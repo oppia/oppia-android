@@ -2,4 +2,5 @@
 <resources>
   <string name="app_name">Oppia</string>
   <string name="welcome_text">Welcome to Oppia!</string>
+  <string name="welcome_back_text">Welcome back to Oppia!</string>
 </resources>
