@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.1"
+    defaultConfig {
+        applicationId "org.oppia.app"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    // https://proandroiddev.com/isolated-fragments-unit-tests-that-run-both-instrumented-and-on-the-jvm-with-the-same-source-code-283db2e9be5d
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/sharedTest/java"
+            kotlin.srcDirs += "src/sharedTest/java"
+        }
+        test {
+            java.srcDirs += "src/sharedTest/java"
+            kotlin.srcDirs += "src/sharedTest/java"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'org.robolectric:robolectric:4.3'
+    testImplementation "com.google.truth:truth:0.43"
+    testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation "com.google.truth:truth:0.43"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
