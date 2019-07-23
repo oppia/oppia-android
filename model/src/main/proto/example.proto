@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message UserAppHistory {
+  bool already_opened_app = 1;
+}
