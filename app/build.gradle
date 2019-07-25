@@ -46,6 +46,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    api 'com.google.guava:guava:28.0-android'
 
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'androidx.test.ext:junit:1.1.1'
@@ -59,5 +60,6 @@ dependencies {
     androidTestImplementation "com.google.truth:truth:0.43"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    compile project(":model")
+    implementation project(":model")
+    implementation project(":utility")
 }
