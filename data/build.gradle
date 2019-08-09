@@ -31,4 +31,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+
+    api "com.google.auto.value:auto-value-annotations:1.6.5"
+    annotationProcessor "com.google.auto.value:auto-value:1.6.5"
+
+    //AutoJSON
+    //https://github.com/rharter/auto-value-gson/
+    annotationProcessor("com.ryanharter.auto.value:auto-value-gson:1.0.0")
+    implementation("com.ryanharter.auto.value:auto-value-gson-runtime:1.0.0")
 }
