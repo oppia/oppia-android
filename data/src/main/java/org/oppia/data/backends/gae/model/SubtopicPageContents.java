@@ -12,18 +12,23 @@ import java.util.List;
 @AutoValue
 public abstract class SubtopicPageContents {
 
-    /*
-    * Parent Hierarchy: Subtopic -> SubtopicPageContents
-    */
+  /*
+   * Parent Hierarchy: Subtopic -> SubtopicPageContents
+   */
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    @SerializedName("subtitled_html") public abstract SubtitledHtml getContent();
-    @SerializedName("recorded_voiceovers") public abstract RecordedVoiceovers getRecordedVoiceovers();
-    @SerializedName("written_translations") public abstract WrittenTranslations getWrittenTranslations();
-        
-    public static TypeAdapter<SubtopicPageContents> createTypeAdapter(Gson gson) {
-        return new AutoValue_SubtopicPageContents.GsonTypeAdapter(gson);
-    }
+  @SerializedName("subtitled_html")
+  public abstract SubtitledHtml getContent();
+
+  @SerializedName("recorded_voiceovers")
+  public abstract RecordedVoiceovers getRecordedVoiceovers();
+
+  @SerializedName("written_translations")
+  public abstract WrittenTranslations getWrittenTranslations();
+
+  public static TypeAdapter<SubtopicPageContents> createTypeAdapter(Gson gson) {
+    return new AutoValue_SubtopicPageContents.GsonTypeAdapter(gson);
+  }
 
 }

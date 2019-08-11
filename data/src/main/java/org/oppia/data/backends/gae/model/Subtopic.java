@@ -11,18 +11,23 @@ import java.util.List;
 @AutoValue
 public abstract class Subtopic {
 
-    /*
-    * Parent Hierarchy: Subtopic
-    */
+  /*
+   * Parent Hierarchy: Subtopic
+   */
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    @SerializedName("topic_id") public abstract String getTopicId();
-    @SerializedName("subtopic_id") public abstract String getSubtopicId();
-    @SerializedName("page_contents") public abstract SubtopicPageContents getPageContents();
-    
-    public static TypeAdapter<Subtopic> createTypeAdapter(Gson gson) {
-        return new AutoValue_Subtopic.GsonTypeAdapter(gson);
-    }
+  @SerializedName("topic_id")
+  public abstract String getTopicId();
+
+  @SerializedName("subtopic_id")
+  public abstract String getSubtopicId();
+
+  @SerializedName("page_contents")
+  public abstract SubtopicPageContents getPageContents();
+
+  public static TypeAdapter<Subtopic> createTypeAdapter(Gson gson) {
+    return new AutoValue_Subtopic.GsonTypeAdapter(gson);
+  }
 
 }
