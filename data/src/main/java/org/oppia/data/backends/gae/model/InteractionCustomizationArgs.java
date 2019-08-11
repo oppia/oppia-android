@@ -11,18 +11,21 @@ import java.util.List;
 @AutoValue
 public abstract class InteractionCustomizationArgs<ValueDataType> {
 
-    /*
-    * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> InteractionInstance -> CustomizationArgs
-    */
+  /*
+   * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> InteractionInstance -> CustomizationArgs
+   */
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    @SerializedName("parse_with_jinja") public abstract boolean isParseWithJinja();
-    //TODO (Ben): Check this free form data
-    @SerializedName("value") public abstract List<ValueDataType> getValue();
+  @SerializedName("parse_with_jinja")
+  public abstract boolean isParseWithJinja();
 
-    public static TypeAdapter<InteractionCustomizationArgs> createTypeAdapter(Gson gson, Type[] types) {
-        return new AutoValue_InteractionCustomizationArgs.GsonTypeAdapter(gson, types);
-    }
+  //TODO (Ben): Check this free form data
+  @SerializedName("value")
+  public abstract List<ValueDataType> getValue();
+
+  public static TypeAdapter<InteractionCustomizationArgs> createTypeAdapter(Gson gson, Type[] types) {
+    return new AutoValue_InteractionCustomizationArgs.GsonTypeAdapter(gson, types);
+  }
 
 }

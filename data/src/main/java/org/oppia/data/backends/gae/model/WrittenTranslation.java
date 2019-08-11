@@ -8,18 +8,21 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class WrittenTranslation {
 
-    /*
-    * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> WrittenTranslations -> WrittenTranslation
-    */
+  /*
+   * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> WrittenTranslations -> WrittenTranslation
+   */
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    //TODO: HTML-String data type
-    @SerializedName("html") public abstract String getHtml();
-    @SerializedName("needs_update") public abstract boolean isUpdateNeeded();
+  //TODO: HTML-String data type
+  @SerializedName("html")
+  public abstract String getHtml();
 
-    public static TypeAdapter<WrittenTranslation> createTypeAdapter(Gson gson) {
-        return new AutoValue_WrittenTranslation.GsonTypeAdapter(gson);
-    }
+  @SerializedName("needs_update")
+  public abstract boolean isUpdateNeeded();
+
+  public static TypeAdapter<WrittenTranslation> createTypeAdapter(Gson gson) {
+    return new AutoValue_WrittenTranslation.GsonTypeAdapter(gson);
+  }
 
 }

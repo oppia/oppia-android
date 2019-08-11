@@ -10,18 +10,19 @@ import java.util.Map;
 @AutoValue
 public abstract class WrittenTranslations {
 
-    /*
-    * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> WrittenTranslations
-    */
+  /*
+   * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> WrittenTranslations
+   */
 
-    //TODO: ImmutableMap<> and Map<> error
-    //ImmutableMap<> does not work but Map<> works
-    //TODO: AutoJSON null data error
+  //TODO: ImmutableMap<> and Map<> error
+  //ImmutableMap<> does not work but Map<> works
+  //TODO: AutoJSON null data error
 
-    @SerializedName("translations_mapping") public abstract Map<String, Map<String, WrittenTranslation>> getTranslationsMapping();
+  @SerializedName("translations_mapping")
+  public abstract Map<String, Map<String, WrittenTranslation>> getTranslationsMapping();
 
-    public static TypeAdapter<WrittenTranslations> createTypeAdapter(Gson gson) {
-        return new AutoValue_WrittenTranslations.GsonTypeAdapter(gson);
-    }
+  public static TypeAdapter<WrittenTranslations> createTypeAdapter(Gson gson) {
+    return new AutoValue_WrittenTranslations.GsonTypeAdapter(gson);
+  }
 
 }

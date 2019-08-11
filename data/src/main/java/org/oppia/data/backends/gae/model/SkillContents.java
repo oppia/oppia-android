@@ -10,21 +10,28 @@ import java.util.List;
 @AutoValue
 public abstract class SkillContents {
 
-    /*
-    * Parent Hierarchy: ConceptCard -> SkillContents
-    */
+  /*
+   * Parent Hierarchy: ConceptCard -> SkillContents
+   */
 
-    //TODO: ImmutableList<> and List<> error
-    //ImmutableList<> does not work but List<> works
-    //TODO: AutoJSON null data error
-    
-    @SerializedName("explanation") public abstract SubtitledHtml getExplanation();
-    @SerializedName("worked_examples") public abstract List<SubtitledHtml> getWorkedExamples();
-    @SerializedName("recorded_voiceovers") public abstract RecordedVoiceovers getRecordedVoiceovers();
-    @SerializedName("written_translations") public abstract WrittenTranslations getWrittenTranslations();
+  //TODO: ImmutableList<> and List<> error
+  //ImmutableList<> does not work but List<> works
+  //TODO: AutoJSON null data error
 
-    public static TypeAdapter<SkillContents> createTypeAdapter(Gson gson) {
-        return new AutoValue_SkillContents.GsonTypeAdapter(gson);
-    }
+  @SerializedName("explanation")
+  public abstract SubtitledHtml getExplanation();
+
+  @SerializedName("worked_examples")
+  public abstract List<SubtitledHtml> getWorkedExamples();
+
+  @SerializedName("recorded_voiceovers")
+  public abstract RecordedVoiceovers getRecordedVoiceovers();
+
+  @SerializedName("written_translations")
+  public abstract WrittenTranslations getWrittenTranslations();
+
+  public static TypeAdapter<SkillContents> createTypeAdapter(Gson gson) {
+    return new AutoValue_SkillContents.GsonTypeAdapter(gson);
+  }
 
 }

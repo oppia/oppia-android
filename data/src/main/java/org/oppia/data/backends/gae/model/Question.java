@@ -11,19 +11,24 @@ import java.util.List;
 @AutoValue
 public abstract class Question {
 
-    /*
-    * Parent Hierarchy: QuestionPlayer -> Question
-    */
+  /*
+   * Parent Hierarchy: QuestionPlayer -> Question
+   */
 
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    @SerializedName("id") public abstract String getId();
-    @SerializedName("question_state_data") public abstract State getState();
-    @SerializedName("version") public abstract int getVersion();
+  @SerializedName("id")
+  public abstract String getId();
 
-    public static TypeAdapter<Question> createTypeAdapter(Gson gson) {
-        return new AutoValue_Question.GsonTypeAdapter(gson);
-    }
+  @SerializedName("question_state_data")
+  public abstract State getState();
+
+  @SerializedName("version")
+  public abstract int getVersion();
+
+  public static TypeAdapter<Question> createTypeAdapter(Gson gson) {
+    return new AutoValue_Question.GsonTypeAdapter(gson);
+  }
 
 }

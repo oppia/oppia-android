@@ -10,18 +10,19 @@ import java.util.Map;
 @AutoValue
 public abstract class RecordedVoiceovers {
 
-    /*
-    * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> RecordedVoiceovers
-    */
+  /*
+   * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> RecordedVoiceovers
+   */
 
-    //TODO: ImmutableMap<> and Map<> error
-    //ImmutableMap<> does not work but Map<> works
-    //TODO: AutoJSON null data error
+  //TODO: ImmutableMap<> and Map<> error
+  //ImmutableMap<> does not work but Map<> works
+  //TODO: AutoJSON null data error
 
-    @SerializedName("voiceovers_mapping") public abstract Map<String, Map<String, Voiceover>> getVoiceoversMapping();
+  @SerializedName("voiceovers_mapping")
+  public abstract Map<String, Map<String, Voiceover>> getVoiceoversMapping();
 
-    public static TypeAdapter<RecordedVoiceovers> createTypeAdapter(Gson gson) {
-        return new AutoValue_RecordedVoiceovers.GsonTypeAdapter(gson);
-    }
+  public static TypeAdapter<RecordedVoiceovers> createTypeAdapter(Gson gson) {
+    return new AutoValue_RecordedVoiceovers.GsonTypeAdapter(gson);
+  }
 
 }

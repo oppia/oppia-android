@@ -27,16 +27,35 @@ public abstract class ExplorationContainer {
   //ImmutableMap<> does not work but Map<> works
   //TODO: AutoJSON null data error
 
-  @SerializedName("record_playthrough_probability") public abstract float getRecordPlaythroughProbability();
-  @SerializedName("exploration_id") public abstract String getExplorationId();
-  @SerializedName("state_classifier_mapping") public abstract Map<String, StateClassifier> getStateClassifierMapping();
-  @SerializedName("user_email") public abstract String getUserEmail();
-  @SerializedName("version") public abstract int getVersion();
-  @SerializedName("correctness_feedback_enabled") public abstract boolean isCorrectnessFeedbackEnabled();
-  @SerializedName("username") public abstract String getUsername();
-  @SerializedName("is_logged_in") public abstract boolean isLoggedIn();
-  @SerializedName("exploration") public abstract Exploration getExploration();
-  @SerializedName("session_id") public abstract String getSessionId();
+  @SerializedName("record_playthrough_probability")
+  public abstract float getRecordPlaythroughProbability();
+
+  @SerializedName("exploration_id")
+  public abstract String getExplorationId();
+
+  @SerializedName("state_classifier_mapping")
+  public abstract Map<String, StateClassifier> getStateClassifierMapping();
+
+  @SerializedName("user_email")
+  public abstract String getUserEmail();
+
+  @SerializedName("version")
+  public abstract int getVersion();
+
+  @SerializedName("correctness_feedback_enabled")
+  public abstract boolean isCorrectnessFeedbackEnabled();
+
+  @SerializedName("username")
+  public abstract String getUsername();
+
+  @SerializedName("is_logged_in")
+  public abstract boolean isLoggedIn();
+
+  @SerializedName("exploration")
+  public abstract Exploration getExploration();
+
+  @SerializedName("session_id")
+  public abstract String getSessionId();
 
   public static TypeAdapter<ExplorationContainer> createTypeAdapter(Gson gson) {
     return new AutoValue_ExplorationContainer.GsonTypeAdapter(gson);

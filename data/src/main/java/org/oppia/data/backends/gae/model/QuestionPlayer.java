@@ -11,18 +11,19 @@ import java.util.List;
 @AutoValue
 public abstract class QuestionPlayer {
 
-    /*
-    * Parent Hierarchy: QuestionPlayer
-    */
+  /*
+   * Parent Hierarchy: QuestionPlayer
+   */
 
-    //TODO: ImmutableList<> and List<> error
-    //ImmutableList<> does not work but List<> works
-    //TODO: AutoJSON null data error
-    
-    @SerializedName("question_dicts") public abstract List<Question> getQuestions();
+  //TODO: ImmutableList<> and List<> error
+  //ImmutableList<> does not work but List<> works
+  //TODO: AutoJSON null data error
 
-    public static TypeAdapter<QuestionPlayer> createTypeAdapter(Gson gson) {
-        return new AutoValue_QuestionPlayer.GsonTypeAdapter(gson);
-    }
+  @SerializedName("question_dicts")
+  public abstract List<Question> getQuestions();
+
+  public static TypeAdapter<QuestionPlayer> createTypeAdapter(Gson gson) {
+    return new AutoValue_QuestionPlayer.GsonTypeAdapter(gson);
+  }
 
 }

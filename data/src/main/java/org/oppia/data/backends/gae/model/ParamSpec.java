@@ -8,16 +8,17 @@ import com.google.gson.annotations.SerializedName;
 @AutoValue
 public abstract class ParamSpec {
 
-    /*
-    * Parent Hierarchy: ExplorationContainer -> Exploration -> ParamSpec
-    */
+  /*
+   * Parent Hierarchy: ExplorationContainer -> Exploration -> ParamSpec
+   */
 
-    //TODO: AutoJSON null data error
+  //TODO: AutoJSON null data error
 
-    @SerializedName("obj_type") public abstract String getObjType();
+  @SerializedName("obj_type")
+  public abstract String getObjType();
 
-    public static TypeAdapter<ParamSpec> createTypeAdapter(Gson gson) {
-        return new AutoValue_ParamSpec.GsonTypeAdapter(gson);
-    }
+  public static TypeAdapter<ParamSpec> createTypeAdapter(Gson gson) {
+    return new AutoValue_ParamSpec.GsonTypeAdapter(gson);
+  }
 
 }
