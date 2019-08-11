@@ -24,7 +24,7 @@ public abstract class InteractionCustomizationArgs<ValueDataType> {
   @SerializedName("value")
   public abstract List<ValueDataType> getValue();
 
-  public static TypeAdapter<InteractionCustomizationArgs> createTypeAdapter(Gson gson, Type[] types) {
+  public static <ValueDataType> TypeAdapter<InteractionCustomizationArgs<ValueDataType>> createTypeAdapter(Gson gson, Type[] types) {
     return new AutoValue_InteractionCustomizationArgs.GsonTypeAdapter(gson, types);
   }
 

@@ -26,7 +26,7 @@ public abstract class StateClassifier<ClassifierDataType> {
   @SerializedName("data_schema_version")
   public abstract int getDataSchemaVersion();
 
-  public static TypeAdapter<StateClassifier> createTypeAdapter(Gson gson, Type[] types) {
+  public static <ClassifierDataType> TypeAdapter<StateClassifier<ClassifierDataType>> createTypeAdapter(Gson gson, Type[] types) {
     return new AutoValue_StateClassifier.GsonTypeAdapter(gson, types);
   }
 

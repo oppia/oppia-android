@@ -26,7 +26,7 @@ public abstract class RuleSpec<InputDatatype> {
   @SerializedName("rule_type")
   public abstract String getRuleType();
 
-  public static TypeAdapter<RuleSpec> createTypeAdapter(Gson gson, Type[] types) {
+  public static <InputDatatype> TypeAdapter<RuleSpec<InputDatatype>> createTypeAdapter(Gson gson, Type[] types) {
     return new AutoValue_RuleSpec.GsonTypeAdapter(gson, types);
   }
 

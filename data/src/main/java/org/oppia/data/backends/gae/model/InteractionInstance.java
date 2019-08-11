@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @AutoValue
-public abstract class InteractionInstance<ConfirmedUnclassifiedAnswersDataTYpe> {
+public abstract class InteractionInstance<ConfirmedUnclassifiedAnswersDataType> {
 
   /*
    * Parent Hierarchy: ExplorationContainer -> Exploration -> State -> InteractionInstance
@@ -33,7 +33,7 @@ public abstract class InteractionInstance<ConfirmedUnclassifiedAnswersDataTYpe> 
 
   //TODO (Ben): Check this free form data
   @SerializedName("confirmed_unclassified_answers")
-  public abstract List<ConfirmedUnclassifiedAnswersDataTYpe> getConfirmedUnclassifiedAnswers();
+  public abstract List<ConfirmedUnclassifiedAnswersDataType> getConfirmedUnclassifiedAnswers();
 
   @SerializedName("hints")
   public abstract List<Hint> getHints();
@@ -44,7 +44,7 @@ public abstract class InteractionInstance<ConfirmedUnclassifiedAnswersDataTYpe> 
   @SerializedName("customization_args")
   public abstract Map<String, CustomizationArgs> getCustomizationArgs();
 
-  public static TypeAdapter<InteractionInstance> createTypeAdapter(Gson gson, Type[] type) {
+  public static <ConfirmedUnclassifiedAnswersDataType> TypeAdapter<InteractionInstance<ConfirmedUnclassifiedAnswersDataType>> createTypeAdapter(Gson gson, Type[] type) {
     return new AutoValue_InteractionInstance.GsonTypeAdapter(gson, type);
   }
 

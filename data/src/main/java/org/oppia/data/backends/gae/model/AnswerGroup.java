@@ -32,7 +32,7 @@ public abstract class AnswerGroup<TrainingDataType> {
   @SerializedName("training_data")
   public abstract List<TrainingDataType> getTrainingData();
 
-  public static TypeAdapter<AnswerGroup> createTypeAdapter(Gson gson, Type[] types) {
+  public static <TrainingDataType> TypeAdapter<AnswerGroup<TrainingDataType>> createTypeAdapter(Gson gson, Type[] types) {
     return new AutoValue_AnswerGroup.GsonTypeAdapter(gson, types);
   }
 
