@@ -1,49 +1,48 @@
 package org.oppia.app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModelProviders
+import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.model.UserAppHistory
-import org.oppia.util.data.AsyncDataSource
+import org.oppia.domain.UserAppHistoryController
+import org.oppia.util.data.AsyncResult
 
-class HomeFragment: Fragment() {
-  private var userHistoryRetrievalJob: Job? = null
+/** Fragment that contains an introduction to the app. */
+class HomeFragment : Fragment() {
+  private val userAppHistoryController = UserAppHistoryController()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.home_fragment, container, /* attachToRoot= */ false)
+    val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    getUserAppHistoryViewModel().userAppHistoryLiveData = getUserAppHistory()
+    binding.lifecycleOwner = this
+
+    userAppHistoryController.markUserOpenedApp()
+
+    return binding.root
   }
 
-  override fun onStart() {
-    if (userHistoryRetrievalJob == null) {
-      val userAppHistoryDataSource = getUserAppHistory()
-      userHistoryRetrievalJob = viewLifecycleOwner.lifecycleScope.launch {
-        // TODO(BenHenning): Convert this to LiveData rather than risk an async operation.
-        val appHistory = userAppHistoryDataSource.executePendingOperation()
-        if (appHistory.alreadyOpenedApp) {
-          getWelcomeTextView()?.setText(R.string.welcome_back_text)
-        }
-      }
+  private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
+    return ViewModelProviders.of(this).get(UserAppHistoryViewModel::class.java)
+  }
+
+  private fun getUserAppHistory(): LiveData<UserAppHistory> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(
+      userAppHistoryController.getUserAppHistory()
+    ) { result: AsyncResult<UserAppHistory> -> processUserAppHistoryResult(result) }
+  }
+
+  private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
+    if (appHistoryResult.isFailure()) {
+      Log.e("HomeFragment", "Failed to retrieve user app history", appHistoryResult.error)
     }
-
-    super.onStart()
-  }
-
-  private fun getWelcomeTextView(): TextView? {
-    return view?.findViewById(R.id.welcome_text_view)
-  }
-
-  private fun getUserAppHistory(): AsyncDataSource<UserAppHistory> {
-    // TODO(BenHenning): Retrieve this from a domain provider.
-    return object: AsyncDataSource<UserAppHistory> {
-      override suspend fun executePendingOperation(): UserAppHistory {
-        return UserAppHistory.newBuilder().setAlreadyOpenedApp(false).build()
-      }
-    }
+    return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }
 }
