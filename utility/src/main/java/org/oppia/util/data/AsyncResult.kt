@@ -41,8 +41,12 @@ class AsyncResult<T> private constructor(
     return if (isSuccess()) value!! else defaultValue
   }
 
-  /** Returns the value of the result if it succeeded, otherwise throws the underlying exception. */
+  /**
+   * Returns the value of the result if it succeeded, otherwise throws the underlying exception. Throws if this result
+   * is not yet completed.
+   */
   fun getOrThrow(): T {
+    check(isCompleted()) { "Result is not yet completed." }
     if (isSuccess()) return value!! else throw error!!
   }
 

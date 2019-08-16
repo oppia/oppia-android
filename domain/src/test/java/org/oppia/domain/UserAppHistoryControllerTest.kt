@@ -7,9 +7,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,44 +45,52 @@ class UserAppHistoryControllerTest {
   @Captor
   lateinit var appHistoryResultCaptor: ArgumentCaptor<AsyncResult<UserAppHistory>>
 
-  private val userAppHistoryController = UserAppHistoryController()
-
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+  private val testThread = newSingleThreadContext("UI thread")
 
   @Before
   fun setUp() {
-    Dispatchers.setMain(mainThreadSurrogate)
+    Dispatchers.setMain(testThread)
   }
 
   @After
   fun tearDown() {
     Dispatchers.resetMain()
-    mainThreadSurrogate.close()
+    testThread.close()
   }
 
   @Test
-  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() {
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest {
+    val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
+
     testActivityScenarioRule.scenario.onActivity { activity ->
       getTestFragment(activity).observeUserAppHistory(userAppHistoryController.getUserAppHistory())
     }
 
     testActivityScenarioRule.scenario.moveToState(Lifecycle.State.RESUMED)
+    advanceUntilIdle()
+
+//    val testFragment = getTestFragment(activity)
+//    val expectedOutput = activity.getString(org.oppia.test.R.string.test_output_result, false)
+//    onView(withId(testFragment.getOutputTextView().id)).check(matches(withText(expectedOutput)))
 
     testActivityScenarioRule.scenario.onActivity { activity ->
       val appHistoryResult = getTestFragment(activity).userAppHistoryResult
-      assertThat(appHistoryResult).isNotNull()
-      assertThat(appHistoryResult!!.isSuccess()).isTrue()
-      assertThat(appHistoryResult.getOrThrow().alreadyOpenedApp).isFalse()
+      assertThat(appHistoryResult!!.getOrThrow().alreadyOpenedApp).isFalse()
     }
   }
 
   @Test
-  fun testController_afterSettingAppOpened_providesLiveData_thatIndicatesUserHasOpenedTheApp() {
+  @ExperimentalCoroutinesApi
+  fun testController_afterSettingAppOpened_providesLiveData_thatIndicatesUserHasOpenedTheApp() = runBlockingTest {
+    val userAppHistoryController = UserAppHistoryController(testThread)
+
     val appHistory = userAppHistoryController.getUserAppHistory()
     appHistory.observeForever(mockAppHistoryObserver)
 
     userAppHistoryController.markUserOpenedApp()
+    advanceUntilIdle()
 
     verify(mockAppHistoryObserver).onChanged(appHistoryResultCaptor.capture())
     assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
