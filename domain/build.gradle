@@ -44,8 +44,8 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.3'
 
     implementation project(":model")
-    implementation project(":testsupport")
     implementation project(":utility")
+    testImplementation project(":testsupport")
 }
 repositories {
     mavenCentral()

@@ -1,9 +1,13 @@
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.test">
+  <!-- Note that this application should only be used in test contexts. If you are seeing a build error for the
+  production app saying that multiple themes are being defined, then that means this module is being depended on in a
+  non-test context somewhere. -->
   <application
+    android:testOnly="true"
     android:theme="@style/TestTheme">
-    <activity android:name="org.oppia.test.TestUserAppHistoryControllerActivity">
+    <activity android:name="TestUserAppHistoryControllerActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
