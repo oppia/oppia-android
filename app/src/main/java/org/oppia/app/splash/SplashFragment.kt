@@ -31,6 +31,7 @@ class SplashFragment : Fragment() {
     private fun loadSplashScreen() {
 
 
+        // TODO(Veena): Replace below code to load profile data and then redirect to HomePage
         Handler().postDelayed(// Using handler with postDelayed called runnable run method
 
         {
