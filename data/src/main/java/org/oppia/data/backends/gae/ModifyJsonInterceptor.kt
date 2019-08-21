@@ -4,10 +4,6 @@ import okhttp3.*
 
 import java.io.IOException
 
-//TODO: Transfer this XSSI_PREFIX to a constant file
-// which is responsible for networking too.
-private const val XSSI_PREFIX = ")]}\'\n"
-
 class ModifyJsonInterceptor : Interceptor {
 
   @Throws(IOException::class)
@@ -18,7 +14,7 @@ class ModifyJsonInterceptor : Interceptor {
     if (response.code() == 200) {
       if (response.body() != null) {
         var rawJson = response.body()!!.string()
-        if (rawJson.startsWith(XSSI_PREFIX)) {
+        if (rawJson.startsWith(NetworkSettings.XSSI_PREFIX)) {
           rawJson = rawJson.substring(rawJson.indexOf('\n') + 1)
         }
         val contentType = response.body()!!.contentType()
@@ -26,7 +22,8 @@ class ModifyJsonInterceptor : Interceptor {
         return response.newBuilder().body(body).build()
       }
     } else if (response.code() == 403) {
-      //TODO: Manage other network errors here
+      //TODO(#5): Identify how error handling will work (e.g. what Retrofit does),
+      // whether RPC retry is supported & how it is/can be configured, etc.
     }
     return response
   }
