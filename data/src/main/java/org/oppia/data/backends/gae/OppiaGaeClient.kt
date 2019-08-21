@@ -23,5 +23,4 @@ object OppiaGaeClient {
       }
       return retrofit
     }
-
 }

@@ -27,5 +27,4 @@ class ModifyJsonInterceptor : Interceptor {
     }
     return response
   }
-
 }
