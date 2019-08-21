@@ -60,6 +60,8 @@ dependencies {
     androidTestImplementation "com.google.truth:truth:0.43"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    implementation 'com.hypertrack:hyperlog:0.0.10'
+
     implementation project(":model")
     implementation project(":utility")
 }

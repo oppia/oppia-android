@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.app.HomeActivity
 import org.oppia.app.R
+import android.app.Activity
+import android.content.Context
+import org.oppia.app.utility.Logger
 
 
 class SplashFragment : Fragment() {
@@ -18,6 +21,9 @@ class SplashFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
     }
+
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,18 +37,21 @@ class SplashFragment : Fragment() {
     private fun loadSplashScreen() {
 
 
+        Logger.d(requireContext(),"Splash","debug")
+
         // TODO(Veena): Replace below code to load profile data and then redirect to HomePage
+
         Handler().postDelayed(// Using handler with postDelayed called runnable run method
 
         {
             routeToHomePage()
-        }, (5 * 1000).toLong()) // wait for 5 seconds
+        }, (3 * 1000).toLong()) // wait for 5 seconds
 
     }
 
 
     private fun routeToHomePage() {
-        val intent = Intent(activity, HomeActivity::class.java)
+        val intent = Intent(requireContext(), HomeActivity::class.java)
 
         startActivity(intent)
 
