@@ -3,50 +3,51 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.1"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.1"
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-    }
+  defaultConfig {
+    minSdkVersion 16
+    targetSdkVersion 28
+    versionCode 1
+    versionName "1.0"
+  }
 
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
     }
+  }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+  }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    testImplementation 'android.arch.core:core-testing:1.1.1'
-    testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    testImplementation 'androidx.test.ext:junit:1.1.1'
-    testImplementation 'com.google.truth:truth:0.43'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2'
-    testImplementation 'org.mockito:mockito-core:2.19.0'
-    testImplementation 'org.robolectric:robolectric:4.3'
-
-    implementation project(":model")
-    implementation project(":utility")
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation(
+      'androidx.appcompat:appcompat:1.0.2',
+      'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  )
+  testImplementation(
+      'android.arch.core:core-testing:1.1.1',
+      'androidx.test.espresso:espresso-core:3.2.0',
+      'androidx.test.ext:junit:1.1.1',
+      'com.google.truth:truth:0.43',
+      'junit:junit:4.12',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.mockito:mockito-core:2.19.0',
+      'org.robolectric:robolectric:4.3'
+  )
+  implementation project(":model")
+  implementation project(":utility")
 }
 repositories {
-    mavenCentral()
+  mavenCentral()
 }

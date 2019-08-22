@@ -10,7 +10,6 @@
 app/build
 domain/build
 model/build
-testsupport/build
 utility/build
 .DS_Store
 /build
