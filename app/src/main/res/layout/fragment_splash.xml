@@ -4,16 +4,4 @@
   android:background="@color/colorPrimary"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-
-    <ImageView
-      android:layout_width="match_parent"
-      android:layout_height="130dp"
-      android:scaleType="fitXY"
-      android:adjustViewBounds="true"
-      android:layout_marginLeft="60dp"
-      android:layout_marginRight="60dp"
-      android:src="@drawable/ic_oppia_logo_white"
-      android:layout_gravity="center"
-      android:layout_marginBottom="100dp"/>
-
 </FrameLayout>

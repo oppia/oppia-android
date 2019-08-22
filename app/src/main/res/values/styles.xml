@@ -6,7 +6,6 @@
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
-
   <style name="OppiaThemeWithoutActionBar" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -15,6 +14,16 @@
 
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
     <item name="android:windowBackground">@drawable/bg_splash</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+    <item name="android:backgroundDimEnabled">true</item>
   </style>
 
+  <!-- Base style for animations.  This style specifies no animations. -->
+  <style name="Animation" />
+
+  <!-- Standard animations for a full-screen window or activity. -->
+  <style name="Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+  </style>
 </resources>

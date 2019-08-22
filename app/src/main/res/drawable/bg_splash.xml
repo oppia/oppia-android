@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item android:drawable="@color/colorPrimary" />
-
-  <item android:drawable="@drawable/ic_oppia_logo_white"
-        android:width="300dp"
-        android:height="200dp"
-        android:gravity="center">
+  <item android:drawable="@drawable/splash_page"
+        android:gravity="fill">
   </item>
 
 </layer-list>
