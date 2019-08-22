@@ -3,8 +3,10 @@
 
   <item android:drawable="@color/colorPrimary" />
 
-  <!--<item android:drawable="@drawable/ic_oppia_logo_white"-->
-        <!--android:gravity="top">-->
-  <!--</item>-->
+  <item android:drawable="@drawable/ic_oppia_logo_white"
+        android:width="300dp"
+        android:height="200dp"
+        android:gravity="center">
+  </item>
 
 </layer-list>

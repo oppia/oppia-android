@@ -9,7 +9,6 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors.directExecutor
 import org.oppia.app.model.UserAppHistory
-import org.oppia.app.utility.Logger
 import org.oppia.util.data.AsyncDataSource
 
 /** The central activity for all users entering the app. */
@@ -34,7 +33,7 @@ class HomeActivity : AppCompatActivity() {
 
       override fun onFailure(t: Throwable) {
         // TODO(BenHenning): Replace this log statement with a clearer logging API.
-        Logger.e(applicationContext,"HomeActivity", "Failed to retrieve user app history = "+ t)
+        Log.e("HomeActivity", "Failed to retrieve user app history = "+ t)
       }
     }, directExecutor())
   }
