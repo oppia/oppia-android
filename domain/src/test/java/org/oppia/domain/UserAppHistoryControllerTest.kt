@@ -1,9 +1,7 @@
 package org.oppia.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +22,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.app.model.UserAppHistory
-import org.oppia.test.TestUserAppHistoryControllerActivity
-import org.oppia.test.TestUserAppHistoryControllerActivity.TestFragment
 import org.oppia.util.data.AsyncResult
 
 /** Tests for [UserAppHistoryController]. */
@@ -34,14 +31,11 @@ import org.oppia.util.data.AsyncResult
 class UserAppHistoryControllerTest {
   @Rule
   @JvmField
-  val mockitoRule = MockitoJUnit.rule()
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Rule
   @JvmField
   val executorRule = InstantTaskExecutorRule()
-
-  @get:Rule
-  val testActivityScenarioRule = ActivityScenarioRule(TestUserAppHistoryControllerActivity::class.java)
 
   @Mock
   lateinit var mockAppHistoryObserver: Observer<AsyncResult<UserAppHistory>>
@@ -55,12 +49,14 @@ class UserAppHistoryControllerTest {
 
   @Before
   @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun setUp() {
     Dispatchers.setMain(testThread)
   }
 
   @After
   @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun tearDown() {
     Dispatchers.resetMain()
     testThread.close()
@@ -77,7 +73,7 @@ class UserAppHistoryControllerTest {
     appHistory.observeForever(mockAppHistoryObserver)
 
     verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-    assertThat(appHistoryResultCaptor.allValues[0].isPending()).isTrue()
+    assertThat(appHistoryResultCaptor.value.isPending()).isTrue()
   }
 
   @Test
@@ -85,21 +81,13 @@ class UserAppHistoryControllerTest {
   fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest {
     val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
 
-    testActivityScenarioRule.scenario.onActivity { activity ->
-     getTestFragment(activity).observeUserAppHistory(userAppHistoryController.getUserAppHistory())
-    }
-
-    testActivityScenarioRule.scenario.moveToState(Lifecycle.State.RESUMED)
+    val appHistory = userAppHistoryController.getUserAppHistory()
     advanceUntilIdle()
+    appHistory.observeForever(mockAppHistoryObserver)
 
-//    val testFragment = getTestFragment(activity)
-//    val expectedOutput = activity.getString(org.oppia.test.R.string.test_output_result, false)
-//    onView(withId(testFragment.getOutputTextView().id)).check(matches(withText(expectedOutput)))
-
-    testActivityScenarioRule.scenario.onActivity { activity ->
-      val appHistoryResult = getTestFragment(activity).userAppHistoryResult
-      //assertThat(appHistoryResult!!.getOrThrow().alreadyOpenedApp).isFalse()
-    }
+    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
+    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
   }
 
   @Test
@@ -133,9 +121,5 @@ class UserAppHistoryControllerTest {
     verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
     assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
     assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isTrue()
-  }
-
-  private fun getTestFragment(testActivity: TestUserAppHistoryControllerActivity): TestFragment {
-    return testActivity.supportFragmentManager.findFragmentByTag("test_fragment") as TestFragment
   }
 }

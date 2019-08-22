@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="test_output_pending" translatable="false">Pending</string>
-  <string name="test_output_result" translatable="false">Opened app: %1$b</string>
-</resources>

@@ -46,7 +46,6 @@ dependencies {
 
     implementation project(":model")
     implementation project(":utility")
-    testImplementation project(":testsupport")
 }
 repositories {
     mavenCentral()
