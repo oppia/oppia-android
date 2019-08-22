@@ -9,14 +9,18 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors.directExecutor
 import org.oppia.app.model.UserAppHistory
+import org.oppia.app.utility.Logger
 import org.oppia.util.data.AsyncDataSource
 
 /** The central activity for all users entering the app. */
 class HomeActivity : AppCompatActivity() {
 
+  val TAG = HomeActivity::class.java.getName()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.home_activity)
+    Logger.d(applicationContext,TAG,"Welcome to Oppia")
   }
 
   override fun onStart() {
@@ -28,6 +32,7 @@ class HomeActivity : AppCompatActivity() {
       override fun onSuccess(result: UserAppHistory?) {
         if (result != null && result.alreadyOpenedApp) {
           getWelcomeTextView().setText(R.string.welcome_back_text)
+          Logger.d(applicationContext,TAG,"Welcome back to oppia")
         }
       }
 
