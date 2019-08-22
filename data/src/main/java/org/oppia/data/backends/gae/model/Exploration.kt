@@ -18,4 +18,5 @@ data class Exploration (
   @Json(name = "objective") val objective: String?,
   @Json(name = "correctness_feedback_enabled") val isCorrectnessFeedbackEnabled: Boolean?,
   @Json(name = "title") val title: String?
+
 )
