@@ -2,7 +2,11 @@ package org.oppia.domain
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.oppia.app.model.UserAppHistory
 import org.oppia.util.data.AsyncDataSource
 import org.oppia.util.data.AsyncResult
@@ -10,26 +14,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 /** Controller for persisting and retrieving the previous user history of using the app. */
-class UserAppHistoryController(coroutineContext: CoroutineContext = EmptyCoroutineContext) {
+class UserAppHistoryController(private val coroutineContext: CoroutineContext = EmptyCoroutineContext) {
   // TODO(BenHenning): Persist this value.
-  private var userOpenedApp = true
+  private var userOpenedApp = false
 
-  // Lazy initialize this so that its async function isn't started until it's actually needed.
-  private val userAppHistoryData: NotifiableAsyncLiveData<UserAppHistory> by lazy {
-    NotifiableAsyncLiveData(coroutineContext) {
-      createUserAppHistoryDataSource().executePendingOperation()
-    }
-  }
-
-  /** Saves that the user has opened the app. */
+  /**
+   * Saves that the user has opened the app. Note that this does not notify existing consumers that the change was made.
+   */
   fun markUserOpenedApp() {
     userOpenedApp = true
-    userAppHistoryData.notifyUpdate()
   }
 
   /** Returns a [LiveData] result indicating whether the user has previously opened the app. */
   fun getUserAppHistory(): LiveData<AsyncResult<UserAppHistory>> {
-    return userAppHistoryData
+    return NotifiableAsyncLiveData(coroutineContext) {
+      createUserAppHistoryDataSource().executePendingOperation()
+    }
   }
 
   // TODO(BenHenning): Move this to a data source within the data source module.
@@ -76,6 +76,7 @@ class UserAppHistoryController(coroutineContext: CoroutineContext = EmptyCorouti
           removeSource(pendingCoroutineLiveData!!)
           pendingCoroutineLiveData = null
         }
+        enqueueAsyncFunctionAsLiveData()
       }
     }
 
@@ -84,14 +85,12 @@ class UserAppHistoryController(coroutineContext: CoroutineContext = EmptyCorouti
      * docs for context.
      */
     private fun enqueueAsyncFunctionAsLiveData() {
-      val coroutineLiveData: LiveData<AsyncResult<T>> by lazy {
-        liveData(context) {
-          try {
-            emit(AsyncResult.success(function()))
-          } catch (t: Throwable) {
-            // Capture all failures for the downstream handler.
-            emit(AsyncResult.failed<T>(t))
-          }
+      val coroutineLiveData = CoroutineLiveData(context) {
+        try {
+          AsyncResult.success(function())
+        } catch (t: Throwable) {
+          // Capture all failures for the downstream handler.
+          AsyncResult.failed<T>(t)
         }
       }
       synchronized(lock) {
@@ -100,6 +99,31 @@ class UserAppHistoryController(coroutineContext: CoroutineContext = EmptyCorouti
           value = computedValue
         }
       }
+    }
+  }
+
+  // TODO(BenHenning): Replace this with AndroidX's CoroutineLiveData once the corresponding LiveData suspend job bug is
+  // fixed & available.
+  /** A [LiveData] whose value is derived from a suspended function. */
+  private class CoroutineLiveData<T>(
+    private val context: CoroutineContext,
+    private val function: suspend () -> T
+  ) : MutableLiveData<T>() {
+    private var runningJob: Job? = null
+
+    override fun onActive() {
+      super.onActive()
+      if (runningJob == null) {
+        val scope = CoroutineScope(Dispatchers.Main + context)
+        runningJob = scope.launch {
+          value = function()
+        }
+      }
+    }
+
+    override fun onInactive() {
+      super.onInactive()
+      runningJob?.cancel()
     }
   }
 }

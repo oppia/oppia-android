@@ -20,10 +20,17 @@ class HomeFragment : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    getUserAppHistoryViewModel().userAppHistoryLiveData = getUserAppHistory()
-    binding.lifecycleOwner = this
+    val viewModel = getUserAppHistoryViewModel()
+    val appUserHistory = getUserAppHistory()
+    viewModel.userAppHistoryLiveData = appUserHistory
+    // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
+    // data-bound view models.
+    binding.let {
+      it.viewModel = viewModel
+      it.lifecycleOwner = this
+    }
 
-    userAppHistoryController.markUserOpenedApp()
+    // TODO(BenHenning): Mark that the user opened the app once it's persisted to disk.
 
     return binding.root
   }
