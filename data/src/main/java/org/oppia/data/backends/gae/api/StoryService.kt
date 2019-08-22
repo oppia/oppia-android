@@ -1,0 +1,14 @@
+package org.oppia.data.backends.gae.api
+
+import org.oppia.data.backends.gae.model.Story
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface StoryService {
+
+  @GET("story_data_handler/{story_id}")
+  fun getStory(@Path("story_id") storyId: String, @Query("user_id") userId: String, @Query("user") user: String): Call<Story>
+
+}
