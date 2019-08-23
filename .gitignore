@@ -8,6 +8,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 app/build
+domain/build
 model/build
 utility/build
 .DS_Store
