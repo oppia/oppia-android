@@ -6,8 +6,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class AdditionalStorySummary(
 
-  @Json(name = "id") val id: String,
-  @Json(name = "title") val title: String,
-  @Json(name = "description") val description: String
+  @Json(name = "id") val id: String?,
+  @Json(name = "title") val title: String?,
+  @Json(name = "description") val description: String?
 
 )

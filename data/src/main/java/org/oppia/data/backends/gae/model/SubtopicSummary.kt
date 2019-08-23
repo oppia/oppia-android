@@ -6,8 +6,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class SubtopicSummary(
 
-  @Json(name = "id") val id: String,
-  @Json(name = "title") val title: String,
-  @Json(name = "skill_ids") val skillIds: List<String>
+  @Json(name = "id") val id: String?,
+  @Json(name = "title") val title: String?,
+  @Json(name = "skill_ids") val skillIds: List<String?>?
 
 )
