@@ -30,11 +30,7 @@ class HomeFragment : Fragment() {
       it.lifecycleOwner = this
     }
 
-<<<<<<< HEAD
-    // TODO(BenHenning): Mark that the user opened the app once it's persisted to disk.
-=======
     // TODO(#70): Mark that the user opened the app once it's persisted to disk.
->>>>>>> upstream/master
 
     return binding.root
   }
