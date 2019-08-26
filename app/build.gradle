@@ -66,6 +66,6 @@ dependencies {
             'com.google.truth:truth:0.43',
     )
     implementation project(":model")
-    implementation project(":domain")
+//    implementation project(":domain")
     implementation project(":utility")
 }
