@@ -18,7 +18,7 @@ class NetworkInterceptor : Interceptor {
       if (response.body() != null) {
         var rawJson = response.body()!!.string()
         if (rawJson.startsWith(NetworkSettings.XSSI_PREFIX)) {
-          rawJson = rawJson.substring(rawJson.indexOf('\n') + 1)
+          rawJson.removePrefix(NetworkSettings.XSSI_PREFIX)
         }
         val contentType = response.body()!!.contentType()
         val body = ResponseBody.create(contentType, rawJson)
