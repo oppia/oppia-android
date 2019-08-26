@@ -10,18 +10,17 @@ object OppiaGaeClient {
 
   private var retrofit: Retrofit? = null
 
-  val retrofitInstance: Retrofit?
-    get() {
-      if (retrofit == null) {
-        val client = OkHttpClient.Builder()
-        client.addInterceptor(NetworkInterceptor())
+  val retrofitInstance: Retrofit? by lazy {
+    if (retrofit == null) {
+      val client = OkHttpClient.Builder()
+      client.addInterceptor(NetworkInterceptor())
 
-        retrofit = retrofit2.Retrofit.Builder()
-          .baseUrl(NetworkSettings.BASE_URL)
-          .addConverterFactory(MoshiConverterFactory.create())
-          .client(client.build())
-          .build()
-      }
-      return retrofit
+      retrofit = retrofit2.Retrofit.Builder()
+        .baseUrl(NetworkSettings.BASE_URL)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client.build())
+        .build()
     }
+    return@lazy retrofit
+  }
 }
