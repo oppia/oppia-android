@@ -1,13 +1,10 @@
 package org.oppia.data.backends.gae
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
 import org.oppia.data.Constants
 import java.io.IOException
-
-private val TAG: String = NetworkInterceptor::class.java.simpleName
 
 /** Interceptor on top of Retrofit to modify requests and response */
 class NetworkInterceptor : Interceptor {
