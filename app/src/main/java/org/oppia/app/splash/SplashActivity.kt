@@ -5,11 +5,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import android.content.res.Configuration
-
-/*
-* This activity acts as a container to SplashFragment
-* There is a background theme set to this activity to display app logo until the app is initialized
-*/
+/** An activity that shows a temporary loading page until the app is fully opened. */
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
