@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+/** Retrofit instance for managing topic-handler */
 interface TopicService {
 
   @GET("topic_data_handler/{topic_name}")
