@@ -26,7 +26,6 @@ class NetworkInterceptor : Interceptor {
         return response.newBuilder().body(body).build()
       }
     }
-
     return response
   }
 
