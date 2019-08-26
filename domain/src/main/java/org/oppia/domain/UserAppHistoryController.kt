@@ -15,11 +15,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /** Controller for persisting and retrieving the previous user history of using the app. */
 class UserAppHistoryController(private val coroutineContext: CoroutineContext = EmptyCoroutineContext) {
-<<<<<<< HEAD
-  // TODO(BenHenning): Persist this value.
-=======
   // TODO(#70): Persist this value.
->>>>>>> upstream/master
   private var userOpenedApp = false
 
   /**
@@ -36,10 +32,6 @@ class UserAppHistoryController(private val coroutineContext: CoroutineContext = 
     }
   }
 
-<<<<<<< HEAD
-  // TODO(BenHenning): Move this to a data source within the data source module.
-=======
->>>>>>> upstream/master
   private fun createUserAppHistoryDataSource(): AsyncDataSource<UserAppHistory> {
     return object : AsyncDataSource<UserAppHistory> {
       override suspend fun executePendingOperation(): UserAppHistory {
@@ -48,11 +40,7 @@ class UserAppHistoryController(private val coroutineContext: CoroutineContext = 
     }
   }
 
-<<<<<<< HEAD
-  // TODO(BenHenning): Move this to the correct module once the architecture for data sources is determined.
-=======
   // TODO(#71): Move this to the correct module once the architecture for data sources is determined.
->>>>>>> upstream/master
   /**
    * A version of [LiveData] which can be notified to execute a specified coroutine if there is a pending update.
    *
@@ -113,13 +101,8 @@ class UserAppHistoryController(private val coroutineContext: CoroutineContext = 
     }
   }
 
-<<<<<<< HEAD
-  // TODO(BenHenning): Replace this with AndroidX's CoroutineLiveData once the corresponding LiveData suspend job bug is
-  // fixed & available.
-=======
   // TODO(#72): Replace this with AndroidX's CoroutineLiveData once the corresponding LiveData suspend job bug is fixed
   //  and available.
->>>>>>> upstream/master
   /** A [LiveData] whose value is derived from a suspended function. */
   private class CoroutineLiveData<T>(
     private val context: CoroutineContext,
