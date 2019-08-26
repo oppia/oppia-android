@@ -6,7 +6,7 @@ package org.oppia.util.data
  * @param <T> The type of data being provided by this data source.
  */
 interface AsyncDataSource<T> {
-  // TODO(BenHenning): Finalize the interfaces for this API beyond a basic prototype for the initial project intro.
+  // TODO(#6): Finalize the interfaces for this API beyond a basic prototype for the initial project intro.
 
   suspend fun executePendingOperation(): T
 }
