@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 28
@@ -11,6 +12,7 @@ android {
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   compileOptions {
@@ -35,10 +37,19 @@ dependencies {
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
       'com.google.protobuf:protobuf-lite:3.0.0',
+      'com.squareup.moshi:moshi-kotlin:1.8.0',
+      'com.squareup.retrofit2:converter-moshi:2.5.0',
+      'com.squareup.retrofit2:retrofit:2.5.0',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
   )
   testImplementation(
+      'android.arch.core:core-testing:1.1.1',
+      'androidx.test.ext:junit:1.1.1',
+      'com.google.truth:truth:0.43',
       'junit:junit:4.12',
+      'org.robolectric:robolectric:4.3',
   )
+  androidTestImplementation('androidx.test:runner:1.2.0',
+      'androidx.test.espresso:espresso-core:3.2.0')
   implementation project(":utility")
 }
