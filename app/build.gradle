@@ -3,15 +3,22 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion 29
+  compileSdkVersion 28
   buildToolsVersion "29.0.1"
   defaultConfig {
     applicationId "org.oppia.app"
-    minSdkVersion 16
+    minSdkVersion 19
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8
   }
   buildTypes {
     release {

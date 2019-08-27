@@ -2,6 +2,7 @@ package org.oppia.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +66,9 @@ class UserAppHistoryControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveData_thatIsPendingBeforeResultIsPosted() = runBlockingTest {
-    val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
+    // TODO(BenHenning): Bind the blocking test's coroutine dispatcher to Dagger so that downstream CoroutineLiveData
+    //  uses it.
+    val userAppHistoryController = UserAppHistoryController(ApplicationProvider.getApplicationContext())
 
     // Observe with a paused dispatcher to ensure the actual user app history value is not provided before assertion.
     val appHistory = userAppHistoryController.getUserAppHistory()
@@ -79,7 +82,7 @@ class UserAppHistoryControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest {
-    val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
+    val userAppHistoryController = UserAppHistoryController(ApplicationProvider.getApplicationContext())
 
     val appHistory = userAppHistoryController.getUserAppHistory()
     advanceUntilIdle()
@@ -93,7 +96,7 @@ class UserAppHistoryControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testControllerObserver_observedBeforeSettingAppOpened_providesLiveData_userDidNotOpenApp() = runBlockingTest {
-    val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
+    val userAppHistoryController = UserAppHistoryController(ApplicationProvider.getApplicationContext())
     val appHistory = userAppHistoryController.getUserAppHistory()
 
     appHistory.observeForever(mockAppHistoryObserver)
@@ -110,7 +113,7 @@ class UserAppHistoryControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_observedAfterSettingAppOpened_providesLiveData_userOpenedApp() = runBlockingTest {
-    val userAppHistoryController = UserAppHistoryController(this.coroutineContext)
+    val userAppHistoryController = UserAppHistoryController(ApplicationProvider.getApplicationContext())
     val appHistory = userAppHistoryController.getUserAppHistory()
 
     userAppHistoryController.markUserOpenedApp()

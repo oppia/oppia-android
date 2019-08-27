@@ -16,13 +16,14 @@ import org.oppia.util.data.AsyncResult
 
 /** Fragment that contains an introduction to the app. */
 class HomeFragment : Fragment() {
-  private val userAppHistoryController = UserAppHistoryController()
+  private var userAppHistoryController: UserAppHistoryController? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    userAppHistoryController = UserAppHistoryController(activity!!.applicationContext)
+
     val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getUserAppHistoryViewModel()
-    val appUserHistory = getUserAppHistory()
-    viewModel.userAppHistoryLiveData = appUserHistory
+    viewModel.userAppHistoryLiveData = getUserAppHistory()
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
       it.lifecycleOwner = this
     }
 
-    // TODO(#70): Mark that the user opened the app once it's persisted to disk.
+    userAppHistoryController?.markUserOpenedApp()
 
     return binding.root
   }
@@ -39,11 +40,11 @@ class HomeFragment : Fragment() {
     return ViewModelProviders.of(this).get(UserAppHistoryViewModel::class.java)
   }
 
-  private fun getUserAppHistory(): LiveData<UserAppHistory> {
+  private fun getUserAppHistory(): LiveData<UserAppHistory>? {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(
-      userAppHistoryController.getUserAppHistory()
-    ) { result: AsyncResult<UserAppHistory> -> processUserAppHistoryResult(result) }
+    return userAppHistoryController?.let {
+      Transformations.map(it.getUserAppHistory(), ::processUserAppHistoryResult)
+    }
   }
 
   private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {

@@ -1,6 +1,8 @@
 package org.oppia.util.data
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -63,6 +65,25 @@ class AsyncResultTest {
     assertThat(result.getErrorOrNull()).isNull()
   }
 
+  @Test
+  fun testPendingAsyncResult_transformed_isStillPending() {
+    val original = AsyncResult.pending<String>()
+
+    val transformed = original.transform { 0 }
+
+    assertThat(transformed.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPendingAsyncResult_transformedAsync_isStillPending() = runBlockingTest {
+    val original = AsyncResult.pending<String>()
+
+    val transformed = original.transformAsync { 0 }
+
+    assertThat(transformed.isPending()).isTrue()
+  }
+
   /* Success tests. */
 
   @Test
@@ -114,6 +135,25 @@ class AsyncResultTest {
     assertThat(result.getErrorOrNull()).isNull()
   }
 
+  @Test
+  fun testSucceededAsyncResult_transformed_hasTransformedValue() {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transform { 0 }
+
+    assertThat(transformed.getOrThrow()).isEqualTo(0)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_transformedAsync_hasTransformedValue() = runBlockingTest {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transformAsync { 0 }
+
+    assertThat(transformed.getOrThrow()).isEqualTo(0)
+  }
+
   /* Failure tests. */
 
   @Test
@@ -163,5 +203,26 @@ class AsyncResultTest {
     val result = AsyncResult.failed<String>(UnsupportedOperationException())
 
     assertThat(result.getErrorOrNull()).isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testFailedAsyncResult_transformed_throwsChainedFailureException_withCorrectRootCause() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException())
+
+    val transformed = result.transform { 0 }
+
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testFailedAsyncResult_transformedAsync_throwsChainedFailureException_withCorrectRootCause() = runBlockingTest {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException())
+
+    val transformed = result.transformAsync { 0 }
+
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
   }
 }
