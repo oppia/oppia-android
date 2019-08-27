@@ -6,7 +6,11 @@ import okhttp3.ResponseBody
 import org.oppia.data.Constants
 import java.io.IOException
 
-/** Interceptor on top of Retrofit to modify requests and response */
+/**
+ * Interceptor on top of Retrofit to modify requests and response
+ * The Interceptor intercepts requests and response and in every response
+ * it checks for XSSI_PREFIX and removes it to make a valid Json
+ */
 class NetworkInterceptor : Interceptor {
 
   @Throws(IOException::class)

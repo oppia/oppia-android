@@ -3,7 +3,8 @@ package org.oppia.data.backends.gae.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-/** Model for serialization/deserialization using Moshi with Retrofit *
+/**
+ * Model for serialization/deserialization using Moshi with Retrofit *
  * @see <a href="https://github.com/oppia/oppia/blob/b33aa9cf1aa6372e12d0b35f95cceb44efe5320f/core/controllers/topic_viewer.py#L45">Oppia-Web Topic structure</a>
  */
 @JsonClass(generateAdapter = true)
