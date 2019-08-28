@@ -12,9 +12,9 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.concurrent.withLock
-
-// TODO(BenHenning): Set this up in Dagger such that Context and instances of persistent cache store can be injected.
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a well-defined order. Note
@@ -27,7 +27,9 @@ import kotlin.concurrent.withLock
  * Note that this is a fast-response data provider, meaning it will provide a pending [AsyncResult] to subscribers
  * immediately until the actual store is retrieved from disk.
  */
-class PersistentCacheStore<T : MessageLite>(context: Context, cacheName: String, initialValue: T) : DataProvider<T> {
+class PersistentCacheStore<T : MessageLite> private constructor(
+  context: Context, cacheName: String, initialValue: T
+) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
@@ -165,6 +167,20 @@ class PersistentCacheStore<T : MessageLite>(context: Context, cacheName: String,
     /** Returns a copy of this payload with the new, specified [CacheState]. */
     fun moveToState(newState: CacheState): CachePayload<T> {
       return CachePayload(state = newState, value = value)
+    }
+  }
+
+  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for cross-module circular
+  // dependencies. Currently, the data module cannot depend on the app module.
+  /**
+   * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable from central
+   * controllers since they can't be placed directly in the Dagger graph.
+   */
+  @Singleton
+  class Factory @Inject constructor(private val context: Context) {
+    /** Returns a new [PersistentCacheStore] with the specified cache name and initial value. */
+    fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
+      return PersistentCacheStore(context, cacheName, initialValue)
     }
   }
 }
