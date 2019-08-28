@@ -1,19 +1,10 @@
-package com.example.myapplication.backend.model
+package org.oppia.app.backend.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class TopicSummary(
-
-/*
- * Ignore below params
- * is_admin, iframed, is_moderator,
- * is_super_admin, state_classifier_mapping,
- * preferred_audio_language_code, can_edit,
- * is_topic_manager, additional_angular_modules
- * auto_tts_enabled
- */
+data class TopicIndexModel(
 
         @Json(name = "thumbnail_bg_color") val thumbnail_bg_color: String?,
         @Json(name = "thumbnail_icon_url") val thumbnail_icon_url: String?,

@@ -1,15 +1,15 @@
 package org.oppia.app.topic_index.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.myapplication.backend.model.TopicSummary;
+import org.oppia.app.backend.model.TopicIndexModel;
 import org.oppia.app.R;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 /** TopicIndexAdapter binds the summary data to the list of Topics*/
 public class TopicIndexAdapter extends RecyclerView.Adapter<TopicIndexAdapter.MyViewHolder> {
     
-    private List<TopicSummary> topicSummaryList = new ArrayList<>();
+    private List<TopicIndexModel> topicSummaryList = new ArrayList<>();
     Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -26,7 +26,8 @@ public class TopicIndexAdapter extends RecyclerView.Adapter<TopicIndexAdapter.My
         TextView tvCategory;
         TextView tvDescription;
         TextView tvNumOfLessons;
-        LinearLayout llSubContainer, llContainer;
+        RelativeLayout llSubContainer;
+        LinearLayout llContainer;
         CardView cardView;
 
         public MyViewHolder(View view) {
@@ -43,7 +44,7 @@ public class TopicIndexAdapter extends RecyclerView.Adapter<TopicIndexAdapter.My
 
         }
     }
-    public TopicIndexAdapter(List<TopicSummary> topicSummaryList, Context mcontext) {
+    public TopicIndexAdapter(List<TopicIndexModel> topicSummaryList, Context mcontext) {
         this.topicSummaryList = topicSummaryList;
         this.context = mcontext;
     }
@@ -59,7 +60,7 @@ public class TopicIndexAdapter extends RecyclerView.Adapter<TopicIndexAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        TopicSummary topicSummary = topicSummaryList.get(position);
+        TopicIndexModel topicSummary = topicSummaryList.get(position);
 
         holder.tvTitle.setText(topicSummary.getTitle());
         holder.tvDescription.setText(topicSummary.getObjective());

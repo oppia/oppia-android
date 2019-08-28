@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="230dp"
     android:layout_margin="5dp"
     app:cardCornerRadius="3dp">
 
@@ -44,10 +44,10 @@
         android:layout_marginTop="5dp"
         android:text="Mathematics"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llSubContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
     <TextView
         android:id="@+id/tvDescription"
@@ -55,6 +55,9 @@
         android:layout_height="wrap_content"
         android:maxLines="3"
         android:ellipsize="end"
+        android:gravity="top"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/tvNumOfLessons"
         android:layout_marginTop="5dp"
         android:textColor="@color/white"
         android:text=""/>
@@ -64,9 +67,10 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textStyle="italic"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
         android:text="4 lessons"/>
-    </LinearLayout>
+    </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
 </androidx.cardview.widget.CardView>

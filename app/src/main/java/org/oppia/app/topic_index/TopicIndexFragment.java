@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.myapplication.backend.model.TopicSummary;
-import com.example.myapplication.backend.model.TopicSummaryHandler;
+import org.oppia.app.backend.model.TopicIndexModel;
+import org.oppia.app.backend.model.TopicIndexHandler;
 import org.oppia.app.R;
 import org.oppia.app.backend.OppiaGaeClient;
 import org.oppia.app.backend.api.TopicIndexHandlerService;
@@ -25,7 +25,7 @@ public class TopicIndexFragment extends Fragment {
 
   RecyclerView rvTopicSummary;
 
-  List<TopicSummary> topicSummaryList = new ArrayList<>();
+  List<TopicIndexModel> topicSummaryList = new ArrayList<>();
   GridLayoutManager gridLayoutManager;
 
   TopicIndexAdapter topicIndexAdapter;
@@ -64,18 +64,18 @@ public class TopicIndexFragment extends Fragment {
 
     TopicIndexHandlerService appStoreApiService = OppiaGaeClient.INSTANCE.getRetrofitInstance().create(TopicIndexHandlerService.class);
 
-    Call<TopicSummaryHandler> getStoresResponseCall = appStoreApiService.getTopicIndex();
+    Call<TopicIndexHandler> getStoresResponseCall = appStoreApiService.getTopicIndex();
 
-    getStoresResponseCall.enqueue(new Callback<TopicSummaryHandler>() {
+    getStoresResponseCall.enqueue(new Callback<TopicIndexHandler>() {
       @Override
-      public void onResponse(Call<TopicSummaryHandler> call, Response<TopicSummaryHandler> response) {
+      public void onResponse(Call<TopicIndexHandler> call, Response<TopicIndexHandler> response) {
 
 
         Integer code = response.code();
         switch (code) {
           case 200:
           case 201:
-            TopicSummaryHandler topicSummaryHandler =  response.body();
+            TopicIndexHandler topicSummaryHandler =  response.body();
 
             topicSummaryList.addAll(topicSummaryHandler.getTopic_summary_dicts());
             Log.d(TAG, "Topic Name: ******************" +response.body());
@@ -87,7 +87,7 @@ public class TopicIndexFragment extends Fragment {
       }
 
       @Override
-      public void onFailure(Call<TopicSummaryHandler> call, Throwable t) {
+      public void onFailure(Call<TopicIndexHandler> call, Throwable t) {
         Log.d(TAG,"Failure ****************"+ t.getMessage());
 
 
