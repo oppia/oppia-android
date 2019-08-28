@@ -63,3 +63,4 @@ class TopicIndexAdapter(val topicSummaryList: List<TopicIndexModel>, internal va
   }
 
 }
+
