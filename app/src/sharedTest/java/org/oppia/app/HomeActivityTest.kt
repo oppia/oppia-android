@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.home.HomeActivity
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)

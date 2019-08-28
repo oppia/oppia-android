@@ -7,11 +7,13 @@ import org.oppia.app.model.UserAppHistory
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Controller for persisting and retrieving the previous user history of using the app. */
-class UserAppHistoryController(context: Context) {
-  private val appHistoryStore =
-    PersistentCacheStore<UserAppHistory>(context, "user_app_history", UserAppHistory.getDefaultInstance())
+@Singleton
+class UserAppHistoryController @Inject constructor(cacheStoreFactory: PersistentCacheStore.Factory) {
+  private val appHistoryStore = cacheStoreFactory.create("user_app_history", UserAppHistory.getDefaultInstance())
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markUserOpenedApp().

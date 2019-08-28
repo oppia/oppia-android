@@ -7,7 +7,7 @@
     <import type="org.oppia.app.R"/>
     <variable
       name="viewModel"
-      type="org.oppia.app.UserAppHistoryViewModel"/>
+      type="org.oppia.app.home.UserAppHistoryViewModel"/>
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

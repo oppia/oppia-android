@@ -23,6 +23,8 @@ protobuf {
 }
 
 dependencies {
+  // This must use compile in order for lite protobufs to generate correctly.
+  // TODO(#59): Move to Bazel to avoid relying on a deprecated Gradle directive.
   compile 'com.google.protobuf:protobuf-lite:3.0.0'
 }
 
