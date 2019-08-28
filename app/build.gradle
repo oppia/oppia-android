@@ -65,7 +65,9 @@ dependencies {
       'androidx.test:runner:1.2.0',
       'com.google.truth:truth:0.43',
   )
+  implementation 'androidx.fragment:fragment:1.1.0-alpha01'
+  debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha01'
   implementation project(":model")
-  implementation project(":domain")
+//  implementation project(":domain")
   implementation project(":utility")
 }

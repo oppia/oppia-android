@@ -1,51 +1,31 @@
 package org.oppia.app.splash
 
-import android.app.PendingIntent.getActivity
-import android.widget.FrameLayout
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.android.synthetic.main.activity_splash.view.*
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.HomeActivity
+import org.robolectric.util.FragmentTestUtil
+import org.junit.Before
 import org.oppia.app.R
-import androidx.test.rule.ActivityTestRule
-
 
 
 /** Tests for [SplashActivity]. */
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
-
-
   @get:Rule
-  var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(SplashActivity::class.java)
-
-
-  private var splashActivity: SplashActivity? = null
-  private var supportFM: FragmentTransaction? = null
-
-  @Before
-  fun setUp() {
-    splashActivity = activityTestRule.getActivity()
-    supportFM = splashActivity!!.supportFragmentManager.beginTransaction();
-
-
-  }
+  val activityActivityTestRule = ActivityScenarioRule(SplashActivity::class.java)
 
   @Test
-  fun testEvent() {
+  fun tournamentsContainerIsDisplayed() {
+    launchFragmentInContainer<SplashFragment>()
 
-      supportFM!!.add(R.id.fragment_container, SplashFragment()).commitNow()
-
+    onView(withId(R.id.fragment_container))
+      .check(matches(isDisplayed()))
   }
-
-
 }
-
