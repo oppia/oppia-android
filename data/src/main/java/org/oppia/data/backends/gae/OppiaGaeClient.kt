@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-/** This file manages Retrofit configuration and connection with Oppia backend */
+/** An object that contains the Retrofit configuration with the Oppia backend. */
 object OppiaGaeClient {
 
   private var retrofit: Retrofit? = null
@@ -16,7 +16,7 @@ object OppiaGaeClient {
       client.addInterceptor(NetworkInterceptor())
 
       retrofit = retrofit2.Retrofit.Builder()
-        .baseUrl(NetworkSettings.BASE_URL)
+        .baseUrl(NetworkSettings.getBaseUrl())
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client.build())
         .build()

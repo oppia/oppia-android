@@ -8,8 +8,8 @@ import java.io.IOException
 
 /**
  * Interceptor on top of Retrofit to modify requests and response
- * The Interceptor intercepts requests and response and in every response
- * it checks for XSSI_PREFIX and removes it to make a valid Json
+ *
+ * The Interceptor removes XSSI_PREFIX from every response to produce valid Json
  */
 class NetworkInterceptor : Interceptor {
 
@@ -18,7 +18,7 @@ class NetworkInterceptor : Interceptor {
     val request = chain.request()
     val response = chain.proceed(request)
 
-    if (response.code() == Constants.RESPONSE_SUCCESS) {
+    if (response.code() == Constants.HTTP_OK) {
       if (response.body() != null) {
         var rawJson = response.body()!!.string()
         rawJson = removeXSSIPrefixFromResponse(rawJson)

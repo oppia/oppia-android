@@ -1,10 +1,29 @@
 package org.oppia.data.backends.gae
 
-/** NetworkSettings contains functions and constants specifically related to network only. */
+/** An object that contains functions and constants specifically related to network only. */
 object NetworkSettings {
 
+  private var isDeveloperMode: Boolean = true
+
+  /** DEVELOPER URL which connects to development server */
   // TODO(#74): Move this to DI graph
-  const val BASE_URL = "https://oppia.org"
+  private const val DEVELOPER_URL = "https://oppia.org"
+  /**  PRODUCTION URL which connects to production server */
+  private const val PROD_URL = "https://oppia.org"
+  /**
+   * Prefix in Json response for extra layer of security in API calls
+   *
+   * @see <a href="https://github.com/oppia/oppia/blob/8f9eed9652d7c2d318798792f3c2c38a909abc67/feconf.py#L319">XSSI_PREFIX</a>
+   *
+   * Remove this prefix from every Json response which is achieved in [NetworkInterceptor]
+   */
   const val XSSI_PREFIX = ")]}\'"
 
+  fun getBaseUrl(): String {
+    return if (isDeveloperMode) {
+      DEVELOPER_URL
+    } else {
+      PROD_URL
+    }
+  }
 }

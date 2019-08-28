@@ -1,8 +1,9 @@
 package org.oppia.data
 
-/** Constant values for data module will be defined here */
+/** An object that contains constants for data module */
 object Constants {
 
-  const val RESPONSE_SUCCESS = 200
+  /** Constant which defines successful API call */
+  const val HTTP_OK = 200
 
 }
