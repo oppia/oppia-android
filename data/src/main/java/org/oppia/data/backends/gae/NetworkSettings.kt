@@ -13,7 +13,7 @@ object NetworkSettings {
   /**
    * Prefix in Json response for extra layer of security in API calls
    *
-   * @see <a href="https://github.com/oppia/oppia/blob/8f9eed9652d7c2d318798792f3c2c38a909abc67/feconf.py#L319">XSSI_PREFIX</a>
+   * @see <a href="https://github.com/oppia/oppia/blob/8f9eed/feconf.py#L319">XSSI_PREFIX</a>
    *
    * Remove this prefix from every Json response which is achieved in [NetworkInterceptor]
    */

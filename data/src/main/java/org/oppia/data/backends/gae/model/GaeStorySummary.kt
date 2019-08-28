@@ -4,11 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Model for serialization/deserialization using Moshi with Retrofit
- * @see <a href="https://github.com/oppia/oppia/blob/b33aa9cf1aa6372e12d0b35f95cceb44efe5320f/core/domain/story_domain.py#L1118">Oppia-Web StorySummary structure</a>
+ * Data class for story summary model with minimum details
+ * @see <a href="https://github.com/oppia/oppia/blob/b33aa9/core/domain/story_domain.py#L1118">StorySummary structure</a>
  */
 @JsonClass(generateAdapter = true)
-data class StorySummary(
+data class GaeStorySummary(
 
   @Json(name = "id") val storyId: String?,
   @Json(name = "title") val title: String?,

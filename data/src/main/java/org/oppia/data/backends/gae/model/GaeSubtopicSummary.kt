@@ -4,11 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Model for serialization/deserialization using Moshi with Retrofit
- * @see <a href="https://github.com/oppia/oppia/blob/b33aa9cf1aa6372e12d0b35f95cceb44efe5320f/core/domain/topic_domain.py#L297">Oppia-Web SubtopicSummary structure</a>
+ * Data class for Subtopic summary model
+ * @see <a href="https://github.com/oppia/oppia/blob/b33aa9/core/domain/topic_domain.py#L297">SubtopicSummary structure</a>
  */
 @JsonClass(generateAdapter = true)
-data class SubtopicSummary(
+data class GaeSubtopicSummary(
 
   @Json(name = "id") val subtopicId: String?,
   @Json(name = "title") val title: String?,
