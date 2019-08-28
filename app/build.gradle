@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 28
@@ -57,6 +58,10 @@ dependencies {
       'androidx.core:core-ktx:1.0.2',
       'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      'androidx.cardview:cardview:1.0.0',
+      'com.squareup.retrofit2:converter-moshi:2.5.0',
+      "com.squareup.moshi:moshi-kotlin:1.8.0",
+      'androidx.recyclerview:recyclerview:1.0.0'
   )
   testImplementation(
       'androidx.test:core:1.2.0',
@@ -72,6 +77,8 @@ dependencies {
       'androidx.test:runner:1.2.0',
       'com.google.truth:truth:0.43',
   )
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
+
   implementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
