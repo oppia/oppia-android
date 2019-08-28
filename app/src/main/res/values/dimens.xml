@@ -5,4 +5,9 @@
   <dimen name="text_size14sp">14sp</dimen>
   <dimen name="text_size12sp">12sp</dimen>
   <dimen name="text_size10sp">10sp</dimen>
+  <dimen name="card_view_height">230dp</dimen>
+  <dimen name="margin_5dp">5dp</dimen>
+  <dimen name="corner_radius_3dp">3dp</dimen>
+  <dimen name="margin_8dp">8dp</dimen>
+  <dimen name="padding_8dp">8dp</dimen>
 </resources>

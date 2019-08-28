@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/cardView"
-    android:layout_width="match_parent"
-    android:layout_height="230dp"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="3dp">
+<androidx.cardview.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical"
+  android:id="@+id/cardView"
+  android:layout_width="match_parent"
+  android:layout_height="@dimen/card_view_height"
+  android:layout_margin="@dimen/margin_5dp"
+  app:cardCornerRadius="@dimen/corner_radius_3dp">
 
-<LinearLayout
+  <LinearLayout
     android:id="@+id/llContainer"
-    android:background="@color/light_brown"
+    android:background="@color/lightBrown"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -25,53 +26,57 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/brown"
-      android:layout_marginTop="8dp"
-      android:padding="8dp"
+      android:layout_marginTop="@dimen/margin_8dp"
+      android:padding="@dimen/padding_8dp"
       android:orientation="vertical">
-    <TextView
+
+      <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="@dimen/text_size18sp"
-        android:text="Division"/>
-    <TextView
+        android:text=""/>
+
+      <TextView
         android:id="@+id/tvCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:layout_marginTop="5dp"
-        android:text="Mathematics"/>
+        android:layout_marginTop="@dimen/margin_5dp"
+        android:text=""/>
 
-    <RelativeLayout
+      <RelativeLayout
         android:id="@+id/llSubContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <TextView
-        android:id="@+id/tvDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:gravity="top"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/tvNumOfLessons"
-        android:layout_marginTop="5dp"
-        android:textColor="@color/white"
-        android:text=""/>
-    <TextView
-        android:id="@+id/tvNumOfLessons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textStyle="italic"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="5dp"
-        android:text="4 lessons"/>
-    </RelativeLayout>
+
+        <TextView
+          android:id="@+id/tvDescription"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="3"
+          android:ellipsize="end"
+          android:gravity="top"
+          android:layout_alignParentTop="true"
+          android:layout_above="@+id/tvNumOfLessons"
+          android:layout_marginTop="@dimen/margin_5dp"
+          android:textColor="@color/white"
+          android:text=""/>
+
+        <TextView
+          android:id="@+id/tvNumOfLessons"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/white"
+          android:textStyle="italic"
+          android:layout_alignParentBottom="true"
+          android:layout_marginTop="@dimen/margin_5dp"
+          android:text=""/>
+      </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+  </LinearLayout>
 </androidx.cardview.widget.CardView>
 
