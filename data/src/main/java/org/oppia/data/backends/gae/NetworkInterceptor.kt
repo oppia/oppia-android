@@ -21,7 +21,7 @@ class NetworkInterceptor : Interceptor {
     if (response.code() == Constants.HTTP_OK) {
       if (response.body() != null) {
         var rawJson = response.body()!!.string()
-        rawJson = removeXSSIPrefixFromResponse(rawJson)
+        rawJson = removeXSSIPrefix(rawJson)
         val contentType = response.body()!!.contentType()
         val body = ResponseBody.create(contentType, rawJson)
         return response.newBuilder().body(body).build()
@@ -36,7 +36,7 @@ class NetworkInterceptor : Interceptor {
    * @param rawJson: This is the string that we get in body of our response
    * @return String: rawJson without XSSI_PREFIX
    */
-  fun removeXSSIPrefixFromResponse(rawJson: String): String {
+  fun removeXSSIPrefix(rawJson: String): String {
     return rawJson.removePrefix(NetworkSettings.XSSI_PREFIX).trimStart()
   }
 }

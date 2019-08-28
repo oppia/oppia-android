@@ -16,17 +16,17 @@ private const val FAKE_RESPONSE_WITH_XSSI_PREFIX: String =
 class NetworkInterceptorTest {
 
   @Test
-  fun testNetworkInterceptor_removeXSSIPrefixFromResponse_withXSSIPREFIX() {
+  fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val networkInterceptor = NetworkInterceptor()
-    val rawJson: String = networkInterceptor.removeXSSIPrefixFromResponse(FAKE_RESPONSE_WITH_XSSI_PREFIX)
+    val rawJson: String = networkInterceptor.removeXSSIPrefix(FAKE_RESPONSE_WITH_XSSI_PREFIX)
 
     assertThat(rawJson).isEqualTo(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
   }
 
   @Test
-  fun testNetworkInterceptor_removeXSSIPrefixFromResponse_withoutXSSIPREFIX() {
+  fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val networkInterceptor = NetworkInterceptor()
-    val rawJson: String = networkInterceptor.removeXSSIPrefixFromResponse(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
+    val rawJson: String = networkInterceptor.removeXSSIPrefix(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
 
     assertThat(rawJson).isEqualTo(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
   }
