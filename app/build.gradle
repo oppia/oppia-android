@@ -67,6 +67,6 @@ dependencies {
   )
   debugImplementation 'androidx.fragment:fragment-testing:1.2.0-alpha02'
   implementation project(":model")
-//  implementation project(":domain")
+  implementation project(":domain")
   implementation project(":utility")
 }
