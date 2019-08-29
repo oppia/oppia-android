@@ -1,13 +1,13 @@
 package org.oppia.data.backends.gae.api
 
-import org.oppia.app.backend.model.TopicIndexHandler
+import org.oppia.data.backends.gae.model.TopicIndexModel
 import retrofit2.Call
 import retrofit2.http.GET
 
 interface TopicIndexHandlerService {
 
-  @GET("bins/6ztun")  // replace endpoint to topicindexhandler
-  fun getTopicIndex(): Call<TopicIndexHandler>
+  @GET("topicindexhandler")
+  fun getTopicIndex(): Call<TopicIndexModel>
 
 }
 

@@ -1,16 +1,12 @@
-package org.oppia.app.backend.model
+package org.oppia.data.backends.gae.model;
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonClass;
+import org.oppia.app.backend.model.TopicSummarytDicts
 
 @JsonClass(generateAdapter = true)
 data class TopicIndexModel(
 
-  @Json(name = "id") val id: String?,
-  @Json(name = "category") val category: String?,
-  @Json(name = "title") val title: String?,
-  @Json(name = "objective") val objective: String?,
-  @Json(name = "num_of_lessons") val num_of_lessons: String?,
-  @Json(name = "last_updated_msec") val last_updated_msec: Double?
+  @Json(name = "topic_summary_dicts") val topic_summary_dicts: List<TopicSummarytDicts>?
 
 )
