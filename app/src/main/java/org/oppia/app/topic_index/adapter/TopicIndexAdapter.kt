@@ -18,7 +18,7 @@ import java.util.ArrayList
 class TopicIndexAdapter(val topicSummaryList: List<TopicIndexModel>, internal var context: TopicIndexFragment) :
   RecyclerView.Adapter<TopicIndexAdapter.MyViewHolder>() {
 
-  //the class is hodling the list view
+  /** this class is hodling the list view */
   inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     internal var tvTitle: TextView
     internal var tvCategory: TextView
@@ -29,7 +29,6 @@ class TopicIndexAdapter(val topicSummaryList: List<TopicIndexModel>, internal va
     internal var cardView: CardView
 
     init {
-
       tvTitle = view.findViewById(R.id.tvTitle)
       tvCategory = view.findViewById(R.id.tvCategory)
       tvDescription = view.findViewById(R.id.tvDescription)
@@ -38,17 +37,16 @@ class TopicIndexAdapter(val topicSummaryList: List<TopicIndexModel>, internal va
       cardView = view.findViewById(R.id.cardView)
       llContainer = view.findViewById(R.id.llContainer)
       llSubContainer = view.findViewById(R.id.llSubContainer)
-
     }
   }
-  //this method is returning the view for each item in the list
+  /** this method is returning the view for each item in the list */
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
     val itemView = LayoutInflater.from(parent.context)
       .inflate(R.layout.topic_index_items, parent, false)
 
     return MyViewHolder(itemView)
   }
-  //this method is binding the data on the list
+  /**this method is binding the data on the list */
   override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
     holder.tvTitle.text = topicSummaryList[position].title
@@ -57,10 +55,8 @@ class TopicIndexAdapter(val topicSummaryList: List<TopicIndexModel>, internal va
     holder.tvCategory.text = topicSummaryList[position].category
 
   }
-  //this method is giving the size of the list
+  /**this method is giving the size of the list */
   override fun getItemCount(): Int {
     return topicSummaryList.size
   }
-
 }
-

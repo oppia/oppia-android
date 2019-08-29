@@ -57,7 +57,7 @@
           android:id="@+id/tvDescription"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:maxLines="3"
+          android:maxLines="@integer/text_max_lines_3"
           android:ellipsize="end"
           android:gravity="top"
           android:layout_alignParentTop="true"

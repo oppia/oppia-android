@@ -24,16 +24,13 @@ import java.util.ArrayList
 /** This Fragment contains a list of Topics summary  */
 class TopicIndexFragment : Fragment() {
 
-   var rvTopicindex: RecyclerView? = null
-
+  var rvTopicindex: RecyclerView? = null
   internal var topicSummaryList: MutableList<TopicIndexModel> = ArrayList()
-   var gridLayoutManager: GridLayoutManager? = null
-
+  var gridLayoutManager: GridLayoutManager? = null
   var topicIndexAdapter: TopicIndexAdapter? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
   }
 
   override fun onCreateView(
@@ -42,7 +39,7 @@ class TopicIndexFragment : Fragment() {
   ): View? {
     val view = inflater.inflate(R.layout.topic_index_fragment, container, false)
 
-     rvTopicindex = view.findViewById(R.id.rvTopicSummary) as RecyclerView
+    rvTopicindex = view.findViewById(R.id.rvTopicSummary) as RecyclerView
 
     initViews()
 
@@ -53,6 +50,7 @@ class TopicIndexFragment : Fragment() {
   }
 
   private fun initViews() {
+
     gridLayoutManager = GridLayoutManager(activity, 2)
     rvTopicindex!!.layoutManager = gridLayoutManager
 
@@ -71,59 +69,28 @@ class TopicIndexFragment : Fragment() {
 
       override fun onResponse(call: Call<TopicIndexHandler>?, response: Response<TopicIndexHandler>?) {
 
-//        val code = response!!.code()
-//        when (code) {
-//          200, 201 -> {
-            val topicSummaryHandler = response!!.body()
+        val code = response!!.code()
+        when (code) {
+          200, 201 -> {
+        val topicSummaryHandler = response!!.body()
 
-            topicSummaryList.addAll(topicSummaryHandler!!.topic_summary_dicts!!)
-            Log.d(TAG, "Topic Name: ******************" + response.body())
+        topicSummaryList.addAll(topicSummaryHandler!!.topic_summary_dicts!!)
+        Log.d(TAG, "Topic Name: ******************" + response.body())
 
-            topicIndexAdapter!!.notifyDataSetChanged()
-//          }
-//        }
-
+        topicIndexAdapter!!.notifyDataSetChanged()
+          }
+        }
       }
 
       override fun onFailure(call: Call<TopicIndexHandler>?, t: Throwable?) {
 
         Log.e(TAG, t.toString())
-
       }
-
     })
-
-//    val appStoreApiService = OppiaGaeClient.retrofitInstance!!.create(TopicIndexHandlerService::class.java)
-//
-//    val getStoresResponseCall = appStoreApiService.getTopicIndex()
-//
-//    getStoresResponseCall.enqueue(object : SortedList.Callback<TopicIndexHandler>() {
-//      fun onResponse(call: Call<TopicIndexHandler>, response: Response<TopicIndexHandler>) {
-//
-//        val code = response.code()
-//        when (code) {
-//          200, 201 -> {
-//            val topicSummaryHandler = response.body()
-//
-//            topicSummaryList.addAll(topicSummaryHandler.topic_summary_dicts!!)
-//            Log.d(TAG, "Topic Name: ******************" + response.body())
-//
-//            topicIndexAdapter.notifyDataSetChanged()
-//          }
-//        }
-//
-//      }
-//
-//      fun onFailure(call: Call<TopicIndexHandler>, t: Throwable) {
-//        Log.d(TAG, "Failure ****************" + t.message)
-//
-//      }
-//    })
-
   }
 
   companion object {
     private val TAG = TopicIndexFragment::class.java.name
   }
 
-}// Required empty public constructor
+}

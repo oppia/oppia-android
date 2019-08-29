@@ -10,4 +10,6 @@
   <dimen name="corner_radius_3dp">3dp</dimen>
   <dimen name="margin_8dp">8dp</dimen>
   <dimen name="padding_8dp">8dp</dimen>
+
+  <integer name="text_max_lines_3">3</integer>
 </resources>
