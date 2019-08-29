@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/mobile_navigation"
+  app:startDestination="@+id/nav_home">
+
+  <fragment
+    android:id="@+id/nav_home"
+    android:name="org.oppia.app.drawer.ui.home.HomeFragment"
+    android:label="@string/menu_home"
+    tools:layout="@layout/fragment_home" />
+
+  <fragment
+    android:id="@+id/nav_preferences"
+    android:name="org.oppia.app.drawer.ui.preferences.PreferencesFragment"
+    android:label="@string/menu_preferences"
+    tools:layout="@layout/fragment_preferences" />
+
+  <fragment
+    android:id="@+id/nav_help"
+    android:name="org.oppia.app.drawer.ui.help.HelpFragment"
+    android:label="@string/menu_help"
+    tools:layout="@layout/fragment_help" />
+
+  <fragment
+    android:id="@+id/nav_my_downloads"
+    android:name="org.oppia.app.drawer.ui.mydownloads.MyDownloadsFragment"
+    android:label="@string/menu_my_downloads"
+    tools:layout="@layout/fragment_my_downloads" />
+
+  <fragment
+    android:id="@+id/nav_logout"
+    android:name="org.oppia.app.drawer.ui.logout.LogoutFragment"
+    android:label="@string/menu_logout"
+    tools:layout="@layout/fragment_logout" />
+
+  <fragment
+    android:id="@+id/nav_send"
+    android:name="org.oppia.app.drawer.ui.AdminSetting.AdminSettingFragment"
+    android:label="@string/menu_send"
+
+    tools:layout="@layout/fragment_send" />
+</navigation>

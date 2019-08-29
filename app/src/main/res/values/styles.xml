@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <style name="OppiaTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
   </style>
+
+  <style name="OppiaTheme.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="OppiaTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+  <style name="OppiaTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
