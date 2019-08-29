@@ -17,4 +17,5 @@
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_logout">Log Out</string>
   <string name="menu_send">Send</string>
+  <string name="admin_settings">Admin Settings</string>
 </resources>

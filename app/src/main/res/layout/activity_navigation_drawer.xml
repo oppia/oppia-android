@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="30dp"
-        android:text="Admin Settings"
+        android:text="@string/admin_settings"
         android:textColor="@color/black" />
     </LinearLayout>
   </com.google.android.material.navigation.NavigationView>
