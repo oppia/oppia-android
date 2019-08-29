@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 interface TopicIndexHandlerService {
 
-  @GET("topicindexhandler")
+  @GET("/topic_index_data_handler")
   fun getTopicIndex(): Call<TopicIndexModel>
 
 }
