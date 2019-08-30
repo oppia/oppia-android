@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProviders
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.model.UserAppHistory
+import org.oppia.app.utility.Logger
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 
@@ -29,7 +30,8 @@ class HomeFragment : Fragment() {
       it.viewModel = viewModel
       it.lifecycleOwner = this
     }
-
+    Logger.e("TAG", "Sample log message");
+    Logger.i("TAG", "Sample log message");
     // TODO(#70): Mark that the user opened the app once it's persisted to disk.
 
     return binding.root
