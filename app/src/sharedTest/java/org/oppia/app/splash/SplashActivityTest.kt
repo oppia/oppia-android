@@ -1,6 +1,5 @@
 package org.oppia.app.splash
 
-import androidx.fragment.app.testing.launchFragment
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -19,10 +18,7 @@ class SplashActivityTest {
   val activityActivityTestRule = ActivityScenarioRule(SplashActivity::class.java)
 
   @Test
-  fun splashContainerIsDisplayed() {
-    launchFragment<SplashFragment>()
-
-    onView(withId(R.id.fragment_container))
-      .check(matches(isDisplayed()))
+  fun testSplashFragment_isDisplayed() {
+    onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
   }
 }
