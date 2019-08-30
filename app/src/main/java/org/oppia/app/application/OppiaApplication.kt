@@ -3,7 +3,8 @@ package org.oppia.app.application
 import android.app.Application
 import android.content.Context
 
-/** Called when the application is starting, before any activity, service, or receiver objects (excluding content providers) have been created.
+/** Kotlin Android MainApplication class for global applicationContext
+ * Called when the application is starting, before any activity, service, or receiver objects (excluding content providers) have been created.
  */
 class OppiaApplication : Application() {
 
