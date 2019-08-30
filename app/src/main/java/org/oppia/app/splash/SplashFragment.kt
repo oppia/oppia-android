@@ -13,25 +13,22 @@ import org.oppia.app.R
 
 class SplashFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+  }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.splash_fragment, container, false)
-        routeToHomePage();
-        return view
-    }
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val view = inflater.inflate(R.layout.splash_fragment, container, false)
+    routeToHomePage();
+    return view
+  }
 
-    private fun routeToHomePage() {
-
-        val intent = Intent(requireContext(), HomeActivity::class.java)
-        startActivity(intent)
-
-        // close this activity
-        activity!!.finish()
-
-    }
+  private fun routeToHomePage() {
+    val intent = Intent(requireContext(), HomeActivity::class.java)
+    startActivity(intent)
+    activity!!.finish()
+  }
 }
