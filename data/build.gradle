@@ -41,6 +41,7 @@ dependencies {
       'com.squareup.moshi:moshi-kotlin:1.8.0',
       'com.squareup.retrofit2:converter-moshi:2.5.0',
       'com.squareup.retrofit2:retrofit:2.5.0',
+      'com.squareup.retrofit2:retrofit-mock:2.5.0',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
   )
   testImplementation(
@@ -49,6 +50,8 @@ dependencies {
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
       'org.robolectric:robolectric:4.3',
+      'com.squareup.okhttp3:mockwebserver:4.1.0',
+      'com.squareup.okhttp3:okhttp:4.1.0',
   )
   androidTestImplementation('androidx.test:runner:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0')
