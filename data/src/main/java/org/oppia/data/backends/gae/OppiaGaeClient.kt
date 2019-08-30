@@ -7,18 +7,14 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 /** An object that contains the Retrofit configuration with the Oppia backend. */
 object OppiaGaeClient {
-
-  private var retrofit: Retrofit? = null
-
   val retrofitInstance by lazy {
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
-    retrofit = retrofit2.Retrofit.Builder()
+    return@lazy retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client.build())
       .build()
-    return@lazy retrofit
   }
 }
