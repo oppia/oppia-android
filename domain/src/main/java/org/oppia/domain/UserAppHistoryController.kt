@@ -1,6 +1,5 @@
 package org.oppia.domain
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.UserAppHistory
@@ -12,7 +11,9 @@ import javax.inject.Singleton
 
 /** Controller for persisting and retrieving the previous user history of using the app. */
 @Singleton
-class UserAppHistoryController @Inject constructor(cacheStoreFactory: PersistentCacheStore.Factory) {
+class UserAppHistoryController @Inject constructor(
+  cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders
+) {
   private val appHistoryStore = cacheStoreFactory.create("user_app_history", UserAppHistory.getDefaultInstance())
 
   init {
@@ -38,12 +39,21 @@ class UserAppHistoryController @Inject constructor(cacheStoreFactory: Persistent
     }
   }
 
+  /** Clears any indication that the user has previously opened the application. */
+  fun clearUserAppHistory() {
+    appHistoryStore.clearCacheAsync().invokeOnCompletion {
+      it?.let {
+        Log.e("DOMAIN", "Failed to clear user app history.", it)
+      }
+    }
+  }
+
   /**
    * Returns a [LiveData] result indicating whether the user has previously opened the app. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [markUserOpenedApp] has since been
    * called.
    */
   fun getUserAppHistory(): LiveData<AsyncResult<UserAppHistory>> {
-    return DataProviders.convertToLiveData(appHistoryStore)
+    return dataProviders.convertToLiveData(appHistoryStore)
   }
 }

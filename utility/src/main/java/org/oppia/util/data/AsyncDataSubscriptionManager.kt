@@ -7,6 +7,8 @@ import org.oppia.util.threading.ConcurrentQueueMap
 import org.oppia.util.threading.dequeue
 import org.oppia.util.threading.enqueue
 import org.oppia.util.threading.getQueue
+import javax.inject.Inject
+import javax.inject.Singleton
 
 internal typealias ObserveAsyncChange = suspend () -> Unit
 
@@ -16,7 +18,8 @@ internal typealias ObserveAsyncChange = suspend () -> Unit
  * A subscription manager for all [DataProvider]s. This should only be used outside of this package for notifying
  * changes to custom [DataProvider]s.
  */
-object AsyncDataSubscriptionManager {
+@Singleton
+class AsyncDataSubscriptionManager @Inject constructor() {
   private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
   private val associatedIds = ConcurrentQueueMap<Any, Any>()
 

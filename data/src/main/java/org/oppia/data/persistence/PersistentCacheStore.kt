@@ -11,6 +11,7 @@ import org.oppia.util.data.InMemoryBlockingCache
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.Files
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,7 +29,8 @@ import kotlin.concurrent.withLock
  * immediately until the actual store is retrieved from disk.
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
-  context: Context, cacheName: String, initialValue: T
+  context: Context, cacheFactory: InMemoryBlockingCache.Factory,
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String, initialValue: T
 ) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
@@ -36,7 +38,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
 
   private val cacheFile = File(context.filesDir, cacheFileName)
   @GuardedBy("failureLock") private var deferredLoadCacheFailure: Throwable? = null
-  private val cache = InMemoryBlockingCache(CachePayload(state = CacheState.UNLOADED, value = initialValue))
+  private val cache = cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
   override fun getId(): Any {
     return providerId
@@ -101,19 +103,36 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    *     issues.
    */
   fun storeDataAsync(updateInMemoryCache: Boolean = true, update: (T) -> T): Deferred<Any> {
-    return cache.updateIfPresentAsync { cachePayload ->
+    return cache.updateIfPresentAsync { cachedPayload ->
       // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
       // nothing can read from it until this update completes.
-      AsyncDataSubscriptionManager.notifyChange(providerId)
-      val updatedPayload = storeFileCache(cachePayload, update)
-      if (updateInMemoryCache) updatedPayload else cachePayload
+      asyncDataSubscriptionManager.notifyChange(providerId)
+      val updatedPayload = storeFileCache(cachedPayload, update)
+      if (updateInMemoryCache) updatedPayload else cachedPayload
+    }
+  }
+
+  /**
+   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This does not notify
+   * subscribers.
+   */
+  fun clearCacheAsync(): Deferred<Any> {
+    return cache.maybeForceDeleteAsync { cachedPayload ->
+      if (cacheFile.exists()) {
+        cacheFile.delete()
+      }
+      failureLock.withLock {
+        deferredLoadCacheFailure = null
+      }
+      // Always clear the in-memory cache.
+      true
     }
   }
 
   private fun deferLoadFileAndNotify() {
     // Schedule another update to the cache that actually loads the file from memory. Record any potential failures.
     cache.updateIfPresentAsync { cachePayload ->
-      AsyncDataSubscriptionManager.notifyChange(providerId)
+      asyncDataSubscriptionManager.notifyChange(providerId)
       loadFileCache(cachePayload)
     }.invokeOnCompletion {
       failureLock.withLock {
@@ -177,10 +196,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * controllers since they can't be placed directly in the Dagger graph.
    */
   @Singleton
-  class Factory @Inject constructor(private val context: Context) {
+  class Factory @Inject constructor(
+    private val context: Context, private val cacheFactory: InMemoryBlockingCache.Factory,
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  ) {
     /** Returns a new [PersistentCacheStore] with the specified cache name and initial value. */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
-      return PersistentCacheStore(context, cacheName, initialValue)
+      return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue)
     }
   }
 }

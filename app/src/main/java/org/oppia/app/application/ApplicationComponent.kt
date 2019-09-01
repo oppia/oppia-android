@@ -4,12 +4,13 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
 
 /** Root Dagger component for the application. All application-scoped modules should be included in this component. */
 @Singleton
-@Component(modules = [ApplicationModule::class])
+@Component(modules = [ApplicationModule::class, DispatcherModule::class])
 interface ApplicationComponent {
   @Component.Builder
   interface Builder {

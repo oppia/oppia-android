@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 28
@@ -37,7 +38,11 @@ dependencies {
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  )
+  kapt(
+      'com.google.dagger:dagger-compiler:2.24'
   )
   testImplementation(
       'com.google.truth:truth:0.43',

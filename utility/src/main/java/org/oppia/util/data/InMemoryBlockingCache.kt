@@ -1,18 +1,19 @@
 package org.oppia.util.data
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
-import java.util.concurrent.Executors
+import org.oppia.util.threading.BlockingDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
  * after any prior started operations began, and before any future operations. This class is thread-safe. Note that it's
  * safe to execute long-running operations in lambdas passed into the methods of this class.
  */
-class InMemoryBlockingCache<T: Any>(initialValue: T? = null) {
-  private val blockingDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: CoroutineDispatcher, initialValue: T?) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
 
   /**
@@ -97,6 +98,45 @@ class InMemoryBlockingCache<T: Any>(initialValue: T? = null) {
   fun deleteAsync(): Deferred<Unit> {
     return blockingScope.async {
       value = null
+    }
+  }
+
+  /**
+   * Returns a [Deferred] that executes when checking the specified function on whether this cache should be deleted,
+   * and returns whether it was deleted.
+   *
+   * Note that the provided function will not be called if the cache is already cleared, and this will return empty.
+   */
+  fun maybeDeleteAsync(shouldDelete: suspend (T) -> Boolean): Deferred<Boolean> {
+    return blockingScope.async {
+      val valueSnapshot = value
+      if (valueSnapshot != null && shouldDelete(valueSnapshot)) {
+        value = null
+        true
+      } else false
+    }
+  }
+
+  /**
+   * Returns a [Deferred] in the same way as [maybeDeleteAsync], except the deletion function provided is guaranteed to
+   * be called regardless of the state of the cache, and whose return value will be returned in this method's
+   * [Deferred].
+   */
+  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> {
+    return blockingScope.async {
+      if (shouldDelete(value)) {
+        value = null
+        true
+      } else false
+    }
+  }
+
+  /** An injectable factory for [InMemoryBlockingCache]es. */
+  @Singleton
+  class Factory @Inject constructor(@BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher) {
+    /** Returns a new [InMemoryBlockingCache] with, optionally, the specified initial value. */
+    fun <T : Any> create(initialValue: T? = null): InMemoryBlockingCache<T> {
+      return InMemoryBlockingCache(blockingDispatcher, initialValue)
     }
   }
 }

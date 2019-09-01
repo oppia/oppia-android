@@ -7,15 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
+import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.concurrent.withLock
-
-// TODO(BenHenning): Move this to the dagger graph so that there can be a component specified coroutine context in which
-// to run LiveData coroutines. This avoids needing to propagate context variables from domain code, and easily enables
-// switching contexts for tests.
 
 /**
  * Various functions to create or manipulate [DataProvider]s.
@@ -23,11 +20,11 @@ import kotlin.concurrent.withLock
  * It's recommended to transform providers rather than [LiveData] since the latter occurs on the main thread, and the
  * former can occur safely on background threads to reduce UI lag and user perceived latency.
  */
-object DataProviders {
-  // TODO(BenHenning): Inject the dispatcher, instead, to allow tests to customize the dispatcher on which coroutines
-  // execute.
-  private val backgroundDispatcher = Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
-
+@Singleton
+class DataProviders @Inject constructor(
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+) {
   /**
    * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
    * provides it to its own subscribers.
@@ -40,7 +37,7 @@ object DataProviders {
    * otherwise interact with UI components.
    */
   fun <T1, T2> transform(dataProvider: DataProvider<T1>, newId: Any, function: (T1) -> T2): DataProvider<T2> {
-    AsyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object: DataProvider<T2> {
       override fun getId(): Any {
         return newId
@@ -59,7 +56,7 @@ object DataProviders {
   fun <T1, T2> transformAsync(
     dataProvider: DataProvider<T1>, newId: Any, function: suspend (T1) -> T2
   ): DataProvider<T2> {
-    AsyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object: DataProvider<T2> {
       override fun getId(): Any {
         return newId
@@ -119,7 +116,7 @@ object DataProviders {
    * but [LiveData] guarantees that final delivery of the result will happen on the main thread.
    */
   fun <T> convertToLiveData(dataProvider: DataProvider<T>): LiveData<AsyncResult<T>> {
-    return NotifiableAsyncLiveData(backgroundDispatcher, dataProvider)
+    return NotifiableAsyncLiveData(backgroundDispatcher, asyncDataSubscriptionManager, dataProvider)
   }
 
   // TODO(#71): Move this to the correct module once the architecture for data providers is determined.
@@ -133,6 +130,7 @@ object DataProviders {
    */
   private class NotifiableAsyncLiveData<T>(
     private val dispatcher: CoroutineDispatcher,
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val dataProvider: DataProvider<T>
   ) : MediatorLiveData<AsyncResult<T>>() {
     private val coroutineLiveDataLock = ReentrantLock()
@@ -151,7 +149,7 @@ object DataProviders {
         val subscriber: ObserveAsyncChange = {
           notifyUpdate()
         }
-        AsyncDataSubscriptionManager.subscribe(dataProvider.getId(), subscriber)
+        asyncDataSubscriptionManager.subscribe(dataProvider.getId(), subscriber)
         dataProviderSubscriber = subscriber
       }
       super.onActive()
@@ -160,7 +158,7 @@ object DataProviders {
     override fun onInactive() {
       super.onInactive()
       dataProviderSubscriber?.let {
-        AsyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), it)
+        asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), it)
         dataProviderSubscriber = null
       }
       dequeuePendingCoroutineLiveData()
