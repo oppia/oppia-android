@@ -119,7 +119,6 @@ class DataProviders @Inject constructor(
     return NotifiableAsyncLiveData(backgroundDispatcher, asyncDataSubscriptionManager, dataProvider)
   }
 
-  // TODO(#71): Move this to the correct module once the architecture for data providers is determined.
   /**
    * A version of [LiveData] which can be notified to execute a specified coroutine if there is a pending update.
    *
@@ -170,6 +169,8 @@ class DataProviders @Inject constructor(
      * Note that if an existing operation is pending, it may complete but its results will not be propagated in favor
      * of the run started by this call. Note also that regardless of the current [AsyncResult] value of this live data,
      * the new value will overwrite it (e.g. it's possible to go from a failed to success state or vice versa).
+     *
+     * This needs to be run on the main thread due to [LiveData] limitations.
      */
     private fun notifyUpdate() {
       dequeuePendingCoroutineLiveData()

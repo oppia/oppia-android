@@ -148,9 +148,9 @@ class HomeActivityTest {
       return application
     }
 
-    // TODO(BenHenning): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-    // proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-    // test coroutine dispatcher.
+    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
+    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
+    //  test coroutine dispatcher.
 
     @Singleton
     @Provides
@@ -180,7 +180,7 @@ class HomeActivityTest {
     fun getUserAppHistoryController(): UserAppHistoryController
   }
 
-  // TODO(BenHenning): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
+  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
   //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
   //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
   //  and immediate.
