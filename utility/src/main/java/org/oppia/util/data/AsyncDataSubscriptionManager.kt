@@ -26,7 +26,7 @@ class AsyncDataSubscriptionManager @Inject constructor() {
     subscriptionMap.enqueue(id, observeChange)
   }
 
-  /** Ubsubscribes the specified callback function from the specified [DataProvider] ID. */
+  /** Unsubscribes the specified callback function from the specified [DataProvider] ID. */
   internal fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
     // TODO(#91): Determine a way to safely fully remove the queue once it's empty. This may require a custom data
     //  structure or external locking for proper thread safety (e.g. to handle the case where multiple
