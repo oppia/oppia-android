@@ -5,29 +5,25 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.data.backends.gae.NetworkInterceptor
-import org.oppia.data.backends.gae.NetworkSettings
-
-private const val FAKE_RESPONSE_WITHOUT_XSSI_PREFIX: String = "{\"is_valid_response\": true}"
-private const val FAKE_RESPONSE_WITH_XSSI_PREFIX: String =
-  NetworkSettings.XSSI_PREFIX + "\n" + "{\"is_valid_response\": true}"
 
 /** Tests for [NetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
 class NetworkInterceptorTest {
-
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val networkInterceptor = NetworkInterceptor()
-    val rawJson: String = networkInterceptor.removeXSSIPrefix(FAKE_RESPONSE_WITH_XSSI_PREFIX)
+    val rawJson: String =
+      networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITH_XSSI_PREFIX)
 
-    assertThat(rawJson).isEqualTo(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
+    assertThat(rawJson).isEqualTo(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
   }
 
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val networkInterceptor = NetworkInterceptor()
-    val rawJson: String = networkInterceptor.removeXSSIPrefix(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
+    val rawJson: String =
+      networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
 
-    assertThat(rawJson).isEqualTo(FAKE_RESPONSE_WITHOUT_XSSI_PREFIX)
+    assertThat(rawJson).isEqualTo(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
   }
 }

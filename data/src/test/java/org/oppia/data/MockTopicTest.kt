@@ -7,6 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.data.backends.gae.NetworkInterceptor
+import org.oppia.data.backends.gae.OppiaGaeClient
 import org.oppia.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -24,16 +25,7 @@ class MockTopicTest {
   @Before
   @Throws(Exception::class)
   fun setUp() {
-    val networkInterceptor = NetworkInterceptor()
-
-    val client = OkHttpClient.Builder()
-    client.addInterceptor(networkInterceptor)
-
-    retrofit = Retrofit.Builder()
-      .baseUrl("https://www.testoppia.com")
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
-      .build()
+    retrofit = OppiaGaeClient.retrofitInstance
 
     val behavior = NetworkBehavior.create()
     mockRetrofit = MockRetrofit.Builder(retrofit!!)
@@ -47,10 +39,10 @@ class MockTopicTest {
     val delegate = mockRetrofit!!.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 
-    val topic = mockTopicService.getTopicByName("Test Topic")
+    val topic = mockTopicService.getTopicByName("Topic1")
     val topicResponse = topic.execute()
 
     assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat("Test Topic").isEqualTo(topicResponse.body()!!.topicName)
+    assertThat("Topic1").isEqualTo(topicResponse.body()!!.topicName)
   }
 }
