@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.app.HomeActivity
 import org.oppia.app.R
 
-/** The SplashFragments navigates to Home page once the app is finished loading completely*/
+/** This SplashFragments navigates to Home page once the app is finished loading completely*/
 
 class SplashFragment : Fragment() {
 
