@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 28
@@ -22,6 +23,12 @@ android {
     jvmTarget = JavaVersion.VERSION_1_8
   }
 
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
+    }
+  }
+
   buildTypes {
     release {
       minifyEnabled false
@@ -39,7 +46,17 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
   )
   testImplementation(
+      'androidx.test.ext:junit:1.1.1',
+      'com.google.dagger:dagger:2.24',
+      'com.google.truth:truth:0.43',
       'junit:junit:4.12',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.mockito:mockito-core:2.19.0',
+      'org.robolectric:robolectric:4.3',
+  )
+  kaptTest(
+      'com.google.dagger:dagger-compiler:2.24'
   )
   implementation project(":utility")
+  testImplementation project(":model")
 }

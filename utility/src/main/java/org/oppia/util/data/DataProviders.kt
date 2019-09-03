@@ -36,7 +36,7 @@ class DataProviders @Inject constructor(
    * it may be called on different background threads at different times. It should perform no UI operations or
    * otherwise interact with UI components.
    */
-  fun <T1, T2> transform(dataProvider: DataProvider<T1>, newId: Any, function: (T1) -> T2): DataProvider<T2> {
+  fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object: DataProvider<T2> {
       override fun getId(): Any {
@@ -44,7 +44,11 @@ class DataProviders @Inject constructor(
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
-        return dataProvider.retrieveData().transform(function)
+        try {
+          return dataProvider.retrieveData().transform(function)
+        } catch (t: Throwable) {
+          return AsyncResult.failed(t)
+        }
       }
     }
   }
@@ -54,7 +58,7 @@ class DataProviders @Inject constructor(
    * blocking.
    */
   fun <T1, T2> transformAsync(
-    dataProvider: DataProvider<T1>, newId: Any, function: suspend (T1) -> T2
+    newId: Any, dataProvider: DataProvider<T1>, function: suspend (T1) -> AsyncResult<T2>
   ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object: DataProvider<T2> {
@@ -79,7 +83,7 @@ class DataProviders @Inject constructor(
    * Changes to the returned data provider can be propagated using calls to [AsyncDataSubscriptionManager.notifyChange]
    * with the in-memory provider's identifier.
    */
-  fun <T> createInMemoryDataProvider(loadFromMemory: () -> T, id: Any): DataProvider<T> {
+  fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
     return object: DataProvider<T> {
       override fun getId(): Any {
         return id
@@ -99,7 +103,7 @@ class DataProviders @Inject constructor(
    * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except the load function can
    * be blocking.
    */
-  fun <T> createInMemoryDataProviderAsync(loadFromMemoryAsync: suspend () -> AsyncResult<T>, id: Any): DataProvider<T> {
+  fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
     return object: DataProvider<T> {
       override fun getId(): Any {
         return id
@@ -134,6 +138,7 @@ class DataProviders @Inject constructor(
   ) : MediatorLiveData<AsyncResult<T>>() {
     private val coroutineLiveDataLock = ReentrantLock()
     @GuardedBy("coroutineLiveDataLock") private var pendingCoroutineLiveData: LiveData<AsyncResult<T>>? = null
+    @GuardedBy("coroutineLiveDataLock") private var cachedValue: AsyncResult<T>? = null
 
     // This field is only access on the main thread, so no additional locking is necessary.
     private var dataProviderSubscriber: ObserveAsyncChange? = null
@@ -188,7 +193,11 @@ class DataProviders @Inject constructor(
       coroutineLiveDataLock.withLock {
         pendingCoroutineLiveData = coroutineLiveData
         addSource(coroutineLiveData) { computedValue ->
-          value = computedValue
+          // Only notify LiveData subscriptions if the value is actually different.
+          if (cachedValue != computedValue) {
+            value = computedValue
+            cachedValue = value
+          }
         }
       }
     }

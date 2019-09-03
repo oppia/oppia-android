@@ -34,6 +34,19 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
   }
 
   /**
+   * Returns a [Deferred] that provides the most-up-to-date value of the cache, after either retrieving the current
+   * state (if defined), or calling the provided generator to create a new state and initialize the cache to that state.
+   * The provided function must be thread-safe and should have no side effects.
+   */
+  fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> {
+    return blockingScope.async {
+      val initedValue = value ?: generate()
+      value = initedValue
+      initedValue
+    }
+  }
+
+  /**
    * Returns a [Deferred] that will provide the most-up-to-date value stored in the cache, or null if it's not yet
    * initialized.
    */
@@ -50,19 +63,6 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
   fun readIfPresentAsync(): Deferred<T> {
     return blockingScope.async {
       checkNotNull(value) { "Expected to read the cache only after it's been created" }
-    }
-  }
-
-  /**
-   * Returns a [Deferred] that provides the most-up-to-date value of the cache, after either retrieving the current
-   * state (if defined), or calling the provided generator to create a new state and initialize the cache to that state.
-   * The provided function must be thread-safe and should have no side effects.
-   */
-  fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> {
-    return blockingScope.async {
-      val initedValue = value ?: generate()
-      value = initedValue
-      initedValue
     }
   }
 
@@ -105,7 +105,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    * Returns a [Deferred] that executes when checking the specified function on whether this cache should be deleted,
    * and returns whether it was deleted.
    *
-   * Note that the provided function will not be called if the cache is already cleared, and this will return empty.
+   * Note that the provided function will not be called if the cache is already cleared.
    */
   fun maybeDeleteAsync(shouldDelete: suspend (T) -> Boolean): Deferred<Boolean> {
     return blockingScope.async {

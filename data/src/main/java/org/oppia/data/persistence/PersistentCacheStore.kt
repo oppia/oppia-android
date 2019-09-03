@@ -11,7 +11,7 @@ import org.oppia.util.data.InMemoryBlockingCache
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.nio.file.Files
+import java.io.IOException
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,7 +30,7 @@ import kotlin.concurrent.withLock
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
   context: Context, cacheFactory: InMemoryBlockingCache.Factory,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String, initialValue: T
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String, private val initialValue: T
 ) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
@@ -117,15 +117,16 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * subscribers.
    */
   fun clearCacheAsync(): Deferred<Any> {
-    return cache.maybeForceDeleteAsync { cachedPayload ->
+    return cache.updateIfPresentAsync {
       if (cacheFile.exists()) {
         cacheFile.delete()
       }
       failureLock.withLock {
         deferredLoadCacheFailure = null
       }
-      // Always clear the in-memory cache.
-      true
+      // Always clear the in-memory cache and reset it to the initial value (the cache itself should never be fully
+      // deleted since the rest of the store assumes a value is always present in it).
+      CachePayload(state = CacheState.UNLOADED, value = initialValue)
     }
   }
 
@@ -136,7 +137,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       loadFileCache(cachePayload)
     }.invokeOnCompletion {
       failureLock.withLock {
-        deferredLoadCacheFailure = it
+        // Other failures should be captured for reporting.
+        deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
       }
     }
   }
@@ -153,9 +155,21 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
 
     val cacheBuilder = currentPayload.value.toBuilder()
-    return CachePayload(
-      state = CacheState.IN_MEMORY_AND_ON_DISK,
-      value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T)
+    return try {
+      CachePayload(
+        state = CacheState.IN_MEMORY_AND_ON_DISK,
+        value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T
+      )
+    } catch (e: IOException) {
+      failureLock.withLock {
+        deferredLoadCacheFailure = e
+      }
+      // Update the cache to have an in-memory copy of the current payload since on-disk retrieval failed.
+      CachePayload(
+        state = CacheState.IN_MEMORY_ONLY,
+        value = currentPayload.value
+      )
+    }
   }
 
   /**

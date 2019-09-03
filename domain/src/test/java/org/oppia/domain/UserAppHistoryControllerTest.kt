@@ -36,6 +36,7 @@ import org.oppia.app.model.UserAppHistory
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -43,6 +44,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [UserAppHistoryController]. */
 @RunWith(AndroidJUnit4::class)
+@Config(manifest = Config.NONE)
 class UserAppHistoryControllerTest {
   @Rule
   @JvmField
@@ -59,7 +61,7 @@ class UserAppHistoryControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
-  val coroutineContext by lazy {
+  private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
 
@@ -78,7 +80,7 @@ class UserAppHistoryControllerTest {
   @ObsoleteCoroutinesApi
   fun setUp() {
     Dispatchers.setMain(testThread)
-    setUpRootComponent()
+    setUpTestApplicationComponent()
   }
 
   @After
@@ -89,7 +91,7 @@ class UserAppHistoryControllerTest {
     testThread.close()
   }
 
-  private fun setUpRootComponent() {
+  private fun setUpTestApplicationComponent() {
     DaggerUserAppHistoryControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
@@ -133,7 +135,7 @@ class UserAppHistoryControllerTest {
     advanceUntilIdle()
 
     // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
-    setUpRootComponent()
+    setUpTestApplicationComponent()
     val appHistory = userAppHistoryController.getUserAppHistory()
     appHistory.observeForever(mockAppHistoryObserver)
     advanceUntilIdle()
@@ -144,8 +146,28 @@ class UserAppHistoryControllerTest {
     assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isTrue()
   }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_openedApp_cleared_observeNewController_userDidNotOpenApp() = runBlockingTest(coroutineContext) {
+    userAppHistoryController.markUserOpenedApp()
+    advanceUntilIdle()
+
+    // Clear, then recreate another controller.
+    userAppHistoryController.clearUserAppHistory()
+    setUpTestApplicationComponent()
+    val appHistory = userAppHistoryController.getUserAppHistory()
+    appHistory.observeForever(mockAppHistoryObserver)
+    advanceUntilIdle()
+
+    // The app should be considered not yet opened since the previous history was cleared.
+    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
+    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
+  }
+
   @Qualifier annotation class TestDispatcher
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
@@ -177,6 +199,7 @@ class UserAppHistoryControllerTest {
     }
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [TestModule::class])
   interface TestApplicationComponent {
