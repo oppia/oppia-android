@@ -15,10 +15,7 @@ class PreferencesActivity : ParentActivity() {
     setContentView(R.layout.activity_preferences)
     preferencesViewModel =
       ViewModelProviders.of(this).get(PreferencesViewModel::class.java)
-//    val textView: TextView = findViewById(R.id.text_gallery)
-//    preferencesViewModel.text.observe(this, Observer {
-//      textView.text = it
-//    })
+
     init(resources.getString(R.string.menu_preferences))
 
   }
