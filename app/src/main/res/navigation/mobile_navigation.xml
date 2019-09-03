@@ -13,9 +13,9 @@
 
   <fragment
     android:id="@+id/nav_preferences"
-    android:name="org.oppia.app.drawer.ui.preferences.PreferencesFragment"
+    android:name="org.oppia.app.drawer.ui.preferences.PreferencesActivity"
     android:label="@string/menu_preferences"
-    tools:layout="@layout/fragment_preferences" />
+    tools:layout="@layout/activity_preferences" />
 
   <fragment
     android:id="@+id/nav_help"

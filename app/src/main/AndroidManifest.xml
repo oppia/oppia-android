@@ -11,8 +11,36 @@
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <activity
-      android:name=".drawer.MainActivity"
+      android:name=".drawer.ui.preferences.PreferencesActivity"
       android:label="@string/title_activity_navigation_drawer"
+      android:theme="@style/OppiaTheme.NoActionBar">
+<!--      <intent-filter>-->
+<!--        <action android:name="android.intent.action.MAIN" />-->
+
+<!--        <category android:name="android.intent.category.LAUNCHER" />-->
+<!--      </intent-filter>-->
+<!--      <intent-filter>-->
+<!--        <action android:name="android.intent.action.VIEW" />-->
+
+<!--        <category android:name="android.intent.category.DEFAULT" />-->
+<!--      </intent-filter>-->
+    </activity>
+    <activity
+      android:name=".ParentActivity"
+      android:label="@string/title_activity_navigation_drawer"
+      android:theme="@style/OppiaTheme.NoActionBar">
+<!--      <intent-filter>-->
+<!--        <action android:name="android.intent.action.MAIN" />-->
+
+<!--        <category android:name="android.intent.category.LAUNCHER" />-->
+<!--      </intent-filter>-->
+<!--      <intent-filter>-->
+<!--        <action android:name="android.intent.action.VIEW" />-->
+
+<!--        <category android:name="android.intent.category.DEFAULT" />-->
+<!--      </intent-filter>-->
+    </activity>
+    <activity android:name=".HomeActivity"
       android:theme="@style/OppiaTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -24,18 +52,6 @@
 
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
-    </activity>
-    <activity android:name=".HomeActivity">
-      <!--<intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>-->
     </activity>
   </application>
 
