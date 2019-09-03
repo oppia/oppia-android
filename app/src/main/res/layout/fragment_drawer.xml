@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:background="#e45a2c">
+
+  <RelativeLayout
+    android:id="@+id/nav_header_container"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_alignParentTop="true"
+    android:background="#4fe7ec">
+
+    <ImageView
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:src="@mipmap/ic_launcher"
+      android:scaleType="fitCenter"
+      android:layout_centerInParent="true" />
+
+  </RelativeLayout>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/listview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp" />
+
+
+</LinearLayout>

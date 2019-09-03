@@ -18,4 +18,12 @@
   <string name="menu_logout">Log Out</string>
   <string name="menu_send">Send</string>
   <string name="admin_settings">Admin Settings</string>
+
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="drawer_open">Open</string>
+  <string name="drawer_close">Close</string>
+
+
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
