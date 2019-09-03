@@ -16,7 +16,7 @@ class MockTopicService(private val delegate: BehaviorDelegate<TopicService>) : T
     return delegate.returningResponse(topic).getTopicByName(topicName)
   }
 
-  private fun MockGaeTopic(): Any? {
+  private fun MockGaeTopic(): GaeTopic {
     val jsonResponse: String = FakeJsonResponse.TOPIC_SERVICE_RESPONSE
 
     val moshi = Moshi.Builder().build()
