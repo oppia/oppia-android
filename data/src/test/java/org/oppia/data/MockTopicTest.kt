@@ -2,15 +2,12 @@ package org.oppia.data
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.OppiaGaeClient
 import org.oppia.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
