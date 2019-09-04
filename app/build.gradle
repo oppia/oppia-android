@@ -63,7 +63,6 @@ dependencies {
       'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'androidx.legacy:legacy-support-v13:1.0.0'
   )
   testImplementation(
       'androidx.test:core:1.2.0',

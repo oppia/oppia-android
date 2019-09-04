@@ -9,6 +9,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.io.PrintStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -111,36 +112,52 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
   }
 
   private fun write(text: String) {
-    var out: BufferedWriter? = null
-    var filePath = LOG_DIRECTORY
-    try {
 
-      val df = SimpleDateFormat("dd_MMM_yyyy", Locale.ENGLISH)
-      val formattedDate = df.format(System.currentTimeMillis())
+    // Create a PrintStream instance
+    val stream = PrintStream(System.out)
 
-      if (!File(LOG_DIRECTORY).exists())
-        File(LOG_DIRECTORY).mkdir()
+    // Get the String Object
+    // to be printed in the stream
+    val `object` = text
 
-      filePath = "$LOG_DIRECTORY$formattedDate.log"
-      if (!File(filePath).exists())
-        File(filePath).createNewFile()
+    // print the object
+    // to this stream using print() method
+    // This will put the object in the stream
+    // till it is printed on the console
+    stream.println(`object`)
 
-      val fStream = FileWriter(filePath, true)
-      out = BufferedWriter(fStream)
-      out.write(text + "\n")
-      out.flush()
-    } catch (e: IOException) {
-      Log.e("Log", "Path:$filePath")
-      e.printStackTrace()
-    } finally {
-      try {
-        out?.close()
+    stream.flush()
 
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
-
-    }
+//    var out: BufferedWriter? = null
+//    var filePath = LOG_DIRECTORY
+//    try {
+//
+//      val df = SimpleDateFormat("dd_MMM_yyyy", Locale.ENGLISH)
+//      val formattedDate = df.format(System.currentTimeMillis())
+//
+//      if (!File(LOG_DIRECTORY).exists())
+//        File(LOG_DIRECTORY).mkdir()
+//
+//      filePath = "$LOG_DIRECTORY$formattedDate.log"
+//      if (!File(filePath).exists())
+//        File(filePath).createNewFile()
+//
+//      val fStream = FileWriter(filePath, true)
+//      out = BufferedWriter(fStream)
+//      out.write(text + "\n")
+//      out.flush()
+//    } catch (e: IOException) {
+//      Log.e("Log", "Path:$filePath")
+//      e.printStackTrace()
+//    } finally {
+//      try {
+//        out?.close()
+//
+//      } catch (e: IOException) {
+//        e.printStackTrace()
+//      }
+//
+//    }
   }
 
 }
