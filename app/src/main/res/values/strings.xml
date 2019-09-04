@@ -3,6 +3,4 @@
   <string name="app_name">Oppia</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
-  <string name="lessons">lessons</string>
-  <string name="all_topics">All Topics</string>
 </resources>
