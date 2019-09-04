@@ -10,6 +10,5 @@ interface ClassroomService {
 
   @GET("classroom_data_handler/{classroom_name}")
   fun getClassroomTopicSummaryDicts(@Path("classroom_name") classRoomName: String): Call<GaeClassroom>
-
 }
 
