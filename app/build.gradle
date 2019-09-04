@@ -1,17 +1,27 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 29
+  compileSdkVersion 28
   buildToolsVersion "29.0.1"
   defaultConfig {
     applicationId "org.oppia.app"
-    minSdkVersion 16
+    minSdkVersion 19
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    // https://developer.android.com/training/testing/junit-runner#ato-gradle
+    testInstrumentationRunnerArguments clearPackageData: 'true'
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8
   }
   buildTypes {
     release {
@@ -23,6 +33,8 @@ android {
     enabled = true
   }
   testOptions {
+    // https://developer.android.com/training/testing/junit-runner#ato-gradle
+    execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
     }
@@ -49,6 +61,7 @@ dependencies {
       'androidx.constraintlayout:constraintlayout:1.1.3',
       'androidx.core:core-ktx:1.0.2',
       'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
+      'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -73,6 +86,18 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'androidx.test:runner:1.2.0',
       'com.google.truth:truth:0.43',
+  )
+  androidTestUtil(
+      'androidx.test:orchestrator:1.2.0',
+  )
+  kapt(
+      'com.google.dagger:dagger-compiler:2.24'
+  )
+  kaptTest(
+      'com.google.dagger:dagger-compiler:2.24'
+  )
+  kaptAndroidTest(
+      'com.google.dagger:dagger-compiler:2.24'
   )
   implementation project(":model")
   implementation project(":domain")

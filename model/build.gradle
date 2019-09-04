@@ -28,9 +28,6 @@ dependencies {
   compile 'com.google.protobuf:protobuf-lite:3.0.0'
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
-
 sourceSets {
   main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
   main.java.srcDirs += "$projectDir/src/main/proto"

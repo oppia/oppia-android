@@ -8,3 +8,7 @@ option java_multiple_files = true;
 message UserAppHistory {
   bool already_opened_app = 1;
 }
+
+message TestMessage {
+  int32 version = 1;
+}

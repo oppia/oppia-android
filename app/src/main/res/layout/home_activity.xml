@@ -3,7 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/drawer_layout"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  tools:context=".home.HomeDrawerActivity">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -22,10 +23,11 @@
     </LinearLayout>
 
     <FrameLayout
-      android:id="@+id/container_body"
+      android:id="@+id/home_fragment_placeholder"
       android:layout_width="fill_parent"
       android:layout_height="0dp"
       android:layout_weight="1" />
+
   </LinearLayout>
   <fragment
     android:id="@+id/fragment_navigation_drawer"

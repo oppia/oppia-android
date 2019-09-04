@@ -1,17 +1,17 @@
 package org.oppia.app
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.DrawerFragment
 import org.oppia.app.drawer.FragmentTransactions
 import org.oppia.app.drawer.ui.preferences.PreferencesActivity
+import org.oppia.app.home.HomeActivity
 
 /** The ParentActivity is the parent of all activity with navigation drawer for all users entering the app. */
-open class ParentActivity : AppCompatActivity(), FragmentTransactions {
+open class ParentActivity : InjectableAppCompatActivity(), FragmentTransactions {
 
   var toolbar: Toolbar? = null
   var drawerFragment: DrawerFragment? = null
