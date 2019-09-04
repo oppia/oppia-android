@@ -1,6 +1,8 @@
 package org.oppia.app.utility
 
+import android.content.Context
 import android.util.Log
+import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.OppiaApplication
 
 import java.io.BufferedWriter
@@ -10,15 +12,17 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 /** Wrapper class for Android Log. */
-object Logger {
+class Logger @Inject constructor(@ApplicationContext context: Context) {
 
   private val ENABLE_CONSOLE_LOG = true
   private val ENABLE_FILE_LOG = true
   private val GLOBAL_LOG_LEVEL = LogLevel.VERBOSE
   private val LOG_DIRECTORY =
-    OppiaApplication.applicationContext().getExternalFilesDir(null).toString() + File.separator + "OppiaAppLog" + File.separator
+    context.getExternalFilesDir(null).toString() + File.separator + "OppiaAppLog" + File.separator
 
   private enum class LogLevel private constructor(val logLevel: Int) {
     VERBOSE(Log.VERBOSE),
