@@ -1,32 +1,23 @@
 package org.oppia.app.application
 
 import android.app.Application
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import org.oppia.app.activity.ActivityComponent
 
-/** Oppia MainApplication class for global applicationContext
- * Called when the application is starting, before any activity, service, or receiver objects (excluding content providers) have been created.
- */
-class OppiaApplication : Application() {
-
-  init {
-    instance = this
+/** The root [Application] of the Oppia app. */
+class OppiaApplication: Application() {
+  /** The root [ApplicationComponent]. */
+  private val component: ApplicationComponent by lazy {
+    DaggerApplicationComponent.builder()
+      .setApplication(this)
+      .build()
   }
 
-  companion object {
-    private var instance: OppiaApplication? = null
-
-    fun applicationContext() : Context {
-      return instance!!.applicationContext
-    }
-  }
-
-  override fun onCreate() {
-    super.onCreate()
-    // initialize for any
-
-    // Use ApplicationContext.
-    // example: SharedPreferences etc...
-    val context: Context = applicationContext()
+  /**
+   * Returns a new [ActivityComponent] for the specified activity. This should only be used by
+   * [org.oppia.app.activity.InjectableAppCompatActivity].
+   */
+  fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 }
-
