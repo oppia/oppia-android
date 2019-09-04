@@ -1,10 +1,10 @@
-package org.oppia.app.backend.model
+package org.oppia.data.backends.gae.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class TopicSummarytDicts(
+data class GaeClassroomTopicSummarytDict(
 
   @Json(name = "version") val version: Int?,
   @Json(name = "id") val id: String?,
