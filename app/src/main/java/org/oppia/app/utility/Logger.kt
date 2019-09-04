@@ -33,107 +33,52 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
     ASSERT(Log.ASSERT)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   */
+  /** Logs a verbose message with the specified tag.*/
   fun v(tag: String, msg: String) {
     write(LogLevel.VERBOSE, tag, msg)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   * @param tr  An exception to log
-   */
+  /** Logs a verbose message with the specified tag, message and exception.*/
   fun v(tag: String, msg: String, tr: Throwable) {
     write(LogLevel.VERBOSE, tag, msg, tr)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   */
+  /** Logs a debug message with the specified tag*/
   fun d(tag: String, msg: String) {
     write(LogLevel.DEBUG, tag, msg)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   * @param tr  An exception to log
-   */
+  /** Logs a debug message with the specified tag, message and exception.*/
   fun d(tag: String, msg: String, tr: Throwable) {
     write(LogLevel.DEBUG, tag, msg, tr)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   */
+  /** Logs a info message with the specified tag.*/
   fun i(tag: String, msg: String) {
     write(LogLevel.INFO, tag, msg)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   * @param tr  An exception to log
-   */
+  /** Logs a info message with the specified tag, message and exception.*/
   fun i(tag: String, msg: String, tr: Throwable) {
     write(LogLevel.INFO, tag, msg, tr)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   */
+  /** Logs a warn message with the specified tag.*/
   fun w(tag: String, msg: String) {
     write(LogLevel.WARNING, tag, msg)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   * @param tr  An exception to log
-   */
+  /** Logs a warn message with the specified tag, message and exception.*/
   fun w(tag: String, msg: String, tr: Throwable) {
     write(LogLevel.WARNING, tag, msg, tr)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   */
+  /** Logs a error message with the specified tag.*/
   fun e(tag: String, msg: String) {
     write(LogLevel.ERROR, tag, msg)
   }
 
-  /**
-   *
-   * @param tag Used to identify the source of a log message.  It usually identifies
-   * the class or activity where the log call occurs.
-   * @param msg The message you would like logged.
-   * @param tr  An exception to log
-   */
+  /** Logs a error message with the specified tag, message and exception.*/
   fun e(tag: String, msg: String, tr: Throwable) {
     write(LogLevel.ERROR, tag, msg, tr)
   }
