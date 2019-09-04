@@ -16,4 +16,5 @@ data class GaeTopicSummarytDict(
   @Json(name = "total_skill_count") val total_skill_count: Int?,
   @Json(name = "topic_model_last_updated") val topic_model_last_updated: Double?,
   @Json(name = "topic_model_created_on") val topic_model_created_on: Double?
+
 )

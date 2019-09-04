@@ -7,4 +7,5 @@ import com.squareup.moshi.JsonClass;
 data class GaeClassroom(
 
   @Json(name = "topic_summary_dicts") val topic_summary_dicts: List<GaeTopicSummarytDict>?
+
 )
