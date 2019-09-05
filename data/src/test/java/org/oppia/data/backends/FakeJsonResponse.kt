@@ -1,4 +1,4 @@
-package org.oppia.data
+package org.oppia.data.backends
 
 import org.oppia.data.backends.gae.NetworkSettings
 

@@ -1,9 +1,10 @@
-package org.oppia.data
+package org.oppia.data.backends.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.data.backends.FakeJsonResponse
 import org.oppia.data.backends.gae.NetworkInterceptor
 
 /** Tests for [NetworkInterceptor] */

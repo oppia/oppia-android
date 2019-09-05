@@ -31,7 +31,7 @@ class NetworkInterceptor : Interceptor {
   }
 
   /**
-   * This method accepts a non-null string which is a JSON response and
+   * This function accepts a non-null string which is a JSON response and
    * removes XSSI_PREFIX from response before deserialization
    * @param rawJson: This is the string that we get in body of our response
    * @return String: rawJson without XSSI_PREFIX
