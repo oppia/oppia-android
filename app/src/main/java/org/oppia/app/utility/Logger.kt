@@ -100,6 +100,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
     }
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
       val msg = Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log
+      /** To mange background threads*/
       CoroutineScope(IO).launch { write(msg) }
     }
   }
@@ -113,6 +114,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
         Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log + "\n" + Log.getStackTraceString(
           tr
         )
+      /** To mange background threads*/
      CoroutineScope(IO).launch { write(msg) }
     }
   }
