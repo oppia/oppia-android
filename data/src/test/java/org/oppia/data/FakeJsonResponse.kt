@@ -5,10 +5,10 @@ import org.oppia.data.backends.gae.NetworkSettings
 /** An object that contains fake json responses for test cases */
 object FakeJsonResponse {
 
-  /** Dummy json response with XSSI Prfix for [NetworkInterceptorTest] */
+  /** Dummy json response with XSSI Prefix for [NetworkInterceptorTest] */
   const val DUMMY_RESPONSE_WITH_XSSI_PREFIX: String =
     NetworkSettings.XSSI_PREFIX + "\n" + "{\"is_valid_response\": true}"
-  /** Dummy json response without XSSI Prfix for [NetworkInterceptorTest] */
+  /** Dummy json response without XSSI Prefix for [NetworkInterceptorTest] */
   const val DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX: String = "{\"is_valid_response\": true}"
   /** Fake json response for [MockTopicService] */
   const val TOPIC_SERVICE_RESPONSE: String =
