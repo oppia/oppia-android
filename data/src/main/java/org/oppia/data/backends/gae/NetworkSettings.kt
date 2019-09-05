@@ -12,9 +12,7 @@ object NetworkSettings {
   private const val PROD_URL = "https://oppia.org"
   /**
    * Prefix in Json response for extra layer of security in API calls
-   *
-   * @see <a href="https://github.com/oppia/oppia/blob/8f9eed/feconf.py#L319">XSSI_PREFIX</a>
-   *
+   * https://github.com/oppia/oppia/blob/8f9eed/feconf.py#L319
    * Remove this prefix from every Json response which is achieved in [NetworkInterceptor]
    */
   const val XSSI_PREFIX = ")]}\'"
