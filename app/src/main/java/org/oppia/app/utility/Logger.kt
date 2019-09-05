@@ -17,14 +17,19 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import javax.inject.Singleton
 
-/** Wrapper class for Android Log. */
+/** This Wrapper class is for Android Logs and to perform file logging. */
+@Singleton
 class Logger @Inject constructor(@ApplicationContext context: Context) {
 
   private val ENABLE_CONSOLE_LOG = true
   private val ENABLE_FILE_LOG = true
   private val GLOBAL_LOG_LEVEL = LogLevel.VERBOSE
-  private val LOG_DIRECTORY =File(context.filesDir, "oppia_app.log")
+  private val LOG_DIRECTORY = File(context.filesDir, "oppia_app.log")
 
   private enum class LogLevel private constructor(val logLevel: Int) {
     VERBOSE(Log.VERBOSE),
@@ -95,7 +100,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
     }
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
       val msg = Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log
-      write(msg)
+      CoroutineScope(IO).launch { write(msg) }
     }
   }
 
@@ -108,15 +113,11 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
         Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log + "\n" + Log.getStackTraceString(
           tr
         )
-      write(msg)
+     CoroutineScope(IO).launch { write(msg) }
     }
   }
 
-  private fun write(text: String) {
-    val ps = PrintStream(LOG_DIRECTORY)
-    System.setOut(ps)
-    println(text)
-
+  private suspend fun write(text: String) {
+    LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
   }
-
 }

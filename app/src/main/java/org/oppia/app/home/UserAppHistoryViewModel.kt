@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAppHistory
+import org.oppia.app.utility.Logger
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
@@ -13,7 +14,8 @@ import javax.inject.Inject
 /** [ViewModel] for user app usage history. */
 @FragmentScope
 class UserAppHistoryViewModel @Inject constructor(
-  private val userAppHistoryController: UserAppHistoryController
+  private val userAppHistoryController: UserAppHistoryController,
+  private val logger: Logger
 ): ViewModel() {
   val userAppHistoryLiveData: LiveData<UserAppHistory>? by lazy {
     getUserAppHistory()
@@ -26,7 +28,7 @@ class UserAppHistoryViewModel @Inject constructor(
 
   private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
     if (appHistoryResult.isFailure()) {
-      Log.e("HomeFragment", "Failed to retrieve user app history", appHistoryResult.getErrorOrNull())
+      logger.e("HomeFragment", "Failed to retrieve user app history"+ appHistoryResult.getErrorOrNull())
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }
