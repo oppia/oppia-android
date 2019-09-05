@@ -119,7 +119,8 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
     }
   }
 
-  private suspend fun write(text: String) {
+  private fun write(text: String) {
+    println("debug ${text} ${Thread.currentThread().name}")
     LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
   }
 }
