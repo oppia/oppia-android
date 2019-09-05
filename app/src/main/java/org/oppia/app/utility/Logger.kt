@@ -7,6 +7,7 @@ import org.oppia.app.application.OppiaApplication
 
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintStream
@@ -15,6 +16,9 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
+import android.widget.Toast
+
+
 
 /** Wrapper class for Android Log. */
 class Logger @Inject constructor(@ApplicationContext context: Context) {
@@ -22,8 +26,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
   private val ENABLE_CONSOLE_LOG = true
   private val ENABLE_FILE_LOG = true
   private val GLOBAL_LOG_LEVEL = LogLevel.VERBOSE
-  private val LOG_DIRECTORY =
-    context.getExternalFilesDir(null).toString() + File.separator + "OppiaAppLog" + File.separator
+  private val LOG_DIRECTORY =File(context.filesDir, "oppia_app.log")
 
   private enum class LogLevel private constructor(val logLevel: Int) {
     VERBOSE(Log.VERBOSE),
@@ -112,52 +115,10 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
   }
 
   private fun write(text: String) {
+    val ps = PrintStream(LOG_DIRECTORY)
+    System.setOut(ps)
+    println(text)
 
-    // Create a PrintStream instance
-    val stream = PrintStream(System.out)
-
-    // Get the String Object
-    // to be printed in the stream
-    val `object` = text
-
-    // print the object
-    // to this stream using print() method
-    // This will put the object in the stream
-    // till it is printed on the console
-    stream.println(`object`)
-
-    stream.flush()
-
-//    var out: BufferedWriter? = null
-//    var filePath = LOG_DIRECTORY
-//    try {
-//
-//      val df = SimpleDateFormat("dd_MMM_yyyy", Locale.ENGLISH)
-//      val formattedDate = df.format(System.currentTimeMillis())
-//
-//      if (!File(LOG_DIRECTORY).exists())
-//        File(LOG_DIRECTORY).mkdir()
-//
-//      filePath = "$LOG_DIRECTORY$formattedDate.log"
-//      if (!File(filePath).exists())
-//        File(filePath).createNewFile()
-//
-//      val fStream = FileWriter(filePath, true)
-//      out = BufferedWriter(fStream)
-//      out.write(text + "\n")
-//      out.flush()
-//    } catch (e: IOException) {
-//      Log.e("Log", "Path:$filePath")
-//      e.printStackTrace()
-//    } finally {
-//      try {
-//        out?.close()
-//
-//      } catch (e: IOException) {
-//        e.printStackTrace()
-//      }
-//
-//    }
   }
 
 }

@@ -12,7 +12,6 @@ class HomeActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    Logger(this).e("Log","Sample testing")
     homeActivityController.handleOnCreate()
   }
 }
