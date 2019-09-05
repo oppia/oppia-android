@@ -4,7 +4,7 @@ package org.oppia.util.data
 class AsyncResult<T> private constructor(
   private val status: Status,
   private val value: T? = null,
-  val error: Throwable? = null
+  private val error: Throwable? = null
 ) {
   /** Represents the status of an asynchronous result. */
   enum class Status {
@@ -74,13 +74,41 @@ class AsyncResult<T> private constructor(
 
   /**
    * Returns a transformed version of this result in the same way as [transform] except it supports using a blocking
-   * transformation function instead of a non-blocking one.
+   * transformation function instead of a non-blocking one. Note that the transform function is only used if the current
+   * result is a success, at which case the function's result becomes the new transformed result.
    */
-  suspend fun <O> transformAsync(transformFunction: suspend (T) -> O): AsyncResult<O> {
+  suspend fun <O> transformAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
     return when(status) {
       Status.PENDING -> pending()
       Status.FAILED -> failed(ChainedFailureException(error!!))
-      Status.SUCCEEDED -> success(transformFunction(value!!))
+      Status.SUCCEEDED -> transformFunction(value!!)
+    }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
+      return true
+    }
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    val otherResult = other as AsyncResult<*>
+    return otherResult.status == status && otherResult.error == error && otherResult.value == value
+  }
+
+  override fun hashCode(): Int {
+    // Automatically generated hashCode() function that has parity with equals().
+    var result = status.hashCode()
+    result = 31 * result + (value?.hashCode() ?: 0)
+    result = 31 * result + (error?.hashCode() ?: 0)
+    return result
+  }
+
+  override fun toString(): String {
+    return when(status) {
+      Status.PENDING -> "AsyncResult[status=PENDING]"
+      Status.FAILED -> "AsyncResult[status=FAILED, error=$error]"
+      Status.SUCCEEDED -> "AsyncResult[status=SUCCESS, value=$value]"
     }
   }
 

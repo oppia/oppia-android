@@ -26,7 +26,7 @@ class UserAppHistoryViewModel @Inject constructor(
 
   private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
     if (appHistoryResult.isFailure()) {
-      Log.e("HomeFragment", "Failed to retrieve user app history", appHistoryResult.error)
+      Log.e("HomeFragment", "Failed to retrieve user app history", appHistoryResult.getErrorOrNull())
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }

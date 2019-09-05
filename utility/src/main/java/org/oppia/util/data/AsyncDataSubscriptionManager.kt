@@ -7,16 +7,17 @@ import org.oppia.util.threading.ConcurrentQueueMap
 import org.oppia.util.threading.dequeue
 import org.oppia.util.threading.enqueue
 import org.oppia.util.threading.getQueue
+import javax.inject.Inject
+import javax.inject.Singleton
 
 internal typealias ObserveAsyncChange = suspend () -> Unit
-
-// TODO(BenHenning): Move this to the Dagger graph rather than making it a singleton.
 
 /**
  * A subscription manager for all [DataProvider]s. This should only be used outside of this package for notifying
  * changes to custom [DataProvider]s.
  */
-object AsyncDataSubscriptionManager {
+@Singleton
+class AsyncDataSubscriptionManager @Inject constructor() {
   private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
   private val associatedIds = ConcurrentQueueMap<Any, Any>()
 
@@ -25,11 +26,11 @@ object AsyncDataSubscriptionManager {
     subscriptionMap.enqueue(id, observeChange)
   }
 
-  /** Ubsubscribes the specified callback function from the specified [DataProvider] ID. */
+  /** Unsubscribes the specified callback function from the specified [DataProvider] ID. */
   internal fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
-    // TODO(BenHenning): Determine a way to safely fully remove the queue once it's empty. This may require a custom
-    // data structure or external locking for proper thread safety (e.g. to handle the case where multiple
-    // subscribes/notifies happen shortly after the queue is removed).
+    // TODO(#91): Determine a way to safely fully remove the queue once it's empty. This may require a custom data
+    //  structure or external locking for proper thread safety (e.g. to handle the case where multiple
+    //  subscribes/notifies happen shortly after the queue is removed).
     return subscriptionMap.dequeue(id, observeChange)
   }
 
@@ -38,11 +39,11 @@ object AsyncDataSubscriptionManager {
    * observers of the child ID.
    */
   internal fun associateIds(childId: Any, parentId: Any) {
-    // TODO(BenHenning): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps
-    // should make this impossible in practice unless data provider users try to use the same key for multiple
-    // inter-dependent data providers.
-    // TODO(BenHenning): Find a way to determine parent-child ID associations during subscription time to avoid needing
-    // to store long-lived references to IDs prior to subscriptions.
+    // TODO(#6): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
+    //  make this impossible in practice unless data provider users try to use the same key for multiple inter-dependent
+    //  data providers.
+    // TODO(#6): Find a way to determine parent-child ID associations during subscription time to avoid needing to store
+    //  long-lived references to IDs prior to subscriptions.
     associatedIds.enqueue(parentId, childId)
   }
 
@@ -52,9 +53,10 @@ object AsyncDataSubscriptionManager {
    */
   @Suppress("DeferredResultUnused") // Exceptions on the main thread will cause app crashes. No action needed.
   suspend fun notifyChange(id: Any) {
-    // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData expects.
-    // TODO(BenHenning): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid
-    // any load on the UI thread until the final data value is ready for delivery.
+    // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData
+    // expects.
+    // TODO(#90): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid any
+    //  load on the UI thread until the final data value is ready for delivery.
     val scope = CoroutineScope(Dispatchers.Main)
     scope.async {
       subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
