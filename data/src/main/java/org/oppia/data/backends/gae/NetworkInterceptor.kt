@@ -5,13 +5,16 @@ import okhttp3.Response
 import okhttp3.ResponseBody
 import org.oppia.data.Constants
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Interceptor on top of Retrofit to modify requests and response
  *
  * The Interceptor removes XSSI_PREFIX from every response to produce valid Json
  */
-class NetworkInterceptor : Interceptor {
+@Singleton
+class NetworkInterceptor @Inject constructor() : Interceptor {
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
