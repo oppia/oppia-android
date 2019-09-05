@@ -1,0 +1,37 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+	package
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:11-35
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+	android:versionCode
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml:1:1-37
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+uses-sdk
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		ADDED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
+		INJECTED from /Users/talesra/Desktop/android-codes/oppia-android/oppia-android/data/src/main/AndroidManifest.xml
