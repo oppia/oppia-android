@@ -18,8 +18,6 @@ import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 import android.widget.Toast
 
-
-
 /** Wrapper class for Android Log. */
 class Logger @Inject constructor(@ApplicationContext context: Context) {
 
