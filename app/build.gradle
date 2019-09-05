@@ -90,6 +90,7 @@ dependencies {
   kaptAndroidTest(
       'com.google.dagger:dagger-compiler:2.24'
   )
+  api project(':data')
   implementation project(":model")
   implementation project(":domain")
   implementation project(":utility")

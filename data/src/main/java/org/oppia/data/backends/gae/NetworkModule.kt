@@ -33,7 +33,6 @@ class NetworkModule {
   @Provides
   @Singleton
   fun provideRetrofitInstance(): Retrofit {
-
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
