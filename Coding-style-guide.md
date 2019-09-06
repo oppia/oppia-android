@@ -11,6 +11,15 @@ Please follow the following style rules when writing code, in order to minimize 
 - Make sure to remove temporary code (e.g. log statements or toasts to help with local debugging) before pushing to GitHub.
 - Do not check any build artifacts into GitHub.
 
+## Code Formatting
+Reformat all edited files automatically in android studio using the following command.
+- Windows: `Ctrl + Alt + L`
+- Linux: `Ctrl + Shift + Alt + L`
+- macOS: `Option + Command + L`
+- Ubuntu users might face issue because `Ctrl + Alt + L` locks the screen by default nature. Refer to this [stackoverflow-link](https://stackoverflow.com/questions/16580171/code-formatting-shortcut-in-android-studio) on how to solve this.
+
+NOTE: This does not guarantee 100% formatting of code as per guidelines but will be very helpful in indentation and extra spaces.
+
 ## Comments
 - Ensure that comments have correct grammar, spelling and capitalization.
 - Vertically align the `*`s on the left side of a multi-line comment.
