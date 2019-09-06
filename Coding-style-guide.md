@@ -8,7 +8,7 @@ Please follow the following style rules when writing code, in order to minimize 
 - Ensure that the indentation of your code is correct.
 - In general, avoid leaving multiple consecutive blank lines. Collapse them into a single one.
 - The last character in each file should always be a newline. (If it's not, you'll see a red symbol at the end of the file when you look at the "Files Changed" tab in GitHub.)
-- Make sure to remove temporary code (e.g. log statements to help with local debugging) before pushing to GitHub.
+- Make sure to remove temporary code (e.g. log statements or toasts to help with local debugging) before pushing to GitHub.
 - Do not check any build artifacts into GitHub.
 
 ## Comments
