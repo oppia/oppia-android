@@ -11,15 +11,11 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
- * Sample resource https://github.com/gahfy/Feed-Me/tree/unitTests
- */
-
-/**
  * Module which provides all required dependencies about network
+ *
+ * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
  */
 @Module
-// Safe here as we are dealing with a Dagger 2 module
-@Suppress("unused")
 class NetworkModule {
 
   @Qualifier

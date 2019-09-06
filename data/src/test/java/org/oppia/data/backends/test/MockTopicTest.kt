@@ -24,7 +24,6 @@ class MockTopicTest {
   private lateinit var retrofit: Retrofit
 
   @Before
-  @Throws(Exception::class)
   fun setUp() {
 
     val client = OkHttpClient.Builder()
@@ -43,8 +42,7 @@ class MockTopicTest {
   }
 
   @Test
-  @Throws(Exception::class)
-  fun testMockTopicService_withTopicName_success() {
+  fun testTopicService_usingFakeJson_deserializationSuccessful() {
     val delegate = mockRetrofit.create(TopicService::class.java)
     val mockTopicService = MockTopicService(delegate)
 

@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * https://github.com/oppia/oppia/blob/77d6fd/core/domain/topic_domain.py#L1178
  */
 @JsonClass(generateAdapter = true)
-data class GaeTopicSummarytDict(
+data class GaeTopicSummary(
 
   @Json(name = "version") val version: Int?,
   @Json(name = "id") val id: String?,
