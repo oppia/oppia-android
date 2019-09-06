@@ -29,3 +29,4 @@ Please follow the following style rules when writing code, in order to minimize 
 
 ## build.gradle file
 - Arrange lists in alphabetical order unless there's a good reason not to.
+- Combine `implementation`, `androidTestImplementation` and `testImplementation` to declare all similar dependencies in one block.
