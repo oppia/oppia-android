@@ -20,7 +20,7 @@ Please follow the following style rules when writing code, in order to minimize 
 - When writing TODOs, refer to an issue number on the GitHub issue tracker. E.g. `TODO(#1234): Do X, Y and Z.`
 
 ## XML files
-- Do not declare values directly in the XML file; use e.g. a dimens.xml file instead. In general, avoid using hard-coded strings.
+- Do not declare values directly in the XML file; use e.g. a dimens.xml file instead. In general, avoid using hard-coded strings. Similar case for colors and strings
 
 ## Java/Kotlin files
 - Separate adjacent functions or blocks of code by a single blank line.
