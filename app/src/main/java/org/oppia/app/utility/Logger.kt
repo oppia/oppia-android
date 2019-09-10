@@ -106,9 +106,8 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
       Log.println(logLevel.logLevel, tag, fullLog )
     }
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
-      val msg =
-        Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + fullLog
-      
+     val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
+
       // To mange background threads
       CoroutineScope(IO).launch { write(msg) }
     }
