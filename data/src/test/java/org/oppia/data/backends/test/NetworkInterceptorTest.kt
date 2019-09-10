@@ -27,12 +27,15 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [NetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
 class NetworkInterceptorTest {
+
+  @Inject lateinit var networkInterceptor: NetworkInterceptor
 
   @Before
   fun setUp() {
@@ -41,7 +44,6 @@ class NetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
-    val networkInterceptor = NetworkInterceptor()
     val rawJson: String =
       networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITH_XSSI_PREFIX)
 
@@ -50,7 +52,6 @@ class NetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
-    val networkInterceptor = NetworkInterceptor()
     val rawJson: String =
       networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
 
@@ -70,19 +71,6 @@ class NetworkInterceptorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestNetworkModule {
-    @OppiaRetrofit
-    @Provides
-    @Singleton
-    fun provideRetrofitInstance(): Retrofit {
-      val client = OkHttpClient.Builder()
-      client.addInterceptor(NetworkInterceptor())
-
-      return retrofit2.Retrofit.Builder()
-        .baseUrl(NetworkSettings.getBaseUrl())
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client.build())
-        .build()
-    }
 
     @Provides
     @Singleton
@@ -104,5 +92,6 @@ class NetworkInterceptorTest {
     }
 
     fun inject(networkInterceptorTest: NetworkInterceptorTest)
+    fun inject(networkInterceptor: NetworkInterceptor)
   }
 }
