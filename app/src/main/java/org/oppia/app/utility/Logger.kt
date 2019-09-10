@@ -42,80 +42,75 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
 
   /** Logs a verbose message with the specified tag.*/
   fun v(tag: String, msg: String) {
-    write(LogLevel.VERBOSE, tag, msg)
+    writeLog(LogLevel.VERBOSE, tag, msg)
   }
 
   /** Logs a verbose message with the specified tag, message and exception.*/
   fun v(tag: String, msg: String, tr: Throwable) {
-    write(LogLevel.VERBOSE, tag, msg, tr)
+    writeError(LogLevel.VERBOSE, tag, msg, tr)
   }
 
   /** Logs a debug message with the specified tag*/
   fun d(tag: String, msg: String) {
-    write(LogLevel.DEBUG, tag, msg)
+    writeLog(LogLevel.DEBUG, tag, msg)
   }
 
   /** Logs a debug message with the specified tag, message and exception.*/
   fun d(tag: String, msg: String, tr: Throwable) {
-    write(LogLevel.DEBUG, tag, msg, tr)
+    writeError(LogLevel.DEBUG, tag, msg, tr)
   }
 
   /** Logs a info message with the specified tag.*/
   fun i(tag: String, msg: String) {
-    write(LogLevel.INFO, tag, msg)
+    writeLog(LogLevel.INFO, tag, msg)
   }
 
   /** Logs a info message with the specified tag, message and exception.*/
   fun i(tag: String, msg: String, tr: Throwable) {
-    write(LogLevel.INFO, tag, msg, tr)
+    writeError(LogLevel.INFO, tag, msg, tr)
   }
 
   /** Logs a warn message with the specified tag.*/
   fun w(tag: String, msg: String) {
-    write(LogLevel.WARNING, tag, msg)
+    writeLog(LogLevel.WARNING, tag, msg)
   }
 
   /** Logs a warn message with the specified tag, message and exception.*/
   fun w(tag: String, msg: String, tr: Throwable) {
-    write(LogLevel.WARNING, tag, msg, tr)
+    writeError(LogLevel.WARNING, tag, msg, tr)
   }
 
   /** Logs a error message with the specified tag.*/
   fun e(tag: String, msg: String) {
-    write(LogLevel.ERROR, tag, msg)
+    writeLog(LogLevel.ERROR, tag, msg)
   }
 
   /** Logs a error message with the specified tag, message and exception.*/
   fun e(tag: String, msg: String, tr: Throwable) {
-    write(LogLevel.ERROR, tag, msg, tr)
+    writeError(LogLevel.ERROR, tag, msg, tr)
   }
 
   private fun isLogEnable(logLevel: LogLevel): Boolean {
     return GLOBAL_LOG_LEVEL.logLevel < logLevel.logLevel
   }
 
-  private fun write(logLevel: LogLevel, tag: String, log: String) {
-    if (isLogEnable(logLevel) && ENABLE_CONSOLE_LOG) {
-      Log.println(logLevel.logLevel, tag, log)
-    }
-    if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
-      val msg = Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log
-      /** To mange background threads*/
-      CoroutineScope(IO).launch { write(msg) }
-    }
+  private fun writeLog(logLevel: LogLevel, tag: String, log: String) {
+    writeInternal(logLevel, tag, log)
   }
 
-  private fun write(logLevel: LogLevel, tag: String, log: String, tr: Throwable) {
+  private fun writeError(logLevel: LogLevel, tag: String, log: String, tr: Throwable) {
+    writeInternal(logLevel, tag, "$log\n${Log.getStackTraceString(tr)}")
+  }
+  private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
     if (isLogEnable(logLevel) && ENABLE_CONSOLE_LOG) {
-      Log.println(logLevel.logLevel, tag, log + "\n" + Log.getStackTraceString(tr))
+      Log.println(logLevel.logLevel, tag, fullLog )
     }
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
       val msg =
-        Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + log + "\n" + Log.getStackTraceString(
-          tr
-        )
-      /** To mange background threads*/
-     CoroutineScope(IO).launch { write(msg) }
+        Calendar.getInstance().time.toString() + "\t" + logLevel.name + "/" + tag + ": " + fullLog
+      
+      // To mange background threads
+      CoroutineScope(IO).launch { write(msg) }
     }
   }
 
