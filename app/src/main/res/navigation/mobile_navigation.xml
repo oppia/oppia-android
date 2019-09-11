@@ -5,13 +5,13 @@
   android:id="@+id/mobile_navigation"
   app:startDestination="@+id/nav_home">
 
-  <fragment
+  <activity
     android:id="@+id/nav_home"
-    android:name="org.oppia.app.drawer.ui.home.HomeFragment"
+    android:name="org.oppia.app.home.HomeActivity"
     android:label="@string/menu_home"
     tools:layout="@layout/fragment_home" />
 
-  <fragment
+  <activity
     android:id="@+id/nav_preferences"
     android:name="org.oppia.app.drawer.ui.preferences.PreferencesActivity"
     android:label="@string/menu_preferences"
@@ -19,9 +19,9 @@
 
   <fragment
     android:id="@+id/nav_help"
-    android:name="org.oppia.app.drawer.ui.help.HelpFragment"
+    android:name="org.oppia.app.help.HelpActivity"
     android:label="@string/menu_help"
-    tools:layout="@layout/fragment_help" />
+    tools:layout="@layout/activity_help" />
 
   <fragment
     android:id="@+id/nav_my_downloads"

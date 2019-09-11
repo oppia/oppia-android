@@ -29,7 +29,7 @@
   </LinearLayout>
   <fragment
     android:id="@+id/fragment_navigation_drawer"
-    android:name="org.oppia.app.drawer.DrawerFragment"
+    android:name="org.oppia.app.drawer.NavigationDrawerFragment"
     android:layout_width="260dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"

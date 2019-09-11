@@ -11,25 +11,23 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity android:name=".home.HomeActivity"
+    <activity
+      android:name=".home.HomeActivity"
       android:theme="@style/OppiaTheme.NoActionBar">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
       <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
-    <activity
-      android:name=".drawer.ui.preferences.PreferencesActivity"
-      android:label="@string/title_activity_navigation_drawer"
-      android:theme="@style/OppiaTheme.NoActionBar"></activity>
-    <activity
-      android:name=".ParentActivity"
-      android:label="@string/title_activity_navigation_drawer"
+ <activity
+      android:name=".help.HelpActivity"
       android:theme="@style/OppiaTheme.NoActionBar">
+
     </activity>
+
   </application>
 </manifest>

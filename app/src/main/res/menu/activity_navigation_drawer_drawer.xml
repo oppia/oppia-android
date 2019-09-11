@@ -25,11 +25,7 @@
       android:id="@+id/nav_logout"
       android:icon="@drawable/ic_logout_48dp"
       android:title="@string/menu_logout" />
-    <item
-      android:id="@+id/nav_send"
-android:visible="false"
-      android:icon="@drawable/ic_menu_send"
-      android:title="@string/menu_send" />
+
   </group>
 
   <item android:title="Communicate">

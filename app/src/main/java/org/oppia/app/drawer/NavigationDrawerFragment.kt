@@ -1,6 +1,6 @@
 package org.oppia.app.drawer
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 
@@ -9,14 +9,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
-import org.oppia.app.ParentActivity
 
 import org.oppia.app.R
+import org.oppia.app.help.HelpActivity
+import org.oppia.app.home.HomeActivity
 
-class DrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+/**
+ * NavigationDrawerFragment to show navigation drawer
+ *
+ */
+class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
   override fun onNavigationItemSelected(p0: MenuItem): Boolean {
     if (p0.itemId > 0) {
-      openFragment(p0.itemId)
+      openActivityByMenuItemId(p0.itemId)
 //      mDrawerLayout!!.closeDrawers()
       return true
     } else
@@ -29,7 +34,7 @@ class DrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
   private var mDrawerToggle: ActionBarDrawerToggle? = null
   private var mDrawerLayout: DrawerLayout? = null
   private var containerView: View? = null
-
+  private var previousMenuId: Int? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
@@ -46,15 +51,32 @@ class DrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
     val navView: NavigationView = views!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
 
-    openFragment(0)
+    openActivityByMenuItemId(0)
 
     return views
   }
 
-  private fun openFragment(menuItemId: Int) {
+  private fun openActivityByMenuItemId(menuItemId: Int) {
+    if (menuItemId != null && previousMenuId != menuItemId && menuItemId != 0) {
+      var intent: Intent = Intent(activity, HomeActivity::class.java)
 
-    (activity as ParentActivity).openFragment(menuItemId)
-  }
+      when (menuItemId) {
+        R.id.nav_home -> intent = Intent(activity, HomeActivity::class.java)
+        //       may use in future when working on PreferencesActivity
+//        R.id.nav_preferences -> intent = Intent(activity, PreferencesActivity::class.java)
+        R.id.nav_help -> intent = Intent(activity, HelpActivity::class.java)
+
+
+      }
+
+      startActivity(intent)
+      activity!!.overridePendingTransition(
+        R.anim.from_right_in,
+        R.anim.slide_out_left
+      )}
+      previousMenuId = menuItemId;
+    }
+
 
   fun setUpDrawer(fragmentId: Int, drawerLayout: DrawerLayout, toolbar: Toolbar) {
     containerView = activity!!.findViewById(fragmentId)
@@ -84,7 +106,7 @@ class DrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListen
 
     mDrawerLayout!!.setDrawerListener(mDrawerToggle)
     mDrawerLayout!!.post { mDrawerToggle!!.syncState() }
-//    mDrawerLayout!!.closeDrawers();
+//  mDrawerLayout!!.closeDrawers();
 
   }
 
