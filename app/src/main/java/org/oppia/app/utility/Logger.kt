@@ -18,8 +18,11 @@ import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
 /** This Wrapper class is for Android Logs and to perform file logging. */
@@ -109,12 +112,14 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
      val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
 
       // To mange background threads
-      CoroutineScope(IO).launch { write(msg) }
+      CoroutineScope(newSingleThreadContext("MyOwnThread")).launch { write(msg) }
+
     }
   }
 
   private fun write(text: String) {
-    println("debug ${text} ${Thread.currentThread().name}")
-    LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
+      println("debug ${text} ${Thread.currentThread().name}")
+      LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
+
   }
 }

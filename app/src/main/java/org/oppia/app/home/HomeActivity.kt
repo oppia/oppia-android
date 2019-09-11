@@ -13,6 +13,6 @@ class HomeActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     homeActivityController.handleOnCreate()
-    Logger(this@HomeActivity).e("Debug","Test")
+    Logger(this@HomeActivity).e("Debug","Test123")
   }
 }
