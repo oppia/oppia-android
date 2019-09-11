@@ -1,7 +1,7 @@
 Please follow the following style rules when writing code, in order to minimize unnecessary back-and-forth during code review.
 
 ## General
-- We follow a hybrid of [JetBrain's Kotlin style guide](https://developer.android.com/kotlin/style-guide) and [Google's Java style guide](https://google.github.io/styleguide/javaguide.html#s4.2-block-indentation).
+- In general, we follow [Google's Java style guide](https://google.github.io/styleguide/javaguide.html#s4.2-block-indentation) (but please look at it from a Kotlin perspective).
 - Use 2 spaces for indentation and 4 spaces for continuation, per https://google.github.io/styleguide/javaguide.html#s4.2-block-indentation. (This should be configured at the project level for Kotlin. Ensure that you're using the project configuration for Kotlin in your IDE, so that you can reformat the code via the IDE if needed.)
 - Never commit a PR which includes commented-out code.
 - Ensure that your code looks consistent with the code surrounding it.
