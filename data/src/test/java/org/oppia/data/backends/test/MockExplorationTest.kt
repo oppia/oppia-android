@@ -6,20 +6,20 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.api.MockTopicService
+import org.oppia.data.backends.api.MockExplorationService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.backends.gae.api.TopicService
+import org.oppia.data.backends.gae.api.ExplorationService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [TopicService] retrofit instance using [MockTopicService]
+ * Test for [ExplorationService] retrofit instance using [MockExplorationService]
  */
 @RunWith(AndroidJUnit4::class)
-class MockTopicTest {
+class MockExplorationTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -41,14 +41,14 @@ class MockTopicTest {
   }
 
   @Test
-  fun testTopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+  fun testExplorationService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ExplorationService::class.java)
+    val mockExplorationService = MockExplorationService(delegate)
 
-    val topic = mockTopicService.getTopicByName("Topic1")
-    val topicResponse = topic.execute()
+    val explorationContainer = mockExplorationService.getExplorationById("DIWZiVgs0km-")
+    val explorationContainerResponse = explorationContainer.execute()
 
-    assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat("Topic1").isEqualTo(topicResponse.body()!!.topicName)
+    assertThat(explorationContainerResponse.isSuccessful).isTrue()
+    assertThat("DIWZiVgs0km-").isEqualTo(explorationContainerResponse.body()!!.explorationId)
   }
 }
