@@ -5,9 +5,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 class HelpActivity : InjectableAppCompatActivity() {
-
-  @Inject
-  lateinit var helpActivityController: HelpActivityController
+  @Inject lateinit var helpActivityController: HelpActivityController
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

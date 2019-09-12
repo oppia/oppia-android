@@ -71,8 +71,6 @@ dependencies {
       'com.google.code.gson:gson:2.8.5',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-      ,
   )
     testImplementation(
       'androidx.fragment:fragment-testing:1.2.0-alpha01',

@@ -59,8 +59,8 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
 
       when (menuItemId) {
         R.id.nav_home -> intent = Intent(activity, HomeActivity::class.java)
-        //       may use in future when working on PreferencesActivity
-//        R.id.nav_preferences -> intent = Intent(activity, PreferencesActivity::class.java)
+        // may use in future when working on PreferencesActivity
+        // R.id.nav_preferences -> intent = Intent(activity, PreferencesActivity::class.java)
         R.id.nav_help -> intent = Intent(activity, HelpActivity::class.java)
 
       }
