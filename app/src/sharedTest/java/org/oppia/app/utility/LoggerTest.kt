@@ -22,8 +22,5 @@ class LoggerTest {
   fun testlogger(){
     Logger(ApplicationProvider.getApplicationContext(), blockingDispatcher!!).e("Test","Test456")
   }
-
-  @After
-  fun tearDown() {
-  }
+  
 }
