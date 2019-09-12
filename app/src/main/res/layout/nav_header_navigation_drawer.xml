@@ -15,8 +15,8 @@
 
   <ImageView
     android:id="@+id/imageView"
-    android:layout_width="64dp"
-    android:layout_height="64dp"
+    android:layout_width="@dimen/imageview_dim_64"
+    android:layout_height="@dimen/imageview_dim_64"
     android:contentDescription="@string/nav_header_desc"
     android:paddingTop="@dimen/nav_header_vertical_spacing"
     app:srcCompat="@mipmap/ic_launcher_round" />
