@@ -23,22 +23,5 @@
     android:label="@string/menu_help"
     tools:layout="@layout/activity_help" />
 
-  <fragment
-    android:id="@+id/nav_my_downloads"
-    android:name="org.oppia.app.drawer.ui.mydownloads.MyDownloadsFragment"
-    android:label="@string/menu_my_downloads"
-    tools:layout="@layout/fragment_my_downloads" />
 
-  <fragment
-    android:id="@+id/nav_logout"
-    android:name="org.oppia.app.drawer.ui.logout.LogoutFragment"
-    android:label="@string/menu_logout"
-    tools:layout="@layout/fragment_logout" />
-
-  <fragment
-    android:id="@+id/nav_send"
-    android:name="org.oppia.app.drawer.ui.AdminSetting.AdminSettingFragment"
-    android:label="@string/menu_send"
-
-    tools:layout="@layout/fragment_send" />
 </navigation>

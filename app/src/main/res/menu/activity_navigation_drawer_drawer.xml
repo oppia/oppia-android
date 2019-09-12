@@ -14,9 +14,9 @@
       android:title="@string/menu_preferences" />
     <item
       android:id="@+id/nav_help"
-      android:visible="true"
       android:icon="@drawable/ic_help_grey_48dp"
-      android:title="@string/menu_help" />
+      android:title="@string/menu_help"
+      android:visible="true" />
     <item
       android:id="@+id/nav_my_downloads"
       android:icon="@drawable/ic_my_downloads_grey_48dp"
@@ -27,11 +27,5 @@
       android:title="@string/menu_logout" />
 
   </group>
-
-  <item android:title="Communicate">
-    <menu>
-
-    </menu>
-  </item>
 
 </menu>
