@@ -6,6 +6,6 @@
   <color name="lightGreen">#26A69A</color>
   <color name="red">#C55F45</color>
   <color name="black">#000000</color>
-  <color name="DarkGrey">#264653</color>
+  <color name="darkGrey">#264653</color>
   <color name="grey">#707070</color>
 </resources>

@@ -47,9 +47,7 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
     views = inflater.inflate(R.layout.fragment_drawer, container, false)
     val navView: NavigationView = views!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
-
     openActivityByMenuItemId(0)
-
     return views
   }
 
@@ -62,9 +60,7 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
         // may use in future when working on PreferencesActivity
         // R.id.nav_preferences -> intent = Intent(activity, PreferencesActivity::class.java)
         R.id.nav_help -> intent = Intent(activity, HelpActivity::class.java)
-
       }
-
       startActivity(intent)
       activity!!.overridePendingTransition(
         R.anim.from_right_in,
@@ -99,10 +95,7 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
         toolbar.alpha = 1 - slideOffset / 2
       }
     }
-
     mDrawerLayout!!.setDrawerListener(mDrawerToggle)
     mDrawerLayout!!.post { mDrawerToggle!!.syncState() }
-
   }
-
 }
