@@ -104,7 +104,6 @@ class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingD
 
       // To mange background threads
       blockingScope.launch { write(msg) }
-
     }
   }
 
