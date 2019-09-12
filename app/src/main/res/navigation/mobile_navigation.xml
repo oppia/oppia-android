@@ -9,17 +9,17 @@
     android:id="@+id/nav_home"
     android:name="org.oppia.app.home.HomeActivity"
     android:label="@string/menu_home"
-    tools:layout="@layout/fragment_home" />
+    tools:layout="@layout/home_fragment" />
 
   <activity
     android:id="@+id/nav_preferences"
     android:label="@string/menu_preferences"
-    tools:layout="@layout/activity_preferences" />
+    tools:layout="@layout/preferences_activity" />
 
   <fragment
     android:id="@+id/nav_help"
     android:name="org.oppia.app.help.HelpActivity"
     android:label="@string/menu_help"
-    tools:layout="@layout/activity_help" />
+    tools:layout="@layout/help_activity" />
 
 </navigation>
