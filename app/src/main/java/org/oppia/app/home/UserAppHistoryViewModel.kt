@@ -9,7 +9,6 @@ import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
-
 /** [ViewModel] for user app usage history. */
 @FragmentScope
 class UserAppHistoryViewModel @Inject constructor(

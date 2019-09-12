@@ -13,7 +13,7 @@
 
   <activity
     android:id="@+id/nav_preferences"
-    android:name="org.oppia.app.drawer.ui.preferences.PreferencesActivity"
+
     android:label="@string/menu_preferences"
     tools:layout="@layout/activity_preferences" />
 

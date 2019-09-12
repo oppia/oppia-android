@@ -22,7 +22,7 @@
     </LinearLayout>
 
     <FrameLayout
-      android:id="@+id/container_body"
+      android:id="@+id/home_fragment_placeholder"
       android:layout_width="fill_parent"
       android:layout_height="0dp"
       android:layout_weight="1" />

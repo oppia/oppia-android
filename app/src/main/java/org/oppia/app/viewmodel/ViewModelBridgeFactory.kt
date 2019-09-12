@@ -2,8 +2,9 @@ package org.oppia.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.security.Provider
 import javax.inject.Inject
-import javax.inject.Provider
+
 
 /**
  * Provides a Dagger bridge to facilitate [ViewModel]s supporting @Inject constructors. Adapted from:
@@ -11,7 +12,7 @@ import javax.inject.Provider
  * https://github.com/tfcporciuncula/dagger-simple-way.
  */
 class ViewModelBridgeFactory<V : ViewModel> @Inject constructor(
-  private val viewModelProvider: Provider<V>
+  private val viewModelProvider: javax.inject.Provider<V>
 ): ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     val viewModel = viewModelProvider.get()
