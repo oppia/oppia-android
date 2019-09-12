@@ -16,13 +16,11 @@ import org.oppia.app.home.HomeActivity
 
 /**
  * NavigationDrawerFragment to show navigation drawer
- *
  */
 class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
   override fun onNavigationItemSelected(p0: MenuItem): Boolean {
     if (p0.itemId > 0) {
       openActivityByMenuItemId(p0.itemId)
-//      mDrawerLayout!!.closeDrawers()
       return true
     } else
       return false
@@ -47,7 +45,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
   ): View? {
     // Inflate the layout for this fragment
     views = inflater.inflate(R.layout.fragment_drawer, container, false)
-//    val drawerLayout: DrawerLayout = views!!.findViewById(R.id.drawer_layout)
     val navView: NavigationView = views!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
 
@@ -66,17 +63,16 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
 //        R.id.nav_preferences -> intent = Intent(activity, PreferencesActivity::class.java)
         R.id.nav_help -> intent = Intent(activity, HelpActivity::class.java)
 
-
       }
 
       startActivity(intent)
       activity!!.overridePendingTransition(
         R.anim.from_right_in,
         R.anim.slide_out_left
-      )}
-      previousMenuId = menuItemId;
+      )
     }
-
+    previousMenuId = menuItemId;
+  }
 
   fun setUpDrawer(fragmentId: Int, drawerLayout: DrawerLayout, toolbar: Toolbar) {
     containerView = activity!!.findViewById(fragmentId)
@@ -106,7 +102,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
 
     mDrawerLayout!!.setDrawerListener(mDrawerToggle)
     mDrawerLayout!!.post { mDrawerToggle!!.syncState() }
-//  mDrawerLayout!!.closeDrawers();
 
   }
 
