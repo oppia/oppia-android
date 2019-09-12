@@ -2,32 +2,22 @@ package org.oppia.app.utility
 
 import android.content.Context
 import android.util.Log
-import org.oppia.app.application.ApplicationContext
-import org.oppia.app.application.OppiaApplication
-
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
-import java.io.IOException
-import java.io.PrintStream
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
-import android.widget.Toast
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
+import org.oppia.app.application.ApplicationContext
+import org.oppia.util.threading.BlockingDispatcher
+import java.io.File
+import java.util.*
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** This Wrapper class is for Android Logs and to perform file logging. */
 @Singleton
-class Logger @Inject constructor(@ApplicationContext context: Context) {
+class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher) {
+
+  private val blockingScope = CoroutineScope(blockingDispatcher)
 
   private val ENABLE_CONSOLE_LOG = true
   private val ENABLE_FILE_LOG = true
@@ -104,22 +94,23 @@ class Logger @Inject constructor(@ApplicationContext context: Context) {
   private fun writeError(logLevel: LogLevel, tag: String, log: String, tr: Throwable) {
     writeInternal(logLevel, tag, "$log\n${Log.getStackTraceString(tr)}")
   }
+
   private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
     if (isLogEnable(logLevel) && ENABLE_CONSOLE_LOG) {
-      Log.println(logLevel.logLevel, tag, fullLog )
+      Log.println(logLevel.logLevel, tag, fullLog)
     }
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
-     val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
+      val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
 
       // To mange background threads
-      CoroutineScope(newSingleThreadContext("MyOwnThread")).launch { write(msg) }
+      blockingScope.launch { write(msg) }
 
     }
   }
 
-  private fun write(text: String) {
-      println("debug ${text} ${Thread.currentThread().name}")
-      LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
+  private suspend fun write(text: String) {
+    println("debug ${text} ${Thread.currentThread().name}")
+    LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
 
   }
 }
