@@ -13,7 +13,6 @@
 
   <activity
     android:id="@+id/nav_preferences"
-
     android:label="@string/menu_preferences"
     tools:layout="@layout/activity_preferences" />
 
@@ -22,6 +21,5 @@
     android:name="org.oppia.app.help.HelpActivity"
     android:label="@string/menu_help"
     tools:layout="@layout/activity_help" />
-
 
 </navigation>
