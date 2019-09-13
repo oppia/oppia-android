@@ -67,13 +67,16 @@ class ContentListFragment : Fragment() {
     rvContentCard!!.adapter = adapter
 
     btnContinue!!.setOnClickListener {
+
       btnCount++;
       btnBack!!.visibility = View.VISIBLE;
       contentList.clear()
-     contentList.add(dummyList.get(btnCount))
+      contentList.add(dummyList.get(btnCount))
       adapter!!.notifyDataSetChanged();
+
     }
     btnBack!!.setOnClickListener {
+
       btnCount--;
       if(btnCount==0)
       btnBack!!.visibility = View.GONE;
