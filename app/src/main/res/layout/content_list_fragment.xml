@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".player.content.ContentListFragment">
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/rvContentCard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:layout_alignParentTop="true"
+    android:layout_above="@+id/btnContinue"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="8dp"
+  />
+
+  <Button
+    android:id="@+id/btnBack"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:visibility="gone"
+    android:layout_margin="5dp"
+    android:text="back"/>
+  <Button
+    android:id="@+id/btnContinue"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    android:layout_margin="5dp"
+    android:text="Continue"/>
+
+</RelativeLayout>
