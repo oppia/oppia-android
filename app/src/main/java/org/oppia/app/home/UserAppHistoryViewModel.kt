@@ -1,12 +1,11 @@
 package org.oppia.app.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAppHistory
-import org.oppia.app.utility.Logger
+import org.oppia.util.logging.Logger
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
