@@ -6,20 +6,20 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.api.MockTopicService
+import org.oppia.data.backends.api.MockClassroomService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.backends.gae.api.TopicService
+import org.oppia.data.backends.gae.api.ClassroomService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [TopicService] retrofit instance using [MockTopicService]
+ * Test for [ClassroomService] retrofit instance using [MockClassroomService]
  */
 @RunWith(AndroidJUnit4::class)
-class MockTopicTest {
+class MockClassroomTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -41,14 +41,14 @@ class MockTopicTest {
   }
 
   @Test
-  fun testTopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(TopicService::class.java)
-    val mockTopicService = MockTopicService(delegate)
+  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(ClassroomService::class.java)
+    val mockClassroomService = MockClassroomService(delegate)
 
-    val topic = mockTopicService.getTopicByName("Topic1")
-    val topicResponse = topic.execute()
+    val classroom = mockClassroomService.getClassroom("Math")
+    val classroomResponse = classroom.execute()
 
-    assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
+    assertThat(classroomResponse.isSuccessful).isTrue()
+    assertThat(classroomResponse.body()!!.topic_summary_dicts?.get(0)?.name).isEqualTo("Math")
   }
 }

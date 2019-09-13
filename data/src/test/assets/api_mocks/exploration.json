@@ -1,0 +1,1284 @@
+{
+  "username": "rt4914",
+  "can_edit": true,
+  "exploration": {
+    "param_changes": [{
+      "customization_args": {
+        "value": "-1",
+        "parse_with_jinja": true
+      },
+      "generator_id": "Copier",
+      "name": "guess"
+    }],
+    "title": "Three Balls",
+    "param_specs": {
+      "guess": {
+        "obj_type": "UnicodeString"
+      }
+    },
+    "language_code": "en",
+    "objective": "learn how to count permutations accurately and systematically",
+    "correctness_feedback_enabled": false,
+    "states": {
+      "correct but why": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "rows": {
+              "value": 5
+            },
+            "placeholder": {
+              "value": "Type your answer here."
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eYes, the question is asking for the number of permutations of 3 different balls, and that is 3! = 3 x 2 x 1. You can think about this by noticing that there are 3 ways to pick the first ball -- then, once you've done that, there are 2 ways to pick the second, and the last choice is forced. That's 3 x 2 = 6 ways.\u003c/p\u003e"
+              },
+              "dest": "Continue Option",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "permutation"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eYes, the question is asking for the number of permutations of 3 different balls, and that is 3 factorial, or 3 x 2 x 1. You can think about this by noticing that there are 3 ways to pick the first ball -- then, once you've done that, there are 2 ways to pick the second, and the last choice is forced. That's 3 x 2 = 6 ways.\u003c/p\u003e"
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "factorial"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eYes, the question is asking for the number of permutations of 3 different balls, and that is 3! (3 factorial), or 3 x 2 x 1. You can think about this by noticing that there are 3 ways to pick the first ball -- then, once you've done that, there are 2 ways to pick the second, and the last choice is forced. That's 3 x 2 = 6 ways.\u003c/p\u003e"
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "3!"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003e Yes,\n the question is asking for the number of permutations of 3 different \nballs, and that is 3! (3 factorial), or 3 x 2 x 1. You can think about \nthis by noticing that there are 3 ways to pick the first ball -- then, \nonce you've done that, there are 2 ways to pick the second, and the last\n choice is forced. That's 3 x 2 = 6 ways.\u003c/p\u003e"
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "3*2*1"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "\u003cp\u003e Yes,\n the question is asking for the number of permutations of 3 different \nballs, and that is 3! (3 factorial), or 3 x 2 x 1. You can think about \nthis by noticing that there are 3 ways to pick the first ball -- then, \nonce you've done that, there are 2 ways to pick the second, and the last\n choice is forced. That's 3 x 2 = 6 ways.\u003c/p\u003e"
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "3x2x1"
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003eOK! There are indeed 6 ways to arrange the balls: there are 3 ways to choose the leftmost one, and for each of these, there are 2 ways to choose the second one; the last choice is then forced. This gives 3 x 2 = 6 scenarios.\n\nIf you do a quick search for the words 'permutation' or 'factorial' on the Internet, you'll also be able to find more information about this topic.\u003c/p\u003e"
+            },
+            "dest": "Final challenge",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eRight! Why do you think it is 6?\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Found all the ways": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "choices": {
+              "value": ["\u003cp\u003eYes\u003c/p\u003e", "\u003cp\u003eNo\u003c/p\u003e"]
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eWas it? I think you guessed {{guess}}, but there were actually 6 ways.\u003c/p\u003e"
+              },
+              "dest": "Introspection",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eYes, you thought the number of ways was {{guess}}, but it was actually 6.\u003c/p\u003e"
+              },
+              "dest": "Introspection",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Introspection",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eSo, you've found that there are six ways to arrange these three balls.\u003cbr\u003e\u003cbr\u003eIs that the same as your first guess?\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Not 6": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {},
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eLooks like you forgot to capitalize your answers. Sorry, but could you use capital letters like RBY instead of lowercase like rby?\u003cbr\u003eIt's easier to read.\u003c/p\u003e"
+              },
+              "dest": "Not 6",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "HasElementsIn",
+              "inputs": {
+                "x": ["bry", "byr", "rby", "ryb", "ybr", "yrb"]
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eAt least one of your list elements seems to be wrong. Can you check and make sure that each of them is a three-letter uppercase string that contains only the letters 'B', 'R' and 'Y' once each?\u003c/p\u003e"
+              },
+              "dest": "Not 6",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "HasElementsNotIn",
+              "inputs": {
+                "x": ["BRY", "BYR", "RBY", "RYB", "YBR", "YRB"]
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eYou seem to have missed some arrangements with the red ball on the left...\u003c/p\u003e"
+              },
+              "dest": "Not 6",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "OmitsElementsIn",
+              "inputs": {
+                "x": ["RBY", "RYB"]
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003eI think you're missing some! Make sure you've listed all the arrangements where the yellow ball is on the left\u003c/p\u003e"
+              },
+              "dest": "Not 6",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "OmitsElementsIn",
+              "inputs": {
+                "x": ["YBR", "YRB"]
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "\u003cp\u003eHave you found all the arrangements with a blue ball on the left?\u003c/p\u003e"
+              },
+              "dest": "Not 6",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "OmitsElementsIn",
+              "inputs": {
+                "x": ["BRY", "BYR"]
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": ""
+              },
+              "dest": "Found all the ways",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["BRY", "BYR", "RBY", "RYB", "YBR", "YRB"]
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003e(Whoops! If you got here, this is a bug. Please leave some feedback and we'll fix it.)\u003cbr\u003e\u003c/p\u003e"
+            },
+            "dest": "Not 6",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "SetInput"
+        },
+        "param_changes": [{
+          "customization_args": {
+            "value": "{{if guess != -1 then guess else answer}}",
+            "parse_with_jinja": true
+          },
+          "generator_id": "Copier",
+          "name": "guess"
+        }],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "feedback_6": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eOK, you found {{answer}} ways to do this. I'd be interested in seeing what you came up with; could you list the different ways?\u00a0Write them as three-character words, for example:\u003cbr\u003e\u003cbr\u003e\u00a0 \u00a0 \u00a0RBY\u003cbr\u003e\u003cbr\u003eMeans put the red ball on the left, the blue ball in the middle, and the yellow ball on the right, like this:\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;RBY_height_196_width_551.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003eCan you list all the ways you found?\u003cbr\u003e\u003cbr\u003e\u00a0 \u00a0\u00a0\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "feedback_6": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "END": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "EndExploration"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eCongratulations, you have finished!\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Two balls": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {},
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eYes! That is correct. If the balls are red and blue, either the red one comes first, or the blue one comes first. Once you've picked the first one, the other choice is fixed.\u003c/p\u003e"
+              },
+              "dest": "General Theory",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eHm. Might you be thinking that, since the answer for 3 balls is 6, the answer for 2 balls must be 4, because you just multiply by 2?\n\nIf so, alas, you've fallen into a trap! Look carefully at the 1-ball case: the answer is not 1 x 2 = 2, it is just 1. So this 'multiply by 2' idea is not correct. We should be careful to avoid drawing conclusions based on just a single case.\n\nWhy not try again? How many ways are there to arrange two balls in a row?\u003c/p\u003e"
+              },
+              "dest": "Two balls",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 4.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eNah, that can't be right :-) There's at least one way to arrange two balls in a row, isn't there?\u003c/p\u003e"
+              },
+              "dest": "Two balls",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsLessThanOrEqualTo",
+              "inputs": {
+                "x": 0.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003eThere's at least one more way. Try swapping the balls?\u003c/p\u003e"
+              },
+              "dest": "Two balls",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1.0
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003eI think you may have counted something too many times. Try to remember the systematic approach you came up with earlier, and use it here...\u003c/p\u003e"
+            },
+            "dest": "Two balls",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "NumericInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eLet's try to find (or validate) a general pattern by looking at small cases. We do this because it's easy to compute the answers for small cases by hand, and they give us data which we can use to try and figure out a more general pattern.\u003cbr\u003e\u003cbr\u003eThe most obvious small case is 1 ball! There's one way to arrange one ball in a line.\u003cbr\u003e\u003cbr\u003eHow about 2 balls? How many ways are there to arrange two balls, with different colours, in a line?\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;2balls_height_248_width_265.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "General Theory": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Type your answer here."
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eYes! F2 = 2 * F1, since there are two ways to pick the ball on the left, and  for each of these 2 ways, there are F1 ways to arrange the other balls.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "2F1"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eYes! F2 = 2 * F1, since there are two ways to pick the ball on the left, and  for each of these 2 ways, there are F1 ways to arrange the other balls.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "2*F1"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eYes! F2 = 2 * F1, since there are two ways to pick the ball on the left, and  for each of these 2 ways, there are F1 ways to arrange the other balls.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "F1*2"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003eYes! F2 = 2 * F1, since there are two ways to pick the ball on the left, and  for each of these 2 ways, there are F1 ways to arrange the other balls.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "2 * F1"
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "\u003cp\u003eYes! F2 = 2 * F1, since there are two ways to pick the ball on the left, and  for each of these 2 ways, there are F1 ways to arrange the other balls.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": "F1 * 2"
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003eAlas, I don't understand the answer you just typed. Was it something like F2 = 2 * F1? If so, you are correct! There are two ways to pick the first ball, and F1 ways to pick the second one. This all works out because F1 = 1, so F2 = 2 * 1 = 2.\u003c/p\u003e"
+            },
+            "dest": "Final challenge",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eSo: \u003cbr\u003e\u003cbr\u003eThere is 1 way to arrange 1 ball.\u003cbr\u003eThere are 2 ways to arrange 2 balls.\u003cbr\u003eThere are\u00a06 ways to arrange 3 balls.\u003cbr\u003e\u003cbr\u003eLet's give these names. We will say F1 = 1, F2 = 2, F3 = 6. So, if you have n balls (where n is 1, 2, 3, ...), then Fn is the number of ways to arrange them.\u003cbr\u003e\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;patterns_height_643_width_670.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u003cbr\u003e\u003cbr\u003eCan you see a pattern here, or a systematic way to count them? Let's have a look at the 3-ball case.\u003cbr\u003e\u003cbr\u003e--------------------------------------------------------------------------------------------\u003cbr\u003e\u003cbr\u003eFirst you pick the ball on the left. This could be red, blue or yellow. There are three cases to consider:\u003cbr\u003e\u003cbr\u003eIf the first ball is red, then there are two balls left to arrange in the other two slots. And there are F2 ways to do this.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;startRed_height_214_width_643.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u003cbr\u003e\u003cbr\u003e\u003c/p\u003e\u003cp\u003eIf the first ball is blue, then there are two balls left to ... hey, this is the same thing, it's just F2.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;startBlue_height_219_width_633.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cbr\u003eAnd, if the first ball is yellow, then ... yada, yada, F2.\u003cbr\u003e\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;startYellow_height_200_width_635.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u003cbr\u003e\u003cbr\u003eSo the total number of ways to arrange 3 balls, F3, is equal to 3 * F2. And all this works out correctly, because F2 = 2, and F3 = 3 * 2 = 6.\u003cbr\u003e\u003cbr\u003e--------------------------------------------------------------------------------------------\u003cbr\u003e\u003cbr\u003eNow, can you write out a similar expression for F2, in terms of F1? Then we'll move on to figuring out F4, which starts to become hard to compute manually.\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Guess a generalization": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "choices": {
+              "value": ["\u003cp\u003eYes! It's clearly 8.\u003c/p\u003e", "\u003cp\u003eNo, I don't think it's 8.\u003c/p\u003e"]
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eAll right! We have an answer. We could check it, I guess, by listing all sequences of four balls. But let's do something easier; let's try it with just two.\u003c/p\u003e"
+              },
+              "dest": "Two balls",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Two balls",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eNow, let's think about what happens if we had different numbers of balls. We know that the answer for three balls is 6. What if we had four balls to arrange?\u003cbr\u003e\u003cbr\u003eHere's a possible idea: 3 times 2 is 6, so the answer for four balls must be 4 times 2, which is 8. Basically, we just multiply the number of balls by 2, and get the answer. We've already shown that it works for 3 balls; we can figure out exactly why later.\u003cbr\u003e\u003cbr\u003eDo you believe this reasoning? Do you agree that there are exactly 8 ways to arrange four balls of different colours in a line?\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Intro": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {},
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": ""
+              },
+              "dest": "correct but why",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 6.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eSurely there's at least one? For example, you might have the red ball on the left, the blue ball in the middle, and the yellow ball on the right. Now try and find a few more. How many different ways can you find, in total?\u003c/p\u003e"
+              },
+              "dest": "Intro",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsLessThanOrEqualTo",
+              "inputs": {
+                "x": 0.0
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Not 6",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "NumericInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;3balls_height_312_width_328.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003eSuppose you were given three balls: one red, one blue, and one yellow -- and one day, you are idly playing around with them. Soon, you discover that you can make patterns by arranging the balls in a straight line; let's pretend you're doing this with the line stretching from left to right in front of you.\u003cbr\u003e\u003cbr\u003eHow many different ways can you find to arrange the three balls in a straight line? Try to determine all of them.\u003cbr\u003e\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Introspection": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Type your answer here."
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eCome on, surely you have something...\u003c/p\u003e"
+              },
+              "dest": "Introspection",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ""
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Guess a generalization",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eCan you think a little bit about why your answer was different from six? Did you count a particular arrangement twice, or did you miss one?\u003cbr\u003e\u003cbr\u003eMaking sure that you've counted everything can be tricky! Two common mistakes are counting one thing twice, and forgetting to count some of the things. These can be overcome by counting systematically and doing sanity checks.\u003cbr\u003e\u003cbr\u003eLet's think about these things for a bit. Take a couple of minutes, and think a bit about some checks you can make to ensure that you don't overcount or undercount things, or a systematic way that you could have used to count the balls. Write these down here -- you will probably want to refer to them in a future exercise, and we'll show your jottings to you again at that point.\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Continue Option": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {
+            "choices": {
+              "value": ["\u003cp\u003eYes, take me to another stage in the exploration that would have taught me about permutations\u003c/p\u003e", "\u003cp\u003eNo thanks, I'm done for now. I can always restart it if I want to experiment more.\u003c/p\u003e"]
+            }
+          },
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": ""
+              },
+              "dest": "Two balls",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": ""
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003eThis will never get hit and this message should not be necessary.\u003c/p\u003e"
+            },
+            "dest": "Continue Option",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eWow, you got through that really fast!\u003c/p\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003eWould you like to play around with the problem a bit more, and see how this exploration would have presented the material if you didn't figure it out yourself?\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "feedback_2": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Final challenge": {
+        "interaction": {
+          "solution": null,
+          "customization_args": {},
+          "answer_groups": [{
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eYes, that is correct: the answer is 4 times the number of ways to arrange three balls in a row, so it is 4 times 6, which is 24! Well done.\u003c/p\u003e"
+              },
+              "dest": "END",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 24.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eAhem. That, I think, is a trick answer, surely? I am pretty sure there's at least one way to arrange four balls in a line...\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsLessThanOrEqualTo",
+              "inputs": {
+                "x": 0.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eHmm, that's close-ish, but not quite. It feels like you may not have found all the possible cases. It's really quite easy to miss some of them.\n\nYou're close to solving this, though. There's an easy way and a hard way. The easy way is to use the reasoning we've developed previously to calculate the answer with a single multiplication. The hard way is to systematically find all the cases, and make sure that you haven't missed any. It's up to you whichever you pick, but you need to get an accurate answer!\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsInclusivelyBetween",
+              "inputs": {
+                "b": 23.0,
+                "a": 18.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003eI think you've overcounted. This is quite common in counting problems, especially if you aren't working systematically, or aren't explicitly listing the things you're counting.\n\nIf you're working from a list of possibilities, check it to make sure you have no duplicates! And you might also consider using the approach we've developed earlier in the exploration -- it's much easier, and less prone to errors.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsGreaterThan",
+              "inputs": {
+                "x": 24.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "\u003cp\u003eBut we know you can arrange 3 balls in 6 ways. So for 4 balls, there couldn't possibly be fewer ways than 6!\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "IsLessThan",
+              "inputs": {
+                "x": 6.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "\u003cp\u003eSo adding a fourth ball doesn't give you any more combinations than arranging three balls did? I don't think that's right.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 6.0
+              }
+            }]
+          }, {
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "\u003cp\u003e\u00a0Interesting, 12 is twice as much as the number of ways to arrange 3 balls.\u00a0I think there are actually many more ways than 12, but you might be onto something: for each way to arrange 3 balls, there are several ways to add the fourth ball. If you figure out how many, it should be straightforward to arrive at the final number of 4-ball arrangements.\u003c/p\u003e"
+              },
+              "dest": "Final challenge",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null,
+            "training_data": [],
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 12.0
+              }
+            }]
+          }],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "\u003cp\u003eHmm, I don't think so, there are quite a lot more than that. Check your work, and try again.\u003c/p\u003e"
+            },
+            "dest": "Final challenge",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "id": "NumericInput"
+        },
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "feedback_6": {},
+            "feedback_7": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003eNow here's a final challenge: using what you've learned, can you figure out how many ways there are to arrange four balls in a row? Listing all the possibilities by hand is going to be tedious, but, by now, you've learned at least one way to calculate this number quickly and accurately.\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_4": {},
+            "feedback_5": {},
+            "feedback_6": {},
+            "feedback_7": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      }
+    },
+    "init_state_name": "Intro"
+  },
+  "auto_tts_enabled": true,
+  "state_classifier_mapping": {},
+  "session_id": "06pyGPsl3VwFEbNG_u4SGJpF",
+  "correctness_feedback_enabled": false,
+  "is_super_admin": true,
+  "is_moderator": false,
+  "preferred_audio_language_code": null,
+  "iframed": false,
+  "is_topic_manager": false,
+  "is_admin": false,
+  "is_logged_in": true,
+  "version": 1,
+  "record_playthrough_probability": 0.2,
+  "user_email": "test@example.com",
+  "exploration_id": "4"
+}
