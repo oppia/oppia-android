@@ -102,7 +102,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingD
     if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
       val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
 
-      // To mange background threads
+   // To ensure that saving messages don't block the main thread, and are saved in order.
       blockingScope.launch { write(msg) }
     }
   }
