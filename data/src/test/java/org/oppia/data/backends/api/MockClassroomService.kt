@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
 /**
- * Mock ClassroomService with dummy data from [FakeJsonResponse]
+ * Mock ClassroomService with dummy data from [classroom.json]
  */
 class MockClassroomService(private val delegate: BehaviorDelegate<ClassroomService>) :
   ClassroomService {

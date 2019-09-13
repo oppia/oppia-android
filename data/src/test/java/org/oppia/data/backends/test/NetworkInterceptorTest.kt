@@ -54,13 +54,11 @@ class NetworkInterceptorTest {
       .inject(this)
   }
 
-  @Qualifier
-  annotation class OppiaRetrofit
+  @Qualifier annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestNetworkModule {
-
     @Provides
     @Singleton
     fun provideMockTopicService(@OppiaRetrofit retrofit: Retrofit): MockTopicService {

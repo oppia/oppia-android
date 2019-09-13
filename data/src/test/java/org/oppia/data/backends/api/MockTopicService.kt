@@ -1,6 +1,5 @@
 package org.oppia.data.backends.api
 
-import android.util.Log
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.oppia.data.backends.ApiUtils
@@ -12,7 +11,7 @@ import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
 /**
- * Mock TopicService with dummy data from [FakeJsonResponse]
+ * Mock TopicService with dummy data from [topic.json]
  */
 class MockTopicService(private val delegate: BehaviorDelegate<TopicService>) : TopicService {
   override fun getTopicByName(topicName: String): Call<GaeTopic> {
