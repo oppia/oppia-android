@@ -49,6 +49,6 @@ class MockClassroomTest {
     val classroomResponse = classroom.execute()
 
     assertThat(classroomResponse.isSuccessful).isTrue()
-    assertThat(classroomResponse.body()!!.topic_summary_dicts?.get(0)?.name).isEqualTo("Math")
+    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
   }
 }
