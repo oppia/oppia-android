@@ -21,4 +21,8 @@ class AudioFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return audioFragmentController.handleCreateView(inflater, container)
   }
+
+  fun languageSelected(language: String){
+    audioFragmentController.languageSelected(language)
+  }
 }
