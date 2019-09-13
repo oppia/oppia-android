@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="audio_fragment_corner_radius">8dp</dimen>
+  <dimen name="margin_32dp">32dp</dimen>
+  <dimen name="margin_audio_fragment">@dimen/margin_32dp</dimen>
+  <dimen name="margin_8dp">8dp</dimen>
+</resources>

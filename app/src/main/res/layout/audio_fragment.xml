@@ -1,12 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  <data>
-  </data>
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data></data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginStart="@dimen/margin_audio_fragment"
+    android:layout_marginLeft="@dimen/margin_audio_fragment"
+    android:layout_marginEnd="@dimen/margin_audio_fragment"
+    android:layout_marginRight="@dimen/margin_audio_fragment"
+    android:background="@drawable/audio_background"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <ImageView
+      android:id="@+id/ivPlayPauseAudio"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/audio_pause_play_description"
+      android:padding="4dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+      android:id="@+id/sbAudioProgress"
+      style="@style/AudioSeekBar"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/margin_8dp"
+      android:layout_marginEnd="@dimen/margin_8dp"
+      android:layout_weight="1"
+      android:max="100"
+      android:thumb="@drawable/seekbar_thumb"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@+id/tvAudioLanguage"
+      app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/tvAudioLanguage"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="4dp"
+      android:textColor="@color/white"
+      android:textSize="14sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

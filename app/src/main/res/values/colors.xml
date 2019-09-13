@@ -4,4 +4,11 @@
   <color name="colorPrimaryDark">#00574B</color>
   <color name="colorAccent">#D81B60</color>
   <color name="ic_launcher_background">#26A69A</color>
+
+  <!--  BASIC COLORS-->
+  <color name="blue">#2D4A9D</color>
+  <color name="white">#FFFFFF</color>
+
+  <!--  AUDIO COMPONENT-->
+  <color name="audioComponentBackground">@color/blue</color>
 </resources>
