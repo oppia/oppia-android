@@ -45,10 +45,10 @@ class MockExplorationTest {
     val delegate = mockRetrofit.create(ExplorationService::class.java)
     val mockExplorationService = MockExplorationService(delegate)
 
-    val explorationContainer = mockExplorationService.getExplorationById("DIWZiVgs0km-")
+    val explorationContainer = mockExplorationService.getExplorationById("4")
     val explorationContainerResponse = explorationContainer.execute()
 
     assertThat(explorationContainerResponse.isSuccessful).isTrue()
-    assertThat("DIWZiVgs0km-").isEqualTo(explorationContainerResponse.body()!!.explorationId)
+    assertThat(explorationContainerResponse.body()!!.explorationId).isEqualTo("4")
   }
 }

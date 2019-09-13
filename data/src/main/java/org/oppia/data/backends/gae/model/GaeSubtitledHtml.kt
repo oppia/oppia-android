@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeSubtitledHtml(
 
-  @Json(name = "html") val html: String,
-  @Json(name = "content_id") val contentId: String
+  @Json(name = "html") val html: String?,
+  @Json(name = "content_id") val contentId: String?
 
 )

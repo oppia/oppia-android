@@ -2,7 +2,7 @@ package org.oppia.data.backends.api
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.data.backends.FakeJsonResponse
+import org.oppia.data.backends.ApiUtils
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
 import org.oppia.data.backends.gae.api.ExplorationService
@@ -28,7 +28,7 @@ class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationS
   private fun createMockGaeExplorationContainer(): GaeExplorationContainer {
     val networkInterceptor = NetworkInterceptor()
     var explorationResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + FakeJsonResponse.EXPLORATION_SERVICE_RESPONSE
+      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("exploration.json")
     explorationResponseWithXssiPrefix =
       networkInterceptor.removeXSSIPrefix(explorationResponseWithXssiPrefix)
 

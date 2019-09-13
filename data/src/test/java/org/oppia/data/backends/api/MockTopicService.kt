@@ -1,8 +1,9 @@
 package org.oppia.data.backends.api
 
+import android.util.Log
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.data.backends.FakeJsonResponse
+import org.oppia.data.backends.ApiUtils
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
 import org.oppia.data.backends.gae.api.TopicService
@@ -27,7 +28,8 @@ class MockTopicService(private val delegate: BehaviorDelegate<TopicService>) : T
   private fun createMockGaeTopic(): GaeTopic {
     val networkInterceptor = NetworkInterceptor()
     var topicResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + FakeJsonResponse.TOPIC_SERVICE_RESPONSE
+      NetworkSettings.XSSI_PREFIX + ApiUtils.getFakeJson("topic.json")
+
     topicResponseWithXssiPrefix = networkInterceptor.removeXSSIPrefix(topicResponseWithXssiPrefix)
 
     val moshi = Moshi.Builder().build()

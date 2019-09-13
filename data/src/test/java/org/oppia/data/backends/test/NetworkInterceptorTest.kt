@@ -1,7 +1,6 @@
 package org.oppia.data.backends.test
 
 import android.app.Application
-import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -9,24 +8,14 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.FakeJsonResponse
+import org.oppia.data.backends.ApiUtils
 import org.oppia.data.backends.api.MockTopicService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkModule
-import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.persistence.DaggerPersistentCacheStoreTest_TestApplicationComponent
-import org.oppia.data.persistence.PersistentCacheStoreTest
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -45,17 +34,17 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITH_XSSI_PREFIX)
+      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_with_xssi_prefix.json"))
 
-    assertThat(rawJson).isEqualTo(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
+    assertThat(rawJson).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
   }
 
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
+      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
 
-    assertThat(rawJson).isEqualTo(FakeJsonResponse.DUMMY_RESPONSE_WITHOUT_XSSI_PREFIX)
+    assertThat(rawJson).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
   }
 
   private fun setUpTestApplicationComponent() {

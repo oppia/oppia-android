@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeWrittenTranslation(
 
-  @Json(name = "html") val html: String,
-  @Json(name = "needs_update") val isUpdateNeeded: Boolean
+  @Json(name = "html") val html: String?,
+  @Json(name = "needs_update") val isUpdateNeeded: Boolean?
 
 )

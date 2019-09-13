@@ -49,6 +49,6 @@ class MockTopicTest {
     val topicResponse = topic.execute()
 
     assertThat(topicResponse.isSuccessful).isTrue()
-    assertThat("Topic1").isEqualTo(topicResponse.body()!!.topicName)
+    assertThat(topicResponse.body()!!.topicName).isEqualTo("Topic1")
   }
 }
