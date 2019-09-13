@@ -24,7 +24,7 @@
     app:itemBackground="@android:color/transparent"
     app:itemIconTint="@color/drawer_item"
     app:itemTextColor="@color/drawer_item"
-    app:menu="@menu/activity_navigation_drawer_drawer">
+    app:menu="@menu/navigation_drawer_menu">
 
     <LinearLayout
       android:layout_width="match_parent"
