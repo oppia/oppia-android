@@ -3,6 +3,7 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.audioplayer.AudioPlayerFragment
 import org.oppia.app.home.HomeFragment
 
 /** Root subcomponent for all fragments. */
@@ -16,4 +17,5 @@ interface FragmentComponent {
   }
 
   fun inject(homeFragment: HomeFragment)
+  fun inject(audioPlayerFragment: AudioPlayerFragment)
 }
