@@ -70,7 +70,9 @@ dependencies {
       'com.google.android.material:material:1.0.0',
       'com.google.code.gson:gson:2.8.5',
       'com.google.dagger:dagger:2.24',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1",
+      "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1"
   )
     testImplementation(
       'androidx.fragment:fragment-testing:1.2.0-alpha01',

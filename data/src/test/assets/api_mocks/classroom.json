@@ -1,0 +1,24 @@
+{
+  "is_super_admin": true,
+  "topic_summary_dicts": [
+    {
+      "version": 3,
+      "language_code": "en",
+      "subtopic_count": 0,
+      "canonical_story_count": 1,
+      "uncategorized_skill_count": 0,
+      "topic_model_last_updated": 1567587844908.068,
+      "id": "BpslppK1Tb89",
+      "additional_story_count": 0,
+      "total_skill_count": 0,
+      "topic_model_created_on": 1567587801448.179,
+      "name": "Math"
+    }
+  ],
+  "user_email": "test@example.com",
+  "iframed": false,
+  "username": "veena",
+  "is_topic_manager": false,
+  "is_moderator": true,
+  "is_admin": true
+}
