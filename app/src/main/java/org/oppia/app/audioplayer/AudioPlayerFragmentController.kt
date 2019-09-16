@@ -1,21 +1,17 @@
 package org.oppia.app.audioplayer
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.SeekBar
-import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.audioplayer_fragment.view.*
-import org.oppia.app.R
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.domain.AudioPlayerController
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.audioplayer_fragment.view.*
+import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.R
+import org.oppia.domain.AudioPlayerController
 
 @FragmentScope
 class AudioPlayerFragmentController @Inject constructor(
@@ -36,28 +32,29 @@ class AudioPlayerFragmentController @Inject constructor(
       popupMenu.show()
     }
 
-    audioPlayerController.initializeMediaPlayer("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", R.raw.jazz_in_paris, SeekBarListener())
+    audioPlayerController.initializeMediaPlayer("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", SeekBarListener())
     controlButton = view.control_btn
     controlButton.setOnClickListener {
-      if (audioPlayerController.isPlaying()) {
-        audioPlayerController.pause()
-        controlButton.text = fragment.getString(R.string.audio_player_play)
-      } else {
-        audioPlayerController.play()
-        controlButton.text = fragment.getString(R.string.audio_player_pause)
+      if (audioPlayerController.isPrepared()) {
+        if (audioPlayerController.isPlaying()) {
+          audioPlayerController.pause()
+          controlButton.text = fragment.getString(R.string.audio_player_play)
+        } else {
+          audioPlayerController.play()
+          controlButton.text = fragment.getString(R.string.audio_player_pause)
+        }
       }
     }
+
     seekBar = view.seek_bar
     seekBar.setOnSeekBarChangeListener (object: SeekBar.OnSeekBarChangeListener {
       private var userProgress = 0
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) userProgress = progress
       }
-
       override fun onStartTrackingTouch(seekBar: SeekBar?) {
         userIsSeeking = true
       }
-
       override fun onStopTrackingTouch(seekBar: SeekBar?) {
         userIsSeeking = false
         audioPlayerController.seekTo(userProgress)
@@ -81,5 +78,4 @@ class AudioPlayerFragmentController @Inject constructor(
       controlButton.text = fragment.getString(R.string.audio_player_play)
     }
   }
-
 }

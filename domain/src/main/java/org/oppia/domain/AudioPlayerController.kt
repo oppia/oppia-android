@@ -2,6 +2,7 @@ package org.oppia.domain
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.net.Uri
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -13,16 +14,14 @@ class AudioPlayerController @Inject constructor(val context: Context) {
   private var executor: ScheduledExecutorService? = null
   private var prepared = false
 
-  fun initializeMediaPlayer (stringUri: String, fileDescriptor: Int, listener: SeekBarListener) {
+  fun initializeMediaPlayer (stringUri: String, listener: SeekBarListener) {
     if (mediaPlayer == null) mediaPlayer = MediaPlayer()
-    if (seekBarListener == null) seekBarListener = listener
+    seekBarListener = listener
     mediaPlayer?.setOnCompletionListener {
       stopUpdatingSeekBar()
       seekBarListener?.onCompleted()
     }
-    val assetFileDescriptor = context.getResources().openRawResourceFd(fileDescriptor)
-    //mediaPlayer?.setDataSource(context, Uri.parse(stringUri))
-    mediaPlayer?.setDataSource(assetFileDescriptor)
+    mediaPlayer?.setDataSource(context, Uri.parse(stringUri))
     mediaPlayer?.prepareAsync()
     mediaPlayer?.setOnPreparedListener {
       prepared = true
@@ -65,10 +64,9 @@ class AudioPlayerController @Inject constructor(val context: Context) {
         it.onPositionChanged(0)
       }
     }
-
   }
 
-
+  fun isPrepared(): Boolean = prepared
   fun isPlaying() : Boolean = mediaPlayer?.isPlaying ?: false
   fun seekTo(position: Int) = mediaPlayer?.seekTo(position)
   fun release() = mediaPlayer?.release()

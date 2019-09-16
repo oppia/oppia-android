@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.PopupMenu
-import android.widget.Toast
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.audioplayer_fragment.*
 import org.oppia.app.fragment.InjectableFragment
-import javax.inject.Inject
 
 class AudioPlayerFragment : InjectableFragment(), PopupMenu.OnMenuItemClickListener {
   @Inject lateinit var audioPlayerFragmentController : AudioPlayerFragmentController
