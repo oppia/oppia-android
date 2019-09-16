@@ -11,8 +11,6 @@
     android:label="@string/menu_home"
     tools:layout="@layout/home_fragment" />
 
-
-
   <fragment
     android:id="@+id/nav_help"
     android:name="org.oppia.app.help.HelpActivity"
