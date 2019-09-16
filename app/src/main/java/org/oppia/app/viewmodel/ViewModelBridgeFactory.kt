@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import java.security.Provider
 import javax.inject.Inject
 
-
 /**
  * Provides a Dagger bridge to facilitate [ViewModel]s supporting @Inject constructors. Adapted from:
  * https://proandroiddev.com/dagger-2-on-android-the-simple-way-f706a2c597e9 and

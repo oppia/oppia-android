@@ -24,8 +24,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
       return true
     } else
       return false
-
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
   private var views: View? = null
@@ -35,7 +33,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
   private var previousMenuId: Int? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
   }
 
   override fun onCreateView(

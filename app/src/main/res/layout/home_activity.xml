@@ -29,6 +29,7 @@
       android:layout_weight="1" />
 
   </LinearLayout>
+
   <fragment
     android:id="@+id/fragment_navigation_drawer"
     android:name="org.oppia.app.drawer.NavigationDrawerFragment"

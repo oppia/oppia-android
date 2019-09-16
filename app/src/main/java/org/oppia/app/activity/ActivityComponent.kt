@@ -21,5 +21,5 @@ interface ActivityComponent {
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
   fun inject(homeActivity: HelpActivity)
-  fun inject(homeActivity: HomeActivity)
+  fun inject(helpActivity: HomeActivity)
 }

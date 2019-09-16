@@ -14,5 +14,5 @@
 
   <style name="OppiaTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-  <style name="OppiaTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+  <style name="OppiaTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
 </resources>
