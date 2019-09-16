@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains displays current state of exploration.*/
+/** Fragment that contains displays current state of exploration. */
 class StateFragment : InjectableFragment() {
   @Inject
   lateinit var stateFragmentController: StateFragmentController
