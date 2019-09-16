@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.utility.URLImageParser
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
+import org.oppia.util.data.URLImageParser
 
 class ContentCardAdapter(
   internal var context: Context,

@@ -1,4 +1,4 @@
-package org.oppia.app.utility;
+package org.oppia.util.data
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
 /** */
@@ -25,7 +24,7 @@ open class URLImageParser(internal var mTv: TextView, internal var mContext: Con
                 .apply( RequestOptions().override(100, 100)) //This is important
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
                         if (resource != null) {
                             val bitmapDrawable = BitmapDrawable(resource)
                             drawable.addLevel(1, 1, bitmapDrawable)

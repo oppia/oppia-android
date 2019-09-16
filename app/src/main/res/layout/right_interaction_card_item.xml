@@ -1,17 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_gravity="right"
-  android:layout_height="wrap_content"
-  android:background="@drawable/bg_white_card"
-  android:layout_margin="5dp"
-  android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <TextView
-    android:id="@+id/tvContents"
-    android:layout_margin="5dp"
-    android:layout_gravity="right"
+  <data>
+
+    <variable
+      name="gaeSubtitleHtml"
+      type="org.oppia.data.backends.gae.model.GaeSubtitledHtml" />
+  </data>
+
+  <LinearLayout
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:layout_margin="5dp"
+    android:background="@drawable/bg_white_card"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <TextView
+      android:id="@+id/tvContents"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="right"
+      android:layout_margin="5dp" />
+  </LinearLayout>
+</layout>
