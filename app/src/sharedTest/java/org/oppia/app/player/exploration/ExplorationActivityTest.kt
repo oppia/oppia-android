@@ -34,7 +34,6 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
   }
 
   @After
@@ -43,7 +42,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_loadFragment_hasDummyString() {
+  fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       Espresso.onView(ViewMatchers.withId(R.id.dummy_text_view))
         .check(ViewAssertions.matches(ViewMatchers.withText("This is dummy TextView for testing")))
