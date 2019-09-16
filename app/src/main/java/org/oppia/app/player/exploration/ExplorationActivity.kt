@@ -4,7 +4,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The starting point for exploration*/
+/** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity() {
   @Inject lateinit var explorationActivityController: ExplorationActivityController
 

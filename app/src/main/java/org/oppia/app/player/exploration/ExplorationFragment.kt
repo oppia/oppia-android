@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains displays single exploration.*/
+/** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
   @Inject lateinit var explorationFragmentController: ExplorationFragmentController
 
