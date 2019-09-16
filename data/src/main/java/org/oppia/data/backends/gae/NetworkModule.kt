@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.oppia.data.backends.gae.api.ClassroomService
+import org.oppia.data.backends.gae.api.ExplorationService
 import org.oppia.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -28,7 +29,7 @@ class NetworkModule {
   @OppiaRetrofit
   @Provides
   @Singleton
-  fun provideRetrofitInstance(): Retrofit {
+  public fun provideRetrofitInstance(): Retrofit {
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
@@ -59,5 +60,15 @@ class NetworkModule {
   @Singleton
   fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
     return retrofit.create(ClassroomService::class.java)
+  }
+  /**
+   * Provides the Classroom service implementation.
+   * @param retrofit the Retrofit object used to instantiate the service
+   * @return the Classroom service implementation.
+   */
+  @Provides
+  @Singleton
+  fun provideExplorationService(@OppiaRetrofit retrofit: Retrofit): ExplorationService {
+    return retrofit.create(ExplorationService::class.java)
   }
 }

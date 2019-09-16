@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L1774
  */
 @JsonClass(generateAdapter = true)
-data class GaeState(
+data class GaeState (
 
   @Json(name = "recorded_voiceovers") val recordedVoiceovers: GaeRecordedVoiceovers?,
   @Json(name = "content") val content: GaeSubtitledHtml?,

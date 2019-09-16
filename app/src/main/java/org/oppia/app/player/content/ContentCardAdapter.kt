@@ -12,39 +12,49 @@ import org.oppia.app.R
 import org.oppia.app.utility.URLImageParser
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 
-import java.util.ArrayList
+class ContentCardAdapter(
+  internal var context: Context,
+  contentList: MutableList<GaeSubtitledHtml>
+) :
+  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-class ContentCardAdapter(internal var context: Context, contentList: List<GaeSubtitledHtml>) :
-  RecyclerView.Adapter<ContentCardAdapter.MyViewHolder>() {
-  internal var contentList: List<GaeSubtitledHtml> = ArrayList()
+  private val VIEW_TYPE_CONTENT = 1
+  private val VIEW_TYPE_RIGHT_INTERACTION = 2
+
+  var interactionType: String? = null
+  internal var contentList: MutableList<GaeSubtitledHtml>?
 
   init {
-    // TODO Auto-generated constructor stub
     this.contentList = contentList
+    this.interactionType = interactionType;
 
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     // System.out.println("hiiiiii"+shopList.get(0).getShop_name());
-    val itemView = LayoutInflater.from(parent.context)
-      .inflate(R.layout.content_card_items, parent, false)
+    var view: View
 
-    return MyViewHolder(itemView)
-  }
-
-  override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-    val imageGetter = URLImageParser(holder.tvContents, context)
-    val html: Spannable
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      html = Html.fromHtml(contentList[position].html, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+    if (viewType == VIEW_TYPE_CONTENT) {
+      view = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.content_card_items, parent, false);
+      return ContentViewHolder(view);
     } else {
-      html = Html.fromHtml(contentList[position].html, imageGetter, null) as Spannable
+      view = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.right_interaction_card_item, parent, false);
+      return RightInteractionViewHolder(view);
     }
-    holder.tvContents.text = html
   }
 
-  inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+    when (holder.itemViewType) {
+      VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position))
+      VIEW_TYPE_RIGHT_INTERACTION -> (holder as RightInteractionViewHolder).bind(contentList!!.get(position))
+    }
+
+  }
+
+  inner class ContentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     internal var tvContents: TextView
 
@@ -52,10 +62,57 @@ class ContentCardAdapter(internal var context: Context, contentList: List<GaeSub
       tvContents = view.findViewById(R.id.tvContents)
 
     }
+
+    fun bind(gaeSubtitledHtml: GaeSubtitledHtml) {
+
+      val imageGetter = URLImageParser(tvContents, context)
+      val html: Spannable
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = Html.fromHtml(gaeSubtitledHtml.html, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+      } else {
+        html = Html.fromHtml(gaeSubtitledHtml.html, imageGetter, null) as Spannable
+      }
+      tvContents.text = html
+    }
+  }
+
+  inner class RightInteractionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    internal var tvContents: TextView
+
+    init {
+      tvContents = view.findViewById(R.id.tvContents)
+
+    }
+
+    fun bind(gaeSubtitledHtml: GaeSubtitledHtml) {
+
+      val imageGetter = URLImageParser(tvContents, context)
+      val html: Spannable
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = Html.fromHtml(gaeSubtitledHtml.html, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+      } else {
+        html = Html.fromHtml(gaeSubtitledHtml.html, imageGetter, null) as Spannable
+      }
+      tvContents.text = html
+    }
+  }
+
+  // Determines the appropriate ViewType according to the sender of the message.
+  override fun getItemViewType(position: Int): Int {
+
+    if (contentList!!.get(position).contentId!!.contains("content") || contentList!!.get(position).contentId!!.contains(
+        "feedback")) {
+
+      return VIEW_TYPE_CONTENT
+    } else {
+      // If some other user sent the message
+      return VIEW_TYPE_RIGHT_INTERACTION
+    }
   }
 
   override fun getItemCount(): Int {
-    return contentList.size
+    return contentList!!.size
   }
 
 }
