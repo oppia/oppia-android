@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** The controller for [StateFragment]. */
 @FragmentScope
-class StateFragmentController @Inject constructor(
+class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {

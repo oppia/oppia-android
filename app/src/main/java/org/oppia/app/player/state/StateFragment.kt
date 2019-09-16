@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains displays current state of exploration. */
 class StateFragment : InjectableFragment() {
-  @Inject
-  lateinit var stateFragmentController: StateFragmentController
+  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,6 +18,6 @@ class StateFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return stateFragmentController.handleCreateView(inflater, container)
+    return stateFragmentPresenter.handleCreateView(inflater, container)
   }
 }

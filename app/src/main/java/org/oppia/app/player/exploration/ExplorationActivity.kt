@@ -6,11 +6,11 @@ import javax.inject.Inject
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var explorationActivityController: ExplorationActivityController
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    explorationActivityController.handleOnCreate()
+    explorationActivityPresenter.handleOnCreate()
   }
 }
