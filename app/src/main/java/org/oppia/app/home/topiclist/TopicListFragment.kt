@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.app.home.topiclist
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains an introduction to the app. */
-class HomeFragment : InjectableFragment() {
-  @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
+/** Fragment that lists all topics available to the user. */
+class TopicListFragment : InjectableFragment() {
+  @Inject
+  lateinit var topicListFragmentPresenter: TopicListFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +19,6 @@ class HomeFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return homeFragmentPresenter.handleCreateView(inflater, container)
+    return topicListFragmentPresenter.handleCreateView(inflater, container)
   }
 }

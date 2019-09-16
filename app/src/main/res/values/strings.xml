@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
+  <string name="home_activity_name">Home</string>
+  <string name="continue_playing_section_header">Continue playing</string>
+  <string name="more_topics_button_text">More</string>
+  <string name="all_topics_section_header">All Topics</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
+  <plurals name="lesson_count">
+    <item quantity="zero">
+      0 Lessons
+    </item>
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
+    </item>
+  </plurals>
 </resources>

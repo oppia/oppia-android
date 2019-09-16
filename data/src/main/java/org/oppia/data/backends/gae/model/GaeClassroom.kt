@@ -10,6 +10,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeClassroom(
 
-  @Json(name = "topic_summary_dicts") val topic_summary_dicts: List<GaeTopicSummary>?
+  @Json(name = "topic_summary_dicts") val topicSummaryDicts: List<GaeTopicSummary?>?
 
 )

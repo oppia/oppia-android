@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message Classroom {
+  repeated TopicSummary topic_summary = 1;
+  int64 last_update_time_ms = 2;
+}
+
+message TopicSummary {
+  int32 version = 1;
+  string id = 2;
+  string name = 3;
+  int32 subtopic_count = 4;
+  int32 canonical_story_count = 5;
+  int32 uncategorized_skill_count = 6;
+  int32 additional_story_count = 7;
+  int32 total_skill_count = 8;
+}

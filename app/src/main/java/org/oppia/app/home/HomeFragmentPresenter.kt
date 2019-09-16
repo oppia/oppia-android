@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.home_fragment.*
+import org.oppia.app.R
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.topiclist.TopicListFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import javax.inject.Inject
 
-/** The controller for [HomeFragment]. */
+/** The presenter for [HomeFragment]. */
 @FragmentScope
-class HomeFragmentController @Inject constructor(
+class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController
@@ -26,6 +29,13 @@ class HomeFragmentController @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
+    if (getTopicListFragment() == null) {
+      fragment.childFragmentManager
+          .beginTransaction()
+          .add(R.id.all_topics_container_placeholder, TopicListFragment())
+          .commitNow()
+    }
+
     userAppHistoryController.markUserOpenedApp()
 
     return binding.root
@@ -33,5 +43,9 @@ class HomeFragmentController @Inject constructor(
 
   private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
     return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
+  }
+
+  private fun getTopicListFragment(): TopicListFragment? {
+    return fragment.childFragmentManager.findFragmentById(R.id.all_topics_container_placeholder) as TopicListFragment?
   }
 }

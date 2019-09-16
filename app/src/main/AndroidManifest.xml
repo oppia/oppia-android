@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
   xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.oppia.app">
+  xmlns:tools="http://schemas.android.com/tools" package="org.oppia.app">
+
+  <uses-permission android:name="android.permission.INTERNET" />
 
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
+    android:usesCleartextTraffic="true"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
-    android:theme="@style/OppiaTheme">
+    android:theme="@style/OppiaTheme"
+    tools:targetApi="M">
     <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

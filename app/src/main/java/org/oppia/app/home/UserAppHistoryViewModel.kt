@@ -15,19 +15,23 @@ import javax.inject.Inject
 class UserAppHistoryViewModel @Inject constructor(
   private val userAppHistoryController: UserAppHistoryController,
   private val logger: Logger
-): ViewModel() {
-  val userAppHistoryLiveData: LiveData<UserAppHistory>? by lazy {
-    getUserAppHistory()
-  }
+) : ViewModel() {
+  val userAppHistoryLiveData: LiveData<UserAppHistory> by lazy { getUserAppHistory() }
 
-  private fun getUserAppHistory(): LiveData<UserAppHistory>? {
+  private fun getUserAppHistory(): LiveData<UserAppHistory> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
+    return Transformations.map(
+      userAppHistoryController.getUserAppHistory(),
+      ::processUserAppHistoryResult
+    )
   }
 
   private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
     if (appHistoryResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve user app history"+ appHistoryResult.getErrorOrNull())
+      logger.e(
+        "HomeFragment",
+        "Failed to retrieve user app history ${appHistoryResult.getErrorOrNull()}"
+      )
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }
