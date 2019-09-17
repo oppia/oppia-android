@@ -1,5 +1,6 @@
-package org.oppia.app.help
+package org.oppia.app.home
 
+import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -9,9 +10,9 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-/** The controller for [HelpActivity]. */
+/** The controller for [HomeActivity]. */
 @ActivityScope
-class HelpActivityController @Inject constructor(private val activity: AppCompatActivity) {
+class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   var toolbar: Toolbar? = null
   var navigationDrawerFragment: NavigationDrawerFragment? = null
 
@@ -32,10 +33,10 @@ class HelpActivityController @Inject constructor(private val activity: AppCompat
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
-    init(activity.getString(R.string.menu_help))
+    init(activity.getString(R.string.menu_home))
     activity.supportFragmentManager.beginTransaction().add(
       R.id.home_fragment_placeholder,
-      HelpFragment()
+      HomeFragment()
     ).commitNow()
   }
 }

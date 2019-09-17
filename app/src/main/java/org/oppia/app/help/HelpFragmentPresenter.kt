@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 /** The controller for [HelpFragment]. */
 @FragmentScope
-class HelpFragmentController @Inject constructor(
+class HelpFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HelpViewModel>
 ) {

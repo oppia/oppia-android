@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains an introduction to the app. */
 class HomeFragment : InjectableFragment() {
-  @Inject lateinit var homeFragmentController: HomeFragmentController
+  @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class HomeFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return homeFragmentController.handleCreateView(inflater, container)
+    return homeFragmentPresenter.handleCreateView(inflater, container)
   }
 }

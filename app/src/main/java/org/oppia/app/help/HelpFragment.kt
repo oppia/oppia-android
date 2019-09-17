@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains help in the app. */
 class HelpFragment : InjectableFragment() {
-  @Inject lateinit var homeFragmentController: HelpFragmentController
+  @Inject lateinit var homeFragmentPresenter: HelpFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class HelpFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return homeFragmentController.handleCreateView(inflater, container)
+    return homeFragmentPresenter.handleCreateView(inflater, container)
   }
 }

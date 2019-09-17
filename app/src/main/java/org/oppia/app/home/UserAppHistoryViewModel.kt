@@ -9,24 +9,31 @@ import org.oppia.util.logging.Logger
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
+
 /** [ViewModel] for user app usage history. */
 @FragmentScope
 class UserAppHistoryViewModel @Inject constructor(
   private val userAppHistoryController: UserAppHistoryController,
   private val logger: Logger
-): ViewModel() {
+) : ViewModel() {
   val userAppHistoryLiveData: LiveData<UserAppHistory>? by lazy {
     getUserAppHistory()
   }
 
   private fun getUserAppHistory(): LiveData<UserAppHistory>? {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
+    return Transformations.map(
+      userAppHistoryController.getUserAppHistory(),
+      ::processUserAppHistoryResult
+    )
   }
 
   private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
     if (appHistoryResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve user app history"+ appHistoryResult.getErrorOrNull())
+      logger.e(
+        "HomeFragment",
+        "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull()
+      )
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }

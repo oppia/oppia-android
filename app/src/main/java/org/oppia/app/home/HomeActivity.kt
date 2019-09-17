@@ -7,11 +7,11 @@ import javax.inject.Inject
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity() {
   @Inject
-  lateinit var homeActivityController: HomeActivityController
+  lateinit var homeActivityPresenter: HomeActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    homeActivityController.handleOnCreate()
+    homeActivityPresenter.handleOnCreate()
   }
 }

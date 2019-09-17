@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
-class HomeFragmentController @Inject constructor(
+class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController

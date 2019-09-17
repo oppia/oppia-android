@@ -10,6 +10,16 @@
   <style name="OppiaTheme.NoActionBar">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
+  <!-- Base style for animations.  This style specifies no animations. -->
+  <style name="Animation" />
+
+  <!-- Standard animations for a full-screen window or activity. -->
+  <style name="Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
   </style>
 
   <style name="OppiaTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

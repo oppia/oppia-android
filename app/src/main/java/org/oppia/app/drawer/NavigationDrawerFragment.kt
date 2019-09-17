@@ -59,10 +59,7 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
         R.id.nav_help -> intent = Intent(activity, HelpActivity::class.java)
       }
       startActivity(intent)
-      activity!!.overridePendingTransition(
-        R.anim.from_right_in,
-        R.anim.slide_out_left
-      )
+
     }
     previousMenuId = menuItemId;
   }
