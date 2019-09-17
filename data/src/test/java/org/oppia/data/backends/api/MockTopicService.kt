@@ -21,7 +21,6 @@ class MockTopicService(private val delegate: BehaviorDelegate<TopicService>) : T
 
   /**
    * This function creates a mock GaeTopic with data from dummy json.
-   * This function also tests the removeXSSIPrefix function from [NetworkInterceptor]
    * @return GaeTopic: GaeTopic with mock data
    */
   private fun createMockGaeTopic(): GaeTopic {
