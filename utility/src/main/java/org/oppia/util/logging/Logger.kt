@@ -1,37 +1,25 @@
-package org.oppia.app.utility
+package org.oppia.util.logging
 
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import org.oppia.app.application.ApplicationContext
 import org.oppia.util.threading.BlockingDispatcher
 import java.io.File
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** This Wrapper class is for Android Logs and to perform file logging. */
+/** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
-class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher) {
-
+class Logger @Inject constructor(
+  context: Context, @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
+  @EnableConsoleLog private val enableConsoleLog: Boolean, @EnableConsoleLog private val enableFileLog: Boolean,
+  @GlobalLogLevel private val globalLogLevel: LogLevel
+) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
-
-  private val ENABLE_CONSOLE_LOG = true
-  private val ENABLE_FILE_LOG = true
-  private val GLOBAL_LOG_LEVEL = LogLevel.VERBOSE
-  private val LOG_DIRECTORY = File(context.filesDir, "oppia_app.log")
-
-  private enum class LogLevel private constructor(val logLevel: Int) {
-    VERBOSE(Log.VERBOSE),
-    DEBUG(Log.DEBUG),
-    INFO(Log.INFO),
-    WARNING(Log.WARN),
-    ERROR(Log.ERROR),
-    ASSERT(Log.ASSERT)
-  }
+  private val logDirectory = File(context.filesDir, "oppia_app.log")
 
   /** Logs a verbose message with the specified tag.*/
   fun v(tag: String, msg: String) {
@@ -84,7 +72,7 @@ class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingD
   }
 
   private fun isLogEnable(logLevel: LogLevel): Boolean {
-    return GLOBAL_LOG_LEVEL.logLevel < logLevel.logLevel
+    return globalLogLevel.logLevel < logLevel.logLevel
   }
 
   private fun writeLog(logLevel: LogLevel, tag: String, log: String) {
@@ -96,20 +84,22 @@ class Logger @Inject constructor(@ApplicationContext context: Context,@BlockingD
   }
 
   private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
-    if (isLogEnable(logLevel) && ENABLE_CONSOLE_LOG) {
+    if (!isLogEnable(logLevel)) {
+      return;
+    }
+    if (enableConsoleLog) {
       Log.println(logLevel.logLevel, tag, fullLog)
     }
-    if (isLogEnable(logLevel) && ENABLE_FILE_LOG) {
-      val msg = "${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog"
-
-   // To ensure that saving messages don't block the main thread, and are saved in order.
-      blockingScope.launch { write(msg) }
+    if (enableFileLog) {
+      logToFileInBackground("${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog")
     }
   }
 
-  private suspend fun write(text: String) {
-    println("debug ${text} ${Thread.currentThread().name}")
-    LOG_DIRECTORY.printWriter().use { out -> out.println(text) }
-
+  /**
+   * Writes the specified text line to file in a background thread to ensure that saving messages don't block the main
+   * thread. A blocking dispatcher is used to ensure messages are written in order.
+   */
+  private fun logToFileInBackground(text: String) {
+    blockingScope.launch { logDirectory.printWriter().use { out -> out.println(text) } }
   }
 }

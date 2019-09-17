@@ -10,11 +10,10 @@ import javax.inject.Inject
 
 /** The controller for [ExplorationFragment]. */
 @FragmentScope
-class ExplorationFragmentController @Inject constructor(
+class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    return binding.root
+    return ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
   }
 }

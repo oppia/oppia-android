@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains displays single exploration.*/
+/** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
-  @Inject lateinit var explorationFragmentController: ExplorationFragmentController
+  @Inject lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class ExplorationFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return explorationFragmentController.handleCreateView(inflater, container)
+    return explorationFragmentPresenter.handleCreateView(inflater, container)
   }
 }
