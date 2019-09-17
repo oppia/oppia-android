@@ -1,4 +1,4 @@
-package org.oppia.domain
+package org.oppia.domain.audio
 
 interface SeekBarListener {
   fun onDurationChanged(duration: Int)

@@ -7,14 +7,15 @@ import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import javax.inject.Inject
 import kotlinx.android.synthetic.main.audioplayer_fragment.view.*
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.R
-import org.oppia.domain.AudioPlayerController
+import org.oppia.domain.audio.AudioPlayerController
 
 @FragmentScope
-class AudioPlayerFragmentController @Inject constructor(
+class AudioPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val audioPlayerController: AudioPlayerController
 ) {
@@ -32,7 +33,16 @@ class AudioPlayerFragmentController @Inject constructor(
       popupMenu.show()
     }
 
-    audioPlayerController.initializeMediaPlayer("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", SeekBarListener())
+    audioPlayerController.initializeMediaPlayer("https://ccrma.stanford.edu/~jos/mp3/bachfugue.mp3", SeekBarListener())
+    audioPlayerController.getPlayState().observe(fragment, Observer { playStatus ->
+      when (playStatus.type) {
+        "DURATION" -> seekBar.max = playStatus.value
+        "POSITION" -> if (!userIsSeeking) seekBar.progress = playStatus.value
+        "COMPLETE" -> controlButton.text = fragment.getString(R.string.audio_player_play)
+      }
+    })
+
+
     controlButton = view.control_btn
     controlButton.setOnClickListener {
       if (audioPlayerController.isPrepared()) {
@@ -65,7 +75,7 @@ class AudioPlayerFragmentController @Inject constructor(
 
   fun handleOnStop() = audioPlayerController.release()
 
-  inner class SeekBarListener : org.oppia.domain.SeekBarListener{
+  inner class SeekBarListener : org.oppia.domain.audio.SeekBarListener {
     override fun onDurationChanged(duration: Int) {
       seekBar.max = duration
     }

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.audioplayer_fragment.*
 import org.oppia.app.fragment.InjectableFragment
 
 class AudioPlayerFragment : InjectableFragment(), PopupMenu.OnMenuItemClickListener {
-  @Inject lateinit var audioPlayerFragmentController : AudioPlayerFragmentController
+  @Inject lateinit var audioPlayerFragmentPresenter : AudioPlayerFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -20,12 +20,12 @@ class AudioPlayerFragment : InjectableFragment(), PopupMenu.OnMenuItemClickListe
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return audioPlayerFragmentController.handleCreateView(inflater, container)
+    return audioPlayerFragmentPresenter.handleCreateView(inflater, container)
   }
 
   override fun onStop() {
     super.onStop()
-    audioPlayerFragmentController.handleOnStop()
+    audioPlayerFragmentPresenter.handleOnStop()
   }
 
   override fun onMenuItemClick(item: MenuItem?): Boolean {
