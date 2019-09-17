@@ -8,18 +8,17 @@
   </data>
 
   <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="right"
     android:layout_margin="5dp"
-    android:background="@drawable/bg_white_card"
+    android:background="@drawable/bg_blue_card"
     android:orientation="vertical">
 
     <TextView
       android:id="@+id/tvContents"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="right"
+      android:text="@{gaeSubtitleHtml.html}"
       android:layout_margin="5dp" />
   </LinearLayout>
 </layout>

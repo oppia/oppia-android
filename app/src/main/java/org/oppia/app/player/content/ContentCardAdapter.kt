@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.URLImageParser
+import androidx.databinding.DataBindingUtil
+import org.oppia.app.databinding.ContentCardItemsBinding
 
 class ContentCardAdapter(
   internal var context: Context,
@@ -31,13 +33,18 @@ class ContentCardAdapter(
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    // System.out.println("hiiiiii"+shopList.get(0).getShop_name());
     var view: View
 
     if (viewType == VIEW_TYPE_CONTENT) {
-      view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.content_card_items, parent, false);
-      return ContentViewHolder(view);
+//      view = LayoutInflater.from(parent.getContext())
+//        .inflate(R.layout.content_card_items, parent, false);
+
+      val binding = ContentCardItemsBinding.inflate(
+        LayoutInflater.from(parent.context),parent,
+        false
+      )
+      val viewHolder = ContentViewHolder(binding.root)
+      return viewHolder
     } else {
       view = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.right_interaction_card_item, parent, false);

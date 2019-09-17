@@ -21,5 +21,5 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(stateFragment: StateFragment)
-  fun inject(topicListFragment: ContentListFragment)
+  fun inject(contentListFragment: ContentListFragment)
 }
