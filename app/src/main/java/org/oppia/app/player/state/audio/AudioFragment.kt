@@ -11,7 +11,7 @@ import javax.inject.Inject
 /** Fragment that controls audio for a state and content.*/
 class AudioFragment : InjectableFragment() {
   @Inject
-  lateinit var audioFragmentController: AudioFragmentController
+  lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,10 +19,10 @@ class AudioFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return audioFragmentController.handleCreateView(inflater, container)
+    return audioFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  fun languageSelected(language: String){
-    audioFragmentController.languageSelected(language)
+  fun languageSelected(language: String) {
+    audioFragmentPresenter.languageSelected(language)
   }
 }

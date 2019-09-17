@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /** The controller for [AudioFragment]. */
 @FragmentScope
-class AudioFragmentController @Inject constructor(
+class AudioFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>
 ) {
@@ -31,7 +31,7 @@ class AudioFragmentController @Inject constructor(
   }
 
   fun languageSelected(language: String) {
-    Log.d("AudioFragmentController", language)
+    Log.d("AudioFragmentPresenter", language)
   }
 
 }

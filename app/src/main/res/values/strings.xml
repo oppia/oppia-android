@@ -4,8 +4,8 @@
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_pause_play_description">Audio play/pause button</string>
-  <string name="alert_dialog_ok">Ok</string>
-  <string name="alert_dialog_cancel">Cancel</string>
-  <string name="alert_dialog_audio_language_title">Audio Language</string>
+  <string name="audio_language_select_dialog_okay_button">Ok</string>
+  <string name="audio_language_select_dialog_cancel_button">Cancel</string>
+  <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="dummy_string">This is dummy TextView for testing</string>
 </resources>

@@ -7,6 +7,10 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 import java.util.ArrayList
 
+private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
+private const val KEY_TITLE = "TITLE"
+
+private const val KEY_CURRENT_LANGUAGE = "CURRENT_LANGUAGE"
 /**
  * DialogFragment that controls language selection in audio and written translations
  */
@@ -27,12 +31,12 @@ class LanguageDialogFragment : DialogFragment() {
       val selectedIndex: Int = languageCodeList.indexOf(currentLanguageCode)
       val frag = LanguageDialogFragment()
       val args = Bundle()
-      args.putString("TITLE", title)
+      args.putString(KEY_TITLE, title)
       args.putStringArrayList(
-        "LANGUAGE__LIST",
+        KEY_LANGUAGE_LIST,
         convertLanguageCodeListToNameList(languageCodeList) as ArrayList<String>
       )
-      args.putInt("CURRENT_LANGUAGE", selectedIndex)
+      args.putInt(KEY_CURRENT_LANGUAGE, selectedIndex)
       frag.arguments = args
       return frag
     }
@@ -45,8 +49,9 @@ class LanguageDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val languageList = savedInstanceState?.getStringArrayList("LANGUAGE_LIST")
-    val title = savedInstanceState?.getString("TITLE")
+    val title = savedInstanceState?.getString(KEY_TITLE)
+    val languageList = savedInstanceState?.getStringArrayList(KEY_LANGUAGE_LIST)
+    val currentIndex = savedInstanceState?.getString(KEY_CURRENT_LANGUAGE)
     val options = languageList!!.toTypedArray<CharSequence>()
 
     return AlertDialog.Builder(activity!!)
@@ -55,13 +60,13 @@ class LanguageDialogFragment : DialogFragment() {
         (parentFragment as AudioFragment).languageSelected(languageList[which])
         dismiss()
       }
-      .setPositiveButton(R.string.alert_dialog_ok) { dialog, whichButton ->
+      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
         if (parentFragment != null) {
           (parentFragment as AudioFragment).languageSelected(languageList[whichButton])
           dismiss()
         }
       }
-      .setNegativeButton(R.string.alert_dialog_cancel) { dialog, whichButton ->
+      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
         dismiss()
       }
       .create()
