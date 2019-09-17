@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.audio
+package org.oppia.app.player.audio
 
 import android.content.Context
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.audio
+package org.oppia.app.player.audio
 
 import android.app.Dialog
 import android.os.Bundle
@@ -9,8 +9,8 @@ import java.util.ArrayList
 
 private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
 private const val KEY_TITLE = "TITLE"
-
 private const val KEY_CURRENT_LANGUAGE = "CURRENT_LANGUAGE"
+
 /**
  * DialogFragment that controls language selection in audio and written translations
  */
@@ -34,17 +34,11 @@ class LanguageDialogFragment : DialogFragment() {
       args.putString(KEY_TITLE, title)
       args.putStringArrayList(
         KEY_LANGUAGE_LIST,
-        convertLanguageCodeListToNameList(languageCodeList) as ArrayList<String>
+        languageCodeList as ArrayList<String>
       )
       args.putInt(KEY_CURRENT_LANGUAGE, selectedIndex)
       frag.arguments = args
       return frag
-    }
-
-    private fun convertLanguageCodeListToNameList(languageCodeList: List<String>): List<String> {
-      // Code to convert language code list to language name list
-      // e.g. en to English and hi ot Hindi
-      return languageCodeList
     }
   }
 
