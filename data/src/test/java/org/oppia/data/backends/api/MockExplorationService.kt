@@ -22,7 +22,6 @@ class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationS
 
   /**
    * This function creates a mock GaeExplorationContainer with data from dummy json.
-   * This function also tests the removeXSSIPrefix function from [NetworkInterceptor]
    * @return GaeExplorationContainer: GaeExplorationContainer with mock data
    */
   private fun createMockGaeExplorationContainer(): GaeExplorationContainer {

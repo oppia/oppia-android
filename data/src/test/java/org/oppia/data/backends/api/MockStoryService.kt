@@ -21,7 +21,6 @@ class MockStoryService(private val delegate: BehaviorDelegate<StoryService>) : S
 
   /**
    * This function creates a mock GaeStory with data from dummy json.
-   * This function also tests the removeXSSIPrefix function from [NetworkInterceptor]
    * @return GaeStory: GaeStory with mock data
    */
   private fun createMockGaeStory(): GaeStory {
