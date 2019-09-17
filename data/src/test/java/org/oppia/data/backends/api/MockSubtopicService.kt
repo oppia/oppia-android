@@ -15,14 +15,13 @@ import retrofit2.mock.BehaviorDelegate
  */
 class MockSubtopicService(private val delegate: BehaviorDelegate<SubtopicService>) :
   SubtopicService {
-  override fun getSubtopic(topic_name: String, subtopic_id: String): Call<GaeSubtopic> {
+  override fun getSubtopic(topicName: String, subtopicId: String): Call<GaeSubtopic> {
     val subtopic = createMockGaeSubtopic()
-    return delegate.returningResponse(subtopic).getSubtopic(topic_name, subtopic_id)
+    return delegate.returningResponse(subtopic).getSubtopic(topicName, subtopicId)
   }
 
   /**
    * This function creates a mock GaeSubtopic with data from dummy json.
-   * This function also tests the removeXSSIPrefix function from [NetworkInterceptor]
    * @return GaeSubtopic: GaeSubtopic with mock data
    */
   private fun createMockGaeSubtopic(): GaeSubtopic {
