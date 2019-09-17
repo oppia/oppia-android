@@ -34,7 +34,7 @@ class AudioPlayerFragmentPresenter @Inject constructor(
     }
 
     audioPlayerController.initializeMediaPlayer("https://ccrma.stanford.edu/~jos/mp3/bachfugue.mp3")
-    audioPlayerController.getPlayState().observe(fragment, Observer { playStatus ->
+    audioPlayerController.getPlayState().observe(fragment.viewLifecycleOwner, Observer { playStatus ->
       when (playStatus.type) {
         "DURATION" -> seekBar.max = playStatus.value
         "POSITION" -> if (!userIsSeeking) seekBar.progress = playStatus.value
