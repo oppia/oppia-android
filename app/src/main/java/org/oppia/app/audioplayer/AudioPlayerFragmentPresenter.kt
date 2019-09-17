@@ -33,15 +33,17 @@ class AudioPlayerFragmentPresenter @Inject constructor(
       popupMenu.show()
     }
 
-    audioPlayerController.initializeMediaPlayer("https://ccrma.stanford.edu/~jos/mp3/bachfugue.mp3", SeekBarListener())
+    audioPlayerController.initializeMediaPlayer("https://ccrma.stanford.edu/~jos/mp3/bachfugue.mp3")
     audioPlayerController.getPlayState().observe(fragment, Observer { playStatus ->
       when (playStatus.type) {
         "DURATION" -> seekBar.max = playStatus.value
         "POSITION" -> if (!userIsSeeking) seekBar.progress = playStatus.value
-        "COMPLETE" -> controlButton.text = fragment.getString(R.string.audio_player_play)
+        "COMPLETE" -> {
+          controlButton.text = fragment.getString(R.string.audio_player_play)
+          seekBar.progress = 0
+        }
       }
     })
-
 
     controlButton = view.control_btn
     controlButton.setOnClickListener {
@@ -74,18 +76,4 @@ class AudioPlayerFragmentPresenter @Inject constructor(
   }
 
   fun handleOnStop() = audioPlayerController.release()
-
-  inner class SeekBarListener : org.oppia.domain.audio.SeekBarListener {
-    override fun onDurationChanged(duration: Int) {
-      seekBar.max = duration
-    }
-
-    override fun onPositionChanged(position: Int) {
-      if (!userIsSeeking) seekBar.progress = position
-    }
-
-    override fun onCompleted() {
-      controlButton.text = fragment.getString(R.string.audio_player_play)
-    }
-  }
 }

@@ -15,27 +15,21 @@ class AudioPlayerController @Inject constructor(val context: Context) {
   class PlayStatus(val type: String, val value: Int)
 
   private var mediaPlayer: MediaPlayer? = null
-  private var seekBarListener: SeekBarListener? = null
   private var executor: ScheduledExecutorService? = null
   private var prepared = false
   private val playState = MutableLiveData<PlayStatus>()
 
-  fun initializeMediaPlayer (stringUri: String, listener: SeekBarListener) {
+  fun initializeMediaPlayer (stringUri: String) {
     if (mediaPlayer == null) mediaPlayer = MediaPlayer()
-    seekBarListener = listener
     mediaPlayer?.setOnCompletionListener {
       stopUpdatingSeekBar()
-      seekBarListener?.onCompleted()
       playState.postValue(PlayStatus("COMPLETE", 0))
     }
     mediaPlayer?.setDataSource(context, Uri.parse(stringUri))
     mediaPlayer?.prepareAsync()
     mediaPlayer?.setOnPreparedListener {
       prepared = true
-      seekBarListener?.onDurationChanged(it.duration)
-      seekBarListener?.onPositionChanged(0)
       playState.postValue(PlayStatus("DURATION", it.duration))
-      playState.postValue(PlayStatus("POSITION", 0))
     }
   }
 
@@ -60,7 +54,6 @@ class AudioPlayerController @Inject constructor(val context: Context) {
   private fun updateSeekBar() {
     mediaPlayer?.let {
       if (prepared && it.isPlaying) {
-        seekBarListener?.onPositionChanged(it.currentPosition)
         playState.postValue(PlayStatus("POSITION", it.currentPosition))
       }
     }
@@ -70,10 +63,6 @@ class AudioPlayerController @Inject constructor(val context: Context) {
     if (executor != null) {
       executor?.shutdown()
       executor = null
-      playState.postValue(PlayStatus("POSITION", 0))
-      seekBarListener?.let {
-        it.onPositionChanged(0)
-      }
     }
   }
 
