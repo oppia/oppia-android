@@ -5,8 +5,8 @@
   <data>
 
     <variable
-      name="languageCode"
-      type="org.oppia.app.player.audio.LanguageInterface" />
+      name="fragmentManager"
+      type="androidx.fragment.app.FragmentManager" />
 
     <variable
       name="viewModel"
@@ -29,7 +29,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:contentDescription="@string/audio_pause_play_description"
-      android:padding="4dp"
+      android:padding="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -39,13 +39,10 @@
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="8dp"
-      android:layout_weight="1"
       android:max="100"
       android:thumb="@drawable/seekbar_thumb"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="@+id/tvAudioLanguage"
+      app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,11 +50,13 @@
       android:id="@+id/tvAudioLanguage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:padding="4dp"
+      android:padding="8dp"
       android:textAllCaps="true"
       android:textColor="@color/white"
       android:textSize="14sp"
       android:textStyle="bold"
+      android:text="@{viewModel.audioLanguageCode}"
+      android:onClick="@{(v) -> viewModel.languageSelectionClicked(fragmentManager)}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

@@ -1,14 +1,15 @@
 package org.oppia.app.player.audio
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 import java.util.ArrayList
 
 private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
-private const val KEY_TITLE = "TITLE"
 private const val KEY_CURRENT_LANGUAGE = "CURRENT_LANGUAGE"
 
 /**
@@ -18,51 +19,54 @@ class LanguageDialogFragment : DialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment
-     * @param title: title of the Dialog
      * @param languageCodeList: List of strings containing languages
      * @param currentLanguageCode: Currently selected language code
      * @return LanguageDialogFragment: DialogFragment
      */
     fun newInstance(
-      title: String,
       languageCodeList: List<String>,
       currentLanguageCode: String
     ): LanguageDialogFragment {
       val selectedIndex: Int = languageCodeList.indexOf(currentLanguageCode)
-      val frag = LanguageDialogFragment()
+      val fragment = LanguageDialogFragment()
       val args = Bundle()
-      args.putString(KEY_TITLE, title)
       args.putStringArrayList(
         KEY_LANGUAGE_LIST,
         languageCodeList as ArrayList<String>
       )
       args.putInt(KEY_CURRENT_LANGUAGE, selectedIndex)
-      frag.arguments = args
-      return frag
+      fragment.arguments = args
+      return fragment
     }
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val title = savedInstanceState?.getString(KEY_TITLE)
-    val languageList = savedInstanceState?.getStringArrayList(KEY_LANGUAGE_LIST)
-    val currentIndex = savedInstanceState?.getString(KEY_CURRENT_LANGUAGE)
+    var languageList = savedInstanceState?.getStringArrayList(KEY_LANGUAGE_LIST)
+    val currentIndex = savedInstanceState?.getInt(KEY_CURRENT_LANGUAGE, 0)
+
+    Log.d("TAG1", "currentIndex " + currentIndex)
+
+    if (languageList != null) {
+      Log.d("TAG1", "sample " + languageList.size)
+    } else {
+      languageList = ArrayList<String>()
+      languageList.add("en")
+      languageList.add("hi")
+      languageList.add("hi-en")
+    }
+
     val options = languageList!!.toTypedArray<CharSequence>()
 
-    return AlertDialog.Builder(activity!!)
-      .setTitle(title)
+    return AlertDialog.Builder(activity as Context)
+      .setTitle(R.string.audio_language_select_dialog_title)
       .setSingleChoiceItems(options, 0) { dialog, which ->
         (parentFragment as AudioFragment).languageSelected(languageList[which])
         dismiss()
       }
-      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        if (parentFragment != null) {
-          (parentFragment as AudioFragment).languageSelected(languageList[whichButton])
-          dismiss()
-        }
-      }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
         dismiss()
       }
+      .setCancelable(true)
       .create()
   }
 }
