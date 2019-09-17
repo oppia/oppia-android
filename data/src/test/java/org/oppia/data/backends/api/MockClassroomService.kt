@@ -22,7 +22,6 @@ class MockClassroomService(private val delegate: BehaviorDelegate<ClassroomServi
 
   /**
    * This function creates a mock GaeClassroom with data from dummy json.
-   * This function also tests the removeXSSIPrefix function from [NetworkInterceptor]
    * @return GaeClassroom: GaeClassroom with mock data
    */
   private fun createMockGaeClassroom(): GaeClassroom {
