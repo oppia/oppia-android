@@ -66,10 +66,6 @@ dependencies {
       'com.google.truth:truth:0.43',
       'androidx.test.espresso:espresso-intents:3.1.0'
   )
-  implementation 'androidx.fragment:fragment:1.1.0-alpha01'
-  implementation ("androidx.fragment:fragment-testing:1.1.0-beta01",{
-      exclude group: 'androidx.test', module: 'core'
-})
 
   implementation project(":model")
   implementation project(":domain")
