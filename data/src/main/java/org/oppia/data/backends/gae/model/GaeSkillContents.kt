@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 /**
  * Data class for SkillContents model
- *
+ * https://github.com/oppia/oppia/blob/b33aa9/core/domain/skill_domain.py#L285
  */
 @JsonClass(generateAdapter = true)
 data class GaeSkillContents(
