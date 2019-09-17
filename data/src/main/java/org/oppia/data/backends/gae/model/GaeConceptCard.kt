@@ -10,6 +10,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeConceptCard(
 
-  @Json(name = "concept_card_dicts") val conceptCardDicts: List<GaeSkillContents>
+  @Json(name = "concept_card_dicts") val conceptCardDicts: List<GaeSkillContents>?
 
 )
