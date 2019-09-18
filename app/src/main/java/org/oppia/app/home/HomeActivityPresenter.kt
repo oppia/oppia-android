@@ -10,7 +10,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-/** The controller for [HomeActivity]. */
+/** The controller for [HomeActivityPresenter]. */
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   var toolbar: Toolbar? = null
