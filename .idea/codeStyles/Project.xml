@@ -7,6 +7,7 @@
     </JetCodeStyleSettings>
     <XML>
       <option name="XML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
+      <option name="XML_KEEP_BLANK_LINES" value="0" />
       <option name="XML_WHITE_SPACE_AROUND_CDATA" value="1" />
     </XML>
     <codeStyleSettings language="Groovy">
