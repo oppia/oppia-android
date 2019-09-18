@@ -17,26 +17,26 @@ import org.oppia.app.HomeActivity
 class SplashActivityTest {
 
   @get:Rule
-  var mActivityRule: IntentsTestRule<SplashActivity> = IntentsTestRule(
+  var activityRule: IntentsTestRule<SplashActivity> = IntentsTestRule(
     SplashActivity::class.java
   )
-  var mainActivity: SplashActivity? = null
-  var mainActivityFragment: SplashFragment? = null
+  var splahActivity: SplashActivity? = null
+  var splashActivityFragment: SplashFragment? = null
 
   @Before
   fun setUp() {
-    mainActivity = mActivityRule.getActivity();
-    mainActivityFragment = SplashFragment()
-    startFragment(mainActivityFragment!!)
+    splahActivity = activityRule.getActivity();
+    splashActivityFragment = SplashFragment()
   }
 
   @Test
-  fun testMainActivity() {
-    Assert.assertNotNull(mainActivity)
+  fun testSplashActivity_initialOpen_routesToHomeActivity() {
+    Assert.assertNotNull(splahActivity)
+    startFragment(splashActivityFragment!!)
   }
 
   private fun startFragment(fragment: Fragment) {
-    val fragmentManager = mainActivity?.getSupportFragmentManager()
+    val fragmentManager = splahActivity?.getSupportFragmentManager()
     val fragmentTransaction = fragmentManager?.beginTransaction()
     fragmentTransaction?.add(fragment, null)
     fragmentTransaction?.commit()
