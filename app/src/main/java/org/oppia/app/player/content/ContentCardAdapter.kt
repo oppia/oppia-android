@@ -13,6 +13,7 @@ import org.oppia.app.R
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.URLImageParser
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import org.oppia.app.databinding.ContentCardItemsBinding
 import org.oppia.app.databinding.RightInteractionCardItemBinding
 
@@ -46,14 +47,14 @@ class ContentCardAdapter(
         LayoutInflater.from(parent.context),parent,
         false
       )
-      val viewHolder = ContentViewHolder(binding.root)
+      val viewHolder = ContentViewHolder(binding)
       return viewHolder
     } else {
       val binding = RightInteractionCardItemBinding.inflate(
         LayoutInflater.from(parent.context),parent,
         false
       )
-      val viewHolder = RightInteractionViewHolder(binding.root)
+      val viewHolder = RightInteractionViewHolder(binding)
       return viewHolder
 //      view = LayoutInflater.from(parent.getContext())
 //        .inflate(R.layout.right_interaction_card_item, parent, false);
@@ -70,12 +71,13 @@ class ContentCardAdapter(
 
   }
 
-  inner class ContentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+  inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
     internal var tvContents: TextView
 
+
     init {
-      tvContents = view.findViewById(R.id.tvContents)
+      tvContents = binding.root.findViewById(R.id.tvContents)
 
     }
 
@@ -92,12 +94,13 @@ class ContentCardAdapter(
     }
   }
 
-  inner class RightInteractionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+  inner class RightInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
     internal var tvContents: TextView
 
+
     init {
-      tvContents = view.findViewById(R.id.tvContents)
+      tvContents = binding.root.findViewById(R.id.tvContents)
 
     }
 

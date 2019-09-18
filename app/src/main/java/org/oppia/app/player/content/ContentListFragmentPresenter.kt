@@ -30,6 +30,7 @@ class ContentListFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) : MainContract.MainView {
 
+  private lateinit var binding: ContentListFragmentBinding
   var contentCardAdapter: ContentCardAdapter? = null
   var contentList: MutableList<GaeSubtitledHtml> = ArrayList()
 
@@ -38,12 +39,18 @@ class ContentListFragmentPresenter @Inject constructor(
   private var presenter: MainContract.presenter? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+     binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+
     binding.recyclerView.apply {
-      layoutManager = LinearLayoutManager(context)
-      contentCardAdapter = ContentCardAdapter(context, contentList);//createRecyclerViewAdapter()
-      binding.recyclerView.adapter = contentCardAdapter
+
+      contentList.add(GaeSubtitledHtml("content","Html Content"))
+
+      binding.recyclerView.layoutManager= LinearLayoutManager(context)
+//      binding.recyclerView.adapter = contentCardAdapter
       // https://stackoverflow.com/a/50075019/3689782
+//      contentCardAdapter = ContentCardAdapter(context, contentList);//createRecyclerViewAdapter()
+      binding.contentCardAdapter =ContentCardAdapter(context, contentList);//createRecyclerViewAdapter()
 
     }
 
@@ -51,6 +58,8 @@ class ContentListFragmentPresenter @Inject constructor(
     (presenter as MainPresenterImpl).requestDataFromServer()
     return binding.root
   }
+
+
 
   override fun showProgress() {
   }
@@ -61,8 +70,9 @@ class ContentListFragmentPresenter @Inject constructor(
   override fun setDataToRecyclerView(contentListFromServer: MutableList<GaeSubtitledHtml>) {
 
     contentList = contentListFromServer;
+    binding.contentCardAdapter?.notifyDataSetChanged()
 
-    contentCardAdapter = ContentCardAdapter(context, contentListFromServer)
+//    contentCardAdapter = ContentCardAdapter(context, contentListFromServer)
   }
 
   override fun onResponseFailure(throwable: Throwable) {
