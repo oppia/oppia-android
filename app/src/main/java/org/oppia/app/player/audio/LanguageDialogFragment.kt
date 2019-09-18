@@ -3,7 +3,6 @@ package org.oppia.app.player.audio
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
@@ -44,11 +43,12 @@ class LanguageDialogFragment : DialogFragment() {
     var languageList = savedInstanceState?.getStringArrayList(KEY_LANGUAGE_LIST)
     val currentIndex = savedInstanceState?.getInt(KEY_CURRENT_LANGUAGE, 0)
 
-    Log.d("TAG1", "currentIndex " + currentIndex)
-
     if (languageList != null) {
-      Log.d("TAG1", "sample " + languageList.size)
+      // Not null
+      // Currently data is not get transferred to LanguageDialogFragment.
     } else {
+      // Null
+      // Error handling can be done here if needed.
       languageList = ArrayList<String>()
       languageList.add("en")
       languageList.add("hi")

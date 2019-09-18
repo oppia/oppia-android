@@ -1,5 +1,7 @@
 package org.oppia.app.player.audio
 
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -12,32 +14,30 @@ private const val TAG_DIALOG = "LANGUAGE_DIALOG"
 class AudioViewModel @Inject constructor(
 ) : ViewModel() {
 
-  var currentlanguageCode: String = "en"
+  private var currentLanguageCode: String = "en"
 
   val audioLanguageCode: String? by lazy {
-    getCurrentLanguageCode()
+    getLanguageCode()
   }
 
   fun setAudioLanguageCode(languageCode: String) {
-    currentlanguageCode = languageCode
+    currentLanguageCode = languageCode
   }
 
-  private fun getCurrentLanguageCode(): String {
-    return currentlanguageCode
+  private fun getLanguageCode(): String {
+    return currentLanguageCode
   }
 
   fun languageSelectionClicked(fragmentManager: FragmentManager) {
-    val fragmentTransaction = fragmentManager.beginTransaction()
-    val prev = fragmentManager.findFragmentByTag(TAG_DIALOG)
-    if (prev != null) {
-      fragmentTransaction.remove(prev)
+    val previousFragment = fragmentManager.findFragmentByTag(TAG_DIALOG)
+    if (previousFragment != null) {
+      fragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    fragmentTransaction.addToBackStack(null)
     val dialogFragment = LanguageDialogFragment.newInstance(
       getDummyAudioLanguageList(),
       "en"
     )
-    dialogFragment.show(fragmentManager, TAG_DIALOG)
+    dialogFragment.showNow(fragmentManager, TAG_DIALOG)
   }
 
   private fun getDummyAudioLanguageList(): List<String> {
