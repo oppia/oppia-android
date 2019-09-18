@@ -5,6 +5,9 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.audioplayer.AudioPlayerFragment
 import org.oppia.app.home.HomeFragment
+import org.oppia.app.player.exploration.ExplorationFragment
+import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.audio.AudioFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent
@@ -16,6 +19,9 @@ interface FragmentComponent {
     fun build(): FragmentComponent
   }
 
-  fun inject(homeFragment: HomeFragment)
+  fun inject(audioFragment: AudioFragment)
   fun inject(audioPlayerFragment: AudioPlayerFragment)
+  fun inject(explorationFragment: ExplorationFragment)
+  fun inject(homeFragment: HomeFragment)
+  fun inject(stateFragment: StateFragment)
 }

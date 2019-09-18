@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Provider
 
 /** Root subcomponent for all activities. */
@@ -19,5 +20,6 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
 }

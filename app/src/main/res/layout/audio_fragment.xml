@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="fragmentManager"
+      type="androidx.fragment.app.FragmentManager" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.audio.AudioViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginStart="@dimen/audio_fragment_margin"
+    android:layout_marginEnd="@dimen/audio_fragment_margin"
+    android:background="@drawable/audio_background"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <ImageView
+      android:id="@+id/ivPlayPauseAudio"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/audio_pause_play_description"
+      android:padding="8dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+      android:id="@+id/sbAudioProgress"
+      style="@style/AudioSeekBar"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:max="100"
+      android:thumb="@drawable/seekbar_thumb"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
+      app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/tvAudioLanguage"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:textAllCaps="true"
+      android:textColor="@color/white"
+      android:textSize="14sp"
+      android:textStyle="bold"
+      android:text="@{viewModel.audioLanguageCode}"
+      android:onClick="@{(v) -> viewModel.languageSelectionClicked(fragmentManager)}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
