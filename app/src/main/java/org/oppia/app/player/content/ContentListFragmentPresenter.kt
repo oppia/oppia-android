@@ -24,18 +24,14 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.R
 
-
-
 /** Presenter for [ContentListFragment]. */
 class ContentListFragmentPresenter @Inject constructor(
   @ApplicationContext private val context: Context,
   private val fragment: Fragment
-) :  MainContract.MainView {
+) : MainContract.MainView {
 
   var contentCardAdapter: ContentCardAdapter? = null
   var contentList: MutableList<GaeSubtitledHtml> = ArrayList()
-
-
 
 //  var gaeSubtitledHtml: GaeSubtitledHtml? = null;
 
@@ -44,16 +40,18 @@ class ContentListFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.recyclerView.apply {
-      contentCardAdapter = ContentCardAdapter(context,contentList);//createRecyclerViewAdapter()
+      layoutManager = LinearLayoutManager(context)
+      contentCardAdapter = ContentCardAdapter(context, contentList);//createRecyclerViewAdapter()
       binding.recyclerView.adapter = contentCardAdapter
       // https://stackoverflow.com/a/50075019/3689782
-      layoutManager = LinearLayoutManager(context)
+
     }
 
-    presenter = MainPresenterImpl(ContentListFragmentPresenter(context,fragment), GetContentCardIntractorImpl())
+    presenter = MainPresenterImpl(ContentListFragmentPresenter(context, fragment), GetContentCardIntractorImpl())
     (presenter as MainPresenterImpl).requestDataFromServer()
     return binding.root
   }
+
   override fun showProgress() {
   }
 
@@ -63,8 +61,8 @@ class ContentListFragmentPresenter @Inject constructor(
   override fun setDataToRecyclerView(contentListFromServer: MutableList<GaeSubtitledHtml>) {
 
     contentList = contentListFromServer;
-//    contentCardAdapter = ContentCardAdapter(context,contentListFromServer)
-    contentCardAdapter!!.notifyDataSetChanged()
+
+    contentCardAdapter = ContentCardAdapter(context, contentListFromServer)
   }
 
   override fun onResponseFailure(throwable: Throwable) {
@@ -79,9 +77,6 @@ class ContentListFragmentPresenter @Inject constructor(
 //      )
 //      .build()
 //  }
-
-
-
 
 //  private fun fetchExplorations() {
 //    try {

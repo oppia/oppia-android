@@ -3,6 +3,7 @@ package org.oppia.app.player.content
 import android.content.Context
 import android.text.Html
 import android.text.Spannable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.URLImageParser
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.databinding.ContentCardItemsBinding
+import org.oppia.app.databinding.RightInteractionCardItemBinding
 
 class ContentCardAdapter(
   internal var context: Context,
@@ -23,12 +25,12 @@ class ContentCardAdapter(
   private val VIEW_TYPE_CONTENT = 1
   private val VIEW_TYPE_RIGHT_INTERACTION = 2
 
-  var interactionType: String? = null
+
   internal var contentList: MutableList<GaeSubtitledHtml>?
 
   init {
     this.contentList = contentList
-    this.interactionType = interactionType;
+    Log.d("contentlist=","======"+contentList)
 
   }
 
@@ -38,6 +40,7 @@ class ContentCardAdapter(
     if (viewType == VIEW_TYPE_CONTENT) {
 //      view = LayoutInflater.from(parent.getContext())
 //        .inflate(R.layout.content_card_items, parent, false);
+//      return ContentViewHolder(view);
 
       val binding = ContentCardItemsBinding.inflate(
         LayoutInflater.from(parent.context),parent,
@@ -46,9 +49,15 @@ class ContentCardAdapter(
       val viewHolder = ContentViewHolder(binding.root)
       return viewHolder
     } else {
-      view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.right_interaction_card_item, parent, false);
-      return RightInteractionViewHolder(view);
+      val binding = RightInteractionCardItemBinding.inflate(
+        LayoutInflater.from(parent.context),parent,
+        false
+      )
+      val viewHolder = RightInteractionViewHolder(binding.root)
+      return viewHolder
+//      view = LayoutInflater.from(parent.getContext())
+//        .inflate(R.layout.right_interaction_card_item, parent, false);
+//      return RightInteractionViewHolder(view);
     }
   }
 
