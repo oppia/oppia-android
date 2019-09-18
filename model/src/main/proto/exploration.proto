@@ -51,8 +51,9 @@ message State {
   repeated ParamChange param_changes = 4;
   string classifier_model_id = 5;
   Interaction interaction = 6;
-  // Boolean indicating whether the creator wants to ask for answer details from the learner about
-  // why they picked a particular answer while playing the exploration.
+  // Boolean indicating whether the creator wants to ask for answer details
+  // from the learner about why they picked a particular answer while
+  // playing the exploration.
   bool solicit_answer_details = 7;
 }
 
