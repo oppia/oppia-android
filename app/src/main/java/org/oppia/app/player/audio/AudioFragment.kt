@@ -18,10 +18,10 @@ class AudioFragment : InjectableFragment() {
   private lateinit var cellularDataInterface: CellularDataInterface
   private lateinit var languageInterface: LanguageInterface
   // Control this boolean value from controllers in domain module.
-  private var showCellularDataAlert = true
+  private var showCellularDataDialog = true
 
   init {
-    // Add code to control the value of showCellularDataAlert from PersistenceCacheStore.
+    // Add code to control the value of showCellularDataDialog from [PersistentCacheStore].
   }
 
   override fun onAttach(context: Context?) {
@@ -30,8 +30,8 @@ class AudioFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    if (showCellularDataAlert) {
-      showCellularDataDialog()
+    if (showCellularDataDialog) {
+      showCellularDataDialogFragment()
     }
     return audioFragmentPresenter.handleCreateView(inflater, container)
   }
@@ -63,7 +63,7 @@ class AudioFragment : InjectableFragment() {
     return languageCodeList
   }
 
-  private fun showCellularDataDialog() {
+  private fun showCellularDataDialogFragment() {
     cellularDataInterface = object : CellularDataInterface {
       override fun cellularDataUserPreference(doNotShowAlert: Boolean, playAudio: Boolean) {
         // true, true -> save preference and play audio
