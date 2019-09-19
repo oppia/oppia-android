@@ -1,17 +1,16 @@
 package org.oppia.app.splash
 
-import androidx.fragment.app.Fragment
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents
-import androidx.test.rule.ActivityTestRule
-import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.HomeActivity
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingResource
-import org.junit.*
 
 /** Tests for [SplashActivity]. */
 @RunWith(AndroidJUnit4::class)
