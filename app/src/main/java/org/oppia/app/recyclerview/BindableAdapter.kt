@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.databinding.ContentCardItemsBinding
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction2
 
 /** A function that returns the type of view that should can bind the specified data object. */
 typealias ComputeViewType<T> = (T) -> Int
@@ -131,7 +133,9 @@ class BindableAdapter<T : Any> internal constructor(
     fun <DB : ViewDataBinding> registerViewDataBinder(
       viewType: Int = DEFAULT_VIEW_TYPE,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
+      setViewModel: KFunction2<ContentCardItemsBinding, @ParameterName(
+        name = "htmlContent"
+      ) String?, Unit>
     ): Builder<T> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->

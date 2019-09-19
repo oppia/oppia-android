@@ -20,6 +20,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@{htmlContent}"
+      android:gravity="left"
+      android:padding="8dp"
       android:layout_margin="5dp" />
   </LinearLayout>
 </layout>

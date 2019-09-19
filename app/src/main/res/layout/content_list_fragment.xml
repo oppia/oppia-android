@@ -3,11 +3,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-    <variable
-      name="contentCardAdapter"
-      type="org.oppia.app.player.content.ContentCardAdapter" />
-  </data>
+
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,7 +17,6 @@
       android:layout_alignParentTop="true"
       android:layout_marginLeft="2dp"
       android:layout_marginRight="2dp"
-      android:adapter="@{contentCardAdapter}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       android:divider="@android:color/transparent"
       android:dividerHeight="8dp" />
