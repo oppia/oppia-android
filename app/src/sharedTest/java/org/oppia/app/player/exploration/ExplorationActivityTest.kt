@@ -2,13 +2,9 @@ package org.oppia.app.player.exploration
 
 import android.app.Application
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
@@ -16,16 +12,11 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
