@@ -8,14 +8,21 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val TAG_DIALOG = "LANGUAGE_DIALOG"
+private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 
 /** Fragment that controls audio for a state and content.*/
 class AudioFragment : InjectableFragment() {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
+  private lateinit var cellularDataInterface: CellularDataInterface
+  private lateinit var languageInterface: LanguageInterface
+  // Control this boolean value from controllers in domain module.
+  private var showCellularDataAlert = true
 
-  lateinit var languageInterface: LanguageInterface
+  init {
+    // Add code to control the value of showCellularDataAlert from PersistenceCacheStore.
+  }
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -23,6 +30,9 @@ class AudioFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    if (showCellularDataAlert) {
+      showCellularDataDialog()
+    }
     return audioFragmentPresenter.handleCreateView(inflater, container)
   }
 
@@ -33,7 +43,7 @@ class AudioFragment : InjectableFragment() {
       }
     }
 
-    val previousFragment = fragmentManager?.findFragmentByTag(TAG_DIALOG)
+    val previousFragment = fragmentManager?.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
@@ -42,7 +52,7 @@ class AudioFragment : InjectableFragment() {
       getDummyAudioLanguageList(),
       "en"
     )
-    dialogFragment.showNow(fragmentManager, TAG_DIALOG)
+    dialogFragment.showNow(fragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
   private fun getDummyAudioLanguageList(): List<String> {
@@ -51,5 +61,26 @@ class AudioFragment : InjectableFragment() {
     languageCodeList.add("hi")
     languageCodeList.add("hi-en")
     return languageCodeList
+  }
+
+  private fun showCellularDataDialog() {
+    cellularDataInterface = object : CellularDataInterface {
+      override fun cellularDataUserPreference(doNotShowAlert: Boolean, playAudio: Boolean) {
+        // true, true -> save preference and play audio
+        // true, false -> save preference and do not show AudioFragment
+        // false, true -> do not save preference and play audio
+        // false, false -> do nothing and do not show AudioFragment
+      }
+    }
+
+    val previousFragment = fragmentManager?.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    if (previousFragment != null) {
+      fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
+    }
+    val dialogFragment = CellularDataDialogFragment.newInstance(
+      cellularDataInterface
+    )
+    // Might need to replace show() with showNow().
+    dialogFragment.show(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 }
