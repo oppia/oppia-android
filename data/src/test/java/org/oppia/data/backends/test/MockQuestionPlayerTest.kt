@@ -6,20 +6,20 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.data.backends.api.MockClassroomService
+import org.oppia.data.backends.api.MockQuestionPlayerService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
-import org.oppia.data.backends.gae.api.ClassroomService
+import org.oppia.data.backends.gae.api.QuestionPlayerService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 
 /**
- * Test for [ClassroomService] retrofit instance using [MockClassroomService]
+ * Test for [QuestionPlayerService] retrofit instance using [MockQuestionPlayerService]
  */
 @RunWith(AndroidJUnit4::class)
-class MockClassroomTest {
+class MockQuestionPlayerTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit
 
@@ -41,14 +41,19 @@ class MockClassroomTest {
   }
 
   @Test
-  fun testClassroomService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(ClassroomService::class.java)
-    val mockClassroomService = MockClassroomService(delegate)
+  fun testQuestionPlayerService_usingFakeJson_deserializationSuccessful() {
+    val delegate = mockRetrofit.create(QuestionPlayerService::class.java)
+    val mockQuestionPlayerService = MockQuestionPlayerService(delegate)
 
-    val classroom = mockClassroomService.getClassroom("Math")
-    val classroomResponse = classroom.execute()
+    val skillIdList = ArrayList<String>()
+    skillIdList.add("1")
+    skillIdList.add("2")
+    skillIdList.add("3")
+    val skillIds = skillIdList.joinToString(separator = ", ")
+    val questionPlayer = mockQuestionPlayerService.getQuestionPlayerBySkillIds(skillIds, 10)
+    val questionPlayerResponse = questionPlayer.execute()
 
-    assertThat(classroomResponse.isSuccessful).isTrue()
-    assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
+    assertThat(questionPlayerResponse.isSuccessful).isTrue()
+    assertThat(questionPlayerResponse.body()!!.questions!!.size).isEqualTo(1)
   }
 }

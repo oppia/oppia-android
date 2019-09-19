@@ -1,0 +1,36 @@
+{
+  "is_moderator": true,
+  "is_admin": true,
+  "username": "rt4914",
+  "user_email": "test@example.com",
+  "concept_card_dicts": [
+    {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "\u003cp\u003eReview Material\u003c/p\u003e"
+      },
+      "worked_examples": [
+        {
+          "content_id": "worked_example_1",
+          "html": "\u003cp\u003e\u003cem\u003eExample 1\u003c/em\u003e\u003c/p\u003e"
+        }
+      ],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      }
+    }
+  ],
+  "iframed": false,
+  "additional_angular_modules": [],
+  "is_topic_manager": false,
+  "is_super_admin": true
+}

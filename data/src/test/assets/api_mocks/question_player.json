@@ -1,0 +1,128 @@
+{
+  "is_moderator": true,
+  "is_admin": true,
+  "username": "rt4914",
+  "question_dicts": [
+    {
+      "version": 3,
+      "linked_skill_ids": [
+        "A9j9taXAqqkV"
+      ],
+      "language_code": "en",
+      "question_state_data_schema_version": 30,
+      "question_state_data": {
+        "interaction": {
+          "default_outcome": {
+            "dest": null,
+            "labelled_as_correct": false,
+            "missing_prerequisite_skill_id": null,
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "refresher_exploration_id": null
+          },
+          "answer_groups": [
+            {
+              "outcome": {
+                "dest": null,
+                "labelled_as_correct": true,
+                "missing_prerequisite_skill_id": null,
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "\u003cp\u003ecorrect\u003c/p\u003e"
+                },
+                "refresher_exploration_id": null
+              },
+              "tagged_skill_misconception_id": null,
+              "rule_specs": [
+                {
+                  "inputs": {
+                    "x": 0
+                  },
+                  "rule_type": "Equals"
+                }
+              ],
+              "training_data": []
+            },
+            {
+              "outcome": {
+                "dest": null,
+                "labelled_as_correct": false,
+                "missing_prerequisite_skill_id": null,
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "\u003cp\u003edefault feedback\u003c/p\u003e"
+                },
+                "refresher_exploration_id": null
+              },
+              "tagged_skill_misconception_id": "A9j9taXAqqkV-0",
+              "rule_specs": [
+                {
+                  "inputs": {
+                    "x": 1
+                  },
+                  "rule_type": "Equals"
+                }
+              ],
+              "training_data": []
+            }
+          ],
+          "id": "MultipleChoiceInput",
+          "solution": null,
+          "customization_args": {
+            "choices": {
+              "value": [
+                "\u003cp\u003e1\u003c/p\u003e",
+                "\u003cp\u003e2\u003c/p\u003e"
+              ]
+            }
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "\u003cp\u003eHint 1\u003c/p\u003e"
+              }
+            }
+          ],
+          "confirmed_unclassified_answers": []
+        },
+        "content": {
+          "content_id": "content",
+          "html": "\u003cp\u003e\u003cstrong\u003eQuestion Editor\u003c/strong\u003e\u003c/p\u003e"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_2": {},
+            "hint_1": {},
+            "content": {}
+          }
+        },
+        "classifier_model_id": null,
+        "solicit_answer_details": false,
+        "param_changes": [],
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_2": {},
+            "hint_1": {},
+            "content": {}
+          }
+        }
+      },
+      "id": "NoUdS5FVV0eV"
+    }
+  ],
+  "user_email": "test@example.com",
+  "iframed": false,
+  "additional_angular_modules": [],
+  "is_topic_manager": false,
+  "is_super_admin": true
+}

@@ -15,7 +15,8 @@ import javax.inject.Singleton
 @Singleton
 class Logger @Inject constructor(
   context: Context, @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
-  @EnableConsoleLog private val enableConsoleLog: Boolean, @EnableConsoleLog private val enableFileLog: Boolean,
+  @EnableConsoleLog private val enableConsoleLog: Boolean,
+  @EnableFileLog private val enableFileLog: Boolean,
   @GlobalLogLevel private val globalLogLevel: LogLevel
 ) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
