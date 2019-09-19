@@ -45,7 +45,7 @@
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
       android:padding="8dp"
-      android:text="@{viewModel.audioLanguageCode}"
+      android:text="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"
       android:textColor="@color/white"
       android:textSize="14sp"

@@ -1,5 +1,6 @@
 package org.oppia.app.player.audio
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
@@ -9,17 +10,9 @@ import javax.inject.Inject
 class AudioViewModel @Inject constructor(
 ) : ViewModel() {
 
-  private var currentLanguageCode: String = "en"
-
-  val audioLanguageCode: String? by lazy {
-    getLanguageCode()
-  }
+  val currentLanguageCode = ObservableField<String>("en")
 
   fun setAudioLanguageCode(languageCode: String) {
-    currentLanguageCode = languageCode
-  }
-
-  private fun getLanguageCode(): String {
-    return currentLanguageCode
+    currentLanguageCode.set(languageCode)
   }
 }

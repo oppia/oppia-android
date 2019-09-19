@@ -16,16 +16,21 @@ private const val KEY_CURRENT_LANGUAGE = "CURRENT_LANGUAGE"
  */
 class LanguageDialogFragment : DialogFragment() {
   companion object {
+    lateinit var languageInterface1: LanguageInterface
     /**
      * This function is responsible for displaying content in DialogFragment
+     * @param languageInterface: [LanguageInterface] to send data back to parent
      * @param languageCodeList: List of strings containing languages
      * @param currentLanguageCode: Currently selected language code
      * @return LanguageDialogFragment: DialogFragment
      */
     fun newInstance(
+      languageInterface: LanguageInterface,
       languageCodeList: List<String>,
       currentLanguageCode: String
     ): LanguageDialogFragment {
+
+      languageInterface1 = languageInterface
       val selectedIndex: Int = languageCodeList.indexOf(currentLanguageCode)
       val fragment = LanguageDialogFragment()
       val args = Bundle()
@@ -45,7 +50,7 @@ class LanguageDialogFragment : DialogFragment() {
 
     if (languageList != null) {
       // Not null
-      // Currently data is not get transferred to LanguageDialogFragment.
+      // Currently data is not getting transferred to LanguageDialogFragment.
     } else {
       // Null
       // Error handling can be done here if needed.
@@ -63,7 +68,7 @@ class LanguageDialogFragment : DialogFragment() {
         currentIndex = which
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        // Transfer languageList[which] back to AudioFragment languageSelected() function
+        languageInterface1.onLanguageSelected(languageList.get(currentIndex!!))
         dismiss()
       }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->

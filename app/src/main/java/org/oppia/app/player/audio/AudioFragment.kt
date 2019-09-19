@@ -15,6 +15,8 @@ class AudioFragment : InjectableFragment() {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
+  lateinit var languageInterface: LanguageInterface
+
   override fun onAttach(context: Context?) {
     super.onAttach(context)
     fragmentComponent.inject(this)
@@ -24,16 +26,19 @@ class AudioFragment : InjectableFragment() {
     return audioFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  fun languageSelected(language: String) {
-    audioFragmentPresenter.languageSelected(language)
-  }
-
   fun languageSelectionClicked() {
+    languageInterface = object : LanguageInterface {
+      override fun onLanguageSelected(currentLanguageCode: String) {
+        audioFragmentPresenter.languageSelected(currentLanguageCode)
+      }
+    }
+
     val previousFragment = fragmentManager?.findFragmentByTag(TAG_DIALOG)
     if (previousFragment != null) {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
+      languageInterface,
       getDummyAudioLanguageList(),
       "en"
     )
