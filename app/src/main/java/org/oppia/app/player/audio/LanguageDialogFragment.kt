@@ -41,7 +41,7 @@ class LanguageDialogFragment : DialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     var languageList = savedInstanceState?.getStringArrayList(KEY_LANGUAGE_LIST)
-    val currentIndex = savedInstanceState?.getInt(KEY_CURRENT_LANGUAGE, 0)
+    var currentIndex = savedInstanceState?.getInt(KEY_CURRENT_LANGUAGE, 0)
 
     if (languageList != null) {
       // Not null
@@ -60,7 +60,10 @@ class LanguageDialogFragment : DialogFragment() {
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.audio_language_select_dialog_title)
       .setSingleChoiceItems(options, 0) { dialog, which ->
-        (parentFragment as AudioFragment).languageSelected(languageList[which])
+        currentIndex = which
+      }
+      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
+        // Transfer languageList[which] back to AudioFragment languageSelected() function
         dismiss()
       }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->

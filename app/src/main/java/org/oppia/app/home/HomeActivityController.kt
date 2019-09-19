@@ -13,7 +13,7 @@ class HomeActivityController @Inject constructor(private val activity: AppCompat
     activity.setContentView(R.layout.home_activity)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.home_fragment_placeholder,
-      AudioFragment()
+      HomeFragment()
     ).commitNow()
   }
 }

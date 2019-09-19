@@ -1,11 +1,9 @@
 package org.oppia.app.player.audio
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -22,7 +20,7 @@ class AudioFragmentPresenter @Inject constructor(
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.viewModel = getAudioViewModel()
-      it.fragmentManager = getFragmentManager()
+      it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
     return binding.root
@@ -30,10 +28,6 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
-  }
-
-  private fun getFragmentManager(): FragmentManager {
-    return fragment.childFragmentManager
   }
 
   fun languageSelected(language: String) {

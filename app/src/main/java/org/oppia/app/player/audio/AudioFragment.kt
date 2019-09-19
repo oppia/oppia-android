@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+private const val TAG_DIALOG = "LANGUAGE_DIALOG"
+
 /** Fragment that controls audio for a state and content.*/
 class AudioFragment : InjectableFragment() {
   @Inject
@@ -24,5 +26,25 @@ class AudioFragment : InjectableFragment() {
 
   fun languageSelected(language: String) {
     audioFragmentPresenter.languageSelected(language)
+  }
+
+  fun languageSelectionClicked() {
+    val previousFragment = fragmentManager?.findFragmentByTag(TAG_DIALOG)
+    if (previousFragment != null) {
+      fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
+    }
+    val dialogFragment = LanguageDialogFragment.newInstance(
+      getDummyAudioLanguageList(),
+      "en"
+    )
+    dialogFragment.showNow(fragmentManager, TAG_DIALOG)
+  }
+
+  private fun getDummyAudioLanguageList(): List<String> {
+    val languageCodeList = ArrayList<String>()
+    languageCodeList.add("en")
+    languageCodeList.add("hi")
+    languageCodeList.add("hi-en")
+    return languageCodeList
   }
 }
