@@ -1,11 +1,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
 
+<data>
     <variable
-      name="gaeSubtitleHtml"
-      type="org.oppia.data.backends.gae.model.GaeSubtitledHtml" />
+      name="htmlContent"
+      type="String" />
   </data>
+
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -18,7 +19,7 @@
       android:id="@+id/tvContents"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@{gaeSubtitleHtml.html}"
+      android:text="@{htmlContent}"
       android:layout_margin="5dp" />
   </LinearLayout>
 </layout>
