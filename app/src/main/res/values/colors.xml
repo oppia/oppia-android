@@ -3,5 +3,8 @@
   <color name="colorPrimary">#008577</color>
   <color name="colorPrimaryDark">#00574B</color>
   <color name="colorAccent">#D81B60</color>
+  <color name="colorIvory">#FFFFF0</color>
+  <color name="colorConceptToolbar">#C55F45</color>
+  <color name="colorConceptToolbarDarker">#A6503A</color>
   <color name="ic_launcher_background">#26A69A</color>
 </resources>
