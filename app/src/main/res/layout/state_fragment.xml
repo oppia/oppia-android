@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
+    <import type="android.view.View"/>
     <variable
       name="stateFragment"
       type="org.oppia.app.player.state.StateFragment"/>
@@ -10,16 +11,21 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <fragment
-      android:id="@+id/audio_fragment"
-      class="org.oppia.app.player.audio.AudioFragment"
+    <LinearLayout
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
+      android:visibility="@{stateFragment.isAudioFragmentShowing? View.VISIBLE: View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent">
+      <fragment
+        android:id="@+id/audio_fragment"
+        class="org.oppia.app.player.audio.AudioFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
     <Button
       android:id="@+id/dummy_audio_button"
       android:layout_width="wrap_content"
