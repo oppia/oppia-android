@@ -19,12 +19,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [ExplorationActivity]. */
+/** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
 class CellularDataDialogFragmentTest {
 
