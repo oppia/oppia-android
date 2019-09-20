@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "subtitled_html.proto";
+import "interaction_object.proto";
 
 package model;
 
@@ -26,7 +27,7 @@ message Exploration {
 message ParamChange {
   string generator_id = 1;
   string name = 2;
-  CustomizationArgs customization_args = 3;
+  ParamChangeCustomizationArgs customization_args = 3;
 }
 
 // Structure for a param spec.
@@ -57,11 +58,12 @@ message State {
   bool solicit_answer_details = 7;
 }
 
-// Structure for customization args.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeCustomizationArgs.kt
-message CustomizationArgs {
+// Structure for customization args for ParamChange objects.
+message ParamChangeCustomizationArgs {
   bool parse_with_jinja = 1;
-  string value = 2;
+  // If the param change has only a single value, we will populate just
+  // one element in this list
+  repeated string list_of_values = 3;
 }
 
 message VoiceoverMapping {
@@ -86,9 +88,9 @@ message Interaction {
   repeated AnswerGroup confirmed_unclassified_answers = 4;
   Hint hint = 5;
   Outcome default_outcome = 6;
-  // Mapping from the name of a customization arg to the value of the
-  // customization arg
-  map<string, CustomizationArgs> customization_args = 7;
+  // Mapping from the name of a customization arg to the default interaction
+  // object  of the customization arg
+  map<string, InteractionObject> customization_args = 7;
 }
 
 message TranslationMapping {
