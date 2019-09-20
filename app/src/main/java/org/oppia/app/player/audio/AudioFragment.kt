@@ -21,7 +21,7 @@ class AudioFragment : InjectableFragment() {
   private var showCellularDataDialog = true
 
   init {
-    // Add code to control the value of showCellularDataDialog from [PersistentCacheStore].
+    // Add code to control the value of showCellularDataDialog using AudioController.
   }
 
   override fun onAttach(context: Context?) {
@@ -65,12 +65,18 @@ class AudioFragment : InjectableFragment() {
 
   private fun showCellularDataDialogFragment() {
     cellularDataInterface = object : CellularDataInterface {
-      override fun cellularDataUserPreference(doNotShowAlert: Boolean, playAudio: Boolean) {
-        // true, true -> save preference and play audio
-        // true, false -> save preference and do not show AudioFragment
-        // false, true -> do not save preference and play audio
-        // false, false -> do nothing and do not show AudioFragment
+      override fun enableAudioWhileOnCellular(doNotShowAgain: Boolean) {
+        // Show audio-bar
+        // doNotShowAgain -> true -> save this preference
+        // doNotShowAgain -> false -> do not save this preference
       }
+
+      override fun disableAudioWhileOnCellular(doNotShowAgain: Boolean) {
+        // Do not show audio-bar
+        // doNotShowAgain -> true -> save this preference
+        // doNotShowAgain -> false -> do not save this preference
+      }
+
     }
 
     val previousFragment = fragmentManager?.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)

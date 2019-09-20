@@ -9,10 +9,10 @@ import android.widget.CheckBox
 import org.oppia.app.R
 
 /**
- * DialogFragment that controls user preference for dialog box
+ * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
  */
 class CellularDataDialogFragment : DialogFragment() {
-  private var doNotShowAlert: Boolean = false
+  private var doNotShowAgain: Boolean = false
 
   companion object {
     lateinit var cellularDataInterface: CellularDataInterface
@@ -34,7 +34,7 @@ class CellularDataDialogFragment : DialogFragment() {
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
     checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-      doNotShowAlert = isChecked
+      doNotShowAgain = isChecked
     }
 
     return AlertDialog.Builder(activity as Context)
@@ -42,11 +42,11 @@ class CellularDataDialogFragment : DialogFragment() {
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)
       .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { dialog, whichButton ->
-        cellularDataInterface.cellularDataUserPreference(doNotShowAlert, true)
+        cellularDataInterface.enableAudioWhileOnCellular(doNotShowAgain)
         dismiss()
       }
       .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { dialog, whichButton ->
-        cellularDataInterface.cellularDataUserPreference(doNotShowAlert, false)
+        cellularDataInterface.disableAudioWhileOnCellular(doNotShowAgain)
         dismiss()
       }
       .setCancelable(true)
