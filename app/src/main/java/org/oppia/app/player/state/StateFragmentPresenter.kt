@@ -14,6 +14,10 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    return StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
+    val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding.let {
+      it.stateFragment = fragment as StateFragment
+    }
+    return binding.root
   }
 }
