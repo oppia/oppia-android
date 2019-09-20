@@ -5,6 +5,7 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
+// Object type of the interaction object
 enum ObjectType {
   NORMALIZED_STRING = 0;
   SIGNED_INT = 1;
@@ -15,6 +16,7 @@ enum ObjectType {
   SET_OF_HTML_STRING = 6;
 }
 
+// Structure for any interaction object
 message InteractionObject {
   ObjectType object_type = 1;
   oneof value {
@@ -37,13 +39,17 @@ message List {
   repeated string string_list = 1;
 }
 
+// Structure for a number with units object.
 message NumberWithUnits {
   ObjectType number_type = 1;
   float real = 2;
   Fraction fraction = 3;
+  // Controllers are expected to convert the unit into a string
+  // for display in the UI.
   string unit = 4;
 }
 
+// Structure for a fraction object.
 message Fraction {
   bool is_negative = 1;
   bool whole_number = 2;
