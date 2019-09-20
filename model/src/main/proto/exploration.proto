@@ -89,7 +89,7 @@ message Interaction {
   Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
-  // object  of the customization arg
+  // object of the customization arg
   map<string, InteractionObject> customization_args = 7;
 }
 
@@ -152,7 +152,7 @@ message RuleSpec {
   // Mapping from the name of the rule template to the value of the rule template.
   // The keys and values for this map can be deduced from
   // https://github.com/oppia/oppia/blob/develop/extensions/interactions/rule_templates.json
-  map<string, HtmlStringList> inputs = 1;
+  map<string, InteractionObject> inputs = 1;
   string rule_type = 2;
 }
 

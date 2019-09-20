@@ -5,17 +5,28 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
+enum ObjectType {
+  NORMALIZED_STRING = 0;
+  SIGNED_INT = 1;
+  NON_NEGATIVE_INT = 2;
+  REAL = 3;
+  BOOLEAN = 4;
+  NUMBER_WITH_UNITS = 5;
+  SET_OF_HTML_STRING = 6;
+}
+
 message InteractionObject {
-  oneof object {
-    int32 int_value = 1;
-    string string_value = 2;
-    bool bool_value = 3;
+  ObjectType object_type = 1;
+  oneof value {
+    string normalized_string = 2;
+    int32 signed_int = 3;
+    uint32 non_negative_int = 4;
+    float real = 5;
+    bool bool_value = 6;
+    NumberWithUnits number_with_units = 7;
     // repeated fields cannot be within a oneof so lists are
     // wrapped into this parameter.
-    List list = 4;
-    Graph graph = 5;
-    ImageWithRegions image_with_regions = 6;
-    LogicQuestion logic_question = 7;
+    List set_of_html_string = 8;
   }
 }
 
@@ -26,44 +37,17 @@ message List {
   repeated string string_list = 1;
 }
 
-// Structure representing a graph object.
-message Graph {
-  repeated Vertex vertices = 1;
-  repeated Edge edges = 2;
-  bool is_labelled = 3;
-  bool is_directed = 4;
-  bool is_weighted = 5;
+message NumberWithUnits {
+  ObjectType number_type = 1;
+  float real = 2;
+  Fraction fraction = 3;
+  string unit = 4;
 }
 
-// Structure representing an image with regions interaction.
-message ImageWithRegions {
-  string image_path = 1;
-  repeated Vertex labelled_regions = 2;
+message Fraction {
+  bool is_negative = 1;
+  bool whole_number = 2;
+  int32 numerator = 3;
+  int32 denominator = 4;
 }
 
-// Structure representing a logic question interaction.
-message LogicQuestion {
-  message LogicQuestionParam {
-    string top_kind_name = 1;
-    string top_operator_name = 2;
-    List arguments = 3;
-    List dummies = 4;
-  }
-  repeated LogicQuestionParam assumptions = 1;
-  repeated LogicQuestionParam results = 2;
-  string default_proof_string = 3;
-}
-
-// Structure representing a vertex for images or graphs.
-message Vertex {
-  int32 x = 1;
-  int32 y = 2;
-  string label = 3;
-}
-
-// Structure representing an edge for graphs.
-message Edge {
-  int32 source = 1;
-  int32 destination = 2;
-  int32 weight = 3;
-}
