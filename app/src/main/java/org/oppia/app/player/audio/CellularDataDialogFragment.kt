@@ -42,11 +42,15 @@ class CellularDataDialogFragment : DialogFragment() {
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)
       .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { dialog, whichButton ->
-        cellularDataInterface.enableAudioWhileOnCellular(doNotShowAgain)
+        if(cellularDataInterface!=null) {
+          cellularDataInterface.enableAudioWhileOnCellular(doNotShowAgain)
+        }
         dismiss()
       }
       .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { dialog, whichButton ->
-        cellularDataInterface.disableAudioWhileOnCellular(doNotShowAgain)
+        if(cellularDataInterface!=null) {
+          cellularDataInterface.disableAudioWhileOnCellular(doNotShowAgain)
+        }
         dismiss()
       }
       .setCancelable(true)
