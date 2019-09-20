@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 
-/** Fragment that represents the current state card of an exploration. */
+/** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface {
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
@@ -68,7 +68,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
       cellularDataInterface
     )
     dialogFragment.showNow(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
-
   }
 
   override fun enableAudioWhileOnCellular(doNotShowAgain: Boolean) {

@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 
-/** Fragment that controls audio for a state and content.*/
-class AudioFragment : InjectableFragment() {
+/** Fragment that controls audio for a content-card. */
+class AudioFragment : InjectableFragment(), LanguageInterface {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
   private lateinit var languageInterface: LanguageInterface
@@ -22,18 +23,30 @@ class AudioFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    onAttachToParentFragment(this)
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return audioFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  fun languageSelectionClicked() {
-    languageInterface = object : LanguageInterface {
-      override fun onLanguageSelected(currentLanguageCode: String) {
-        selectedLanguageCode = currentLanguageCode
-        audioFragmentPresenter.languageSelected(currentLanguageCode)
-      }
+  private fun onAttachToParentFragment(fragment: Fragment) {
+    try {
+      languageInterface = fragment as LanguageInterface
+    } catch (e: ClassCastException) {
+      throw ClassCastException(
+        "$fragment must implement LanguageInterface"
+      )
     }
+  }
 
+  fun languageSelectionClicked() {
+    showLanguageDialogFragment()
+  }
+
+  private fun showLanguageDialogFragment() {
     val previousFragment = fragmentManager?.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
@@ -52,5 +65,10 @@ class AudioFragment : InjectableFragment() {
     languageCodeList.add("hi")
     languageCodeList.add("hi-en")
     return languageCodeList
+  }
+
+  override fun onLanguageSelected(currentLanguageCode: String) {
+    selectedLanguageCode = currentLanguageCode
+    audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 }

@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 
 /**
- * DialogFragment that controls language selection in audio and written translations
+ * DialogFragment that controls language selection in audio and written translations.
  */
 class LanguageDialogFragment : DialogFragment() {
   companion object {
@@ -44,7 +44,9 @@ class LanguageDialogFragment : DialogFragment() {
         selectedIndex = which
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        languageInterface.onLanguageSelected(languageList.get(selectedIndex))
+        if (languageInterface != null) {
+          languageInterface.onLanguageSelected(languageList.get(selectedIndex))
+        }
         dismiss()
       }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
