@@ -71,7 +71,7 @@ class AudioPlayerController @Inject constructor(
   }
 
   /** Call function to play audio.
-   * Must call [initializeMediaPlayer] and wait for prepared state.
+   * Must call [initializeMediaPlayer] and wait for prepared state first.
    * MediaPlayer should be in paused state */
   fun play() {
     check(prepared)
@@ -82,7 +82,7 @@ class AudioPlayerController @Inject constructor(
   }
 
   /** Call function to pause audio.
-   * Must call [initializeMediaPlayer] and wait for prepared state.
+   * Must call [initializeMediaPlayer] and wait for prepared state first.
    * MediaPlayer should be in playing state */
   fun pause() {
     check(prepared)
@@ -127,15 +127,23 @@ class AudioPlayerController @Inject constructor(
     stopUpdatingSeekBar()
   }
 
+  /** Call function to check playing state
+  *  Must call [initializeMediaPlayer] and wait for prepared state first. */
   fun isPlaying() : Boolean {
     check(prepared)
     return mediaPlayer.isPlaying
   }
 
+  /** Call function to change progress of MediaPlayer
+   *  Must call [initializeMediaPlayer] and wait for prepared state first. */
   fun seekTo(position: Int)  {
     check(prepared)
     mediaPlayer.seekTo(position)
   }
 
+  /* Observe to get updates on MediaPlayer current Progress
+  *  Prepared: Set duration of seek bar and attach listeners to UI
+  *  Playing: Update seek bar with current position
+  *  Completed: Reset play button and seek bar to original state */
   fun getPlayState() : LiveData<PlayProgress> = playState
 }
