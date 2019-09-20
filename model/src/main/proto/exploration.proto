@@ -155,8 +155,3 @@ message RuleSpec {
   map<string, InteractionObject> inputs = 1;
   string rule_type = 2;
 }
-
-// Structure containing a list of html strings
-message HtmlStringList {
-  repeated string html_strings_list = 1;
-}
