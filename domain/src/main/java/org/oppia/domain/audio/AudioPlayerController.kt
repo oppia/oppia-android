@@ -3,44 +3,44 @@ package org.oppia.domain.audio
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
+import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
-/* AudioPlayerController controls interactions with an internal MediaPlayer,
-*  Use initializeMediaPlayer to set a source url for the audio
-*  Observe on getPlayState to get updates to status of MediaPlayer
-*  Use deinitializeMediaPlayer to release MediaPlayer and stop scheduling Seek Bar updates
-*/
-class AudioPlayerController @Inject constructor(val context: Context) {
+/** Controller which provides audio playing capabilities.
+ * [initializeMediaPlayer] should be used to download a specific audio track.
+ * [releaseMediaPlayer] should be used to clean up the controller's resources.
+ * See documentation for both to understand how to use them correctly. */
+class AudioPlayerController @Inject constructor(
+  val context: Context, @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+) {
 
-  inner class AudioMutableLiveData : MutableLiveData<PlayStatus>() {
+  inner class AudioMutableLiveData : MutableLiveData<PlayProgress>() {
     override fun onActive() {
       super.onActive()
-      seekBarActive = true
+      observerActive = true
     }
 
     override fun onInactive() {
       super.onInactive()
-      seekBarActive = false
+      observerActive = false
       stopUpdatingSeekBar()
     }
   }
 
-  enum class Status { PREPARED, COMPLETED, POSITION_UPDATE }
-  class PlayStatus(val type: Status, val position: Int, val duration: Int)
+  enum class PlayStatus { PREPARED, PLAYED, COMPLETED}
+  class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
+  class MediaPlayerAlreadyInitException : Exception()
+  class MediaPlayerNotInitException : Exception()
 
   private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
   private val playState = AudioMutableLiveData()
@@ -48,65 +48,94 @@ class AudioPlayerController @Inject constructor(val context: Context) {
   private val seekBarLock = ReentrantLock()
 
   private var prepared = false
-  private var seekBarActive = false
+  private var observerActive = false
+  private var mediaPlayerActive = false
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
+  /* Call function to begin loading a audio sourced specified by url
+  *  MediaPlayer must be inactive when calling this function */
   fun initializeMediaPlayer(url: String) {
+    if (mediaPlayerActive) throw MediaPlayerAlreadyInitException()
+    mediaPlayerActive = true
     mediaPlayer.setOnCompletionListener {
       stopUpdatingSeekBar()
-      playState.postValue(PlayStatus(Status.COMPLETED, 0, mediaPlayer.duration))
+      playState.postValue(PlayProgress(PlayStatus.COMPLETED, 0, mediaPlayer.duration))
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
-      playState.postValue(PlayStatus(Status.PREPARED, 0, it.duration))
+      playState.postValue(PlayProgress(PlayStatus.PREPARED, 0, it.duration))
     }
     mediaPlayer.setDataSource(context, Uri.parse(url))
     mediaPlayer.prepare()
   }
 
+  /** Call function to play audio.
+   * Must call [initializeMediaPlayer] and wait for prepared state.
+   * MediaPlayer should be in paused state */
   fun play() {
-    if (prepared && !mediaPlayer.isPlaying) {
+    check(prepared)
+    if (!mediaPlayer.isPlaying) {
       mediaPlayer.start()
       scheduleNextSeekBarUpdate()
     }
   }
 
+  /** Call function to pause audio.
+   * Must call [initializeMediaPlayer] and wait for prepared state.
+   * MediaPlayer should be in playing state */
   fun pause() {
-    if (prepared && mediaPlayer.isPlaying) {
+    check(prepared)
+    if (mediaPlayer.isPlaying) {
       mediaPlayer.pause()
       stopUpdatingSeekBar()
     }
   }
 
   private fun scheduleNextSeekBarUpdate() {
-    if (seekBarActive) {
-      nextUpdateJob = CoroutineScope(Dispatchers.Default).launch {
-        delay(SEEKBAR_UPDATE_FREQUENCY)
-        seekBarLock.withLock { updateSeekBar() }
-        scheduleNextSeekBarUpdate()
+    if (observerActive && prepared) {
+      seekBarLock.withLock {
+        nextUpdateJob = CoroutineScope(backgroundDispatcher).launch {
+          delay(SEEKBAR_UPDATE_FREQUENCY)
+          updateSeekBar()
+          scheduleNextSeekBarUpdate()
+        }
       }
     }
   }
 
   private fun updateSeekBar() {
-    if (prepared && mediaPlayer.isPlaying) {
-      playState.postValue(PlayStatus(Status.POSITION_UPDATE, mediaPlayer.currentPosition, mediaPlayer.duration))
+    if (mediaPlayer.isPlaying) {
+      playState.postValue(PlayProgress(PlayStatus.PLAYED, mediaPlayer.currentPosition, mediaPlayer.duration))
     }
   }
 
   private fun stopUpdatingSeekBar() {
-    nextUpdateJob?.cancel()
-    nextUpdateJob = null
+    seekBarLock.withLock {
+      nextUpdateJob?.cancel()
+      nextUpdateJob = null
+    }
   }
 
-  fun deinitializeMediaPlayer () {
+  /* Call function to release media player and stop seek bar updates
+  *  MediaPlayer must be active when calling this function */
+  fun releaseMediaPlayer() {
+    if (!mediaPlayerActive) throw MediaPlayerNotInitException()
+    mediaPlayerActive = false
+    prepared = false
     mediaPlayer.release()
     stopUpdatingSeekBar()
   }
 
-  fun isPrepared(): Boolean = prepared
-  fun isPlaying() : Boolean = mediaPlayer.isPlaying
-  fun seekTo(position: Int) = mediaPlayer.seekTo(position)
-  fun getPlayState() : LiveData<PlayStatus> = playState
+  fun isPlaying() : Boolean {
+    check(prepared)
+    return mediaPlayer.isPlaying
+  }
+
+  fun seekTo(position: Int)  {
+    check(prepared)
+    mediaPlayer.seekTo(position)
+  }
+
+  fun getPlayState() : LiveData<PlayProgress> = playState
 }
