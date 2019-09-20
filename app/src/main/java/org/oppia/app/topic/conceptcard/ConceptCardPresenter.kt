@@ -5,24 +5,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.conceptcard_fragment.view.*
 import org.oppia.app.R
+import org.oppia.app.databinding.ConceptcardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
+/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
 class ConceptCardPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
-  ){
+){
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val view = inflater.inflate(R.layout.conceptcard_fragment, container,  false)
-    view.toolbar.title = "Concept Card"
-    view.toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-    view.toolbar.setNavigationOnClickListener {
+    val binding = ConceptcardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+    binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment as? DialogFragment)?.dismiss()
     }
-    return view
+    binding.let {
+      it.viewModel = getConceptCardViewModel()
+      it.lifecycleOwner = fragment
+    }
+
+    return binding.root
+  }
+
+  private fun getConceptCardViewModel(): ConceptCardViewModel {
+    return viewModelProvider.getForFragment(fragment, ConceptCardViewModel::class.java)
   }
 }

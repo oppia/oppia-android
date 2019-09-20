@@ -5,14 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.conceptcard_fragment.*
-import kotlinx.android.synthetic.main.conceptcard_fragment.view.*
 import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
-import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/* Fragment that displays a fullscreen dialog for concept cards */
 class ConceptCardFragment : InjectableDialogFragment() {
   @Inject lateinit var conceptCardPresenter: ConceptCardPresenter
 
