@@ -17,7 +17,7 @@ class AudioFragment : InjectableFragment() {
 
   lateinit var languageInterface: LanguageInterface
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
@@ -42,7 +42,7 @@ class AudioFragment : InjectableFragment() {
       getDummyAudioLanguageList(),
       "en"
     )
-    dialogFragment.showNow(fragmentManager, TAG_DIALOG)
+    dialogFragment.showNow(fragmentManager!!, TAG_DIALOG)
   }
 
   private fun getDummyAudioLanguageList(): List<String> {

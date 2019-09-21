@@ -16,7 +16,7 @@ abstract class InjectableFragment: Fragment() {
    */
   lateinit var fragmentComponent: FragmentComponent
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent = (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
   }

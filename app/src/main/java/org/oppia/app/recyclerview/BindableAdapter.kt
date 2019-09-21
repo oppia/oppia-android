@@ -27,7 +27,7 @@ private typealias ViewHolderFactory<T> = (ViewGroup) -> BindableAdapter.Bindable
 class BindableAdapter<T : Any> internal constructor(
   private val computeViewType: ComputeViewType<T>,
   private val viewHolderFactoryMap: Map<Int, ViewHolderFactory<T>>,
-  val dataClassType: KClass<T>
+  private val dataClassType: KClass<T>
 ) : RecyclerView.Adapter<BindableAdapter.BindableViewHolder<T>>() {
   private val dataList: MutableList<T> = ArrayList()
 
@@ -49,7 +49,7 @@ class BindableAdapter<T : Any> internal constructor(
    * adapter. This helps ensure type compatibility at runtime in cases where the generic type of the
    * adapter object is lost.
    */
-  fun <T2: Any> setDataUnchecked(newDataList: List<T2>) {
+  fun <T2 : Any> setDataUnchecked(newDataList: List<T2>) {
     // NB: This check only works if the list has any data in it. Since we can't use a reified type
     // here (due to Android data binding not supporting custom adapters with inline functions), this
     // method will succeed if types are different for empty lists (that is, List<T1> == List<T2>
@@ -194,7 +194,7 @@ class BindableAdapter<T : Any> internal constructor(
     /** Returns a new [BindableAdapter]. */
     fun build(): BindableAdapter<T> {
       val computeViewType = this.computeViewType
-      check(viewHolderFactoryMap.isNotEmpty()) { "At least one view holder must be registered" }
+      check(viewHolderFactoryMap.isNotEmpty()) { "At least one view binder must be registered" }
       return BindableAdapter(computeViewType, viewHolderFactoryMap, dataClassType)
     }
 
