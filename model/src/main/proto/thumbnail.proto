@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+// Represents the thumbnail that should be rendered for a lesson.
+message LessonThumbnail {
+  // The graphic corresponding to this thumbnail.
+  LessonThumbnailGraphic thumbnail_graphic = 1;
+
+  // The background color for this thumbnail, in RGB (no alpha channel).
+  int32 background_color_rgb = 2;
+}
+
+// Corresponds to different types of thumbnails that may be used by a topic, story, or chapter. These currently only
+// correspond to in-app thumbnails, but may later indicate that a lesson has a downloadable thumbnail to use, instead.
+enum LessonThumbnailGraphic {
+  // An unknown thumbnail type. The UI should pick a reasonable default.
+  LESSON_THUMBNAIL_GRAPHIC_UNSPECIFIED = 0;
+
+  // Corresponds to an in-app image of a boy with cupcakes.
+  BOY_WITH_CUPCAKES = 1;
+}
