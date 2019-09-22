@@ -20,6 +20,21 @@ enum LessonThumbnailGraphic {
   // An unknown thumbnail type. The UI should pick a reasonable default.
   LESSON_THUMBNAIL_GRAPHIC_UNSPECIFIED = 0;
 
-  // Corresponds to an in-app image of a boy with cupcakes.
-  BOY_WITH_CUPCAKES = 1;
+  // Corresponds to an in-app image of a baker.
+  BAKER = 1;
+
+  // Corresponds to an in-app image of a child with a book.
+  CHILD_WITH_BOOK = 2;
+
+  // Corresponds to an in-app image of a child with cupcakes.
+  CHILD_WITH_CUPCAKES = 3;
+
+  // Corresponds to an in-app image of a child holding a homework paper with fractions.
+  CHILD_WITH_FRACTIONS_HOMEWORK = 4;
+
+  // Corresponds to an in-app image of a duck and a chicken.
+  DUCK_AND_CHICKEN = 5;
+
+  // Corresponds to an in-app image of a person next to a pie chart.
+  PERSON_WITH_PIE_CHART = 6;
 }
