@@ -97,21 +97,21 @@ class TopicListController @Inject constructor() {
 
   private fun createTopicThumbnail0(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_BOOK)
       .setBackgroundColorRgb(0xd5836f)
       .build()
   }
 
   private fun createTopicThumbnail1(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
       .setBackgroundColorRgb(0xf7bf73)
       .build()
   }
 
   private fun createStoryThumbnail(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+      .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xa5d3ec)
       .build()
   }

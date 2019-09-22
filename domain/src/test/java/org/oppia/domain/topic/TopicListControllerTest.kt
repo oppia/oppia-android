@@ -66,7 +66,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+    assertThat(firstTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_BOOK)
   }
 
   @Test
@@ -94,7 +94,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
-    assertThat(secondTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+    assertThat(secondTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
   }
 
   @Test
@@ -197,7 +197,7 @@ class TopicListControllerTest {
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BOY_WITH_CUPCAKES)
+    assertThat(recentLesson.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
   }
 
   @Test
