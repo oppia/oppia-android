@@ -13,6 +13,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ChapterSummary.Playability
+import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
@@ -73,6 +75,17 @@ class TopicControllerTest {
     assertThat(getSkillIds(topic)).containsExactly("test_skill_id_0", "test_skill_id_1").inOrder()
   }
 
+  // This test is intentionally verifying that there are no thumbnails for skills, since there are not yet any to
+  // populate.
+  @Test
+  fun testRetrieveTopic_validTopicWithSkills_skillsHaveNoThumbnailUrls() {
+    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.getSkill(0).thumbnailUrl).isEmpty()
+    assertThat(topic.getSkill(1).thumbnailUrl).isEmpty()
+  }
+
   @Test
   fun testRetrieveTopic_validTopic_returnsTopicWithProgress() {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
@@ -80,7 +93,15 @@ class TopicControllerTest {
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
     assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_0)
-    assertThat(topic.getStory(0).getChapter(0).completed).isTrue()
+    assertThat(topic.getStory(0).getChapter(0).playability).isEqualTo(Playability.COMPLETED)
+  }
+
+  @Test
+  fun testRetrieveTopic_validTopic_returnsTopicWithThumbnail() {
+    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_BOOK)
   }
 
   @Test
@@ -98,6 +119,14 @@ class TopicControllerTest {
 
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_1)
+  }
+
+  @Test
+  fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() {
+    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_1)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
   }
 
   @Test
@@ -149,6 +178,15 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() {
+    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    val chapter = story.getChapter(0)
+    assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
+  }
+
+  @Test
   fun testRetrieveStory_validSecondStory_isSuccessful() {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
@@ -182,9 +220,9 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).completed).isTrue()
-    assertThat(story.getChapter(1).completed).isFalse()
-    assertThat(story.getChapter(2).completed).isFalse()
+    assertThat(story.getChapter(0).playability).isEqualTo(Playability.COMPLETED)
+    assertThat(story.getChapter(1).playability).isEqualTo(Playability.NOT_STARTED)
+    assertThat(story.getChapter(2).playability).isEqualTo(Playability.MISSING_PREREQUISITES)
   }
 
   @Test

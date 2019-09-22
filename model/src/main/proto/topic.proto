@@ -1,31 +1,83 @@
 syntax = "proto3";
 
+import "thumbnail.proto";
+
 package model;
 
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
+// Corresponds to a single topic that can be read, played, trained, or reviewed.
 message Topic {
+  // The ID corresponding to the topic.
   string topic_id = 1;
+
+  // The topic's name.
   string name = 2;
+
+  // A brief description of the topic.
   string description = 3;
+
+  // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
+
+  // A list of summarized skills contained within this topic.
   repeated SkillSummary skill = 5;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 6;
 }
 
+// A summary of a story that can be played within a topic.
 message StorySummary {
+  // The ID of the story.
   string story_id = 1;
+
+  // The name of the story.
   string story_name = 2;
+
+  // A list of summarized chapters/explorations that can be played within the story.
   repeated ChapterSummary chapter = 3;
 }
 
+// A summary of a chapter/exploration that can be played.
 message ChapterSummary {
+  // The exploration ID associated with this chapter.
   string exploration_id = 1;
+
+  // The chapter's name (which is the same as the exploration's title).
   string name = 2;
-  bool completed = 3;
+
+  enum Playability {
+    // The completion status is unknown.
+    COMPLETION_STATUS_UNSPECIFIED = 0;
+
+    // The chapter has not yet been started, but can be started by the player.
+    NOT_STARTED = 1;
+
+    // The chapter has not yet been started, and can't since the player is missing prerequisites.
+    MISSING_PREREQUISITES = 2;
+
+    // The chapter has been completed by the player.
+    COMPLETED = 3;
+  }
+
+  // Indicates the playability of the current chapter, including whether it's already been completed.
+  Playability playability = 3;
+
+  // The thumbnail corresponding to this chapter.
+  LessonThumbnail chapter_thumbnail = 4;
 }
 
+// A summary of a skill that can be trained or reviewed by the player.
 message SkillSummary {
+  // The ID of the skill.
   string skill_id = 1;
+
+  // A brief description of the skill.
   string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
 }
