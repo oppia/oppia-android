@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message Topic {
+  string topic_id = 1;
+  string name = 2;
+  string description = 3;
+  repeated StorySummary story = 4;
+  repeated SkillSummary skill = 5;
+}
+
+message StorySummary {
+  string story_id = 1;
+  string story_name = 2;
+  repeated ChapterSummary chapter = 3;
+}
+
+message ChapterSummary {
+  string exploration_id = 1;
+  string name = 2;
+  bool completed = 3;
+}
+
+message SkillSummary {
+  string skill_id = 1;
+  string description = 2;
+}
