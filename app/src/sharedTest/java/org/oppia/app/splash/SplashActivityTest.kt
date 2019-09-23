@@ -38,7 +38,7 @@ class SplashActivityTest {
     SplashActivity::class.java, true,
     false
   )
-  
+
   @Before
   fun setUp() {
     //initial setup code
