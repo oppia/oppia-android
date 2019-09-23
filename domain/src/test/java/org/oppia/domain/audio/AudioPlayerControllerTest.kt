@@ -2,6 +2,7 @@ package org.oppia.domain.audio
 
 import android.app.Application
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,15 +20,22 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.mockito.Mockito.verify
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.google.common.truth.Truth.assertThat
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mockito.atLeastOnce
+import org.oppia.util.data.AsyncResult
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import javax.inject.Qualifier
@@ -42,26 +50,134 @@ class AudioPlayerControllerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock
-  lateinit var mockPlayProgressObserver: Observer<AudioPlayerController.PlayProgress>
+  lateinit var mockAudioPlayerObserver: Observer<AsyncResult<AudioPlayerController.PlayProgress>>
+
+  @Captor
+  lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<AudioPlayerController.PlayProgress>>
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
+
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
+
+  private val TEST_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
   @Before
   fun setup() {
-    ShadowMediaPlayer.setCreateListener { player, shadow ->
-      shadowMediaPlayer = shadow
-    }
-    ShadowMediaPlayer.addMediaInfo(DataSource.toDataSource("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"), ShadowMediaPlayer.MediaInfo(100, 10))
     setUpTestApplicationComponent()
+    addMediaInfo()
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+    shadowMediaPlayer.dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
   }
 
 
   @Test
   fun testAudioPlayer_successfulInitialize_reportsSuccessfulInit() {
-    ShadowMediaPlayer.addMediaInfo(DataSource.toDataSource("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"), ShadowMediaPlayer.MediaInfo(100, 10))
-    audioPlayerController.initializeMediaPlayer("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
+    audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    shadowMediaPlayer.invokePreparedListener()
+
+    assertThat(shadowMediaPlayer.isPrepared).isTrue()
+    assertThat(audioPlayerController.isPlaying()).isFalse()
+  }
+
+  @Test
+  fun testAudioPlayer_play_isPlaying() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+
+    assertThat(audioPlayerController.isPlaying()).isTrue()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isTrue()
+  }
+
+  @Test
+  fun testAudioPlayer_pause_notIsPlaying() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.pause()
+
+    assertThat(audioPlayerController.isPlaying()).isFalse()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
+  }
+
+  @Test
+  fun testAudioPlayer_seekTo_hasCorrectProgress() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.seekTo(500)
+
+    assertThat(shadowMediaPlayer.currentPositionRaw).isEqualTo(500)
+  }
+
+  @Test
+  fun testAudioPlayer_releaseMediaPlayer_isReleasedState() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.releaseMediaPlayer()
+
+    assertThat(shadowMediaPlayer.state).isEqualTo(ShadowMediaPlayer.State.END)
+  }
+
+  @Test
+  fun testAudioObserver_invokePrepare_capturesPreparedState() {
+    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
+
+    arrangeMediaPlayer()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PREPARED)
+  }
+
+  @Test
+  fun testAudioObserver_invokeCompletion_capturesCompletedState() {
+    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
+    arrangeMediaPlayer()
+
+    shadowMediaPlayer.invokeCompletionListener()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.COMPLETED)
+  }
+
+  @Test
+  fun testAudioObserver_invokeChangeDataSource_capturesPendingState() {
+    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
+    arrangeMediaPlayer()
+
+    audioPlayerController.changeDataSource(TEST_URL)
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+  }
+
+  @Test
+  fun testAudioObserver_invokePlay_capturesPlayingState() {
+    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+    audioPlayerController.pause()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PAUSED)
+  }
+
+  private fun arrangeMediaPlayer() {
+    audioPlayerController.initializeMediaPlayer(TEST_URL)
+    shadowMediaPlayer.invokePreparedListener()
+  }
+
+  private fun addMediaInfo() {
+    val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(1000, 0)
+    ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
   }
 
   private fun setUpTestApplicationComponent() {

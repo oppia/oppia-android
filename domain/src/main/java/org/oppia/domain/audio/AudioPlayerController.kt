@@ -3,6 +3,7 @@ package org.oppia.domain.audio
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,7 +39,7 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
-  enum class PlayStatus { PREPARED, PLAYED, PAUSED, COMPLETED}
+  enum class PlayStatus { PREPARED, PLAYING, PAUSED, COMPLETED}
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
   class MediaPlayerAlreadyInitException : Exception()
   class MediaPlayerNotInitException : Exception()
@@ -59,17 +60,8 @@ class AudioPlayerController @Inject constructor(
   fun initializeMediaPlayer(url: String) {
     if (mediaPlayerActive) throw MediaPlayerAlreadyInitException()
     mediaPlayerActive = true
-    mediaPlayer.setOnCompletionListener {
-      stopUpdatingSeekBar()
-      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, mediaPlayer.duration)))
-    }
-    mediaPlayer.setOnPreparedListener {
-      prepared = true
-      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, it.duration)))
-    }
-    mediaPlayer.setDataSource(context, Uri.parse(url))
-    mediaPlayer.prepareAsync()
-    playState.postValue(AsyncResult.pending())
+    setMediaPlayerListeners()
+    prepareDataSource(url)
   }
 
   /* Call function to change data source of media player
@@ -78,6 +70,21 @@ class AudioPlayerController @Inject constructor(
     prepared = false
     stopUpdatingSeekBar()
     mediaPlayer.reset()
+    prepareDataSource(url)
+  }
+
+  private fun setMediaPlayerListeners() {
+    mediaPlayer.setOnCompletionListener {
+      stopUpdatingSeekBar()
+      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, mediaPlayer.duration)))
+    }
+    mediaPlayer.setOnPreparedListener {
+      prepared = true
+      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, it.duration)))
+    }
+  }
+
+  private fun prepareDataSource(url: String) {
     mediaPlayer.setDataSource(context, Uri.parse(url))
     mediaPlayer.prepareAsync()
     playState.postValue(AsyncResult.pending())
@@ -120,7 +127,7 @@ class AudioPlayerController @Inject constructor(
 
   private fun updateSeekBar() {
     if (mediaPlayer.isPlaying) {
-      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.PLAYED, mediaPlayer.currentPosition, mediaPlayer.duration)))
+      playState.postValue(AsyncResult.success(PlayProgress(PlayStatus.PLAYING, mediaPlayer.currentPosition, mediaPlayer.duration)))
     }
   }
 
@@ -158,6 +165,10 @@ class AudioPlayerController @Inject constructor(
   /* Observe to get updates on MediaPlayer current Progress
   *  Prepared: Set duration of seek bar and attach listeners to UI
   *  Playing: Update seek bar with current position
+  *  Paused: Change to pause icon
   *  Completed: Reset play button and seek bar to original state */
   fun getPlayState() : LiveData<AsyncResult<PlayProgress>> = playState
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
 }
