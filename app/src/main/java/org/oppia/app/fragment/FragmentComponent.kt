@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 
 /** Root subcomponent for all fragments. */
@@ -18,6 +19,7 @@ interface FragmentComponent {
     fun build(): FragmentComponent
   }
 
+  fun inject(audioFragment: AudioFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(stateFragment: StateFragment)
