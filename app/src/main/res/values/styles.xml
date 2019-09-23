@@ -14,7 +14,7 @@
   </style>
 
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
-    <item name="android:windowBackground">@drawable/bg_splash</item>
+    <item name="android:windowBackground">@drawable/splash_page</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
