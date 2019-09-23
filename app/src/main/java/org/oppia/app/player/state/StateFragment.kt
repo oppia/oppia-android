@@ -2,7 +2,6 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,6 +106,25 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     // doNotShowAgain -> false -> do not save this preference
   }
 
+  // This method will be deleted in final implementation
+  private fun createDummyDataForButtonCheck() {
+    dummyStateIndex = ArrayList()
+    dummyInteractionId = ArrayList()
+
+    dummyStateIndex.add(0)
+    dummyInteractionId.add("Continue")
+    dummyStateIndex.add(1)
+    dummyInteractionId.add("MultipleChoiceInput")
+    dummyStateIndex.add(2)
+    dummyInteractionId.add("TextInput")
+    dummyStateIndex.add(3)
+    dummyInteractionId.add("Continue")
+    dummyStateIndex.add(4)
+    dummyInteractionId.add("ItemSelectionInput")
+    dummyStateIndex.add(5)
+    dummyInteractionId.add("EndExploration")
+  }
+
   private fun setCurrentStateIndex(stateIndex: Int, interactionId: String) {
     setAllButtonVisibilityGone()
     currentStateIndex.set(stateIndex)
@@ -139,32 +157,14 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     isEndExplorationButtonVisible.set(false)
   }
 
-  private fun createDummyDataForButtonCheck() {
-    dummyStateIndex = ArrayList()
-    dummyInteractionId = ArrayList()
-
-    dummyStateIndex.add(0)
-    dummyInteractionId.add("Continue")
-    dummyStateIndex.add(1)
-    dummyInteractionId.add("MultipleChoiceInput")
-    dummyStateIndex.add(2)
-    dummyInteractionId.add("TextInput")
-    dummyStateIndex.add(3)
-    dummyInteractionId.add("Continue")
-    dummyStateIndex.add(4)
-    dummyInteractionId.add("ItemSelectionInput")
-    dummyStateIndex.add(5)
-    dummyInteractionId.add("EndExploration")
-  }
-
-  fun nextState(){
+  private fun nextState() {
     val nextStateIndex = currentStateIndex.get() + 1
     if (nextStateIndex < dummyStateIndex.size) {
       setCurrentStateIndex(dummyStateIndex[nextStateIndex], dummyInteractionId[nextStateIndex])
     }
   }
 
-  fun previousState(){
+  private fun previousState() {
     val prevStateIndex = currentStateIndex.get() - 1
     if (prevStateIndex >= 0) {
       setCurrentStateIndex(dummyStateIndex[prevStateIndex], dummyInteractionId[prevStateIndex])
@@ -191,12 +191,9 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   }
 
   fun learnAgainButtonClicked() {
-
   }
 
   fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-    Log.w("tag", "onTextChanged $s")
-
     if (isActiveSubmitButtonVisible.get()!! || isInactiveSubmitButtonVisible.get()!!) {
       if (s.isNotEmpty()) {
         isInactiveSubmitButtonVisible.set(false)

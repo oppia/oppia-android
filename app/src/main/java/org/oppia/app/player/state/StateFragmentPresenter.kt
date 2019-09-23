@@ -12,8 +12,7 @@ import javax.inject.Inject
 /** The controller for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>
+  private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -21,9 +20,5 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
     }
     return binding.root
-  }
-
-  private fun getStateViewModel(): StateViewModel {
-    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 }
