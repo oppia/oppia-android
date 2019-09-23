@@ -16,7 +16,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
   private lateinit var languageInterface: LanguageInterface
-  var selectedLanguageCode: String = "en"
+  private var selectedLanguageCode: String = "en"
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -33,13 +33,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   }
 
   private fun onAttachToParentFragment(fragment: Fragment) {
-    try {
-      languageInterface = fragment as LanguageInterface
-    } catch (e: ClassCastException) {
-      throw ClassCastException(
-        "$fragment must implement LanguageInterface"
-      )
-    }
+    languageInterface = fragment as LanguageInterface
   }
 
   fun languageSelectionClicked() {
