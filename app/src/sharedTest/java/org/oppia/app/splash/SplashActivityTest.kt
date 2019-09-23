@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.HomeActivity
+import org.oppia.app.home.HomeActivity
 
 /** Tests for [SplashActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -33,7 +33,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @Throws(InterruptedException::class)
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
 
     activityTestRule.launchActivity(null)
