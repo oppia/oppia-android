@@ -1,0 +1,49 @@
+{
+  "story_title": "Story 1",
+  "story_description": "Story Description",
+  "is_moderator": true,
+  "is_admin": true,
+  "username": "rt4914",
+  "user_email": "test@example.com",
+  "iframed": false,
+  "story_nodes": [
+    {
+      "exp_summary_dict": {
+        "community_owned": true,
+        "human_readable_contributors_summary": {},
+        "category": "Algebra",
+        "title": "Root Linear Coefficient Theorem",
+        "status": "public",
+        "num_views": 4,
+        "objective": "discover the Root Linear Coefficient Theorem",
+        "activity_type": "exploration",
+        "ratings": {
+          "2": 0,
+          "3": 0,
+          "1": 0,
+          "4": 0,
+          "5": 0
+        },
+        "id": "3",
+        "thumbnail_bg_color": "#cd672b",
+        "created_on_msec": 1566278940160.576,
+        "tags": [],
+        "thumbnail_icon_url": "/subjects/Algebra.svg",
+        "language_code": "en",
+        "last_updated_msec": 1566278940160.279
+      },
+      "completed": false,
+      "title": "Chapter 1",
+      "outline": "\u003cp\u003eChapter 1 Outline\u003c/p\u003e",
+      "prerequisite_skill_ids": [],
+      "destination_node_ids": [],
+      "outline_is_finalized": false,
+      "acquired_skill_ids": [],
+      "id": "node_1",
+      "exploration_id": "3"
+    }
+  ],
+  "additional_angular_modules": [],
+  "is_topic_manager": false,
+  "is_super_admin": true
+}

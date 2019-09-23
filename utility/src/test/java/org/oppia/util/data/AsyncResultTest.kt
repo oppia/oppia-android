@@ -1,6 +1,8 @@
 package org.oppia.util.data
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -63,6 +65,69 @@ class AsyncResultTest {
     assertThat(result.getErrorOrNull()).isNull()
   }
 
+  @Test
+  fun testPendingAsyncResult_transformed_isStillPending() {
+    val original = AsyncResult.pending<String>()
+
+    val transformed = original.transform { 0 }
+
+    assertThat(transformed.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPendingAsyncResult_transformedAsync_isStillPending() = runBlockingTest {
+    val original = AsyncResult.pending<String>()
+
+    val transformed = original.transformAsync { AsyncResult.success(0) }
+
+    assertThat(transformed.isPending()).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_isEqualToAnotherPendingResult() {
+    val result = AsyncResult.pending<String>()
+
+    // Two pending results are the same regardless of their types.
+    assertThat(result).isEqualTo(AsyncResult.pending<Int>())
+  }
+
+  @Test
+  fun testPendingResult_isNotEqualToFailedResult() {
+    val result = AsyncResult.pending<String>()
+
+    assertThat(result).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()))
+  }
+
+  @Test
+  fun testPendingResult_isNotEqualToSucceededResult() {
+    val result = AsyncResult.pending<String>()
+
+    assertThat(result).isNotEqualTo(AsyncResult.success("Success"))
+  }
+
+  @Test
+  fun testPendingResult_hashCode_isEqualToAnotherPendingResult() {
+    val resultHash = AsyncResult.pending<String>().hashCode()
+
+    // Two pending results are the same regardless of their types.
+    assertThat(resultHash).isEqualTo(AsyncResult.pending<Int>().hashCode())
+  }
+
+  @Test
+  fun testPendingResult_hashCode_isNotEqualToSucceededResult() {
+    val resultHash = AsyncResult.pending<String>().hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.success("Success").hashCode())
+  }
+
+  @Test
+  fun testPendingResult_hashCode_isNotEqualToFailedResult() {
+    val resultHash = AsyncResult.pending<String>().hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()).hashCode())
+  }
+
   /* Success tests. */
 
   @Test
@@ -114,6 +179,117 @@ class AsyncResultTest {
     assertThat(result.getErrorOrNull()).isNull()
   }
 
+  @Test
+  fun testSucceededAsyncResult_transformed_hasTransformedValue() {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transform { 0 }
+
+    assertThat(transformed.getOrThrow()).isEqualTo(0)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_transformedAsyncPending_isPending() = runBlockingTest {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transformAsync { AsyncResult.pending<Int>() }
+
+    assertThat(transformed.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_transformedAsyncSuccess_hasTransformedValue() = runBlockingTest {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transformAsync { AsyncResult.success(0) }
+
+    assertThat(transformed.getOrThrow()).isEqualTo(0)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_transformedAsyncFailed_isFailure() = runBlockingTest {
+    val original = AsyncResult.success("value")
+
+    val transformed = original.transformAsync { AsyncResult.failed<Int>(UnsupportedOperationException()) }
+
+    // Note that the failure is not chained since the transform function was responsible for 'throwing' it.
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testSucceededResult_isNotEqualToPendingResult() {
+    val result = AsyncResult.success("Success")
+
+    assertThat(result).isNotEqualTo(AsyncResult.pending<Int>())
+  }
+
+  @Test
+  fun testSucceededResult_isEqualToSameSucceededResult() {
+    val result = AsyncResult.success("Success")
+
+    assertThat(result).isEqualTo(AsyncResult.success("Success"))
+  }
+
+  @Test
+  fun testSucceededResult_isNotEqualToDifferentSucceededResult() {
+    val result = AsyncResult.success("Success")
+
+    assertThat(result).isNotEqualTo(AsyncResult.success("Other value"))
+  }
+
+  @Test
+  fun testSucceededResult_isNotEqualToDifferentTypedSucceededResult() {
+    val result = AsyncResult.success("0")
+
+    assertThat(result).isNotEqualTo(AsyncResult.success(0))
+  }
+
+  @Test
+  fun testSucceededResult_isNotEqualToFailedResult() {
+    val result = AsyncResult.success("Success")
+
+    assertThat(result).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()))
+  }
+
+  @Test
+  fun testSucceededResult_hashCode_isNotEqualToPendingResult() {
+    val resultHash = AsyncResult.success("Success").hashCode()
+
+    // Two pending results are the same regardless of their types.
+    assertThat(resultHash).isNotEqualTo(AsyncResult.pending<Int>().hashCode())
+  }
+
+  @Test
+  fun testSucceededResult_hashCode_isEqualToSameSucceededResult() {
+    val resultHash = AsyncResult.success("Success").hashCode()
+
+    assertThat(resultHash).isEqualTo(AsyncResult.success("Success").hashCode())
+  }
+
+  @Test
+  fun testSucceededResult_hashCode_isNotEqualToDifferentSucceededResult() {
+    val resultHash = AsyncResult.success("Success").hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.success("Other value").hashCode())
+  }
+
+  @Test
+  fun testSucceededResult_hashCode_isNotEqualToDifferentTypedSucceededResult() {
+    val resultHash = AsyncResult.success("0").hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.success(0))
+  }
+
+  @Test
+  fun testSucceededResult_hashCode_isNotEqualToFailedResult() {
+    val resultHash = AsyncResult.success("Success").hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()).hashCode())
+  }
+
   /* Failure tests. */
 
   @Test
@@ -163,5 +339,89 @@ class AsyncResultTest {
     val result = AsyncResult.failed<String>(UnsupportedOperationException())
 
     assertThat(result.getErrorOrNull()).isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testFailedAsyncResult_transformed_throwsChainedFailureException_withCorrectRootCause() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException())
+
+    val transformed = result.transform { 0 }
+
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testFailedAsyncResult_transformedAsync_throwsChainedFailureException_withCorrectRootCause() = runBlockingTest {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException())
+
+    val transformed = result.transformAsync { AsyncResult.success(0) }
+
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testFailedResult_isNotEqualToPendingResult() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException("Reason"))
+
+    assertThat(result).isNotEqualTo(AsyncResult.pending<Int>())
+  }
+
+  @Test
+  fun testFailedResult_isNotEqualToSucceededResult() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException("Reason"))
+
+    assertThat(result).isNotEqualTo(AsyncResult.success("Success"))
+  }
+
+  @Test
+  fun testFailedResult_isEqualToFailedResultWithSameExceptionObject() {
+    val failure = UnsupportedOperationException("Reason")
+
+    val result = AsyncResult.failed<String>(failure)
+
+    assertThat(result).isEqualTo(AsyncResult.failed<String>(failure))
+  }
+
+  @Test
+  fun testFailedResult_isNotEqualToFailedResultWithDifferentInstanceOfSameExceptionType() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException("Reason"))
+
+    // Different exceptions have different stack traces, so they can't be equal despite similar constructions.
+    assertThat(result).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException("Reason")))
+  }
+
+  @Test
+  fun testFailedResult_hashCode_isNotEqualToPendingResult() {
+    val resultHash = AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode()
+
+    // Two pending results are the same regardless of their types.
+    assertThat(resultHash).isNotEqualTo(AsyncResult.pending<Int>().hashCode())
+  }
+
+  @Test
+  fun testFailedResult_hashCode_isNotEqualToSucceededResult() {
+    val resultHash = AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode()
+
+    assertThat(resultHash).isNotEqualTo(AsyncResult.success("Success").hashCode())
+  }
+
+  @Test
+  fun testFailedResult_hashCode_isEqualToFailedResultWithSameExceptionObject() {
+    val failure = UnsupportedOperationException("Reason")
+
+    val resultHash = AsyncResult.failed<String>(failure).hashCode()
+
+    assertThat(resultHash).isEqualTo(AsyncResult.failed<String>(failure).hashCode())
+  }
+
+  @Test
+  fun testFailedResult_hashCode_isNotEqualToFailedResultWithDifferentInstanceOfSameExceptionType() {
+    val resultHash = AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode()
+
+    // Different exceptions have different stack traces, so they can't be equal despite similar constructions.
+    assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode())
   }
 }

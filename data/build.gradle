@@ -1,0 +1,78 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+  compileSdkVersion 28
+  buildToolsVersion "29.0.1"
+
+  defaultConfig {
+    minSdkVersion 19
+    targetSdkVersion 28
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8
+  }
+
+  testOptions {
+    unitTests {
+      includeAndroidResources = true
+    }
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation(
+      'androidx.appcompat:appcompat:1.0.2',
+      'com.google.dagger:dagger:2.24',
+      'com.google.protobuf:protobuf-lite:3.0.0',
+      'com.squareup.moshi:moshi-kotlin:1.8.0',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
+  )
+  testImplementation(
+      'android.arch.core:core-testing:1.1.1',
+      'androidx.test.ext:junit:1.1.1',
+      'com.google.dagger:dagger:2.24',
+      'com.google.truth:truth:0.43',
+      'com.squareup.okhttp3:mockwebserver:4.1.0',
+      'com.squareup.okhttp3:okhttp:4.1.0',
+      'junit:junit:4.12',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.mockito:mockito-core:2.19.0',
+      'org.robolectric:robolectric:4.3',
+  )
+  // TODO (#59): Remove this once Bazel is introduced
+  // TODO (#97): Isolate retrofit-mock dependency from production
+  api(
+      'com.squareup.retrofit2:converter-moshi:2.5.0',
+      'com.squareup.retrofit2:retrofit:2.5.0',
+      'com.squareup.retrofit2:retrofit-mock:2.5.0',
+  )
+  androidTestImplementation('androidx.test:runner:1.2.0',
+      'androidx.test.espresso:espresso-core:3.2.0')
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
+  kaptTest(
+      'com.google.dagger:dagger-compiler:2.24'
+  )
+
+  implementation project(":utility")
+  testImplementation project(":model")
+}
