@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The controller for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<StateViewModel>
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -19,5 +21,9 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
     }
     return binding.root
+  }
+
+  private fun getStateViewModel(): StateViewModel {
+    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 }

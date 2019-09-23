@@ -6,12 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.fragment.app.Fragment
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.audio.CellularDataInterface
 import javax.inject.Inject
 
+private const val CONTINUE = "Continue"
+private const val END_EXPLORATION = "EndExploration"
+private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
+private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
+private const val TEXT_INPUT = "TextInput"
+private const val FRACTION_INPUT = "FractionInput"
+private const val NUMERIC_INPUT = "NumericInput"
+private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 
 /** Fragment that represents the current state of an exploration. */
@@ -22,6 +31,20 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   // Control this boolean value from controllers in domain module.
   private var showCellularDataDialog = true
   var isAudioFragmentShowing = ObservableField<Boolean>(false)
+
+  private lateinit var dummyStateIndex: ArrayList<Int>
+  private lateinit var dummyInteractionId: ArrayList<String>
+
+  val currentStateIndex = ObservableInt(0)
+  // Indicates the maximum state-index learner has reached.
+  // This variable helps in figuring out whether to show "Next" button or not
+  private val maxLearnerProgressIndex = ObservableInt(0)
+  var isNextButtonVisible = ObservableField<Boolean>(false)
+  var isContinueButtonVisible = ObservableField<Boolean>(false)
+  var isActiveSubmitButtonVisible = ObservableField<Boolean>(false)
+  var isInactiveSubmitButtonVisible = ObservableField<Boolean>(false)
+  var isLearnAgainButtonVisible = ObservableField<Boolean>(false)
+  var isEndExplorationButtonVisible = ObservableField<Boolean>(false)
 
   init {
     // Add code to control the value of showCellularDataDialog using AudioController.
@@ -35,6 +58,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     onAttachToParentFragment(this)
+    createDummyDataForButtonCheck()
+    setCurrentStateIndex(dummyStateIndex.get(0), dummyInteractionId.get(0))
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,4 +105,82 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     // doNotShowAgain -> true -> save this preference
     // doNotShowAgain -> false -> do not save this preference
   }
+
+  private fun setCurrentStateIndex(stateIndex: Int, interactionId: String) {
+    setAllButtonVisibilityGone()
+    if ((stateIndex-1) > currentStateIndex.get()) {
+      maxLearnerProgressIndex.set(stateIndex)
+      isNextButtonVisible.set(true)
+    } else {
+      isNextButtonVisible.set(false)
+      if (interactionId == CONTINUE) {
+        isContinueButtonVisible.set(true)
+      } else if (interactionId == MULTIPLE_CHOICE_INPUT || interactionId == ITEM_SELECT_INPUT
+        || interactionId == TEXT_INPUT || interactionId == FRACTION_INPUT
+        || interactionId == NUMERIC_INPUT || interactionId == NUMERIC_WITH_UNITS
+      ) {
+        isInactiveSubmitButtonVisible.set(true)
+      } else if (interactionId == END_EXPLORATION) {
+        isEndExplorationButtonVisible.set(true)
+      } else {
+        isInactiveSubmitButtonVisible.set(true)
+      }
+    }
+    currentStateIndex.set(stateIndex)
+  }
+
+  private fun setAllButtonVisibilityGone() {
+    isNextButtonVisible.set(false)
+    isContinueButtonVisible.set(false)
+    isActiveSubmitButtonVisible.set(false)
+    isInactiveSubmitButtonVisible.set(false)
+    isLearnAgainButtonVisible.set(false)
+    isEndExplorationButtonVisible.set(false)
+  }
+
+  private fun createDummyDataForButtonCheck() {
+    dummyStateIndex = ArrayList()
+    dummyInteractionId = ArrayList()
+
+    dummyStateIndex.add(0)
+    dummyInteractionId.add("Continue")
+    dummyStateIndex.add(1)
+    dummyInteractionId.add("MultipleChoiceInput")
+    dummyStateIndex.add(2)
+    dummyInteractionId.add("TextInput")
+    dummyStateIndex.add(3)
+    dummyInteractionId.add("Continue")
+    dummyStateIndex.add(4)
+    dummyInteractionId.add("ItemSelectionInput")
+    dummyStateIndex.add(5)
+    dummyInteractionId.add("EndExploration")
+  }
+
+  fun continueButtonClicked() {
+    val nextStateIndex = currentStateIndex.get() + 1
+    if(nextStateIndex< dummyStateIndex.size){
+      setCurrentStateIndex(dummyStateIndex.get(nextStateIndex), dummyInteractionId.get(nextStateIndex))
+    }
+  }
+
+  fun nextButtonClicked() {
+
+  }
+
+  fun previousButtonClicked() {
+
+  }
+
+  fun submitButtonClicked() {
+
+  }
+
+  fun endExplorationButtonClicked() {
+
+  }
+
+  fun learnAgainButtonClicked() {
+
+  }
 }
+

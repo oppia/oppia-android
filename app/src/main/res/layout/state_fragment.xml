@@ -59,9 +59,10 @@
         android:layout_alignParentStart="true"
         android:background="@drawable/previous_next_state_image_view_background"
         android:contentDescription="@string/previous_state_description"
+        android:onClick="@{(v) -> stateFragment.previousButtonClicked()}"
         android:padding="8dp"
         android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
-        android:visibility="gone"/>
+        android:visibility="@{stateFragment.currentStateIndex!=0?View.VISIBLE : View.GONE}"/>
       <ImageView
         android:id="@+id/next_state_image_view"
         android:layout_width="wrap_content"
@@ -69,27 +70,47 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/previous_next_state_image_view_background"
         android:contentDescription="@string/next_state_description"
+        android:onClick="@{(v) -> stateFragment.nextButtonClicked()}"
         android:padding="8dp"
         android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
-        android:visibility="gone"/>
+        android:visibility="@{stateFragment.isNextButtonVisible?View.VISIBLE : View.GONE}"/>
       <Button
         android:id="@+id/continue_state_button"
         style="@style/StateButtonActive"
         android:layout_alignParentEnd="true"
+        android:onClick="@{(v) -> stateFragment.continueButtonClicked()}"
         android:text="@string/state_continue_button"
-        android:visibility="gone"/>
+        android:visibility="@{stateFragment.isContinueButtonVisible?View.VISIBLE : View.GONE}"/>
       <Button
         android:id="@+id/submit_state_active_button"
         style="@style/StateButtonActive"
         android:layout_alignParentEnd="true"
+        android:onClick="@{(v) -> stateFragment.submitButtonClicked()}"
         android:text="@string/state_submit_button"
-        android:visibility="gone"/>
+        android:visibility="@{stateFragment.isActiveSubmitButtonVisible?View.VISIBLE : View.GONE}"/>
       <Button
         android:id="@+id/submit_state_inactive_button"
         style="@style/StateButtonInactive"
         android:layout_alignParentEnd="true"
         android:text="@string/state_submit_button"
-        android:visibility="gone"/>
+        android:visibility="@{stateFragment.isInactiveSubmitButtonVisible?View.VISIBLE : View.GONE}"/>
+      <Button
+        android:id="@+id/end_exploration_state_button"
+        style="@style/StateButtonActive"
+        android:layout_alignParentEnd="true"
+        android:onClick="@{(v) -> stateFragment.endExplorationButtonClicked()}"
+        android:text="@string/state_end_exploration_button"
+        android:visibility="@{stateFragment.isEndExplorationButtonVisible()?View.VISIBLE : View.GONE}"/>
+      <Button
+        android:id="@+id/learn_again_state_button"
+        style="@style/StateButtonActive"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/state_button_blue_background"
+        android:drawableEnd="@drawable/ic_refresh_white_24dp"
+        android:drawablePadding="4dp"
+        android:onClick="@{(v) -> stateFragment.learnAgainButtonClicked()}"
+        android:text="@string/state_learn_again_button"
+        android:visibility="@{stateFragment.isLearnAgainButtonVisible()?View.VISIBLE : View.GONE}"/>
     </RelativeLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
