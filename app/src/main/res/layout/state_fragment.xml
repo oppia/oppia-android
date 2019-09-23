@@ -32,15 +32,28 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
+      android:layout_marginTop="64dp"
       android:layout_marginEnd="8dp"
       android:layout_marginBottom="8dp"
       android:onClick="@{(v) -> stateFragment.dummyButtonClicked()}"
       android:text="Dummy Audio Button"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
+    <EditText
+      android:id="@+id/dummy_interaction_edit_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginEnd="8dp"
+      android:text="@{stateFragment.isInactiveSubmitButtonVisible()? @string/empty : ``+stateFragment.currentStateIndex}"
+      android:layout_marginBottom="8dp"
+      android:onTextChanged="@{stateFragment.onTextChanged}"
+      android:hint="Dummy interaction"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/dummy_audio_button"/>
     <RelativeLayout
       android:id="@+id/button_container_relative_layout"
       android:layout_width="match_parent"
@@ -51,7 +64,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/dummy_audio_button">
+      app:layout_constraintTop_toBottomOf="@id/dummy_interaction_edit_text">
       <ImageView
         android:id="@+id/previous_state_image_view"
         android:layout_width="wrap_content"

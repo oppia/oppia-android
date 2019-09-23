@@ -2,6 +2,7 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,10 +109,11 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
 
   private fun setCurrentStateIndex(stateIndex: Int, interactionId: String) {
     setAllButtonVisibilityGone()
-    if ((stateIndex-1) > currentStateIndex.get()) {
-      maxLearnerProgressIndex.set(stateIndex)
+    currentStateIndex.set(stateIndex)
+    if (maxLearnerProgressIndex.get() > currentStateIndex.get()) {
       isNextButtonVisible.set(true)
     } else {
+      maxLearnerProgressIndex.set(stateIndex)
       isNextButtonVisible.set(false)
       if (interactionId == CONTINUE) {
         isContinueButtonVisible.set(true)
@@ -126,7 +128,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
         isInactiveSubmitButtonVisible.set(true)
       }
     }
-    currentStateIndex.set(stateIndex)
   }
 
   private fun setAllButtonVisibilityGone() {
@@ -156,31 +157,55 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     dummyInteractionId.add("EndExploration")
   }
 
-  fun continueButtonClicked() {
+  fun nextState(){
     val nextStateIndex = currentStateIndex.get() + 1
-    if(nextStateIndex< dummyStateIndex.size){
-      setCurrentStateIndex(dummyStateIndex.get(nextStateIndex), dummyInteractionId.get(nextStateIndex))
+    if (nextStateIndex < dummyStateIndex.size) {
+      setCurrentStateIndex(dummyStateIndex[nextStateIndex], dummyInteractionId[nextStateIndex])
     }
   }
 
-  fun nextButtonClicked() {
+  fun previousState(){
+    val prevStateIndex = currentStateIndex.get() - 1
+    if (prevStateIndex >= 0) {
+      setCurrentStateIndex(dummyStateIndex[prevStateIndex], dummyInteractionId[prevStateIndex])
+    }
+  }
 
+  fun continueButtonClicked() {
+    nextState()
+  }
+
+  fun nextButtonClicked() {
+    nextState()
   }
 
   fun previousButtonClicked() {
-
+    previousState()
   }
 
   fun submitButtonClicked() {
-
+    nextState()
   }
 
   fun endExplorationButtonClicked() {
-
   }
 
   fun learnAgainButtonClicked() {
 
+  }
+
+  fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+    Log.w("tag", "onTextChanged $s")
+
+    if (isActiveSubmitButtonVisible.get()!! || isInactiveSubmitButtonVisible.get()!!) {
+      if (s.isNotEmpty()) {
+        isInactiveSubmitButtonVisible.set(false)
+        isActiveSubmitButtonVisible.set(true)
+      } else {
+        isInactiveSubmitButtonVisible.set(true)
+        isActiveSubmitButtonVisible.set(false)
+      }
+    }
   }
 }
 
