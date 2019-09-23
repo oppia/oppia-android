@@ -56,7 +56,7 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.ext:junit:1.1.1',
       'com.google.truth:truth:0.43',
-      'org.robolectric:robolectric:4.3'
+      'org.robolectric:robolectric:4.3',
   )
   androidTestImplementation(
       'androidx.test:core:1.2.0',
