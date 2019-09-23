@@ -10,7 +10,8 @@
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/oppiaLightBlue">
     <LinearLayout
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -40,5 +41,55 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
+    <RelativeLayout
+      android:id="@+id/button_container_relative_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:gravity="center_vertical"
+      android:padding="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/dummy_audio_button">
+      <ImageView
+        android:id="@+id/previous_state_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/previous_next_state_image_view_background"
+        android:contentDescription="@string/previous_state_description"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
+        android:visibility="gone"/>
+      <ImageView
+        android:id="@+id/next_state_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/previous_next_state_image_view_background"
+        android:contentDescription="@string/next_state_description"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
+        android:visibility="gone"/>
+      <Button
+        android:id="@+id/continue_state_button"
+        style="@style/StateButtonActive"
+        android:layout_alignParentEnd="true"
+        android:text="@string/state_continue_button"
+        android:visibility="gone"/>
+      <Button
+        android:id="@+id/submit_state_active_button"
+        style="@style/StateButtonActive"
+        android:layout_alignParentEnd="true"
+        android:text="@string/state_submit_button"
+        android:visibility="gone"/>
+      <Button
+        android:id="@+id/submit_state_inactive_button"
+        style="@style/StateButtonInactive"
+        android:layout_alignParentEnd="true"
+        android:text="@string/state_submit_button"
+        android:visibility="gone"/>
+    </RelativeLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
