@@ -38,7 +38,7 @@ class SplashActivityTest {
     SplashActivity::class.java, true,
     false
   )
-
+  
   @Before
   fun setUp() {
     //initial setup code
@@ -47,7 +47,6 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
-
     activityTestRule.launchActivity(null)
 
     intended(hasComponent(HomeActivity::class.java.getName()))
@@ -58,5 +57,4 @@ class SplashActivityTest {
     //clean up code
     Intents.release()
   }
-
 }
