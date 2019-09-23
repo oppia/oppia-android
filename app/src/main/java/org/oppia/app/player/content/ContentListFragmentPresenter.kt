@@ -10,11 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_card_items.view.*
 import org.oppia.app.application.ApplicationContext
-import org.oppia.app.databinding.ContentCardItemsBinding
 import org.oppia.app.databinding.ContentListFragmentBinding
-import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
-import org.oppia.util.data.URLImageParser
+import org.oppia.util.data.UrlImageParser
 import javax.inject.Inject
 
 /** Presenter for [ContentListFragment]. */
@@ -33,11 +31,9 @@ class ContentListFragmentPresenter @Inject constructor(
 
     binding.recyclerView.apply {
 
-//      binding.recyclerView.layoutManager = LinearLayoutManager(context)
-//      contentCardAdapter = ContentCardAdapter(context, contentList);
-//      binding.contentCardAdapter = ContentCardAdapter(context, contentList);
-     layoutManager = LinearLayoutManager(context)
-      adapter = createRecyclerViewAdapter();
+      binding.recyclerView.layoutManager = LinearLayoutManager(context)
+      contentCardAdapter = ContentCardAdapter(context, contentList);
+      binding.contentCardAdapter = ContentCardAdapter(context, contentList);
     }
     fetchDummyExplorations()
 
@@ -56,26 +52,5 @@ class ContentListFragmentPresenter @Inject constructor(
 
     contentList.add(GaeSubtitledHtml("Textinput","\u003cp\u003eI don't remember!\u003c/p\u003e"))
     contentList.add(GaeSubtitledHtml("Feedback","\u003cp\u003eThat's OK. Let's look at it again.\u003c/p\u003e"))
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<GaeSubtitledHtml> {
-    return BindableAdapter.Builder
-      .newBuilder<GaeSubtitledHtml>()
-      .registerViewDataBinder(
-        inflateDataBinding = ContentCardItemsBinding::inflate,
-        setViewModel = ContentCardItemsBinding::setHtmlContent)
-      .build()
-  }
-
-  fun convertHtmlToString(gaeSubtitledHtml: GaeSubtitledHtml): String{
-    var htmlContent : String=""
-    val imageGetter = URLImageParser(binding.root.tvContents, context)
-    val html: Spannable
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
-    } else {
-      html = Html.fromHtml(htmlContent, imageGetter, null) as Spannable
-    }
-    return html.toString()
   }
 }

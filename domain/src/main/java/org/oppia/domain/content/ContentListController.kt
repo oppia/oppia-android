@@ -3,6 +3,7 @@ package org.oppia.domain.content
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.data.backends.gae.api.ClassroomService
+import org.oppia.data.backends.gae.api.ExplorationService
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
@@ -17,23 +18,26 @@ import javax.inject.Singleton
 class ContentListController @Inject constructor(
   cacheStoryFactory: PersistentCacheStore.Factory,
   @BackgroundDispatcher backgroundDispatcher: CoroutineDispatcher,
-  private val classroomService: ClassroomService,
+  private val explorationService: ExplorationService,
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-
-  fun getTopicList(): LiveData<AsyncResult<List<GaeSubtitledHtml>>> {
-    var topicListProvider: DataProvider<GaeSubtitledHtml> = topicListStore
-    topicListProvider =
-      dataProviders.transformAsync("latest_classroom", topicListProvider) { cachedClassroom ->
-        maybeUpdateCache(cachedClassroom)
-      }
-    val classroomListProvider =
-      dataProviders.transform("latest_classroom_list", topicListProvider) { classroom ->
-        classroom.topicSummaryList
-      }
-    return dataProviders.convertToLiveData(classroomListProvider)
-  }
+//  private val contentListStore = cacheStoryFactory.create("htmContent", "exploration_content")
+//
+//
+//  fun getContentList(): LiveData<AsyncResult<List<GaeSubtitledHtml>>> {
+//    var contentListProvider: DataProvider<GaeSubtitledHtml> = contentListStore
+//    contentListProvider =
+//      dataProviders.transformAsync("exploration_content", contentListProvider) { cachedClassroom ->
+//        maybeUpdateCache(cachedClassroom)
+//      }
+//    val classroomListProvider =
+//      dataProviders.transform("exploration_content", contentListProvider) { state ->
+//        state.contentSummaryList
+//      }
+//    return dataProviders.convertToLiveData(classroomListProvider)
+//
+//  }
 
 
 }

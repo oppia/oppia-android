@@ -66,9 +66,9 @@ dependencies {
       "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1",
       "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1",
       'androidx.recyclerview:recyclerview:1.0.0',
-      'com.github.bumptech.glide:glide:4.9.0'
+      'com.github.bumptech.glide:glide:4.9.0',
+      'org.jsoup:jsoup:1.12.1',
   )
-  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
   testImplementation(
       'androidx.test:core:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0',

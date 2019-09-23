@@ -14,4 +14,4 @@ data class GaeSubtitledHtml(
   @Json(name = "content_id") val contentId: String?,
   @Json(name = "html") val html: String?
 
-) : Serializable
+)
