@@ -45,9 +45,7 @@ class LanguageDialogFragment : DialogFragment() {
         selectedIndex = which
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        if (languageInterface != null) {
-          languageInterface.onLanguageSelected(languageList.get(selectedIndex))
-        }
+        languageInterface.onLanguageSelected(languageList.get(selectedIndex))
         dismiss()
       }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->

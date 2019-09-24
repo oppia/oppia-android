@@ -22,7 +22,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   var isAudioFragmentShowing = ObservableField<Boolean>(false)
 
   init {
-    // Add code to control the value of showCellularDataDialog using AudioController.
+    // TODO(#116): Code to control the value of showCellularDataDialog using AudioController.
   }
 
   override fun onAttach(context: Context?) {
@@ -47,20 +47,18 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     if (previousFragment != null) {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
-    val dialogFragment = CellularDataDialogFragment.newInstance(
-      this
-    )
+    val dialogFragment = CellularDataDialogFragment.newInstance(this)
     dialogFragment.showNow(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
-  override fun enableAudioWhileOnCellular(doNotShowAgain: Boolean) {
+  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
     isAudioFragmentShowing.set(true)
-    // doNotShowAgain -> true -> save this preference
-    // doNotShowAgain -> false -> do not save this preference
+    // saveUserChoice -> true -> save this preference
+    // saveUserChoice -> false -> do not save this preference
   }
 
-  override fun disableAudioWhileOnCellular(doNotShowAgain: Boolean) {
-    // doNotShowAgain -> true -> save this preference
-    // doNotShowAgain -> false -> do not save this preference
+  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
+    // saveUserChoice -> true -> save this preference
+    // saveUserChoice -> false -> do not save this preference
   }
 }

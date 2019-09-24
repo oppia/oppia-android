@@ -23,6 +23,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
+// TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
 /** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
 class CellularDataDialogFragmentTest {
