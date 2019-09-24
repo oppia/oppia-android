@@ -36,7 +36,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
       this,
-      getDummyAudioLanguageList(),
+      getDummyAudioLanguageList() as ArrayList<String>,
       selectedLanguageCode
     )
     dialogFragment.showNow(fragmentManager, TAG_LANGUAGE_DIALOG)
