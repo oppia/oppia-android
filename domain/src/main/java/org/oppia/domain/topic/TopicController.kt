@@ -2,6 +2,9 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.lang.IllegalArgumentException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ChapterSummary.Playability
 import org.oppia.app.model.LessonThumbnail
@@ -10,9 +13,6 @@ import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.util.data.AsyncResult
-import java.lang.IllegalArgumentException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"

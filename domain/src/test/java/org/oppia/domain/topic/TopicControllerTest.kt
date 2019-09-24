@@ -75,12 +75,12 @@ class TopicControllerTest {
     assertThat(getSkillIds(topic)).containsExactly("test_skill_id_0", "test_skill_id_1").inOrder()
   }
 
-  // This test is intentionally verifying that there are no thumbnails for skills, since there are not yet any to
-  // populate.
   @Test
   fun testRetrieveTopic_validTopicWithSkills_skillsHaveNoThumbnailUrls() {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
+    // This test is intentionally verifying that there are no thumbnails for skills, since there are not yet any to
+    // populate.
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getSkill(0).thumbnailUrl).isEmpty()
     assertThat(topic.getSkill(1).thumbnailUrl).isEmpty()
