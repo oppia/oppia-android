@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.audio.CellularDataInterface
@@ -18,7 +17,6 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 class StateFragment : InjectableFragment(), CellularDataInterface {
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
-  private lateinit var cellularDataInterface: CellularDataInterface
   // Control this boolean value from controllers in domain module.
   private var showCellularDataDialog = true
   var isAudioFragmentShowing = ObservableField<Boolean>(false)
@@ -32,23 +30,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     fragmentComponent.inject(this)
   }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    onAttachToParentFragment(this)
-  }
-
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return stateFragmentPresenter.handleCreateView(inflater, container)
-  }
-
-  private fun onAttachToParentFragment(fragment: Fragment) {
-    try {
-      cellularDataInterface = fragment as CellularDataInterface
-    } catch (e: ClassCastException) {
-      throw ClassCastException(
-        "$fragment must implement CellularDataInterface"
-      )
-    }
   }
 
   fun dummyButtonClicked() {
@@ -65,7 +48,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
     val dialogFragment = CellularDataDialogFragment.newInstance(
-      cellularDataInterface
+      this
     )
     dialogFragment.showNow(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
