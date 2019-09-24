@@ -16,7 +16,7 @@ class LanguageDialogFragment : DialogFragment() {
     lateinit var languageList: List<String>
     var selectedIndex: Int = 0
     /**
-     * This function is responsible for displaying content in DialogFragment
+     * This function is responsible for displaying content in DialogFragment.
      * @param languageInterface: [LanguageInterface] to send data back to parent
      * @param languageList: List of strings containing languages
      * @param currentLanguageCode: Currently selected language code

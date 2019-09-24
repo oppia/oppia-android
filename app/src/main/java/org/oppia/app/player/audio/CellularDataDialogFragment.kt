@@ -17,7 +17,7 @@ class CellularDataDialogFragment : DialogFragment() {
   companion object {
     lateinit var cellularDataInterface: CellularDataInterface
     /**
-     * This function is responsible for displaying content in DialogFragment
+     * This function is responsible for displaying content in DialogFragment.
      * @param cellularDataInterface: [CellularDataInterface] to send data back to parent
      * @return [CellularDataDialogFragment]: DialogFragment
      */
