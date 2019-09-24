@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ChapterSummary.Playability
 import org.oppia.app.model.LessonThumbnailGraphic
@@ -72,7 +73,7 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly("test_skill_id_0", "test_skill_id_1").inOrder()
+    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1).inOrder()
   }
 
   @Test
@@ -93,7 +94,7 @@ class TopicControllerTest {
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
     assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_0)
-    assertThat(topic.getStory(0).getChapter(0).playability).isEqualTo(Playability.COMPLETED)
+    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
   }
 
   @Test
@@ -220,9 +221,9 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).playability).isEqualTo(Playability.COMPLETED)
-    assertThat(story.getChapter(1).playability).isEqualTo(Playability.NOT_STARTED)
-    assertThat(story.getChapter(2).playability).isEqualTo(Playability.MISSING_PREREQUISITES)
+    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -231,6 +232,8 @@ class TopicControllerTest {
 
     assertThat(storyLiveData.value!!.isFailure()).isTrue()
   }
+
+  // TODO(BenHenning): Add tests for getConceptCard().
 
   private fun setUpTestApplicationComponent() {
     DaggerTopicControllerTest_TestApplicationComponent.builder()

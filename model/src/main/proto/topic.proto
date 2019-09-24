@@ -3,6 +3,9 @@ syntax = "proto3";
 package model;
 
 import "thumbnail.proto";
+import "subtitled_html.proto";
+import "translation.proto";
+import "voiceover.proto";
 
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
@@ -26,6 +29,29 @@ message Topic {
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 6;
+}
+
+// Corresponds to a concept card that can be displayed for a specific skill.
+message ConceptCard {
+  // The ID corresponding to the skill this concept is representing.
+  string skill_id = 1;
+
+  // The skill's description that can help provide context on what content is being reviewed.
+  string skill_description = 2;
+
+  // The core explanation of the skill being reviewed.
+  SubtitledHtml explanation = 3;
+
+  // A list of worked examples to present to the learner.
+  repeated SubtitledHtml worked_example = 4;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 6;
 }
 
 // A summary of a story that can be played within a topic.
@@ -62,8 +88,8 @@ message ChapterSummary {
     COMPLETED = 3;
   }
 
-  // Indicates the playability of the current chapter, including whether it's already been completed.
-  Playability playability = 3;
+  // Indicates the playable state of the current chapter, including whether it's already been completed.
+  ChapterPlayState chapter_play_state = 3;
 
   // The thumbnail corresponding to this chapter.
   LessonThumbnail chapter_thumbnail = 4;

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message VoiceoverMapping {
+  // Mapping from language_code to a VoiceOver
+  map<string, Voiceover> voiceover_mapping = 1;
+}
+
+// Structure for a single voiceover
+// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeVoiceover.kt
+message Voiceover {
+  int64 file_size_bytes = 1;
+  bool needs_update = 2;
+  string file_name = 3;
+}

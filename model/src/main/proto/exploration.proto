@@ -1,9 +1,11 @@
 syntax = "proto3";
 
+package model;
+
 import "subtitled_html.proto";
 import "interaction_object.proto";
-
-package model;
+import "translation.proto";
+import "voiceover.proto";
 
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
@@ -66,19 +68,6 @@ message ParamChangeCustomizationArgs {
   repeated string list_of_values = 3;
 }
 
-message VoiceoverMapping {
-  // Mapping from language_code to a VoiceOver
-  map<string, Voiceover> voiceover_mapping = 1;
-}
-
-// Structure for a single voiceover
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeVoiceover.kt
-message Voiceover {
-  int64 file_size_bytes = 1;
-  bool needs_update = 2;
-  string file_name = 3;
-}
-
 // Structure for a single interaction
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeInteractionInstance.kt
 message Interaction {
@@ -91,18 +80,6 @@ message Interaction {
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
   map<string, InteractionObject> customization_args = 7;
-}
-
-message TranslationMapping {
-  // Mapping from language_code to Translation
-  map<string, Translation> translation_mapping = 1;
-}
-
-// Structure for a single translation
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeWrittenTranslation.kt
-message Translation {
-  string html = 1;
-  bool needs_update = 2;
 }
 
 // Structure for a single answer group
