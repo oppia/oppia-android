@@ -64,63 +64,65 @@ class ContentCardAdapter(
 
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(htmlContent: String?) {
+    fun bind(str: String?) {
+
+      var htmlContent = str
+
       binding.setVariable(BR.htmlContent, htmlContent)
       binding.executePendingBindings();
 
-      var result: Spanned
-      result = HtmlParser.buildSpannedText(binding.root.tvContents,context,htmlContent,
-        HtmlParser.TagHandler()
-        { b: Boolean, s: String, editable: Editable?, attributes: Attributes? ->
-          if (b && s.equals("oppia-noninteractive-image")) {
-            var value: String? = HtmlParser.getValue(attributes, "filepath-with-value");
+      var CUSTOM_TAG = "oppia-noninteractive-image"
+      var HTML_TAG = "img"
+      var CUSTOM_ATTRIBUTE = "filepath-with-value"
+      var HTML_ATTRIBUTE = "src"
+      if(htmlContent!!.contains(CUSTOM_TAG)){
+        Log.d("HTML3", "TRUE")
 
-            // unescapeEntities method to remove html quotes
-            var strictMode: Boolean = true;
-            var unescapedString: String = org.jsoup.parser.Parser.unescapeEntities(value, strictMode);
-            Log.d("value", "*****" + value)
-            Log.d("unescapedString", "*****" + unescapedString)
-          }
-          false;
+        Log.d("HTML1","htmlContent: " + htmlContent)
 
-        })
-      binding.root.tvContents.text = result
+        htmlContent = htmlContent.replace(CUSTOM_TAG,HTML_TAG, false);
+        htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE,HTML_ATTRIBUTE, false);
 
+        htmlContent = htmlContent.replace("&amp;quot;","")
+        Log.d("HTML2","htmlContent: " + htmlContent)
+      }
 
-//      result  = HtmlParser.buildSpannedText(htmlContent,
+      var imageGetter = UrlImageParser(binding.root.tvContents, context)
+      val html: Spannable
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+      } else {
+        html = Html.fromHtml(htmlContent, imageGetter,null) as Spannable
+      }
+
+      binding.root.tvContents.text = html
+
+//      var result: Spanned
+//      result = HtmlParser.buildSpannedText(binding.root.tvContents,context,htmlContent,
 //        HtmlParser.TagHandler()
 //        { b: Boolean, s: String, editable: Editable?, attributes: Attributes? ->
-//          Log.d("tag","*****"+s)
+//          if (b && s.equals("oppia-noninteractive-image")) {
+//            var value: String? = HtmlParser.getValue(attributes, "filepath-with-value");
 //
-//          s.equals("oppia-noninteractive-image");
+//            HtmlParser.replaceValue(attributes,"filepath-with-value")
+//            // unescapeEntities method to remove html quotes
+//            var strictMode: Boolean = true;
+//            var unescapedString: String = org.jsoup.parser.Parser.unescapeEntities(value, strictMode);
+//            Log.d("value", "*****" + value)
 //
+//            Log.d("unescapedString", "*****" + unescapedString.replace("\"", ""))
+//            htmlContent!!.startsWith("<img src=");
+//            htmlContent.endsWith("\"").toString().replace("\"","/>");
+////
+////            Log.d("value", "*****" + value)
+////            Log.d("image url", "*****" + GCS_PREFIX+GCS_RESOURCE_BUCKET_NAME+IMAGE_DOWNLOAD_URL_TEMPLATE+unescapedString.replace("\"", ""))
+//          }
+//          false;
 //
 //        })
 //      binding.root.tvContents.text = result
 
-//  fun _extractFilepathValueFromOppiaNonInteractiveImageTag (strHtml: String) {
-//    var filenames = [];
-//    var document: Document?=null
-//    var dummyElement = document?.createElement("div")
-//
-//    dummyElement.innerHTML = (
-//        HtmlEscaperService.escapedStrToUnescapedStr(strHtml));
-//
-//    var imageTagList = dummyElement.getElementsByTagName(
-//      'oppia-noninteractive-image');
-//    for (var i = 0; i < imageTagList.length; i++) {
-//    // We have the attribute of filepath in oppia-noninteractive-image tag.
-//    // But it actually contains the filename only. We use the variable
-//    // filename instead of filepath since in the end we are retrieving the
-//    // filenames in the exploration.
-//    var filename = JSON.parse(
-//      imageTagList[i].getAttribute('filepath-with-value'));
-//    filenames.push(filename);
-//  }
-//    return filenames;
-//  };
 
-//
     }
   }
 

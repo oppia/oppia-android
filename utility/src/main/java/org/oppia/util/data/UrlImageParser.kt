@@ -6,25 +6,31 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LevelListDrawable
 import android.text.Html
+import android.util.Log
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
 /** UrlImage Parser for android TextView to load Html Image tag */
-
 class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
+
+
+  val GCS_PREFIX: String = "https://storage.googleapis.com/"
+  val GCS_RESOURCE_BUCKET_NAME = "oppiaserver-resources/"
+  var  IMAGE_DOWNLOAD_URL_TEMPLATE = "/<entity_type>/<entity_id>/assets/image/<filename>"
+
 
   var targets: ArrayList<BitmapTarget>? = null
 
   override fun getDrawable(url: String): Drawable {
+    IMAGE_DOWNLOAD_URL_TEMPLATE = "exploration/umPkwp0L1M0-/assets/image/"
+
+    Log.d("url","htmlContent: " + url)
     val urlDrawable = UrlDrawable()
-    val load = Glide.with(context).asBitmap().load(URL(url))
+    val load = Glide.with(context).asBitmap().load(URL(GCS_PREFIX+GCS_RESOURCE_BUCKET_NAME+IMAGE_DOWNLOAD_URL_TEMPLATE+url))
     val target = BitmapTarget(urlDrawable)
     targets?.add(target)
     load.into(target)

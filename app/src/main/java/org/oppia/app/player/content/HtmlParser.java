@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 
+import android.util.Log;
 import android.widget.TextView;
 import org.oppia.util.data.UrlImageParser;
 import org.xml.sax.Attributes;
@@ -41,18 +42,23 @@ public class HtmlParser implements Html.TagHandler, ContentHandler
     }
     return null;
   }
-  public static String replaceValue(Attributes attributes, String name)
+  public static String replaceValue(Attributes attributes, String attrName)
   {
     for (int i = 0, n = attributes.getLength(); i < n; i++)
     {
-      if (name.equals(attributes.getLocalName(i))){
-            name= attributes.getValue(i).replace("filepath-with-value","img");
-        return name;
+      if (attrName.equals(attributes.getLocalName(i))){
+
+         attrName= attributes.getLocalName(i).replace("filepath-with-value","src");
+
+        Log.d("name=","replace="+attrName);
+
+        return attrName;
       }
 
     }
     return null;
   }
+
 
   private final TagHandler handler;
   private ContentHandler wrapped;
