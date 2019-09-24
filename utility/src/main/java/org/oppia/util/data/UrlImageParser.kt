@@ -21,14 +21,10 @@ import java.net.URL
 class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
 
   var targets: ArrayList<BitmapTarget>? = null
-  /***
-   * Get the Drawable from URL
-   * @param urlString
-   * @return
-   */
-  override fun getDrawable(urlString: String): Drawable {
+
+  override fun getDrawable(url: String): Drawable {
     val urlDrawable = UrlDrawable()
-    val load = Glide.with(context).asBitmap().load(URL(urlString))
+    val load = Glide.with(context).asBitmap().load(URL(url))
     val target = BitmapTarget(urlDrawable)
     targets?.add(target)
     load.into(target)

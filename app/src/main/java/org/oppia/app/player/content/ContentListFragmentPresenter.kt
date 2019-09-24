@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.content_card_items.view.*
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.ContentListFragmentBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
-import org.oppia.util.data.UrlImageParser
 import javax.inject.Inject
 
 /** Presenter for [ContentListFragment]. */
@@ -52,5 +51,16 @@ class ContentListFragmentPresenter @Inject constructor(
 
     contentList.add(GaeSubtitledHtml("Textinput","\u003cp\u003eI don't remember!\u003c/p\u003e"))
     contentList.add(GaeSubtitledHtml("Feedback","\u003cp\u003eThat's OK. Let's look at it again.\u003c/p\u003e"))
-  }
+    contentList.add(GaeSubtitledHtml("Feedback","<h1>Image Demo</h1>\\n\" +\n" +
+        "\" <p>\\n\" +\n" +
+        "\" <img src = \"https://storage.googleapis.com/oppiaserver-resources/exploration/umPkwp0L1M0-/assets/image/img_20180107_005032_elygooaqy7_height_143_width_136.png\"\\n\" +\n" +
+        "\" alt = \\\"Picture of a happy monkey\\\" />\\n\" +\n" +
+        "\" </p>\\n\" +\n" +
+        "\" <h2>This page has a picture of a monkey</h2>\\n\" +\n" +
+        "\" <p>\\n\" +\n" +
+        "\" This monkey is called 'Suzanne.' It's a default \\n\" +\n" +
+        "\" object in an incredible free 3D modeling tool\\n\" +\n" +
+        "\" called 'Blender.'\\n\" +\n" +
+        "\" </p>\";"))
+    }
 }

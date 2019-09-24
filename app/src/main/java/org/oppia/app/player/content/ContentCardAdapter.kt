@@ -2,6 +2,8 @@ package org.oppia.app.player.content
 
 import android.content.Context
 import android.text.Editable
+import android.text.Html
+import android.text.Spannable
 import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.ContentCardItemsBinding
 import org.oppia.app.databinding.RightInteractionCardItemBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
+import org.oppia.util.data.UrlImageParser
 import org.xml.sax.Attributes
 
 /** Adapter to bind the HTML contents to the [RecyclerView]. */
