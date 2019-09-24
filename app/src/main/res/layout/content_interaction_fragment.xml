@@ -1,43 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
-
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
   <!--<data>-->
-    <!--<variable-->
-      <!--name="contentCardAdapter"-->
-      <!--type="org.oppia.app.player.content.ContentCardAdapter" />-->
+  <!--<variable-->
+  <!--name="contentCardAdapter"-->
+  <!--type="org.oppia.app.player.content.ContentCardAdapter" />-->
   <!--</data>-->
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".player.content.ContentInteractionFragment">
 
-    <TextView
-      android:id="@+id/recyclerView"
+    <LinearLayout
+      android:id="@+id/rootContainer"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_above="@+id/btnContinue"
-      android:layout_alignParentTop="true"
-      android:layout_marginLeft="2dp"
-      android:layout_marginRight="2dp" />
-
-    <Button
-      android:id="@+id/btnBack"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_margin="5dp"
-      android:text="back"
-      android:visibility="gone" />
-
-    <Button
-      android:id="@+id/btnContinue"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentBottom="true"
-      android:layout_margin="5dp"
-      android:text="Continue" />
-  </RelativeLayout>
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:orientation="vertical">
+      <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp">
+      </RadioGroup>
+    </LinearLayout>
 </layout>

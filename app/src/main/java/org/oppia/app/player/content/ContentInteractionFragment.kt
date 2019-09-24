@@ -25,12 +25,12 @@ import java.lang.Exception
 import java.util.ArrayList
 import javax.inject.Inject
 
-/** This fragment displays contents. It handles rich-text response
+/** This fragment displays single/multiplechoice input interaction. It handles rich-text response
  */
 class ContentInteractionFragment : InjectableFragment() {
 
   @Inject
-  lateinit var contentListFragmentPresenter: ContentListFragmentPresenter
+  lateinit var contentInteractionFragmentPresenter: ContentInteractionFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -38,6 +38,6 @@ class ContentInteractionFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return contentListFragmentPresenter.handleCreateView(inflater, container)
+    return contentInteractionFragmentPresenter.handleCreateView(inflater, container)
   }
 }

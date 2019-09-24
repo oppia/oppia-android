@@ -32,6 +32,13 @@ public class HtmlParser implements Html.TagHandler, ContentHandler
     return Html.fromHtml("<oppia-noninteractive-image/>" + html, imageGetter, new HtmlParser(handler));
   }
 
+  public static Spanned buildSpannedText(String html, TagHandler handler)
+  {
+    // add a tag at the start that is not handled by default,
+    // allowing custom tag handler to replace xmlReader contentHandler
+    return Html.fromHtml("<oppia-noninteractive-image/>" + html, null, new HtmlParser(handler));
+  }
+
   public static String getValue(Attributes attributes, String name)
   {
     for (int i = 0, n = attributes.getLength(); i < n; i++)
