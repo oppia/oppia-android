@@ -35,13 +35,17 @@ class AudioPlayerController @Inject constructor(
   inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>() {
     override fun onActive() {
       super.onActive()
-      observerActive = true
+      audioLock.withLock {
+        observerActive = true
+      }
     }
 
     override fun onInactive() {
       super.onInactive()
-      observerActive = false
-      stopUpdatingSeekBar()
+      audioLock.withLock {
+        observerActive = false
+        stopUpdatingSeekBar()
+      }
     }
   }
 
@@ -63,7 +67,7 @@ class AudioPlayerController @Inject constructor(
   private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
   private var playProgress: AudioMutableLiveData? = null
   private var nextUpdateJob: Job? = null
-  private val seekBarLock = ReentrantLock()
+  private val audioLock = ReentrantLock()
 
   private var prepared = false
   private var observerActive = false
@@ -76,13 +80,15 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer must be inactive when calling this function
    */
   fun initializeMediaPlayer(url: String): LiveData<AsyncResult<PlayProgress>> {
-    check(!mediaPlayerActive) { "Media player has already been initialized" }
-    mediaPlayer.reset()
-    mediaPlayerActive = true
-    setMediaPlayerListeners()
-    prepareDataSource(url)
-    playProgress = AudioMutableLiveData()
-    return playProgress!!
+    audioLock.withLock {
+      check(!mediaPlayerActive) { "Media player has already been initialized" }
+      mediaPlayer.reset()
+      mediaPlayerActive = true
+      setMediaPlayerListeners()
+      prepareDataSource(url)
+      playProgress = AudioMutableLiveData()
+      return playProgress!!
+    }
   }
 
   /*
@@ -90,10 +96,12 @@ class AudioPlayerController @Inject constructor(
    * Puts media player in a preparing state
    */
   fun changeDataSource(url: String) {
-    prepared = false
-    stopUpdatingSeekBar()
-    mediaPlayer.reset()
-    prepareDataSource(url)
+    audioLock.withLock {
+      prepared = false
+      stopUpdatingSeekBar()
+      mediaPlayer.reset()
+      prepareDataSource(url)
+    }
   }
 
   private fun setMediaPlayerListeners() {
@@ -121,10 +129,12 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer should be in paused state
    */
   fun play() {
-    check(prepared) { "Media Player not in a prepared state" }
-    if (!mediaPlayer.isPlaying) {
-      mediaPlayer.start()
-      scheduleNextSeekBarUpdate()
+    audioLock.withLock {
+      check(prepared) { "Media Player not in a prepared state" }
+      if (!mediaPlayer.isPlaying) {
+        mediaPlayer.start()
+        scheduleNextSeekBarUpdate()
+      }
     }
   }
 
@@ -134,20 +144,22 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer should be in playing state
    */
   fun pause() {
-    check(prepared) { "Media Player not in a prepared state" }
-    if (mediaPlayer.isPlaying) {
-      playProgress?.value =
-        AsyncResult.success(
-          PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, mediaPlayer.duration)
-        )
-      mediaPlayer.pause()
-      stopUpdatingSeekBar()
+    audioLock.withLock {
+      check(prepared) { "Media Player not in a prepared state" }
+      if (mediaPlayer.isPlaying) {
+        playProgress?.value =
+          AsyncResult.success(
+            PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, mediaPlayer.duration)
+          )
+        mediaPlayer.pause()
+        stopUpdatingSeekBar()
+      }
     }
   }
 
   private fun scheduleNextSeekBarUpdate() {
-    if (observerActive && prepared) {
-      seekBarLock.withLock {
+    audioLock.withLock {
+      if (observerActive && prepared) {
         nextUpdateJob = CoroutineScope(backgroundDispatcher).launch {
           delay(SEEKBAR_UPDATE_FREQUENCY)
           updateSeekBar()
@@ -158,17 +170,19 @@ class AudioPlayerController @Inject constructor(
   }
 
   private fun updateSeekBar() {
-    if (mediaPlayer.isPlaying) {
-      playProgress?.postValue(
-        AsyncResult.success(
-          PlayProgress(PlayStatus.PLAYING, mediaPlayer.currentPosition, mediaPlayer.duration)
+    audioLock.withLock {
+      if (mediaPlayer.isPlaying) {
+        playProgress?.postValue(
+          AsyncResult.success(
+            PlayProgress(PlayStatus.PLAYING, mediaPlayer.currentPosition, mediaPlayer.duration)
+          )
         )
-      )
+      }
     }
   }
 
   private fun stopUpdatingSeekBar() {
-    seekBarLock.withLock {
+    audioLock.withLock {
       nextUpdateJob?.cancel()
       nextUpdateJob = null
     }
@@ -179,13 +193,15 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer must be active when calling this function
    */
   fun releaseMediaPlayer() {
-    check(mediaPlayerActive) { "Media player has not been previously initialized" }
-    mediaPlayerActive = false
-    prepared = false
-    mediaPlayer.release()
-    stopUpdatingSeekBar()
-    playProgress?.removeObservers(fragment)
-    playProgress = null
+    audioLock.withLock {
+      check(mediaPlayerActive) { "Media player has not been previously initialized" }
+      mediaPlayerActive = false
+      prepared = false
+      mediaPlayer.release()
+      stopUpdatingSeekBar()
+      playProgress?.removeObservers(fragment)
+      playProgress = null
+    }
   }
 
   /**
@@ -193,8 +209,10 @@ class AudioPlayerController @Inject constructor(
    * Must call [initializeMediaPlayer] and wait for prepared state first.
    */
   fun seekTo(position: Int)  {
-    check(prepared) { "Media Player not in a prepared state" }
-    mediaPlayer.seekTo(position)
+    audioLock.withLock {
+      check(prepared) { "Media Player not in a prepared state" }
+      mediaPlayer.seekTo(position)
+    }
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
