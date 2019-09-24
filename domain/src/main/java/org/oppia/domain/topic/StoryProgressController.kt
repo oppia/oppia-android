@@ -2,12 +2,12 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.StoryProgress
 import org.oppia.util.data.AsyncResult
-import javax.inject.Inject
-import javax.inject.Singleton
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_1 = "test_story_id_1"
@@ -94,6 +94,11 @@ class StoryProgressController @Inject constructor() {
     )
   }
 
+  /**
+   * Mutable container for [StoryProgress] that provides support for determining whether a specific chapter can be
+   * played in the context of this story, marking a chapter as played, and converting to a [StoryProgress] object for
+   * reporting to the UI.
+   */
   private class TrackedStoryProgress(private val chapterList: List<String>, completedChapters: Set<String>) {
     private val trackedCompletedChapters: MutableSet<String> = completedChapters.toMutableSet()
 
