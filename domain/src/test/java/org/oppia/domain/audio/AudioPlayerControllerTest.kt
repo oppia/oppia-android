@@ -3,6 +3,7 @@ package org.oppia.domain.audio
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -70,7 +71,7 @@ class AudioPlayerControllerTest {
     setUpTestApplicationComponent()
     addMediaInfo()
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
-    shadowMediaPlayer.dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
+    shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
   }
 
 
@@ -81,7 +82,7 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokePreparedListener()
 
     assertThat(shadowMediaPlayer.isPrepared).isTrue()
-    assertThat(audioPlayerController.isPlaying()).isFalse()
+    assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
   }
 
   @Test
@@ -90,7 +91,6 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.play()
 
-    assertThat(audioPlayerController.isPlaying()).isTrue()
     assertThat(shadowMediaPlayer.isReallyPlaying).isTrue()
   }
 
@@ -100,7 +100,6 @@ class AudioPlayerControllerTest {
 
     audioPlayerController.pause()
 
-    assertThat(audioPlayerController.isPlaying()).isFalse()
     assertThat(shadowMediaPlayer.isReallyPlaying).isFalse()
   }
 
@@ -124,8 +123,6 @@ class AudioPlayerControllerTest {
 
   @Test
   fun testAudioObserver_invokePrepare_capturesPreparedState() {
-    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
-
     arrangeMediaPlayer()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -135,7 +132,6 @@ class AudioPlayerControllerTest {
 
   @Test
   fun testAudioObserver_invokeCompletion_capturesCompletedState() {
-    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
     arrangeMediaPlayer()
 
     shadowMediaPlayer.invokeCompletionListener()
@@ -147,7 +143,6 @@ class AudioPlayerControllerTest {
 
   @Test
   fun testAudioObserver_invokeChangeDataSource_capturesPendingState() {
-    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
     arrangeMediaPlayer()
 
     audioPlayerController.changeDataSource(TEST_URL)
@@ -158,7 +153,6 @@ class AudioPlayerControllerTest {
 
   @Test
   fun testAudioObserver_invokePlay_capturesPlayingState() {
-    audioPlayerController.getPlayState().observeForever(mockAudioPlayerObserver)
     arrangeMediaPlayer()
 
     audioPlayerController.play()
@@ -170,13 +164,13 @@ class AudioPlayerControllerTest {
   }
 
   private fun arrangeMediaPlayer() {
-    audioPlayerController.initializeMediaPlayer(TEST_URL)
+    audioPlayerController.initializeMediaPlayer(TEST_URL).observeForever(mockAudioPlayerObserver)
     shadowMediaPlayer.invokePreparedListener()
   }
 
   private fun addMediaInfo() {
     val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
-    val mediaInfo = ShadowMediaPlayer.MediaInfo(1000, 0)
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
   }
 
@@ -234,6 +228,9 @@ class AudioPlayerControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @Provides
+    fun provideFragment(): Fragment = Fragment()
   }
 
   // TODO(#89): Move this to a common test application component.
