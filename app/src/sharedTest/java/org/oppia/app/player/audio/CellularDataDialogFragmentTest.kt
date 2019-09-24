@@ -3,7 +3,7 @@ package org.oppia.app.player.audio
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -30,11 +30,11 @@ class CellularDataDialogFragmentTest {
   @Test
   fun testCellularDataDialogFragment_loadDialogFragment_loadAudioFragment_loadLanguageFragment_isDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
-      Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withText("OK")).perform(click())
-      Espresso.onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
-      Espresso.onView(withId(R.id.tvAudioLanguage)).perform(click())
-      Espresso.onView(withText(R.string.audio_language_select_dialog_title)).check(matches(isDisplayed()))
+      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withText("OK")).perform(click())
+      onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
+      onView(withId(R.id.tvAudioLanguage)).perform(click())
+      onView(withText(R.string.audio_language_select_dialog_title)).check(matches(isDisplayed()))
     }
   }
 

@@ -12,12 +12,11 @@ import org.oppia.app.R
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
  */
 class CellularDataDialogFragment : DialogFragment() {
-  private var doNotShowAgain: Boolean = false
-
   companion object {
     lateinit var cellularDataInterface: CellularDataInterface
     /**
      * This function is responsible for displaying content in DialogFragment.
+     *
      * @param cellularDataInterface: [CellularDataInterface] to send data back to parent
      * @return [CellularDataDialogFragment]: DialogFragment
      */
@@ -33,27 +32,22 @@ class CellularDataDialogFragment : DialogFragment() {
     val view = activity!!.layoutInflater.inflate(R.layout.cellular_data_dialog, null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
-    checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-      doNotShowAgain = isChecked
-    }
-
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.cellular_data_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)
       .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { dialog, whichButton ->
         if (cellularDataInterface != null) {
-          cellularDataInterface.enableAudioWhileOnCellular(doNotShowAgain)
+          cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
         }
         dismiss()
       }
       .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { dialog, whichButton ->
         if (cellularDataInterface != null) {
-          cellularDataInterface.disableAudioWhileOnCellular(doNotShowAgain)
+          cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
         }
         dismiss()
       }
-      .setCancelable(true)
       .create()
   }
 }

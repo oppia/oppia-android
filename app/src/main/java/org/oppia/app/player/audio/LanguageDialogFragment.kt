@@ -17,6 +17,7 @@ class LanguageDialogFragment : DialogFragment() {
     var selectedIndex: Int = 0
     /**
      * This function is responsible for displaying content in DialogFragment.
+     *
      * @param languageInterface: [LanguageInterface] to send data back to parent
      * @param languageList: List of strings containing languages
      * @param currentLanguageCode: Currently selected language code
@@ -52,7 +53,6 @@ class LanguageDialogFragment : DialogFragment() {
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
         dismiss()
       }
-      .setCancelable(true)
       .create()
   }
 }
