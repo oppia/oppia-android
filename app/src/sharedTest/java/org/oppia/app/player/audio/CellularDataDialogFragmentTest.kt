@@ -29,7 +29,7 @@ import javax.inject.Singleton
 class CellularDataDialogFragmentTest {
 
   @Test
-  fun testCellularDataDialogFragment_loadDialogFragment_loadAudioFragment_loadLanguageFragment_isDisplayed() {
+  fun testCellularDataDialogFragment_loadCellularDialogFragment_loadAudioFragment_loadLanguageFragment_isDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText("OK")).perform(click())

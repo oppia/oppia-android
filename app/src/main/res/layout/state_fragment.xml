@@ -7,6 +7,9 @@
     <variable
       name="stateFragment"
       type="org.oppia.app.player.state.StateFragment"/>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.StateViewModel"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -16,7 +19,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
-      android:visibility="@{stateFragment.isAudioFragmentShowing? View.VISIBLE: View.GONE}"
+      android:visibility="@{viewModel.isAudioFragmentVisible? View.VISIBLE: View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">

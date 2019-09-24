@@ -19,7 +19,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   lateinit var stateFragmentPresenter: StateFragmentPresenter
   // Control this boolean value from controllers in domain module.
   private var showCellularDataDialog = true
-  var isAudioFragmentShowing = ObservableField<Boolean>(false)
 
   init {
     // TODO(#116): Code to control the value of showCellularDataDialog using AudioController.
@@ -35,10 +34,11 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   }
 
   fun dummyButtonClicked() {
-    if (showCellularDataDialog && !isAudioFragmentShowing.get()!!) {
+    if (showCellularDataDialog) {
+      stateFragmentPresenter.setAudioFragmentVisible(false)
       showCellularDataDialogFragment()
     } else {
-      isAudioFragmentShowing.set(false)
+      stateFragmentPresenter.setAudioFragmentVisible(true)
     }
   }
 
@@ -52,7 +52,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   }
 
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    isAudioFragmentShowing.set(true)
+    stateFragmentPresenter.setAudioFragmentVisible(true)
     // saveUserChoice -> true -> save this preference
     // saveUserChoice -> false -> do not save this preference
   }
