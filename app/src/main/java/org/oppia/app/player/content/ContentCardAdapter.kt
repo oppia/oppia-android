@@ -75,16 +75,12 @@ class ContentCardAdapter(
       var HTML_TAG = "img"
       var CUSTOM_ATTRIBUTE = "filepath-with-value"
       var HTML_ATTRIBUTE = "src"
-      if(htmlContent!!.contains(CUSTOM_TAG)){
-        Log.d("HTML3", "TRUE")
 
-        Log.d("HTML1","htmlContent: " + htmlContent)
+      if(htmlContent!!.contains(CUSTOM_TAG)){
 
         htmlContent = htmlContent.replace(CUSTOM_TAG,HTML_TAG, false);
         htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE,HTML_ATTRIBUTE, false);
-
         htmlContent = htmlContent.replace("&amp;quot;","")
-        Log.d("HTML2","htmlContent: " + htmlContent)
       }
 
       var imageGetter = UrlImageParser(binding.root.tvContents, context)
@@ -94,7 +90,6 @@ class ContentCardAdapter(
       } else {
         html = Html.fromHtml(htmlContent, imageGetter,null) as Spannable
       }
-
       binding.root.tvContents.text = html
 
 //      var result: Spanned
@@ -121,8 +116,6 @@ class ContentCardAdapter(
 //
 //        })
 //      binding.root.tvContents.text = result
-
-
     }
   }
 

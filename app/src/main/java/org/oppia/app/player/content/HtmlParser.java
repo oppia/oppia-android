@@ -54,7 +54,6 @@ public class HtmlParser implements Html.TagHandler, ContentHandler
 
         return attrName;
       }
-
     }
     return null;
   }
