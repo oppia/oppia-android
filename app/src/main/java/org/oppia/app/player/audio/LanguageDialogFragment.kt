@@ -15,22 +15,17 @@ private const val KEY_SELECTED_INDEX = "SELECTED_INDEX"
  */
 class LanguageDialogFragment : DialogFragment() {
   companion object {
-    lateinit var languageInterface: LanguageInterface
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
-     * @param languageInterface: [LanguageInterface] to send data back to parent
      * @param languageArrayList: List of strings containing languages
      * @param currentLanguageCode: Currently selected language code
      * @return [LanguageDialogFragment]: DialogFragment
      */
     fun newInstance(
-      languageInterface: LanguageInterface,
       languageArrayList: ArrayList<String>,
       currentLanguageCode: String
     ): LanguageDialogFragment {
-      this.languageInterface = languageInterface
-
       val selectedIndex = languageArrayList.indexOf(currentLanguageCode)
       val languageDialogFragment = LanguageDialogFragment()
       val args = Bundle()
@@ -45,6 +40,8 @@ class LanguageDialogFragment : DialogFragment() {
     var selectedIndex = arguments!!.getInt(KEY_SELECTED_INDEX, 0)
     val languageArrayList: ArrayList<String> = arguments?.getStringArrayList(KEY_LANGUAGE_LIST) as ArrayList<String>
     val options = languageArrayList.toTypedArray<CharSequence>()
+
+    val languageInterface: LanguageInterface = targetFragment as AudioFragment
 
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.audio_language_select_dialog_title)

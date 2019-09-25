@@ -7,23 +7,19 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import android.widget.CheckBox
 import org.oppia.app.R
+import org.oppia.app.player.state.StateFragment
 
 /**
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
  */
 class CellularDataDialogFragment : DialogFragment() {
   companion object {
-    lateinit var cellularDataInterface: CellularDataInterface
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
-     * @param cellularDataInterface: [CellularDataInterface] to send data back to parent
      * @return [CellularDataDialogFragment]: DialogFragment
      */
-    fun newInstance(
-      cellularDataInterface: CellularDataInterface
-    ): CellularDataDialogFragment {
-      this.cellularDataInterface = cellularDataInterface
+    fun newInstance(): CellularDataDialogFragment {
       return CellularDataDialogFragment()
     }
   }
@@ -31,6 +27,8 @@ class CellularDataDialogFragment : DialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val view = activity!!.layoutInflater.inflate(R.layout.cellular_data_dialog, null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
+
+    val cellularDataInterface: CellularDataInterface = targetFragment as StateFragment
 
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.cellular_data_alert_dialog_title)

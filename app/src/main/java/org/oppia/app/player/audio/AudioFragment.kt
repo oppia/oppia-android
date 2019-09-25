@@ -9,6 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
+private const val REQUEST_CODE_DIALOG = 1
 
 /** Fragment that controls audio for a content-card. */
 class AudioFragment : InjectableFragment(), LanguageInterface {
@@ -35,10 +36,10 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      this,
       getDummyAudioLanguageList() as ArrayList<String>,
       selectedLanguageCode
     )
+    dialogFragment.setTargetFragment(this, REQUEST_CODE_DIALOG)
     dialogFragment.showNow(fragmentManager, TAG_LANGUAGE_DIALOG)
   }
 

@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ObservableField
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.audio.CellularDataInterface
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+private const val REQUEST_CODE_DIALOG = 1
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface {
@@ -47,7 +47,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     if (previousFragment != null) {
       fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
     }
-    val dialogFragment = CellularDataDialogFragment.newInstance(this)
+    val dialogFragment = CellularDataDialogFragment.newInstance()
+    dialogFragment.setTargetFragment(this, REQUEST_CODE_DIALOG)
     dialogFragment.showNow(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
