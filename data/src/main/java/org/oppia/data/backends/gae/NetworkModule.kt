@@ -61,10 +61,11 @@ class NetworkModule {
   fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
     return retrofit.create(ClassroomService::class.java)
   }
+
   /**
-   * Provides the Classroom service implementation.
+   * Provides the Exploration service implementation.
    * @param retrofit the Retrofit object used to instantiate the service
-   * @return the Classroom service implementation.
+   * @return the Exploration service implementation.
    */
   @Provides
   @Singleton

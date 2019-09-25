@@ -7,11 +7,8 @@ import retrofit2.http.Path
 
 /** Service that provides access to exploration endpoints. */
 interface ExplorationService {
-
-  @GET("bins/ypzch")
-//  fun getExplorationById(@Path("exploration_id") explorationId: String): Call<GaeExplorationContainer>
-  fun getExplorationById(): Call<GaeExplorationContainer>
-//  @GET("explorehandler/init/{exploration_id}")
-//  fun getExplorationById(@Path("exploration_id") explorationId: String): Call<GaeExplorationContainer>
+  
+  @GET("explorehandler/init/{exploration_id}")
+  fun getExplorationById(@Path("exploration_id") explorationId: String): Call<GaeExplorationContainer>
 
 }
