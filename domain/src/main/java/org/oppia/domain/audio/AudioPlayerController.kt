@@ -161,8 +161,8 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
       if (observerActive && prepared) {
         nextUpdateJob = CoroutineScope(backgroundDispatcher).launch {
-          delay(SEEKBAR_UPDATE_FREQUENCY)
           updateSeekBar()
+          delay(SEEKBAR_UPDATE_FREQUENCY)
           scheduleNextSeekBarUpdate()
         }
       }
@@ -217,4 +217,7 @@ class AudioPlayerController @Inject constructor(
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun getNextUpdateJob(): Job? = nextUpdateJob
 }

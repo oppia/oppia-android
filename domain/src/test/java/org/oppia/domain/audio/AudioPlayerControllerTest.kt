@@ -14,6 +14,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,6 +41,7 @@ import org.oppia.util.data.AsyncResult
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import javax.inject.Qualifier
+import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -49,6 +51,14 @@ class AudioPlayerControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  @field:AudioPlayerControllerTest.TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
+  private val coroutineContext by lazy {
+    EmptyCoroutineContext + testDispatcher
+  }
 
   @Mock
   lateinit var mockAudioPlayerObserver: Observer<AsyncResult<AudioPlayerController.PlayProgress>>
@@ -65,6 +75,7 @@ class AudioPlayerControllerTest {
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
 
   private val TEST_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  private val TEST_URL2 = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
 
   @Before
   fun setup() {
@@ -145,7 +156,18 @@ class AudioPlayerControllerTest {
   fun testAudioObserver_invokeChangeDataSource_capturesPendingState() {
     arrangeMediaPlayer()
 
-    audioPlayerController.changeDataSource(TEST_URL)
+    audioPlayerController.changeDataSource(TEST_URL2)
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+  }
+
+  @Test
+  fun testAudioObserver_invokeChangeDataSourceAfterPlay_capturesPendingState() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+    audioPlayerController.changeDataSource(TEST_URL2)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
@@ -156,11 +178,80 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAudioObserver_invokePlayAndWait_capturesManyPlayingState() = runBlockingTest(coroutineContext){
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+    advanceTimeBy(1000) //Wait for next schedule update call
+    shadowMediaPlayer.invokeCompletionListener()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.allValues.size).isEqualTo(4)
+    assertThat(audioPlayerResultCaptor.allValues[0].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PREPARED)
+    assertThat(audioPlayerResultCaptor.allValues[1].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues[2].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testAudioObserver_invokePause_capturesPausedState() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
     audioPlayerController.pause()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
     assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PAUSED)
+  }
+
+  @Test
+  fun testAudioObserver_invokePrepared_capturesCorrectProgress() {
+    //TODO
+  }
+
+  @Test
+  fun testAudioObserver_invokeSeekTo_capturesCorrectProgress() {
+    //TODO
+  }
+
+  @Test
+  fun testAudioObserver_invokeChangeDataSource_capturesCorrectProgress() {
+    //TODO
+  }
+
+  @Test
+  fun testScheduling_invokePause_checkJobIsNull() {
+    //TODO
+  }
+
+  @Test
+  fun testScheduling_invokeCompletion_checkJobIsNull() {
+    //TODO
+  }
+
+  @Test
+  fun testScheduling_noObservers_checkJobIsNull() {
+    //TODO
+  }
+
+  @Test
+  fun testScheduling_addAndRemoveObservers_checkJobStates() {
+    //TODO
+  }
+
+  @Test
+  fun testError() {
+    //TODO
   }
 
   private fun arrangeMediaPlayer() {
