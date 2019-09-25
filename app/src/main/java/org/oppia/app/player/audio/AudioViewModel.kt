@@ -9,7 +9,6 @@ import javax.inject.Inject
 @FragmentScope
 class AudioViewModel @Inject constructor(
 ) : ViewModel() {
-
   val currentLanguageCode = ObservableField<String>("en")
 
   fun setAudioLanguageCode(languageCode: String) {
