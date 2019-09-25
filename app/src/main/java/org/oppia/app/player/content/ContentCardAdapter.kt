@@ -22,35 +22,29 @@ import org.xml.sax.Attributes
 
 /** Adapter to bind the HTML contents to the [RecyclerView]. */
 class ContentCardAdapter(
-  internal var context: Context,
-  contentList: MutableList<GaeSubtitledHtml>
-) :
-  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  private val context: Context,
+  val contentList: MutableList<GaeSubtitledHtml>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private val VIEW_TYPE_CONTENT = 1
   private val VIEW_TYPE_RIGHT_INTERACTION = 2
 
-  internal var contentList: MutableList<GaeSubtitledHtml>?
-
-  init {
-    this.contentList = contentList
-  }
-
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    if (viewType == VIEW_TYPE_CONTENT) {
-      val inflater = LayoutInflater.from(parent.getContext())
-      val binding =
-        DataBindingUtil.inflate<ContentCardItemsBinding>(inflater, R.layout.content_card_items, parent, false)
-      return ContentViewHolder(binding)
-    } else {
-      val inflater = LayoutInflater.from(parent.getContext())
-      val binding = DataBindingUtil.inflate<RightInteractionCardItemBinding>(
-        inflater,
-        R.layout.right_interaction_card_item,
-        parent,
-        false
-      )
-      return RightInteractionViewHolder(binding)
+
+    return when (viewType) {
+      VIEW_TYPE_CONTENT -> {
+        val inflater = LayoutInflater.from(parent.getContext())
+        val binding =
+          DataBindingUtil.inflate<ContentCardItemsBinding>(inflater, R.layout.content_card_items, parent, false)
+        ContentViewHolder(binding)
+      }
+      VIEW_TYPE_RIGHT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.getContext())
+        val binding =
+          DataBindingUtil.inflate<RightInteractionCardItemBinding>(inflater, R.layout.right_interaction_card_item, parent, false)
+        RightInteractionViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
@@ -60,6 +54,20 @@ class ContentCardAdapter(
       VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html)
       VIEW_TYPE_RIGHT_INTERACTION -> (holder as RightInteractionViewHolder).bind(contentList!!.get(position).html)
     }
+  }
+
+  // Determines the appropriate ViewType according to the sender of the message.
+  override fun getItemViewType(position: Int): Int {
+
+    return if (!contentList!!.get(position).contentId!!.contains("content") && !contentList!!.get(position).contentId!!.contains("Feedback")) {
+      VIEW_TYPE_RIGHT_INTERACTION
+    } else {
+      VIEW_TYPE_CONTENT
+    }
+  }
+
+  override fun getItemCount(): Int {
+    return contentList!!.size
   }
 
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -76,11 +84,11 @@ class ContentCardAdapter(
       var CUSTOM_ATTRIBUTE = "filepath-with-value"
       var HTML_ATTRIBUTE = "src"
 
-      if(htmlContent!!.contains(CUSTOM_TAG)){
+      if (htmlContent!!.contains(CUSTOM_TAG)) {
 
-        htmlContent = htmlContent.replace(CUSTOM_TAG,HTML_TAG, false);
-        htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE,HTML_ATTRIBUTE, false);
-        htmlContent = htmlContent.replace("&amp;quot;","")
+        htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
+        htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
+        htmlContent = htmlContent.replace("&amp;quot;", "")
       }
 
       var imageGetter = UrlImageParser(binding.root.tvContents, context)
@@ -88,88 +96,40 @@ class ContentCardAdapter(
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
         html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
       } else {
-        html = Html.fromHtml(htmlContent, imageGetter,null) as Spannable
+        html = Html.fromHtml(htmlContent, imageGetter, null) as Spannable
       }
       binding.root.tvContents.text = html
-
-//      var result: Spanned
-//      result = HtmlParser.buildSpannedText(binding.root.tvContents,context,htmlContent,
-//        HtmlParser.TagHandler()
-//        { b: Boolean, s: String, editable: Editable?, attributes: Attributes? ->
-//          if (b && s.equals("oppia-noninteractive-image")) {
-//            var value: String? = HtmlParser.getValue(attributes, "filepath-with-value");
-//
-//            HtmlParser.replaceValue(attributes,"filepath-with-value")
-//            // unescapeEntities method to remove html quotes
-//            var strictMode: Boolean = true;
-//            var unescapedString: String = org.jsoup.parser.Parser.unescapeEntities(value, strictMode);
-//            Log.d("value", "*****" + value)
-//
-//            Log.d("unescapedString", "*****" + unescapedString.replace("\"", ""))
-//            htmlContent!!.startsWith("<img src=");
-//            htmlContent.endsWith("\"").toString().replace("\"","/>");
-////
-////            Log.d("value", "*****" + value)
-////            Log.d("image url", "*****" + GCS_PREFIX+GCS_RESOURCE_BUCKET_NAME+IMAGE_DOWNLOAD_URL_TEMPLATE+unescapedString.replace("\"", ""))
-//          }
-//          false;
-//
-//        })
-//      binding.root.tvContents.text = result
     }
   }
-
 
   inner class RightInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(htmlContent: String?) {
+    fun bind(str: String?) {
+      var htmlContent = str
+
       binding.setVariable(BR.htmlContent, htmlContent)
       binding.executePendingBindings();
 
-      var result: Spanned
-      result = HtmlParser.buildSpannedText(binding.root.tvContents,context,htmlContent,
-        HtmlParser.TagHandler()
-        { b: Boolean, s: String, editable: Editable?, attributes: Attributes? ->
-          if (b && s.equals("oppia-noninteractive-image")) {
-            var value: String? = HtmlParser.getValue(attributes, "filepath-with-value");
+      var CUSTOM_TAG = "oppia-noninteractive-image"
+      var HTML_TAG = "img"
+      var CUSTOM_ATTRIBUTE = "filepath-with-value"
+      var HTML_ATTRIBUTE = "src"
 
-            // unescapeEntities method to remove html quotes
-            var strictMode: Boolean = true;
-            var unescapedString: String = org.jsoup.parser.Parser.unescapeEntities(value, strictMode);
-            Log.d("value", "*****" + value)
-            Log.d("unescapedString", "*****" + unescapedString)
-          }
-          false;
+      if (htmlContent!!.contains(CUSTOM_TAG)) {
 
-        })
-      binding.root.tvContents.text = result
-//
-//      var imageGetter = UrlImageParser(binding.root.tvContents, context)
-//      val html: Spannable
-//      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//        html = Html.fromHtml(result.toString(), Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
-//      } else {
-//        html = Html.fromHtml(result.toString(), imageGetter,null) as Spannable
-//      }
-//
-//      binding.root.tvContents.text = html
+        htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
+        htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
+        htmlContent = htmlContent.replace("&amp;quot;", "")
+      }
+
+      var imageGetter = UrlImageParser(binding.root.tvContents, context)
+      val html: Spannable
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
+      } else {
+        html = Html.fromHtml(htmlContent, imageGetter, null) as Spannable
+      }
+      binding.root.tvContents.text = html
     }
-  }
-
-  // Determines the appropriate ViewType according to the sender of the message.
-  override fun getItemViewType(position: Int): Int {
-
-    if (!contentList!!.get(position).contentId!!.contains("content") && !contentList!!.get(position).contentId!!.contains(
-        "Feedback"
-      )
-    ) {
-      return VIEW_TYPE_RIGHT_INTERACTION
-    } else {
-      return VIEW_TYPE_CONTENT
-    }
-  }
-
-  override fun getItemCount(): Int {
-    return contentList!!.size
   }
 }
