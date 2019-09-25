@@ -1,12 +1,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-
   <data>
     <variable
       name="htmlContent"
-      type="String" />
+      type="String"/>
   </data>
-
   <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -15,15 +12,14 @@
     android:layout_marginRight="5dp"
     android:layout_marginBottom="5dp"
     android:orientation="vertical">
-
     <TextView
       android:id="@+id/tvContents"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{htmlContent}"
+      android:layout_alignParentRight="true"
+      android:background="@drawable/bg_white_card"
       android:gravity="right|center"
       android:padding="8dp"
-      android:background="@drawable/bg_white_card"
-      android:layout_alignParentRight="true" />
+      android:text="@{htmlContent}"/>
   </RelativeLayout>
 </layout>

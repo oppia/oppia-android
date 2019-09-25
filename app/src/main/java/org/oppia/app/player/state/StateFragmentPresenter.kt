@@ -8,7 +8,7 @@ import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** The controller for [StateFragment]. */
+/** Presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment

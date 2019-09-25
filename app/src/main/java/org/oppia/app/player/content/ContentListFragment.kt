@@ -25,8 +25,7 @@ import java.lang.Exception
 import java.util.ArrayList
 import javax.inject.Inject
 
-/** This fragment displays contents. It handles rich-text response
- */
+/** Fragment that displays rich-text content. */
 class ContentListFragment : InjectableFragment() {
 
   @Inject

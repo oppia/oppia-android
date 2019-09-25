@@ -1,14 +1,11 @@
 package org.oppia.app.player.content
 
 import android.content.Context
-import android.text.Html
-import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.content_card_items.view.*
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.ContentListFragmentBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml

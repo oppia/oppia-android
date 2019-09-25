@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
-
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
   <data>
     <variable
       name="contentCardAdapter"
-      type="org.oppia.app.player.content.ContentCardAdapter" />
+      type="org.oppia.app.player.content.ContentCardAdapter"/>
   </data>
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".player.content.ContentListFragment">
-
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyclerView"
       android:layout_width="match_parent"
@@ -22,10 +20,9 @@
       android:layout_marginLeft="2dp"
       android:layout_marginRight="2dp"
       android:adapter="@{contentCardAdapter}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       android:divider="@android:color/transparent"
-      android:dividerHeight="8dp" />
-
+      android:dividerHeight="8dp"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <Button
       android:id="@+id/btnBack"
       android:layout_width="wrap_content"
@@ -33,8 +30,7 @@
       android:layout_alignParentBottom="true"
       android:layout_margin="5dp"
       android:text="back"
-      android:visibility="gone" />
-
+      android:visibility="gone"/>
     <Button
       android:id="@+id/btnContinue"
       android:layout_width="wrap_content"
@@ -42,6 +38,6 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentBottom="true"
       android:layout_margin="5dp"
-      android:text="Continue" />
+      android:text="Continue"/>
   </RelativeLayout>
 </layout>

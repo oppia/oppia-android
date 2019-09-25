@@ -10,7 +10,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeFragment
 import javax.inject.Inject
 
-/** The controller for [ExplorationFragment]. */
+/** Presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment

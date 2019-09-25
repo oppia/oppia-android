@@ -7,7 +7,7 @@ import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.content.ContentListFragment
 import javax.inject.Inject
 
-/** The controller for [ExplorationActivity]. */
+/** Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
