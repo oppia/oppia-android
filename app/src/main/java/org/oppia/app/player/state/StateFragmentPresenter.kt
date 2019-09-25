@@ -31,4 +31,36 @@ class StateFragmentPresenter @Inject constructor(
   fun setAudioFragmentVisible(isVisible: Boolean) {
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
+
+  fun setNextButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setNextButtonVisible(isVisible)
+  }
+
+  fun setPreviousButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setPreviousButtonVisible(isVisible)
+  }
+
+  fun setContinueButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setContinueButtonVisible(isVisible)
+  }
+
+  fun setActiveSubmitButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setActiveSubmitButtonVisible(isVisible)
+  }
+
+  fun setInactiveSubmitButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setInactiveSubmitButtonVisible(isVisible)
+  }
+
+  fun setLearnAgainButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setLearnAgainButtonVisible(isVisible)
+  }
+
+  fun setEndExplorationButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setEndExplorationButtonVisible(isVisible)
+  }
+
+  fun hideAllButtons() {
+    getStateViewModel().hideAllButtons()
+  }
 }
