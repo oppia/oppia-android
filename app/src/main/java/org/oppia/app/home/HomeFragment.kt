@@ -1,10 +1,12 @@
 package org.oppia.app.home
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -17,7 +19,9 @@ class HomeFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
+  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return homeFragmentController.handleCreateView(inflater, container)
   }
+
 }
