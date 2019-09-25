@@ -1,23 +1,14 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
-  <!--<data>-->
-  <!--<variable-->
-  <!--name="contentCardAdapter"-->
-  <!--type="org.oppia.app.player.content.ContentCardAdapter" />-->
-  <!--</data>-->
-
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
       android:id="@+id/rootContainer"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:gravity="center"
       android:orientation="vertical">
       <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp">
+      android:padding="15dp">
       </RadioGroup>
     </LinearLayout>
 </layout>
