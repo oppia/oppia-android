@@ -121,11 +121,11 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
         || interactionId == TEXT_INPUT || interactionId == FRACTION_INPUT
         || interactionId == NUMERIC_INPUT || interactionId == NUMERIC_WITH_UNITS
       ) {
-        stateFragmentPresenter.setInactiveSubmitButtonVisible(true)
+        stateFragmentPresenter.setSubmitButtonVisible(true)
       } else if (interactionId == END_EXPLORATION) {
         stateFragmentPresenter.setEndExplorationButtonVisible(true)
       } else {
-        stateFragmentPresenter.setInactiveSubmitButtonVisible(true)
+        stateFragmentPresenter.setSubmitButtonVisible(true)
       }
     }
   }
@@ -148,6 +148,12 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     nextState()
   }
 
+  fun endExplorationButtonClicked() {
+  }
+
+  fun learnAgainButtonClicked() {
+  }
+
   fun nextButtonClicked() {
     nextState()
   }
@@ -158,11 +164,5 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
 
   fun submitButtonClicked() {
     nextState()
-  }
-
-  fun endExplorationButtonClicked() {
-  }
-
-  fun learnAgainButtonClicked() {
   }
 }

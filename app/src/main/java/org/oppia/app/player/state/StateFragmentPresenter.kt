@@ -44,16 +44,8 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setContinueButtonVisible(isVisible)
   }
 
-  fun setActiveSubmitButtonVisible(isVisible: Boolean) {
-    getStateViewModel().setActiveSubmitButtonVisible(isVisible)
-  }
-
-  fun setInactiveSubmitButtonVisible(isVisible: Boolean) {
-    getStateViewModel().setInactiveSubmitButtonVisible(isVisible)
-  }
-
-  fun setLearnAgainButtonVisible(isVisible: Boolean) {
-    getStateViewModel().setLearnAgainButtonVisible(isVisible)
+  fun setSubmitButtonVisible(isVisible: Boolean) {
+    getStateViewModel().setSubmitButtonVisible(isVisible)
   }
 
   fun setEndExplorationButtonVisible(isVisible: Boolean) {

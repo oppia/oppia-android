@@ -50,9 +50,8 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="8dp"
       android:layout_marginBottom="8dp"
-      android:onTextChanged="@{viewModel.onTextChanged}"
       android:hint="Dummy interaction"
-      android:text="@{viewModel.isInactiveSubmitButtonVisible()? @string/empty : ``+stateFragment.currentStateIndex}"
+      android:onTextChanged="@{viewModel.onTextChanged}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/dummy_audio_button"/>
@@ -98,17 +97,14 @@
         android:visibility="@{viewModel.isContinueButtonVisible()? View.VISIBLE: View.GONE}"/>
       <Button
         android:id="@+id/submit_state_active_button"
-        style="@style/StateButtonActive"
-        android:layout_alignParentEnd="true"
-        android:onClick="@{(v) -> stateFragment.submitButtonClicked()}"
-        android:text="@string/state_submit_button"
-        android:visibility="@{viewModel.isActiveSubmitButtonVisible()? View.VISIBLE: View.GONE}"/>
-      <Button
-        android:id="@+id/submit_state_inactive_button"
         style="@style/StateButtonInactive"
         android:layout_alignParentEnd="true"
+        android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
+        android:clickable="@{viewModel.isSubmitButtonActive()}"
+        android:onClick="@{(v) -> stateFragment.submitButtonClicked()}"
         android:text="@string/state_submit_button"
-        android:visibility="@{viewModel.isInactiveSubmitButtonVisible()? View.VISIBLE: View.GONE}"/>
+        android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"
+        android:visibility="@{viewModel.isSubmitButtonVisible()? View.VISIBLE: View.GONE}"/>
       <Button
         android:id="@+id/end_exploration_state_button"
         style="@style/StateButtonActive"

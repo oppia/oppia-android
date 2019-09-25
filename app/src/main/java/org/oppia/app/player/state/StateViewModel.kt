@@ -14,8 +14,8 @@ class StateViewModel @Inject constructor() : ViewModel() {
   var isLearnAgainButtonVisible = ObservableField<Boolean>(false)
   var isNextButtonVisible = ObservableField<Boolean>(false)
   var isPreviousButtonVisible = ObservableField<Boolean>(false)
-  var isActiveSubmitButtonVisible = ObservableField<Boolean>(false)
-  var isInactiveSubmitButtonVisible = ObservableField<Boolean>(false)
+  var isSubmitButtonVisible = ObservableField<Boolean>(false)
+  var isSubmitButtonActive = ObservableField<Boolean>(false)
 
   fun hideAllButtons() {
     isContinueButtonVisible.set(false)
@@ -23,8 +23,7 @@ class StateViewModel @Inject constructor() : ViewModel() {
     isLearnAgainButtonVisible.set(false)
     isNextButtonVisible.set(false)
     isPreviousButtonVisible.set(false)
-    isActiveSubmitButtonVisible.set(false)
-    isInactiveSubmitButtonVisible.set(false)
+    isSubmitButtonVisible.set(false)
   }
 
   fun setAudioFragmentVisible(isVisible: Boolean) {
@@ -51,23 +50,15 @@ class StateViewModel @Inject constructor() : ViewModel() {
     isPreviousButtonVisible.set(isVisible)
   }
 
-  fun setActiveSubmitButtonVisible(isVisible: Boolean) {
-    isActiveSubmitButtonVisible.set(isVisible)
-  }
-
-  fun setInactiveSubmitButtonVisible(isVisible: Boolean) {
-    isInactiveSubmitButtonVisible.set(isVisible)
+  fun setSubmitButtonVisible(isVisible: Boolean) {
+    isSubmitButtonVisible.set(isVisible)
   }
 
   fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-    if (isActiveSubmitButtonVisible.get()!! || isInactiveSubmitButtonVisible.get()!!) {
-      if (s.isNotEmpty()) {
-        isInactiveSubmitButtonVisible.set(false)
-        isActiveSubmitButtonVisible.set(true)
-      } else {
-        isInactiveSubmitButtonVisible.set(true)
-        isActiveSubmitButtonVisible.set(false)
-      }
+    if (s.isNotEmpty()) {
+      isSubmitButtonActive.set(true)
+    } else {
+      isSubmitButtonActive.set(false)
     }
   }
 }
