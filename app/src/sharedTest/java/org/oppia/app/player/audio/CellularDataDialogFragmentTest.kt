@@ -15,6 +15,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -32,10 +33,21 @@ class CellularDataDialogFragmentTest {
   fun testCellularDataDialogFragment_loadCellularDialogFragment_loadAudioFragment_loadLanguageFragment_isDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
-      onView(withText("OK")).perform(click())
+      onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.cellular_data_alert_dialog_okay_button)).perform(click())
       onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
       onView(withId(R.id.tvAudioLanguage)).perform(click())
       onView(withText(R.string.audio_language_select_dialog_title)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testCellularDataDialogFragment_loadCellularDialogFragment_clickCancelButton_audioFragmentIsNotDisplayed() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.cellular_data_alert_dialog_cancel_button)).perform(click())
+      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
     }
   }
 
