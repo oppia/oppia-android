@@ -36,6 +36,7 @@ class ContentListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  //TODO (#121) :Replace this once interface for ExplorationDataController is available
   private fun fetchDummyExplorations() {
 
     contentList.add(
