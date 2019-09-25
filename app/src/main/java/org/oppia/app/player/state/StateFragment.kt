@@ -31,9 +31,9 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   private lateinit var dummyStateIndex: ArrayList<Int>
   private lateinit var dummyInteractionId: ArrayList<String>
 
-  val currentStateIndex = ObservableInt(0)
+  private val currentStateIndex = ObservableInt(0)
   // Indicates the maximum state-index learner has reached.
-  // This variable helps in figuring out whether to show "Next" button or not
+  // This variable helps in figuring out whether to show "Next" button or not.
   private val maxLearnerProgressIndex = ObservableInt(0)
 
   init {
@@ -84,7 +84,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     // saveUserChoice -> false -> do not save this preference
   }
 
-  // This method will be deleted in final implementation
+  // TODO(#163): Remove this dummy data in final state-implementation
   private fun createDummyDataForButtonCheck() {
     dummyStateIndex = ArrayList()
     dummyInteractionId = ArrayList()
@@ -103,6 +103,12 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     dummyInteractionId.add("EndExploration")
   }
 
+  /**
+   * This function is responsible controlling left and right button visiblty
+   *
+   * @param [stateIndex]: Int: This controls the left/previous button based on its value.
+   * @param [interactionId]: String: This controls the right button based on the interaction-id
+   */
   private fun setCurrentStateIndex(stateIndex: Int, interactionId: String) {
     stateFragmentPresenter.hideAllButtons()
     currentStateIndex.set(stateIndex)
@@ -130,6 +136,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     }
   }
 
+  // Dummy method to go to next state
   private fun nextState() {
     val nextStateIndex = currentStateIndex.get() + 1
     if (nextStateIndex < dummyStateIndex.size) {
@@ -137,6 +144,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     }
   }
 
+  // Dummy method to go to previous state
   private fun previousState() {
     val prevStateIndex = currentStateIndex.get() - 1
     if (prevStateIndex >= 0) {
@@ -145,24 +153,30 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   }
 
   fun continueButtonClicked() {
+    // TODO(#163): Handle continue button click here.
     nextState()
   }
 
   fun endExplorationButtonClicked() {
+    // TODO(#163): Handle end-exploration button click here.
   }
 
   fun learnAgainButtonClicked() {
+    // TODO(#163): Handle learn-again button click here.
   }
 
   fun nextButtonClicked() {
+    // TODO(#163): Handle next button click here.
     nextState()
   }
 
   fun previousButtonClicked() {
+    // TODO(#163): Handle previous button click here.
     previousState()
   }
 
   fun submitButtonClicked() {
+    // TODO(#163): Handle submit button click here.
     nextState()
   }
 }
