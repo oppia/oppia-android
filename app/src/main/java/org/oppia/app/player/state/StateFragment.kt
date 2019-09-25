@@ -11,7 +11,6 @@ import org.oppia.app.player.audio.CellularDataInterface
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
-private const val REQUEST_CODE_DIALOG = 1
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface {
@@ -43,13 +42,12 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragmentManager?.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    val previousFragment = childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
     if (previousFragment != null) {
-      fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
+      childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = CellularDataDialogFragment.newInstance()
-    dialogFragment.setTargetFragment(this, REQUEST_CODE_DIALOG)
-    dialogFragment.showNow(fragmentManager, TAG_CELLULAR_DATA_DIALOG)
+    dialogFragment.showNow(childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {

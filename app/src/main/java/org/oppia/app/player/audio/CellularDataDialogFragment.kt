@@ -28,7 +28,7 @@ class CellularDataDialogFragment : DialogFragment() {
     val view = activity!!.layoutInflater.inflate(R.layout.cellular_data_dialog, null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
-    val cellularDataInterface: CellularDataInterface = targetFragment as StateFragment
+    val cellularDataInterface: CellularDataInterface = parentFragment as StateFragment
 
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.cellular_data_alert_dialog_title)

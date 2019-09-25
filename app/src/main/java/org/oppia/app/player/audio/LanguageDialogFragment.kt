@@ -37,11 +37,14 @@ class LanguageDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    var selectedIndex = arguments!!.getInt(KEY_SELECTED_INDEX, 0)
-    val languageArrayList: ArrayList<String> = arguments?.getStringArrayList(KEY_LANGUAGE_LIST) as ArrayList<String>
+
+    val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
+
+    var selectedIndex = args.getInt(KEY_SELECTED_INDEX, 0)
+    val languageArrayList: ArrayList<String> = args.getStringArrayList(KEY_LANGUAGE_LIST)
     val options = languageArrayList.toTypedArray<CharSequence>()
 
-    val languageInterface: LanguageInterface = targetFragment as AudioFragment
+    val languageInterface: LanguageInterface = parentFragment as AudioFragment
 
     return AlertDialog.Builder(activity as Context)
       .setTitle(R.string.audio_language_select_dialog_title)
