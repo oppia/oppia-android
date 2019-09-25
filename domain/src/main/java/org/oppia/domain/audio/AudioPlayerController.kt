@@ -37,6 +37,8 @@ class AudioPlayerController @Inject constructor(
       super.onActive()
       audioLock.withLock {
         observerActive = true
+        if (prepared && mediaPlayer.isPlaying)
+          scheduleNextSeekBarUpdate()
       }
     }
 

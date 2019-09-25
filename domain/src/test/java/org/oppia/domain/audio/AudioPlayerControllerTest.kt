@@ -42,6 +42,8 @@ import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import javax.inject.Qualifier
 import kotlin.coroutines.EmptyCoroutineContext
+import org.oppia.domain.audio.AudioPlayerController.PlayStatus
+import java.lang.IllegalStateException
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -66,12 +68,10 @@ class AudioPlayerControllerTest {
   @Captor
   lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<AudioPlayerController.PlayProgress>>
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var fragment: Fragment
 
-  @Inject
-  lateinit var audioPlayerController: AudioPlayerController
-
+  @Inject lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
 
   private val TEST_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
@@ -84,7 +84,6 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
   }
-
 
   @Test
   fun testAudioPlayer_successfulInitialize_reportsSuccessfulInit() {
@@ -138,7 +137,7 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PREPARED)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
   }
 
   @Test
@@ -149,7 +148,7 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
   }
 
   @Test
@@ -181,7 +180,7 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
   }
 
   @Test
@@ -195,10 +194,10 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.allValues.size).isEqualTo(4)
-    assertThat(audioPlayerResultCaptor.allValues[0].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PREPARED)
-    assertThat(audioPlayerResultCaptor.allValues[1].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
-    assertThat(audioPlayerResultCaptor.allValues[2].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PLAYING)
-    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.allValues[0].getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
+    assertThat(audioPlayerResultCaptor.allValues[1].getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues[2].getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -211,47 +210,172 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(AudioPlayerController.PlayStatus.PAUSED)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)
   }
 
   @Test
   fun testAudioObserver_invokePrepared_capturesCorrectProgress() {
-    //TODO
+    arrangeMediaPlayer()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
   }
 
   @Test
   fun testAudioObserver_invokeSeekTo_capturesCorrectProgress() {
-    //TODO
+    arrangeMediaPlayer()
+
+    audioPlayerController.seekTo(500)
+    audioPlayerController.play()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+  }
+
+  @Test
+  fun testAudioObserver_invokePlay_capturesCorrectDuration() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().duration).isEqualTo(1000)
   }
 
   @Test
   fun testAudioObserver_invokeChangeDataSource_capturesCorrectProgress() {
-    //TODO
+    arrangeMediaPlayer()
+
+    audioPlayerController.seekTo(500)
+    audioPlayerController.changeDataSource(TEST_URL2)
+    shadowMediaPlayer.invokePreparedListener()
+    audioPlayerController.play()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
   }
 
   @Test
-  fun testScheduling_invokePause_checkJobIsNull() {
-    //TODO
+  fun testAudioObserver_invokeRelease_checkRemoveObservers() {
+    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
+    playProgress.observe(fragment, mockAudioPlayerObserver)
+
+    audioPlayerController.play()
+    audioPlayerController.releaseMediaPlayer()
+
+    assertThat(shadowMediaPlayer.state).isEquivalentAccordingToCompareTo(ShadowMediaPlayer.State.END)
+    assertThat(playProgress.hasObservers()).isFalse()
   }
 
   @Test
-  fun testScheduling_invokeCompletion_checkJobIsNull() {
-    //TODO
+  @ExperimentalCoroutinesApi
+  fun testScheduling_invokePause_checkJobIsNull() = runBlockingTest(coroutineContext) {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNotNull()
+    audioPlayerController.pause()
+
+    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
   }
 
   @Test
-  fun testScheduling_noObservers_checkJobIsNull() {
-    //TODO
+  @ExperimentalCoroutinesApi
+  fun testScheduling_invokeCompletion_checkJobIsNull() = runBlockingTest(coroutineContext) {
+    arrangeMediaPlayer()
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNotNull()
+    shadowMediaPlayer.invokeCompletionListener()
+
+    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
   }
 
   @Test
-  fun testScheduling_addAndRemoveObservers_checkJobStates() {
-    //TODO
+  @ExperimentalCoroutinesApi
+  fun testScheduling_noObservers_checkJobIsNull() = runBlockingTest(coroutineContext) {
+    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
+    playProgress.observeForever(mockAudioPlayerObserver)
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNotNull()
+    playProgress.removeObserver(mockAudioPlayerObserver)
+
+    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
   }
 
   @Test
-  fun testError() {
-    //TODO
+  @ExperimentalCoroutinesApi
+  fun testScheduling_addAndRemoveObservers_checkJobStates() = runBlockingTest(coroutineContext) {
+    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
+
+    playProgress.observeForever(mockAudioPlayerObserver)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNotNull()
+    audioPlayerController.pause()
+
+    playProgress.removeObserver(mockAudioPlayerObserver)
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
+  }
+
+  @Test
+  fun testError_invokeInitTwice_checkFails() {
+    arrangeMediaPlayer()
+
+    try {
+      audioPlayerController.initializeMediaPlayer(TEST_URL2)
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Media player has already been initialized")
+    }
+  }
+
+  @Test
+  fun testError_invokeRelease_checkFails() {
+    try {
+      audioPlayerController.releaseMediaPlayer()
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Media player has not been previously initialized")
+    }
+  }
+
+  @Test
+  fun testError_invokePlay_checkFails() {
+    audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    try {
+      audioPlayerController.play()
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Media Player not in a prepared state")
+    }
+  }
+
+  @Test
+  fun testError_invokePause_checkFails() {
+    audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    try {
+      audioPlayerController.pause()
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Media Player not in a prepared state")
+    }
+  }
+
+  @Test
+  fun testError_invokeSeekTo_checkFails() {
+    audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    try {
+      audioPlayerController.seekTo(500)
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Media Player not in a prepared state")
+    }
   }
 
   private fun arrangeMediaPlayer() {
@@ -321,6 +445,7 @@ class AudioPlayerControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
 
     @Provides
+    @Singleton
     fun provideFragment(): Fragment = Fragment()
   }
 
