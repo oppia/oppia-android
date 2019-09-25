@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.audio.CellularDataInterface
+import org.oppia.domain.audio.CellularDialogController
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface {
+class StateFragment @Inject constructor(
+  private val cellularDialogController: CellularDialogController
+) : InjectableFragment(), CellularDataInterface {
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
   // Control this boolean value from controllers in domain module.
-  private var showCellularDataDialog = true
+  private var showCellularDataDialog = true //TODO
 
   init {
     // TODO(#116): Code to control the value of showCellularDataDialog using AudioController.
@@ -52,11 +55,13 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
 
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
     stateFragmentPresenter.setAudioFragmentVisible(true)
+    if (saveUserChoice) cellularDialogController.setShowDialogPreference(true)
     // saveUserChoice -> true -> save this preference
     // saveUserChoice -> false -> do not save this preference
   }
 
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
+    if (saveUserChoice) cellularDialogController.setShowDialogPreference(false)
     // saveUserChoice -> true -> save this preference
     // saveUserChoice -> false -> do not save this preference
   }
