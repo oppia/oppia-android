@@ -44,18 +44,20 @@ enum ObjectType {
 // Structure for a single state
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeState.kt
 message State {
+  // The name of the State.
+  string name = 1;
   // Mapping from content_id to a VoiceoverMapping
-  map<string, VoiceoverMapping> recorded_voiceovers = 1;
-  SubtitledHtml content = 2;
+  map<string, VoiceoverMapping> recorded_voiceovers = 2;
+  SubtitledHtml content = 3;
   // Mapping from content_id to a TranslationMapping
-  map<string, TranslationMapping> written_translations = 3;
-  repeated ParamChange param_changes = 4;
-  string classifier_model_id = 5;
-  Interaction interaction = 6;
+  map<string, TranslationMapping> written_translations = 4;
+  repeated ParamChange param_changes = 5;
+  string classifier_model_id = 6;
+  Interaction interaction = 7;
   // Boolean indicating whether the creator wants to ask for answer details
   // from the learner about why they picked a particular answer while
   // playing the exploration.
-  bool solicit_answer_details = 7;
+  bool solicit_answer_details = 8;
 }
 
 // Structure for customization args for ParamChange objects.
