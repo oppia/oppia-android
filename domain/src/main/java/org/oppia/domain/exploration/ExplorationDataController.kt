@@ -11,6 +11,9 @@ import org.oppia.util.data.AsyncResult
 import java.io.IOException
 import android.content.res.AssetManager
 import androidx.annotation.Nullable
+import org.json.JSONObject
+
+
 
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
@@ -23,45 +26,47 @@ class ExplorationDataController @Inject constructor(private val context: Context
   /**
    * Returns an  [Exploration] given an ID.
    */
-
   fun getExplorationById(ID: String): LiveData<AsyncResult<Exploration>> {
     return MutableLiveData(AsyncResult.success(createExploration(ID)))
   }
 
-
   private fun createExploration(ID: String): Exploration {
-    return if (ID == TEST_EXPLORATION_ID_0) createExploration0() else createExploration1();
+    return if (ID == TEST_EXPLORATION_ID_0) createExploration0() else createExploration1()
     }
 
+  // Returns the "welcome" exploration
   private fun createExploration0(): Exploration {
+    val welcomeObject = loadJSONFromAsset("welcome.json")
     return Exploration.newBuilder()
      // Add fields
       .build()
   }
 
   private fun createExploration1(): Exploration {
+    val aboutOppiaObject = loadJSONFromAsset("about_oppia.json")
     return Exploration.newBuilder()
      // Add fields
       .build()
   }
 
   @Nullable
-  fun loadJSONFromAsset(assetName: String): String? {
-    val am = context.getAssets()
+  fun loadJSONFromAsset(assetName: String): JSONObject? {
+    val am = context.assets
 
-    var json: String? = null
+    var jsonObject: JSONObject?
     try {
-      val `is` = am.open("assetName")
+      val `is` = am.open(assetName)
       val size = `is`.available()
       val buffer = ByteArray(size)
       `is`.read(buffer)
       `is`.close()
-      json = String(buffer, "UTF-8")
+      val json = String(buffer, Charsets.UTF_8)
+      jsonObject = JSONObject(json)
     } catch (ex: IOException) {
       ex.printStackTrace()
       return null
     }
 
-    return json
+    return jsonObject
   }
 }
