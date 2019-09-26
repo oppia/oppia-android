@@ -15,7 +15,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
-/** UrlImage Parser for android TextView to load Html Image tag */
+/** UrlImage Parser for android TextView to extract image from Html content. */
 class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
 
 
