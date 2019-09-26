@@ -46,30 +46,23 @@ class ExplorationDataController @Inject constructor(private val context: Context
 
   @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
   private suspend fun retrieveWelcomeExplorationAsync(): AsyncResult<Exploration> {
-    return AsyncResult.success(createExploration0())
+    return AsyncResult.success(createExploration("welcome.json"))
   }
 
   @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
   private suspend fun retrieveAbboutOppiaExplorationAsync(): AsyncResult<Exploration> {
-    return AsyncResult.success(createExploration1())
+    return AsyncResult.success(createExploration("about_oppia.json"))
   }
 
   // Returns the "welcome" exploration
-  private fun createExploration0(): Exploration {
-    val welcomeObject = loadJSONFromAsset("welcome.json")
+  private fun createExploration(Id: String): Exploration {
+    val explorationObject = loadJSONFromAsset(Id)
     return Exploration.newBuilder()
-      .setTitle(welcomeObject?.getString("title"))
-      .setLanguageCode(welcomeObject?.getString("language_code"))
-      .setInitStateName(welcomeObject?.getString("init_state_name"))
-      .setObjective(welcomeObject?.getString("objective"))
-      .putAllStates(createStatesFromJsonObject(welcomeObject?.getJSONObject("states")))
-      .build()
-  }
-
-  private fun createExploration1(): Exploration {
-    val aboutOppiaObject = loadJSONFromAsset("about_oppia.json")
-    return Exploration.newBuilder()
-     // Add fields
+      .setTitle(explorationObject?.getString("title"))
+      .setLanguageCode(explorationObject?.getString("language_code"))
+      .setInitStateName(explorationObject?.getString("init_state_name"))
+      .setObjective(explorationObject?.getString("objective"))
+      .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
       .build()
   }
 
@@ -93,27 +86,29 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return jsonObject
   }
 
-  private fun createStatesFromJsonObject(statesJsonObject: JSONObject): MutableMap<String, State> {
+  private fun createStatesFromJsonObject(statesJsonObject: JSONObject?): MutableMap<String, State> {
     val statesMap: MutableMap<String, State> = mutableMapOf()
-    val statesIterator = statesJsonObject.keys().iterator()
+    val statesKeys = statesJsonObject?.keys()?: return statesMap
+    val statesIterator = statesKeys.iterator()
     while(statesIterator.hasNext()) {
       val key = statesIterator.next()
-      statesMap.put(key, createStateFromJson(statesJsonObject.getJSONObject(key)))
+      statesMap[key] =  createStateFromJson(statesJsonObject.getJSONObject(key))
     }
     return statesMap
   }
 
-  private fun createStateFromJson(stateJson: JSONObject): State {
+  private fun createStateFromJson(stateJson: JSONObject?): State {
     return State.newBuilder()
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
-          stateJson.getJSONObject("content")?.getString("html")))
-      .setInteraction(createInteractionFromJson(stateJson.getJSONObject("interaction")))
+          stateJson?.getJSONObject("content")?.getString("html")))
+      .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
       .build()
   }
 
   private fun createInteractionFromJson(interactionJson: JSONObject?): Interaction {
     return Interaction.newBuilder()
+      .setId(interactionJson?.getString("id"))
       // Add data
       .build()
   }
