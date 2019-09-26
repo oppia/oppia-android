@@ -218,7 +218,4 @@ class AudioPlayerController @Inject constructor(
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  fun getNextUpdateJob(): Job? = nextUpdateJob
 }
