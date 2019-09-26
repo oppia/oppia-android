@@ -7,6 +7,7 @@ import android.text.method.DigitsKeyListener
 import android.widget.EditText
 
 import org.oppia.app.R
+
 /** The customclass for [NumberInputInteractionView]. */
 class NumberInputInteractionView : EditText {
 
@@ -21,6 +22,7 @@ class NumberInputInteractionView : EditText {
     init()
   }
 
+  //update default attributes of NumberInputInteractionView here
   fun init() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel = 10
@@ -37,7 +39,6 @@ class NumberInputInteractionView : EditText {
     filterArray[0] = InputFilter.LengthFilter(length)
     setFilters(filterArray)
   }
-
 
 }
 

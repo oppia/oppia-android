@@ -55,6 +55,6 @@ class MockConceptCardTest {
     val conceptCardResponse = conceptCard.execute()
 
     assertThat(conceptCardResponse.isSuccessful).isTrue()
-    assertThat(conceptCardResponse.body()!!.conceptCardDicts.size).isEqualTo(1)
+    assertThat(conceptCardResponse.body()!!.conceptCardDicts!!.size).isEqualTo(1)
   }
 }

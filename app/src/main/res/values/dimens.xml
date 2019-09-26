@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="radius_corner">5</dimen>
+  <dimen name="audio_fragment_corner_radius">8dp</dimen>
+  <dimen name="audio_fragment_margin">32dp</dimen>
+  <dimen name="cellular_data_dialog_padding">24dp</dimen>
 </resources>

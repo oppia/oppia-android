@@ -21,6 +21,7 @@ class TextInputInteractionView : EditText {
     init()
   }
 
+  //update default attributes of TextInputInteractionView here
   fun init() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel = 10

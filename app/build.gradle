@@ -37,7 +37,9 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
+
     }
+    unitTests.returnDefaultValues = true
   }
 
   // https://proandroiddev.com/isolated-fragments-unit-tests-that-run-both-instrumented-and-on-the-jvm-with-the-same-source-code-283db2e9be5d
