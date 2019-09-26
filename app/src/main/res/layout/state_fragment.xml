@@ -96,7 +96,7 @@
         android:text="@string/state_continue_button"
         android:visibility="@{viewModel.isContinueButtonVisible()? View.VISIBLE: View.GONE}"/>
       <Button
-        android:id="@+id/submit_state_active_button"
+        android:id="@+id/submit_state_button"
         style="@style/StateButtonInactive"
         android:layout_alignParentEnd="true"
         android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
