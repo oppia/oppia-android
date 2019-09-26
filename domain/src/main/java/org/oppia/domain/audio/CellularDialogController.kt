@@ -10,7 +10,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Controller for persisting and retrieving the previous user history of using the app. */
+/** Controller for persisting and retrieving the cellular data preference. */
 @Singleton
 class CellularDialogController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders,
@@ -38,21 +38,12 @@ class CellularDialogController @Inject constructor(
     }
   }
 
-  /** Clears any indication that the user has previously opened the application. */
-  fun clearCellularDataPreference() {
-    cellularDataStore.clearCacheAsync().invokeOnCompletion {
-      it?.let {
-        logger.e("DOMAIN", "Failed to clear cellular data preference.", it)
-      }
-    }
-  }
-
   /**
    * Returns a [LiveData] result indicating whether the user wants to show the CellularDataDialog. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [setShowDialogPreference] has since been
    * called.
    */
-  fun getUserAppHistory(): LiveData<AsyncResult<CellularDataPreference>> {
+  fun getCellularDataPreference(): LiveData<AsyncResult<CellularDataPreference>> {
     return dataProviders.convertToLiveData(cellularDataStore)
   }
 }
