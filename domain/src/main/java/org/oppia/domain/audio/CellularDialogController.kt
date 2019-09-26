@@ -2,7 +2,6 @@ package org.oppia.domain.audio
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.CellularDataPreference
-import org.oppia.app.model.UserAppHistory
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
