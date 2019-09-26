@@ -25,15 +25,18 @@ import android.widget.RadioButton
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.content_interaction_fragment.view.*
 import org.oppia.util.data.UrlImageParser
+import android.widget.CompoundButton
 
 /** Presenter for [ContentInteractionFragment]. */
 class ContentInteractionFragmentPresenter @Inject constructor(
   @ApplicationContext private val context: Context,
-  private val fragment: Fragment,
-  private val interactionInstanceId: String, val gaeCustomizationArgs: Map<String, GaeCustomizationArgs>
+  private val fragment: Fragment
+//  private val interactionInstanceId: String, val gaeCustomizationArgs: Map<String, GaeCustomizationArgs>
 ) {
+
 
   private lateinit var binding: ContentInteractionFragmentBinding
 
@@ -42,14 +45,26 @@ class ContentInteractionFragmentPresenter @Inject constructor(
     binding = ContentInteractionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     // TODO replace dummy exploration with below function once Exploration interface is available
-    fetchDummyExplorations()
+//    fetchDummyExplorations()
 
-//    showInputInteractions()
-    
+    showInputInteractions()
+
     return binding.root
   }
 
   private fun showInputInteractions() {
+
+    //Todo(Veena): Remove static initialization and use values from constructor for gaeCustomizationArgsMap and interactionInstanceId
+   var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
+    var interactionInstanceId = "MultipleChoiceInput"
+    var sampleData: GaeCustomizationArgs =
+      GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
+    gaeCustomizationArgsMap?.put("choices", sampleData)
+    interactionInstanceId = "MultipleChoiceInput"
+
+   // Todo(veena): Keep the below code for actual implementation
+    val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
+
     if (interactionInstanceId.equals("MultipleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
@@ -64,66 +79,6 @@ class ContentInteractionFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun fetchDummyExplorations() {
-
-    val retrofitInstance = NetworkModule().provideRetrofitInstance()
-    val appStoreApiService = NetworkModule().provideExplorationService(retrofitInstance);
-    val getStoresResponseCall = appStoreApiService.getExplorationById()
-
-    getStoresResponseCall.enqueue(object : Callback<GaeExplorationContainer> {
-      override fun onResponse(call: Call<GaeExplorationContainer>, response: Response<GaeExplorationContainer>) {
-
-        try {
-
-          val code = response.code()
-          when (code) {
-            200, 201 -> {
-              val explorationContainer: GaeExplorationContainer? = response.body()
-              var gaeStateMap: Map<String, GaeState>? = null
-              gaeStateMap = explorationContainer!!.exploration!!.states
-//              val gaeStateData: GaeState? = gaeStateMap!!.get("Q2 on N and D")
-              val gaeStateData: GaeState? = gaeStateMap!!.get("Practice 2")
-
-              var gaeCustomizationArgsMap: Map<String, GaeCustomizationArgs>? = null
-
-              gaeCustomizationArgsMap = gaeStateData?.interactionInstance?.customizationArgs
-
-              val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
-
-              Log.d("Tag", "explorationContainer: ******************" + explorationContainer!!.exploration!!.states);
-              Log.d("Tag", "explorationContainer: ******************" + gaeCustomizationArgsMap);
-              Log.d("Tag", "explorationContainer: ******************" + gaeCustomizationArgs);
-
-              if (gaeStateData?.interactionInstance?.id.equals("MultipleChoiceInput")) {
-                val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
-                var items = gaeCustomArgsInString.split(",").toTypedArray()
-                addRadioButtons(items)
-
-              } else if (gaeStateData?.interactionInstance?.id.equals("ItemSelectionInput") || gaeStateData?.interactionInstance?.id.equals(
-                  "SingleChoiceInput"
-                )
-              ) {
-                val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
-                var items = gaeCustomArgsInString.split(",").toTypedArray()
-                addCheckbox(items)
-              } else {
-                //Do no show any view
-              }
-            }
-          }
-        } catch (e: Exception) {
-          Log.d("Tag", "Failure ****************" + e.printStackTrace())
-        }
-      }
-
-      override fun onFailure(call: Call<GaeExplorationContainer>, t: Throwable) {
-        Log.d("Tag", "Failure ****************" + t.message)
-
-      }
-    })
-
-  }
-
   fun addCheckbox(optionsArray: Array<String>) {
     for (row in 0..0) {
       val ll = LinearLayout(context)
@@ -133,6 +88,12 @@ class ContentInteractionFragmentPresenter @Inject constructor(
         val cb = CheckBox(context)
         cb.id = View.generateViewId()
         cb.text = convertHtmlToString(optionsArray[i], cb).toString()
+
+        cb.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+          val msg = "You have " + (if (isChecked) "checked" else "unchecked") + " this Check it Checkbox."
+          Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+        })
         ll.addView(cb)
       }
       binding.root.radioGroup.addView(ll)
@@ -141,17 +102,31 @@ class ContentInteractionFragmentPresenter @Inject constructor(
 
   fun addRadioButtons(optionsArray: Array<String>) {
     for (row in 0..0) {
-      val ll = RadioGroup(context)
-      ll.orientation = LinearLayout.VERTICAL
+      val rg = RadioGroup(context)
+      rg.orientation = LinearLayout.VERTICAL
 
       for (i in 0..optionsArray.size - 1) {
         val rdbtn = RadioButton(context)
         rdbtn.id = View.generateViewId()
         rdbtn.text = convertHtmlToString(optionsArray[i], rdbtn).toString()// + rdbtn.id
         rdbtn.gravity = (Gravity.RIGHT); (Gravity.CENTER)
-        ll.addView(rdbtn)
+
+        rg.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
+          override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
+            for (i in 0 until group.childCount) {
+              val btn = group.getChildAt(i) as RadioButton
+              if (btn.id == checkedId) {
+                val text = btn.text
+                Toast.makeText(context, "" + text, Toast.LENGTH_LONG).show()
+                return
+              }
+            }
+
+          }
+        })
+        rg.addView(rdbtn)
       }
-      binding.root.radioGroup.addView(ll)
+      binding.root.radioGroup.addView(rg)
     }
   }
 
