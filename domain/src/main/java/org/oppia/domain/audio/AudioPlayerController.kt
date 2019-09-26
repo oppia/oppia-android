@@ -25,7 +25,6 @@ import kotlin.concurrent.withLock
  * [releaseMediaPlayer] should be used to clean up the controller's resources.
  * See documentation for both to understand how to use them correctly.
  */
-
 class AudioPlayerController @Inject constructor(
   private val context: Context,
   private val fragment: Fragment,
@@ -51,18 +50,18 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
-  /**
-   * [PREPARED]: mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo()
-   * [PLAYING]: mediaPlayer in "Started" state, ready to pause(), seekTo()
-   * [PAUSED]: mediaPlayer in "Paused" state, ready to play(), seekTo()
-   * [COMPLETED]: mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo()
-   */
-  enum class PlayStatus { PREPARED, PLAYING, PAUSED, COMPLETED }
+  /** Represents current state of internal Media Player. */
+  enum class PlayStatus {
+    PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
+    PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
+    PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
+    COMPLETED  // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+  }
 
   /**
-   * [type]: Represents current state of mediaPlayer, see above
-   * [position]: Represents mediaPlayer's current position in playback
-   * [duration]: Represents duration of current audio
+   * [type]: See above.
+   * [position]: Represents mediaPlayer's current position in playback.
+   * [duration]: Represents duration of current audio.
    */
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
 
@@ -78,8 +77,8 @@ class AudioPlayerController @Inject constructor(
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
   /**
-   * Call function to begin loading a audio sourced specified by url
-   * MediaPlayer must be inactive when calling this function
+   * Loads audio source from a URL and return LiveData to send updates.
+   * This controller cannot already be initialized.
    */
   fun initializeMediaPlayer(url: String): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
@@ -88,14 +87,15 @@ class AudioPlayerController @Inject constructor(
       mediaPlayerActive = true
       setMediaPlayerListeners()
       prepareDataSource(url)
-      playProgress = AudioMutableLiveData()
-      return playProgress!!
     }
+    val progressLiveData = AudioMutableLiveData()
+    playProgress = progressLiveData
+    return progressLiveData
   }
 
-  /*
-   * Call function to change data source of media player
-   * Puts media player in a preparing state
+  /**
+   * Changes audio source to specified.
+   * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
   fun changeDataSource(url: String) {
     audioLock.withLock {
@@ -109,26 +109,25 @@ class AudioPlayerController @Inject constructor(
   private fun setMediaPlayerListeners() {
     mediaPlayer.setOnCompletionListener {
       stopUpdatingSeekBar()
-      playProgress?.postValue(
+      playProgress?.value =
         AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, mediaPlayer.duration))
-      )
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
-      playProgress?.postValue(AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, it.duration)))
+      playProgress?.value =
+        AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, it.duration))
     }
   }
 
   private fun prepareDataSource(url: String) {
     mediaPlayer.setDataSource(context, Uri.parse(url))
     mediaPlayer.prepareAsync()
-    playProgress?.postValue(AsyncResult.pending())
+    playProgress?.value = AsyncResult.pending()
   }
 
   /**
-   * Call function to play audio.
-   * Must call [initializeMediaPlayer] and wait for prepared state first.
-   * MediaPlayer should be in paused state
+   * Puts MediaPlayer in started state and begins sending seek bar updates.
+   * Controller must already have audio prepared.
    */
   fun play() {
     audioLock.withLock {
@@ -141,9 +140,8 @@ class AudioPlayerController @Inject constructor(
   }
 
   /**
-   * Call function to pause audio.
-   * Must call [initializeMediaPlayer] and wait for prepared state first.
-   * MediaPlayer should be in playing state
+   * Puts MediaPlayer in paused state and stops sending seek bar updates.
+   * Controller must already have audio prepared.
    */
   fun pause() {
     audioLock.withLock {
@@ -191,8 +189,9 @@ class AudioPlayerController @Inject constructor(
   }
 
   /**
-   * Call function to release media player and stop seek bar updates
-   * MediaPlayer must be active when calling this function
+   * Puts MediaPlayer in end state and releases resources.
+   * Stop updating seek bar and removes all observers.
+   * MediaPlayer must already be initialized.
    */
   fun releaseMediaPlayer() {
     audioLock.withLock {
@@ -207,8 +206,8 @@ class AudioPlayerController @Inject constructor(
   }
 
   /**
-   * Call function to change progress of MediaPlayer
-   * Must call [initializeMediaPlayer] and wait for prepared state first.
+   * Seek to specific position in MediaPlayer.
+   * Controller must already have audio prepared.
    */
   fun seekTo(position: Int)  {
     audioLock.withLock {
