@@ -58,7 +58,6 @@ class ContentInteractionFragmentPresenter @Inject constructor(
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
       addRadioButtons(items)
-
     } else if (interactionInstanceId.equals("ItemSelectionInput") || interactionInstanceId.equals("SingleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
