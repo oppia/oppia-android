@@ -17,7 +17,7 @@ import org.oppia.app.databinding.LearnersCardItemBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.UrlImageParser
 
-/** Adapter to bind the HTML contents to the [RecyclerView]. */
+/** Adapter to bind the contents to the [RecyclerView].It handles rich-text content  */
 class ContentCardAdapter(
   private val context: Context,
   val contentList: MutableList<GaeSubtitledHtml>
