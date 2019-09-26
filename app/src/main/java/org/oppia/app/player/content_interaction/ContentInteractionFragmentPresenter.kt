@@ -142,7 +142,6 @@ class ContentInteractionFragmentPresenter @Inject constructor(
     } else {
       html = Html.fromHtml(htmlContent, imageGetter, null) as Spannable
     }
-
     result = html
     return result;
   }
