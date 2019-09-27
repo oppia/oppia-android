@@ -247,8 +247,10 @@ class ExplorationDataController @Inject constructor(private val context: Context
   private fun createCustomizationArgsMapFromJson(
     customizationArgsJson: JSONObject?): MutableMap<String, InteractionObject> {
     val customizationArgsMap: MutableMap<String, InteractionObject> = mutableMapOf()
-    val customizationArgsKeys = (
-        customizationArgsJson?:return customizationArgsMap).keys()?: return customizationArgsMap
+    if (customizationArgsJson == null) {
+      return customizationArgsMap
+    }
+    val customizationArgsKeys = customizationArgsJson.keys()?: return customizationArgsMap
     val customizationArgsIterator = customizationArgsKeys.iterator()
     while(customizationArgsIterator.hasNext()) {
       val key = customizationArgsIterator.next()
@@ -275,7 +277,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     }
       return InteractionObject.getDefaultInstance()
   }
-  
+
   @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
   private fun createStringList(value: List<*>): StringList {
     val stringList = mutableListOf<String>()
