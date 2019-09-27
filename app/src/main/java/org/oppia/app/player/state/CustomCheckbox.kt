@@ -26,11 +26,9 @@ class CustomCheckbox(context: Context?, private val optionContents: String) : Ch
 
   // Update default attributes of ItemSelectionInputInteractionView here.
   fun initViews() {
-
     val paddingPixel = 2
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
-
     gravity = Gravity.LEFT
     setTextColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -55,16 +53,13 @@ class CustomCheckbox(context: Context?, private val optionContents: String) : Ch
   }
 
   fun convertHtmlToString(rawResponse: Any?, rdbtn: View): Spanned {
-
     var htmlContent = rawResponse as String;
     var result: Spanned
     if (htmlContent!!.contains(CUSTOM_TAG)) {
-
       htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
       htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-
     var imageGetter = UrlImageParser(rdbtn as TextView, context)
     val html: Spannable
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
