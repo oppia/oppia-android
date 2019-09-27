@@ -62,13 +62,13 @@ class ExplorationDataController @Inject constructor(private val context: Context
 
   // Returns an exploration given an assetName
   private fun createExploration(assetName: String): Exploration {
-    val explorationObject = loadJSONFromAsset(assetName)
+    val explorationObject = loadJSONFromAsset(assetName)?: return Exploration.newBuilder().build()
     return Exploration.newBuilder()
       .setTitle(explorationObject?.getString("title"))
       .setLanguageCode(explorationObject?.getString("language_code"))
       .setInitStateName(explorationObject?.getString("init_state_name"))
       .setObjective(explorationObject?.getString("objective"))
-      .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
+   //   .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
       .build()
   }
 
@@ -216,9 +216,6 @@ class ExplorationDataController @Inject constructor(private val context: Context
       return InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
-    } else if (interactionId == "InteractiveMap") {
-      // TODO: Support Interactive Map interaction
-      return InteractionObject.newBuilder().build()
     } else if (interactionId == "NumericInput") {
       return InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))

@@ -32,6 +32,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.Exploration
+import org.oppia.app.model.UserAppHistory
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -44,6 +46,9 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+
+const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
+const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
@@ -60,6 +65,13 @@ class ExplorationDataControllerTest {
   @Inject
   lateinit var explorationDataController: ExplorationDataController
 
+  @Mock
+  lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
+
+  @Captor
+  lateinit var explorationResultCaptor: ArgumentCaptor<AsyncResult<Exploration>>
+
+
   @Inject
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
@@ -67,15 +79,6 @@ class ExplorationDataControllerTest {
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
-
-  const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
-  const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
-
-  @Mock
-  lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
-
-  @Captor
-  lateinit var explorationResultCaptor: ArgumentCaptor<AsyncResult<Exploration>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -107,24 +110,47 @@ class ExplorationDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataFortheWelcomeExploration() = runBlockingTest(coroutineContext) {
-    val exploration = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
-    exploration.observeForever(mockExplorationObserver)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    assertThat(explorationLiveData).isNotNull()
+    explorationLiveData!!.observeForever(mockExplorationObserver)
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-//    assertThat(mockExplorationObserver.).isTrue()
-//    assertThat(mockExplorationObserver.value.getOrThrow().alreadyOpenedApp).isFalse()
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+//    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+//    val explorationResult = explorationLiveData?.value
+//    assertThat(explorationResult).isNotNull()
+//    assertThat(explorationResult!!.isSuccess()).isTrue()
+//    assertThat(explorationResult.get)
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataFortheAboutOppiaExploration()
       = runBlockingTest(coroutineContext) {
-    val exploration = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
-    exploration.observeForever(mockExplorationObserver)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    assertThat(explorationLiveData).isNotNull()
+    explorationLiveData!!.observeForever(mockExplorationObserver)
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-//    assertThat(mockExplorationObserver.).isTrue()
-//    assertThat(mockExplorationObserver.value.getOrThrow().alreadyOpenedApp).isFalse()
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_returnsNullForNonExistentExploration()
+      = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    assertThat(explorationLiveData).isNotNull()
+    explorationLiveData!!.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNull()
   }
 
 
@@ -184,6 +210,7 @@ class ExplorationDataControllerTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
