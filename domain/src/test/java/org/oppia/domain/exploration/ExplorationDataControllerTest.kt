@@ -114,43 +114,47 @@ class ExplorationDataControllerTest {
     advanceUntilIdle()
     assertThat(explorationLiveData).isNotNull()
     explorationLiveData!!.observeForever(mockExplorationObserver)
+    val expectedExplorationStateSet = listOf("END", "Estimate 100", "Numeric input",
+      "Things you can do", "Welcome!", "What language")
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-//    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
-//    val explorationResult = explorationLiveData?.value
-//    assertThat(explorationResult).isNotNull()
-//    assertThat(explorationResult!!.isSuccess()).isTrue()
-//    assertThat(explorationResult.get)
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Welcome to Oppia!")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(6)
+    assertThat(exploration.statesMap.keys).containsAllIn(expectedExplorationStateSet)
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataFortheAboutOppiaExploration()
       = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
     advanceUntilIdle()
     assertThat(explorationLiveData).isNotNull()
     explorationLiveData!!.observeForever(mockExplorationObserver)
+    val expectedExplorationStateSet = listOf("About this website", "Contact", "Contribute", "Credits", "END",
+      "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you")
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("About Oppia")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(11)
+    assertThat(exploration.statesMap.keys).containsAllIn(expectedExplorationStateSet)
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_returnsNullForNonExistentExploration()
       = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
-    assertThat(explorationLiveData).isNotNull()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
-
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNull()
+    assertThat(explorationLiveData).isNull()
   }
 
 

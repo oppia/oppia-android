@@ -3,6 +3,7 @@ package org.oppia.domain.exploration
 import android.content.Context
 import androidx.lifecycle.LiveData
 import org.json.JSONArray
+import org.json.JSONException
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.app.model.Exploration
@@ -128,10 +129,18 @@ class ExplorationDataController @Inject constructor(private val context: Context
           interactionJson.getString("id")))
       .setDefaultOutcome(
         createOutcomeFromJson(
-          interactionJson.getJSONObject("default_outcome")))
+          getJSONObject(interactionJson,"default_outcome")))
       .putAllCustomizationArgs(createCustomizationArgsMapFromJson(
-        interactionJson.getJSONObject("customization_args")))
+        getJSONObject(interactionJson,"customization_args")))
       .build()
+  }
+
+  private fun getJSONObject(parentObject: JSONObject, key: String): JSONObject? {
+    try {
+      return parentObject.getJSONObject(key)
+    } catch(e: JSONException) {
+      return null
+    }
   }
 
   private fun createAnswerGroupsFromJson(answerGroupsJson: JSONArray?,
@@ -150,8 +159,6 @@ class ExplorationDataController @Inject constructor(private val context: Context
   private fun createSingleAnswerGroupFromJson(answerGroupJson: JSONObject,
                                               interactionId: String): AnswerGroup {
     return AnswerGroup.newBuilder()
-      .setTaggedSkillMisconceptionId(
-        answerGroupJson.getString("tagged_skill_misconception_id"))
       .setOutcome(
         createOutcomeFromJson(answerGroupJson.getJSONObject("outcome")))
       .setCorrect(
@@ -226,9 +233,10 @@ class ExplorationDataController @Inject constructor(private val context: Context
   }
 
   private fun createCustomizationArgsMapFromJson(
-    customizationArgsJson: JSONObject): MutableMap<String, InteractionObject> {
+    customizationArgsJson: JSONObject?): MutableMap<String, InteractionObject> {
     val customizationArgsMap: MutableMap<String, InteractionObject> = mutableMapOf()
-    val customizationArgsKeys = customizationArgsJson.keys()?: return customizationArgsMap
+    val customizationArgsKeys = (
+        customizationArgsJson?:return customizationArgsMap).keys()?: return customizationArgsMap
     val customizationArgsIterator = customizationArgsKeys.iterator()
     while(customizationArgsIterator.hasNext()) {
       val key = customizationArgsIterator.next()
