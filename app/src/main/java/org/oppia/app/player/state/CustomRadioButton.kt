@@ -22,14 +22,10 @@ const val HTML_ATTRIBUTE = "src"
 
 // TODO(#163): Move this to a StateCardFragment Low-fi PR.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
-class CustomRadioButton(context: Context?,private val optionContents: String) : RadioButton(context) {
-
-  init {
-    initViews()
-  }
+class CustomRadioButton(context: Context,private val optionContents: String) : RadioButton(context) {
 
   // Update default attributes of ItemSelectionInputInteractionView here.
-  fun initViews() {
+  init {
     val paddingPixel = 2
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()

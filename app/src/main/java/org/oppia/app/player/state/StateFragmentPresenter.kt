@@ -45,7 +45,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showInputInteractions() {
-
     //Todo(Veena): Remove static initialization and use values from constructor for gaeCustomizationArgsMap and interactionInstanceId
     var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
     var interactionInstanceId = "MultipleChoiceInput"

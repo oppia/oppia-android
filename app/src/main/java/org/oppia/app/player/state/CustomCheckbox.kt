@@ -18,21 +18,18 @@ import android.view.Gravity
 
 // TODO(#163): Move this to a StateCardFragment Low-fi PR.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
-class CustomCheckbox(context: Context?, private val optionContents: String) : CheckBox(context) {
-
-  init {
-    initViews()
-  }
+class CustomCheckbox(context: Context, private val optionContents: String) : CheckBox(context) {
 
   // Update default attributes of ItemSelectionInputInteractionView here.
-  fun initViews() {
+  init {
     val paddingPixel = 2
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
     gravity = Gravity.LEFT
     setTextColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      setButtonTintList(ColorStateList(
+      setButtonTintList(
+        ColorStateList(
           arrayOf(
             intArrayOf(android.R.attr.state_enabled)
           ),
