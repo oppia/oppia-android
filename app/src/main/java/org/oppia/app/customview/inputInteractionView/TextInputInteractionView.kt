@@ -2,10 +2,7 @@ package org.oppia.app.customview.inputInteractionView
 
 import android.content.Context
 import android.text.InputFilter
-import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.widget.EditText
-
 import org.oppia.app.R
 
 /** The customclass for [TextInputInteractionView]. */
