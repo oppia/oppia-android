@@ -44,6 +44,9 @@ import javax.inject.Qualifier
 import kotlin.coroutines.EmptyCoroutineContext
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import java.lang.IllegalStateException
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -267,6 +270,7 @@ class AudioPlayerControllerTest {
     assertThat(playProgress.hasObservers()).isFalse()
   }
 
+  /** Ensure test dispatcher is running. If test does not hang, behavior is correct */
   @Test
   @ExperimentalCoroutinesApi
   fun testScheduling_preparePlayer_invokePauseAndAdvance_checkNoNewUpdates()
@@ -282,6 +286,7 @@ class AudioPlayerControllerTest {
     assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)
   }
 
+  /** Ensure test dispatcher is running. If test does not hang, behavior is correct */
   @Test
   @ExperimentalCoroutinesApi
   fun testScheduling_preparePlayer_invokeCompletionAndAdvance_checkJobIsNull()
@@ -297,90 +302,71 @@ class AudioPlayerControllerTest {
     assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
   }
 
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testScheduling_observeData_removeObserver_checkJobIsNull()
-//      = runBlockingTest(coroutineContext) {
-//    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
-//    playProgress.observeForever(mockAudioPlayerObserver)
-//
-//    audioPlayerController.play()
-//    advanceTimeBy(2000)
-//    playProgress.removeObserver(mockAudioPlayerObserver)
-//    advanceTimeBy(2000)
-//
-//    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
-//  }
-//
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testScheduling_addAndRemoveObservers_checkJobStates() = runBlockingTest(coroutineContext) {
-//    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
-//
-//    audioPlayerController.play()
-//    advanceTimeBy(2000)
-//    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
-//
-//    playProgress.observeForever(mockAudioPlayerObserver)
-//    assertThat(audioPlayerController.getNextUpdateJob()).isNotNull()
-//    audioPlayerController.pause()
-//
-//    playProgress.removeObserver(mockAudioPlayerObserver)
-//    audioPlayerController.play()
-//    advanceTimeBy(2000)
-//    assertThat(audioPlayerController.getNextUpdateJob()).isNull()
-//  }
+  /** Ensure test dispatcher is running. If test does not hang, behavior is correct */
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testScheduling_observeData_removeObserver_checkJobIsNull()
+      = runBlockingTest(coroutineContext) {
+    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
+    playProgress.observeForever(mockAudioPlayerObserver)
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+    playProgress.removeObserver(mockAudioPlayerObserver)
+    advanceTimeBy(2000)
+  }
+
+  /** Ensure test dispatcher is running. If test does not hang, behavior is correct */
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testScheduling_addAndRemoveObservers_checkJobStates() = runBlockingTest(coroutineContext) {
+    val playProgress = audioPlayerController.initializeMediaPlayer(TEST_URL)
+
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+
+    playProgress.observeForever(mockAudioPlayerObserver)
+    audioPlayerController.pause()
+
+    playProgress.removeObserver(mockAudioPlayerObserver)
+    audioPlayerController.play()
+    advanceTimeBy(2000)
+  }
 
   @Test
   fun testController_alreadyInitialized_initializePlayer_fails() {
     arrangeMediaPlayer()
 
-    try {
+    assertThrows(IllegalStateException::class) {
       audioPlayerController.initializeMediaPlayer(TEST_URL2)
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Media player has already been initialized")
     }
   }
 
   @Test
   fun testController_notInitialized_releasePlayer_fails() {
-    try {
+    assertThrows(IllegalStateException::class) {
       audioPlayerController.releaseMediaPlayer()
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Media player has not been previously initialized")
     }
   }
 
   @Test
   fun testError_notPrepared_invokePlay_fails() {
-    audioPlayerController.initializeMediaPlayer(TEST_URL)
-
-    try {
+    assertThrows(IllegalStateException::class) {
       audioPlayerController.play()
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Media Player not in a prepared state")
     }
   }
 
   @Test
   fun testError_notPrepared_invokePause_fails() {
-    audioPlayerController.initializeMediaPlayer(TEST_URL)
-
-    try {
+    assertThrows(IllegalStateException::class) {
       audioPlayerController.pause()
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Media Player not in a prepared state")
     }
   }
 
   @Test
   fun testError_notPrepared_invokeSeekTo_fails() {
-    audioPlayerController.initializeMediaPlayer(TEST_URL)
-
-    try {
+    assertThrows(IllegalStateException::class) {
       audioPlayerController.seekTo(500)
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Media Player not in a prepared state")
     }
   }
 
@@ -393,6 +379,19 @@ class AudioPlayerControllerTest {
     val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
     val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
+  }
+
+  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
+    }
   }
 
   private fun setUpTestApplicationComponent() {
