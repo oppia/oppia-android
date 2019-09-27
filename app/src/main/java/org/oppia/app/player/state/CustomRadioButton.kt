@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Html
 import android.text.Spannable
 import android.text.Spanned
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.RadioButton
@@ -14,19 +15,20 @@ import androidx.core.content.ContextCompat
 import org.oppia.app.R
 import org.oppia.util.data.UrlImageParser
 
+const val CUSTOM_TAG = "oppia-noninteractive-image"
+const val HTML_TAG = "img"
+const val CUSTOM_ATTRIBUTE = "filepath-with-value"
+const val HTML_ATTRIBUTE = "src"
+
 // TODO(#190): Move this to a custom.inputinteractionview.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
-class CustomRadioButton : RadioButton {
-  private var mContext: Context
-  private var optionContents: String? = null
+class CustomRadioButton(context: Context?,private val optionContents: String) : RadioButton(context) {
 
-  constructor(context: Context, optionContents: String) : super(context) {
-    this.mContext = context
-    this.optionContents = optionContents
+  init {
     initViews()
   }
 
-  //update default attributes of ItemSelectionInputInteractionView here
+  // Update default attributes of ItemSelectionInputInteractionView here.
   fun initViews() {
 
     val paddingPixel = 2
@@ -34,10 +36,14 @@ class CustomRadioButton : RadioButton {
     val paddingDp = (paddingPixel * density).toInt()
 
     gravity = Gravity.LEFT
-
     setTextColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      setButtonTintList(colorStateList);
+      setButtonTintList(ColorStateList(
+        arrayOf(
+          intArrayOf(android.R.attr.state_enabled)
+        ),
+        intArrayOf(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
+      ));
     }
     setHighlightColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     textSize = 16f
@@ -46,21 +52,10 @@ class CustomRadioButton : RadioButton {
     text = convertHtmlToString(optionContents, rootView).toString()
   }
 
-  var colorStateList = ColorStateList(
-    arrayOf(
-      intArrayOf(android.R.attr.state_enabled) //enabled
-    ),
-    intArrayOf(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
-  )
-
   fun convertHtmlToString(rawResponse: Any?, rdbtn: View): Spanned {
 
     var htmlContent = rawResponse as String;
     var result: Spanned
-    var CUSTOM_TAG = "oppia-noninteractive-image"
-    var HTML_TAG = "img"
-    var CUSTOM_ATTRIBUTE = "filepath-with-value"
-    var HTML_ATTRIBUTE = "src"
 
     if (htmlContent!!.contains(CUSTOM_TAG)) {
 

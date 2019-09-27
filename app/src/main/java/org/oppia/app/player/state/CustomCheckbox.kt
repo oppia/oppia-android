@@ -18,17 +18,13 @@ import android.view.Gravity
 
 // TODO(#190): Move this to a custom.inputinteractionview.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
-class CustomCheckbox : CheckBox {
-  private var mContext: Context
-  private var optionContents: String? = null
+class CustomCheckbox(context: Context?, private val optionContents: String) : CheckBox(context) {
 
-  constructor(context: Context, optionContents: String) : super(context) {
-    this.mContext = context
-    this.optionContents = optionContents
+  init {
     initViews()
   }
 
-  //update default attributes of MultipleSelectionInputInteractionView here
+  // Update default attributes of ItemSelectionInputInteractionView here.
   fun initViews() {
 
     val paddingPixel = 2
@@ -36,10 +32,15 @@ class CustomCheckbox : CheckBox {
     val paddingDp = (paddingPixel * density).toInt()
 
     gravity = Gravity.LEFT
-
     setTextColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      setButtonTintList(colorStateList);
+      setButtonTintList(ColorStateList(
+          arrayOf(
+            intArrayOf(android.R.attr.state_enabled)
+          ),
+          intArrayOf(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
+        )
+      );
     }
     setHighlightColor(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
     textSize = 16f
@@ -53,22 +54,10 @@ class CustomCheckbox : CheckBox {
     })
   }
 
-  var colorStateList = ColorStateList(
-    arrayOf(
-      intArrayOf(android.R.attr.state_enabled) //enabled
-    ),
-    intArrayOf(ContextCompat.getColor(context, R.color.oppiaDarkBlue))
-  )
-
   fun convertHtmlToString(rawResponse: Any?, rdbtn: View): Spanned {
 
     var htmlContent = rawResponse as String;
     var result: Spanned
-    var CUSTOM_TAG = "oppia-noninteractive-image"
-    var HTML_TAG = "img"
-    var CUSTOM_ATTRIBUTE = "filepath-with-value"
-    var HTML_ATTRIBUTE = "src"
-
     if (htmlContent!!.contains(CUSTOM_TAG)) {
 
       htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);

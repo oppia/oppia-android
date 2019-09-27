@@ -104,5 +104,4 @@ class StateFragmentPresenter @Inject constructor(
       binding.root.interactionRadioGroup.addView(rg)
     }
   }
-
 }
