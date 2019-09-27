@@ -25,5 +25,5 @@ interface FragmentComponent {
   fun inject(homeFragment: HomeFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(conceptCardFragment: ContentListFragment)
+  fun inject(contentListFragment: ContentListFragment)
 }
