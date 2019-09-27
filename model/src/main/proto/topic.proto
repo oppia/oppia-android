@@ -108,37 +108,6 @@ message SkillSummary {
   string thumbnail_url = 3;
 }
 
-// Represents the play state of a single chapter.
-enum ChapterPlayState {
-  // The completion status is unknown.
-  COMPLETION_STATUS_UNSPECIFIED = 0;
-
-  // The chapter has not yet been started, but can be started by the player.
-  NOT_STARTED = 1;
-
-  // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
-  NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
-
-  // The chapter has been completed by the player.
-  COMPLETED = 3;
-}
-
-// Represents the progress a player has made for a story.
-message StoryProgress {
-  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
-  // should be completed within the story.
-  repeated ChapterProgress chapter_progress = 1;
-}
-
-// Represents the progress a player has made on a single chapter.
-message ChapterProgress {
-  // The exploration ID of the chapter with possible progress made.
-  string exploration_id = 1;
-
-  // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
-}
-
 // Corresponds to the on-disk storage representing all available topics for play.
 message Classroom {
   // Known topics that the player can play.
@@ -227,4 +196,35 @@ message TopicSummary {
 
   // The associated thumbnail that should be displayed with this topic summary.
   LessonThumbnail topic_thumbnail = 10;
+}
+
+// Represents the play state of a single chapter.
+enum ChapterPlayState {
+  // The completion status is unknown.
+  COMPLETION_STATUS_UNSPECIFIED = 0;
+
+  // The chapter has not yet been started, but can be started by the player.
+  NOT_STARTED = 1;
+
+  // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
+  NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
+
+  // The chapter has been completed by the player.
+  COMPLETED = 3;
+}
+
+// Represents the progress a player has made for a story.
+message StoryProgress {
+  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
+  // should be completed within the story.
+  repeated ChapterProgress chapter_progress = 1;
+}
+
+// Represents the progress a player has made on a single chapter.
+message ChapterProgress {
+  // The exploration ID of the chapter with possible progress made.
+  string exploration_id = 1;
+
+  // Corresponds to whether this chapter is playable or has been started.
+  ChapterPlayState play_state = 2;
 }

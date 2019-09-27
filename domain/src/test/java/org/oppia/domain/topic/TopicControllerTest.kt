@@ -14,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.ChapterSummary.Playability
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
@@ -233,7 +232,187 @@ class TopicControllerTest {
     assertThat(storyLiveData.value!!.isFailure()).isTrue()
   }
 
-  // TODO(BenHenning): Add tests for getConceptCard().
+  @Test
+  fun testGetConceptCard_validSkill_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_validSkill_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_0)
+  }
+
+  @Test
+  fun testGetConceptCard_validSkill_returnsCardWithCorrectDescription() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillDescription).isEqualTo("An important skill")
+  }
+
+  @Test
+  fun testGetConceptCard_validSkill_returnsCardWithCorrectExplanation() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.explanation.html).isEqualTo("Hello. Welcome to Oppia.")
+  }
+
+  @Test
+  fun testGetConceptCard_validSkill_returnsCardWithCorrectWorkedExample() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("This is the first example.")
+  }
+
+  @Test
+  fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForExplanation() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    val contentId = conceptCard.explanation.contentId
+    assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
+    val translations = conceptCard.writtenTranslationMap.getValue(contentId).translationMappingMap
+    assertThat(translations).containsKey("es")
+    assertThat(translations.getValue("es").html).isEqualTo("Hola. Bienvenidos a Oppia.")
+  }
+
+  @Test
+  fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForWorkedExample() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    val contentId = conceptCard.getWorkedExample(0).contentId
+    assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
+    val translations = conceptCard.writtenTranslationMap.getValue(contentId).translationMappingMap
+    assertThat(translations).containsKey("es")
+    assertThat(translations.getValue("es").html).isEqualTo("Este es el primer ejemplo trabajado.")
+  }
+
+  @Test
+  fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForExplanation() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    val contentId = conceptCard.explanation.contentId
+    assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
+    val voiceovers = conceptCard.recordedVoiceoverMap.getValue(contentId).voiceoverMappingMap
+    assertThat(voiceovers).containsKey("es")
+    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_explanation.mp3")
+  }
+
+  @Test
+  fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForWorkedExample() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    val contentId = conceptCard.getWorkedExample(0).contentId
+    assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
+    val voiceovers = conceptCard.recordedVoiceoverMap.getValue(contentId).voiceoverMappingMap
+    assertThat(voiceovers).containsKey("es")
+    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_example.mp3")
+  }
+
+  @Test
+  fun testGetConceptCard_validSecondSkill_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_validSecondSkill_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testGetConceptCard_validSecondSkill_returnsCardWithCorrectDescription() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillDescription).isEqualTo("Another important skill")
+  }
+
+  @Test
+  fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextExplanation() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.explanation.html).isEqualTo("Explanation with <b>rich text</b>.")
+  }
+
+  @Test
+  fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextWorkedExample() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("Worked example with <i>rich text</i>.")
+  }
+
+  @Test
+  fun testGetConceptCard_validThirdSkillDifferentTopic_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_2)
+  }
+
+  @Test
+  fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectDescription() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillDescription).isEqualTo("A different skill in a different topic")
+  }
+
+  @Test
+  fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectExplanation() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.explanation.html).isEqualTo("Explanation without rich text.")
+  }
+
+  @Test
+  fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithMultipleWorkedExamples() {
+    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.workedExampleCount).isEqualTo(2)
+    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("Worked example without rich text.")
+    assertThat(conceptCard.getWorkedExample(1).html).isEqualTo("Second worked example.")
+  }
+
+  @Test
+  fun testGetConceptCard_invalidSkillId_returnsFailure() {
+    val conceptCardLiveData = topicController.getConceptCard("invalid_skill_id")
+
+    assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTopicControllerTest_TestApplicationComponent.builder()

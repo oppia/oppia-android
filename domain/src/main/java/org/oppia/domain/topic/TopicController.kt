@@ -20,8 +20,6 @@ import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.util.data.AsyncResult
 
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
-const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
@@ -236,22 +234,22 @@ class TopicController @Inject constructor() {
         SubtitledHtml.newBuilder().setHtml("This is the first example.").setContentId(TEST_SKILL_CONTENT_ID_1).build()
       )
       .putRecordedVoiceover(
-        TEST_SKILL_ID_0, VoiceoverMapping.newBuilder().putVoiceoverMapping(
+        TEST_SKILL_CONTENT_ID_0, VoiceoverMapping.newBuilder().putVoiceoverMapping(
           "es", Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3").setFileSizeBytes(456).build()
         ).build()
       )
       .putRecordedVoiceover(
-        TEST_SKILL_ID_1, VoiceoverMapping.newBuilder().putVoiceoverMapping(
+        TEST_SKILL_CONTENT_ID_1, VoiceoverMapping.newBuilder().putVoiceoverMapping(
           "es", Voiceover.newBuilder().setFileName("fake_spanish_xlated_example.mp3").setFileSizeBytes(123).build()
         ).build()
       )
       .putWrittenTranslation(
-        TEST_SKILL_ID_0, TranslationMapping.newBuilder().putTranslationMapping(
+        TEST_SKILL_CONTENT_ID_0, TranslationMapping.newBuilder().putTranslationMapping(
           "es", Translation.newBuilder().setHtml("Hola. Bienvenidos a Oppia.").build()
         ).build()
       )
       .putWrittenTranslation(
-        TEST_SKILL_ID_1, TranslationMapping.newBuilder().putTranslationMapping(
+        TEST_SKILL_CONTENT_ID_1, TranslationMapping.newBuilder().putTranslationMapping(
           "es", Translation.newBuilder().setHtml("Este es el primer ejemplo trabajado.").build()
         ).build()
       )
