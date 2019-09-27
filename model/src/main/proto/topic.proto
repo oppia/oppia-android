@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package model;
 
-import "thumbnail.proto";
 import "subtitled_html.proto";
+import "thumbnail.proto";
 import "translation.proto";
 import "voiceover.proto";
 
@@ -137,4 +137,94 @@ message ChapterProgress {
 
   // Corresponds to whether this chapter is playable or has been started.
   ChapterPlayState play_state = 2;
+}
+
+// Corresponds to the on-disk storage representing all available topics for play.
+message Classroom {
+  // Known topics that the player can play.
+  TopicSummary topic_summary = 1;
+
+  // The last time this classroom was updated.
+  int64 last_update_time_ms = 2;
+}
+
+// Corresponds to the list of topics that can be shown on the homescreen.
+message TopicList {
+  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
+  // recommended story if no other stories are in progress.
+  PromotedStory promoted_story = 1;
+
+  // All topics that are available to the player.
+  repeated TopicSummary topic_summary = 2;
+
+  // The total number of ongoing stories by the player.
+  int32 ongoing_story_count = 3;
+}
+
+// Corresponds to the list of stories the player is currently playing.
+message OngoingStoryList {
+  // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recent_story = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_story = 2;
+}
+
+// The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
+// or because they have completed all other lessons and may find this one interesting.
+message PromotedStory {
+  // The ID of the story being promoted.
+  string story_id = 1;
+
+  // The name of the story being promoted.
+  string story_name = 2;
+
+  // The ID of the topic this story is part of.
+  string topic_id = 3;
+
+  // The name of the topic this story is part of.
+  string topic_name = 4;
+
+  // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
+  // reasons other than to complete it (e.g. it's recommended).
+  int32 completed_chapter_count = 5;
+
+  // The total number of lessons this story contains.
+  int32 total_chapter_count = 6;
+
+  // The thumbnail that should be displayed for this promoted story.
+  LessonThumbnail lesson_thumbnail = 7;
+}
+
+// A homescreen summary of a topic.
+message TopicSummary {
+  // The ID of the topic.
+  string topic_id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The structural version of the topic.
+  int32 version = 3;
+
+  // The number of subtopics.
+  int32 subtopic_count = 4;
+
+  // The number of canonical stories.
+  int32 canonical_story_count = 5;
+
+  // The number of skills that have yet to be categorized.
+  int32 uncategorized_skill_count = 6;
+
+  // The number of additional, non-canonical stories.
+  int32 additional_story_count = 7;
+
+  // The total number of skills associated with this topic.
+  int32 total_skill_count = 8;
+
+  // The total number of lessons associated with this topic.
+  int32 total_chapter_count = 9;
+
+  // The associated thumbnail that should be displayed with this topic summary.
+  LessonThumbnail topic_thumbnail = 10;
 }
