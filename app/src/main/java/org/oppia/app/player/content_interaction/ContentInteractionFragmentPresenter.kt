@@ -84,7 +84,6 @@ class ContentInteractionFragmentPresenter @Inject constructor(
         
         ll.addView(cb)
       }
-      binding.root.radioGroup.addView(ll)
     }
   }
 
