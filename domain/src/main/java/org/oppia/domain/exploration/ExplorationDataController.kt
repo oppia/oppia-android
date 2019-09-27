@@ -14,15 +14,15 @@ import org.oppia.app.model.Outcome
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.RuleSpec
-import org.oppia.app.model.Solution
 import org.oppia.app.model.State
+import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.DataProviders
 
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 private const val WELCOME_EXPLORATION_DATA_PROVIDER_ID = "WelcomeExplorationDataProvider"
-private const val ABBOUT_OPPIA_EXPLORATION_DATA_PROVIDER_ID = "AbboutOppiaExplorationDataProvider"
+private const val ABBOUT_OPPIA_EXPLORATION_DATA_PROVIDER_ID = "AboutOppiaExplorationDataProvider"
 
 /** Controller for retrieving an exploration. */
 @Singleton
@@ -33,9 +33,9 @@ class ExplorationDataController @Inject constructor(private val context: Context
   private val welcomeExplorationDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
       WELCOME_EXPLORATION_DATA_PROVIDER_ID, this::retrieveWelcomeExplorationAsync)
-  private val abboutOppiaExplorationDataProvider =
+  private val aboutOppiaExplorationDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
-      WELCOME_EXPLORATION_DATA_PROVIDER_ID, this::retrieveAbboutOppiaExplorationAsync)
+      ABBOUT_OPPIA_EXPLORATION_DATA_PROVIDER_ID, this::retrieveAbboutOppiaExplorationAsync)
 
   /**
    * Returns an  [Exploration] given an ID.
@@ -45,7 +45,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
       return dataProviders.convertToLiveData(welcomeExplorationDataProvider)
     }
     if (ID == TEST_EXPLORATION_ID_1) {
-      return dataProviders.convertToLiveData(abboutOppiaExplorationDataProvider)
+      return dataProviders.convertToLiveData(aboutOppiaExplorationDataProvider)
     }
     return null
   }
@@ -129,7 +129,8 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .setDefaultOutcome(
         createOutcomeFromJson(
           interactionJson.getJSONObject("default_outcome")))
-      // Add customization args
+      .putAllCustomizationArgs(createCustomizationArgsMapFromJson(
+        interactionJson.getJSONObject("customization_args")))
       .build()
   }
 
@@ -193,37 +194,76 @@ class ExplorationDataController @Inject constructor(private val context: Context
         RuleSpec.newBuilder()
           .setRuleType(
             ruleSpecJson.getJSONObject(i).getString("rule_type"))
-          .setInput(createInputsFromJson(
-            ruleSpecJson.getJSONObject(i).getJSONObject("inputs"), interactionId))
+          .setInput(createInteractionObjectFromJson(
+            ruleSpecJson.getJSONObject(i).getJSONObject("inputs"),
+            /* keyName= */"x", interactionId))
           .build())
     }
     return ruleSpecList
   }
 
-  private fun createInputsFromJson(inputJson: JSONObject?,
-                                   interactionId: String): InteractionObject {
+  private fun createInteractionObjectFromJson(inputJson: JSONObject?,
+                                              keyName: String,
+                                              interactionId: String): InteractionObject {
     if(inputJson == null) {
       return InteractionObject.getDefaultInstance()
     }
     if(interactionId == "MultipleChoiceInput") {
       return InteractionObject.newBuilder()
-        .setNonNegativeInt(inputJson.getInt("x"))
+        .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
     } else if (interactionId == "TextInput") {
       return InteractionObject.newBuilder()
-        .setNormalizedString(inputJson.getString("x"))
+        .setNormalizedString(inputJson.getString(keyName))
         .build()
     } else if (interactionId == "InteractiveMap") {
       // TODO: Support Interactive Map interaction
       return InteractionObject.newBuilder().build()
     } else if (interactionId == "NumericInput") {
       return InteractionObject.newBuilder()
-        .setReal(inputJson.getDouble("x"))
+        .setReal(inputJson.getDouble(keyName))
         .build()
     } else {
       return InteractionObject.getDefaultInstance()
     }
   }
 
+  private fun createCustomizationArgsMapFromJson(
+    customizationArgsJson: JSONObject): MutableMap<String, InteractionObject> {
+    val customizationArgsMap: MutableMap<String, InteractionObject> = mutableMapOf()
+    val customizationArgsKeys = customizationArgsJson.keys()?: return customizationArgsMap
+    val customizationArgsIterator = customizationArgsKeys.iterator()
+    while(customizationArgsIterator.hasNext()) {
+      val key = customizationArgsIterator.next()
+      customizationArgsMap[key] =  createCustomizationArgsFromJson(
+        customizationArgsJson.getJSONObject(key).get("value"))
+    }
+    return customizationArgsMap
+  }
 
-}
+  private fun createCustomizationArgsFromJson(customizationArgValue: Any): InteractionObject {
+    val interactionObjectBuilder = InteractionObject.newBuilder()
+    when(customizationArgValue) {
+      is String -> return interactionObjectBuilder
+        .setNormalizedString(customizationArgValue).build()
+      is Int -> return interactionObjectBuilder
+        .setSignedInt(customizationArgValue).build()
+      is Double -> return interactionObjectBuilder
+        .setReal(customizationArgValue).build()
+      is List<*> -> if(customizationArgValue.size > 0) {
+        return interactionObjectBuilder.setSetOfHtmlString(
+          createStringList(customizationArgValue)).build()
+      }
+    }
+      return InteractionObject.getDefaultInstance()
+  }
+
+  @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
+  private fun createStringList(value: List<*>): StringList {
+    val stringList = mutableListOf<String>()
+    if(value[0] is String) {
+      stringList.addAll(value as List<String>)
+    }
+    return StringList.getDefaultInstance()
+  }
+ }
