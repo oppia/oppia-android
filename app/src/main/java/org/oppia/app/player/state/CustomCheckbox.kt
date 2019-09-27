@@ -16,7 +16,7 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.view.Gravity
 
-// TODO(#190): Move this to a custom.inputinteractionview.
+// TODO(#163): Move this to a StateCardFragment Low-fi PR.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
 class CustomCheckbox(context: Context?, private val optionContents: String) : CheckBox(context) {
 

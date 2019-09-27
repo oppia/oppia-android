@@ -20,7 +20,7 @@ const val HTML_TAG = "img"
 const val CUSTOM_ATTRIBUTE = "filepath-with-value"
 const val HTML_ATTRIBUTE = "src"
 
-// TODO(#190): Move this to a custom.inputinteractionview.
+// TODO(#163): Move this to a StateCardFragment Low-fi PR.
 /** Custom Checkbox for MultipleSelectionInputInteractionView. */
 class CustomRadioButton(context: Context?,private val optionContents: String) : RadioButton(context) {
 
