@@ -83,10 +83,8 @@ class StateFragmentPresenter @Inject constructor(
     for (row in 0..0) {
       val rg = RadioGroup(context)
       rg.orientation = LinearLayout.VERTICAL
-
       for (i in 0..optionsArray.size - 1) {
         val rdbtn = CustomRadioButton(context, optionsArray[i])
-
         rg.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
           override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
             for (i in 0 until group.childCount) {
