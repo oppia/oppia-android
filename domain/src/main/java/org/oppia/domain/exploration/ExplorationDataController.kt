@@ -62,13 +62,13 @@ class ExplorationDataController @Inject constructor(private val context: Context
 
   // Returns an exploration given an assetName
   private fun createExploration(assetName: String): Exploration {
-    val explorationObject = loadJSONFromAsset(assetName)?: return Exploration.newBuilder().build()
+    val explorationObject = loadJSONFromAsset(assetName)?: return Exploration.getDefaultInstance()
     return Exploration.newBuilder()
       .setTitle(explorationObject?.getString("title"))
       .setLanguageCode(explorationObject?.getString("language_code"))
       .setInitStateName(explorationObject?.getString("init_state_name"))
       .setObjective(explorationObject?.getString("objective"))
-   //   .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
+      .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
       .build()
   }
 
