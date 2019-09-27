@@ -67,9 +67,10 @@ class ExplorationProgressController @Inject constructor(
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExploration(exploration: Exploration) {
+    // The exploration must be initialized first since other lazy fields depend on it being inited.
+    currentExploration = exploration
     stateGraph.resetStateGraph(exploration.statesMap)
     stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
-    currentExploration = exploration
     playingExploration = true
     isSubmittingAnswer = false
   }
