@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains tabs for Topic. */
+/** Fragment that contains subtopic list for play mode. */
 class TopicPlayFragment : InjectableFragment() {
   @Inject
   lateinit var topicPlayFragmentController: TopicPlayFragmentController

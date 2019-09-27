@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains tabs for Topic. */
+/** Fragment that card for topic review. */
 class TopicReviewFragment : InjectableFragment() {
   @Inject
   lateinit var topicReviewFragmentController: TopicReviewFragmentController
