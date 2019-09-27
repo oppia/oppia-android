@@ -2,13 +2,19 @@ package org.oppia.domain.exploration
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import org.json.JSONArray
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.app.model.Exploration
 import org.oppia.util.data.AsyncResult
 import java.io.IOException
 import org.json.JSONObject
+import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.Outcome
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.RuleSpec
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.DataProviders
@@ -107,10 +113,117 @@ class ExplorationDataController @Inject constructor(private val context: Context
   }
 
   private fun createInteractionFromJson(interactionJson: JSONObject?): Interaction {
+    if (interactionJson == null) {
+      return Interaction.getDefaultInstance();
+    }
     return Interaction.newBuilder()
-      .setId(interactionJson?.getString("id"))
-      // Add data
+      .setId(interactionJson.getString("id"))
+      .addAllAnswerGroups(
+        createAnswerGroupsFromJson(
+          interactionJson.getJSONArray("answer_groups"),
+          interactionJson.getString("id")))
+      .addAllConfirmedUnclassifiedAnswers(
+        createAnswerGroupsFromJson(
+          interactionJson.getJSONArray("confirmed_unclassified_answers"),
+          interactionJson.getString("id")))
+      .setDefaultOutcome(
+        createOutcomeFromJson(
+          interactionJson.getJSONObject("default_outcome")))
+      // Add customization args
       .build()
   }
+
+  private fun createAnswerGroupsFromJson(answerGroupsJson: JSONArray?,
+                                         interactionId: String): MutableList<AnswerGroup> {
+    val answerGroups = mutableListOf<AnswerGroup>()
+    if(answerGroupsJson == null) {
+      return answerGroups
+    }
+    for (i in 0 until answerGroupsJson.length()) {
+      answerGroups.add(createSingleAnswerGroupFromJson(
+        answerGroupsJson.getJSONObject(i), interactionId))
+    }
+    return answerGroups
+  }
+
+  private fun createSingleAnswerGroupFromJson(answerGroupJson: JSONObject,
+                                              interactionId: String): AnswerGroup {
+    return AnswerGroup.newBuilder()
+      .setTaggedSkillMisconceptionId(
+        answerGroupJson.getString("tagged_skill_misconception_id"))
+      .setOutcome(
+        createOutcomeFromJson(answerGroupJson.getJSONObject("outcome")))
+      .setCorrect(
+        answerGroupJson.getBoolean("correct"))
+      .addAllRuleSpecs(
+        createRuleSpecsFromJson(
+          answerGroupJson.getJSONArray("rule_specs"),  interactionId))
+      .build()
+  }
+
+  private fun createOutcomeFromJson(outcomeJson: JSONObject?): Outcome {
+    if(outcomeJson == null) {
+      return Outcome.getDefaultInstance()
+    }
+    return Outcome.newBuilder()
+      .setDestStateName(outcomeJson.getString("dest"))
+      .addAllFeedback(createFeedbackFromJson(outcomeJson.getJSONArray("feedback")))
+      .build()
+  }
+
+  private fun createFeedbackFromJson(feedbackJson: JSONArray?): MutableList<SubtitledHtml> {
+    val feedbackList = mutableListOf<SubtitledHtml>();
+    if (feedbackJson == null) {
+      return feedbackList
+    }
+    for (i in 0 until feedbackJson.length()) {
+      feedbackList.add(SubtitledHtml.newBuilder().setHtml(feedbackJson.getString(i)).build())
+    }
+    return feedbackList
+  }
+
+  private fun createRuleSpecsFromJson(ruleSpecJson: JSONArray?,
+                                      interactionId: String): MutableList<RuleSpec> {
+    val ruleSpecList = mutableListOf<RuleSpec>()
+    if(ruleSpecJson == null) {
+      return ruleSpecList
+    }
+    for (i in 0 until ruleSpecJson.length()) {
+      ruleSpecList.add(
+        RuleSpec.newBuilder()
+          .setRuleType(
+            ruleSpecJson.getJSONObject(i).getString("rule_type"))
+          .setInput(createInputsFromJson(
+            ruleSpecJson.getJSONObject(i).getJSONObject("inputs"), interactionId))
+          .build())
+    }
+    return ruleSpecList
+  }
+
+  private fun createInputsFromJson(inputJson: JSONObject?,
+                                   interactionId: String): InteractionObject {
+    if(inputJson == null) {
+      return InteractionObject.getDefaultInstance()
+    }
+    if(interactionId == "MultipleChoiceInput") {
+      return InteractionObject.newBuilder()
+        .setNonNegativeInt(inputJson.getInt("x"))
+        .build()
+    } else if (interactionId == "TextInput") {
+      return InteractionObject.newBuilder()
+        .setNormalizedString(inputJson.getString("x"))
+        .build()
+    } else if (interactionId == "InteractiveMap") {
+      // TODO: Support Interactive Map interaction
+      return InteractionObject.newBuilder().build()
+    } else if (interactionId == "NumericInput") {
+      return InteractionObject.newBuilder()
+        .setReal(inputJson.getDouble("x"))
+        .build()
+    } else {
+      return InteractionObject.getDefaultInstance()
+    }
+  }
+
 
 }

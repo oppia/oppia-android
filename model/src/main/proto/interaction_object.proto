@@ -11,7 +11,7 @@ message InteractionObject {
     string normalized_string = 1;
     int32 signed_int = 2;
     uint32 non_negative_int = 3;
-    float real = 4;
+    double real = 4;
     bool bool_value = 5;
     NumberWithUnits number_with_units = 6;
     // repeated fields cannot be within a oneof so lists are
