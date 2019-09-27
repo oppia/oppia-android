@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains an introduction to the app. */
+/** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
   @Inject lateinit var topicFragmentController: TopicFragmentController
 
