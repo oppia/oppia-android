@@ -339,7 +339,7 @@
           }
         },
         "default_outcome": {
-          "dest": "Example2",
+          "dest": "Example3",
           "feedback": [],
           "param_changes": []
         },
@@ -348,63 +348,7 @@
         "solution": null
       },
       "param_changes": []
-    },
-    "Example2": {
-      "classifier_model_id": null,
-      "content": {
-        "audio_translations": {},
-        "html": "<div>Guess what {{answer}}, you’ve been playing one of my explorations all along! </div><div><br></div><div>Explorations are like interactive lessons. There are many types of interactions you can have in an exploration; for example, let's try using a map.</div><div><br></div><div>Can you find Helsinki, Finland on the map?</div>"
-      },
-      "interaction": {
-        "answer_groups": [
-          {
-            "correct": false,
-            "outcome": {
-              "dest": "Example3",
-              "feedback": [
-                "Great job, you found it!"
-              ],
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "d": 0,
-                  "p": [
-                    0,
-                    0
-                  ]
-                },
-                "rule_type": "Within"
-              }
-            ]
-          }
-        ],
-        "confirmed_unclassified_answers": [],
-        "customization_args": {
-          "latitude": {
-            "value": 0
-          },
-          "longitude": {
-            "value": 0
-          },
-          "zoom": {
-            "value": 0
-          }
-        },
-        "default_outcome": {
-          "dest": "Example3",
-          "feedback": [
-            "Well, not quite, but close enough!"
-          ],
-          "param_changes": []
-        },
-        "hints": [],
-        "id": "InteractiveMap",
-        "solution": null
-      },
-      "param_changes": []
-    },
+    }
     "Example3": {
       "classifier_model_id": null,
       "content": {

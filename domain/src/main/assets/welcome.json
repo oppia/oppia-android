@@ -72,85 +72,6 @@
       },
       "param_changes": []
     },
-    "Finding Helsinki": {
-      "classifier_model_id": null,
-      "content": {
-        "audio_translations": {},
-        "html": "You might want to build something more complicated than that, though. The good news is that you can integrate your own interactive questions into Oppia!<div><br>Where would people say the word 'Oppia'? Well, in Finland, and probably in its capital, Helsinki. Can you find Helsinki on a map of the world?</div>"
-      },
-      "interaction": {
-        "answer_groups": [
-          {
-            "correct": false,
-            "outcome": {
-              "dest": "Things you can do",
-              "feedback": [
-                "Hooray, you found it!"
-              ],
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "d": 110,
-                  "p": [
-                    60.1708,
-                    24.9375
-                  ]
-                },
-                "rule_type": "Within"
-              }
-            ]
-          },
-          {
-            "correct": false,
-            "outcome": {
-              "dest": "Finding Helsinki",
-              "feedback": [
-                "Close, but not quite. Helsinki is on the south coast of Finland; try looking there.",
-                "That's not too far, but you can get closer! Try looking on the south coast of Finland."
-              ],
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "d": 1100,
-                  "p": [
-                    60.1708,
-                    24.9375
-                  ]
-                },
-                "rule_type": "Within"
-              }
-            ]
-          }
-        ],
-        "confirmed_unclassified_answers": [],
-        "customization_args": {
-          "latitude": {
-            "value": 60.1708
-          },
-          "longitude": {
-            "value": 24.9375
-          },
-          "zoom": {
-            "value": 2
-          }
-        },
-        "default_outcome": {
-          "dest": "Finding Helsinki",
-          "feedback": [
-            "That is rather far away! Try zooming into Finland."
-          ],
-          "param_changes": []
-        },
-        "hints": [],
-        "id": "InteractiveMap",
-        "solution": null
-      },
-      "param_changes": []
-    },
     "Numeric input": {
       "classifier_model_id": null,
       "content": {
@@ -162,7 +83,7 @@
           {
             "correct": false,
             "outcome": {
-              "dest": "Finding Helsinki",
+              "dest": "Things you can do",
               "feedback": [
                 "Yes, that's correct: 11 times 11 is 121."
               ],

@@ -60,9 +60,9 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return AsyncResult.success(createExploration("about_oppia.json"))
   }
 
-  // Returns the "welcome" exploration
-  private fun createExploration(Id: String): Exploration {
-    val explorationObject = loadJSONFromAsset(Id)
+  // Returns an exploration given an assetName
+  private fun createExploration(assetName: String): Exploration {
+    val explorationObject = loadJSONFromAsset(assetName)
     return Exploration.newBuilder()
       .setTitle(explorationObject?.getString("title"))
       .setLanguageCode(explorationObject?.getString("language_code"))
