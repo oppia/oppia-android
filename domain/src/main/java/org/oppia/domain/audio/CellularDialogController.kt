@@ -26,19 +26,19 @@ class CellularDialogController @Inject constructor(
     }
   }
 
-  /** Saves that the user's preference on whether to show the dialog. */
+  /** Saves that the user's preference on whether to hide the dialog. */
   fun setHideDialogPreference(hideDialog: Boolean) {
     cellularDataStore.storeDataAsync(updateInMemoryCache = true) {
       it.toBuilder().setHideDialog(hideDialog).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing the user's preference to show cellular data dialog.", it)
+        logger.e("DOMAIN", "Failed when storing the user's preference to hide cellular data dialog.", it)
       }
     }
   }
 
   /**
-   * Returns a [LiveData] result indicating whether the user wants to show the CellularDataDialog. This is guaranteed to
+   * Returns a [LiveData] result indicating whether the user wants to hide the CellularDataDialog. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [setHideDialogPreference] has since been
    * called.
    */
