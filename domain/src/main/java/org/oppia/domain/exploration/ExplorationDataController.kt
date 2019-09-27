@@ -73,6 +73,16 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .build()
   }
 
+  // Returns a JSON Object if it exists, else returns null
+  private fun getJSONObject(parentObject: JSONObject, key: String): JSONObject? {
+    try {
+      return parentObject.getJSONObject(key)
+    } catch(e: JSONException) {
+      return null
+    }
+  }
+
+  // Loads the JSON string from an asset and converts it to a JSONObject
   private fun loadJSONFromAsset(assetName: String): JSONObject? {
     val am = context.assets
 
@@ -93,6 +103,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return jsonObject
   }
 
+  // Creates the states map from JSON
   private fun createStatesFromJsonObject(statesJsonObject: JSONObject?): MutableMap<String, State> {
     val statesMap: MutableMap<String, State> = mutableMapOf()
     val statesKeys = statesJsonObject?.keys()?: return statesMap
@@ -104,6 +115,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return statesMap
   }
 
+  // Creates a single state object from JSON
   private fun createStateFromJson(stateJson: JSONObject?): State {
     return State.newBuilder()
       .setContent(
@@ -113,6 +125,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .build()
   }
 
+  // Creates an interaction from JSON
   private fun createInteractionFromJson(interactionJson: JSONObject?): Interaction {
     if (interactionJson == null) {
       return Interaction.getDefaultInstance();
@@ -135,14 +148,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .build()
   }
 
-  private fun getJSONObject(parentObject: JSONObject, key: String): JSONObject? {
-    try {
-      return parentObject.getJSONObject(key)
-    } catch(e: JSONException) {
-      return null
-    }
-  }
-
+  // Creates the list of answer group objects from JSON
   private fun createAnswerGroupsFromJson(answerGroupsJson: JSONArray?,
                                          interactionId: String): MutableList<AnswerGroup> {
     val answerGroups = mutableListOf<AnswerGroup>()
@@ -156,6 +162,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return answerGroups
   }
 
+  // Creates a single answer group object from JSON
   private fun createSingleAnswerGroupFromJson(answerGroupJson: JSONObject,
                                               interactionId: String): AnswerGroup {
     return AnswerGroup.newBuilder()
@@ -169,6 +176,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .build()
   }
 
+  // Creates an outcome object from JSON
   private fun createOutcomeFromJson(outcomeJson: JSONObject?): Outcome {
     if(outcomeJson == null) {
       return Outcome.getDefaultInstance()
@@ -179,6 +187,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .build()
   }
 
+  // Creates a feedback object from JSON
   private fun createFeedbackFromJson(feedbackJson: JSONArray?): MutableList<SubtitledHtml> {
     val feedbackList = mutableListOf<SubtitledHtml>();
     if (feedbackJson == null) {
@@ -190,6 +199,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return feedbackList
   }
 
+  // Creates the list of rule spec objects from JSON
   private fun createRuleSpecsFromJson(ruleSpecJson: JSONArray?,
                                       interactionId: String): MutableList<RuleSpec> {
     val ruleSpecList = mutableListOf<RuleSpec>()
@@ -201,7 +211,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
         RuleSpec.newBuilder()
           .setRuleType(
             ruleSpecJson.getJSONObject(i).getString("rule_type"))
-          .setInput(createInteractionObjectFromJson(
+          .setInput(createInputFromJson(
             ruleSpecJson.getJSONObject(i).getJSONObject("inputs"),
             /* keyName= */"x", interactionId))
           .build())
@@ -209,7 +219,8 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return ruleSpecList
   }
 
-  private fun createInteractionObjectFromJson(inputJson: JSONObject?,
+  // Creates an input interaction object from JSON
+  private fun createInputFromJson(inputJson: JSONObject?,
                                               keyName: String,
                                               interactionId: String): InteractionObject {
     if(inputJson == null) {
@@ -232,6 +243,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     }
   }
 
+  // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
     customizationArgsJson: JSONObject?): MutableMap<String, InteractionObject> {
     val customizationArgsMap: MutableMap<String, InteractionObject> = mutableMapOf()
@@ -240,13 +252,14 @@ class ExplorationDataController @Inject constructor(private val context: Context
     val customizationArgsIterator = customizationArgsKeys.iterator()
     while(customizationArgsIterator.hasNext()) {
       val key = customizationArgsIterator.next()
-      customizationArgsMap[key] =  createCustomizationArgsFromJson(
+      customizationArgsMap[key] =  createCustomizationArgValueFromJson(
         customizationArgsJson.getJSONObject(key).get("value"))
     }
     return customizationArgsMap
   }
 
-  private fun createCustomizationArgsFromJson(customizationArgValue: Any): InteractionObject {
+  // Creates a customization arg value interaction object from JSON
+  private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when(customizationArgValue) {
       is String -> return interactionObjectBuilder
@@ -262,7 +275,7 @@ class ExplorationDataController @Inject constructor(private val context: Context
     }
       return InteractionObject.getDefaultInstance()
   }
-
+  
   @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
   private fun createStringList(value: List<*>): StringList {
     val stringList = mutableListOf<String>()
