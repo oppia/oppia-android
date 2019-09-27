@@ -22,7 +22,6 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>
 ) {
   private var llRoot: LinearLayout? = null
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
