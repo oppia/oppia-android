@@ -39,7 +39,7 @@
       app:layout_constraintBottom_toTopOf="@+id/dummy_audio_button"
       app:layout_constraintTop_toBottomOf="@+id/linearLayout" tools:layout_editor_absoluteX="8dp">
       <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/interactionRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp">

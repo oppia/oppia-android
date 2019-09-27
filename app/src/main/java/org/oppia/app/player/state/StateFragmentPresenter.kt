@@ -9,7 +9,6 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.content_interaction_fragment.view.radioGroup
 import kotlinx.android.synthetic.main.state_fragment.view.*
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.StateFragmentBinding
@@ -102,7 +101,7 @@ class StateFragmentPresenter @Inject constructor(
         })
         rg.addView(rdbtn)
       }
-      binding.root.radioGroup.addView(rg)
+      binding.root.interactionRadioGroup.addView(rg)
     }
   }
 

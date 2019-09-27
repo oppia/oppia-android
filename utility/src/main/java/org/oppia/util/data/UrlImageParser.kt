@@ -14,8 +14,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
-/** UrlImage Parser for android TextView to load Html Image tag */
-
+/** UrlImage Parser for android TextView to load Html Image tag.  */
 class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
 
   var targets: ArrayList<BitmapTarget>? = null
@@ -39,7 +38,6 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
 
       drawable = BitmapDrawable(context.resources, resource)
-
       tvContents.post {
         val w = tvContents.width
         val hh = (drawable as BitmapDrawable).intrinsicHeight
@@ -52,7 +50,6 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
         tvContents.text = tvContents.text
         tvContents.invalidate()
       }
-
     }
   }
 
@@ -63,5 +60,4 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
         drawable!!.draw(canvas)
     }
   }
-
 }
