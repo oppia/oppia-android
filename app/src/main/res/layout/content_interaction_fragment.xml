@@ -1,14 +1,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-      android:id="@+id/rootContainer"
+  <LinearLayout
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <RadioGroup
+      android:id="@+id/radioGroup"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-      <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+      android:layout_height="wrap_content"
       android:padding="15dp">
-      </RadioGroup>
-    </LinearLayout>
+    </RadioGroup>
+  </LinearLayout>
 </layout>

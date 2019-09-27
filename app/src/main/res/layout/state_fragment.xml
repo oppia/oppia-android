@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
     <import type="android.view.View"/>
@@ -15,19 +15,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
+      android:id="@+id/linearLayout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
       android:visibility="@{viewModel.isAudioFragmentVisible? View.VISIBLE: View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
       <fragment
         android:id="@+id/audio_fragment"
         class="org.oppia.app.player.audio.AudioFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/interactionContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:background="@color/white" android:orientation="vertical"
+      android:padding="10dp"
+      app:layout_constraintBottom_toTopOf="@+id/dummy_audio_button"
+      app:layout_constraintTop_toBottomOf="@+id/linearLayout" tools:layout_editor_absoluteX="8dp">
+      <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+      </RadioGroup>
     </LinearLayout>
     <Button
       android:id="@+id/dummy_audio_button"
