@@ -27,7 +27,6 @@ class ContentCardAdapter(
   private val VIEW_TYPE_LEARNER = 2
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
     return when (viewType) {
       VIEW_TYPE_CONTENT -> {
         val inflater = LayoutInflater.from(parent.getContext())
@@ -46,7 +45,6 @@ class ContentCardAdapter(
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
     when (holder.itemViewType) {
       VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html)
       VIEW_TYPE_LEARNER -> (holder as LearnersViewHolder).bind(contentList!!.get(position).html)
@@ -55,12 +53,9 @@ class ContentCardAdapter(
 
   // Determines the appropriate ViewType according to the sender of the message.
   override fun getItemViewType(position: Int): Int {
-
     return if (!contentList!!.get(position).contentId!!.contains("content") &&
       !contentList!!.get(position).contentId!!.contains(
-        "Feedback"
-      )
-    ) {
+        "Feedback")) {
       VIEW_TYPE_LEARNER
     } else {
       VIEW_TYPE_CONTENT
@@ -74,12 +69,9 @@ class ContentCardAdapter(
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(rawString: String?) {
-
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
-
       val html: Spannable = parseHtml(rawString, binding.root.tvContents)
-
       binding.root.tvContents.text = html
     }
   }
@@ -87,21 +79,16 @@ class ContentCardAdapter(
   private fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
     var htmlContent = rawString
-
     var CUSTOM_TAG = "oppia-noninteractive-image"
     var HTML_TAG = "img"
     var CUSTOM_ATTRIBUTE = "filepath-with-value"
     var HTML_ATTRIBUTE = "src"
-
     if (htmlContent!!.contains(CUSTOM_TAG)) {
-
       htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
       htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-
     var imageGetter = UrlImageParser(tvContents, context)
-
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
       html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
     } else {
@@ -113,12 +100,9 @@ class ContentCardAdapter(
   inner class LearnersViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(rawString: String?) {
-
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
-
       val html: Spannable = parseHtml(rawString, binding.root.tvContents)
-
       binding.root.tvContents.text = html
     }
   }
