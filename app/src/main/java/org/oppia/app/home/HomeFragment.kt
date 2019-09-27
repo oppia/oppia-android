@@ -23,5 +23,4 @@ class HomeFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return homeFragmentController.handleCreateView(inflater, container)
   }
-
 }

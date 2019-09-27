@@ -37,7 +37,6 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
-
     }
     unitTests.returnDefaultValues = true
   }

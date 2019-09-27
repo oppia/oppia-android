@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.InputFilter
 import android.text.method.DigitsKeyListener
 import android.widget.EditText
+
 import org.oppia.app.R
 
 /** The customclass for [FractionInputInteractionView]. */
@@ -17,11 +18,11 @@ class FractionInputInteractionView : EditText {
     this.mContext = context
     this.placeholder = placeholder
     this.rows = rows
-    init()
+    attributes()
   }
 
-  //update default attributes of TextInputInteractionView here
-  fun init() {
+  // This function contains default attributes of FractionInputInteractionView.
+  fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel = 10
     val density = resources.displayMetrics.density
@@ -37,6 +38,4 @@ class FractionInputInteractionView : EditText {
     filterArray[0] = InputFilter.LengthFilter(length)
     setFilters(filterArray)
   }
-
 }
-

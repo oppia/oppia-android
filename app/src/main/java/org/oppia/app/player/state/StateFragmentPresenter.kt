@@ -36,7 +36,7 @@ class StateFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  //for adding textinputinteraction view
+  // The function for adding Textinputinteraction view
   fun addTextInputContentCard(placeholder: String, type: Int) {
     var contentComponent = TextInputInteractionView(
       fragment.context!!,
@@ -49,10 +49,9 @@ class StateFragmentPresenter @Inject constructor(
     )
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot!!.addView(contentComponent, params)
-
   }
 
-  //for adding numberinputinteraction view
+  // The function for adding numberinputinteraction view
   fun addNumberInputContentCard(placeholder: String, type: Int) {
     var contentComponent = NumberInputInteractionView(
       fragment.context!!,
@@ -68,7 +67,7 @@ class StateFragmentPresenter @Inject constructor(
 
   }
 
-  //for adding numberinputinteraction view
+  // The function for adding numberinputinteraction view
   fun addFractionInputContentCard(placeholder: String, type: Int) {
     var contentComponent = FractionInputInteractionView(
       fragment.context!!,

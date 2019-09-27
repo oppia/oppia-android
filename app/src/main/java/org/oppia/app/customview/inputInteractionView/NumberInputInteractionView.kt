@@ -19,11 +19,11 @@ class NumberInputInteractionView : EditText {
     this.mContext = context
     this.placeholder = placeholder
     this.rows = rows
-    init()
+    attributes()
   }
 
-  //update default attributes of NumberInputInteractionView here
-  fun init() {
+  // This function contains default attributes of NumberInputInteractionView.
+  fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel = 10
     val density = resources.displayMetrics.density
@@ -39,8 +39,4 @@ class NumberInputInteractionView : EditText {
     filterArray[0] = InputFilter.LengthFilter(length)
     setFilters(filterArray)
   }
-
 }
-
-
-

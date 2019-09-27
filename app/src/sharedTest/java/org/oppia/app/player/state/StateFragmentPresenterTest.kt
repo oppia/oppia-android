@@ -26,31 +26,22 @@ import org.oppia.util.threading.BlockingDispatcher
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
-  //to test text,number,and fraction input interaction views
+  // The function to test text,number,and fraction input interaction views
   @Test
   fun addTextInputContentCard() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(ViewMatchers.withId(R.id.dummy_audio_button)).perform(click())
-      onView(ViewMatchers.withHint("text"))
-        .check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("text"))
-        .perform(click())
-      onView(ViewMatchers.withHint("text"))
-        .perform(clearText(), typeText("Some Text"));
+      onView(ViewMatchers.withHint("text")).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint("text")).perform(click())
+      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("Some Text"));
       pauseTestFor(500)
-      onView(ViewMatchers.withHint("number 1"))
-        .check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("number 1"))
-        .perform(click())
-      onView(ViewMatchers.withHint("text"))
-        .perform(clearText(), typeText("123"));
+      onView(ViewMatchers.withHint("number 1")).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint("number 1")).perform(click())
+      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("123"));
       pauseTestFor(500)
-      onView(ViewMatchers.withHint("fraction 1/1"))
-        .check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("fraction 1/1"))
-        .perform(click())
-      onView(ViewMatchers.withHint("text"))
-        .perform(clearText(), typeText("1/3"));
+      onView(ViewMatchers.withHint("fraction 1/1")).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint("fraction 1/1")).perform(click())
+      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("1/3"));
       pauseTestFor(500)
     }
   }
