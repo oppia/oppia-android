@@ -18,7 +18,7 @@ class CellularDialogController @Inject constructor(
   private val cellularDataStore = cacheStoreFactory.create("cellular_data_preference", CellularDataPreference.getDefaultInstance())
 
   init {
-    // Prime the cache ahead of time so that any existing history is read prior to any calls to setShowDialogPreference().
+    // Prime the cache ahead of time so that any existing history is read prior to any calls to setHideDialogPreference().
     cellularDataStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for cellular dialog preference.", it)
@@ -27,9 +27,9 @@ class CellularDialogController @Inject constructor(
   }
 
   /** Saves that the user's preference on whether to show the dialog. */
-  fun setShowDialogPreference(showDialog: Boolean) {
+  fun setHideDialogPreference(hideDialog: Boolean) {
     cellularDataStore.storeDataAsync(updateInMemoryCache = true) {
-      it.toBuilder().setShowDialog(showDialog).build()
+      it.toBuilder().setHideDialog(hideDialog).build()
     }.invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed when storing the user's preference to show cellular data dialog.", it)
@@ -39,7 +39,7 @@ class CellularDialogController @Inject constructor(
 
   /**
    * Returns a [LiveData] result indicating whether the user wants to show the CellularDataDialog. This is guaranteed to
-   * provide the state of the store upon the creation of this controller even if [setShowDialogPreference] has since been
+   * provide the state of the store upon the creation of this controller even if [setHideDialogPreference] has since been
    * called.
    */
   fun getCellularDataPreference(): LiveData<AsyncResult<CellularDataPreference>> {

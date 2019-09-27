@@ -129,5 +129,5 @@ message ChapterProgress {
 }
 
 message CellularDataPreference {
-  bool showDialog = 1;
+  bool hideDialog = 1;
 }

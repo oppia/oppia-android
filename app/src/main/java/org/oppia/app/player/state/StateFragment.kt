@@ -22,14 +22,13 @@ class StateFragment @Inject constructor(
 ) : InjectableFragment(), CellularDataInterface {
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
-  // Control this boolean value from controllers in domain module.
-  private var showCellularDataDialog = true //TODO
+  private var hideCellularDataDialog = false
 
   init {
     cellularDialogController.getCellularDataPreference()
       .observe(this, Observer<AsyncResult<CellularDataPreference>>{
       if (it.isSuccess()) {
-        showCellularDataDialog = it.getOrDefault(CellularDataPreference.getDefaultInstance()).showDialog
+        hideCellularDataDialog = it.getOrDefault(CellularDataPreference.getDefaultInstance()).hideDialog
       }
     })
   }
@@ -44,11 +43,11 @@ class StateFragment @Inject constructor(
   }
 
   fun dummyButtonClicked() {
-    if (showCellularDataDialog) {
+    if (hideCellularDataDialog) {
+      stateFragmentPresenter.setAudioFragmentVisible(true)
+    } else {
       stateFragmentPresenter.setAudioFragmentVisible(false)
       showCellularDataDialogFragment()
-    } else {
-      stateFragmentPresenter.setAudioFragmentVisible(true)
     }
   }
 
@@ -63,10 +62,10 @@ class StateFragment @Inject constructor(
 
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
     stateFragmentPresenter.setAudioFragmentVisible(true)
-    if (saveUserChoice) cellularDialogController.setShowDialogPreference(true)
+    if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
   }
 
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    if (saveUserChoice) cellularDialogController.setShowDialogPreference(false)
+    if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
   }
 }

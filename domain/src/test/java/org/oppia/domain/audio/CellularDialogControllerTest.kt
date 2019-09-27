@@ -56,6 +56,10 @@ class CellularDialogControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
+  @Inject
+  @field:TestBlockingDispatcher
+  lateinit var testBlockingDispatcher: TestCoroutineDispatcher
+
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
@@ -71,6 +75,7 @@ class CellularDialogControllerTest {
   @ObsoleteCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
+    testBlockingDispatcher.pauseDispatcher()
   }
 
 
@@ -83,51 +88,50 @@ class CellularDialogControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_thatIndicatesShowDialog()
+  fun testController_providesInitialLiveData_indicatesNotHideDialog()
       = runBlockingTest(coroutineContext) {
     val cellularDataPreference = cellularDialogController.getCellularDataPreference()
-    advanceUntilIdle()
     cellularDataPreference.observeForever(mockCellularDataObserver)
+    testBlockingDispatcher.advanceUntilIdle()
 
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
     assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
-    assertThat(cellularDataResultCaptor.value.getOrThrow().showDialog).isFalse()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isFalse()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSetPreference_providesLiveData_userSetShowDialogTrue()
+  fun testController_setHidePrefTrue_providesLiveData_indicatesHideDialog()
       = runBlockingTest(coroutineContext) {
     val appHistory = cellularDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
-    cellularDialogController.setShowDialogPreference(true)
-    cellularDialogController.setShowDialogPreference(true)
-    advanceUntilIdle()
+    cellularDialogController.setHideDialogPreference(true)
+    testBlockingDispatcher.advanceUntilIdle()
 
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
     assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
-    assertThat(cellularDataResultCaptor.value.getOrThrow().showDialog).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSetPreference_providesLiveData_userSetShowDialogFalse()
+  fun testController_setHidePrefFalse_providesLiveData_indicatesNotHideDialog()
       = runBlockingTest(coroutineContext) {
     val appHistory = cellularDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
-    cellularDialogController.setShowDialogPreference(true)
-    cellularDialogController.setShowDialogPreference(false)
-    cellularDialogController.setShowDialogPreference(false)
-    advanceUntilIdle()
+    cellularDialogController.setHideDialogPreference(true)
+    cellularDialogController.setHideDialogPreference(false)
+    testBlockingDispatcher.advanceUntilIdle()
 
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
     assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
-    assertThat(cellularDataResultCaptor.value.getOrThrow().showDialog).isFalse()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isFalse()
   }
 
   @Qualifier annotation class TestDispatcher
+  @Qualifier annotation class TestBlockingDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -156,8 +160,16 @@ class CellularDialogControllerTest {
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(@TestBlockingDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestBlockingDispatcher
+    fun provideTestBlockingDispatcher(): TestCoroutineDispatcher {
+      return TestCoroutineDispatcher()
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
