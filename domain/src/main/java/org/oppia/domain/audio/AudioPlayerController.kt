@@ -216,6 +216,8 @@ class AudioPlayerController @Inject constructor(
     }
   }
 
+  fun getPlayProgressLiveData(): LiveData<AsyncResult<PlayProgress>>? = playProgress
+
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
 }
