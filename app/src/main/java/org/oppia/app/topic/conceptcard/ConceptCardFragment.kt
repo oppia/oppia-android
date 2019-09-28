@@ -10,7 +10,7 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 /* Fragment that displays a fullscreen dialog for concept cards */
-class ConceptCardFragment : InjectableDialogFragment() {
+class ConceptCardFragment(private val skillId: String) : InjectableDialogFragment() {
   @Inject lateinit var conceptCardPresenter: ConceptCardPresenter
 
   override fun onAttach(context: Context?) {
@@ -25,7 +25,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return conceptCardPresenter.handleCreateView(inflater, container)
+    return conceptCardPresenter.handleCreateView(inflater, container, skillId)
   }
 
   override fun onStart() {
