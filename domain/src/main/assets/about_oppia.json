@@ -18,10 +18,10 @@
       "interaction": {
         "answer_groups": [
           {
-            "correct": false,
             "outcome": {
+              "labelled_as_correct": false,
               "dest": "Contact",
-              "feedback": [],
+              "feedback": "",
               "param_changes": []
             },
             "rule_specs": [
@@ -34,10 +34,11 @@
             ]
           },
           {
-            "correct": false,
+
             "outcome": {
               "dest": "Credits",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -50,10 +51,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Site License",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -79,10 +80,9 @@
         },
         "default_outcome": {
           "dest": "About this website",
-          "feedback": [
-            "..."
-          ],
-          "param_changes": []
+          "feedback": "...",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "MultipleChoiceInput",
@@ -99,10 +99,10 @@
       "interaction": {
         "answer_groups": [
           {
-            "correct": false,
             "outcome": {
               "dest": "So what can I tell you",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -115,10 +115,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Credits",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -131,10 +131,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Site License",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -159,10 +159,9 @@
         },
         "default_outcome": {
           "dest": "Contact",
-          "feedback": [
-            "..."
-          ],
-          "param_changes": []
+          "feedback": "...",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "MultipleChoiceInput",
@@ -186,8 +185,9 @@
         },
         "default_outcome": {
           "dest": "So what can I tell you",
-          "feedback": [],
-          "param_changes": []
+          "feedback": "",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "Continue",
@@ -204,10 +204,10 @@
       "interaction": {
         "answer_groups": [
           {
-            "correct": false,
             "outcome": {
               "dest": "Contact",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -220,10 +220,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "So what can I tell you",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -236,10 +236,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Site License",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -264,10 +264,9 @@
         },
         "default_outcome": {
           "dest": "Credits",
-          "feedback": [
-            "..."
-          ],
-          "param_changes": []
+          "feedback": "...",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "MultipleChoiceInput",
@@ -312,8 +311,9 @@
         },
         "default_outcome": {
           "dest": "END",
-          "feedback": [],
-          "param_changes": []
+          "feedback": "",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "Continue",
@@ -340,8 +340,9 @@
         },
         "default_outcome": {
           "dest": "Example3",
-          "feedback": [],
-          "param_changes": []
+          "feedback": "",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "TextInput",
@@ -365,8 +366,9 @@
         },
         "default_outcome": {
           "dest": "So what can I tell you",
-          "feedback": [],
-          "param_changes": []
+          "feedback": "",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "Continue",
@@ -390,8 +392,9 @@
         },
         "default_outcome": {
           "dest": "So what can I tell you",
-          "feedback": [],
-          "param_changes": []
+          "feedback": "",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "Continue",
@@ -408,10 +411,11 @@
       "interaction": {
         "answer_groups": [
           {
-            "correct": false,
+
             "outcome": {
               "dest": "Credits",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -424,10 +428,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Contact",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -440,10 +444,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "So what can I tell you",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -468,10 +472,9 @@
         },
         "default_outcome": {
           "dest": "Site License",
-          "feedback": [
-            "..."
-          ],
-          "param_changes": []
+          "feedback": "...",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "MultipleChoiceInput",
@@ -488,10 +491,10 @@
       "interaction": {
         "answer_groups": [
           {
-            "correct": false,
             "outcome": {
               "dest": "About this website",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -504,10 +507,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "End Card",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -520,10 +523,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Example1",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -536,10 +539,10 @@
             ]
           },
           {
-            "correct": false,
             "outcome": {
               "dest": "Contribute",
-              "feedback": [],
+              "feedback": "",
+              "labelled_as_correct": false,
               "param_changes": []
             },
             "rule_specs": [
@@ -565,10 +568,9 @@
         },
         "default_outcome": {
           "dest": "So what can I tell you",
-          "feedback": [
-            "..."
-          ],
-          "param_changes": []
+          "feedback": "...",
+          "param_changes": [],
+          "labelled_as_correct": false
         },
         "hints": [],
         "id": "MultipleChoiceInput",
@@ -577,7 +579,7 @@
       "param_changes": []
     }
   },
-  "states_schema_version": 13,
+  "states_schema_version": 30,
   "tags": [],
   "title": "About Oppia"
 }

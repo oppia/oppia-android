@@ -2,6 +2,7 @@ package org.oppia.domain.exploration
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONException
 import javax.inject.Inject
@@ -22,95 +23,95 @@ import org.oppia.util.data.DataProviders
 
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
-private const val WELCOME_EXPLORATION_DATA_PROVIDER_ID = "WelcomeExplorationDataProvider"
-private const val ABBOUT_OPPIA_EXPLORATION_DATA_PROVIDER_ID = "AboutOppiaExplorationDataProvider"
+private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
 
 /** Controller for retrieving an exploration. */
 @Singleton
-class ExplorationDataController @Inject constructor(private val context: Context,
-                                                    private val dataProviders: DataProviders
+class ExplorationDataController @Inject constructor(
+  private val context: Context, private val dataProviders: DataProviders
 ) {
-
-  private val welcomeExplorationDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(
-      WELCOME_EXPLORATION_DATA_PROVIDER_ID, this::retrieveWelcomeExplorationAsync)
-  private val aboutOppiaExplorationDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(
-      ABBOUT_OPPIA_EXPLORATION_DATA_PROVIDER_ID, this::retrieveAbboutOppiaExplorationAsync)
 
   /**
    * Returns an  [Exploration] given an ID.
    */
-  fun getExplorationById(ID: String): LiveData<AsyncResult<Exploration>>? {
-    if (ID == TEST_EXPLORATION_ID_0) {
-      return dataProviders.convertToLiveData(welcomeExplorationDataProvider)
+  fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
+    if (id == TEST_EXPLORATION_ID_0) {
+      return dataProviders.convertToLiveData(
+        dataProviders.createInMemoryDataProviderAsync(
+          EXPLORATION_DATA_PROVIDER_ID, this::retrieveWelcomeExplorationAsync
+        )
+      )
     }
-    if (ID == TEST_EXPLORATION_ID_1) {
-      return dataProviders.convertToLiveData(aboutOppiaExplorationDataProvider)
+    if (id == TEST_EXPLORATION_ID_1) {
+      return dataProviders.convertToLiveData(
+        dataProviders.createInMemoryDataProviderAsync(
+          EXPLORATION_DATA_PROVIDER_ID, this::retrieveAbboutOppiaExplorationAsync
+        )
+      )
     }
-    return null
+    return MutableLiveData(AsyncResult.failed(Throwable("Wrong exploration id")))
   }
 
   @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
   private suspend fun retrieveWelcomeExplorationAsync(): AsyncResult<Exploration> {
-    return AsyncResult.success(createExploration("welcome.json"))
+    try {
+      return AsyncResult.success(createExploration("welcome.json"))
+    } catch (e: Exception) {
+      return AsyncResult.failed(e)
+    }
   }
 
   @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
   private suspend fun retrieveAbboutOppiaExplorationAsync(): AsyncResult<Exploration> {
-    return AsyncResult.success(createExploration("about_oppia.json"))
+    try {
+      return AsyncResult.success(createExploration("about_oppia.json"))
+    } catch (e: Exception) {
+      return AsyncResult.failed(e)
+    }
   }
 
   // Returns an exploration given an assetName
   private fun createExploration(assetName: String): Exploration {
-    val explorationObject = loadJSONFromAsset(assetName)?: return Exploration.getDefaultInstance()
-    return Exploration.newBuilder()
-      .setTitle(explorationObject?.getString("title"))
-      .setLanguageCode(explorationObject?.getString("language_code"))
-      .setInitStateName(explorationObject?.getString("init_state_name"))
-      .setObjective(explorationObject?.getString("objective"))
-      .putAllStates(createStatesFromJsonObject(explorationObject?.getJSONObject("states")))
-      .build()
+    try {
+      val explorationObject = loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
+      return Exploration.newBuilder()
+        .setTitle(explorationObject.getString("title"))
+        .setLanguageCode(explorationObject.getString("language_code"))
+        .setInitStateName(explorationObject.getString("init_state_name"))
+        .setObjective(explorationObject.getString("objective"))
+        .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
+        .build()
+    } catch (e: IOException) {
+      System.out.println(e)
+      throw(Throwable("Failed to load and parse the json asset file. %s", e))
+    }
   }
 
   // Returns a JSON Object if it exists, else returns null
-  private fun getJSONObject(parentObject: JSONObject, key: String): JSONObject? {
-    try {
-      return parentObject.getJSONObject(key)
-    } catch(e: JSONException) {
+  private fun getJsonObject(parentObject: JSONObject, key: String): JSONObject? {
+    return try {
+      parentObject.getJSONObject(key)
+    } catch (e: JSONException) {
       return null
     }
   }
 
   // Loads the JSON string from an asset and converts it to a JSONObject
-  private fun loadJSONFromAsset(assetName: String): JSONObject? {
-    val am = context.assets
-
-    var jsonObject: JSONObject?
-    try {
-      val `is` = am.open(assetName)
-      val size = `is`.available()
-      val buffer = ByteArray(size)
-      `is`.read(buffer)
-      `is`.close()
-      val json = String(buffer, Charsets.UTF_8)
-      jsonObject = JSONObject(json)
-    } catch (ex: IOException) {
-      ex.printStackTrace()
-      return null
-    }
-
-    return jsonObject
+  @Throws(IOException::class)
+  private fun loadJsonFromAsset(assetName: String): JSONObject? {
+    val assetManager = context.assets
+    val jsonContents = assetManager.open(assetName).bufferedReader().use { it.readText() }
+    return JSONObject(jsonContents)
   }
 
   // Creates the states map from JSON
   private fun createStatesFromJsonObject(statesJsonObject: JSONObject?): MutableMap<String, State> {
     val statesMap: MutableMap<String, State> = mutableMapOf()
-    val statesKeys = statesJsonObject?.keys()?: return statesMap
+    val statesKeys = statesJsonObject?.keys() ?: return statesMap
     val statesIterator = statesKeys.iterator()
-    while(statesIterator.hasNext()) {
+    while (statesIterator.hasNext()) {
       val key = statesIterator.next()
-      statesMap[key] =  createStateFromJson(statesJsonObject.getJSONObject(key))
+      statesMap[key] = createStateFromJson(statesJsonObject.getJSONObject(key))
     }
     return statesMap
   }
@@ -120,7 +121,9 @@ class ExplorationDataController @Inject constructor(private val context: Context
     return State.newBuilder()
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
-          stateJson?.getJSONObject("content")?.getString("html")))
+          stateJson?.getJSONObject("content")?.getString("html")
+        )
+      )
       .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
       .build()
   }
@@ -135,127 +138,137 @@ class ExplorationDataController @Inject constructor(private val context: Context
       .addAllAnswerGroups(
         createAnswerGroupsFromJson(
           interactionJson.getJSONArray("answer_groups"),
-          interactionJson.getString("id")))
+          interactionJson.getString("id")
+        )
+      )
       .addAllConfirmedUnclassifiedAnswers(
         createAnswerGroupsFromJson(
           interactionJson.getJSONArray("confirmed_unclassified_answers"),
-          interactionJson.getString("id")))
+          interactionJson.getString("id")
+        )
+      )
       .setDefaultOutcome(
         createOutcomeFromJson(
-          getJSONObject(interactionJson,"default_outcome")))
-      .putAllCustomizationArgs(createCustomizationArgsMapFromJson(
-        getJSONObject(interactionJson,"customization_args")))
+          getJsonObject(interactionJson, "default_outcome")
+        )
+      )
+      .putAllCustomizationArgs(
+        createCustomizationArgsMapFromJson(
+          getJsonObject(interactionJson, "customization_args")
+        )
+      )
       .build()
   }
 
   // Creates the list of answer group objects from JSON
-  private fun createAnswerGroupsFromJson(answerGroupsJson: JSONArray?,
-                                         interactionId: String): MutableList<AnswerGroup> {
+  private fun createAnswerGroupsFromJson(
+    answerGroupsJson: JSONArray?, interactionId: String
+  ): MutableList<AnswerGroup> {
     val answerGroups = mutableListOf<AnswerGroup>()
-    if(answerGroupsJson == null) {
+    if (answerGroupsJson == null) {
       return answerGroups
     }
     for (i in 0 until answerGroupsJson.length()) {
-      answerGroups.add(createSingleAnswerGroupFromJson(
-        answerGroupsJson.getJSONObject(i), interactionId))
+      answerGroups.add(
+        createSingleAnswerGroupFromJson(
+          answerGroupsJson.getJSONObject(i), interactionId
+        )
+      )
     }
     return answerGroups
   }
 
   // Creates a single answer group object from JSON
-  private fun createSingleAnswerGroupFromJson(answerGroupJson: JSONObject,
-                                              interactionId: String): AnswerGroup {
+  private fun createSingleAnswerGroupFromJson(
+    answerGroupJson: JSONObject, interactionId: String
+  ): AnswerGroup {
     return AnswerGroup.newBuilder()
       .setOutcome(
         createOutcomeFromJson(answerGroupJson.getJSONObject("outcome")))
-      .setCorrect(
-        answerGroupJson.getBoolean("correct"))
       .addAllRuleSpecs(
         createRuleSpecsFromJson(
-          answerGroupJson.getJSONArray("rule_specs"),  interactionId))
+          answerGroupJson.getJSONArray("rule_specs"), interactionId)
+      )
       .build()
   }
 
   // Creates an outcome object from JSON
   private fun createOutcomeFromJson(outcomeJson: JSONObject?): Outcome {
-    if(outcomeJson == null) {
+    if (outcomeJson == null) {
       return Outcome.getDefaultInstance()
     }
     return Outcome.newBuilder()
       .setDestStateName(outcomeJson.getString("dest"))
-      .addAllFeedback(createFeedbackFromJson(outcomeJson.getJSONArray("feedback")))
+      .setFeedback(SubtitledHtml.newBuilder()
+        .setHtml(outcomeJson.getString("feedback")))
+      .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
   }
 
-  // Creates a feedback object from JSON
-  private fun createFeedbackFromJson(feedbackJson: JSONArray?): MutableList<SubtitledHtml> {
-    val feedbackList = mutableListOf<SubtitledHtml>();
-    if (feedbackJson == null) {
-      return feedbackList
-    }
-    for (i in 0 until feedbackJson.length()) {
-      feedbackList.add(SubtitledHtml.newBuilder().setHtml(feedbackJson.getString(i)).build())
-    }
-    return feedbackList
-  }
-
   // Creates the list of rule spec objects from JSON
-  private fun createRuleSpecsFromJson(ruleSpecJson: JSONArray?,
-                                      interactionId: String): MutableList<RuleSpec> {
+  private fun createRuleSpecsFromJson(
+    ruleSpecJson: JSONArray?, interactionId: String
+  ): MutableList<RuleSpec> {
     val ruleSpecList = mutableListOf<RuleSpec>()
-    if(ruleSpecJson == null) {
+    if (ruleSpecJson == null) {
       return ruleSpecList
     }
     for (i in 0 until ruleSpecJson.length()) {
       ruleSpecList.add(
         RuleSpec.newBuilder()
           .setRuleType(
-            ruleSpecJson.getJSONObject(i).getString("rule_type"))
-          .setInput(createInputFromJson(
-            ruleSpecJson.getJSONObject(i).getJSONObject("inputs"),
-            /* keyName= */"x", interactionId))
-          .build())
+            ruleSpecJson.getJSONObject(i).getString("rule_type")
+          )
+          .setInput(
+            createInputFromJson(
+              ruleSpecJson.getJSONObject(i).getJSONObject("inputs"),
+              /* keyName= */"x", interactionId
+            )
+          )
+          .build()
+      )
     }
     return ruleSpecList
   }
 
   // Creates an input interaction object from JSON
-  private fun createInputFromJson(inputJson: JSONObject?,
-                                              keyName: String,
-                                              interactionId: String): InteractionObject {
-    if(inputJson == null) {
+  private fun createInputFromJson(
+    inputJson: JSONObject?,
+    keyName: String,
+    interactionId: String
+  ): InteractionObject {
+    if (inputJson == null) {
       return InteractionObject.getDefaultInstance()
     }
-    if(interactionId == "MultipleChoiceInput") {
-      return InteractionObject.newBuilder()
+    return when (interactionId) {
+      "MultipleChoiceInput" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
-    } else if (interactionId == "TextInput") {
-      return InteractionObject.newBuilder()
+      "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
-    } else if (interactionId == "NumericInput") {
-      return InteractionObject.newBuilder()
+      "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
-    } else {
-      return InteractionObject.getDefaultInstance()
+      else -> InteractionObject.getDefaultInstance()
     }
   }
 
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
-    customizationArgsJson: JSONObject?): MutableMap<String, InteractionObject> {
+    customizationArgsJson: JSONObject?
+  ): MutableMap<String, InteractionObject> {
     val customizationArgsMap: MutableMap<String, InteractionObject> = mutableMapOf()
     if (customizationArgsJson == null) {
       return customizationArgsMap
     }
-    val customizationArgsKeys = customizationArgsJson.keys()?: return customizationArgsMap
+    val customizationArgsKeys = customizationArgsJson.keys() ?: return customizationArgsMap
     val customizationArgsIterator = customizationArgsKeys.iterator()
-    while(customizationArgsIterator.hasNext()) {
+    while (customizationArgsIterator.hasNext()) {
       val key = customizationArgsIterator.next()
-      customizationArgsMap[key] =  createCustomizationArgValueFromJson(
-        customizationArgsJson.getJSONObject(key).get("value"))
+      customizationArgsMap[key] = createCustomizationArgValueFromJson(
+        customizationArgsJson.getJSONObject(key).get("value")
+      )
     }
     return customizationArgsMap
   }
@@ -263,27 +276,29 @@ class ExplorationDataController @Inject constructor(private val context: Context
   // Creates a customization arg value interaction object from JSON
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
-    when(customizationArgValue) {
+    when (customizationArgValue) {
       is String -> return interactionObjectBuilder
         .setNormalizedString(customizationArgValue).build()
       is Int -> return interactionObjectBuilder
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
-      is List<*> -> if(customizationArgValue.size > 0) {
+      is List<*> -> if (customizationArgValue.size > 0) {
         return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)).build()
+          createStringList(customizationArgValue)
+        ).build()
       }
     }
-      return InteractionObject.getDefaultInstance()
+    return InteractionObject.getDefaultInstance()
   }
 
   @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
   private fun createStringList(value: List<*>): StringList {
     val stringList = mutableListOf<String>()
-    if(value[0] is String) {
+    if (value[0] is String) {
       stringList.addAll(value as List<String>)
+      return StringList.newBuilder().addAllStringList(stringList).build()
     }
     return StringList.getDefaultInstance()
   }
- }
+}

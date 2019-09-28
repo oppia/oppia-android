@@ -33,7 +33,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.UserAppHistory
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -70,7 +69,6 @@ class ExplorationDataControllerTest {
 
   @Captor
   lateinit var explorationResultCaptor: ArgumentCaptor<AsyncResult<Exploration>>
-
 
   @Inject
   @field:TestDispatcher
@@ -109,10 +107,9 @@ class ExplorationDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveDataFortheWelcomeExploration() = runBlockingTest(coroutineContext) {
+  fun testController_providesInitialLiveDataForTheWelcomeExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
     advanceUntilIdle()
-    assertThat(explorationLiveData).isNotNull()
     explorationLiveData!!.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf("END", "Estimate 100", "Numeric input",
       "Things you can do", "Welcome!", "What language")
@@ -124,28 +121,28 @@ class ExplorationDataControllerTest {
     assertThat(exploration.title).isEqualTo("Welcome to Oppia!")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(6)
-    assertThat(exploration.statesMap.keys).containsAllIn(expectedExplorationStateSet)
+    assertThat(exploration.statesMap.keys).containsExactlyElementsIn(expectedExplorationStateSet)
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveDataFortheAboutOppiaExploration()
+  fun testController_providesInitialLiveDataForTheAboutOppiaExploration()
       = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
     advanceUntilIdle()
-    assertThat(explorationLiveData).isNotNull()
     explorationLiveData!!.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf("About this website", "Contact", "Contribute", "Credits", "END",
       "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you")
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    //assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    System.out.println(explorationLiveData.value!!.getErrorOrNull())
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
     assertThat(exploration.title).isEqualTo("About Oppia")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(11)
-    assertThat(exploration.statesMap.keys).containsAllIn(expectedExplorationStateSet)
+    assertThat(exploration.statesMap.keys).containsExactlyElementsIn(expectedExplorationStateSet)
   }
 
   @Test
@@ -154,12 +151,12 @@ class ExplorationDataControllerTest {
       = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
-    assertThat(explorationLiveData).isNull()
+    explorationLiveData!!.observeForever(mockExplorationObserver)
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isFailure()).isTrue()
   }
 
-
   @Qualifier annotation class TestDispatcher
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {

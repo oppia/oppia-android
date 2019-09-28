@@ -112,7 +112,6 @@ message AnswerGroup {
   Outcome outcome = 2;
   repeated RuleSpec rule_specs = 3;
   repeated TrainingData training_data = 4;
-  bool correct = 5;
 }
 
 // Structure for a single training data instance
@@ -142,7 +141,7 @@ message Hint {
 message Outcome {
   string dest_state_name = 1;
   string refresher_exploration_id = 2;
-  repeated SubtitledHtml feedback = 3;
+  SubtitledHtml feedback = 3;
   repeated ParamChange param_changes = 4;
   string missing_prerequisite_skill_id = 5;
   bool labelled_as_correct = 6;
