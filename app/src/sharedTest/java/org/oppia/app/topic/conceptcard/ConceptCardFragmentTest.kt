@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -29,9 +30,9 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_loadFragment_textIsDisplayed() {
-    // I'm not sure how to launch just the fragment because it doesn't have its own activity
-    ActivityScenario.launch(HomeActivity::class.java).use {
-      Espresso.onView(withId(R.id.rich_text_card)).check(matches(withText("Hello World")))
+    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
+      Espresso.onView(withId(R.id.open_dialog)).perform(click())
+      Espresso.onView(withId(R.id.explanation)).check(matches(withText("Explanation without rich text.")))
     }
   }
 
