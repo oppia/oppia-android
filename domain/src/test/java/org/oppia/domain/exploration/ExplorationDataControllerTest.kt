@@ -111,8 +111,10 @@ class ExplorationDataControllerTest {
     val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
     advanceUntilIdle()
     explorationLiveData!!.observeForever(mockExplorationObserver)
-    val expectedExplorationStateSet = listOf("END", "Estimate 100", "Numeric input",
-      "Things you can do", "Welcome!", "What language")
+    val expectedExplorationStateSet = listOf(
+      "END", "Estimate 100", "Numeric input",
+      "Things you can do", "Welcome!", "What language"
+    )
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
@@ -126,13 +128,14 @@ class ExplorationDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveDataForTheAboutOppiaExploration()
-      = runBlockingTest(coroutineContext) {
+  fun testController_providesInitialLiveDataForTheAboutOppiaExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
     advanceUntilIdle()
     explorationLiveData!!.observeForever(mockExplorationObserver)
-    val expectedExplorationStateSet = listOf("About this website", "Contact", "Contribute", "Credits", "END",
-      "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you")
+    val expectedExplorationStateSet = listOf(
+      "About this website", "Contact", "Contribute", "Credits", "END",
+      "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you"
+    )
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     //assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
@@ -147,8 +150,7 @@ class ExplorationDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_returnsNullForNonExistentExploration()
-      = runBlockingTest(coroutineContext) {
+  fun testController_returnsNullForNonExistentExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
     explorationLiveData!!.observeForever(mockExplorationObserver)
@@ -156,7 +158,9 @@ class ExplorationDataControllerTest {
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {

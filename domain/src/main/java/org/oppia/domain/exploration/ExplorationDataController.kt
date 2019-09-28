@@ -184,10 +184,12 @@ class ExplorationDataController @Inject constructor(
   ): AnswerGroup {
     return AnswerGroup.newBuilder()
       .setOutcome(
-        createOutcomeFromJson(answerGroupJson.getJSONObject("outcome")))
+        createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
+      )
       .addAllRuleSpecs(
         createRuleSpecsFromJson(
-          answerGroupJson.getJSONArray("rule_specs"), interactionId)
+          answerGroupJson.getJSONArray("rule_specs"), interactionId
+        )
       )
       .build()
   }
@@ -199,8 +201,10 @@ class ExplorationDataController @Inject constructor(
     }
     return Outcome.newBuilder()
       .setDestStateName(outcomeJson.getString("dest"))
-      .setFeedback(SubtitledHtml.newBuilder()
-        .setHtml(outcomeJson.getString("feedback")))
+      .setFeedback(
+        SubtitledHtml.newBuilder()
+          .setHtml(outcomeJson.getString("feedback"))
+      )
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
   }
