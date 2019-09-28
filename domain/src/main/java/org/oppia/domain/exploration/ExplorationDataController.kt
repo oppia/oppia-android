@@ -233,9 +233,7 @@ class ExplorationDataController @Inject constructor(
 
   // Creates an input interaction object from JSON
   private fun createInputFromJson(
-    inputJson: JSONObject?,
-    keyName: String,
-    interactionId: String
+    inputJson: JSONObject?, keyName: String, interactionId: String
   ): InteractionObject {
     if (inputJson == null) {
       return InteractionObject.getDefaultInstance()
