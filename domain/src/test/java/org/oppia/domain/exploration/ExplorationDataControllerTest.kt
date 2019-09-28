@@ -138,8 +138,7 @@ class ExplorationDataControllerTest {
     )
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    //assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    System.out.println(explorationLiveData.value!!.getErrorOrNull())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
     assertThat(exploration.title).isEqualTo("About Oppia")

@@ -82,7 +82,6 @@ class ExplorationDataController @Inject constructor(
         .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
         .build()
     } catch (e: IOException) {
-      System.out.println(e)
       throw(Throwable("Failed to load and parse the json asset file. %s", e))
     }
   }
