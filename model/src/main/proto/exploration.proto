@@ -11,15 +11,18 @@ option java_multiple_files = true;
 // Structure for a single exploration.
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeExploration.kt
 message Exploration {
+  // The ID of the exploration.
+  string id = 1;
+
   // Mapping from a state name to a state object
-  map<string, State> states = 1;
-  repeated ParamChange param_changes = 2;
-  repeated ParamSpec param_specs = 3;
-  string init_state_name = 4;
-  string objective = 5;
-  bool correctness_feedback_enabled = 6;
-  string title = 7;
-  string language_code = 8;
+  map<string, State> states = 2;
+  repeated ParamChange param_changes = 3;
+  repeated ParamSpec param_specs = 4;
+  string init_state_name = 5;
+  string objective = 6;
+  bool correctness_feedback_enabled = 7;
+  string title = 8;
+  string language_code = 9;
 }
 
 // Structure for a param change.
