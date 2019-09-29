@@ -129,6 +129,6 @@ message RuleSpec {
   // Mapping from the name of the rule template to the value of the rule template.
   // The keys and values for this map can be deduced from
   // https://github.com/oppia/oppia/blob/develop/extensions/interactions/rule_templates.json
-  map<string, InteractionObject> inputs = 1;
+  InteractionObject input = 1;
   string rule_type = 2;
 }
