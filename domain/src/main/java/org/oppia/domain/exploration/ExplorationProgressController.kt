@@ -23,10 +23,6 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "CurrentStateDataProvider"
 
-const val TEST_INIT_STATE_NAME = "First State"
-const val TEST_MIDDLE_STATE_NAME = "Second State"
-const val TEST_END_STATE_NAME = "Last State"
-
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an exploration. Note that
  * this controller only supports one active exploration at a time.
