@@ -20,8 +20,8 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
   var targets: ArrayList<BitmapTarget>? = null
   /***
    * Get the Drawable from URL
-   * @param urlString
-   * @return
+   * @param urlString contains the source of the image
+   * @return urlDrawable
    */
   override fun getDrawable(urlString: String): Drawable {
     val urlDrawable = UrlDrawable()
