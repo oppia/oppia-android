@@ -24,15 +24,18 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StateViewModel>
 ) {
-  private lateinit var binding: StateFragmentBinding
+
+  var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
+  var interactionInstanceId: String? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+  val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    showInputInteractions()
+    createDummyData()
+    showInputInteractions(binding)
     return binding.root
   }
 
@@ -44,31 +47,30 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
 
-  private fun showInputInteractions() {
-    //Todo(Veena): Remove static initialization and use values from constructor for gaeCustomizationArgsMap and interactionInstanceId
-    var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
-    var interactionInstanceId = "MultipleChoiceInput"
+  private fun createDummyData() {
+    interactionInstanceId = "ItemSelectionInput"
     var sampleData: GaeCustomizationArgs =
       GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
     gaeCustomizationArgsMap?.put("choices", sampleData)
+  }
 
-    // Todo(veena): Keep the below code for actual implementation
+  private fun showInputInteractions(binding: StateFragmentBinding) {
     val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
 
-    if (interactionInstanceId.equals("ItemSelectionInput")) {
+    if (interactionInstanceId.equals("MultipleSelectionInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
-      addRadioButtons(items)
+      addRadioButtons(items,binding)
     } else if (interactionInstanceId.equals("ItemSelectionInput") || interactionInstanceId.equals("SingleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
-      addCheckbox(items)
+      addCheckbox(items,binding)
     } else {
       //Do no show any view
     }
   }
 
-  fun addCheckbox(optionsArray: Array<String>) {
+  fun addCheckbox(optionsArray: Array<String>, binding: StateFragmentBinding) {
     for (row in 0..0) {
       for (i in 0..optionsArray.size - 1) {
         val cb = CustomCheckbox(context, optionsArray[i])
@@ -77,7 +79,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun addRadioButtons(optionsArray: Array<String>) {
+  fun addRadioButtons(
+    optionsArray: Array<String>,
+    binding: StateFragmentBinding
+  ) {
     for (row in 0..0) {
       val rg = RadioGroup(context)
       rg.orientation = LinearLayout.VERTICAL

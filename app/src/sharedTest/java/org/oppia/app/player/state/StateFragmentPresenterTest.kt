@@ -28,26 +28,28 @@ import org.hamcrest.Matcher
 /** Tests for [StateFragmentPresenter]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
+  var interactionInstanceId: String? = null
 
-  // MultipleSelection  input interaction views
   @Test
   fun testMultipleSelectionInputUnteraction() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
+      interactionInstanceId = "MultipleSelectionInput"
+      assertEquals(interactionInstanceId, "MultipleSelectionInput")
 
+      // MultipleSelection  input interaction views
       onView(withId(R.id.interactionRadioGroup)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
           return isDisplayed()
         }
+
         override fun getDescription(): String {
           return "Performing click"
         }
+
         override fun perform(uiController: androidx.test.espresso.UiController?, view: View?) {
-          //The view which we got in argument is the same view which Espresso found using onView(withId(R.id.parent_container))
           val parentRadioGroup = view as RadioGroup
-          //Get the Radiogroup inside the LinearLayout
           val linearLayout = parentRadioGroup.getChildAt(0) as RadioGroup
-          //Get the Button inside the inner LinearLayout
           val radioButton = linearLayout.getChildAt(0) as CustomRadioButton
           radioButton.performClick()
         }
@@ -55,23 +57,25 @@ class StateFragmentPresenterTest {
     }
   }
 
-  // ItemSelection input interaction views
   @Test
   fun testItemSelectionInputUnteraction() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
+      interactionInstanceId = "ItemSelectionInput"
+      assertEquals(interactionInstanceId, "ItemSelectionInput")
 
+      // ItemSelection input interaction views
       onView(withId(R.id.interactionContainer)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
           return isDisplayed()
         }
+
         override fun getDescription(): String {
           return "Performing click"
         }
+
         override fun perform(uiController: androidx.test.espresso.UiController?, view: View?) {
-          //The view which we got in argument is the same view which Espresso found using onView(withId(R.id.parent_container))
           val parentLinearLayout = view as LinearLayout
-//          //Get the checkbox inside the inner LinearLayout
           val checkbox = parentLinearLayout.getChildAt(1) as CustomCheckbox
           checkbox.performClick()
         }
