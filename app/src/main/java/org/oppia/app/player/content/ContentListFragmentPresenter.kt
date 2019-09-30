@@ -29,7 +29,6 @@ class ContentListFragmentPresenter @Inject constructor(
       binding.contentCardAdapter = ContentCardAdapter(context, entity_type, entity_id, contentList);
     }
     fetchDummyExplorations()
-
     return binding.root
   }
 
