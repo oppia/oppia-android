@@ -19,9 +19,9 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
 
   var targets: ArrayList<BitmapTarget>? = null
   /***
-   * Get the Drawable from URL
-   * @param urlString contains the source of the image
-   * @return urlDrawable
+   * This method is called when the HTML parser encounters an <img> tag
+   * @param urlString : urlString argument is the string from the "src" attribute
+   * @return Drawable : Drawable representation of the image
    */
   override fun getDrawable(urlString: String): Drawable {
     val urlDrawable = UrlDrawable()
