@@ -11,7 +11,7 @@ import javax.inject.Inject
 /** Fragment that card for topic review. */
 class TopicReviewFragment : InjectableFragment() {
   @Inject
-  lateinit var topicReviewFragmentController: TopicReviewFragmentController
+  lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,6 +19,6 @@ class TopicReviewFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicReviewFragmentController.handleCreateView(inflater, container)
+    return topicReviewFragmentPresenter.handleCreateView(inflater, container)
   }
 }

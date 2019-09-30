@@ -10,13 +10,11 @@ import javax.inject.Inject
 
 /** The controller for [TopicReviewFragment]. */
 @FragmentScope
-class TopicReviewFragmentController @Inject constructor(
+class TopicReviewFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
-    // data-bound view models.
     binding.let {
       it.lifecycleOwner = fragment
     }

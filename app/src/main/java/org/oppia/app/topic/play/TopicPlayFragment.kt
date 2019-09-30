@@ -11,7 +11,7 @@ import javax.inject.Inject
 /** Fragment that contains subtopic list for play mode. */
 class TopicPlayFragment : InjectableFragment() {
   @Inject
-  lateinit var topicPlayFragmentController: TopicPlayFragmentController
+  lateinit var topicPlayFragmentPresenter: TopicPlayFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,6 +19,6 @@ class TopicPlayFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicPlayFragmentController.handleCreateView(inflater, container)
+    return topicPlayFragmentPresenter.handleCreateView(inflater, container)
   }
 }

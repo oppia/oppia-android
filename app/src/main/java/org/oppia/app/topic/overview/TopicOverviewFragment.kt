@@ -11,7 +11,7 @@ import javax.inject.Inject
 /** Fragment that contains overview of Topic. */
 class TopicOverviewFragment : InjectableFragment() {
   @Inject
-  lateinit var topicOverviewFragmentController: TopicOverviewFragmentController
+  lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,6 +19,6 @@ class TopicOverviewFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicOverviewFragmentController.handleCreateView(inflater, container)
+    return topicOverviewFragmentPresenter.handleCreateView(inflater, container)
   }
 }

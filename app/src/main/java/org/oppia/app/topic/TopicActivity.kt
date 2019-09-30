@@ -6,11 +6,11 @@ import javax.inject.Inject
 
 /** The activity for tabs in Topic. */
 class TopicActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var topicActivityController: TopicActivityController
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicActivityController.handleOnCreate()
+    topicActivityPresenter.handleOnCreate()
   }
 }

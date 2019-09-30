@@ -11,7 +11,7 @@ import javax.inject.Inject
 /** Fragment that contains skills for topic train mode. */
 class TopicTrainFragment : InjectableFragment() {
   @Inject
-  lateinit var topicTrainFragmentController: TopicTrainFragmentController
+  lateinit var topicTrainFragmentPresenter: TopicTrainFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -19,6 +19,6 @@ class TopicTrainFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicTrainFragmentController.handleCreateView(inflater, container)
+    return topicTrainFragmentPresenter.handleCreateView(inflater, container)
   }
 }
