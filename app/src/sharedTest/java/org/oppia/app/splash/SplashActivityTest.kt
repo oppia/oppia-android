@@ -17,11 +17,11 @@ import org.oppia.app.home.HomeActivity
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
 
-  // The initialTouchMode enables the activity to be launched in touch mode.The launchActivity is disabled to launch Activity explicitly within each test case
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, true,
-    false
+    SplashActivity::class.java,
+    true /* initialTouchMode enables the activity to be launched in touch mode. */,
+    false /* launchActivity is disabled to launch Activity explicitly within each test case. */
   )
 
   @Before
