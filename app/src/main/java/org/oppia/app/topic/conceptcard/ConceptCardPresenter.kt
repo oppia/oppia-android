@@ -1,6 +1,5 @@
 package org.oppia.app.topic.conceptcard
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,23 +7,22 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
-import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.ConceptCardExampleViewBinding
 import org.oppia.app.databinding.ConceptcardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TEST_SKILL_ID_0
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
 class ConceptCardPresenter @Inject constructor(
-  @ApplicationContext private val context: Context,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
 ){
+
+  /** Sets up data binding and adapter for RecyclerView */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillId: String): View? {
     val viewModel = getConceptCardViewModel()
     viewModel.setSkillId(skillId)

@@ -3,11 +3,9 @@ package org.oppia.app.topic.conceptcard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.processNextEventInCurrentThread
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -22,10 +20,12 @@ class ConceptCardViewModel @Inject constructor(
 
   private lateinit var skillId: String
 
+  /** Live Data for concept card explanation */
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
     processConceptCardLiveData()
   }
 
+  /** Live Data for concept card worked examples. */
   val workedExamplesLiveData: LiveData<List<SubtitledHtml>> by lazy {
     processWorkedExamplesLiveData()
   }
