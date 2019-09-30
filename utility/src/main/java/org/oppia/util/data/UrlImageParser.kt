@@ -34,16 +34,14 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
 
   inner class BitmapTarget(private val urlDrawable: UrlDrawable) : SimpleTarget<Bitmap>() {
     internal var drawable: Drawable? = null
-
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
       drawable = BitmapDrawable(context.resources, resource)
       tvContents.post {
-        val w = tvContents.width
-        val hh = (drawable as BitmapDrawable).intrinsicHeight
-        val ww = (drawable as BitmapDrawable).intrinsicWidth
-        val newHeight = hh * w / ww
-        val rect = Rect(0, 0, w, newHeight)
+        val textviewWidth = tvContents.width
+        val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
+        val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
+        val newHeight = drawableHeight * textviewWidth / drawableWidth
+        val rect = Rect(0, 0, textviewWidth, newHeight)
         (drawable as BitmapDrawable).bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
