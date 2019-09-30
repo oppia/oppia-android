@@ -56,7 +56,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun showInputInteractions(binding: StateFragmentBinding) {
     val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
-
     if (interactionInstanceId.equals("MultipleSelectionInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
