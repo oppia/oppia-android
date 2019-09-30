@@ -17,16 +17,16 @@ class ContentListFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
 
-  private lateinit var binding: ContentListFragmentBinding
-  var contentCardAdapter: ContentCardAdapter? = null
+  private val entity_type: String = "exploration"
+  private val entity_id: String = "umPkwp0L1M0-"
+
   var contentList: MutableList<GaeSubtitledHtml> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.recyclerView.apply {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
-      contentCardAdapter = ContentCardAdapter(context, contentList);
-      binding.contentCardAdapter = ContentCardAdapter(context, contentList);
+      binding.contentCardAdapter = ContentCardAdapter(context, entity_type, entity_id, contentList);
     }
     fetchDummyExplorations()
 

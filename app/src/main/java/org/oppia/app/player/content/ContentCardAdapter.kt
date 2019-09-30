@@ -25,6 +25,8 @@ const val HTML_ATTRIBUTE = "src"
 /** Adapter to bind the contents to the [RecyclerView]. It handles rich-text content. */
 class ContentCardAdapter(
   private val context: Context,
+  private val entity_type: String,
+  private val entity_id: String,
   val contentList: MutableList<GaeSubtitledHtml>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -82,6 +84,7 @@ class ContentCardAdapter(
   }
 
   private fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
+
     val html: Spannable
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_TAG)) {
@@ -89,7 +92,7 @@ class ContentCardAdapter(
       htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-    var imageGetter = UrlImageParser(tvContents, context)
+    var imageGetter = UrlImageParser(tvContents, context, entity_type, entity_id)
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
       html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null) as Spannable
     } else {

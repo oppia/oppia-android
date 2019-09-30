@@ -14,8 +14,18 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
+// TODO (#169) : Replace this with exploration asset downloader
 /** UrlImage Parser for android TextView to load Html Image tag. */
-class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
+class UrlImageParser(
+  internal var tvContents: TextView,
+  internal var context: Context,
+  private val entity_type: String,
+  private val entity_id: String
+) : Html.ImageGetter {
+
+  val GCS_PREFIX: String = "https://storage.googleapis.com/"
+  val GCS_RESOURCE_BUCKET_NAME = "oppiaserver-resources/"
+  var IMAGE_DOWNLOAD_URL_TEMPLATE = "/<entity_type>/<entity_id>/assets/image/<filename>"
 
   var targets: ArrayList<BitmapTarget>? = null
   /***
@@ -24,8 +34,10 @@ class UrlImageParser(internal var tvContents: TextView, internal var context: Co
    * @return Drawable : Drawable representation of the image
    */
   override fun getDrawable(urlString: String): Drawable {
+    IMAGE_DOWNLOAD_URL_TEMPLATE =  entity_type + "/" + entity_id + "/assets/image/"
     val urlDrawable = UrlDrawable()
-    val load = Glide.with(context).asBitmap().load(URL(urlString))
+    val load = Glide.with(context).asBitmap()
+      .load(URL(GCS_PREFIX + GCS_RESOURCE_BUCKET_NAME + IMAGE_DOWNLOAD_URL_TEMPLATE + urlString))
     val target = BitmapTarget(urlDrawable)
     targets?.add(target)
     load.into(target)
