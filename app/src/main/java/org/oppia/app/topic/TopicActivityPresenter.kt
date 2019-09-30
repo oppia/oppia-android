@@ -5,7 +5,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The controller for [TopicActivity]. */
+/** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
