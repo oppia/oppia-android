@@ -8,8 +8,7 @@ import kotlin.collections.ArrayList
 
 /** [ViewModel] for showing skills in train fragment. */
 @FragmentScope
-class TopicTrainViewModel @Inject constructor(
-) : ViewModel() {
+class TopicTrainViewModel @Inject constructor() : ViewModel() {
   var skillListSummaryLiveData: MutableLiveData<List<String>> = dummySkillListSummaryLiveData()
 
   private fun dummySkillListSummaryLiveData(): MutableLiveData<List<String>> {
