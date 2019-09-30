@@ -31,12 +31,10 @@ class StateFragmentPresenterTest {
   var interactionInstanceId: String? = null
 
   @Test
-  fun testMultipleSelectionInputUnteraction() {
+  fun testMultipleSelectionInputInteraction() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
-      interactionInstanceId = "MultipleSelectionInput"
-      assertEquals(interactionInstanceId, "MultipleSelectionInput")
-
-      // MultipleSelection  input interaction views
+      interactionInstanceId = "MultipleChoiceInput"
+      assertEquals(interactionInstanceId, "MultipleChoiceInput")
       onView(withId(R.id.interactionRadioGroup)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
@@ -58,12 +56,10 @@ class StateFragmentPresenterTest {
   }
 
   @Test
-  fun testItemSelectionInputUnteraction() {
+  fun testItemSelectionInputInteraction() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       interactionInstanceId = "ItemSelectionInput"
       assertEquals(interactionInstanceId, "ItemSelectionInput")
-
-      // ItemSelection input interaction views
       onView(withId(R.id.interactionContainer)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {

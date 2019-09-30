@@ -42,7 +42,6 @@ class CustomCheckbox(context: Context, private val optionContents: String) : Che
     setPadding(paddingDp, paddingDp, paddingDp, paddingDp)
     id = View.generateViewId()
     text = convertHtmlToString(optionContents, rootView).toString()
-
     setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
       val msg = "You have " + (if (isChecked) "checked" else "unchecked") + " this Check it Checkbox."
       Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
