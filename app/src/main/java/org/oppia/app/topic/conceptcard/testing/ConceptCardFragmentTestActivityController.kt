@@ -13,7 +13,7 @@ class ConceptCardFragmentTestActivityController @Inject constructor(private val 
   fun handleOnCreate() {
     activity.setContentView(R.layout.concept_card_fragment_test_activity)
     activity.open_dialog.setOnClickListener {
-      val frag = ConceptCardFragment(TEST_SKILL_ID_2)
+      val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_2)
       frag.showNow(activity.supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
   }
