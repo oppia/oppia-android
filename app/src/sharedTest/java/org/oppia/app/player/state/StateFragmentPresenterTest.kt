@@ -1,4 +1,5 @@
 package org.oppia.app.player.state;
+
 import android.provider.MediaStore
 import android.view.View
 import androidx.test.core.app.ActivityScenario
@@ -21,43 +22,49 @@ import android.widget.RadioGroup
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.ViewAction
 import androidx.test.platform.ui.UiController
+import junit.framework.TestCase.assertEquals
 import org.hamcrest.Matcher
 
 /** Tests for [StateFragmentPresenter]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
+
+  // MultipleSelection  input interaction views
   @Test
-  fun testItemSelectionInputUnteraction() {
+  fun testMultipleSelectionInputUnteraction() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
-      
-      // MultipleSelection  input interaction views
+
       onView(withId(R.id.interactionRadioGroup)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
           return isDisplayed()
         }
-
         override fun getDescription(): String {
           return "Performing click"
         }
         override fun perform(uiController: androidx.test.espresso.UiController?, view: View?) {
           //The view which we got in argument is the same view which Espresso found using onView(withId(R.id.parent_container))
           val parentRadioGroup = view as RadioGroup
-          //Get the LinearLayout inside the LinearLayout
+          //Get the Radiogroup inside the LinearLayout
           val linearLayout = parentRadioGroup.getChildAt(0) as RadioGroup
           //Get the Button inside the inner LinearLayout
           val radioButton = linearLayout.getChildAt(0) as CustomRadioButton
           radioButton.performClick()
         }
       })
+    }
+  }
 
-      // ItemSelection input interaction views
+  // ItemSelection input interaction views
+  @Test
+  fun testItemSelectionInputUnteraction() {
+    ActivityScenario.launch(ExplorationActivity::class.java).use {
+
       onView(withId(R.id.interactionContainer)).perform(object : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
           return isDisplayed()
         }
-
         override fun getDescription(): String {
           return "Performing click"
         }

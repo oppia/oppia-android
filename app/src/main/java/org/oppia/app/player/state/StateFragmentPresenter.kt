@@ -51,12 +51,11 @@ class StateFragmentPresenter @Inject constructor(
     var sampleData: GaeCustomizationArgs =
       GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
     gaeCustomizationArgsMap?.put("choices", sampleData)
-    interactionInstanceId = "MultipleChoiceInput"
 
     // Todo(veena): Keep the below code for actual implementation
     val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
 
-    if (interactionInstanceId.equals("MultipleChoiceInput")) {
+    if (interactionInstanceId.equals("ItemSelectionInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       var items = gaeCustomArgsInString.split(",").toTypedArray()
       addRadioButtons(items)
