@@ -29,6 +29,9 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     showLanguageDialogFragment()
   }
 
+  fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
+  fun getUserPosition() = audioFragmentPresenter.userProgress
+
   private fun showLanguageDialogFragment() {
     val previousFragment = childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {

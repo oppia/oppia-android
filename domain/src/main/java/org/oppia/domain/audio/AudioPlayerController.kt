@@ -52,6 +52,7 @@ class AudioPlayerController @Inject constructor(
 
   /** Represents current state of internal Media Player. */
   enum class PlayStatus {
+    PREPARING,
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
