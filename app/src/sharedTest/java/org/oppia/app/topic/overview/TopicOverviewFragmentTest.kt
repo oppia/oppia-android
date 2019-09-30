@@ -1,4 +1,4 @@
-package org.oppia.app.player.exploration
+package org.oppia.app.topic.overview
 
 import android.app.Application
 import android.content.Context
@@ -16,17 +16,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.topic.TopicActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [ExplorationActivity]. */
+/** Tests for [TopicOverviewFragment]. */
 @RunWith(AndroidJUnit4::class)
-class ExplorationActivityTest {
+class TopicOverviewFragmentTest {
 
   @Test
-  fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
-    ActivityScenario.launch(ExplorationActivity::class.java).use {
+  fun testTopicOverviewFragment_loadFragment_textIsDisplayed() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.dummy_text_view)).check(matches(withText("This is dummy TextView for testing")))
     }
   }

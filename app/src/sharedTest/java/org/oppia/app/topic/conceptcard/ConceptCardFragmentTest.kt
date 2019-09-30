@@ -1,12 +1,10 @@
-package org.oppia.app.player.audio
+package org.oppia.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -31,7 +29,7 @@ class ConceptCardFragmentTest {
   fun testConceptCardFragment_loadFragment_textIsDisplayed() {
     // I'm not sure how to launch just the fragment because it doesn't have its own activity
     ActivityScenario.launch(HomeActivity::class.java).use {
-      Espresso.onView(withId(R.id.rich_text_card)).check(matches(withText("Hello World")))
+      onView(withId(R.id.rich_text_card)).check(matches(withText("Hello World")))
     }
   }
 
