@@ -75,9 +75,9 @@ class CellularDialogControllerTest {
   @ObsoleteCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
+    // Separate dispatcher is needed for PersistentCacheStore to behave similar to production.
     testBlockingDispatcher.pauseDispatcher()
   }
-
 
   private fun setUpTestApplicationComponent() {
     DaggerCellularDialogControllerTest_TestApplicationComponent.builder()
@@ -88,7 +88,7 @@ class CellularDialogControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_indicatesNotHideDialog()
+  fun testController_providesInitialLiveData_indicatesToNotHideDialog()
       = runBlockingTest(coroutineContext) {
     val cellularDataPreference = cellularDialogController.getCellularDataPreference()
     cellularDataPreference.observeForever(mockCellularDataObserver)
@@ -101,7 +101,20 @@ class CellularDialogControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_setHidePrefTrue_providesLiveData_indicatesHideDialog()
+  fun testController_providesInitialLiveData_indicatesToNotUseCellularData()
+      = runBlockingTest(coroutineContext) {
+    val cellularDataPreference = cellularDialogController.getCellularDataPreference()
+    cellularDataPreference.observeForever(mockCellularDataObserver)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
+    assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().useCellularData).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_setHidePrefTrue_providesLiveData_indicatesToHideDialog()
       = runBlockingTest(coroutineContext) {
     val appHistory = cellularDialogController.getCellularDataPreference()
 
@@ -116,7 +129,7 @@ class CellularDialogControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_setHidePrefFalse_providesLiveData_indicatesNotHideDialog()
+  fun testController_setHidePrefFalse_providesLiveData_indicatesToNotHideDialog()
       = runBlockingTest(coroutineContext) {
     val appHistory = cellularDialogController.getCellularDataPreference()
 
@@ -128,6 +141,71 @@ class CellularDialogControllerTest {
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
     assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
     assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_setUsePrefTrue_providesLiveData_indicatesToUseCellularData()
+      = runBlockingTest(coroutineContext) {
+    val appHistory = cellularDialogController.getCellularDataPreference()
+
+    appHistory.observeForever(mockCellularDataObserver)
+    cellularDialogController.setUseCellularDataPreference(true)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
+    assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().useCellularData).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_setUsePrefFalse_providesLiveData_indicatesToNotUseCellularData()
+      = runBlockingTest(coroutineContext) {
+    val appHistory = cellularDialogController.getCellularDataPreference()
+
+    appHistory.observeForever(mockCellularDataObserver)
+    cellularDialogController.setUseCellularDataPreference(true)
+    cellularDialogController.setUseCellularDataPreference(false)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
+    assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().useCellularData).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_setHidePrefToTrue_observedNewController_indicatesToHideDialog()
+      = runBlockingTest(coroutineContext) {
+    cellularDialogController.setHideDialogPreference(true)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    setUpTestApplicationComponent()
+    val appHistory = cellularDialogController.getCellularDataPreference()
+    appHistory.observeForever(mockCellularDataObserver)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
+    assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_setUseDataPrefToTrue_observedNewController_indicatesToUseCellularData()
+      = runBlockingTest(coroutineContext) {
+    cellularDialogController.setUseCellularDataPreference(true)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    setUpTestApplicationComponent()
+    val appHistory = cellularDialogController.getCellularDataPreference()
+    appHistory.observeForever(mockCellularDataObserver)
+    testBlockingDispatcher.advanceUntilIdle()
+
+    verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
+    assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
+    assertThat(cellularDataResultCaptor.value.getOrThrow().useCellularData).isTrue()
   }
 
   @Qualifier annotation class TestDispatcher

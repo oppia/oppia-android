@@ -22,13 +22,16 @@ class StateFragment @Inject constructor(
 ) : InjectableFragment(), CellularDataInterface {
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
-  private var hideCellularDataDialog = false
+  private var showCellularDataDialog = true
+  private var useCellularData = false
 
   init {
     cellularDialogController.getCellularDataPreference()
       .observe(this, Observer<AsyncResult<CellularDataPreference>>{
       if (it.isSuccess()) {
-        hideCellularDataDialog = it.getOrDefault(CellularDataPreference.getDefaultInstance()).hideDialog
+        val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
+        showCellularDataDialog = !(prefs.hideDialog)
+        useCellularData = prefs.useCellularData
       }
     })
   }
@@ -43,11 +46,11 @@ class StateFragment @Inject constructor(
   }
 
   fun dummyButtonClicked() {
-    if (hideCellularDataDialog) {
-      stateFragmentPresenter.setAudioFragmentVisible(true)
-    } else {
+    if (showCellularDataDialog) {
       stateFragmentPresenter.setAudioFragmentVisible(false)
       showCellularDataDialogFragment()
+    } else {
+      stateFragmentPresenter.setAudioFragmentVisible(useCellularData)
     }
   }
 
@@ -63,9 +66,11 @@ class StateFragment @Inject constructor(
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
     stateFragmentPresenter.setAudioFragmentVisible(true)
     if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
+    cellularDialogController.setUseCellularDataPreference(true)
   }
 
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
     if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
+    cellularDialogController.setUseCellularDataPreference(false)
   }
 }
