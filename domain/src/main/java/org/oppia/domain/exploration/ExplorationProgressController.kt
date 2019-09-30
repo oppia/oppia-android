@@ -3,22 +3,20 @@ package org.oppia.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnswerAndResponse
-import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CompletedState
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.PendingState
-import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import javax.inject.Inject
+import javax.inject.Singleton
 
 // TODO(#186): Use an interaction repository to retrieve whether a specific ID corresponds to a terminal interaction.
 private const val TERMINAL_INTERACTION_ID = "EndExploration"
@@ -35,9 +33,11 @@ const val TEST_END_STATE_NAME = "Last State"
  *
  * The current exploration session is started via the exploration data controller.
  */
+@Singleton
 class ExplorationProgressController @Inject constructor(
   private val dataProviders: DataProviders,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val explorationRetriever: ExplorationRetriever
 ) {
   // TODO(#180): Add support for hints.
   // TODO(#179): Add support for parameters.
@@ -45,9 +45,9 @@ class ExplorationProgressController @Inject constructor(
   // TODO(#182): Add support for refresher explorations.
 
   // TODO(BenHenning): Make the controller's internal data structures thread-safe as necessary.
+  private lateinit var currentExplorationId: String
   private lateinit var currentExploration: Exploration
-  private var playingExploration = false
-  private var isSubmittingAnswer = false
+  private var playStage = PlayStage.NOT_PLAYING
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(CURRENT_STATE_DATA_PROVIDER_ID, this::retrieveCurrentStateAsync)
   private val stateGraph: StateGraph by lazy {
@@ -61,23 +61,21 @@ class ExplorationProgressController @Inject constructor(
     )
   }
 
-  init {
-    simulateBeginExploration()
-  }
-
   /** Resets this controller to begin playing the specified [Exploration]. */
-  internal fun beginExploration(exploration: Exploration) {
-    // The exploration must be initialized first since other lazy fields depend on it being inited.
-    currentExploration = exploration
-    stateGraph.resetStateGraph(exploration.statesMap)
-    stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
-    playingExploration = true
-    isSubmittingAnswer = false
+  internal fun beginExploration(explorationId: String) {
+    check(playStage == PlayStage.NOT_PLAYING) {
+      "Expected to finish previous exploration before starting a new one."
+    }
+
+    currentExplorationId = explorationId
+    advancePlayStageTo(PlayStage.START_LOAD_EXPLORATION)
   }
 
   internal fun finishExploration() {
-    playingExploration = false
-    isSubmittingAnswer = false
+    check(playStage != PlayStage.NOT_PLAYING) {
+      "Cannot finish playing an exploration that hasn't yet been started"
+    }
+    advancePlayStageTo(PlayStage.NOT_PLAYING)
   }
 
   /**
@@ -98,18 +96,21 @@ class ExplorationProgressController @Inject constructor(
    * completed state since the learner completed that card. The learner can then proceed from the current completed
    * state to the next pending state using [moveToNextState].
    *
-   * This method cannot be called until an exploration has started or an exception will be thrown. Calling code must
-   * also take care not to allow users to submit an answer while a previous answer is pending. That scenario will also
-   * result in an exception being thrown.
+   * This method cannot be called until an exploration has started and [getCurrentState] returns a non-pending result
+   * or an exception will be thrown. Calling code must also take care not to allow users to submit an answer while a
+   * previous answer is pending. That scenario will also result in an exception being thrown.
    *
    * It's possible for the returned [LiveData] to finish after the [LiveData] from [getCurrentState] is updated.
    */
   fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnswerOutcome>> {
-    check(playingExploration) { "Cannot submit an answer if an exploration is not being played." }
-    check(!isSubmittingAnswer) { "Cannot submit an answer while another answer is pending." }
+    check(playStage != PlayStage.NOT_PLAYING) { "Cannot submit an answer if an exploration is not being played." }
+    check(playStage != PlayStage.SUBMITTING_ANSWER) { "Cannot submit an answer while another answer is pending." }
+    check(playStage != PlayStage.START_LOAD_EXPLORATION && playStage != PlayStage.FINISH_LOAD_EXPLORATION) {
+      "Cannot submit an answer while the exploration is being loaded."
+    }
 
     // Notify observers that the submitted answer is currently pending.
-    isSubmittingAnswer = true
+    advancePlayStageTo(PlayStage.SUBMITTING_ANSWER)
     asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
     // TODO(#115): Perform answer classification on a background thread.
@@ -124,7 +125,8 @@ class ExplorationProgressController @Inject constructor(
       stateDeck.pushState(stateGraph.getState(answerOutcome.stateName))
     }
 
-    isSubmittingAnswer = false
+    // Return to viewing the state.
+    advancePlayStageTo(PlayStage.VIEWING_STATE)
     asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
     return MutableLiveData(AsyncResult.success(answerOutcome))
@@ -135,10 +137,19 @@ class ExplorationProgressController @Inject constructor(
    * throw an exception. Calling code is responsible to make sure that this method is not called when it's not possible
    * to navigate to a previous card.
    *
-   * This method cannot be called until an exploration has started or an exception will be thrown.
+   * This method cannot be called until an exploration has started and [getCurrentState] returns a non-pending result or
+   * an exception will be thrown.
    */
   fun moveToPreviousState() {
-    check(playingExploration) { "Cannot navigate to a previous state if an exploration is not being played." }
+    check(playStage != PlayStage.NOT_PLAYING) {
+      "Cannot navigate to a previous state if an exploration is not being played."
+    }
+    check(playStage != PlayStage.START_LOAD_EXPLORATION && playStage != PlayStage.FINISH_LOAD_EXPLORATION) {
+      "Cannot navigate to a previous state if an exploration is being loaded."
+    }
+    check(playStage != PlayStage.SUBMITTING_ANSWER) {
+      "Cannot navigate to a previous state if an answer submission is pending."
+    }
     stateDeck.navigateToPreviousState()
     asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
   }
@@ -152,10 +163,19 @@ class ExplorationProgressController @Inject constructor(
    * Note that if the current state is a pending state, the user needs to submit a correct answer that routes to a later
    * state via [submitAnswer] in order for the current state to change to a completed state.
    *
-   * This method cannot be called until an exploration has started or an exception will be thrown.
+   * This method cannot be called until an exploration has been started and [getCurrentState] returns a non-pending
+   * result or an exception will be thrown.
    */
   fun moveToNextState() {
-    check(playingExploration) { "Cannot navigate to a next state if an exploration is not being played." }
+    check(playStage != PlayStage.NOT_PLAYING) {
+      "Cannot navigate to a next state if an exploration is not being played."
+    }
+    check(playStage != PlayStage.START_LOAD_EXPLORATION && playStage != PlayStage.FINISH_LOAD_EXPLORATION) {
+      "Cannot navigate to a next state if an exploration is being loaded."
+    }
+    check(playStage != PlayStage.SUBMITTING_ANSWER) {
+      "Cannot navigate to a next state if an answer submission is pending."
+    }
     stateDeck.navigateToNextState()
     asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
   }
@@ -186,26 +206,49 @@ class ExplorationProgressController @Inject constructor(
     return dataProviders.convertToLiveData(currentStateDataProvider)
   }
 
-  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
   private suspend fun retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
-    if (!playingExploration || isSubmittingAnswer) {
-      return AsyncResult.pending()
+    return when (playStage) {
+      PlayStage.NOT_PLAYING -> AsyncResult.pending()
+      PlayStage.START_LOAD_EXPLORATION -> {
+        beginLoadExploration()
+        AsyncResult.pending()
+      }
+      PlayStage.FINISH_LOAD_EXPLORATION -> {
+        try {
+          finishLoadExploration()
+          AsyncResult.success(stateDeck.getCurrentEphemeralState())
+        } catch (e: Exception) {
+          AsyncResult.failed<EphemeralState>(e)
+        }
+      }
+      PlayStage.VIEWING_STATE -> AsyncResult.success(stateDeck.getCurrentEphemeralState())
+      PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
     }
-    return AsyncResult.success(stateDeck.getCurrentEphemeralState())
   }
 
-  private fun simulateBeginExploration() {
-    beginExploration(
-      Exploration.newBuilder()
-        .putStates(TEST_INIT_STATE_NAME, createInitState())
-        .putStates(TEST_MIDDLE_STATE_NAME, createStateWithTwoOutcomes())
-        .putStates(TEST_END_STATE_NAME, createTerminalState())
-        .setInitStateName(TEST_INIT_STATE_NAME)
-        .setObjective("To provide a stub for the UI to reasonably interact with ExplorationProgressController.")
-        .setTitle("Stub Exploration")
-        .setLanguageCode("en")
-        .build()
-    )
+  private fun beginLoadExploration() {
+    // Advance the state if an exploration is still requested to be loaded, and notifies downstream observers a change
+    // is coming. This is done to notify the UI that a load is pending, then use the same data provider to actually
+    // perform the load rather than posting to a background thread. Note also that the async notify is intentional here
+    // since the load should be asynchronous to provide time for the UI to respond to the state update.
+    if (playStage == PlayStage.START_LOAD_EXPLORATION) {
+      advancePlayStageTo(PlayStage.FINISH_LOAD_EXPLORATION)
+      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+    }
+  }
+
+  private suspend fun finishLoadExploration() {
+    // Only load the exploration if the stage hasn't changed.
+    if (playStage == PlayStage.FINISH_LOAD_EXPLORATION) {
+      // The exploration must be initialized first since other lazy fields depend on it being inited.
+      val exploration = explorationRetriever.loadExploration(currentExplorationId)
+      currentExploration = exploration
+      stateGraph.resetStateGraph(exploration.statesMap)
+      stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
+
+      // Advance the stage, but do not notify observers since the current state can be reported immediately to the UI.
+      advancePlayStageTo(PlayStage.VIEWING_STATE)
+    }
   }
 
   private fun simulateSubmitAnswer(currentState: State, answer: InteractionObject): Outcome {
@@ -227,60 +270,71 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private fun createInitState(): State {
-    return State.newBuilder()
-      .setName(TEST_INIT_STATE_NAME)
-      .setContent(SubtitledHtml.newBuilder().setContentId("state_0_content").setHtml("First State"))
-      .setInteraction(
-        Interaction.newBuilder()
-          .setId("Continue")
-          .addAnswerGroups(
-            AnswerGroup.newBuilder()
-              .setOutcome(
-                Outcome.newBuilder()
-                  .setDestStateName(TEST_MIDDLE_STATE_NAME)
-                  .setFeedback(SubtitledHtml.newBuilder().setContentId("state_0_feedback").setHtml("Let's continue."))
-              )
-          )
-      )
-      .build()
+  /**
+   * Advances the current play stage to the specified stage, verifying that the transition is correct.
+   *
+   * Calling code should prevent this method from failing by checking state ahead of calling this method and providing
+   * more useful errors to UI calling code since errors thrown by this method will be more obscure. This method aims to
+   * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
+   * since none of the failures here should ever be exposed to controller callers.
+   */
+  private fun advancePlayStageTo(nextPlayStage: PlayStage) {
+    when (nextPlayStage) {
+      PlayStage.NOT_PLAYING -> {
+        // All transitions to NOT_PLAYING are valid except itself. Stopping playing can happen at any time.
+        check(playStage != PlayStage.NOT_PLAYING) { "Cannot transition to NOT_PLAYING from NOT_PLAYING" }
+        playStage = nextPlayStage
+      }
+      PlayStage.START_LOAD_EXPLORATION -> {
+        // An exploration can only be requested to be loaded from the initial NOT_PLAYING stage.
+        check(playStage == PlayStage.NOT_PLAYING) { "Cannot transition to LOADING_EXPLORATION from $playStage" }
+        playStage = nextPlayStage
+      }
+      PlayStage.FINISH_LOAD_EXPLORATION -> {
+        // An exploration can only be finished loading after being requested to be started.
+        check(playStage == PlayStage.START_LOAD_EXPLORATION) {
+          "Cannot transition to FINISH_LOAD_EXPLORATION from $playStage"
+        }
+        playStage = nextPlayStage
+      }
+      PlayStage.VIEWING_STATE -> {
+        // A state can be viewed after loading an exploration, after viewing another state, or after submitting an
+        // answer. It cannot be viewed without a loaded exploration.
+        check(playStage == PlayStage.FINISH_LOAD_EXPLORATION
+            || playStage == PlayStage.VIEWING_STATE
+            || playStage == PlayStage.SUBMITTING_ANSWER) {
+          "Cannot transition to VIEWING_STATE from $playStage"
+        }
+        playStage = nextPlayStage
+      }
+      PlayStage.SUBMITTING_ANSWER -> {
+        // An answer can only be submitted after viewing a stage.
+        check(playStage == PlayStage.VIEWING_STATE) { "Cannot transition to SUBMITTING_ANSWER from $playStage" }
+        playStage = nextPlayStage
+      }
+    }
   }
 
-  private fun createStateWithTwoOutcomes(): State {
-    return State.newBuilder()
-      .setName(TEST_MIDDLE_STATE_NAME)
-      .setContent(SubtitledHtml.newBuilder().setContentId("state_1_content").setHtml("What language is 'Oppia' from?"))
-      .setInteraction(
-        Interaction.newBuilder()
-          .setId("TextInput")
-          .addAnswerGroups(
-            AnswerGroup.newBuilder()
-              .addRuleSpecs(
-                RuleSpec.newBuilder()
-                  .putInputs("x", InteractionObject.newBuilder().setNormalizedString("Finnish").build())
-                  .setRuleType("CaseSensitiveEquals")
-              )
-              .setOutcome(
-                Outcome.newBuilder()
-                  .setDestStateName(TEST_END_STATE_NAME)
-                  .setFeedback(SubtitledHtml.newBuilder().setContentId("state_1_pos_feedback").setHtml("Correct!"))
-              )
-          )
-          .setDefaultOutcome(
-            Outcome.newBuilder()
-              .setDestStateName(TEST_MIDDLE_STATE_NAME)
-              .setFeedback(SubtitledHtml.newBuilder().setContentId("state_1_neg_feedback").setHtml("Not quite right."))
-          )
-      )
-      .build()
-  }
+  /** Different stages in which the progress controller can exist. */
+  private enum class PlayStage {
+    /** No exploration is currently being played. */
+    NOT_PLAYING,
 
-  private fun createTerminalState(): State {
-    return State.newBuilder()
-      .setName(TEST_END_STATE_NAME)
-      .setContent(SubtitledHtml.newBuilder().setContentId("state_2_content").setHtml("Thanks for playing"))
-      .setInteraction(Interaction.newBuilder().setId("EndExploration"))
-      .build()
+    /** An exploration is being prepared to be played. */
+    START_LOAD_EXPLORATION,
+
+    /**
+     * An exploration is being loaded. Note that this state is to allow the UI to quickly get a pending result when a
+     * load begins, but not have to wait for the load to complete. This also mitigates needing to introduce another
+     * thread hop when performing the load (e.g. by posting the operation on a background dispatcher).
+     */
+    FINISH_LOAD_EXPLORATION,
+
+    /** The controller is currently viewing a State. */
+    VIEWING_STATE,
+
+    /** The controller is in the process of submitting an answer. */
+    SUBMITTING_ANSWER
   }
 
   /**
