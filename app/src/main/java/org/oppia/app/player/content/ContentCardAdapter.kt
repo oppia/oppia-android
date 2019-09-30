@@ -17,6 +17,11 @@ import org.oppia.app.databinding.LearnersCardItemBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.UrlImageParser
 
+const val CUSTOM_TAG = "oppia-noninteractive-image"
+const val HTML_TAG = "img"
+const val CUSTOM_ATTRIBUTE = "filepath-with-value"
+const val HTML_ATTRIBUTE = "src"
+
 /** Adapter to bind the contents to the [RecyclerView]. It handles rich-text content. */
 class ContentCardAdapter(
   private val context: Context,
@@ -24,7 +29,7 @@ class ContentCardAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private val VIEW_TYPE_CONTENT = 1
-  private val VIEW_TYPE_LEARNER = 2
+  private val VIEW_TYPE_INTERACTION = 2
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -34,7 +39,7 @@ class ContentCardAdapter(
           DataBindingUtil.inflate<ContentCardItemsBinding>(inflater, R.layout.content_card_items, parent, false)
         ContentViewHolder(binding)
       }
-      VIEW_TYPE_LEARNER -> {
+      VIEW_TYPE_INTERACTION -> {
         val inflater = LayoutInflater.from(parent.getContext())
         val binding =
           DataBindingUtil.inflate<LearnersCardItemBinding>(inflater, R.layout.learners_card_item, parent, false)
@@ -47,7 +52,7 @@ class ContentCardAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html)
-      VIEW_TYPE_LEARNER -> (holder as LearnersViewHolder).bind(contentList!!.get(position).html)
+      VIEW_TYPE_INTERACTION -> (holder as LearnersViewHolder).bind(contentList!!.get(position).html)
     }
   }
 
@@ -56,7 +61,7 @@ class ContentCardAdapter(
     return if (!contentList!!.get(position).contentId!!.contains("content") &&
       !contentList!!.get(position).contentId!!.contains(
         "Feedback")) {
-      VIEW_TYPE_LEARNER
+      VIEW_TYPE_INTERACTION
     } else {
       VIEW_TYPE_CONTENT
     }
@@ -79,10 +84,6 @@ class ContentCardAdapter(
   private fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
     var htmlContent = rawString
-    var CUSTOM_TAG = "oppia-noninteractive-image"
-    var HTML_TAG = "img"
-    var CUSTOM_ATTRIBUTE = "filepath-with-value"
-    var HTML_ATTRIBUTE = "src"
     if (htmlContent!!.contains(CUSTOM_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
       htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
