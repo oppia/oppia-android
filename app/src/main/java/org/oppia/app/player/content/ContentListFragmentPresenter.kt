@@ -22,9 +22,7 @@ class ContentListFragmentPresenter @Inject constructor(
   var contentList: MutableList<GaeSubtitledHtml> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-
     binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-
     binding.recyclerView.apply {
       binding.recyclerView.layoutManager = LinearLayoutManager(context)
       contentCardAdapter = ContentCardAdapter(context, contentList);
@@ -35,7 +33,7 @@ class ContentListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  //TODO (#121) :Replace this once interface for ExplorationDataController is available
+  // TODO (#121) :Replace this once interface for ExplorationDataController is available
   private fun fetchDummyExplorations() {
     contentList.add(
       GaeSubtitledHtml(

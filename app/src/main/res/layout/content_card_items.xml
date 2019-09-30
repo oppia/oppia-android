@@ -4,19 +4,19 @@
       name="htmlContent"
       type="String"/>
   </data>
-  <LinearLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_margin="4dp"
     android:background="@drawable/bg_blue_card"
     android:orientation="vertical">
     <TextView
       android:id="@+id/tvContents"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="5dp"
+      android:layout_margin="4dp"
       android:gravity="left"
       android:padding="8dp"
       android:text="@{htmlContent}"/>
-  </LinearLayout>
+  </RelativeLayout>
 </layout>
