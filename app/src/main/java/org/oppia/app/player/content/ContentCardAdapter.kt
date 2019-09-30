@@ -74,7 +74,15 @@ class ContentCardAdapter(
   }
 
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(rawString: String?) {
+      binding.setVariable(BR.htmlContent, rawString)
+      binding.executePendingBindings();
+      val html: Spannable = parseHtml(rawString, binding.root.tvContents)
+      binding.root.tvContents.text = html
+    }
+  }
 
+  inner class LearnersViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(rawString: String?) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
@@ -84,7 +92,6 @@ class ContentCardAdapter(
   }
 
   private fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
-
     val html: Spannable
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_TAG)) {
@@ -101,13 +108,4 @@ class ContentCardAdapter(
     return html
   }
 
-  inner class LearnersViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(rawString: String?) {
-      binding.setVariable(BR.htmlContent, rawString)
-      binding.executePendingBindings();
-      val html: Spannable = parseHtml(rawString, binding.root.tvContents)
-      binding.root.tvContents.text = html
-    }
-  }
 }
