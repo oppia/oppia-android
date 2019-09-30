@@ -58,7 +58,7 @@ class ContentCardAdapter(
     }
   }
 
-  // Determines the appropriate ViewType according to the sender of the message.
+  // Determines the appropriate ViewType according to the interaction type.
   override fun getItemViewType(position: Int): Int {
     return if (!contentList!!.get(position).contentId!!.contains("content") &&
       !contentList!!.get(position).contentId!!.contains(
