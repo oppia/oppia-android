@@ -2,17 +2,57 @@
 <layout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.train.TopicTrainViewModel"/>
+  </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-      android:id="@+id/dummy_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="This is dummy TextView for testing"
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:overScrollMode="never"
+      android:scrollbars="none"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent">
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp">
+        <TextView
+          android:id="@+id/master_skills_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/topic_train_master_these_skills"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="20sp"/>
+        <TextView
+          android:id="@+id/skills_description_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="@string/topic_train_skills_description"
+          android:textColor="@color/oppiaSecondaryText"
+          android:textSize="16sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/skill_recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          app:data="@{viewModel.skillListSummaryLiveData}"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <Button
+          android:id="@+id/topic_train_start_button"
+          style="@style/StateButtonInactive"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="24dp"
+          android:text="@string/topic_train_start"/>
+      </LinearLayout>
+    </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

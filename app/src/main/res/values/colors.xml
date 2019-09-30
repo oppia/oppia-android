@@ -13,4 +13,6 @@
   <color name="white">#FFFFFF</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <color name="oppiaPrimaryText">#333333</color>
+  <color name="oppiaSecondaryText">#666666</color>
 </resources>

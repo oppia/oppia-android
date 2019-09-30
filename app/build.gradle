@@ -97,4 +97,5 @@ dependencies {
   implementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
+  implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }
