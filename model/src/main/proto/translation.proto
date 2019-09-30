@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message TranslationMapping {
+  // Mapping from language_code to Translation
+  map<string, Translation> translation_mapping = 1;
+}
+
+// Structure for a single translation
+// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeWrittenTranslation.kt
+message Translation {
+  string html = 1;
+  bool needs_update = 2;
+}
