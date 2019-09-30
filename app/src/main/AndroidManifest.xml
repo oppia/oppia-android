@@ -24,6 +24,6 @@
     </activity>
     <activity
       android:name=".help.HelpActivity"
-      android:theme="@style/OppiaTheme.NoActionBar"></activity>
+      android:theme="@style/OppiaTheme.NoActionBar"/>
   </application>
 </manifest>

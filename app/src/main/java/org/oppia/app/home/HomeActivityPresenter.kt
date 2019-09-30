@@ -24,7 +24,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     navigationDrawerFragment =
       activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
-      R.id.fragment_navigation_drawer,
       activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
       toolbar!!
     )
