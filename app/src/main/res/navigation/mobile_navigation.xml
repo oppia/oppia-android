@@ -4,17 +4,14 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/mobile_navigation"
   app:startDestination="@+id/nav_home">
-
   <activity
     android:id="@+id/nav_home"
     android:name="org.oppia.app.home.HomeActivity"
     android:label="@string/menu_home"
     tools:layout="@layout/home_fragment" />
-
-  <fragment
+  <activity
     android:id="@+id/nav_help"
     android:name="org.oppia.app.help.HelpActivity"
     android:label="@string/menu_help"
     tools:layout="@layout/help_activity" />
-
 </navigation>

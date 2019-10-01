@@ -74,8 +74,7 @@ dependencies {
       "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1",
       "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1"
   )
-    testImplementation(
-      'androidx.fragment:fragment-testing:1.2.0-alpha01',
+  testImplementation(
       'androidx.test:core:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.2.0',

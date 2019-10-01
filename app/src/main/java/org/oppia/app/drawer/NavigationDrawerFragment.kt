@@ -17,8 +17,9 @@ import org.oppia.app.home.HomeActivity
 /** [NavigationDrawerFragment] to show navigation drawer */
 class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
-  private var previousmMenuItemId: Int? = null
-
+  private var previousmMenuItemId: Int?
+    get() = previousmMenuItemId
+    set( value: Int?) { previousmMenuItemId = value }
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -43,8 +44,9 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
       }
       startActivity(intent)
       activity!!.finish()
+      previousmMenuItemId = menuItemId
     }
-    previousmMenuItemId = menuItemId
+
 
   }
 
