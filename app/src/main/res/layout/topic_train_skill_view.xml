@@ -22,7 +22,7 @@
       android:text="@{skill}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:onCheckedChanged="@{viewModel::onCheckChanged}"
+      android:onCheckedChanged="@{(compoundButton, isChecked) -> viewModel.onCheckChanged(compoundButton, isChecked)}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

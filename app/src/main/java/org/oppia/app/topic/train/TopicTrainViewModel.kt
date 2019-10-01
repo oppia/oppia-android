@@ -1,6 +1,5 @@
 package org.oppia.app.topic.train
 
-import android.util.Log
 import android.widget.CompoundButton
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,7 @@ import kotlin.collections.ArrayList
 
 /** [ViewModel] for showing skills in train fragment. */
 @FragmentScope
-class TopicTrainViewModel @Inject constructor() : ViewModel(){
+class TopicTrainViewModel @Inject constructor() : ViewModel() {
   var skillListLiveData: MutableLiveData<List<String>> = dummySkillListLiveData()
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
@@ -32,7 +31,7 @@ class TopicTrainViewModel @Inject constructor() : ViewModel(){
     return skillListLiveData
   }
 
-  fun onCheckChanged(compoundButton: CompoundButton, isChecked: Boolean){
-    Log.d("TAG","adfs")
+  fun onCheckChanged(compoundButton: CompoundButton, isChecked: Boolean) {
+    isSubmitButtonActive.set(isChecked)
   }
 }
