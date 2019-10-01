@@ -14,12 +14,13 @@ import javax.inject.Provider
 interface ActivityComponent {
   @Subcomponent.Builder
   interface Builder {
-    @BindsInstance fun setActivity(appCompatActivity: AppCompatActivity): Builder
+    @BindsInstance
+    fun setActivity(appCompatActivity: AppCompatActivity): Builder
+
     fun build(): ActivityComponent
   }
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
-
   fun inject(homeActivity: HomeActivity)
   fun inject(helpActivity: HelpActivity)
 }
