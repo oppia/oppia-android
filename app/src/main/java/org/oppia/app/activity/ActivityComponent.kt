@@ -3,8 +3,8 @@ package org.oppia.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
-import org.oppia.app.help.HelpActivity
 import org.oppia.app.fragment.FragmentComponent
+import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import javax.inject.Provider
 
@@ -20,6 +20,6 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
-  fun inject(homeActivity: HelpActivity)
-  fun inject(helpActivity: HomeActivity)
+  fun inject(homeActivity: HomeActivity)
+  fun inject(helpActivity: HelpActivity)
 }
