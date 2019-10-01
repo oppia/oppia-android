@@ -12,17 +12,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.home.HomeActivity
 
-/** Tests for [SplashActivity].
- * https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle */
+/**
+ * Tests for [SplashActivity]. For context on the activity test rule setup see:
+ * https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/.
+ */
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
-
+  
+  // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
+  // disabled to launch Activity explicitly within each test case.
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java,
-    true /* initialTouchMode enables the activity to be launched in touch mode. */,
-    false /* launchActivity is disabled to launch Activity explicitly within each test case. */
-  )
+    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false)
 
   @Before
   fun setUp() {
