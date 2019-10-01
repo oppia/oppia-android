@@ -7,13 +7,17 @@ import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_6
 import javax.inject.Inject
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>
+  private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val explorationDataController: ExplorationDataController
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -21,6 +25,9 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
+
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_6)
+
     return binding.root
   }
 

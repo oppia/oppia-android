@@ -8,14 +8,18 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_6
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import java.util.*
 import javax.inject.Inject
 
-/** [ViewModel] for state-fragment. */
+/** [ViewModel] for StateFragment. */
 @FragmentScope
 class StateViewModel @Inject constructor(
+  private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
 ) : ViewModel() {
@@ -28,19 +32,14 @@ class StateViewModel @Inject constructor(
   var isSubmitButtonVisible = ObservableField<Boolean>(false)
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
-  val ephemeralStateLiveData: LiveData<EphemeralState> by lazy { getEphemeralState() }
-
-  /**
-   * The retrieved [LiveData] for retrieving exploration progress. This model should ensure only one
-   * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
-   * always in sync.
-   */
-  private val currentEphemeralStateResultLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-    explorationProgressController.getCurrentState()
+  init {
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_6)
   }
 
+  val ephemeralStateLiveData: LiveData<EphemeralState> by lazy { getEphemeralState() }
+
   private fun getEphemeralState(): LiveData<EphemeralState> {
-    return Transformations.map(currentEphemeralStateResultLiveData, ::processEphemeralStateResult)
+    return Transformations.map(explorationProgressController.getCurrentState(), ::processEphemeralStateResult)
   }
 
   private fun processEphemeralStateResult(ephemeralState: AsyncResult<EphemeralState>): EphemeralState {
