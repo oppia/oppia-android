@@ -26,7 +26,6 @@
       android:src="@drawable/ic_settings_grey_48dp" />
 
     <TextView
-      android:id="@+id/logout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"

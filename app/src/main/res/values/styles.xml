@@ -21,8 +21,4 @@
     <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
     <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
   </style>
-
-  <style name="OppiaTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-  <style name="OppiaTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
 </resources>
