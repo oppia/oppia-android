@@ -2,7 +2,6 @@ package org.oppia.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import java.security.Provider
 import javax.inject.Inject
 
 /**
@@ -12,7 +11,7 @@ import javax.inject.Inject
  */
 class ViewModelBridgeFactory<V : ViewModel> @Inject constructor(
   private val viewModelProvider: javax.inject.Provider<V>
-): ViewModelProvider.Factory {
+) : ViewModelProvider.Factory {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
     val viewModel = viewModelProvider.get()
     // Check whether the user accidentally switched the types during provider retrieval. ViewModelProvider is meant to

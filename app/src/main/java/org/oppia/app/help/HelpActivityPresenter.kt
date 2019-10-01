@@ -9,13 +9,13 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-/** The controller for [HelpActivityPresenter]. */
+/** The presenter for [HelpActivity]. */
 @ActivityScope
 class HelpActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  var toolbar: Toolbar? = null
-  var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private var toolbar: Toolbar? = null
+  private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
-  fun init(title: String) {
+  fun setUpNavigationDrawer(title: String) {
     toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar?
 
     activity.setSupportActionBar(toolbar)
@@ -31,7 +31,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
-    init(activity.getString(R.string.menu_help))
+    setUpNavigationDrawer(activity.getString(R.string.menu_help))
     activity.supportFragmentManager.beginTransaction().add(
       R.id.home_fragment_placeholder,
       HelpFragment()

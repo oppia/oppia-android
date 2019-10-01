@@ -9,7 +9,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The controller for [HelpFragmentPresenter]. */
+/** The presenter for [HelpFragment]. */
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
   private val fragment: Fragment,

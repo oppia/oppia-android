@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** The central help page activity for users FAQ and feedbacks. */
 class HelpActivity : InjectableAppCompatActivity() {
   @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
 
