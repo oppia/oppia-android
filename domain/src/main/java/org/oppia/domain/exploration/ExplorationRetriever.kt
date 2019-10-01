@@ -18,7 +18,8 @@ import javax.inject.Inject
 const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
 const val TEST_EXPLORATION_ID_6 = "test_exp_id_6"
 
-// TODO(#59): Make this class inaccessible outside of the domain package. UI code should not depend on it.
+// TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
+//  to depend on this utility.
 
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(private val context: Context) {
@@ -50,7 +51,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
 
   // Returns a JSON Object if it exists, else returns null
   private fun getJsonObject(parentObject: JSONObject, key: String): JSONObject? {
-    return parentObject.getJSONObject(key)
+    return parentObject.optJSONObject(key)
   }
 
   // Loads the JSON string from an asset and converts it to a JSONObject
@@ -68,14 +69,15 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
     val statesIterator = statesKeys.iterator()
     while (statesIterator.hasNext()) {
       val key = statesIterator.next()
-      statesMap[key] = createStateFromJson(statesJsonObject.getJSONObject(key))
+      statesMap[key] = createStateFromJson(key, statesJsonObject.getJSONObject(key))
     }
     return statesMap
   }
 
   // Creates a single state object from JSON
-  private fun createStateFromJson(stateJson: JSONObject?): State {
+  private fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
     return State.newBuilder()
+      .setName(stateName)
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
           stateJson?.getJSONObject("content")?.getString("html")
@@ -209,7 +211,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
       "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
-      else -> InteractionObject.getDefaultInstance()
+      else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
 

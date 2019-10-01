@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BackgroundDispatcher
@@ -116,6 +117,20 @@ class DataProviders @Inject constructor(
   }
 
   /**
+   * Returns an in-memory [DataProvider] which wraps the specified [Deferred] and provides either its successful value
+   * or its resulting failure.
+   */
+  fun <T> createDeferredDataProviderAsync(id: Any, deferred: Deferred<T>): DataProvider<T> {
+    return createInMemoryDataProviderAsync(id) {
+      try {
+        AsyncResult.success(deferred.await())
+      } catch (e: Exception ) {
+        AsyncResult.failed<T>(e)
+      }
+    }
+  }
+
+  /**
    * Converts a [DataProvider] to [LiveData]. This will use a background executor to handle processing of the coroutine,
    * but [LiveData] guarantees that final delivery of the result will happen on the main thread.
    */
@@ -205,7 +220,7 @@ class DataProviders @Inject constructor(
     private fun dequeuePendingCoroutineLiveData() {
       coroutineLiveDataLock.withLock {
         pendingCoroutineLiveData?.let {
-          removeSource(it)
+          removeSource(it) // This can trigger onInactive() situations for long-standing operations, leading to them being cancelled.
           pendingCoroutineLiveData = null
         }
       }
@@ -234,7 +249,7 @@ class DataProviders @Inject constructor(
 
     override fun onInactive() {
       super.onInactive()
-      runningJob?.cancel()
+      runningJob?.cancel() // This can cancel downstream operations that may want to complete side effects.
       runningJob = null
     }
   }

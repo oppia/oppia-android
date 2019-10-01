@@ -29,8 +29,10 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
+import org.oppia.app.model.Exploration
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -57,15 +59,26 @@ class ExplorationProgressControllerTest {
   lateinit var explorationProgressController: ExplorationProgressController
 
   @Inject
+  lateinit var explorationRetriever: ExplorationRetriever
+
+  @ExperimentalCoroutinesApi
+  @Inject
   @field:TestDispatcher
   lateinit var testDispatcher: TestCoroutineDispatcher
 
   @Mock
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
+  @Mock
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
+  @Captor
+  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
@@ -94,6 +107,18 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testPlayExploration_invalid_returnsSuccess() = runBlockingTest(coroutineContext) {
+    val resultLiveData = explorationDataController.startPlayingExploration("invalid_exp_id")
+    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
+
+    // An invalid exploration is not known until it's fully loaded, and that's observed via getCurrentState.
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testGetCurrentState_playInvalidExploration_returnsFailure() = runBlockingTest(coroutineContext) {
     val currentStateLiveData = explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
@@ -106,6 +131,17 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Invalid exploration ID: invalid_exp_id")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPlayExploration_valid_returnsSuccess() = runBlockingTest(coroutineContext) {
+    val resultLiveData = explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
+
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
@@ -131,6 +167,7 @@ class ExplorationProgressControllerTest {
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() = runBlockingTest(
     coroutineContext
   ) {
+    val exploration = getTestExploration5()
     explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
 
     val currentStateLiveData = explorationProgressController.getCurrentState()
@@ -141,7 +178,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(TEST_INIT_STATE_NAME)
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(exploration.initStateName)
   }
 
   @Test
@@ -149,6 +186,7 @@ class ExplorationProgressControllerTest {
   fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() = runBlockingTest(
     coroutineContext
   ) {
+    val exploration = getTestExploration5()
     // Start with playing an invalid exploration.
     explorationDataController.startPlayingExploration("invalid_exp_id")
     explorationDataController.stopPlayingExploration()
@@ -164,60 +202,85 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(TEST_INIT_STATE_NAME)
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(exploration.initStateName)
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testFinishExploration_beforePlaying_fails() = runBlockingTest(coroutineContext) {
-    val exception = assertThrows(IllegalStateException::class) { explorationDataController.stopPlayingExploration() }
+  fun testFinishExploration_beforePlaying_failWithError() = runBlockingTest(coroutineContext) {
+    val resultLiveData = explorationDataController.stopPlayingExploration()
+    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
 
-    assertThat(exception).hasMessageThat().contains("Cannot finish playing an exploration that hasn't yet been started")
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncResultCaptor.value.getErrorOrNull())
+      .hasMessageThat()
+      .contains("Cannot finish playing an exploration that hasn't yet been started")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testPlayExploration_withoutFinishingPrevious_fails() = runBlockingTest(coroutineContext) {
+  fun testPlayExploration_withoutFinishingPrevious_failsWithError() = runBlockingTest(coroutineContext) {
     explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
 
     // Try playing another exploration without finishing the previous one.
-    val exception = assertThrows(IllegalStateException::class) {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
-    }
+    val resultLiveData = explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
 
-    assertThat(exception)
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Expected to finish previous exploration before starting a new one.")
   }
 
   // testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState
-  // testSubmitAnswer_forContinueButton_returnsAnswerIsCorrect
+  // testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds
+  // testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds
+  // testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition
+  // testSubmitAnswer_forMultipleChoice_wrongAnswer_returnsDefaultOutcome
   // testGetCurrentState_whileSubmittingAnswer_becomesPending
+  // testGetCurrentState_afterSubmittingWrongAnswer_updatesPendingState
   // testGetCurrentState_afterSubmittingCorrectAnswer_becomesCompletedState
-  // testSubmitAnswer_forTextInput_wrongAnswer_returnsAnswerIsWrong
-  // testSubmitAnswer_forTextInput_correctAnswer_returnsAnswerIsCorrect
-  // testGetCurrentState_afterPreviousState_submitWrongAnswer_updatePendingState
-  // testGetCurrentState_afterPreviousState_submitRightAnswer_pendingStateBecomesCompleted
-  // testGetCurrentState_thirdState_isTerminalState
-  // testSubmitAnswer_beforePlaying_fails
-  // testSubmitAnswer_whileLoading_fails
-  // testSubmitAnswer_whileSubmittingAnotherAnswer_fails
-  // testMoveToPrevious_beforePlaying_fails
-  // testMoveToPrevious_whileLoadingExploration_fails
-  // testMoveToPrevious_whileSubmittingAnswer_fails
-  // testMoveToPrevious_onInitialState_fails
+  // testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition
+  // testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome
+  // testGetCurrentState_secondState_submitWrongAnswer_updatePendingState
+  // testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted
+  // testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition
+  // testSubmitAnswer_forNumericInput_wrongAnswer_returnsDefaultOutcome
+  // testSubmitAnswer_forContinue_returnsOutcomeWithTransition
+  // testGetCurrentState_fifthState_isTerminalState
+  // testSubmitAnswer_beforePlaying_failsWithError
+  // testSubmitAnswer_whileLoading_failsWithError
+  // testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
+  // testMoveToPrevious_beforePlaying_failsWithError
+  // testMoveToPrevious_whileLoadingExploration_failsWithError
+  // testMoveToPrevious_whileSubmittingAnswer_failsWithError
+  // testMoveToPrevious_onInitialState_failsWithError
+  // testMoveToPrevious_forStateWithCompletedPreviousState_succeeds
   // testGetCurrentState_afterMoveToPrevious_onSecondState_updatesToCompletedFirstState
   // testGetCurrentState_afterMoveToPrevious_onThirdState_updatesToCompletedSecondState
-  // testMoveToNext_beforePlaying_fails
-  // testMoveToNext_whileLoadingExploration_fails
-  // testMoveToNext_whileSubmittingAnswer_fails
-  // testMoveToNext_onFinalState_fails
-  // testMoveToNext_forPendingInitialState_fails
+  // testMoveToNext_beforePlaying_failsWithError
+  // testMoveToNext_whileLoadingExploration_failsWithError
+  // testMoveToNext_whileSubmittingAnswer_failsWithError
+  // testMoveToNext_onFinalState_failsWithError
+  // testMoveToNext_forPendingInitialState_failsWithError
+  // testMoveToNext_forCompletedState_succeeds
   // testGetCurrentState_afterMoveToNext_onCompletedFirstState_updatesToPendingSecondState
   // testGetCurrentState_afterMoveToNext_onCompletedSecondState_updatesToTerminalThirdState
   // testGetCurrentState_afterMovePreviousAndNext_returnsCurrentState
   // testGetCurrentState_afterMoveNextAndPrevious_returnsCurrentState
   // testGetCurrentState_afterMoveToPrevious_onSecondState_newObserver_receivesCompletedFirstState
+
+  private suspend fun getTestExploration5(): Exploration {
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_5)
+  }
+
+  private suspend fun getTestExploration6(): Exploration {
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_6)
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerExplorationProgressControllerTest_TestApplicationComponent.builder()
@@ -261,10 +324,19 @@ class ExplorationProgressControllerTest {
       return TestCoroutineDispatcher()
     }
 
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     @BackgroundDispatcher
     fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
     }
   }

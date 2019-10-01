@@ -16,6 +16,7 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.robolectric.annotation.Config
 import javax.inject.Inject
@@ -25,7 +26,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class AnswerClassificationControllerTest {
-  private val ARBITRARY_SAMPLE_ANSWER = InteractionObject.newBuilder().setNormalizedString("Some value").build()
+  private val TEST_STRING_ANSWER = InteractionObject.newBuilder().setNormalizedString("Some value").build()
+  private val TEST_INT_2_ANSWER = InteractionObject.newBuilder().setNonNegativeInt(2).build()
+  private val TEST_INT_121_ANSWER = InteractionObject.newBuilder().setNonNegativeInt(121).build()
 
   private val OUTCOME_0 = Outcome.newBuilder()
     .setDestStateName("First state")
@@ -54,19 +57,21 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(OUTCOME_0)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, ARBITRARY_SAMPLE_ANSWER)
+    val state = createTestState("Things you can do", interaction)
+    val outcome = answerClassificationController.classify(state, TEST_STRING_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_0)
   }
 
   @Test
-  fun testClassify_testInteraction_withMultipleDefaultOutcomes_returnsDefaultOutcome() {
+  fun testClassify_testInteraction_withMultipleOutcomes_wrongAnswer_returnsDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setDefaultOutcome(OUTCOME_1)
       .addAnswerGroups(AnswerGroup.newBuilder().setOutcome(OUTCOME_2))
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, ARBITRARY_SAMPLE_ANSWER)
+    val state = createTestState("Welcome!", interaction)
+    val outcome = answerClassificationController.classify(state, TEST_INT_2_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_1)
   }
@@ -80,11 +85,20 @@ class AnswerClassificationControllerTest {
     val interaction2 = Interaction.newBuilder()
       .setDefaultOutcome(OUTCOME_2)
       .build()
-    answerClassificationController.classify(interaction1, ARBITRARY_SAMPLE_ANSWER)
+    val state1 = createTestState("Numeric input", interaction1)
+    answerClassificationController.classify(state1, TEST_INT_121_ANSWER)
 
-    val outcome = answerClassificationController.classify(interaction2, ARBITRARY_SAMPLE_ANSWER)
+    val state2 = createTestState("Things you can do", interaction2)
+    val outcome = answerClassificationController.classify(state2, TEST_STRING_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_2)
+  }
+
+  private fun createTestState(stateName: String, interaction: Interaction): State {
+    return State.newBuilder()
+      .setName(stateName)
+      .setInteraction(interaction)
+      .build()
   }
 
   private fun setUpTestApplicationComponent() {

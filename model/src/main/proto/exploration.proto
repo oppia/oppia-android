@@ -192,8 +192,9 @@ message AnswerOutcome {
   // Oppia's feedback to the learner's most recent answer.
   SubtitledHtml feedback = 1;
 
-  // Whether the answer the learner submitted is the correct answer.
-  bool correct_answer = 2;
+  // Whether the answer the learner submitted is the correct answer. Note that this is only an indication of the
+  // correctness, and not all correct answers are guaranteed to be labelled as correct.
+  bool labelled_as_correct_answer = 2;
 
   // One of several destinations the learner should be routed to as a result of submitting this answer.
   oneof destination {

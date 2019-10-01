@@ -12,6 +12,9 @@ import javax.inject.Singleton
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
  * after any prior started operations began, and before any future operations. This class is thread-safe. Note that it's
  * safe to execute long-running operations in lambdas passed into the methods of this class.
+ *
+ * This cache is primarily intended to be used with immutable payloads, but mutable payloads can be used if calling code
+ * takes caution to restrict all read/write access to those mutable values to operations invoked by this class.
  */
 class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: CoroutineDispatcher, initialValue: T?) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
@@ -89,6 +92,17 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
       val updatedValue = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
       value = updatedValue
       updatedValue
+    }
+  }
+
+  /**
+   * Returns a [Deferred] in the same way and for the same conditions as [updateIfPresentAsync] except the provided
+   * function is expected to update the cache in-place and return a custom value to propagate to the result of the
+   * [Deferred] object.
+   */
+  fun <O> updateInPlaceIfPresentAsync(update: suspend (T) -> O): Deferred<O> {
+    return blockingScope.async {
+      update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
     }
   }
 
