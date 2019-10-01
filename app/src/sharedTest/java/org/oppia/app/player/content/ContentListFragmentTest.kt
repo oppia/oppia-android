@@ -2,44 +2,33 @@ package org.oppia.app.player.content
 
 import android.app.Application
 import android.content.Context
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.Matchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import org.oppia.data.backends.gae.model.GaeSubtitledHtml
-import androidx.fragment.app.Fragment
-import androidx.test.core.app.ApplicationProvider
-import org.oppia.app.player.exploration.ExplorationActivity
-import android.widget.LinearLayout
-import android.widget.TextView
-import junit.framework.TestCase.assertTrue
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import android.R
-import org.junit.Rule
-import android.R
 
 
 
-
-
-// TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
 /** Tests for [ContentListFragment]. */
 @RunWith(AndroidJUnit4::class)
 class ContentListFragmentTest {
@@ -69,8 +58,11 @@ class ContentListFragmentTest {
       val groupViewHolder = adapter.onCreateViewHolder(parent, VIEW_TYPE_INTERACTION)
       assertTrue(groupViewHolder is ContentCardAdapter.LearnersViewHolder)
 
+      runOnUiThread {
+        // Code for WebView goes here
 
-      adapter.parseHtml(contentList.get(0).html,childViewHolder.itemView as TextView)
+        adapter.parseHtml(contentList.get(0).html, childViewHolder.itemView as TextView)
+      }
 
     }
   }
