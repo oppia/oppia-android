@@ -2,5 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:drawable="@drawable/edit_text_background_shadow" android:state_focused="true" />
   <item android:drawable="@drawable/edit_text_background_shadow" android:state_pressed="true" />
-  <item android:drawable="@drawable/edit_text_background_border" />//means normal
+  <item android:drawable="@drawable/edit_text_background_border" />
 </selector>

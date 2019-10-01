@@ -8,14 +8,14 @@ import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withHint
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,6 +23,7 @@ import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
@@ -30,18 +31,18 @@ class StateFragmentPresenterTest {
   @Test
   fun addTextInputContentCard() {
     ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(ViewMatchers.withId(R.id.dummy_audio_button)).perform(click())
-      onView(ViewMatchers.withHint("text")).check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("text")).perform(click())
-      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("Some Text"));
+      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withHint("text")).check(matches(isDisplayed()))
+      onView(withHint("text")).perform(click())
+      onView(withHint("text")).perform(clearText(), typeText("Some Text"));
       pauseTestFor(500)
-      onView(ViewMatchers.withHint("number 1")).check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("number 1")).perform(click())
-      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("123"));
+      onView(withHint("number 1")).check(matches(isDisplayed()))
+      onView(withHint("number 1")).perform(click())
+      onView(withHint("text")).perform(clearText(), typeText("123"));
       pauseTestFor(500)
-      onView(ViewMatchers.withHint("fraction 1/1")).check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint("fraction 1/1")).perform(click())
-      onView(ViewMatchers.withHint("text")).perform(clearText(), typeText("1/3"));
+      onView(withHint("fraction 1/1")).check(matches(isDisplayed()))
+      onView(withHint("fraction 1/1")).perform(click())
+      onView(withHint("text")).perform(clearText(), typeText("1/3"));
       pauseTestFor(500)
     }
   }

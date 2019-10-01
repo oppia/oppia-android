@@ -20,10 +20,10 @@ class NumberInputInteractionView : EditText {
     attributes()
   }
 
-  /** This function contains default attributes of [NumberInputInteractionView].*/
+  /** This function contains default attributes of [NumberInputInteractionView]. */
   fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
-    val paddingPixel = 10
+    val paddingPixel =  mContext.resources.getDimension(R.dimen.padding_8)
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
     setPadding(paddingDp, paddingDp, paddingDp, paddingDp)

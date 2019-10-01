@@ -3,4 +3,5 @@
   <dimen name="audio_fragment_corner_radius">8dp</dimen>
   <dimen name="audio_fragment_margin">32dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
+  <dimen name="padding_8">8dp</dimen>
 </resources>
