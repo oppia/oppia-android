@@ -5,10 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.ConceptCardExampleViewBinding
-import org.oppia.app.databinding.ConceptcardFragmentBinding
+import org.oppia.app.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.recyclerview.BindableAdapter
@@ -26,14 +25,13 @@ class ConceptCardPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillId: String): View? {
     val viewModel = getConceptCardViewModel()
     viewModel.setSkillId(skillId)
-    val binding = ConceptcardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment as? DialogFragment)?.dismiss()
     }
     binding.workedExamples.apply {
       adapter = createRecyclerViewAdapter()
-      layoutManager = LinearLayoutManager(context)
     }
 
     binding.let {

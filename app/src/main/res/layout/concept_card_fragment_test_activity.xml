@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_height="match_parent"
+<LinearLayout
+  android:layout_height="match_parent"
   android:layout_width="match_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:android="http://schemas.android.com/apk/res/android">
   <Button
-    android:id="@+id/open_dialog"
+    android:id="@+id/open_dialog_1"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Open Concept Card Dialog"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="wrap_content" />
+  <Button
+    android:id="@+id/open_dialog_2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+</LinearLayout>

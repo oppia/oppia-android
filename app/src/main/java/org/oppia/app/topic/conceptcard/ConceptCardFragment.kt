@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
-import org.oppia.domain.topic.TEST_SKILL_ID_2
 import javax.inject.Inject
 
 private const val KEY_SKILL_ID = "SKILL_ID"
@@ -44,8 +43,8 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val args = checkNotNull(arguments) { "Expected arguments to be pass to ConceptCardFragment" }
-    val skillId = args.getString(KEY_SKILL_ID, TEST_SKILL_ID_2)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to ConceptCardFragment" }
+    val skillId = checkNotNull(args.getString(KEY_SKILL_ID)) { "Expected skillId to be passed to ConceptCardFragment" }
     return conceptCardPresenter.handleCreateView(inflater, container, skillId)
   }
 
