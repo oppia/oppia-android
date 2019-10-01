@@ -7,14 +7,38 @@
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
 
+  <style name="OppiaThemeWithoutActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+  </style>
+
+  <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
+    <item name="android:windowBackground">@drawable/splash_page</item>
+    <item name="android:windowAnimationStyle">@style/FadeTransitionAnimation.Activity</item>
+  </style>
+
+  <!-- Base style for animations.  This style specifies no animations. -->
+  <style name="FadeTransitionAnimation" />
+
+  <!-- Standard animations for a full-screen window or activity. -->
+  <style name="FadeTransitionAnimation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+    <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+  </style>
+
   <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
     <item name="android:windowNoTitle">true</item>
     <item name="colorPrimaryDark">@color/colorConceptToolbarHeading</item>
+
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
+
     <item name="android:windowIsFloating">false</item>
+
     <!-- This is important! Don't forget to set window background -->
     <item name="android:windowBackground">@color/colorConceptCardBackground</item>
+
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
