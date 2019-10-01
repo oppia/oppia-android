@@ -19,15 +19,19 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.platform.ui.UiController
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.Matcher
 
-/** Tests for [StateFragmentPresenter]. */
+/** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
-class StateFragmentPresenterTest {
+class StateFragmentTest {
   var interactionInstanceId: String? = null
 
   @Test
@@ -35,23 +39,9 @@ class StateFragmentPresenterTest {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       interactionInstanceId = "MultipleChoiceInput"
       assertEquals(interactionInstanceId, "MultipleChoiceInput")
-      onView(withId(R.id.interactionRadioGroup)).perform(object : ViewAction {
+      onView(withId(R.id.rvInteractions)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,click()))
 
-        override fun getConstraints(): Matcher<View> {
-          return isDisplayed()
-        }
-
-        override fun getDescription(): String {
-          return "Performing click"
-        }
-
-        override fun perform(uiController: androidx.test.espresso.UiController?, view: View?) {
-          val parentRadioGroup = view as RadioGroup
-          val linearLayout = parentRadioGroup.getChildAt(0) as RadioGroup
-          val radioButton = linearLayout.getChildAt(0) as CustomRadioButton
-          radioButton.performClick()
-        }
-      })
     }
   }
 
@@ -60,22 +50,8 @@ class StateFragmentPresenterTest {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       interactionInstanceId = "ItemSelectionInput"
       assertEquals(interactionInstanceId, "ItemSelectionInput")
-      onView(withId(R.id.interactionContainer)).perform(object : ViewAction {
-
-        override fun getConstraints(): Matcher<View> {
-          return isDisplayed()
-        }
-
-        override fun getDescription(): String {
-          return "Performing click"
-        }
-
-        override fun perform(uiController: androidx.test.espresso.UiController?, view: View?) {
-          val parentLinearLayout = view as LinearLayout
-          val checkbox = parentLinearLayout.getChildAt(1) as CustomCheckbox
-          checkbox.performClick()
-        }
-      })
+      onView(withId(R.id.rvInteractions)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,click()))
     }
   }
 }

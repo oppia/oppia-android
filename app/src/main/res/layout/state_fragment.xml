@@ -16,7 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-      android:id="@+id/linearLayout"
+      android:id="@+id/ll_audio_container"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
-      android:id="@+id/interactionContainer"
+      android:id="@+id/ll_interaction_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
@@ -40,14 +40,19 @@
       android:orientation="vertical"
       android:padding="8dp"
       app:layout_constraintBottom_toTopOf="@+id/dummy_audio_button"
-      app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+      app:layout_constraintTop_toBottomOf="@+id/ll_audio_container"
       tools:layout_editor_absoluteX="8dp">
-      <RadioGroup
-        android:id="@+id/interactionRadioGroup"
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInteractions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
-      </RadioGroup>
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </LinearLayout>
     <Button
       android:id="@+id/dummy_audio_button"

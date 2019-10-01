@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LevelListDrawable
 import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -15,7 +14,12 @@ import com.bumptech.glide.request.transition.Transition
 import java.net.URL
 
 /** UrlImage Parser for android TextView to load Html Image tag. */
-class UrlImageParser(internal var tvContents: TextView, internal var context: Context) : Html.ImageGetter {
+class UrlImageParser(
+  internal var tvContents: TextView,
+  internal var context: Context,
+  entity_type: String,
+  entity_id: String
+) : Html.ImageGetter {
 
   var targets: ArrayList<BitmapTarget>? = null
   /***
