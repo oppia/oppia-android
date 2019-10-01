@@ -2,14 +2,15 @@ package org.oppia.app.drawer
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
-
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
-
 import org.oppia.app.R
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
@@ -17,9 +18,9 @@ import org.oppia.app.home.HomeActivity
 /** [NavigationDrawerFragment] to show navigation drawer */
 class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
-  private var previousmMenuItemId: Int?
-    get() = previousmMenuItemId
-    set( value: Int?) { previousmMenuItemId = value }
+  private var previousmMenuItemId: Int?=null
+
+
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -46,7 +47,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
       activity!!.finish()
       previousmMenuItemId = menuItemId
     }
-
 
   }
 

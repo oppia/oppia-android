@@ -5,8 +5,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
@@ -16,17 +14,14 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -36,7 +31,6 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -47,7 +41,6 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
-import androidx.test.rule.ActivityTestRule
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -62,9 +55,6 @@ class HomeActivityTest {
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
   }
-  @get:Rule
-  var activityRule: ActivityTestRule<HomeActivity>
-      = ActivityTestRule(HomeActivity::class.java)
 
   @Test
   fun testMainActivity_firstOpen_hasWelcomeString() {
@@ -184,6 +174,7 @@ class HomeActivityTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -199,7 +190,7 @@ class HomeActivityTest {
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
    */
-  private object MainThreadExecutor: AbstractExecutorService() {
+  private object MainThreadExecutor : AbstractExecutorService() {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
