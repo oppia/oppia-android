@@ -35,18 +35,17 @@ class StateFragmentTest {
   var interactionInstanceId: String? = null
 
   @Test
-  fun testMultipleSelectionInputInteraction() {
+  fun testMultipleChoiceInput_showsRadioButtons_onMultipleChoiceInputInteractionInstanceId_userSelectsDesiredOption() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       interactionInstanceId = "MultipleChoiceInput"
       assertEquals(interactionInstanceId, "MultipleChoiceInput")
       onView(withId(R.id.rvInteractions)).perform(
         RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,click()))
-
     }
   }
 
   @Test
-  fun testItemSelectionInputInteraction() {
+  fun tesItemSelectionInput_showsCheckbox_onItemSelectionInputInteractionInstanceId_userCanSelectMoreThanOneCorrectOption() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       interactionInstanceId = "ItemSelectionInput"
       assertEquals(interactionInstanceId, "ItemSelectionInput")

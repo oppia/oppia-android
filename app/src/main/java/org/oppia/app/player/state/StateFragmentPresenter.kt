@@ -51,8 +51,8 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
 
-  private fun createDummyData() {
-    interactionInstanceId = "MultipleChoiceInput"
+   fun createDummyData() {
+    interactionInstanceId = "ItemSelectionInput"
     var sampleData: GaeCustomizationArgs =
       GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
     gaeCustomizationArgsMap?.put("choices", sampleData)

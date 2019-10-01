@@ -23,6 +23,9 @@ const val HTML_TAG = "img"
 const val CUSTOM_ATTRIBUTE = "filepath-with-value"
 const val HTML_ATTRIBUTE = "src"
 
+const val VIEW_TYPE_MULTIPLE_CHOICE = 1
+const val VIEW_TYPE_ITEM_SELECTION = 2
+
 /** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
 class InteractionAdapter(
   private val context: Context,
@@ -32,8 +35,6 @@ class InteractionAdapter(
   val interactionInstanceId: String?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  private val VIEW_TYPE_MULTIPLE_CHOICE = 1
-  private val VIEW_TYPE_ITEM_SELECTION = 2
   private var mSelectedItem = -1
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
