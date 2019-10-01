@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
+    <import type="android.view.View"/>
     <variable
       name="viewModel"
       type="org.oppia.app.topic.train.TopicTrainViewModel"/>
@@ -44,14 +45,15 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
-          app:data="@{viewModel.skillListSummaryLiveData}"
+          app:data="@{viewModel.skillListLiveData}"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         <Button
           android:id="@+id/topic_train_start_button"
           style="@style/StateButtonInactive"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="24dp"
-          android:text="@string/topic_train_start"/>
+          android:text="@string/topic_train_start"
+          android:visibility="@{viewModel.isSubmitButtonActive()? View.VISIBLE: View.GONE}"/>
       </LinearLayout>
     </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>

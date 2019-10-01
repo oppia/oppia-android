@@ -1,5 +1,8 @@
 package org.oppia.app.topic.train
 
+import android.util.Log
+import android.widget.CompoundButton
+import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
@@ -8,11 +11,13 @@ import kotlin.collections.ArrayList
 
 /** [ViewModel] for showing skills in train fragment. */
 @FragmentScope
-class TopicTrainViewModel @Inject constructor() : ViewModel() {
-  var skillListSummaryLiveData: MutableLiveData<List<String>> = dummySkillListSummaryLiveData()
+class TopicTrainViewModel @Inject constructor() : ViewModel(){
+  var skillListLiveData: MutableLiveData<List<String>> = dummySkillListLiveData()
 
-  private fun dummySkillListSummaryLiveData(): MutableLiveData<List<String>> {
-    skillListSummaryLiveData = MutableLiveData()
+  var isSubmitButtonActive = ObservableField<Boolean>(false)
+
+  private fun dummySkillListLiveData(): MutableLiveData<List<String>> {
+    skillListLiveData = MutableLiveData()
 
     val skillList = ArrayList<String>()
     skillList.add("Identify the Parts of a Fraction")
@@ -23,7 +28,11 @@ class TopicTrainViewModel @Inject constructor() : ViewModel() {
     skillList.add("Adding and Subtracting Fractions")
     skillList.add("Multiplying Fractions")
     skillList.add("Dividing Fractions")
-    skillListSummaryLiveData.value = skillList
-    return skillListSummaryLiveData
+    skillListLiveData.value = skillList
+    return skillListLiveData
+  }
+
+  fun onCheckChanged(compoundButton: CompoundButton, isChecked: Boolean){
+    Log.d("TAG","adfs")
   }
 }

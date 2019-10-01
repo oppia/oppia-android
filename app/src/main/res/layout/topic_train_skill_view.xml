@@ -6,6 +6,9 @@
     <variable
       name="skill"
       type="java.lang.String"/>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.train.TopicTrainViewModel"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -14,11 +17,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="4dp"
+      android:drawablePadding="4dp"
       android:gravity="center_vertical"
-      android:text="@{String.valueOf(skill)}"
+      android:text="@{skill}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:drawablePadding="4dp"
+      android:onCheckedChanged="@{viewModel::onCheckChanged}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
