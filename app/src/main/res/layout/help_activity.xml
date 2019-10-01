@@ -19,7 +19,6 @@
       <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
-
     </LinearLayout>
 
     <FrameLayout
@@ -27,7 +26,6 @@
       android:layout_width="fill_parent"
       android:layout_height="0dp"
       android:layout_weight="1" />
-
   </LinearLayout>
 
   <fragment
@@ -38,5 +36,4 @@
     android:layout_gravity="start"
     app:layout="@layout/fragment_drawer"
     tools:layout="@layout/fragment_drawer" />
-
 </androidx.drawerlayout.widget.DrawerLayout>
