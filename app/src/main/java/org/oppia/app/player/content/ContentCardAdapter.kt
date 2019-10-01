@@ -21,6 +21,8 @@ const val CUSTOM_TAG = "oppia-noninteractive-image"
 const val HTML_TAG = "img"
 const val CUSTOM_ATTRIBUTE = "filepath-with-value"
 const val HTML_ATTRIBUTE = "src"
+const val VIEW_TYPE_CONTENT = 1
+const val VIEW_TYPE_INTERACTION = 2
 
 /** Adapter to bind the contents to the [RecyclerView]. It handles rich-text content. */
 class ContentCardAdapter(
@@ -30,8 +32,7 @@ class ContentCardAdapter(
   val contentList: MutableList<GaeSubtitledHtml>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  private val VIEW_TYPE_CONTENT = 1
-  private val VIEW_TYPE_INTERACTION = 2
+
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -91,7 +92,7 @@ class ContentCardAdapter(
     }
   }
 
-  private fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
+   fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_TAG)) {
