@@ -10,7 +10,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import javax.inject.Inject
 
-/** The presenter for [HomeFragmentPresenter]. */
+/** The presenter for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
