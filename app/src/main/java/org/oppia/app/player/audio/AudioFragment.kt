@@ -8,13 +8,31 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
+private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
+private const val KEY_CONTENT_ID = "CONTENT_ID"
 
 /** Fragment that controls audio for a content-card. */
 class AudioFragment : InjectableFragment(), LanguageInterface {
+
+  companion object {
+    /**
+     * Creates a new instance of a AudioFragment
+     * @param explorationId: Used for ExplorationDataController to get correct exploration
+     * @param contentId: Used to get correct VoiceoverMapping
+     * @return [AudioFragment]: Fragment
+     */
+    fun newInstance(explorationId: String, contentId: String): AudioFragment {
+      val audioFragment = AudioFragment()
+      val args = Bundle()
+      args.putString(KEY_EXPLORATION_ID, explorationId)
+      args.putString(KEY_CONTENT_ID, contentId)
+      audioFragment.arguments = args
+      return audioFragment
+    }
+  }
+
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
-  private var selectedLanguageCode: String = "en"
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -22,38 +40,21 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return audioFragmentPresenter.handleCreateView(inflater, container)
+    super.onCreateView(inflater, container, savedInstanceState)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to AudioFragment" }
+    val explorationId = checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to AudioFragment" }
+    val contentId = checkNotNull(args.getString(KEY_CONTENT_ID)) { "Expected contentId to be passed to AudioFragment" }
+    return audioFragmentPresenter.handleCreateView(inflater, container, explorationId, contentId)
   }
 
   fun languageSelectionClicked() {
-    showLanguageDialogFragment()
+    audioFragmentPresenter.showLanguageDialogFragment()
   }
 
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
   fun getUserPosition() = audioFragmentPresenter.userProgress
 
-  private fun showLanguageDialogFragment() {
-    val previousFragment = childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
-    if (previousFragment != null) {
-      childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = LanguageDialogFragment.newInstance(
-      getDummyAudioLanguageList() as ArrayList<String>,
-      selectedLanguageCode
-    )
-    dialogFragment.showNow(childFragmentManager, TAG_LANGUAGE_DIALOG)
-  }
-
-  private fun getDummyAudioLanguageList(): List<String> {
-    val languageCodeList = ArrayList<String>()
-    languageCodeList.add("en")
-    languageCodeList.add("hi")
-    languageCodeList.add("hi-en")
-    return languageCodeList
-  }
-
   override fun onLanguageSelected(currentLanguageCode: String) {
-    selectedLanguageCode = currentLanguageCode
     audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 }
