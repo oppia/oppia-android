@@ -2,7 +2,7 @@ package org.oppia.app.player.audio
 
 import android.app.Application
 import android.content.Context
-import androidx.test.core.app.ActivityScenario
+import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -29,49 +29,40 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ConceptCardFragmentTest {
 
-  //@Rule
-  //val activityTestRule = ActivityTestRule(ConceptCardFragmentTestActivity::class.java)
+  @get:Rule
+  val activityTestRule = ActivityTestRule(ConceptCardFragmentTestActivity::class.java)
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_explanationIsDisplayed() {
-    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
-      Espresso.onView(withId(R.id.open_dialog_1)).perform(click())
-      Espresso.onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
-    }
+    Espresso.onView(withId(R.id.open_dialog_1)).perform(click())
+    Espresso.onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_workedExamplesAreDisplayed() {
-    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
-      Espresso.onView(withId(R.id.open_dialog_1)).perform(click())
-      Espresso.onView(withText("Worked example with <i>rich text</i>.")).check(matches(isDisplayed()))
-    }
+    Espresso.onView(withId(R.id.open_dialog_1)).perform(click())
+    Espresso.onView(withText("Worked example with <i>rich text</i>.")).check(matches(isDisplayed()))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_explanationIsDisplayed() {
-    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
-      Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
-      Espresso.onView(withId(R.id.explanation)).check(matches(withText("Explanation without rich text.")))
-    }
+    Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
+    Espresso.onView(withId(R.id.explanation)).check(matches(withText("Explanation without rich text.")))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_workedExamplesAreDisplayed() {
-    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
-      Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
-      Espresso.onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
-      Espresso.onView(withText("Second worked example.")).check(matches(isDisplayed()))
-    }
+    Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
+    Espresso.onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
+    Espresso.onView(withText("Second worked example.")).check(matches(isDisplayed()))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
-    ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java).use {
-      Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
-      Espresso.onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
-      Espresso.onView(withText("Second worked example.")).check(matches(isDisplayed()))
-    }
+    Espresso.onView(withId(R.id.open_dialog_2)).perform(click())
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    Espresso.onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
+    Espresso.onView(withText("Second worked example.")).check(matches(isDisplayed()))
   }
 
   @Module
