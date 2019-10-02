@@ -39,11 +39,7 @@ class CellularDialogController @Inject constructor(
     }
   }
 
-  /**
-   * Returns a [LiveData] result indicating whether the user wants to hide the CellularDataDialog. This is guaranteed to
-   * provide the state of the store upon the creation of this controller even if [setHideDialogPreference] has since been
-   * called.
-   */
+  /** Returns a [LiveData] result indicating the user's cellular data preferences. */
   fun getCellularDataPreference(): LiveData<AsyncResult<CellularDataPreference>> {
     return dataProviders.convertToLiveData(cellularDataStore)
   }

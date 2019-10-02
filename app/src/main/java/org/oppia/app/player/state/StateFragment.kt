@@ -65,12 +65,16 @@ class StateFragment @Inject constructor(
 
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
     stateFragmentPresenter.setAudioFragmentVisible(true)
-    if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
-    cellularDialogController.setUseCellularDataPreference(true)
+    if (saveUserChoice) {
+      cellularDialogController.setHideDialogPreference(true)
+      cellularDialogController.setUseCellularDataPreference(true)
+    }
   }
 
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    if (saveUserChoice) cellularDialogController.setHideDialogPreference(true)
-    cellularDialogController.setUseCellularDataPreference(false)
+    if (saveUserChoice) {
+      cellularDialogController.setHideDialogPreference(true)
+      cellularDialogController.setUseCellularDataPreference(false)
+    }
   }
 }
