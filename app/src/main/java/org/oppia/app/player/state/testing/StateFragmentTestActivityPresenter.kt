@@ -9,14 +9,13 @@ import javax.inject.Inject
 /** The presenter for [StateFragmentTestActivity] */
 @ActivityScope
 class StateFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val stateFragment: StateFragment
+  private val activity: AppCompatActivity
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.state_fragment_test_activity)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,
-      stateFragment
+      StateFragment()
     ).commitNow()
   }
 }
