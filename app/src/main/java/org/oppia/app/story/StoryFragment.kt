@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** A fragment that contains stories*/
 class StoryFragment : InjectableFragment() {
-  @Inject lateinit var storyFragmentController: StoryFragmentController
+  @Inject lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class StoryFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return storyFragmentController.handleCreateView(inflater, container)
+    return storyFragmentPresenter.handleCreateView(inflater, container)
   }
 }

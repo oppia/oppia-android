@@ -8,7 +8,7 @@ import org.oppia.app.databinding.StoryFragmentBinding
 import javax.inject.Inject
 
 /** The controller for [StoryFragment] */
-class StoryFragmentController @Inject constructor(private val fragment: Fragment) {
+class StoryFragmentPresenter @Inject constructor(private val fragment: Fragment) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to

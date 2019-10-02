@@ -4,13 +4,13 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The activity for stories */
+/** Activity for stories. */
 class StoryActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var storyActivityController: StoryActivityController
+  @Inject lateinit var storyActivityPresenter: StoryActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    storyActivityController.handleOnCreate()
+    storyActivityPresenter.handleOnCreate()
   }
 }

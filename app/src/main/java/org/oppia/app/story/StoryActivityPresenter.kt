@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 /** The controller for [StoryActivity]. */
 @ActivityScope
-public class StoryActivityController @Inject constructor(private val activity: AppCompatActivity) {
+class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.story_activity)
     activity.supportFragmentManager.beginTransaction().add(
