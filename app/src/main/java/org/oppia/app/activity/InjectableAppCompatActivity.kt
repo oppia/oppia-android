@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.application.OppiaApplication
 import org.oppia.app.fragment.FragmentComponent
+
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent fragments that extend
  * [org.oppia.app.fragment.InjectableFragment].
