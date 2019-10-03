@@ -20,8 +20,7 @@ import org.oppia.app.topic.train.TopicTrainFragment
 interface FragmentComponent {
   @Subcomponent.Builder
   interface Builder {
-    @BindsInstance
-    fun setFragment(fragment: Fragment): Builder
+    @BindsInstance fun setFragment(fragment: Fragment): Builder
     fun build(): FragmentComponent
   }
 
