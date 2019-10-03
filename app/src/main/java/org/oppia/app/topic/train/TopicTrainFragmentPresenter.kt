@@ -7,9 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.app.databinding.TopicTrainSkillViewBinding
 import javax.inject.Inject
 
 /** The presenter for [TopicTrainFragment]. */
@@ -21,7 +19,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.skillRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
+      adapter = SkillSelectionAdapter(context, dummySkillList())
       layoutManager = LinearLayoutManager(context)
     }
     binding.let {
@@ -31,16 +29,20 @@ class TopicTrainFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<String> {
-    return BindableAdapter.Builder
-      .newBuilder<String>()
-      .registerViewDataBinder(
-        inflateDataBinding = TopicTrainSkillViewBinding::inflate,
-        setViewModel = TopicTrainSkillViewBinding::setSkill)
-      .build()
-  }
-
   private fun getTopicTrainViewModel(): TopicTrainViewModel {
     return viewModelProvider.getForFragment(fragment, TopicTrainViewModel::class.java)
+  }
+
+  private fun dummySkillList(): List<String> {
+    val skillList = ArrayList<String>()
+    skillList.add("Identify the Parts of a Fraction")
+    skillList.add("Writing Fractions")
+    skillList.add("Equivalent Fractions")
+    skillList.add("Mixed Numbers and Improper Fractions")
+    skillList.add("Comparing Fractions")
+    skillList.add("Adding and Subtracting Fractions")
+    skillList.add("Multiplying Fractions")
+    skillList.add("Dividing Fractions")
+    return skillList
   }
 }

@@ -14,6 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <CheckBox
+      android:id="@+id/skill_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="4dp"
@@ -22,7 +23,6 @@
       android:text="@{skill}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:onCheckedChanged="@{(compoundButton, isChecked) -> viewModel.onCheckChanged(compoundButton, isChecked)}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
