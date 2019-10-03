@@ -23,5 +23,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+    <activity android:name=".splash.SplashActivity"
+              android:theme="@style/SplashScreenTheme">
+    </activity>
   </application>
 </manifest>
