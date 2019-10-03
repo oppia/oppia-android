@@ -1,14 +1,13 @@
 package org.oppia.domain.exploration
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
-private const val START_PLAYING_EXPLORATION_RESULT_DATA_PROVIDER_ID = "StartPlayingExplorationResultDataProvider"
-private const val STOP_PLAYING_EXPLORATION_RESULT_DATA_PROVIDER_ID = "StopPlayingExplorationResultDataProvider"
 
 /**
  * Controller for loading explorations by ID, or beginning to play an exploration.
@@ -41,10 +40,12 @@ class ExplorationDataController @Inject constructor(
    *     fail to load, but this provides early-failure detection.
    */
   fun startPlayingExploration(explorationId: String): LiveData<AsyncResult<Any?>> {
-    val operation = explorationProgressController.beginExplorationAsync(explorationId)
-    val dataProvider = dataProviders.createDeferredDataProviderAsync(
-      START_PLAYING_EXPLORATION_RESULT_DATA_PROVIDER_ID, operation)
-    return dataProviders.convertToLiveData(dataProvider)
+    return try {
+      explorationProgressController.beginExplorationAsync(explorationId)
+      MutableLiveData(AsyncResult.success<Any?>(null))
+    } catch (e: Exception) {
+      MutableLiveData(AsyncResult.failed(e))
+    }
   }
 
   /**
@@ -52,10 +53,12 @@ class ExplorationDataController @Inject constructor(
    * active exploration is being played, otherwise an exception will be thrown.
    */
   fun stopPlayingExploration(): LiveData<AsyncResult<Any?>> {
-    val operation = explorationProgressController.finishExplorationAsync()
-    val dataProvider = dataProviders.createDeferredDataProviderAsync(
-      STOP_PLAYING_EXPLORATION_RESULT_DATA_PROVIDER_ID, operation)
-    return dataProviders.convertToLiveData(dataProvider)
+    return try {
+      explorationProgressController.finishExplorationAsync()
+      MutableLiveData(AsyncResult.success<Any?>(null))
+    } catch (e: Exception) {
+      MutableLiveData(AsyncResult.failed(e))
+    }
   }
 
   @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
