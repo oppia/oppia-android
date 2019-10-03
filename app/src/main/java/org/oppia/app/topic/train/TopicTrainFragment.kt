@@ -21,4 +21,9 @@ class TopicTrainFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return topicTrainFragmentPresenter.handleCreateView(inflater, container)
   }
+
+  fun submitButtonClicked(){
+    // List of selected skills when submit button is clicked.
+    val skillList = topicTrainFragmentPresenter.getSelectedSkillList()
+  }
 }
