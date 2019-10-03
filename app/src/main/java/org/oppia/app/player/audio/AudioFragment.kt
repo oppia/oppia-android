@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
-private const val KEY_CONTENT_ID = "CONTENT_ID"
+private const val KEY_STATE_ID = "STATE_ID"
 
 /** Fragment that controls audio for a content-card. */
 class AudioFragment : InjectableFragment(), LanguageInterface {
@@ -21,11 +21,11 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
      * @param contentId: Used to get correct VoiceoverMapping
      * @return [AudioFragment]: Fragment
      */
-    fun newInstance(explorationId: String, contentId: String): AudioFragment {
+    fun newInstance(explorationId: String, stateId: String): AudioFragment {
       val audioFragment = AudioFragment()
       val args = Bundle()
       args.putString(KEY_EXPLORATION_ID, explorationId)
-      args.putString(KEY_CONTENT_ID, contentId)
+      args.putString(KEY_STATE_ID, stateId)
       audioFragment.arguments = args
       return audioFragment
     }
@@ -43,8 +43,8 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     super.onCreateView(inflater, container, savedInstanceState)
     val args = checkNotNull(arguments) { "Expected arguments to be passed to AudioFragment" }
     val explorationId = checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to AudioFragment" }
-    val contentId = checkNotNull(args.getString(KEY_CONTENT_ID)) { "Expected contentId to be passed to AudioFragment" }
-    return audioFragmentPresenter.handleCreateView(inflater, container, explorationId, contentId)
+    val stateId = checkNotNull(args.getString(KEY_STATE_ID)) { "Expected stateId to be passed to AudioFragment" }
+    return audioFragmentPresenter.handleCreateView(inflater, container, explorationId, stateId)
   }
 
   fun languageSelectionClicked() {

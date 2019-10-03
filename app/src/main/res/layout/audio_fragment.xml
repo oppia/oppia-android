@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
-    <import type="org.oppia.domain.audio.AudioPlayerController.PlayStatus"/>
+    <import type="org.oppia.app.player.audio.AudioViewModel.AudioPlayStatus"/>
     <variable
       name="audioFragment"
       type="org.oppia.app.player.audio.AudioFragment"/>
@@ -26,8 +26,8 @@
       android:layout_height="wrap_content"
       android:contentDescription="@string/audio_pause_play_description"
       android:padding="8dp"
-      android:src="@{viewModel.playProgressLiveData.type == PlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
-      android:onClick="@{(v) -> viewModel.handlePlayPause(viewModel.playProgressLiveData.type)}"
+      android:src="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
+      android:onClick="@{(v) -> viewModel.handlePlayPause(viewModel.playStatusLiveData)}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -36,8 +36,8 @@
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:max="@{viewModel.playProgressLiveData.duration}"
-      android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.playProgressLiveData.position}"
+      android:max="@{viewModel.durationLiveData}"
+      android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
       android:thumb="@drawable/seekbar_thumb"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
