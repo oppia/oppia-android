@@ -15,7 +15,7 @@ import org.oppia.app.R
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 
-/** [NavigationDrawerFragment] to show navigation drawer */
+/** [NavigationDrawerFragment] to show navigation drawer. */
 class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
   private var previousmMenuItemId: Int?=null
