@@ -11,7 +11,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.TopicTrainSkillViewBinding
 
 // TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter.
-/** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. **/
+/** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. */
 class SkillSelectionAdapter(
   private val skillList: List<String>,
   private val skillInterface: SkillInterface
