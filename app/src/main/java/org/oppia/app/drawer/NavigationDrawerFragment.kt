@@ -49,7 +49,7 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
     }
 
   }
-
+/** This function contains the DrawerListener and also set the drawer toggle. */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar) {
     var mDrawerToggle: ActionBarDrawerToggle? = object : ActionBarDrawerToggle(
       activity,
