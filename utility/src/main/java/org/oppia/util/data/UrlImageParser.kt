@@ -79,6 +79,7 @@ class UrlImageParser(
       }
     }
   }
+  
   inner class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
