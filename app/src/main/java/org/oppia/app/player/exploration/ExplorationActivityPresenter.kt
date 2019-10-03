@@ -15,12 +15,12 @@ class ExplorationActivityPresenter @Inject constructor(private val activity: App
     if (getExplorationFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        StateFragment()
+        ExplorationFragment()
       ).commitNow()
     }
   }
 
-  private fun getExplorationFragment(): StateFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.exploration_fragment_placeholder) as StateFragment?
+  private fun getExplorationFragment(): ExplorationFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.exploration_fragment_placeholder) as ExplorationFragment?
   }
 }
