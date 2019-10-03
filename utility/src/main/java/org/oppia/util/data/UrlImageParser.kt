@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LevelListDrawable
 import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -27,19 +26,17 @@ class UrlImageParser(
   val GCS_RESOURCE_BUCKET_NAME = "oppiaserver-resources/"
   var IMAGE_DOWNLOAD_URL_TEMPLATE = "/<entity_type>/<entity_id>/assets/image/<filename>"
 
-  var targets: ArrayList<BitmapTarget>? = null
   /***
    * This method is called when the HTML parser encounters an <img> tag
    * @param urlString : urlString argument is the string from the "src" attribute
    * @return Drawable : Drawable representation of the image
    */
   override fun getDrawable(urlString: String): Drawable {
-    IMAGE_DOWNLOAD_URL_TEMPLATE =  entity_type + "/" + entity_id + "/assets/image/"
+    IMAGE_DOWNLOAD_URL_TEMPLATE = entity_type + "/" + entity_id + "/assets/image/"
     val urlDrawable = UrlDrawable()
     val load = Glide.with(context).asBitmap()
       .load(URL(GCS_PREFIX + GCS_RESOURCE_BUCKET_NAME + IMAGE_DOWNLOAD_URL_TEMPLATE + urlString))
     val target = BitmapTarget(urlDrawable)
-    targets?.add(target)
     load.into(target)
     return urlDrawable
   }
@@ -52,10 +49,16 @@ class UrlImageParser(
         val textviewWidth = tvContents.width
         val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
         val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
-        val newHeight = drawableHeight * textviewWidth / drawableWidth
-        val rect = Rect(0, 0, textviewWidth, newHeight)
-        (drawable as BitmapDrawable).bounds = rect
-        urlDrawable.bounds = rect
+        if (drawableWidth > textviewWidth) {
+          val calculatedHeight = textviewWidth * drawableHeight / drawableWidth;
+          val rect = Rect(0, 0, textviewWidth, calculatedHeight)
+          (drawable as BitmapDrawable).bounds = rect
+          urlDrawable.bounds = rect
+        } else {
+          val rect = Rect(0, 0, drawableWidth, drawableHeight)
+          (drawable as BitmapDrawable).bounds = rect
+          urlDrawable.bounds = rect
+        }
         urlDrawable.drawable = drawable
         tvContents.text = tvContents.text
         tvContents.invalidate()

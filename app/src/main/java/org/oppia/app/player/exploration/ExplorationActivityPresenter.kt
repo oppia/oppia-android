@@ -3,7 +3,6 @@ package org.oppia.app.player.exploration
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.home.HomeFragment
 import javax.inject.Inject
 
 /** The controller for [ExplorationActivity]. */
