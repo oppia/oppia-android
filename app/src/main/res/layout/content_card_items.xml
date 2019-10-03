@@ -11,7 +11,7 @@
     android:background="@drawable/bg_blue_card"
     android:orientation="vertical">
     <TextView
-      android:id="@+id/tvContents"
+      android:id="@+id/tv_contents"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="4dp"
