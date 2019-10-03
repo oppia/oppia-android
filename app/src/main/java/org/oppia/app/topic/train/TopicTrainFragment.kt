@@ -23,7 +23,7 @@ class TopicTrainFragment : InjectableFragment() {
   }
 
   fun submitButtonClicked(){
-    // All selected skills when submit button is clicked.
+    // List of selected skills when submit button is clicked.
     val skillList = topicTrainFragmentPresenter.getSelectedSkillList()
   }
 }
