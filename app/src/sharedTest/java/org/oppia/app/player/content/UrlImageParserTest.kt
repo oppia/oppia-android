@@ -26,10 +26,10 @@ import javax.inject.Singleton
 class UrlImageParserTest {
 
   @Test
-  fun testContentListFragment_loadHtmlContent_isDisplayed() {
+  fun testUrlImageParser_loadHtmlContent_isDisplayed() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
       onView(withId(org.oppia.app.R.id.recyclerview)).check(matches(isDisplayed()))
-      pauseTestFor(3000)
+      pauseTestFor(3000) // pause as image loading takes 2 to 3 secs.
     }
   }
 
