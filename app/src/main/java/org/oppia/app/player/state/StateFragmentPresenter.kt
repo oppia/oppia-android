@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.data.backends.gae.model.GaeCustomizationArgs
+import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_6
 import javax.inject.Inject
 
 /** The presenter for [StateFragment]. */
@@ -18,7 +21,8 @@ import javax.inject.Inject
 class StateFragmentPresenter @Inject constructor(
   @ApplicationContext private val context: Context,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<StateViewModel>
+  private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val explorationDataController: ExplorationDataController
 ) {
 
   private var items: Array<String>? = null
@@ -35,6 +39,12 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
+
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_6)
+
+   Log.d("States","" +explorationDataController.getExplorationById(TEST_EXPLORATION_ID_6))
+   Log.d("States","" +getStateViewModel().ephemeralStateLiveData.value)
+
     binding.rvInteractions.apply {
       binding.rvInteractions.layoutManager = LinearLayoutManager(context)
     }
