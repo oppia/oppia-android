@@ -55,8 +55,8 @@ class ContentListFragmentTest {
       assertTrue(childViewHolder is ContentCardAdapter.ContentViewHolder)
 
       // Learners view holder
-      val groupViewHolder = adapter.onCreateViewHolder(parent, VIEW_TYPE_INTERACTION)
-      assertTrue(groupViewHolder is ContentCardAdapter.LearnersViewHolder)
+      val groupViewHolder = adapter.onCreateViewHolder(parent, VIEW_TYPE_INTERACTION_FEEDBACK)
+      assertTrue(groupViewHolder is ContentCardAdapter.InteractionFeedbackViewHolder)
 
       runOnUiThread {
         // Code for WebView goes here
