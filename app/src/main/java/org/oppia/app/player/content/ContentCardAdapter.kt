@@ -16,6 +16,7 @@ import org.oppia.app.databinding.InterationFeedbackCardItemBinding
 import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.HtmlParser
 
+// TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter
 /** Adapter to bind the contents to the [RecyclerView]. It handles rich-text content. */
 class ContentCardAdapter(
   private val context: Context,
