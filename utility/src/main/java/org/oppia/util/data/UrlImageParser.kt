@@ -60,7 +60,7 @@ class UrlImageParser(
         val textviewWidth = tvContents.width
         val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
         val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
-        // To scale the image keeping aspect ratio.
+        // To resize the image keeping aspect ratio.
         if (drawableWidth > textviewWidth) {
           val calculatedHeight = textviewWidth * drawableHeight / drawableWidth;
           val rect = Rect(0, 0, textviewWidth, calculatedHeight)
