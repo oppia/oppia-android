@@ -66,12 +66,10 @@ class UrlImageParser(
           val rect = Rect(0, 0, textviewWidth, calculatedHeight)
           (drawable as BitmapDrawable).bounds = rect
           urlDrawable.bounds = rect
-          Log.d("textviewWidth", "" + textviewWidth + " " + calculatedHeight)
         } else {
           val rect = Rect(0, 0, drawableWidth, drawableHeight)
           (drawable as BitmapDrawable).bounds = rect
           urlDrawable.bounds = rect
-          Log.d("drawableWidth", "" + drawableWidth + " " + drawableHeight)
         }
         urlDrawable.drawable = drawable
         tvContents.text = tvContents.text
