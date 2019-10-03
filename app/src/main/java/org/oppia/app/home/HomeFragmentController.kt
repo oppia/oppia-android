@@ -1,6 +1,5 @@
 package org.oppia.app.home
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import javax.inject.Inject
-import android.widget.LinearLayout
-import androidx.lifecycle.LifecycleOwner
-import org.oppia.app.R
-import org.oppia.app.customview.inputInteractionView.TextInputInteractionView
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
@@ -28,9 +23,11 @@ class HomeFragmentController @Inject constructor(
     // data-bound view models.
     binding.let {
       it.viewModel = getUserAppHistoryViewModel()
-      it.lifecycleOwner = fragment as LifecycleOwner?
+      it.lifecycleOwner = fragment
     }
+
     userAppHistoryController.markUserOpenedApp()
+
     return binding.root
   }
 
