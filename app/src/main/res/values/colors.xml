@@ -15,4 +15,6 @@
   <color name="white">#FFFFFF</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- SUBMIT BUTTON INACTIVE -->
+  <color name="submitButtonInactive">#56000000</color>
 </resources>

@@ -15,11 +15,15 @@ import javax.inject.Inject
 class TopicTrainFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
-) {
+) : SkillInterface {
+  private val selectedSkillList = ArrayList<String>()
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    val skillAdapter = SkillSelectionAdapter(dummySkillList(), this)
+
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.skillRecyclerView.apply {
-      adapter = SkillSelectionAdapter(context, dummySkillList())
+      adapter = skillAdapter
       layoutManager = LinearLayoutManager(context)
     }
     binding.let {
@@ -31,6 +35,16 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private fun getTopicTrainViewModel(): TopicTrainViewModel {
     return viewModelProvider.getForFragment(fragment, TopicTrainViewModel::class.java)
+  }
+
+  override fun skillSelected(skill: String) {
+    selectedSkillList.add(skill)
+    getTopicTrainViewModel().selectedSkillList(selectedSkillList)
+  }
+
+  override fun skillUnselected(skill: String) {
+    selectedSkillList.remove(skill)
+    getTopicTrainViewModel().selectedSkillList(selectedSkillList)
   }
 
   private fun dummySkillList(): List<String> {
@@ -45,4 +59,6 @@ class TopicTrainFragmentPresenter @Inject constructor(
     skillList.add("Dividing Fractions")
     return skillList
   }
+
+  fun getSelectedSkillList() = selectedSkillList
 }

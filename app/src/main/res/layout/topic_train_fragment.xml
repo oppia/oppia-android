@@ -5,6 +5,9 @@
   <data>
     <import type="android.view.View"/>
     <variable
+      name="topicTrainFragment"
+      type="org.oppia.app.topic.train.TopicTrainFragment"/>
+    <variable
       name="viewModel"
       type="org.oppia.app.topic.train.TopicTrainViewModel"/>
   </data>
@@ -51,8 +54,11 @@
           style="@style/StateButtonInactive"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="24dp"
+          android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
+          android:clickable="@{viewModel.isSubmitButtonActive()}"
+          android:onClick="@{(v) -> topicTrainFragment.submitButtonClicked()}"
           android:text="@string/topic_train_start"
-          android:visibility="@{viewModel.isSubmitButtonActive()? View.VISIBLE: View.GONE}"/>
+          android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"/>
       </LinearLayout>
     </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>

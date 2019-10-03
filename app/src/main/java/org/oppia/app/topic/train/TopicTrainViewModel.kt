@@ -9,4 +9,8 @@ import javax.inject.Inject
 @FragmentScope
 class TopicTrainViewModel @Inject constructor() : ViewModel() {
   var isSubmitButtonActive = ObservableField<Boolean>(false)
+
+  fun selectedSkillList(selectedSkillList: ArrayList<String>) {
+    isSubmitButtonActive.set(selectedSkillList.isNotEmpty())
+  }
 }
