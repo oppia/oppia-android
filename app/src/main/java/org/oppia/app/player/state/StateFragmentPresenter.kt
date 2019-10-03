@@ -29,14 +29,14 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
     llRoot = binding.root.findViewById(R.id.llRoot)
-    addTextInputContentCard("text", 1)
-    addNumberInputContentCard("number 1", 2)
-    addFractionInputContentCard("fraction 1/1", 3)
+    addTextInputContentCard("text")
+    addNumberInputContentCard("number 1")
+    addFractionInputContentCard("fraction 1/1")
     return binding.root
   }
 
-  /** The function for adding [TextInputInteractionView] */
-  fun addTextInputContentCard(placeholder: String, type: Int) {
+  /** The function for adding [TextInputInteractionView]. */
+  fun addTextInputContentCard(placeholder: String) {
     var contentComponent = TextInputInteractionView(
       fragment.context!!,
       placeholder,
@@ -50,8 +50,8 @@ class StateFragmentPresenter @Inject constructor(
     llRoot!!.addView(contentComponent, params)
   }
 
-  /** The function for adding [NumberInputInteractionView] */
-  fun addNumberInputContentCard(placeholder: String, type: Int) {
+  /** The function for adding [NumberInputInteractionView]. */
+  fun addNumberInputContentCard(placeholder: String) {
     var contentComponent = NumberInputInteractionView(
       fragment.context!!,
       placeholder,
@@ -66,8 +66,8 @@ class StateFragmentPresenter @Inject constructor(
 
   }
 
-  /** The function for adding [FractionInputInteractionView] */
-  fun addFractionInputContentCard(placeholder: String, type: Int) {
+  /** The function for adding [FractionInputInteractionView]. */
+  fun addFractionInputContentCard(placeholder: String) {
     var contentComponent = FractionInputInteractionView(
       fragment.context!!,
       placeholder,

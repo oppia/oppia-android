@@ -27,7 +27,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
-  // The function to test text,number,and fraction input interaction views
+  // The function to test text,number,and fraction inputs in interaction views.
   @Test
   fun addTextInputContentCard() {
     ActivityScenario.launch(HomeActivity::class.java).use {
