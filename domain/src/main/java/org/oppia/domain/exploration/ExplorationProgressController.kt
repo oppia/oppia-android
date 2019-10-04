@@ -48,7 +48,10 @@ class ExplorationProgressController @Inject constructor(
   // TODO(#182): Add support for refresher explorations.
   // TODO(#90): Update the internal locking of this controller to use something like an in-memory blocking cache to
   // simplify state locking. However, doing this correctly requires a fix in MediatorLiveData to avoid unexpected
-  // cancellations in chained cross-scope coroutines.
+  // cancellations in chained cross-scope coroutines. Note that this is also essential to ensure post-load operations
+  // can be queued before load completes to avoid cases in tests where the exploration load operation needs to be fully
+  // finished before performing a post-load operation. The current state of the controller is leaking this
+  // implementation detail to tests.
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(CURRENT_STATE_DATA_PROVIDER_ID, this::retrieveCurrentStateAsync)
@@ -90,7 +93,7 @@ class ExplorationProgressController @Inject constructor(
    * know whether a current answer is pending. That [LiveData] will have its state changed to pending during answer
    * submission and until answer resolution.
    *
-   * Submitting an answer may result in the learner staying in the current state, moving to a new state in the
+   * Submitting an answer should result in the learner staying in the current state, moving to a new state in the
    * exploration, being shown a concept card, or being navigated to another exploration altogether. Note that once a
    * correct answer is processed, the current state reported to [getCurrentState] will change from a pending state to a
    * completed state since the learner completed that card. The learner can then proceed from the current completed
@@ -110,11 +113,11 @@ class ExplorationProgressController @Inject constructor(
         check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
-          "Cannot submit an answer while another answer is pending."
-        }
         check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
           "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
         }
 
         // Notify observers that the submitted answer is currently pending.
@@ -421,13 +424,13 @@ class ExplorationProgressController @Inject constructor(
 
     /** Navigates to the previous State in the deck, or fails if this isn't possible. */
     internal fun navigateToPreviousState() {
-      check(!isCurrentStateInitial()) { "Cannot navigate to previous State; at initial state." }
+      check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }
       stateIndex--
     }
 
     /** Navigates to the next State in the deck, or fails if this isn't possible. */
     internal fun navigateToNextState() {
-      check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next State; at most recent State." }
+      check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
       stateIndex++
     }
 
@@ -441,9 +444,12 @@ class ExplorationProgressController @Inject constructor(
 
     /** Returns the current [EphemeralState] the learner is viewing. */
     internal fun getCurrentEphemeralState(): EphemeralState {
+      // Note that the terminal state is evaluated first since it can only return true if the current state is the top
+      // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
+      // the second case assumes the top of the deck must be pending.
       return when {
-        stateIndex == previousStates.size -> getCurrentPendingState()
         isCurrentStateTerminal() -> getCurrentTerminalState()
+        stateIndex == previousStates.size -> getCurrentPendingState()
         else -> getPreviousState()
       }
     }
@@ -452,12 +458,13 @@ class ExplorationProgressController @Inject constructor(
      * Pushes a new State onto the deck. This cannot happen if the learner isn't at the most recent State, if the
      * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
      * operation implies that the most recently submitted answer was the correct answer to the previously current State.
+     * This does NOT change the user's position in the deck, it just marks the current state as completed.
      */
     internal fun pushState(state: State) {
-      check(isCurrentStateTopOfDeck()) { "Cannot push a new State unless the learner is at the most recent State." }
-      check(!isCurrentStateTerminal()) { "Cannot push another State after reaching a terminal State." }
-      check(currentDialogInteractions.size != 0) { "Cannot push another State without an answer." }
-      check(state.name != pendingTopState.name) { "Cannot route from the same State to itself as a new card." }
+      check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
+      check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
+      check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
+      check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
       previousStates += EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())
@@ -465,7 +472,6 @@ class ExplorationProgressController @Inject constructor(
         .build()
       currentDialogInteractions.clear()
       pendingTopState = state
-      stateIndex++
     }
 
     /**
@@ -474,8 +480,8 @@ class ExplorationProgressController @Inject constructor(
      * terminal interaction).
      */
     internal fun submitAnswer(userAnswer: InteractionObject, feedback: SubtitledHtml) {
-      check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent State." }
-      check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal State." }
+      check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
+      check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
       currentDialogInteractions += AnswerAndResponse.newBuilder()
         .setUserAnswer(userAnswer)
         .setFeedback(feedback)

@@ -24,37 +24,55 @@ class AnswerClassificationController @Inject constructor() {
    */
   internal fun classify(currentState: State, answer: InteractionObject): Outcome {
     return when (currentState.name) {
-      "Welcome!" -> simulateMultipleChoiceForWelcomeState(currentState, answer)
-      "What language" -> simulateTextInputForWhatLanguageState(currentState, answer)
-      "Numeric input" -> simulateNumericInputForNumericInputState(currentState, answer)
+      // Exp 5
+      "Welcome!" -> simulateMultipleChoiceForWelcomeStateExp5(currentState, answer)
+      "What language" -> simulateTextInputForWhatLanguageStateExp5(currentState, answer)
+      "Numeric input" -> simulateNumericInputForNumericInputStateExp5(currentState, answer)
       "Things you can do" -> currentState.interaction.defaultOutcome
+      // Exp 6
+      "First State" -> currentState.interaction.defaultOutcome
+      "So what can I tell you" -> simulateMultipleChoiceForWelcomeStateExp6(currentState, answer)
+      "Example1" -> currentState.interaction.defaultOutcome // TextInput with ignored answer.
+      "Example3" -> currentState.interaction.defaultOutcome
+      "End Card" -> currentState.interaction.defaultOutcome
       else -> throw Exception("Cannot submit answer to unexpected state: ${currentState.name}.")
     }
   }
 
-  private fun simulateMultipleChoiceForWelcomeState(currentState: State, answer: InteractionObject): Outcome {
+  private fun simulateMultipleChoiceForWelcomeStateExp5(currentState: State, answer: InteractionObject): Outcome {
     return when {
       answer.objectTypeCase != InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT ->
-        throw Exception("Expected int answer, not $answer.")
-      answer.nonNegativeInt == 0 -> currentState.interaction.answerGroupsList.first().outcome
+        throw Exception("Expected non-negative int answer, not $answer.")
+      answer.nonNegativeInt == 0 -> currentState.interaction.answerGroupsList[0].outcome
+      answer.nonNegativeInt == 2 -> currentState.interaction.answerGroupsList[1].outcome
       else -> currentState.interaction.defaultOutcome
     }
   }
 
-  private fun simulateTextInputForWhatLanguageState(currentState: State, answer: InteractionObject): Outcome {
+  private fun simulateTextInputForWhatLanguageStateExp5(currentState: State, answer: InteractionObject): Outcome {
     return when {
       answer.objectTypeCase != InteractionObject.ObjectTypeCase.NORMALIZED_STRING ->
         throw Exception("Expected string answer, not $answer.")
-      answer.normalizedString.toLowerCase() == "finnish" -> currentState.interaction.getAnswerGroups(7).outcome
+      answer.normalizedString.toLowerCase() == "finnish" -> currentState.interaction.getAnswerGroups(6).outcome
       else -> currentState.interaction.defaultOutcome
     }
   }
 
-  private fun simulateNumericInputForNumericInputState(currentState: State, answer: InteractionObject): Outcome {
+  private fun simulateNumericInputForNumericInputStateExp5(currentState: State, answer: InteractionObject): Outcome {
+    return when {
+      answer.objectTypeCase != InteractionObject.ObjectTypeCase.SIGNED_INT ->
+        throw Exception("Expected signed int answer, not $answer.")
+      answer.signedInt == 121 -> currentState.interaction.answerGroupsList.first().outcome
+      else -> currentState.interaction.defaultOutcome
+    }
+  }
+
+  private fun simulateMultipleChoiceForWelcomeStateExp6(currentState: State, answer: InteractionObject): Outcome {
     return when {
       answer.objectTypeCase != InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT ->
-        throw Exception("Expected int answer, not $answer.")
-      answer.nonNegativeInt == 121 -> currentState.interaction.answerGroupsList.first().outcome
+        throw Exception("Expected non-negative int answer, not $answer.")
+      answer.nonNegativeInt == 3 -> currentState.interaction.answerGroupsList[1].outcome
+      answer.nonNegativeInt == 0 -> currentState.interaction.answerGroupsList[2].outcome
       else -> currentState.interaction.defaultOutcome
     }
   }
