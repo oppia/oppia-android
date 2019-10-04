@@ -18,6 +18,7 @@ class TopicFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
     }
+
     return binding.root
   }
 }

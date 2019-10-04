@@ -27,7 +27,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
     savedInstanceState: Bundle?
   ): View? {
     var views: View? = null
-    // Inflate the layout for this fragment
     views = inflater.inflate(R.layout.fragment_drawer, container, false)
     val navView: NavigationView = views!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
@@ -70,12 +69,12 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
 
       override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
         super.onDrawerSlide(drawerView, slideOffset)
-        /** When ever drawer is visible reduse the opacity of toolbar. */
+        /** Whenever drawer is visible reduse the opacity of toolbar. */
         toolbar.alpha = 1 - slideOffset / 2
       }
     }
     drawerLayout!!.setDrawerListener(mDrawerToggle)
-    /** Synchronize the state of the drawer indicator/affordance with the linked DrawerLayout.*/
+    /** Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout].*/
     drawerLayout!!.post { mDrawerToggle!!.syncState() }
 
   }

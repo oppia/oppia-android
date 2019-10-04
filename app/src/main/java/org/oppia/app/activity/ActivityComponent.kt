@@ -25,4 +25,5 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(helpActivity: HelpActivity)
+  fun inject(topicActivity: TopicActivity)
 }
