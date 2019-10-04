@@ -60,15 +60,19 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
       binding.sbAudioProgress.isEnabled = it != AudioViewModel.AudioPlayStatus.LOADING
-
-      //don't think this will work
-      if (it == AudioViewModel.AudioPlayStatus.PREPARED) {
-        savedInstanceState?.let { bundle ->
-          if (bundle.getBoolean(KEY_IS_PLAYING)) viewModel.handlePlayPause(it)
-          viewModel.handleSeekTo(bundle.getInt(KEY_CURRENT_POSITION))
-        }
-      }
     })
+
+    savedInstanceState?.let { bundle ->
+      viewModel.playStatusLiveData.observe(fragment, object: Observer<AudioViewModel.AudioPlayStatus>{
+        override fun onChanged(status: AudioViewModel.AudioPlayStatus?) {
+          if (status == AudioViewModel.AudioPlayStatus.PREPARED) {
+            if (bundle.getBoolean(KEY_IS_PLAYING)) viewModel.handlePlayPause(status)
+            viewModel.handleSeekTo(bundle.getInt(KEY_CURRENT_POSITION))
+            viewModel.playStatusLiveData.removeObserver(this)
+          }
+        }
+      })
+    }
 
     binding.let {
       it.viewModel = viewModel
