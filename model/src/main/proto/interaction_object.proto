@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+// Structure for any interaction object
+message InteractionObject {
+  oneof object_type {
+    string normalized_string = 1;
+    int32 signed_int = 2;
+    uint32 non_negative_int = 3;
+    double real = 4;
+    bool bool_value = 5;
+    NumberWithUnits number_with_units = 6;
+    // repeated fields cannot be within a oneof so lists are
+    // wrapped into a new message.
+    StringList set_of_html_string = 7;
+  }
+}
+
+// Structure containing a string list.
+message StringList {
+  repeated string string_list = 1;
+}
+
+// Structure for a number with units object.
+message NumberWithUnits {
+  oneof number_type {
+    float real = 1;
+    Fraction fraction = 2;
+  }
+  repeated Unit units = 3;
+}
+
+// Structure for a unit
+message Unit {
+  string unit = 1;
+  int32 exponent = 2;
+}
+
+// Structure for a fraction object.
+message Fraction {
+  bool is_negative = 1;
+  bool whole_number = 2;
+  int32 numerator = 3;
+  int32 denominator = 4;
+}
+
