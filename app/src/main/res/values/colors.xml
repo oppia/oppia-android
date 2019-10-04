@@ -9,8 +9,12 @@
   <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>
+  <color name="oppiaPrimaryText">#333333</color>
+  <color name="oppiaSecondaryText">#666666</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- SUBMIT BUTTON INACTIVE -->
+  <color name="submitButtonInactive">#56000000</color>
 </resources>
