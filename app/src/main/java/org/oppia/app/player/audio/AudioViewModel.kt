@@ -66,8 +66,6 @@ class AudioViewModel @Inject constructor(
 
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
-  fun getCurrentPosition(): Int = audioPlayerController.getCurrentPosition()
-  fun getIsPlaying(): Boolean = audioPlayerController.getIsPlaying()
 
   private val playProgressResultLiveData: LiveData<AsyncResult<PlayProgress>> by lazy {
     audioPlayerController.initializeMediaPlayer()

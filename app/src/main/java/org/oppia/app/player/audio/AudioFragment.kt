@@ -52,13 +52,24 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     audioFragmentPresenter.handleSaveInstanceState(outState)
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    audioFragmentPresenter.handleOnDestroy()
-  }
-
   fun languageSelectionClicked() {
     audioFragmentPresenter.showLanguageDialogFragment()
+  }
+
+  override fun onStop() {
+    super.onStop()
+    activity?.let {
+      if (!it.isChangingConfigurations)
+        audioFragmentPresenter.handleOnStop()
+    }
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    activity?.let {
+      if (!it.isChangingConfigurations)
+        audioFragmentPresenter.handleOnDestroy()
+    }
   }
 
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking

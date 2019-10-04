@@ -23,8 +23,6 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
-private const val KEY_IS_PLAYING = "IS_PLAYING"
-private const val KEY_CURRENT_POSITION = "CURRENT_POSITION"
 private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
 
 /** The presenter for [AudioFragment]. */
@@ -37,6 +35,7 @@ class AudioFragmentPresenter @Inject constructor(
 ) {
   var userIsSeeking = false
   var userProgress = 0
+  private var prepared = false
 
   private var selectedLanguageCode: String = ""
   private var languages = listOf<String>()
@@ -59,27 +58,15 @@ class AudioFragmentPresenter @Inject constructor(
     val viewModel = getAudioViewModel()
     viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
-      binding.sbAudioProgress.isEnabled = it != AudioViewModel.AudioPlayStatus.LOADING
+      prepared = it != AudioViewModel.AudioPlayStatus.LOADING
+      binding.sbAudioProgress.isEnabled = prepared
     })
-
-    savedInstanceState?.let { bundle ->
-      viewModel.playStatusLiveData.observe(fragment, object: Observer<AudioViewModel.AudioPlayStatus>{
-        override fun onChanged(status: AudioViewModel.AudioPlayStatus?) {
-          if (status == AudioViewModel.AudioPlayStatus.PREPARED) {
-            if (bundle.getBoolean(KEY_IS_PLAYING)) viewModel.handlePlayPause(status)
-            viewModel.handleSeekTo(bundle.getInt(KEY_CURRENT_POSITION))
-            viewModel.playStatusLiveData.removeObserver(this)
-          }
-        }
-      })
-    }
 
     binding.let {
       it.viewModel = viewModel
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
-
     getVoiceoverMappings(explorationId, stateId, savedInstanceState?.getString(KEY_SELECTED_LANGUAGE))
     return binding.root
   }
@@ -101,13 +88,14 @@ class AudioFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
+  fun handleSaveInstanceState(outstate: Bundle) =
+    outstate.putString(KEY_SELECTED_LANGUAGE, selectedLanguageCode)
+
   fun handleOnDestroy() = getAudioViewModel().handleRelease()
 
-  fun handleSaveInstanceState(outState: Bundle) {
-    val viewModel = getAudioViewModel()
-    outState.putBoolean(KEY_IS_PLAYING, viewModel.getIsPlaying())
-    outState.putInt(KEY_CURRENT_POSITION, viewModel.getCurrentPosition())
-    outState.putString(KEY_SELECTED_LANGUAGE, selectedLanguageCode)
+  fun handleOnStop() {
+    if (prepared)
+      getAudioViewModel().handlePlayPause(AudioViewModel.AudioPlayStatus.PLAYING)
   }
 
   private fun getVoiceoverMappings(explorationId: String, stateId: String, selectedLang: String?) {
@@ -123,9 +111,11 @@ class AudioFragmentPresenter @Inject constructor(
 
       languages = dummyVoiceoverMapping.keys.toList()
       selectedLanguageCode = selectedLang ?: languages.first()
-      val viewModel = getAudioViewModel()
-      viewModel.setVoiceoverMappings(dummyVoiceoverMapping)
-      viewModel.setAudioLanguageCode(selectedLanguageCode)
+      if (selectedLang == null) {
+        val viewModel = getAudioViewModel()
+        viewModel.setVoiceoverMappings(dummyVoiceoverMapping)
+        viewModel.setAudioLanguageCode(selectedLanguageCode)
+      }
     })
   }
 
@@ -156,3 +146,4 @@ class AudioFragmentPresenter @Inject constructor(
     return explorationResult.getOrDefault(Exploration.getDefaultInstance())
   }
 }
+

@@ -124,7 +124,7 @@ class AudioPlayerController @Inject constructor(
   }
 
   private fun prepareDataSource(url: String) {
-    mediaPlayer.setDataSource(context, Uri.parse(url))
+    mediaPlayer.setDataSource(url)
     mediaPlayer.prepareAsync()
     playProgress?.value = AsyncResult.pending()
   }
@@ -219,10 +219,6 @@ class AudioPlayerController @Inject constructor(
       mediaPlayer.seekTo(position)
     }
   }
-
-  fun getPlayProgressLiveData(): LiveData<AsyncResult<PlayProgress>>? = playProgress
-  fun getCurrentPosition(): Int = mediaPlayer.currentPosition
-  fun getIsPlaying(): Boolean = mediaPlayer.isPlaying
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
