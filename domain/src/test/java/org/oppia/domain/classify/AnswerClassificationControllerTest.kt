@@ -27,8 +27,8 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class AnswerClassificationControllerTest {
   private val TEST_STRING_ANSWER = InteractionObject.newBuilder().setNormalizedString("Some value").build()
-  private val TEST_INT_2_ANSWER = InteractionObject.newBuilder().setNonNegativeInt(2).build()
-  private val TEST_INT_121_ANSWER = InteractionObject.newBuilder().setNonNegativeInt(121).build()
+  private val TEST_INT_2_ANSWER = InteractionObject.newBuilder().setNonNegativeInt(1).build()
+  private val TEST_SIGNED_INT_121_ANSWER = InteractionObject.newBuilder().setSignedInt(121).build()
 
   private val OUTCOME_0 = Outcome.newBuilder()
     .setDestStateName("First state")
@@ -86,7 +86,7 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(OUTCOME_2)
       .build()
     val state1 = createTestState("Numeric input", interaction1)
-    answerClassificationController.classify(state1, TEST_INT_121_ANSWER)
+    answerClassificationController.classify(state1, TEST_SIGNED_INT_121_ANSWER)
 
     val state2 = createTestState("Things you can do", interaction2)
     val outcome = answerClassificationController.classify(state2, TEST_STRING_ANSWER)
