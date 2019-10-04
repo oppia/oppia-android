@@ -1,5 +1,6 @@
 package org.oppia.app.player.audio
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,12 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
+private const val KEY_IS_PLAYING = "IS_PLAYING"
+private const val KEY_CURRENT_POSITION = "CURRENT_POSITION"
+private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
@@ -33,10 +38,10 @@ class AudioFragmentPresenter @Inject constructor(
   var userIsSeeking = false
   var userProgress = 0
 
-  private var selectedLanguageCode: String = "en"
-  private lateinit var languages: Set<String>
+  private var selectedLanguageCode: String = ""
+  private var languages = listOf<String>()
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, explorationId: String, stateId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -50,18 +55,28 @@ class AudioFragmentPresenter @Inject constructor(
         userIsSeeking = false
       }
     })
-    val voiceoverMap = getVoiceoverMappings(explorationId, stateId)
-    languages = voiceoverMap.keys
+
     val viewModel = getAudioViewModel()
-    viewModel.setVoiceoverMappings(voiceoverMap)
+    viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
       binding.sbAudioProgress.isEnabled = it != AudioViewModel.AudioPlayStatus.LOADING
+
+      //don't think this will work
+      if (it == AudioViewModel.AudioPlayStatus.PREPARED) {
+        savedInstanceState?.let { bundle ->
+          if (bundle.getBoolean(KEY_IS_PLAYING)) viewModel.handlePlayPause(it)
+          viewModel.handleSeekTo(bundle.getInt(KEY_CURRENT_POSITION))
+        }
+      }
     })
+
     binding.let {
       it.viewModel = viewModel
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
+
+    getVoiceoverMappings(explorationId, stateId, savedInstanceState?.getString(KEY_SELECTED_LANGUAGE))
     return binding.root
   }
 
@@ -76,28 +91,51 @@ class AudioFragmentPresenter @Inject constructor(
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      languages.toList() as ArrayList<String>,
+      languages as ArrayList<String>,
       selectedLanguageCode
     )
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
-  private fun getVoiceoverMappings(explorationId: String, stateId: String): Map<String, Voiceover> {
-    val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
-    val explorationLiveData = processExplorationLiveData(explorationResultLiveData)
-    val exploration = checkNotNull(explorationLiveData.value)
-    val state = exploration.statesMap.getOrDefault(stateId, State.getDefaultInstance())
-    val contentId = state.content.contentId
-    return state.recordedVoiceoversMap.getOrDefault(contentId, VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+  fun handleOnDestroy() = getAudioViewModel().handleRelease()
+
+  fun handleSaveInstanceState(outState: Bundle) {
+    val viewModel = getAudioViewModel()
+    outState.putBoolean(KEY_IS_PLAYING, viewModel.getIsPlaying())
+    outState.putInt(KEY_CURRENT_POSITION, viewModel.getCurrentPosition())
+    outState.putString(KEY_SELECTED_LANGUAGE, selectedLanguageCode)
   }
 
-//  private fun getDummyAudioLanguageList(): List<String> {
-//    val languageCodeList = ArrayList<String>()
-//    languageCodeList.add("en")
-//    languageCodeList.add("hi")
-//    languageCodeList.add("hi-en")
-//    return languageCodeList
-//  }
+  private fun getVoiceoverMappings(explorationId: String, stateId: String, selectedLang: String?) {
+    val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
+    val explorationLiveData = processExplorationLiveData(explorationResultLiveData)
+    explorationLiveData.observe(fragment, Observer {
+      val state = it.statesMap[stateId] ?: State.getDefaultInstance()
+      val contentId = state.content.contentId
+      val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+
+      //Json parsing not working for some reason, manually adding voiceovers
+      val dummyVoiceoverMapping = getDummyVoiceoverMapping()
+
+      languages = dummyVoiceoverMapping.keys.toList()
+      selectedLanguageCode = selectedLang ?: languages.first()
+      val viewModel = getAudioViewModel()
+      viewModel.setVoiceoverMappings(dummyVoiceoverMapping)
+      viewModel.setAudioLanguageCode(selectedLanguageCode)
+    })
+  }
+
+  private fun getDummyVoiceoverMapping(): Map<String, Voiceover> {
+    val dummyVoiceoverMapping = mutableMapOf<String, Voiceover>()
+    val voiceover = Voiceover.newBuilder()
+    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    dummyVoiceoverMapping["en"] = voiceover.build()
+    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    dummyVoiceoverMapping["es"] = voiceover.build()
+    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+    dummyVoiceoverMapping["cn"] = voiceover.build()
+    return dummyVoiceoverMapping
+  }
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)

@@ -18,7 +18,8 @@ class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController
 ) : ViewModel() {
 
-  private lateinit var voiceoverMap: Map<String, Voiceover>
+  private lateinit var explorationId: String
+  private var voiceoverMap = mapOf<String, Voiceover>()
 
   enum class AudioPlayStatus {
     LOADING,
@@ -28,7 +29,7 @@ class AudioViewModel @Inject constructor(
     COMPLETED
   }
 
-  val currentLanguageCode = ObservableField<String>("en")
+  val currentLanguageCode = ObservableField<String>()
 
   val durationLiveData: LiveData<Int> by lazy {
     processDurationLiveData()
@@ -42,7 +43,10 @@ class AudioViewModel @Inject constructor(
 
   fun setVoiceoverMappings(map : Map<String, Voiceover>) {
     voiceoverMap = map
-    currentLanguageCode.set(voiceoverMap.keys.first()) //TODO which should be default value
+  }
+
+  fun setExplorationId(id: String) {
+    explorationId = id
   }
 
   fun setAudioLanguageCode(languageCode: String) {
@@ -61,10 +65,12 @@ class AudioViewModel @Inject constructor(
   }
 
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
+  fun handleRelease() = audioPlayerController.releaseMediaPlayer()
+  fun getCurrentPosition(): Int = audioPlayerController.getCurrentPosition()
+  fun getIsPlaying(): Boolean = audioPlayerController.getIsPlaying()
 
   private val playProgressResultLiveData: LiveData<AsyncResult<PlayProgress>> by lazy {
-    val uri = voiceOverToUri(voiceoverMap[(currentLanguageCode.get())])
-    audioPlayerController.initializeMediaPlayer(uri)
+    audioPlayerController.initializeMediaPlayer()
   }
 
   private fun processDurationLiveData(): LiveData<Int> {
@@ -101,6 +107,7 @@ class AudioViewModel @Inject constructor(
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
     //TODO https://github.com/oppia/oppia/blob/4e9825fec36a2cc950e4809f363a6e45643aaf35/core/templates/dev/head/services/AssetsBackendApiService.ts
-    return "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    val prefix = "https://storage.googleapis.com/???/exploration/$explorationId/assets/audio/"
+    return voiceover?.fileName ?: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
   }
 }

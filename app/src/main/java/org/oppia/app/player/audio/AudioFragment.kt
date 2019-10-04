@@ -44,7 +44,17 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to AudioFragment" }
     val explorationId = checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to AudioFragment" }
     val stateId = checkNotNull(args.getString(KEY_STATE_ID)) { "Expected stateId to be passed to AudioFragment" }
-    return audioFragmentPresenter.handleCreateView(inflater, container, explorationId, stateId)
+    return audioFragmentPresenter.handleCreateView(inflater, container, savedInstanceState, explorationId, stateId)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    audioFragmentPresenter.handleSaveInstanceState(outState)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    audioFragmentPresenter.handleOnDestroy()
   }
 
   fun languageSelectionClicked() {

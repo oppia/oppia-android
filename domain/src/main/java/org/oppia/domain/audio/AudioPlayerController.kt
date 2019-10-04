@@ -17,6 +17,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
 /**
@@ -25,9 +26,9 @@ import kotlin.concurrent.withLock
  * [releaseMediaPlayer] should be used to clean up the controller's resources.
  * See documentation for both to understand how to use them correctly.
  */
+@Singleton
 class AudioPlayerController @Inject constructor(
   private val context: Context,
-  private val fragment: Fragment,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
@@ -65,7 +66,7 @@ class AudioPlayerController @Inject constructor(
    */
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
 
-  private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
+  private var mediaPlayer: MediaPlayer = MediaPlayer()
   private var playProgress: AudioMutableLiveData? = null
   private var nextUpdateJob: Job? = null
   private val audioLock = ReentrantLock()
@@ -73,6 +74,7 @@ class AudioPlayerController @Inject constructor(
   private var prepared = false
   private var observerActive = false
   private var mediaPlayerActive = false
+  private var isReleased = false
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -80,13 +82,15 @@ class AudioPlayerController @Inject constructor(
    * Loads audio source from a URL and return LiveData to send updates.
    * This controller cannot already be initialized.
    */
-  fun initializeMediaPlayer(url: String): LiveData<AsyncResult<PlayProgress>> {
+  fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
       check(!mediaPlayerActive) { "Media player has already been initialized" }
-      mediaPlayer.reset()
       mediaPlayerActive = true
+      if (isReleased) {
+        mediaPlayer = MediaPlayer()
+        isReleased = false
+      }
       setMediaPlayerListeners()
-      prepareDataSource(url)
     }
     val progressLiveData = AudioMutableLiveData()
     playProgress = progressLiveData
@@ -110,7 +114,7 @@ class AudioPlayerController @Inject constructor(
     mediaPlayer.setOnCompletionListener {
       stopUpdatingSeekBar()
       playProgress?.value =
-        AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, mediaPlayer.duration))
+        AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, it.duration))
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
@@ -197,10 +201,10 @@ class AudioPlayerController @Inject constructor(
     audioLock.withLock {
       check(mediaPlayerActive) { "Media player has not been previously initialized" }
       mediaPlayerActive = false
+      isReleased = true
       prepared = false
       mediaPlayer.release()
       stopUpdatingSeekBar()
-      playProgress?.removeObservers(fragment)
       playProgress = null
     }
   }
@@ -217,6 +221,8 @@ class AudioPlayerController @Inject constructor(
   }
 
   fun getPlayProgressLiveData(): LiveData<AsyncResult<PlayProgress>>? = playProgress
+  fun getCurrentPosition(): Int = mediaPlayer.currentPosition
+  fun getIsPlaying(): Boolean = mediaPlayer.isPlaying
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getTestMediaPlayer(): MediaPlayer = mediaPlayer
