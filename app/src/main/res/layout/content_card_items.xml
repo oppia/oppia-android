@@ -5,6 +5,7 @@
       type="String"/>
   </data>
   <RelativeLayout
+    android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"

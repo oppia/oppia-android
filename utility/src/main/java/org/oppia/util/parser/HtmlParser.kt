@@ -1,4 +1,4 @@
-package org.oppia.util.data;
+package org.oppia.util.parser;
 
 import android.content.Context
 import android.text.Html
@@ -22,7 +22,9 @@ class HtmlParser(
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_TAG, HTML_TAG, false);
-      htmlContent = htmlContent.replace(CUSTOM_ATTRIBUTE, HTML_ATTRIBUTE, false);
+      htmlContent = htmlContent.replace(
+        CUSTOM_ATTRIBUTE,
+        HTML_ATTRIBUTE, false);
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
     var imageGetter = UrlImageParser(tvContents, context, entity_type, entity_id)
