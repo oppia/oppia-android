@@ -1,6 +1,7 @@
 package org.oppia.app.topic.train
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +23,10 @@ class TopicTrainFragment : InjectableFragment() {
     return topicTrainFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  fun submitButtonClicked(){
-    // List of selected skills when submit button is clicked.
+  fun submitButtonClicked() {
     val skillList = topicTrainFragmentPresenter.getSelectedSkillList()
+    val questionPlayerIntent = Intent()
+    questionPlayerIntent.putStringArrayListExtra("SKILL_LIST", skillList)
+    startActivity(questionPlayerIntent)
   }
 }

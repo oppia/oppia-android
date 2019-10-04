@@ -15,7 +15,7 @@ import javax.inject.Inject
 class TopicTrainFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
-) : SkillInterface {
+) : SkillSelector {
   private val selectedSkillList = ArrayList<String>()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
