@@ -5,7 +5,7 @@
   <data>
     <variable
       name="skill"
-      type="java.lang.String"/>
+      type="org.oppia.app.model.SkillSummaryOrBuilder"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -17,7 +17,7 @@
       android:layout_margin="4dp"
       android:drawablePadding="4dp"
       android:gravity="center_vertical"
-      android:text="@{skill}"
+      android:text="@{skill.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"

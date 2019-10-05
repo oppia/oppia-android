@@ -1,6 +1,7 @@
 package org.oppia.app.topic.questionplayer
 
 import android.os.Bundle
+import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -20,6 +21,6 @@ class QuestionPlayerActivity : InjectableAppCompatActivity() {
 
   private fun getSkillList(): ArrayList<String> {
     val topicTrainIntent = intent
-    return topicTrainIntent.getStringArrayListExtra("SKILL_LIST")
+    return topicTrainIntent.getStringArrayListExtra("SKILL_ID_LIST")
   }
 }
