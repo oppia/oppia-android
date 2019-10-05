@@ -10,10 +10,11 @@ import kotlinx.android.synthetic.main.topic_train_skill_view.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicTrainSkillViewBinding
 
-/** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. **/
+// TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter.
+/** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. */
 class SkillSelectionAdapter(
   private val skillList: List<String>,
-  private val skillInterface: SkillInterface
+  private val skillSelector: SkillSelector
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -23,7 +24,7 @@ class SkillSelectionAdapter(
         inflater,
         R.layout.topic_train_skill_view,
         parent,
-        false
+        /* attachToParent= */false
       )
     return SkillViewHolder(binding)
   }
@@ -42,9 +43,9 @@ class SkillSelectionAdapter(
       binding.root.skill_check_box.setOnCheckedChangeListener { buttonView, isChecked ->
         val skill = skillList[position]
         if (isChecked) {
-          skillInterface.skillSelected(skill)
+          skillSelector.skillSelected(skill)
         } else {
-          skillInterface.skillUnselected(skill)
+          skillSelector.skillUnselected(skill)
         }
       }
     }
