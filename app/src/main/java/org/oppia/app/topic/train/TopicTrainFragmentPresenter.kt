@@ -31,10 +31,15 @@ class TopicTrainFragmentPresenter @Inject constructor(
 ) : SkillSelector {
   private val selectedSkillList = ArrayList<SkillSummary>()
 
+  private lateinit var skillSelectionAdapter: SkillSelectionAdapter
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    skillSelectionAdapter = SkillSelectionAdapter(this)
     binding.skillRecyclerView.apply {
       layoutManager = LinearLayoutManager(context)
+      adapter = skillSelectionAdapter
     }
     binding.let {
       it.viewModel = getTopicTrainViewModel()
@@ -51,8 +56,9 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private fun getSkillList(binding: TopicTrainFragmentBinding) {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
-      val skillAdapter = SkillSelectionAdapter(result.skillList, this)
-      binding.skillRecyclerView.adapter = skillAdapter
+      skillSelectionAdapter.setSkillList(result.skillList)
+      //val skillSelectionAdapter = SkillSelectionAdapter(result.skillList, this)
+      //binding.skillRecyclerView.adapter = skillSelectionAdapter
     })
   }
 

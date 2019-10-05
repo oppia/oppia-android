@@ -5,7 +5,7 @@
   <data>
     <variable
       name="skill"
-      type="org.oppia.app.model.SkillSummaryOrBuilder"/>
+      type="org.oppia.app.model.SkillSummary"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
