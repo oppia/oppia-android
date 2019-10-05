@@ -100,35 +100,18 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getVoiceoverMappings(explorationId: String, stateId: String, selectedLang: String?) {
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
-    val explorationLiveData = processExplorationLiveData(explorationResultLiveData)
-    explorationLiveData.observe(fragment, Observer {
+    processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
       val state = it.statesMap[stateId] ?: State.getDefaultInstance()
       val contentId = state.content.contentId
       val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
-
-      //Json parsing not working for some reason, manually adding voiceovers
-      val dummyVoiceoverMapping = getDummyVoiceoverMapping()
-
-      languages = dummyVoiceoverMapping.keys.toList()
+      languages = voiceoverMapping.keys.toList()
       selectedLanguageCode = selectedLang ?: languages.first()
       if (selectedLang == null) {
         val viewModel = getAudioViewModel()
-        viewModel.setVoiceoverMappings(dummyVoiceoverMapping)
+        viewModel.setVoiceoverMappings(voiceoverMapping)
         viewModel.setAudioLanguageCode(selectedLanguageCode)
       }
     })
-  }
-
-  private fun getDummyVoiceoverMapping(): Map<String, Voiceover> {
-    val dummyVoiceoverMapping = mutableMapOf<String, Voiceover>()
-    val voiceover = Voiceover.newBuilder()
-    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-    dummyVoiceoverMapping["en"] = voiceover.build()
-    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-    dummyVoiceoverMapping["es"] = voiceover.build()
-    voiceover.fileName = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-    dummyVoiceoverMapping["cn"] = voiceover.build()
-    return dummyVoiceoverMapping
   }
 
   private fun getAudioViewModel(): AudioViewModel {

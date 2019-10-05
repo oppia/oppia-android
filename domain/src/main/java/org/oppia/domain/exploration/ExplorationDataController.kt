@@ -1,8 +1,10 @@
 package org.oppia.domain.exploration
 
 import android.content.Context
+import android.speech.tts.Voice
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.protobuf.ByteString
 import org.json.JSONArray
 import org.json.JSONException
 import javax.inject.Inject
@@ -19,6 +21,8 @@ import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
 import org.oppia.util.data.DataProviders
 
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
@@ -117,13 +121,43 @@ class ExplorationDataController @Inject constructor(
 
   // Creates a single state object from JSON
   private fun createStateFromJson(stateJson: JSONObject?): State {
-    return State.newBuilder()
+    val state = State.newBuilder()
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
           stateJson?.getJSONObject("content")?.getString("html")
+        ).setContentId(
+          stateJson?.getJSONObject("content")?.optString("content_id")
         )
       )
       .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
+
+    if (stateJson!= null && stateJson.has("recorded_voiceovers")) {
+      addVoiceOverMappings(stateJson.getJSONObject("recorded_voiceovers"), state)
+    }
+
+    return state.build()
+  }
+
+  // Adds VoiceoverMappings to state builder
+  private fun addVoiceOverMappings(recordedVoiceovers: JSONObject, stateBuilder: State.Builder) {
+    val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
+    voiceoverMappingJson?.let {
+      for (key in it.keys()) {
+        val voiceoverMapping = VoiceoverMapping.newBuilder()
+        val voiceoverJson = it.getJSONObject(key)
+        for (lang in voiceoverJson.keys()) {
+          voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
+        }
+        stateBuilder.putRecordedVoiceovers(key, voiceoverMapping.build())
+      }
+    }
+  }
+
+  // Creates a Voiceover from Json
+  private fun createVoiceOverFromJson(voiceoverJson: JSONObject): Voiceover {
+    return Voiceover.newBuilder()
+      .setNeedsUpdate(voiceoverJson.getBoolean("needs_update"))
+      .setFileName(voiceoverJson.getString("filename"))
       .build()
   }
 

@@ -17,17 +17,17 @@
             "en": {
               "file_size_bytes": 0,
               "needs_update": false,
-              "filename": "temp.mp3"
+              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
             },
             "es": {
               "file_size_bytes": 0,
               "needs_update": false,
-              "filename": "temp1.mp3"
+              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
             },
             "cn": {
               "file_size_bytes": 0,
               "needs_update": false,
-              "filename": "temp2.mp3"
+              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
             }
           }
         }
