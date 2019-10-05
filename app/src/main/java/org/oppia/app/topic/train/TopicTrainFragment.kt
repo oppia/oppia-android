@@ -30,6 +30,6 @@ class TopicTrainFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(KEY_SKILL_ID_LIST, topicTrainFragmentPresenter.selectedSkillList)
+    outState.putStringArrayList(KEY_SKILL_ID_LIST, topicTrainFragmentPresenter.selectedSkillIdList)
   }
 }

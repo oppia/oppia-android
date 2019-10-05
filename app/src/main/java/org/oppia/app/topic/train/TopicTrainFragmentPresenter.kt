@@ -28,12 +28,12 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
 ) : SkillSelector {
-  lateinit var selectedSkillList: ArrayList<String>
+  lateinit var selectedSkillIdList: ArrayList<String>
 
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList : ArrayList<String>): View? {
-    selectedSkillList = skillList
+    selectedSkillIdList = skillList
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     skillSelectionAdapter = SkillSelectionAdapter(this)
@@ -59,10 +59,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private fun getSkillList() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       skillSelectionAdapter.setSkillList(result.skillList)
-      if(selectedSkillList.isNotEmpty()) {
-        skillSelectionAdapter.setSelectedSkillList(selectedSkillList)
-        getTopicTrainViewModel().selectedSkillList(selectedSkillList)
-      }
+      skillSelectionAdapter.setSelectedSkillList(selectedSkillIdList)
     })
   }
 
@@ -81,19 +78,19 @@ class TopicTrainFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, TopicTrainViewModel::class.java)
   }
 
-  override fun skillSelected(skill: String) {
-    selectedSkillList.add(skill)
-    getTopicTrainViewModel().selectedSkillList(selectedSkillList)
+  override fun skillSelected(skillId: String) {
+    selectedSkillIdList.add(skillId)
+    getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
   }
 
-  override fun skillUnselected(skill: String) {
-    selectedSkillList.remove(skill)
-    getTopicTrainViewModel().selectedSkillList(selectedSkillList)
+  override fun skillUnselected(skillId: String) {
+    selectedSkillIdList.remove(skillId)
+    getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
   }
 
   fun startQuestionPlayer() {
     val questionPlayerIntent = Intent(fragment.context, QuestionPlayerActivity::class.java)
-    questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", selectedSkillList)
+    questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", selectedSkillIdList)
     fragment.context!!.startActivity(questionPlayerIntent)
   }
 }
