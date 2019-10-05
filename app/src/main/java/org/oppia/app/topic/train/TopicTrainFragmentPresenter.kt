@@ -11,7 +11,6 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -29,11 +28,12 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
 ) : SkillSelector {
-  private val selectedSkillList = ArrayList<SkillSummary>()
+  lateinit var selectedSkillList: ArrayList<String>
 
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList : ArrayList<String>): View? {
+    selectedSkillList = skillList
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     skillSelectionAdapter = SkillSelectionAdapter(this)
@@ -45,24 +45,26 @@ class TopicTrainFragmentPresenter @Inject constructor(
       it.viewModel = getTopicTrainViewModel()
       it.lifecycleOwner = fragment
     }
-    getSkillList(binding)
+    getSkillList()
     return binding.root
   }
+
+  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   // TODO(#135): Get this topic-id or get skillList from from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(TEST_TOPIC_ID_0)
   }
 
-  private fun getSkillList(binding: TopicTrainFragmentBinding) {
+  private fun getSkillList() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       skillSelectionAdapter.setSkillList(result.skillList)
-      //val skillSelectionAdapter = SkillSelectionAdapter(result.skillList, this)
-      //binding.skillRecyclerView.adapter = skillSelectionAdapter
+      if(selectedSkillList.isNotEmpty()) {
+        skillSelectionAdapter.setSelectedSkillList(selectedSkillList)
+        getTopicTrainViewModel().selectedSkillList(selectedSkillList)
+      }
     })
   }
-
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private fun getTopicList(): LiveData<Topic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
@@ -70,7 +72,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicTrainFragmentPresenter", "Failed to retrieve ephemeral state ${topic.getErrorOrNull()}")
+      logger.e("TopicTrainFragmentPresenter", "Failed to retrieve topic ${topic.getErrorOrNull()}")
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -79,24 +81,19 @@ class TopicTrainFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, TopicTrainViewModel::class.java)
   }
 
-  override fun skillSelected(skill: SkillSummary) {
+  override fun skillSelected(skill: String) {
     selectedSkillList.add(skill)
     getTopicTrainViewModel().selectedSkillList(selectedSkillList)
   }
 
-  override fun skillUnselected(skill: SkillSummary) {
+  override fun skillUnselected(skill: String) {
     selectedSkillList.remove(skill)
     getTopicTrainViewModel().selectedSkillList(selectedSkillList)
   }
 
   fun startQuestionPlayer() {
-    val skillList = selectedSkillList
-    val skillIdList = ArrayList<String>()
-    for (skill in skillList) {
-      skillIdList.add(skill.skillId)
-    }
     val questionPlayerIntent = Intent(fragment.context, QuestionPlayerActivity::class.java)
-    questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", skillIdList)
+    questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", selectedSkillList)
     fragment.context!!.startActivity(questionPlayerIntent)
   }
 }

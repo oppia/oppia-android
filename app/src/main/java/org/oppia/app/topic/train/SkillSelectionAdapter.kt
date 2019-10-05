@@ -16,18 +16,19 @@ class SkillSelectionAdapter(private val skillSelector: SkillSelector) :
   RecyclerView.Adapter<SkillSelectionAdapter.SkillViewHolder>() {
 
   private var skillList: List<SkillSummary> = ArrayList()
+  private var selectedSkillIdList: List<String> = ArrayList()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkillViewHolder {
     val skillListItemBinding = DataBindingUtil.inflate<TopicTrainSkillViewBinding>(
       LayoutInflater.from(parent.context),
-      R.layout.topic_train_skill_view, parent, false
+      R.layout.topic_train_skill_view, parent,
+      /* attachToRoot= */false
     )
     return SkillViewHolder(skillListItemBinding)
   }
 
   override fun onBindViewHolder(skillViewHolder: SkillViewHolder, i: Int) {
-    val skill = skillList[i]
-    skillViewHolder.bind(skill, i)
+    skillViewHolder.bind(skillList[i], i)
   }
 
   override fun getItemCount(): Int {
@@ -39,15 +40,19 @@ class SkillSelectionAdapter(private val skillSelector: SkillSelector) :
     notifyDataSetChanged()
   }
 
+  fun setSelectedSkillList(skillIdList: ArrayList<String>) {
+    selectedSkillIdList = skillIdList
+  }
+
   inner class SkillViewHolder(val binding: TopicTrainSkillViewBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: SkillSummary, position: Int) {
-      binding.setVariable(BR.skill, rawString)
+    internal fun bind(skill: SkillSummary, position: Int) {
+      binding.setVariable(BR.skill, skill)
+      binding.root.skill_check_box.isChecked = selectedSkillIdList.contains(skill.skillId)
       binding.root.skill_check_box.setOnCheckedChangeListener { buttonView, isChecked ->
-        val skill = skillList[position]
         if (isChecked) {
-          skillSelector.skillSelected(skill)
+          skillSelector.skillSelected(skill.skillId)
         } else {
-          skillSelector.skillUnselected(skill)
+          skillSelector.skillUnselected(skill.skillId)
         }
       }
     }
