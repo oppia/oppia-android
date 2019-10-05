@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.topic_train_skill_view.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicTrainSkillViewBinding
+import org.oppia.app.model.SkillSummary
 
 // TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. */
 class SkillSelectionAdapter(
-  private val skillList: List<String>,
+  private val skillList: List<SkillSummary>,
   private val skillSelector: SkillSelector
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -38,7 +39,7 @@ class SkillSelectionAdapter(
   }
 
   private inner class SkillViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: String?, position: Int) {
+    internal fun bind(rawString: SkillSummary, position: Int) {
       binding.setVariable(BR.skill, rawString)
       binding.root.skill_check_box.setOnCheckedChangeListener { buttonView, isChecked ->
         val skill = skillList[position]

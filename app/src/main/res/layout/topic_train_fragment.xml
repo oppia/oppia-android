@@ -5,11 +5,11 @@
   <data>
     <import type="android.view.View"/>
     <variable
-      name="topicTrainFragment"
-      type="org.oppia.app.topic.train.TopicTrainFragment"/>
-    <variable
       name="viewModel"
       type="org.oppia.app.topic.train.TopicTrainViewModel"/>
+    <variable
+      name="presenter"
+      type="org.oppia.app.topic.train.TopicTrainFragmentPresenter"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -56,7 +56,7 @@
           android:layout_marginTop="24dp"
           android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
           android:clickable="@{viewModel.isSubmitButtonActive()}"
-          android:onClick="@{(v) -> topicTrainFragment.submitButtonClicked()}"
+          android:onClick="@{presenter::startButtonClicked}"
           android:text="@string/topic_train_start"
           android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"/>
       </LinearLayout>

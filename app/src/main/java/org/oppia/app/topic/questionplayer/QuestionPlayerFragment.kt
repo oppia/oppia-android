@@ -1,20 +1,17 @@
-package org.oppia.app.topic.train
+package org.oppia.app.topic.questionplayer
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
-/** Fragment that contains skills for topic train mode. */
-class TopicTrainFragment : InjectableFragment() {
+/** Fragment that contains all questions in Question Player. */
+class QuestionPlayerFragment: InjectableFragment(){
   @Inject
-  lateinit var topicTrainFragmentPresenter: TopicTrainFragmentPresenter
+  lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -22,6 +19,6 @@ class TopicTrainFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicTrainFragmentPresenter.handleCreateView(inflater, container)
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container)
   }
 }
