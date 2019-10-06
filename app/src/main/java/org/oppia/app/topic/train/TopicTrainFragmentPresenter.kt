@@ -1,20 +1,18 @@
 package org.oppia.app.topic.train
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
@@ -25,13 +23,15 @@ import javax.inject.Inject
 /** The presenter for [TopicTrainFragment]. */
 @FragmentScope
 class TopicTrainFragmentPresenter @Inject constructor(
-  @ApplicationContext private val context: Context,
+  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController,
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
 ) : SkillSelector {
   lateinit var selectedSkillIdList: ArrayList<String>
+
+  private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
 
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
@@ -95,10 +95,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
     getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
   }
 
-  fun startQuestionPlayer() {
-    val questionPlayerIntent = Intent(context, QuestionPlayerActivity::class.java)
-    questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", selectedSkillIdList)
-    questionPlayerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    context.startActivity(questionPlayerIntent)
+  fun onStartButtonClicked() {
+    routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
   }
 }

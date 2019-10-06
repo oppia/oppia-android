@@ -1,9 +1,13 @@
 package org.oppia.app.topic.questionplayer
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
+
+const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY = "QuestionPlayerActivity.skill_id_list"
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity : InjectableAppCompatActivity() {
@@ -14,13 +18,15 @@ class QuestionPlayerActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     questionPlayerActivityPresenter.handleOnCreate()
-
-    // TODO(#159): Use this skillList from TopicTrainFragment to fetch questions and start train mode.
-    val skillList: ArrayList<String> = getSkillList()
   }
 
-  private fun getSkillList(): ArrayList<String> {
-    val topicTrainIntent = intent
-    return topicTrainIntent.getStringArrayListExtra("SKILL_ID_LIST")
+  companion object {
+    // TODO(#159): Use this skillList from TopicTrainFragment to fetch questions and start train mode.
+    /** Returns a new [Intent] to route to [TopicActivity] for a specified skill ID list. */
+    fun createQuestionPlayerActivityIntent(context: Context, skillIdList: ArrayList<String>): Intent {
+      val intent = Intent(context, QuestionPlayerActivity::class.java)
+      intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
+      return intent
+    }
   }
 }

@@ -21,6 +21,6 @@ class TopicTrainViewModel @Inject constructor(
   }
 
   fun startButtonClicked(v: View) {
-    topicTrainFragmentPresenter.startQuestionPlayer()
+    topicTrainFragmentPresenter.onStartButtonClicked()
   }
 }

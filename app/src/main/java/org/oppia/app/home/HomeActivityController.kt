@@ -10,15 +10,9 @@ import javax.inject.Inject
 class HomeActivityController @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
-    if (getHomeFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.home_fragment_placeholder,
-        HomeFragment()
-      ).commitNow()
-    }
-  }
-
-  private fun getHomeFragment(): HomeFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.home_fragment_placeholder) as HomeFragment?
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.home_fragment_placeholder,
+      HomeFragment()
+    ).commitNow()
   }
 }
