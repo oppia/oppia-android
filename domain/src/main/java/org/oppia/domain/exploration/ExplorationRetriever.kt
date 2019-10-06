@@ -177,19 +177,15 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
       return ruleSpecList
     }
     for (i in 0 until ruleSpecJson.length()) {
-      ruleSpecList.add(
-        RuleSpec.newBuilder()
-          .setRuleType(
-            ruleSpecJson.getJSONObject(i).getString("rule_type")
-          )
-          .setInput(
-            createInputFromJson(
-              ruleSpecJson.getJSONObject(i).getJSONObject("inputs"),
-              /* keyName= */"x", interactionId
-            )
-          )
-          .build()
-      )
+      val ruleSpecBuilder = RuleSpec.newBuilder()
+      ruleSpecBuilder.ruleType = ruleSpecJson.getJSONObject(i).getString("rule_type")
+      val inputsJson = ruleSpecJson.getJSONObject(i).getJSONObject("inputs")
+      val inputKeysIterator = inputsJson.keys()
+      while (inputKeysIterator.hasNext()) {
+        val inputName = inputKeysIterator.next()
+        ruleSpecBuilder.putInput(inputName, createInputFromJson(inputsJson, inputName, interactionId))
+      }
+      ruleSpecList.add(ruleSpecBuilder.build())
     }
     return ruleSpecList
   }

@@ -1,5 +1,6 @@
 package org.oppia.domain.classify
 
+import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
@@ -14,29 +15,84 @@ import javax.inject.Inject
  *
  * This controller should only be interacted with via background threads.
  */
-class AnswerClassificationController @Inject constructor() {
+class AnswerClassificationController @Inject constructor(
+  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
+) {
   // TODO(#114): Add support for classifying answers based on an actual exploration. Also, classify() should take an
   // Interaction, not a State.
+
+  // - TextInput
+  //   + TextInputEqualsRuleClassifierProvider
+  //   + TextInputCaseSensitiveEqualsRuleClassifierProvider
+  //   + TextInputStartsWithRuleClassifierProvider
+  //   + TextInputContainsRuleClassifierProvider
+  //   + TextInputFuzzyEqualsRuleClassifierProvider
+  // - NumericInput
+  //   - NumericInputEqualsRuleClassifierProvider
+  //   - NumericInputIsLessThanRuleClassifierProvider
+  //   - NumericInputIsGreaterThanRuleClassifierProvider
+  //   - NumericInputIsLessThanOrEqualToRuleClassifierProvider
+  //   - NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
+  //   - NumericInputIsInclusivelyBetweenRuleClassifierProvider
+  //   - NumericInputIsWithinToleranceRuleClassifierProvider
+  // - NumberWithUnits
+  //   - NumberWithUnitsIsEqualToRuleClassifierProvider
+  //   - NumberWithUnitsIsEquivalentToRuleClassifierProvider
+  // - MultipleChoiceInput
+  //   - MultipleChoiceInputEqualsRuleClassifierProvider
+  // - ItemSelectionInput
+  //   - ItemSelectionInputEqualsRuleClassifierProvider
+  //   - ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider
+  //   - ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
+  //   - ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
+  // - FractionInput
+  //   - FractionInputIsExactlyEqualToRuleClassifierProvider
+  //   - FractionInputIsEquivalentToRuleClassifierProvider
+  //   - FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
+  //   - FractionInputIsLessThanRuleClassifierProvider
+  //   - FractionInputIsGreaterThanRuleClassifierProvider
+  //   - FractionInputHasNumeratorEqualToRuleClassifierProvider
+  //   - FractionInputHasDenominatorEqualToRuleClassifierProvider
+  //   - FractionInputHasIntegerPartEqualToRuleClassifierProvider
+  //   - FractionInputHasNoFractionalPartRuleClassifierProvider
+  //   - FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
+  // - Continue
+  // - EndExploration
 
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
    * matches the learner's answer.
    */
   internal fun classify(currentState: State, answer: InteractionObject): Outcome {
-    return when (currentState.name) {
-      // Exp 5
-      "Welcome!" -> simulateMultipleChoiceForWelcomeStateExp5(currentState, answer)
-      "What language" -> simulateTextInputForWhatLanguageStateExp5(currentState, answer)
-      "Numeric input" -> simulateNumericInputForNumericInputStateExp5(currentState, answer)
-      "Things you can do" -> currentState.interaction.defaultOutcome
-      // Exp 6
-      "First State" -> currentState.interaction.defaultOutcome
-      "So what can I tell you" -> simulateMultipleChoiceForWelcomeStateExp6(currentState, answer)
-      "Example1" -> currentState.interaction.defaultOutcome // TextInput with ignored answer.
-      "Example3" -> currentState.interaction.defaultOutcome
-      "End Card" -> currentState.interaction.defaultOutcome
-      else -> throw Exception("Cannot submit answer to unexpected state: ${currentState.name}.")
+    val interaction = currentState.interaction
+    val interactionClassifier = checkNotNull(interactionClassifiers[interaction.id]) {
+      "Encountered unknown interaction type: ${interaction.id}, expected one of: ${interactionClassifiers.keys}"
     }
+    // TODO(#207): Add support for additional classification types.
+    return classifyAnswer(
+      answer, interaction.answerGroupsList, interaction.defaultOutcome, interactionClassifier, interaction.id)
+  }
+
+  // Based on the Oppia web version:
+  // https://github.com/oppia/oppia/blob/edb62f/core/templates/dev/head/pages/exploration-player-page/services/answer-classification.service.ts#L57.
+  private fun classifyAnswer(
+    answer: InteractionObject, answerGroups: List<AnswerGroup>, defaultOutcome: Outcome,
+    interactionClassifier: InteractionClassifier, interactionId: String
+  ): Outcome {
+    for (answerGroup in answerGroups) {
+      for (ruleSpec in answerGroup.ruleSpecsList) {
+        val ruleClassifier = checkNotNull(interactionClassifier.getRuleClassifier(ruleSpec.ruleType)) {
+          "Expected interaction $interactionId to have classifier for rule type: ${ruleSpec.ruleType}"
+        }
+        if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
+          // Explicit classification matched.
+          return answerGroup.outcome
+        }
+      }
+    }
+
+    // Default outcome classification.
+    return defaultOutcome
   }
 
   private fun simulateMultipleChoiceForWelcomeStateExp5(currentState: State, answer: InteractionObject): Outcome {

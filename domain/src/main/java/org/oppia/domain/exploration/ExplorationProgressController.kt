@@ -141,6 +141,10 @@ class ExplorationProgressController @Inject constructor(
       }
     } catch (e: Exception) {
       return MutableLiveData(AsyncResult.failed(e))
+    } finally {
+      // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always submitting
+      // answer' situation. This can specifically happen if answer classification throws an exception.
+      explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
     }
   }
 
