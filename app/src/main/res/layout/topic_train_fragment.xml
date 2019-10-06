@@ -56,7 +56,7 @@
           android:layout_marginTop="24dp"
           android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
           android:clickable="@{viewModel.isSubmitButtonActive()}"
-          android:onClick="@{presenter::startButtonClicked}"
+          android:onClick="@{viewModel::startButtonClicked}"
           android:text="@string/topic_train_start"
           android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"/>
       </LinearLayout>
