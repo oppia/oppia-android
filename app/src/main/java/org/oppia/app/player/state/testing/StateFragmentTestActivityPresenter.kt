@@ -13,9 +13,15 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.state_fragment_test_activity)
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.state_fragment_placeholder,
-      StateFragment()
-    ).commitNow()
+    if (getStateFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.state_fragment_placeholder,
+        StateFragment()
+      ).commitNow()
+    }
+  }
+
+  private fun getStateFragment(): StateFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
 }

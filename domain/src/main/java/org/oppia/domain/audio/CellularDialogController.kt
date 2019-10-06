@@ -17,8 +17,18 @@ class CellularDialogController @Inject constructor(
 ) {
   private val cellularDataStore = cacheStoreFactory.create("cellular_data_preference", CellularDataPreference.getDefaultInstance())
 
+  fun setNeverUseCellularDataPreference() {
+    setHideDialogPreference(true)
+    setUseCellularDataPreference(false)
+  }
+
+  fun setAlwaysUseCellularDataPreference() {
+    setHideDialogPreference(true)
+    setUseCellularDataPreference(true)
+  }
+
   /** Saves that the user's preference on whether to hide the dialog. */
-  fun setHideDialogPreference(hideDialog: Boolean) {
+  private fun setHideDialogPreference(hideDialog: Boolean) {
     cellularDataStore.storeDataAsync(updateInMemoryCache = true) {
       it.toBuilder().setHideDialog(hideDialog).build()
     }.invokeOnCompletion {
@@ -29,7 +39,7 @@ class CellularDialogController @Inject constructor(
   }
 
   /** Saves that the user's preference on whether to use cellular data. */
-  fun setUseCellularDataPreference(useData: Boolean) {
+  private fun setUseCellularDataPreference(useData: Boolean) {
     cellularDataStore.storeDataAsync(updateInMemoryCache = true) {
       it.toBuilder().setUseCellularData(useData).build()
     }.invokeOnCompletion {
