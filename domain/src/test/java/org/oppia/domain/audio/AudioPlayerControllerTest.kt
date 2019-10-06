@@ -144,6 +144,19 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testController_releasePlayer_initializePlayer_capturesPendingState() {
+    audioPlayerController.initializeMediaPlayer()
+
+    audioPlayerController.releaseMediaPlayer()
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    audioPlayerController.changeDataSource(TEST_URL)
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+  }
+
+
+  @Test
   fun tesObserver_preparePlayer_invokeCompletion_capturesCompletedState() {
     arrangeMediaPlayer()
 
@@ -377,8 +390,10 @@ class AudioPlayerControllerTest {
 
   private fun addMediaInfo() {
     val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
+    val dataSource2 = DataSource.toDataSource(context , Uri.parse(TEST_URL2))
     val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
+    ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
   }
 
   // TODO(#89): Move to a common test library.
