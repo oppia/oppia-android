@@ -2,7 +2,6 @@ package org.oppia.app.fragment
 
 import android.content.Context
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import org.oppia.app.activity.InjectableAppCompatActivity
 
 /**
