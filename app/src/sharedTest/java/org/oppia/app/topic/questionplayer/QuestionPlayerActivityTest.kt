@@ -1,4 +1,4 @@
-package org.oppia.app.topic
+package org.oppia.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
@@ -20,13 +20,13 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [TopicActivity]. */
+/** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
-class TopicActivityTest {
+class QuestionPlayerActivityTest {
 
   @Test
-  fun testTopicActivity_loadTopicFragment_hasDummyString() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+  fun testQuestionPlayerActivity_loadQuestionPlayerFragment_hasDummyString() {
+    ActivityScenario.launch(QuestionPlayerActivity::class.java).use {
       onView(withId(R.id.dummy_text_view)).check(matches(withText("This is dummy TextView for testing")))
     }
   }
