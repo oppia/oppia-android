@@ -117,20 +117,6 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns an in-memory [DataProvider] which wraps the specified [Deferred] and provides either its successful value
-   * or its resulting failure.
-   */
-  fun <T> createDeferredDataProviderAsync(id: Any, deferred: Deferred<T>): DataProvider<T> {
-    return createInMemoryDataProviderAsync(id) {
-      try {
-        AsyncResult.success(deferred.await())
-      } catch (e: Exception ) {
-        AsyncResult.failed<T>(e)
-      }
-    }
-  }
-
-  /**
    * Converts a [DataProvider] to [LiveData]. This will use a background executor to handle processing of the coroutine,
    * but [LiveData] guarantees that final delivery of the result will happen on the main thread.
    */

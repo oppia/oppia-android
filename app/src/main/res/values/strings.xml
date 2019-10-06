@@ -20,4 +20,7 @@
   <string name="state_end_exploration_button">RETURN TO TOPIC</string>
   <string name="state_learn_again_button">LEARN AGAIN</string>
   <string name="empty"></string>
+  <string name="topic_train_master_these_skills">Master These Skills</string>
+  <string name="topic_train_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_train_start">Start</string>
 </resources>
