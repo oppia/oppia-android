@@ -18,7 +18,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     /**
      * Creates a new instance of a AudioFragment
      * @param explorationId: Used for ExplorationDataController to get correct exploration
-     * @param contentId: Used to get correct VoiceoverMapping
+     * @param stateId: Used to get correct VoiceoverMapping
      * @return [AudioFragment]: Fragment
      */
     fun newInstance(explorationId: String, stateId: String): AudioFragment {
@@ -72,6 +72,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     }
   }
 
+  /** Getters used in data binding to know when user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
   fun getUserPosition() = audioFragmentPresenter.userProgress
 

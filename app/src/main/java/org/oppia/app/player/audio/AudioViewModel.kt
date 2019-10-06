@@ -21,6 +21,7 @@ class AudioViewModel @Inject constructor(
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
 
+  /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class AudioPlayStatus {
     LOADING,
     PREPARED,
@@ -49,11 +50,13 @@ class AudioViewModel @Inject constructor(
     explorationId = id
   }
 
+  /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))
   }
 
+  /** Plays or pauses AudioController depending on passed in state */
   fun handlePlayPause(type: AudioPlayStatus?) {
     when (type) {
       AudioPlayStatus.PREPARED -> audioPlayerController.play()
@@ -104,8 +107,12 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
-    //TODO https://github.com/oppia/oppia/blob/4e9825fec36a2cc950e4809f363a6e45643aaf35/core/templates/dev/head/services/AssetsBackendApiService.ts
-    val prefix = "https://storage.googleapis.com/???/exploration/$explorationId/assets/audio/"
-    return voiceover?.fileName ?: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    /**
+     * TODO Ask Sean how to get GCS_RESOURCE_BUCKET_NAME and if it is constant
+     * https://github.com/oppia/oppia/blob/4e9825fec36a2cc950e4809f363a6e45643aaf35/core/templates/dev/head/services/AssetsBackendApiService.ts
+     * What should default media source be if voice over is not present?
+     */
+    val prefix = "https://storage.googleapis.com/???/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
+    return voiceover?.fileName ?: ""
   }
 }

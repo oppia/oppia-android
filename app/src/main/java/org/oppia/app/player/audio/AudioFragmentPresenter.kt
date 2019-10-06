@@ -13,7 +13,6 @@ import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
-import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
@@ -24,6 +23,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
+private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
@@ -35,11 +35,12 @@ class AudioFragmentPresenter @Inject constructor(
 ) {
   var userIsSeeking = false
   var userProgress = 0
-  private var prepared = false
 
+  private var prepared = false
   private var selectedLanguageCode: String = ""
   private var languages = listOf<String>()
 
+  /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
@@ -67,15 +68,23 @@ class AudioFragmentPresenter @Inject constructor(
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
-    getVoiceoverMappings(explorationId, stateId, savedInstanceState?.getString(KEY_SELECTED_LANGUAGE))
+
+    if (savedInstanceState != null) {
+      selectedLanguageCode = savedInstanceState.getString(KEY_SELECTED_LANGUAGE) ?: ""
+      languages = savedInstanceState.getStringArrayList(KEY_LANGUAGE_LIST) ?: ArrayList()
+    } else {
+      getVoiceoverMappings(explorationId, stateId)
+    }
     return binding.root
   }
 
+  /** Sets selected language code in presenter and ViewModel */
   fun languageSelected(language: String) {
     selectedLanguageCode = language
     getAudioViewModel().setAudioLanguageCode(language)
   }
 
+  /** Shows language dialog fragment with language list from exploration */
   fun showLanguageDialogFragment() {
     val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
@@ -88,29 +97,33 @@ class AudioFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
-  fun handleSaveInstanceState(outstate: Bundle) =
+  /** Save selected language and language list to bundle */
+  fun handleSaveInstanceState(outstate: Bundle) {
     outstate.putString(KEY_SELECTED_LANGUAGE, selectedLanguageCode)
+    outstate.putStringArrayList(KEY_LANGUAGE_LIST, ArrayList(languages))
+  }
 
-  fun handleOnDestroy() = getAudioViewModel().handleRelease()
-
+  /** Pauses audio if in prepared state */
   fun handleOnStop() {
     if (prepared)
       getAudioViewModel().handlePlayPause(AudioViewModel.AudioPlayStatus.PLAYING)
   }
 
-  private fun getVoiceoverMappings(explorationId: String, stateId: String, selectedLang: String?) {
+  /** Releases audio player resources */
+  fun handleOnDestroy() = getAudioViewModel().handleRelease()
+
+  /** Sets languages in presenter and ViewModel, selected language code is defaulted to first */
+  private fun getVoiceoverMappings(explorationId: String, stateId: String) {
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
     processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
       val state = it.statesMap[stateId] ?: State.getDefaultInstance()
       val contentId = state.content.contentId
       val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
       languages = voiceoverMapping.keys.toList()
-      selectedLanguageCode = selectedLang ?: languages.first()
-      if (selectedLang == null) {
-        val viewModel = getAudioViewModel()
-        viewModel.setVoiceoverMappings(voiceoverMapping)
-        viewModel.setAudioLanguageCode(selectedLanguageCode)
-      }
+      selectedLanguageCode = languages.first()
+      val viewModel = getAudioViewModel()
+      viewModel.setVoiceoverMappings(voiceoverMapping)
+      viewModel.setAudioLanguageCode(selectedLanguageCode)
     })
   }
 
