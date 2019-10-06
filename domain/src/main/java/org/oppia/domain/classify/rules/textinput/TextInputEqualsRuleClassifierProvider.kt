@@ -7,11 +7,11 @@ import org.oppia.domain.classify.rules.SingleInputClassifier
 import org.oppia.domain.util.normalizeWhitespace
 import javax.inject.Inject
 
-/** Determines whether two strings are equal per the text input interaction. */
+/** Provider for a classifier that determines whether two strings are equal per the text input interaction. */
 internal class TextInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: SingleInputClassifier.Factory
-): RuleClassifierProvider,
-  SingleInputClassifier.SingleInputMatcher<String> {
+): RuleClassifierProvider, SingleInputClassifier.SingleInputMatcher<String> {
+
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.create(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
   }

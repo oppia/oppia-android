@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.threading.BackgroundDispatcher
@@ -1166,7 +1167,9 @@ class ExplorationProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TextInputRuleModule::class, InteractionsModule::class])
+  @Component(modules = [
+    TestModule::class, TextInputRuleModule::class, NumericInputRuleModule::class, InteractionsModule::class
+  ])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

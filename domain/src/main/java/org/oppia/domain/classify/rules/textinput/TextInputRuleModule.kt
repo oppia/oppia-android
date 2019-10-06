@@ -12,9 +12,41 @@ import org.oppia.domain.classify.rules.TextInputRules
 class TextInputRuleModule {
   @Provides
   @IntoMap
+  @StringKey("CaseSensitiveEquals")
+  @TextInputRules
+  internal fun provideTextInputCaseSensitiveEqualsRuleClassifier(
+    classifierProvider: TextInputCaseSensitiveEqualsRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("Contains")
+  @TextInputRules
+  internal fun provideTextInputContainsRuleClassifier(
+    classifierProvider: TextInputContainsRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
   @StringKey("Equals")
   @TextInputRules
   internal fun provideTextInputEqualsRuleClassifier(
     classifierProvider: TextInputEqualsRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("FuzzyEquals")
+  @TextInputRules
+  internal fun provideTextInputFuzzyEqualsRuleClassifier(
+    classifierProvider: TextInputFuzzyEqualsRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("StartsWith")
+  @TextInputRules
+  internal fun provideTextInputStartsWithRuleClassifier(
+    classifierProvider: TextInputStartsWithRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

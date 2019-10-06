@@ -28,13 +28,13 @@ class AnswerClassificationController @Inject constructor(
   //   + TextInputContainsRuleClassifierProvider
   //   + TextInputFuzzyEqualsRuleClassifierProvider
   // - NumericInput
-  //   - NumericInputEqualsRuleClassifierProvider
-  //   - NumericInputIsLessThanRuleClassifierProvider
-  //   - NumericInputIsGreaterThanRuleClassifierProvider
-  //   - NumericInputIsLessThanOrEqualToRuleClassifierProvider
-  //   - NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
-  //   - NumericInputIsInclusivelyBetweenRuleClassifierProvider
-  //   - NumericInputIsWithinToleranceRuleClassifierProvider
+  //   + NumericInputEqualsRuleClassifierProvider
+  //   + NumericInputIsLessThanRuleClassifierProvider
+  //   + NumericInputIsGreaterThanRuleClassifierProvider
+  //   + NumericInputIsLessThanOrEqualToRuleClassifierProvider
+  //   + NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
+  //   + NumericInputIsInclusivelyBetweenRuleClassifierProvider
+  //   + NumericInputIsWithinToleranceRuleClassifierProvider
   // - NumberWithUnits
   //   - NumberWithUnitsIsEqualToRuleClassifierProvider
   //   - NumberWithUnitsIsEquivalentToRuleClassifierProvider
