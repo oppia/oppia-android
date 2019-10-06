@@ -1,5 +1,6 @@
 package org.oppia.app.topic.train
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.application.ApplicationContext
 import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
@@ -23,6 +25,7 @@ import javax.inject.Inject
 /** The presenter for [TopicTrainFragment]. */
 @FragmentScope
 class TopicTrainFragmentPresenter @Inject constructor(
+  @ApplicationContext private val context: Context,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController,
@@ -79,18 +82,23 @@ class TopicTrainFragmentPresenter @Inject constructor(
   }
 
   override fun skillSelected(skillId: String) {
-    selectedSkillIdList.add(skillId)
+    if(!selectedSkillIdList.contains(skillId)) {
+      selectedSkillIdList.add(skillId)
+    }
     getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
   }
 
   override fun skillUnselected(skillId: String) {
-    selectedSkillIdList.remove(skillId)
+    if(selectedSkillIdList.contains(skillId)) {
+      selectedSkillIdList.remove(skillId)
+    }
     getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
   }
 
   fun startQuestionPlayer() {
-    val questionPlayerIntent = Intent(fragment.context, QuestionPlayerActivity::class.java)
+    val questionPlayerIntent = Intent(context, QuestionPlayerActivity::class.java)
     questionPlayerIntent.putStringArrayListExtra("SKILL_ID_LIST", selectedSkillIdList)
-    fragment.context!!.startActivity(questionPlayerIntent)
+    questionPlayerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    context.startActivity(questionPlayerIntent)
   }
 }

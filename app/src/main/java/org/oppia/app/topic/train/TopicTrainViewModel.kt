@@ -1,5 +1,6 @@
 package org.oppia.app.topic.train
 
+import android.util.Log
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ class TopicTrainViewModel @Inject constructor(
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
   fun selectedSkillList(selectedSkillList: ArrayList<String>) {
+    Log.d("TAG", "Size: "+selectedSkillList.size)
     isSubmitButtonActive.set(selectedSkillList.isNotEmpty())
   }
 
