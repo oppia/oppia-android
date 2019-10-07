@@ -36,18 +36,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-      <LinearLayout
-        android:id="@+id/llRoot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
 
+    </LinearLayout>
+    <LinearLayout
+      android:id="@+id/llRoot"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginEnd="24dp"
+      android:orientation="vertical"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
     <Button
       android:id="@+id/dummy_audio_button"
       android:layout_width="wrap_content"

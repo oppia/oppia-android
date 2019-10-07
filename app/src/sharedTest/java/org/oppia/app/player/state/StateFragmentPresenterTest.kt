@@ -27,31 +27,33 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
-  // The function to test text,number,and fraction inputs in interaction views.
+  // The function to test text inputs in interaction view.
   @Test
-  fun testTextInputContentCard_displaySoftInputAccordingToInputType_userTypeInput() {
+  fun testTextInputContentCard_displaySoftInputAccordingToInputType_userEnterText() {
     ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withHint("text")).check(matches(isDisplayed()))
       onView(withHint("text")).perform(click())
-      onView(withHint("text")).perform(clearText(), typeText("Some Text"));
-      pauseTestFor(500)
-      onView(withHint("number 1")).check(matches(isDisplayed()))
-      onView(withHint("number 1")).perform(click())
-      onView(withHint("number 1")).perform(clearText(), typeText("123"));
-      pauseTestFor(500)
-      onView(withHint("fraction 1/1")).check(matches(isDisplayed()))
-      onView(withHint("fraction 1/1")).perform(click())
-      onView(withHint("fraction 1/1")).perform(clearText(), typeText("1/3"));
-      pauseTestFor(500)
+      onView(withHint("text")).perform(clearText(), typeText("Some Text"))
     }
   }
 
-  fun pauseTestFor(milliseconds: Long) {
-    try {
-      Thread.sleep(milliseconds)
-    } catch (e: InterruptedException) {
-      e.printStackTrace();
+  // The function to test number inputs in interaction view.
+  @Test
+  fun testNumberInputContentCard_displaySoftInputAccordingToInputType_userEnterNumber() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withHint("number 1")).check(matches(isDisplayed()))
+      onView(withHint("number 1")).perform(click())
+      onView(withHint("number 1")).perform(clearText(), typeText("123"))
+    }
+  }
+
+  // The function to fraction inputs in interaction view.
+  @Test
+  fun testFractionInputContentCard_displaySoftInputAccordingToInputType_userEnterFraction() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withHint("fraction 1/1")).check(matches(isDisplayed()))
+      onView(withHint("fraction 1/1")).perform(click())
+      onView(withHint("fraction 1/1")).perform(clearText(), typeText("1/3"))
     }
   }
 
