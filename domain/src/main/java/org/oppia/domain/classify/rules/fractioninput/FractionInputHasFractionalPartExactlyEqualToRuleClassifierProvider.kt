@@ -21,6 +21,7 @@ internal class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvide
     return classifierFactory.create(InteractionObject.ObjectTypeCase.FRACTION, "f", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Fraction, input: Fraction): Boolean {
     return answer.numerator == input.numerator && answer.denominator == input.denominator
   }

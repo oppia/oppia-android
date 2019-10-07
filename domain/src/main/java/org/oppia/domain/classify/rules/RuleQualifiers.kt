@@ -2,6 +2,9 @@ package org.oppia.domain.classify.rules
 
 import javax.inject.Qualifier
 
+/** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the continue interaction. */
+@Qualifier annotation class ContinueRules
+
 /** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the fraction input interaction. */
 @Qualifier annotation class FractionInputRules
 

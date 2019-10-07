@@ -20,6 +20,7 @@ internal class NumericInputIsInclusivelyBetweenRuleClassifierProvider @Inject co
     return classifierFactory.create(InteractionObject.ObjectTypeCase.REAL, "a", "b", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Double, firstInput: Double, secondInput: Double): Boolean {
     return answer in firstInput..secondInput
   }

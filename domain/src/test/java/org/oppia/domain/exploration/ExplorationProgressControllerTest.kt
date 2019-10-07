@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -848,23 +849,21 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsDefaultOutcome() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(0.0))
+    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(122.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-    // Verify that the answer was wrong, and that there's no handler for it so the default outcome is returned.
-    // TODO(#114): Update this test to target a non-default outcome since the default outcome *should* be impossible to
-    //  encounter.
+    // Verify that the answer submission failed as expected.
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
-    assertThat(answerOutcome.feedback.html).contains("If you got here, something's gone a bit wrong")
+    assertThat(answerOutcome.feedback.html).contains("You are actually very close.")
   }
 
   @Test
@@ -1172,9 +1171,9 @@ class ExplorationProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    InteractionsModule::class
+    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+    TextInputRuleModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

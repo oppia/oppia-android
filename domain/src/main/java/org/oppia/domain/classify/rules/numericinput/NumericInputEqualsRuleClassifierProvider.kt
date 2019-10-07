@@ -20,6 +20,7 @@ internal class NumericInputEqualsRuleClassifierProvider @Inject constructor(
     return classifierFactory.create(InteractionObject.ObjectTypeCase.REAL, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Double, input: Double): Boolean {
     return input.approximatelyEquals(answer)
   }

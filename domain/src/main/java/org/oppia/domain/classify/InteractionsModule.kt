@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import org.oppia.domain.classify.rules.ContinueRules
 import org.oppia.domain.classify.rules.FractionInputRules
 import org.oppia.domain.classify.rules.ItemSelectionInputRules
 import org.oppia.domain.classify.rules.MultipleChoiceInputRules
@@ -16,55 +17,64 @@ import org.oppia.domain.classify.rules.TextInputRules
 class InteractionsModule {
   @Provides
   @IntoMap
+  @StringKey("Continue")
+  fun provideContinueInteractionClassifier(
+    @ContinueRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputInteractionClassifier(
-    @FractionInputRules numericInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @FractionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(numericInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 
   @Provides
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputInteractionClassifier(
-    @ItemSelectionInputRules numericInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @ItemSelectionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(numericInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputInteractionClassifier(
-    @MultipleChoiceInputRules numericInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @MultipleChoiceInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(numericInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 
   @Provides
   @IntoMap
   @StringKey("NumberWithUnits")
   fun provideNumberWithUnitsInteractionClassifier(
-    @NumberWithUnitsRules numericInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @NumberWithUnitsRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(numericInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 
   @Provides
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputInteractionClassifier(
-    @NumericInputRules numericInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @NumericInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(numericInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 
   @Provides
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputInteractionClassifier(
-    @TextInputRules textInputRules: Map<String, @JvmSuppressWildcards RuleClassifier>
+    @TextInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
-    return GenericInteractionClassifier(textInputRules)
+    return GenericInteractionClassifier(ruleClassifiers)
   }
 }

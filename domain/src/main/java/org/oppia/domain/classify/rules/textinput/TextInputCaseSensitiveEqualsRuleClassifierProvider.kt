@@ -21,6 +21,7 @@ internal class TextInputCaseSensitiveEqualsRuleClassifierProvider @Inject constr
     return classifierFactory.create(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
     return answer.normalizeWhitespace() == input.normalizeWhitespace()
   }

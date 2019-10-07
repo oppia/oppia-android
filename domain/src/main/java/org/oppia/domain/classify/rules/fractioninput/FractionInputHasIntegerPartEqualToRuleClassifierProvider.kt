@@ -22,6 +22,7 @@ internal class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject 
       InteractionObject.ObjectTypeCase.FRACTION, InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Fraction, input: Int): Boolean {
     return answer.wholeNumber == input
   }

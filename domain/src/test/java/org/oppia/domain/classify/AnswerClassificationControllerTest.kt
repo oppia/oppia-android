@@ -18,6 +18,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -64,7 +65,7 @@ class AnswerClassificationControllerTest {
       .build()
 
     val state = createTestState("Things you can do", interaction)
-    val outcome = answerClassificationController.classify(state, TEST_STRING_ANSWER)
+    val outcome = answerClassificationController.classify(state.interaction, TEST_STRING_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_0)
   }
@@ -77,7 +78,7 @@ class AnswerClassificationControllerTest {
       .build()
 
     val state = createTestState("Welcome!", interaction)
-    val outcome = answerClassificationController.classify(state, TEST_INT_2_ANSWER)
+    val outcome = answerClassificationController.classify(state.interaction, TEST_INT_2_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_1)
   }
@@ -92,10 +93,10 @@ class AnswerClassificationControllerTest {
       .setDefaultOutcome(OUTCOME_2)
       .build()
     val state1 = createTestState("Numeric input", interaction1)
-    answerClassificationController.classify(state1, TEST_SIGNED_INT_121_ANSWER)
+    answerClassificationController.classify(state1.interaction, TEST_SIGNED_INT_121_ANSWER)
 
     val state2 = createTestState("Things you can do", interaction2)
-    val outcome = answerClassificationController.classify(state2, TEST_STRING_ANSWER)
+    val outcome = answerClassificationController.classify(state2.interaction, TEST_STRING_ANSWER)
 
     assertThat(outcome).isEqualTo(OUTCOME_2)
   }
@@ -127,9 +128,9 @@ class AnswerClassificationControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    InteractionsModule::class
+    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+    TextInputRuleModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

@@ -21,6 +21,7 @@ internal class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructo
     return classifierFactory.create(InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: StringList, input: StringList): Boolean {
     return answer.htmlList.toSet() == input.htmlList.toSet()
   }

@@ -21,6 +21,7 @@ internal class FractionInputHasNoFractionalPartRuleClassifierProvider @Inject co
     return classifierFactory.create(InteractionObject.ObjectTypeCase.FRACTION, this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Fraction): Boolean {
     return answer.numerator == 0
   }

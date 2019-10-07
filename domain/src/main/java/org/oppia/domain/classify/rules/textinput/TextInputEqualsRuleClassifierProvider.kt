@@ -20,6 +20,7 @@ internal class TextInputEqualsRuleClassifierProvider @Inject constructor(
     return classifierFactory.create(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
     return answer.normalizeWhitespace().equals(input.normalizeWhitespace(), /* ignoreCase= */ true)
   }

@@ -23,6 +23,7 @@ internal class FractionInputIsEquivalentToRuleClassifierProvider @Inject constru
     return classifierFactory.create(InteractionObject.ObjectTypeCase.FRACTION, "f", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Fraction, input: Fraction): Boolean {
     return answer.toFloat().approximatelyEquals(input.toFloat())
   }

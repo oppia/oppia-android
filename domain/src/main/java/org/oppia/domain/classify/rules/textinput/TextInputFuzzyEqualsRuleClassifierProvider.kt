@@ -4,6 +4,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.classify.rules.SingleInputClassifier
+import org.oppia.domain.util.normalizeWhitespace
 import javax.inject.Inject
 
 /**
@@ -19,9 +20,10 @@ internal class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
     return classifierFactory.create(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
   }
 
+  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
-    val lowerInput = input.toLowerCase()
-    val lowerAnswer = answer.toLowerCase()
+    val lowerInput = input.normalizeWhitespace().toLowerCase()
+    val lowerAnswer = answer.normalizeWhitespace().toLowerCase()
     if (lowerInput == lowerAnswer) {
       return true
     }
@@ -36,18 +38,23 @@ internal class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
 
     for (i in 1..lowerInput.length) {
       for (j in 1..lowerAnswer.length) {
+        check(j == editDistance[i].size) {
+          "Something went wrong. Expected index $j to not yet be in array: ${editDistance[i]}"
+        }
         if (lowerInput[i - 1] == lowerAnswer[j - 1]) {
-          editDistance[i][j] = editDistance[i - 1][j - 1];
+          editDistance[i].add(editDistance[i - 1][j - 1])
         } else {
-          editDistance[i][j] = minOf(
-            editDistance[i - 1][j - 1],
-            editDistance[i][j - 1],
-            editDistance[i - 1][j]
-          ) + 1;
+          editDistance[i].add(
+            minOf(
+              editDistance[i - 1][j - 1],
+              editDistance[i][j - 1],
+              editDistance[i - 1][j]
+            ) + 1
+          )
         }
       }
     }
-    return editDistance[lowerInput.length][lowerAnswer.length] == 1;
+    return editDistance[lowerInput.length][lowerAnswer.length] == 1
   }
 }
 

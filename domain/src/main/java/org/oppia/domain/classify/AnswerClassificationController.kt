@@ -18,53 +18,11 @@ import javax.inject.Inject
 class AnswerClassificationController @Inject constructor(
   private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
-  // TODO(#114): Add support for classifying answers based on an actual exploration. Also, classify() should take an
-  // Interaction, not a State.
-
-  // + TextInput
-  //   + TextInputEqualsRuleClassifierProvider
-  //   + TextInputCaseSensitiveEqualsRuleClassifierProvider
-  //   + TextInputStartsWithRuleClassifierProvider
-  //   + TextInputContainsRuleClassifierProvider
-  //   + TextInputFuzzyEqualsRuleClassifierProvider
-  // + NumericInput
-  //   + NumericInputEqualsRuleClassifierProvider
-  //   + NumericInputIsLessThanRuleClassifierProvider
-  //   + NumericInputIsGreaterThanRuleClassifierProvider
-  //   + NumericInputIsLessThanOrEqualToRuleClassifierProvider
-  //   + NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
-  //   + NumericInputIsInclusivelyBetweenRuleClassifierProvider
-  //   + NumericInputIsWithinToleranceRuleClassifierProvider
-  // + NumberWithUnits
-  //   + NumberWithUnitsIsEqualToRuleClassifierProvider
-  //   + NumberWithUnitsIsEquivalentToRuleClassifierProvider
-  // + MultipleChoiceInput
-  //   + MultipleChoiceInputEqualsRuleClassifierProvider
-  // + ItemSelectionInput
-  //   + ItemSelectionInputEqualsRuleClassifierProvider
-  //   + ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider
-  //   + ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
-  //   + ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
-  // - FractionInput
-  //   + FractionInputIsExactlyEqualToRuleClassifierProvider
-  //   + FractionInputIsEquivalentToRuleClassifierProvider
-  //   + FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
-  //   + FractionInputIsLessThanRuleClassifierProvider
-  //   + FractionInputIsGreaterThanRuleClassifierProvider
-  //   + FractionInputHasNumeratorEqualToRuleClassifierProvider
-  //   + FractionInputHasDenominatorEqualToRuleClassifierProvider
-  //   + FractionInputHasIntegerPartEqualToRuleClassifierProvider
-  //   + FractionInputHasNoFractionalPartRuleClassifierProvider
-  //   + FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
-  // + Continue
-  // - EndExploration
-
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
    * matches the learner's answer.
    */
-  internal fun classify(currentState: State, answer: InteractionObject): Outcome {
-    val interaction = currentState.interaction
+  internal fun classify(interaction: Interaction, answer: InteractionObject): Outcome {
     val interactionClassifier = checkNotNull(interactionClassifiers[interaction.id]) {
       "Encountered unknown interaction type: ${interaction.id}, expected one of: ${interactionClassifiers.keys}"
     }
