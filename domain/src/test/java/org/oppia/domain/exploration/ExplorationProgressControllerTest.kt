@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -1171,7 +1172,7 @@ class ExplorationProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+    TestModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
     InteractionsModule::class
   ])

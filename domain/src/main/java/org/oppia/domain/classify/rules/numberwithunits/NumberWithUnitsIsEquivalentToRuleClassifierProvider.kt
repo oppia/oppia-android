@@ -1,13 +1,12 @@
 package org.oppia.domain.classify.rules.numberwithunits
 
-import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.classify.rules.SingleInputClassifier
 import org.oppia.domain.util.approximatelyEquals
-import java.lang.IllegalArgumentException
+import org.oppia.domain.util.toFloat
 import javax.inject.Inject
 
 /**
@@ -38,15 +37,8 @@ internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject const
   private fun extractRealValue(number: NumberWithUnits): Float {
     return when (number.numberTypeCase) {
       NumberWithUnits.NumberTypeCase.REAL -> number.real
-      NumberWithUnits.NumberTypeCase.FRACTION -> convertFractionToReal(number.fraction)
+      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat()
       else -> throw IllegalArgumentException("Invalid number type: ${number.numberTypeCase.name}")
     }
-  }
-
-  // See: https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L73
-  private fun convertFractionToReal(fraction: Fraction): Float {
-    val totalParts = ((fraction.wholeNumber * fraction.denominator) + fraction.numerator).toFloat()
-    val floatVal = totalParts.toFloat() / fraction.denominator.toFloat()
-    return if (fraction.isNegative) -floatVal else floatVal
   }
 }

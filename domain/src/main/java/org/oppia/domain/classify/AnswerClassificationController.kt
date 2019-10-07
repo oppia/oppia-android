@@ -46,17 +46,17 @@ class AnswerClassificationController @Inject constructor(
   //   + ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
   //   + ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
   // - FractionInput
-  //   - FractionInputIsExactlyEqualToRuleClassifierProvider
-  //   - FractionInputIsEquivalentToRuleClassifierProvider
-  //   - FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
-  //   - FractionInputIsLessThanRuleClassifierProvider
-  //   - FractionInputIsGreaterThanRuleClassifierProvider
-  //   - FractionInputHasNumeratorEqualToRuleClassifierProvider
-  //   - FractionInputHasDenominatorEqualToRuleClassifierProvider
-  //   - FractionInputHasIntegerPartEqualToRuleClassifierProvider
-  //   - FractionInputHasNoFractionalPartRuleClassifierProvider
-  //   - FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
-  // - Continue
+  //   + FractionInputIsExactlyEqualToRuleClassifierProvider
+  //   + FractionInputIsEquivalentToRuleClassifierProvider
+  //   + FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
+  //   + FractionInputIsLessThanRuleClassifierProvider
+  //   + FractionInputIsGreaterThanRuleClassifierProvider
+  //   + FractionInputHasNumeratorEqualToRuleClassifierProvider
+  //   + FractionInputHasDenominatorEqualToRuleClassifierProvider
+  //   + FractionInputHasIntegerPartEqualToRuleClassifierProvider
+  //   + FractionInputHasNoFractionalPartRuleClassifierProvider
+  //   + FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
+  // + Continue
   // - EndExploration
 
   /**

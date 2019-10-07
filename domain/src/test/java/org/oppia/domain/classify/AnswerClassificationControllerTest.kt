@@ -18,6 +18,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -126,7 +127,7 @@ class AnswerClassificationControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+    TestModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
     InteractionsModule::class
   ])

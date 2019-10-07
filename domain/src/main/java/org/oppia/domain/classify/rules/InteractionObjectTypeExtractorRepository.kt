@@ -51,7 +51,8 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
         ObjectTypeCase.REAL to createMapping(InteractionObject::getReal),
         ObjectTypeCase.BOOL_VALUE to createMapping(InteractionObject::getBoolValue),
         ObjectTypeCase.NUMBER_WITH_UNITS to createMapping(InteractionObject::getNumberWithUnits),
-        ObjectTypeCase.SET_OF_HTML_STRING to createMapping(InteractionObject::getSetOfHtmlString)
+        ObjectTypeCase.SET_OF_HTML_STRING to createMapping(InteractionObject::getSetOfHtmlString),
+        ObjectTypeCase.FRACTION to createMapping(InteractionObject::getFraction)
       )
     }
 

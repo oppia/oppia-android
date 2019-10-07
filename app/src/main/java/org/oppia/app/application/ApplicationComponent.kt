@@ -6,6 +6,7 @@ import dagger.Component
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -20,8 +21,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
-  ItemSelectionInputModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-  NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
+  FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
 ])
 interface ApplicationComponent {
   @Component.Builder
