@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
@@ -26,4 +27,5 @@ interface ActivityComponent {
   fun inject(homeActivity: HomeActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(topicActivity: TopicActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
 }
