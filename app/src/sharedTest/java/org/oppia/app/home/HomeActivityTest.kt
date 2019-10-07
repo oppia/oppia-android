@@ -83,7 +83,7 @@ class HomeActivityTest {
   fun testHomeActivity_dummyGoToExplorationButtonClicked_opensExplorationActivity() {
     launch(HomeActivity::class.java)
     onView(withId(R.id.go_to_exploration_button)).perform(click())
-    waitForTheView(withText("This is dummy TextView for testing"))
+    waitForTheView(withId(R.id.dummy_audio_button))
   }
 
   private fun simulateNewAppInstance() {

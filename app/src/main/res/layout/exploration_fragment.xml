@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-      android:id="@+id/dummy_text_view"
-      android:layout_width="wrap_content"
+    <fragment
+      android:id="@+id/audio_fragment"
+      class="org.oppia.app.player.state.StateFragment"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="This is dummy TextView for testing"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
