@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.data.backends.gae.model.GaeCustomizationArgs
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
@@ -24,6 +26,7 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
+  private val context: Context,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
@@ -33,6 +36,15 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
+
+  private var items: Array<String>? = null
+  var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
+  var interactionInstanceId: String? = null
+  private val entity_type: String = "exploration"
+  private val entity_id: String = "umPkwp0L1M0-"
+
+  var interactionAdapter: InteractionAdapter? = null
+
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -51,7 +63,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     getCurrentState()
-
+    showInputInteractions(binding)
     return binding.root
   }
 
@@ -111,5 +123,30 @@ class StateFragmentPresenter @Inject constructor(
       logger.e("StateFragmentPresenter", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
+  }
+
+  fun createDummyData() {
+    interactionInstanceId = "ItemSelectionInput"
+    var sampleData: GaeCustomizationArgs =
+      GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
+    gaeCustomizationArgsMap?.put("choices", sampleData)
+  }
+
+  private fun showInputInteractions(binding: StateFragmentBinding) {
+    val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
+    if (interactionInstanceId.equals("MultipleChoiceInput")) {
+      val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
+      items = gaeCustomArgsInString.split(",").toTypedArray()
+      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
+      binding.rvInteractions.adapter = interactionAdapter
+
+    } else if (interactionInstanceId.equals("ItemSelectionInput") || interactionInstanceId.equals("SingleChoiceInput")) {
+      val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
+      items = gaeCustomArgsInString.split(",").toTypedArray()
+      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
+      binding.rvInteractions.adapter = interactionAdapter
+    } else {
+      //Do no show any view
+    }
   }
 }
