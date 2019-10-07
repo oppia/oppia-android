@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
@@ -14,11 +16,10 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,7 +34,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -45,6 +45,7 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
+import org.oppia.app.R
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -76,6 +77,13 @@ class HomeActivityTest {
       waitForTheView(withText("Welcome back to Oppia!"))
       onView(withId(R.id.welcome_text_view)).check(matches(withText("Welcome back to Oppia!")))
     }
+  }
+
+  @Test
+  fun testHomeActivity_dummyGoToExplorationButtonClicked_opensExplorationActivity() {
+    launch(HomeActivity::class.java)
+    onView(withId(R.id.go_to_exploration_button)).perform(click())
+    waitForTheView(withText("This is dummy TextView for testing"))
   }
 
   private fun simulateNewAppInstance() {
@@ -192,6 +200,7 @@ class HomeActivityTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -207,7 +216,7 @@ class HomeActivityTest {
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
    */
-  private object MainThreadExecutor: AbstractExecutorService() {
+  private object MainThreadExecutor : AbstractExecutorService() {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
