@@ -43,7 +43,7 @@ message Unit {
 // Structure for a fraction object.
 message Fraction {
   bool is_negative = 1;
-  bool whole_number = 2;
+  int32 whole_number = 2;
   int32 numerator = 3;
   int32 denominator = 4;
 }

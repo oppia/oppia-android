@@ -36,7 +36,7 @@ class AnswerClassificationController @Inject constructor(
   //   + NumericInputIsInclusivelyBetweenRuleClassifierProvider
   //   + NumericInputIsWithinToleranceRuleClassifierProvider
   // - NumberWithUnits
-  //   - NumberWithUnitsIsEqualToRuleClassifierProvider
+  //   + NumberWithUnitsIsEqualToRuleClassifierProvider
   //   - NumberWithUnitsIsEquivalentToRuleClassifierProvider
   // - MultipleChoiceInput
   //   - MultipleChoiceInputEqualsRuleClassifierProvider
