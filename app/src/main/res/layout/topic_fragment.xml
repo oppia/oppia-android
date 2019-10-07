@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-      android:id="@+id/dummy_text_view"
-      android:layout_width="wrap_content"
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/appBarLayout"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="This is dummy TextView for testing"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintBottom_toTopOf="@+id/viewpager"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Topic"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+      <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabBackground="@color/colorPrimary"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@android:color/white"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+      android:id="@+id/viewpager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+    </androidx.viewpager.widget.ViewPager>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
