@@ -82,7 +82,6 @@ class NavigationDrawerFragment : Fragment(), NavigationView.OnNavigationItemSele
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
     if (menuItem.itemId > 0) {
       openActivityByMenuItemId(menuItem.itemId)
-
       return true
     } else
       return false
