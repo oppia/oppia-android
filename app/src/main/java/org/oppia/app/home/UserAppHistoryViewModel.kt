@@ -5,9 +5,9 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAppHistory
+import org.oppia.util.logging.Logger
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** [ViewModel] for user app usage history. */
