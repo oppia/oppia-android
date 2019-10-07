@@ -8,6 +8,8 @@
   <color name="colorConceptToolbarHeading">#A6503A</color>
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>
+  <color name="oppiaPrimaryText">#333333</color>
+  <color name="oppiaSecondaryText">#666666</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <!-- AUDIO COMPONENT -->
@@ -16,4 +18,6 @@
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="black">#000000</color>
   <color name="navBarHeaderBackground">#264653</color>
+  <!-- SUBMIT BUTTON INACTIVE -->
+  <color name="submitButtonInactive">#56000000</color>
 </resources>

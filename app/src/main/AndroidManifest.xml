@@ -25,6 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+    <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name=".splash.SplashActivity"
               android:theme="@style/SplashScreenTheme">
     </activity>
