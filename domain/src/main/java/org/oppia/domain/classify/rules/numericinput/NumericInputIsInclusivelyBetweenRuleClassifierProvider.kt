@@ -2,7 +2,7 @@ package org.oppia.domain.classify.rules.numericinput
 
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.DoubleInputClassifier
+import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
 
@@ -13,11 +13,11 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumericInput/directives/numeric-input-rules.service.ts#L36
  */
 internal class NumericInputIsInclusivelyBetweenRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: DoubleInputClassifier.Factory
-): RuleClassifierProvider, DoubleInputClassifier.DoubleInputMatcher<Double> {
+  private val classifierFactory: GenericRuleClassifier.Factory
+): RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.create(InteractionObject.ObjectTypeCase.REAL, "a", "b", this)
+    return classifierFactory.createDoubleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "a", "b", this)
   }
 
   // TODO(#210): Add tests for this classifier.

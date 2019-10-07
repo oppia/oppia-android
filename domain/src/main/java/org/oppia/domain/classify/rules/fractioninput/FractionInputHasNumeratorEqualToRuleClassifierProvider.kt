@@ -3,7 +3,7 @@ package org.oppia.domain.classify.rules.fractioninput
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.MultiTypeSingleInputClassifier
+import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
 
@@ -14,11 +14,11 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L52
  */
 internal class FractionInputHasNumeratorEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: MultiTypeSingleInputClassifier.Factory
-): RuleClassifierProvider, MultiTypeSingleInputClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
+  private val classifierFactory: GenericRuleClassifier.Factory
+): RuleClassifierProvider, GenericRuleClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.create(
+    return classifierFactory.createMultiTypeSingleInputClassifier(
       InteractionObject.ObjectTypeCase.FRACTION, InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT, "x", this)
   }
 

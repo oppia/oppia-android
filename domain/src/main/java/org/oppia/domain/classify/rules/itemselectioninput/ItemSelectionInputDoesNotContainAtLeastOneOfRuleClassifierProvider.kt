@@ -4,7 +4,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.classify.rules.SingleInputClassifier
+import org.oppia.domain.classify.rules.GenericRuleClassifier
 import javax.inject.Inject
 
 /**
@@ -14,11 +14,11 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L41
  */
 internal class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: SingleInputClassifier.Factory
-): RuleClassifierProvider, SingleInputClassifier.SingleInputMatcher<StringList> {
+  private val classifierFactory: GenericRuleClassifier.Factory
+): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.create(InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING, "x", this)
+    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING, "x", this)
   }
 
   // TODO(#210): Add tests for this classifier.

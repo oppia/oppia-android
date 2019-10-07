@@ -5,7 +5,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.classify.rules.SingleInputClassifier
+import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.util.approximatelyEquals
 import javax.inject.Inject
 
@@ -16,11 +16,11 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumberWithUnits/directives/number-with-units-rules.service.ts#L34
  */
 internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: SingleInputClassifier.Factory
-): RuleClassifierProvider, SingleInputClassifier.SingleInputMatcher<NumberWithUnits> {
+  private val classifierFactory: GenericRuleClassifier.Factory
+): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.create(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS, "f", this)
+    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS, "f", this)
   }
 
   // TODO(#209): Determine whether additional sanitation of the input is necessary here.

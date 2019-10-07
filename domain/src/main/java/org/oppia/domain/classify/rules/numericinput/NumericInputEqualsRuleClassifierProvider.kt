@@ -3,7 +3,7 @@ package org.oppia.domain.classify.rules.numericinput
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.classify.rules.SingleInputClassifier
+import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.util.approximatelyEquals
 import javax.inject.Inject
 
@@ -13,11 +13,11 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumericInput/directives/numeric-input-rules.service.ts#L21
  */
 internal class NumericInputEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: SingleInputClassifier.Factory
-): RuleClassifierProvider, SingleInputClassifier.SingleInputMatcher<Double> {
+  private val classifierFactory: GenericRuleClassifier.Factory
+): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.create(InteractionObject.ObjectTypeCase.REAL, "x", this)
+    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "x", this)
   }
 
   // TODO(#210): Add tests for this classifier.
