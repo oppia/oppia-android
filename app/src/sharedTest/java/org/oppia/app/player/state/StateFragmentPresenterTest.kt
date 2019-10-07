@@ -29,7 +29,7 @@ import javax.inject.Singleton
 class StateFragmentPresenterTest {
   // The function to test text,number,and fraction inputs in interaction views.
   @Test
-  fun addTextInputContentCard() {
+  fun testTextInputContentCard_displaySoftInputAccordingToInputType_userTypeInput() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withHint("text")).check(matches(isDisplayed()))
@@ -38,11 +38,11 @@ class StateFragmentPresenterTest {
       pauseTestFor(500)
       onView(withHint("number 1")).check(matches(isDisplayed()))
       onView(withHint("number 1")).perform(click())
-      onView(withHint("text")).perform(clearText(), typeText("123"));
+      onView(withHint("number 1")).perform(clearText(), typeText("123"));
       pauseTestFor(500)
       onView(withHint("fraction 1/1")).check(matches(isDisplayed()))
       onView(withHint("fraction 1/1")).perform(click())
-      onView(withHint("text")).perform(clearText(), typeText("1/3"));
+      onView(withHint("fraction 1/1")).perform(clearText(), typeText("1/3"));
       pauseTestFor(500)
     }
   }
