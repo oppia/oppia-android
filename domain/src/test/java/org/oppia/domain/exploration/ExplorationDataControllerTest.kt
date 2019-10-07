@@ -46,9 +46,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
-const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
-
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -108,9 +105,9 @@ class ExplorationDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataForTheWelcomeExploration() = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_5)
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf(
       "END", "Estimate 100", "Numeric input",
       "Things you can do", "Welcome!", "What language"
@@ -129,9 +126,9 @@ class ExplorationDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_6)
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf(
       "About this website", "Contact", "Contribute", "Credits", "END",
       "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you"
@@ -152,7 +149,7 @@ class ExplorationDataControllerTest {
   fun testController_returnsNullForNonExistentExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
   }
