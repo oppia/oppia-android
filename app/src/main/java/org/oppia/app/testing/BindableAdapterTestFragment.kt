@@ -16,7 +16,7 @@ class BindableAdapterTestFragment: InjectableFragment() {
   @Inject
   lateinit var bindableAdapterTestFragmentPresenter: BindableAdapterTestFragmentPresenter
 
-  override fun onAttach(context: Context) {
+  override fun onAttach(context: Context?) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

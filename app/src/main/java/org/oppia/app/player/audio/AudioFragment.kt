@@ -16,7 +16,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
   private var selectedLanguageCode: String = "en"
 
-  override fun onAttach(context: Context) {
+  override fun onAttach(context: Context?) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
