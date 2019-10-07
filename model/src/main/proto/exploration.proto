@@ -13,15 +13,18 @@ option java_multiple_files = true;
 // Structure for a single exploration.
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeExploration.kt
 message Exploration {
+  // The ID of the exploration.
+  string id = 1;
+
   // Mapping from a state name to a state object
-  map<string, State> states = 1;
-  repeated ParamChange param_changes = 2;
-  repeated ParamSpec param_specs = 3;
-  string init_state_name = 4;
-  string objective = 5;
-  bool correctness_feedback_enabled = 6;
-  string title = 7;
-  string language_code = 8;
+  map<string, State> states = 2;
+  repeated ParamChange param_changes = 3;
+  repeated ParamSpec param_specs = 4;
+  string init_state_name = 5;
+  string objective = 6;
+  bool correctness_feedback_enabled = 7;
+  string title = 8;
+  string language_code = 9;
 }
 
 // Structure for a param change.
@@ -46,18 +49,20 @@ enum ObjectType {
 // Structure for a single state
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeState.kt
 message State {
+  // The name of the State.
+  string name = 1;
   // Mapping from content_id to a VoiceoverMapping
-  map<string, VoiceoverMapping> recorded_voiceovers = 1;
-  SubtitledHtml content = 2;
+  map<string, VoiceoverMapping> recorded_voiceovers = 2;
+  SubtitledHtml content = 3;
   // Mapping from content_id to a TranslationMapping
-  map<string, TranslationMapping> written_translations = 3;
-  repeated ParamChange param_changes = 4;
-  string classifier_model_id = 5;
-  Interaction interaction = 6;
+  map<string, TranslationMapping> written_translations = 4;
+  repeated ParamChange param_changes = 5;
+  string classifier_model_id = 6;
+  Interaction interaction = 7;
   // Boolean indicating whether the creator wants to ask for answer details
   // from the learner about why they picked a particular answer while
   // playing the exploration.
-  bool solicit_answer_details = 7;
+  bool solicit_answer_details = 8;
 }
 
 // Structure for customization args for ParamChange objects.
@@ -131,4 +136,81 @@ message RuleSpec {
   // https://github.com/oppia/oppia/blob/develop/extensions/interactions/rule_templates.json
   InteractionObject input = 1;
   string rule_type = 2;
+}
+
+/* The following structures are specific to ephemeral exploration sessions and should never be persisted on disk. */
+
+// Corresponds to an exploration state that exists ephemerally in the UI and will disappear once the user finishes the
+// exploration or navigates away from it. This model contains additional information to help the UI display an exact
+// representation of their interaction with the lesson.
+message EphemeralState {
+  // The actual state to display to the user.
+  State state = 1;
+
+  // Whether there is a state prior to this one that the learner has already completed, or if this is the initial state
+  // of the exploration.
+  bool has_previous_state = 2;
+
+  // Different types this state can take depending on whether the learner needs to finish an existing card, has
+  // navigated to a previous card, or has reached the end of the exploration.
+  oneof state_type {
+    // A pending state that requires a correct answer to continue.
+    PendingState pending_state = 3;
+
+    // A previous state completed by the learner.
+    CompletedState completed_state = 4;
+
+    // This value is always true in the case where the state type is terminal. This type may change in the future to a
+    // message structure if additional data needs to be passed along to the terminal state card.
+    bool terminal_state = 5;
+  }
+}
+
+// Corresponds to an exploration state that hasn't yet had a correct answer filled in.
+message PendingState {
+  // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
+  // order the learner submitted them.
+  repeated AnswerAndResponse wrong_answer = 1;
+}
+
+// Corresponds to an exploration state that the learner has previous completed.
+message CompletedState {
+  // The list of answers and responses that were used to finish this state. These answers are in the order that the
+  // learner submitted them, so the last answer is guaranteed to be the correct answer.
+  repeated AnswerAndResponse answer = 1;
+}
+
+message AnswerAndResponse {
+  // A previous answer the learner submitted.
+  InteractionObject user_answer = 1;
+
+  // Oppia's response to the answer the learner submitted.
+  SubtitledHtml feedback = 2;
+}
+
+message AnswerOutcome {
+  // Oppia's feedback to the learner's most recent answer.
+  SubtitledHtml feedback = 1;
+
+  // Whether the answer the learner submitted is the correct answer. Note that this is only an indication of the
+  // correctness, and not all correct answers are guaranteed to be labelled as correct.
+  bool labelled_as_correct_answer = 2;
+
+  // One of several destinations the learner should be routed to as a result of submitting this answer.
+  oneof destination {
+    // Indicates that the learner should not progress past the current state.
+    bool same_state = 3;
+
+    // Indicates that the learner should move to the next state. This contains the name of that state, but this isn't
+    // meant to be used by the UI directly beyond for logging purposes.
+    string state_name = 4;
+
+    // Indicates that the learner should be shown a concept card corresponding to the specified skill ID to refresh the
+    // concept before proceeding.
+    string missing_prerequisite_skill_id = 5;
+
+    // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
+    // to restart the current exploration.
+    string refresher_exploration_id = 6;
+  }
 }
