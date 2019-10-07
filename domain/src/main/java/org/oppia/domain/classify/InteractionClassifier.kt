@@ -5,6 +5,9 @@ package org.oppia.domain.classify
  * interaction IDs to classifier instances so that they can be used by the [AnswerClassificationController].
  */
 interface InteractionClassifier {
+  /** Returns a set of rule types that this interaction supports classifying. */
+  fun getRuleTypes(): Set<String>
+
   /** Returns the [RuleClassifier] corresponding to the specified rule type. */
   fun getRuleClassifier(ruleType: String): RuleClassifier?
 }

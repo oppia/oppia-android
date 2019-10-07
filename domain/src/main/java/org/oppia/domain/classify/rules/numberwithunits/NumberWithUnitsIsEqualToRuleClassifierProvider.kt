@@ -31,7 +31,7 @@ internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructo
       return false
     }
     // Units must match, but in different orders is fine.
-    if (answer.unitsList.toSet() != input.unitsList.toSet()) {
+    if (answer.unitList.toSet() != input.unitList.toSet()) {
       return false
     }
     // Otherwise, verify the value itself matches.

@@ -32,11 +32,11 @@ message NumberWithUnits {
     float real = 1;
     Fraction fraction = 2;
   }
-  repeated Unit units = 3;
+  repeated NumberUnit unit = 3;
 }
 
 // Structure for a unit
-message Unit {
+message NumberUnit {
   string unit = 1;
   int32 exponent = 2;
 }

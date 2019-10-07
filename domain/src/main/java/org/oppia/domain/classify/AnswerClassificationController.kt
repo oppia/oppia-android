@@ -4,7 +4,7 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
-import org.oppia.app.model.State
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
@@ -40,54 +40,21 @@ class AnswerClassificationController @Inject constructor(
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {
         val ruleClassifier = checkNotNull(interactionClassifier.getRuleClassifier(ruleSpec.ruleType)) {
-          "Expected interaction $interactionId to have classifier for rule type: ${ruleSpec.ruleType}"
+          "Expected interaction $interactionId to have classifier for rule type: ${ruleSpec.ruleType}, but only" +
+              " has: ${interactionClassifier.getRuleTypes()}"
         }
-        if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
-          // Explicit classification matched.
-          return answerGroup.outcome
+        try {
+          if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
+            // Explicit classification matched.
+            return answerGroup.outcome
+          }
+        } catch (e: Exception) {
+          throw IllegalStateException("Failed when classifying answer $answer for interaction $interactionId", e)
         }
       }
     }
 
     // Default outcome classification.
     return defaultOutcome
-  }
-
-  private fun simulateMultipleChoiceForWelcomeStateExp5(currentState: State, answer: InteractionObject): Outcome {
-    return when {
-      answer.objectTypeCase != InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT ->
-        throw Exception("Expected non-negative int answer, not $answer.")
-      answer.nonNegativeInt == 0 -> currentState.interaction.answerGroupsList[0].outcome
-      answer.nonNegativeInt == 2 -> currentState.interaction.answerGroupsList[1].outcome
-      else -> currentState.interaction.defaultOutcome
-    }
-  }
-
-  private fun simulateTextInputForWhatLanguageStateExp5(currentState: State, answer: InteractionObject): Outcome {
-    return when {
-      answer.objectTypeCase != InteractionObject.ObjectTypeCase.NORMALIZED_STRING ->
-        throw Exception("Expected string answer, not $answer.")
-      answer.normalizedString.toLowerCase() == "finnish" -> currentState.interaction.getAnswerGroups(6).outcome
-      else -> currentState.interaction.defaultOutcome
-    }
-  }
-
-  private fun simulateNumericInputForNumericInputStateExp5(currentState: State, answer: InteractionObject): Outcome {
-    return when {
-      answer.objectTypeCase != InteractionObject.ObjectTypeCase.SIGNED_INT ->
-        throw Exception("Expected signed int answer, not $answer.")
-      answer.signedInt == 121 -> currentState.interaction.answerGroupsList.first().outcome
-      else -> currentState.interaction.defaultOutcome
-    }
-  }
-
-  private fun simulateMultipleChoiceForWelcomeStateExp6(currentState: State, answer: InteractionObject): Outcome {
-    return when {
-      answer.objectTypeCase != InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT ->
-        throw Exception("Expected non-negative int answer, not $answer.")
-      answer.nonNegativeInt == 3 -> currentState.interaction.answerGroupsList[1].outcome
-      answer.nonNegativeInt == 0 -> currentState.interaction.answerGroupsList[2].outcome
-      else -> currentState.interaction.defaultOutcome
-    }
   }
 }
