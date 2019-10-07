@@ -228,3 +228,12 @@ message ChapterProgress {
   // Corresponds to whether this chapter is playable or has been started.
   ChapterPlayState play_state = 2;
 }
+
+// Represents user's preference for using cellular data
+message CellularDataPreference {
+  // Preference on whether to hide CellularDataDialogFragment
+  bool hide_dialog = 1;
+
+  // Preference on whether to use cellular data
+  bool use_cellular_data = 2;
+}
