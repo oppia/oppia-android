@@ -21,13 +21,13 @@ class AnswerClassificationController @Inject constructor(
   // TODO(#114): Add support for classifying answers based on an actual exploration. Also, classify() should take an
   // Interaction, not a State.
 
-  // - TextInput
+  // + TextInput
   //   + TextInputEqualsRuleClassifierProvider
   //   + TextInputCaseSensitiveEqualsRuleClassifierProvider
   //   + TextInputStartsWithRuleClassifierProvider
   //   + TextInputContainsRuleClassifierProvider
   //   + TextInputFuzzyEqualsRuleClassifierProvider
-  // - NumericInput
+  // + NumericInput
   //   + NumericInputEqualsRuleClassifierProvider
   //   + NumericInputIsLessThanRuleClassifierProvider
   //   + NumericInputIsGreaterThanRuleClassifierProvider
@@ -35,16 +35,16 @@ class AnswerClassificationController @Inject constructor(
   //   + NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
   //   + NumericInputIsInclusivelyBetweenRuleClassifierProvider
   //   + NumericInputIsWithinToleranceRuleClassifierProvider
-  // - NumberWithUnits
+  // + NumberWithUnits
   //   + NumberWithUnitsIsEqualToRuleClassifierProvider
   //   + NumberWithUnitsIsEquivalentToRuleClassifierProvider
-  // - MultipleChoiceInput
+  // + MultipleChoiceInput
   //   + MultipleChoiceInputEqualsRuleClassifierProvider
-  // - ItemSelectionInput
-  //   - ItemSelectionInputEqualsRuleClassifierProvider
-  //   - ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider
-  //   - ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
-  //   - ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
+  // + ItemSelectionInput
+  //   + ItemSelectionInputEqualsRuleClassifierProvider
+  //   + ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider
+  //   + ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
+  //   + ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
   // - FractionInput
   //   - FractionInputIsExactlyEqualToRuleClassifierProvider
   //   - FractionInputIsEquivalentToRuleClassifierProvider

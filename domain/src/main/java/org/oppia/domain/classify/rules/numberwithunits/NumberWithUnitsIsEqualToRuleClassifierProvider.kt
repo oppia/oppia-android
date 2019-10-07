@@ -12,6 +12,8 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether two numbers with units are equal per the numbers with units
  * interaction.
+ *
+ * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumberWithUnits/directives/number-with-units-rules.service.ts#L34
  */
 internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: SingleInputClassifier.Factory

@@ -22,7 +22,7 @@ message InteractionObject {
 
 // Structure containing a string list.
 message StringList {
-  repeated string string_list = 1;
+  repeated string html = 1;
 }
 
 // Structure for a number with units object.

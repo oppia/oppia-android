@@ -9,6 +9,8 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether an answer is within the input-specified tolerance of another input
  * value per the numeric input interaction.
+ *
+ * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumericInput/directives/numeric-input-rules.service.ts#L41
  */
 internal class NumericInputIsWithinToleranceRuleClassifierProvider @Inject constructor(
   private val classifierFactory: DoubleInputClassifier.Factory

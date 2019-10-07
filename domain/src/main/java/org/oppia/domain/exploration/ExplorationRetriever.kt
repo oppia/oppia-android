@@ -254,7 +254,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
     val stringList = mutableListOf<String>()
     if (value[0] is String) {
       stringList.addAll(value as List<String>)
-      return StringList.newBuilder().addAllStringList(stringList).build()
+      return StringList.newBuilder().addAllHtml(stringList).build()
     }
     return StringList.getDefaultInstance()
   }

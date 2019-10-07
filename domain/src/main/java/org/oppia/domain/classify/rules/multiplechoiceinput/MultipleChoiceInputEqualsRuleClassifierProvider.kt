@@ -9,6 +9,8 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether a multiple choice answer matches a specific option per the multiple
  * choice input interaction.
+ *
+ * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/MultipleChoiceInput/directives/multiple-choice-input-rules.service.ts#L21
  */
 internal class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: SingleInputClassifier.Factory

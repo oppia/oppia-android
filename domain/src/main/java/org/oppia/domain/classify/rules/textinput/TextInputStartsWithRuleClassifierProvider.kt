@@ -10,6 +10,8 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether an answer starts with the rule's input per the text input
  * interaction.
+ *
+ * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/TextInput/directives/text-input-rules.service.ts#L64
  */
 internal class TextInputStartsWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: SingleInputClassifier.Factory

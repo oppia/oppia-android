@@ -13,6 +13,8 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether two numbers with units are effectively equal per the number with
  * units interaction.
+ *
+ * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumberWithUnits/directives/number-with-units-rules.service.ts#L48
  */
 internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: SingleInputClassifier.Factory

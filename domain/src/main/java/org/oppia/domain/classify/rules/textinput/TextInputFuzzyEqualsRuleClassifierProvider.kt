@@ -7,8 +7,8 @@ import org.oppia.domain.classify.rules.SingleInputClassifier
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether two strings are fuzzily equal per the text input interaction. For
- * context, see the Oppia web version:
+ * Provider for a classifier that determines whether two strings are fuzzily equal per the text input interaction.
+ *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/TextInput/directives/text-input-rules.service.ts#L29.
  */
 internal class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(

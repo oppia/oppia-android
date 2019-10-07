@@ -14,7 +14,7 @@ class MultipleChoiceInputModule {
   @IntoMap
   @StringKey("Equals")
   @MultipleChoiceInputRules
-  internal fun MultipleChoiceInputEqualsRuleClassifier(
+  internal fun provideMultipleChoiceInputEqualsRuleClassifier(
     classifierProvider: MultipleChoiceInputEqualsRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
