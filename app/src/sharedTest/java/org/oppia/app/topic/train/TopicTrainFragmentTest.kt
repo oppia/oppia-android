@@ -2,16 +2,19 @@ package org.oppia.app.topic.train
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -20,25 +23,115 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.topic.TopicActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import org.oppia.app.R
+import org.oppia.app.RecyclerViewMatcher
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import androidx.test.rule.ActivityTestRule
 
 /** Tests for [TopicTrainFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicTrainFragmentTest {
 
+  private var skillIdListIntent = ArrayList<String>()
+
+  @get:Rule
+  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    skillIdListIntent.add("test_skill_id_0")
+    skillIdListIntent.add("test_skill_id_1")
+  }
+
   @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_submitButtonIsActivated() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+  fun testTopicTrainFragment_loadFragment_displaySkills_startButtonIsInactive() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+      onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0))
+        .check(matches(hasDescendant(withId(R.id.skill_check_box))))
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
-      onView(withText("Writing Fractions")).check(matches(isNotChecked())).perform(scrollTo(), click())
-      onView(withText("Equivalent Fractions")).check(matches(isNotChecked())).perform(scrollTo(), click())
-      onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     }
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+      onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
+      onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+      onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
+      onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_selectSkills_clickStartButton_skillListTransferSuccessfully() {
+    activityTestRule.launchActivity(null)
+    onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+    onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
+    onView(withRecyclerView(R.id.skill_recycler_view).atPosition(1)).perform(click())
+    onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+    onView(withId(R.id.topic_train_start_button)).perform(click())
+    intended(hasComponent("org.oppia.app.topic.questionplayer.QuestionPlayerActivity"))
+    intended(hasExtra("QuestionPlayerActivity.skill_id_list", skillIdListIntent))
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
+    activityTestRule.launchActivity(null)
+    onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+    onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    onView(
+      withRecyclerView(R.id.skill_recycler_view).atPositionOnView(
+        0,
+        R.id.skill_check_box
+      )
+    ).check(matches(isChecked()))
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
+    activityTestRule.launchActivity(null)
+    onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
+    activityTestRule.launchActivity(null)
+    onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+    onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
+    onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    onView(
+      withRecyclerView(R.id.skill_recycler_view).atPositionOnView(
+        0,
+        R.id.skill_check_box
+      )
+    ).check(matches(isChecked()))
+    onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+  }
+
+  private fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
+    return RecyclerViewMatcher(recyclerViewId)
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   @Module
