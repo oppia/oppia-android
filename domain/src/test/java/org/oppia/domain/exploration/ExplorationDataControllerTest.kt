@@ -34,6 +34,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Exploration
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
@@ -210,8 +211,8 @@ class ExplorationDataControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    InteractionsModule::class
+    TestModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

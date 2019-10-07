@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
@@ -832,7 +833,7 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121))
+    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -851,7 +852,7 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(0))
+    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(0.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -871,7 +872,7 @@ class ExplorationProgressControllerTest {
     playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121)
+    submitNumericInputAnswerAndMoveToNextState(121.0)
 
     val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
     result.observeForever(mockAsyncAnswerOutcomeObserver)
@@ -892,7 +893,7 @@ class ExplorationProgressControllerTest {
     playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121)
+    submitNumericInputAnswerAndMoveToNextState(121.0)
 
     submitContinueButtonAnswerAndMoveToNextState()
 
@@ -933,7 +934,7 @@ class ExplorationProgressControllerTest {
     playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121)
+    submitNumericInputAnswerAndMoveToNextState(121.0)
     submitContinueButtonAnswerAndMoveToNextState()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -1053,7 +1054,7 @@ class ExplorationProgressControllerTest {
   }
 
   @ExperimentalCoroutinesApi
-  private fun submitNumericInputAnswer(numericAnswer: Int) {
+  private fun submitNumericInputAnswer(numericAnswer: Double) {
     explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
     testDispatcher.advanceUntilIdle()
   }
@@ -1077,7 +1078,7 @@ class ExplorationProgressControllerTest {
   }
 
   @ExperimentalCoroutinesApi
-  private fun submitNumericInputAnswerAndMoveToNextState(numericAnswer: Int) {
+  private fun submitNumericInputAnswerAndMoveToNextState(numericAnswer: Double) {
     submitNumericInputAnswer(numericAnswer)
     moveToNextState()
   }
@@ -1111,7 +1112,7 @@ class ExplorationProgressControllerTest {
     playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121)
+    submitNumericInputAnswerAndMoveToNextState(121.0)
     submitContinueButtonAnswerAndMoveToNextState()
     endExploration()
   }
@@ -1124,8 +1125,8 @@ class ExplorationProgressControllerTest {
     return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
   }
 
-  private fun createNumericInputAnswer(numericAnswer: Int): InteractionObject {
-    return InteractionObject.newBuilder().setSignedInt(numericAnswer).build()
+  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
+    return InteractionObject.newBuilder().setReal(numericAnswer).build()
   }
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
@@ -1169,8 +1170,8 @@ class ExplorationProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
-    TestModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    InteractionsModule::class
+    TestModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder
