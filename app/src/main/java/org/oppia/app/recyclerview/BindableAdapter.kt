@@ -7,7 +7,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.reflect.KClass
 
-/** A function that returns the type of view that should can bind the specified data object. */
+/** A function that returns the type of view that can bind the specified data object. */
 typealias ComputeViewType<T> = (T) -> Int
 
 /**
