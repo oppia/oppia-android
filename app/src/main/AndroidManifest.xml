@@ -27,5 +27,6 @@
     <activity android:name=".splash.SplashActivity"
               android:theme="@style/SplashScreenTheme">
     </activity>
+    <activity android:name=".testing.BindableAdapterTestActivity"/>
   </application>
 </manifest>

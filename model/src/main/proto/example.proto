@@ -12,3 +12,10 @@ message UserAppHistory {
 message TestMessage {
   int32 version = 1;
 }
+
+message TestModel {
+  oneof model_type {
+    string str_value = 1;
+    int32 int_value = 2;
+  }
+}
