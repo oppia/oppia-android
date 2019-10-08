@@ -3,9 +3,10 @@ package org.oppia.app.player.exploration
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
@@ -26,8 +27,7 @@ class ExplorationActivityTest {
   @Test
   fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
-      Espresso.onView(ViewMatchers.withId(R.id.dummy_text_view))
-        .check(ViewAssertions.matches(ViewMatchers.withText("This is dummy TextView for testing")))
+      onView(withId(R.id.dummy_text_view)).check(matches(withText("This is dummy TextView for testing")))
     }
   }
 

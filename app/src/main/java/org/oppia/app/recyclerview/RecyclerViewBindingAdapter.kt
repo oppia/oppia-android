@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
  * https://android.jlelse.eu/1bd08b4796b4.
  */
 @BindingAdapter("data")
-fun <T: Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, liveData: LiveData<List<T>>) {
+fun <T : Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, liveData: LiveData<List<T>>) {
   liveData.value?.let { data ->
     val adapter = recyclerView.adapter
     checkNotNull(adapter) { "Cannot bind data to a RecyclerView missing its adapter." }
