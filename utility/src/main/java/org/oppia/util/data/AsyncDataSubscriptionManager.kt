@@ -1,8 +1,10 @@
 package org.oppia.util.data
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.ConcurrentQueueMap
 import org.oppia.util.threading.dequeue
 import org.oppia.util.threading.enqueue
@@ -17,9 +19,12 @@ internal typealias ObserveAsyncChange = suspend () -> Unit
  * changes to custom [DataProvider]s.
  */
 @Singleton
-class AsyncDataSubscriptionManager @Inject constructor() {
+class AsyncDataSubscriptionManager @Inject constructor(
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+) {
   private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
   private val associatedIds = ConcurrentQueueMap<Any, Any>()
+  private val backgroundCoroutineScope = CoroutineScope(backgroundDispatcher)
 
   /** Subscribes the specified callback function to the specified [DataProvider] ID. */
   internal fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
@@ -51,18 +56,25 @@ class AsyncDataSubscriptionManager @Inject constructor() {
    * Notifies all subscribers of the specified [DataProvider] id that the provider has been changed and should be
    * re-queried for its latest state.
    */
-  @Suppress("DeferredResultUnused") // Exceptions on the main thread will cause app crashes. No action needed.
   suspend fun notifyChange(id: Any) {
     // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData
     // expects.
     // TODO(#90): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid any
     //  load on the UI thread until the final data value is ready for delivery.
     val scope = CoroutineScope(Dispatchers.Main)
-    scope.async {
+    scope.launch {
       subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
     }
 
     // Also notify all children observing this parent.
     associatedIds.getQueue(id).forEach { childId -> notifyChange(childId) }
+  }
+
+  /**
+   * Same as [notifyChange] except this may be called on the main thread since it will notify changes on a background
+   * thread.
+   */
+  fun notifyChangeAsync(id: Any) {
+    backgroundCoroutineScope.launch { notifyChange(id) }
   }
 }
