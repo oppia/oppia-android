@@ -40,7 +40,7 @@ import androidx.test.rule.ActivityTestRule
 @RunWith(AndroidJUnit4::class)
 class TopicTrainFragmentTest {
 
-  private var skillIdListIntent = ArrayList<String>()
+  private var skillIdList = ArrayList<String>()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -50,8 +50,8 @@ class TopicTrainFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    skillIdListIntent.add("test_skill_id_0")
-    skillIdListIntent.add("test_skill_id_1")
+    skillIdList.add("test_skill_id_0")
+    skillIdList.add("test_skill_id_1")
   }
 
   @Test
@@ -84,7 +84,7 @@ class TopicTrainFragmentTest {
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     onView(withId(R.id.topic_train_start_button)).perform(click())
     intended(hasComponent("org.oppia.app.topic.questionplayer.QuestionPlayerActivity"))
-    intended(hasExtra("QuestionPlayerActivity.skill_id_list", skillIdListIntent))
+    intended(hasExtra("QuestionPlayerActivity.skill_id_list", skillIdList))
   }
 
   @Test
@@ -116,12 +116,6 @@ class TopicTrainFragmentTest {
     onView(withRecyclerView(R.id.skill_recycler_view).atPosition(0)).perform(click())
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    onView(
-      withRecyclerView(R.id.skill_recycler_view).atPositionOnView(
-        0,
-        R.id.skill_check_box
-      )
-    ).check(matches(isChecked()))
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
   }
 
