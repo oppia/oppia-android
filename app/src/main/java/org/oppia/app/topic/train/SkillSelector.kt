@@ -4,6 +4,7 @@ package org.oppia.app.topic.train
 interface SkillSelector {
   /** This skill will get added to selectedSkillList in [TopicTrainFragmentPresenter]. */
   fun skillSelected(skillId: String)
+
   /** This skill will get removed from selectedSkillList in [TopicTrainFragmentPresenter]. */
   fun skillUnselected(skillId: String)
 }

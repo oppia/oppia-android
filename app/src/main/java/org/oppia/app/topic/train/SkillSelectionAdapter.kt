@@ -10,7 +10,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.TopicTrainSkillViewBinding
 import org.oppia.app.model.SkillSummary
 
-// TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter.
+// TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. */
 class SkillSelectionAdapter(private val skillSelector: SkillSelector) :
   RecyclerView.Adapter<SkillSelectionAdapter.SkillViewHolder>() {
@@ -22,7 +22,7 @@ class SkillSelectionAdapter(private val skillSelector: SkillSelector) :
     val skillListItemBinding = DataBindingUtil.inflate<TopicTrainSkillViewBinding>(
       LayoutInflater.from(parent.context),
       R.layout.topic_train_skill_view, parent,
-      /* attachToRoot= */false
+      /* attachToRoot= */ false
     )
     return SkillViewHolder(skillListItemBinding)
   }

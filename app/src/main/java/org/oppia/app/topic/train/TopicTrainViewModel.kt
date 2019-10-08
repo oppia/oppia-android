@@ -14,7 +14,7 @@ class TopicTrainViewModel @Inject constructor(
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
-  fun selectedSkillList(selectedSkillList: ArrayList<String>) {
+  fun notifySelectedSkillList(selectedSkillList: ArrayList<String>) {
     isSubmitButtonActive.set(selectedSkillList.isNotEmpty())
   }
 

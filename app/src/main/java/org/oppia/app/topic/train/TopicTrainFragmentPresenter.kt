@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
@@ -35,20 +34,19 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList : ArrayList<String>): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
     selectedSkillIdList = skillList
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     skillSelectionAdapter = SkillSelectionAdapter(this)
     binding.skillRecyclerView.apply {
-      layoutManager = LinearLayoutManager(context)
       adapter = skillSelectionAdapter
     }
     binding.let {
       it.viewModel = getTopicTrainViewModel()
       it.lifecycleOwner = fragment
     }
-    getSkillList()
+    subscribeToTopicLiveData()
     return binding.root
   }
 
@@ -59,7 +57,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
     topicController.getTopic(TEST_TOPIC_ID_0)
   }
 
-  private fun getSkillList() {
+  private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       skillSelectionAdapter.setSkillList(result.skillList)
       skillSelectionAdapter.setSelectedSkillList(selectedSkillIdList)
@@ -72,7 +70,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicTrainFragmentPresenter", "Failed to retrieve topic ${topic.getErrorOrNull()}")
+      logger.e("TopicTrainFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -82,20 +80,20 @@ class TopicTrainFragmentPresenter @Inject constructor(
   }
 
   override fun skillSelected(skillId: String) {
-    if(!selectedSkillIdList.contains(skillId)) {
+    if (!selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.add(skillId)
     }
-    getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
+    getTopicTrainViewModel().notifySelectedSkillList(selectedSkillIdList)
   }
 
   override fun skillUnselected(skillId: String) {
-    if(selectedSkillIdList.contains(skillId)) {
+    if (selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.remove(skillId)
     }
-    getTopicTrainViewModel().selectedSkillList(selectedSkillIdList)
+    getTopicTrainViewModel().notifySelectedSkillList(selectedSkillIdList)
   }
 
-  fun onStartButtonClicked() {
+  internal fun onStartButtonClicked() {
     routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
   }
 }
