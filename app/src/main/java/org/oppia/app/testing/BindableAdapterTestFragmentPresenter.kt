@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.TestFragmentBinding
+import org.oppia.app.model.TestModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -22,7 +23,7 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
   companion object {
     // TODO(#59): Move away from this fragile static testing state by leveraging a test-only DI graph that can be
     //  configured within tests to provide the bindable adapter to be used by this presenter.
-    var testBindableAdapter: BindableAdapter<String>? = null
+    var testBindableAdapter: BindableAdapter<TestModel>? = null
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {

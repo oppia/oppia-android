@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.topic_train_skill_view.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicTrainSkillViewBinding
 
-// TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter.
+// TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicTrainFragment]. */
 class SkillSelectionAdapter(
   private val skillList: List<String>,
