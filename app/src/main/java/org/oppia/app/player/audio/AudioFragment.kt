@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val TAG_DIALOG = "LANGUAGE_DIALOG"
+private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 
-/** Fragment that controls audio for a state and content.*/
-class AudioFragment : InjectableFragment() {
+/** Fragment that controls audio for a content-card. */
+class AudioFragment : InjectableFragment(), LanguageInterface {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
-
-  lateinit var languageInterface: LanguageInterface
+  private var selectedLanguageCode: String = "en"
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -27,22 +26,19 @@ class AudioFragment : InjectableFragment() {
   }
 
   fun languageSelectionClicked() {
-    languageInterface = object : LanguageInterface {
-      override fun onLanguageSelected(currentLanguageCode: String) {
-        audioFragmentPresenter.languageSelected(currentLanguageCode)
-      }
-    }
+    showLanguageDialogFragment()
+  }
 
-    val previousFragment = fragmentManager?.findFragmentByTag(TAG_DIALOG)
+  private fun showLanguageDialogFragment() {
+    val previousFragment = childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
-      fragmentManager?.beginTransaction()?.remove(previousFragment)?.commitNow()
+      childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      languageInterface,
-      getDummyAudioLanguageList(),
-      "en"
+      getDummyAudioLanguageList() as ArrayList<String>,
+      selectedLanguageCode
     )
-    dialogFragment.showNow(fragmentManager, TAG_DIALOG)
+    dialogFragment.showNow(childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
   private fun getDummyAudioLanguageList(): List<String> {
@@ -51,5 +47,10 @@ class AudioFragment : InjectableFragment() {
     languageCodeList.add("hi")
     languageCodeList.add("hi-en")
     return languageCodeList
+  }
+
+  override fun onLanguageSelected(currentLanguageCode: String) {
+    selectedLanguageCode = currentLanguageCode
+    audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 }

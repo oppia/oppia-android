@@ -1,0 +1,239 @@
+syntax = "proto3";
+
+package model;
+
+import "subtitled_html.proto";
+import "thumbnail.proto";
+import "translation.proto";
+import "voiceover.proto";
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+// Corresponds to a single topic that can be read, played, trained, or reviewed.
+message Topic {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
+  // The topic's name.
+  string name = 2;
+
+  // A brief description of the topic.
+  string description = 3;
+
+  // A list of summarized stories contained within this topic.
+  repeated StorySummary story = 4;
+
+  // A list of summarized skills contained within this topic.
+  repeated SkillSummary skill = 5;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 6;
+}
+
+// Corresponds to a concept card that can be displayed for a specific skill.
+message ConceptCard {
+  // The ID corresponding to the skill this concept is representing.
+  string skill_id = 1;
+
+  // The skill's description that can help provide context on what content is being reviewed.
+  string skill_description = 2;
+
+  // The core explanation of the skill being reviewed.
+  SubtitledHtml explanation = 3;
+
+  // A list of worked examples to present to the learner.
+  repeated SubtitledHtml worked_example = 4;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 6;
+}
+
+// A summary of a story that can be played within a topic.
+message StorySummary {
+  // The ID of the story.
+  string story_id = 1;
+
+  // The name of the story.
+  string story_name = 2;
+
+  // A list of summarized chapters/explorations that can be played within the story.
+  repeated ChapterSummary chapter = 3;
+}
+
+// A summary of a chapter/exploration that can be played.
+message ChapterSummary {
+  // The exploration ID associated with this chapter.
+  string exploration_id = 1;
+
+  // The chapter's name (which is the same as the exploration's title).
+  string name = 2;
+
+  enum Playability {
+    // The completion status is unknown.
+    COMPLETION_STATUS_UNSPECIFIED = 0;
+
+    // The chapter has not yet been started, but can be started by the player.
+    NOT_STARTED = 1;
+
+    // The chapter has not yet been started, and can't since the player is missing prerequisites.
+    MISSING_PREREQUISITES = 2;
+
+    // The chapter has been completed by the player.
+    COMPLETED = 3;
+  }
+
+  // Indicates the playable state of the current chapter, including whether it's already been completed.
+  ChapterPlayState chapter_play_state = 3;
+
+  // The thumbnail corresponding to this chapter.
+  LessonThumbnail chapter_thumbnail = 4;
+}
+
+// A summary of a skill that can be trained or reviewed by the player.
+message SkillSummary {
+  // The ID of the skill.
+  string skill_id = 1;
+
+  // A brief description of the skill.
+  string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
+}
+
+// Corresponds to the on-disk storage representing all available topics for play.
+message Classroom {
+  // Known topics that the player can play.
+  TopicSummary topic_summary = 1;
+
+  // The last time this classroom was updated.
+  int64 last_update_time_ms = 2;
+}
+
+// Corresponds to the list of topics that can be shown on the homescreen.
+message TopicList {
+  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
+  // recommended story if no other stories are in progress.
+  PromotedStory promoted_story = 1;
+
+  // All topics that are available to the player.
+  repeated TopicSummary topic_summary = 2;
+
+  // The total number of ongoing stories by the player.
+  int32 ongoing_story_count = 3;
+}
+
+// Corresponds to the list of stories the player is currently playing.
+message OngoingStoryList {
+  // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recent_story = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_story = 2;
+}
+
+// The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
+// or because they have completed all other lessons and may find this one interesting.
+message PromotedStory {
+  // The ID of the story being promoted.
+  string story_id = 1;
+
+  // The name of the story being promoted.
+  string story_name = 2;
+
+  // The ID of the topic this story is part of.
+  string topic_id = 3;
+
+  // The name of the topic this story is part of.
+  string topic_name = 4;
+
+  // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
+  // reasons other than to complete it (e.g. it's recommended).
+  int32 completed_chapter_count = 5;
+
+  // The total number of lessons this story contains.
+  int32 total_chapter_count = 6;
+
+  // The thumbnail that should be displayed for this promoted story.
+  LessonThumbnail lesson_thumbnail = 7;
+}
+
+// A homescreen summary of a topic.
+message TopicSummary {
+  // The ID of the topic.
+  string topic_id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The structural version of the topic.
+  int32 version = 3;
+
+  // The number of subtopics.
+  int32 subtopic_count = 4;
+
+  // The number of canonical stories.
+  int32 canonical_story_count = 5;
+
+  // The number of skills that have yet to be categorized.
+  int32 uncategorized_skill_count = 6;
+
+  // The number of additional, non-canonical stories.
+  int32 additional_story_count = 7;
+
+  // The total number of skills associated with this topic.
+  int32 total_skill_count = 8;
+
+  // The total number of lessons associated with this topic.
+  int32 total_chapter_count = 9;
+
+  // The associated thumbnail that should be displayed with this topic summary.
+  LessonThumbnail topic_thumbnail = 10;
+}
+
+// Represents the play state of a single chapter.
+enum ChapterPlayState {
+  // The completion status is unknown.
+  COMPLETION_STATUS_UNSPECIFIED = 0;
+
+  // The chapter has not yet been started, but can be started by the player.
+  NOT_STARTED = 1;
+
+  // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
+  NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
+
+  // The chapter has been completed by the player.
+  COMPLETED = 3;
+}
+
+// Represents the progress a player has made for a story.
+message StoryProgress {
+  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
+  // should be completed within the story.
+  repeated ChapterProgress chapter_progress = 1;
+}
+
+// Represents the progress a player has made on a single chapter.
+message ChapterProgress {
+  // The exploration ID of the chapter with possible progress made.
+  string exploration_id = 1;
+
+  // Corresponds to whether this chapter is playable or has been started.
+  ChapterPlayState play_state = 2;
+}
+
+// Represents user's preference for using cellular data
+message CellularDataPreference {
+  // Preference on whether to hide CellularDataDialogFragment
+  bool hide_dialog = 1;
+
+  // Preference on whether to use cellular data
+  bool use_cellular_data = 2;
+}
