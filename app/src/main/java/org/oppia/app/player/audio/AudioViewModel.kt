@@ -57,16 +57,16 @@ class AudioViewModel @Inject constructor(
   }
 
   /** Plays or pauses AudioController depending on passed in state */
-  fun handlePlayPause(type: AudioPlayStatus?) {
-    when (type) {
-      AudioPlayStatus.PREPARED -> audioPlayerController.play()
-      AudioPlayStatus.PLAYING -> audioPlayerController.pause()
-      AudioPlayStatus.PAUSED -> audioPlayerController.play()
-      AudioPlayStatus.COMPLETED -> audioPlayerController.play()
-      else -> {}
+  fun togglePlayPause(type: AudioPlayStatus?) {
+    if (type == AudioPlayStatus.PLAYING) {
+      audioPlayerController.pause()
+    } else {
+      audioPlayerController.play()
     }
   }
 
+
+  fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 
@@ -87,12 +87,16 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun processDurationResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (playProgressResult.isPending()) return 0
+    if (playProgressResult.isPending()) {
+      return 0
+    }
     return playProgressResult.getOrThrow().duration
   }
 
   private fun processPositionResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (playProgressResult.isPending()) return 0
+    if (playProgressResult.isPending()) {
+      return 0
+    }
     return playProgressResult.getOrThrow().position
   }
 

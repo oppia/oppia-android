@@ -27,7 +27,7 @@
       android:contentDescription="@string/audio_pause_play_description"
       android:padding="8dp"
       android:src="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
-      android:onClick="@{(v) -> viewModel.handlePlayPause(viewModel.playStatusLiveData)}"
+      android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
       android:clickable="@{viewModel.playStatusLiveData != AudioPlayStatus.LOADING}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"

@@ -58,22 +58,18 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
 
   override fun onStop() {
     super.onStop()
-    activity?.let {
-      if (!it.isChangingConfigurations)
-        audioFragmentPresenter.handleOnStop()
-    }
+    audioFragmentPresenter.handleOnStop()
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    activity?.let {
-      if (!it.isChangingConfigurations)
-        audioFragmentPresenter.handleOnDestroy()
-    }
+    audioFragmentPresenter.handleOnDestroy()
   }
 
-  /** Getters used in data binding to know when user is touching SeekBar */
+  /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
+
+  /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
 
   override fun onLanguageSelected(currentLanguageCode: String) {

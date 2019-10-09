@@ -45,11 +45,15 @@ class AudioFragmentPresenter @Inject constructor(
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        if (fromUser) userProgress = progress
+        if (fromUser) {
+          userProgress = progress
+        }
       }
+
       override fun onStartTrackingTouch(seekBar: SeekBar?) {
         userIsSeeking = true
       }
+
       override fun onStopTrackingTouch(seekBar: SeekBar?) {
         getAudioViewModel().handleSeekTo(userProgress)
         userIsSeeking = false
@@ -73,7 +77,7 @@ class AudioFragmentPresenter @Inject constructor(
       selectedLanguageCode = savedInstanceState.getString(KEY_SELECTED_LANGUAGE) ?: ""
       languages = savedInstanceState.getStringArrayList(KEY_LANGUAGE_LIST) ?: ArrayList()
     } else {
-      getVoiceoverMappings(explorationId, stateId)
+      retrieveVoiceoverMappings(explorationId, stateId)
     }
     return binding.root
   }
@@ -105,15 +109,23 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Pauses audio if in prepared state */
   fun handleOnStop() {
-    if (prepared)
-      getAudioViewModel().handlePlayPause(AudioViewModel.AudioPlayStatus.PLAYING)
+    if (!fragment.requireActivity().isChangingConfigurations && prepared) {
+      getAudioViewModel().pauseAudio()
+    }
   }
 
   /** Releases audio player resources */
-  fun handleOnDestroy() = getAudioViewModel().handleRelease()
+  fun handleOnDestroy() {
+    if (!fragment.requireActivity().isChangingConfigurations) {
+      getAudioViewModel().handleRelease()
+    }
+  }
 
-  /** Sets languages in presenter and ViewModel, selected language code is defaulted to first */
-  private fun getVoiceoverMappings(explorationId: String, stateId: String) {
+  /**
+   * Retrieves VoiceoverMapping from the ExplorationDataController
+   * Sets languages in Presenter and ViewModel, selected language code is defaulted to first
+   */
+  private fun retrieveVoiceoverMappings(explorationId: String, stateId: String) {
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
     processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
       val state = it.statesMap[stateId] ?: State.getDefaultInstance()
@@ -137,7 +149,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun processExplorationResult(explorationResult: AsyncResult<Exploration>): Exploration {
     if (explorationResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve Exploration: " + explorationResult.getErrorOrNull())
+      logger.e("AudioFragment", "Failed to retrieve Exploration", explorationResult.getErrorOrNull()!!)
     }
     return explorationResult.getOrDefault(Exploration.getDefaultInstance())
   }

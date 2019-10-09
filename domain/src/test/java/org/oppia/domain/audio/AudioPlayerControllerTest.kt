@@ -3,7 +3,6 @@ package org.oppia.domain.audio
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -165,6 +164,7 @@ class AudioPlayerControllerTest {
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
     assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
   }
 
   @Test

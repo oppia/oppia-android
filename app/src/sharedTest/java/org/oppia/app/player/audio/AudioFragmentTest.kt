@@ -28,12 +28,16 @@ import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import org.robolectric.shadows.ShadowMediaPlayer
 
 // TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
 // TODO: https://github.com/robolectric/robolectric/issues/5235 Need ShadowMediaPlayer to write tests, can import robolectric beccause of duplicated classes
 /** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
+
+
+  private lateinit var shadow: ShadowMediaPlayer
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
