@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <fragment
-      android:id="@+id/audio_fragment"
+      android:id="@+id/state_fragment"
       class="org.oppia.app.player.state.StateFragment"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

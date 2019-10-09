@@ -82,7 +82,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_dummyGoToExplorationButtonClicked_opensExplorationActivity() {
     launch(HomeActivity::class.java)
-    onView(withId(R.id.go_to_exploration_button)).perform(click())
+    onView(withId(R.id.play_exploration_button)).perform(click())
     waitForTheView(withId(R.id.dummy_audio_button))
   }
 
