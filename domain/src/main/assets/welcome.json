@@ -2,7 +2,7 @@
   "author_notes": "",
   "blurb": "",
   "category": "Welcome",
-  "init_state_name": "Welcome!",
+  "init_state_name": "Numeric input",
   "language_code": "en",
   "objective": "become familiar with Oppia's capabilities",
   "param_changes": [],
@@ -160,7 +160,14 @@
           }
         ],
         "confirmed_unclassified_answers": [],
-        "customization_args": {},
+        "customization_args": {
+          "rows": {
+            "value": 1
+          },
+          "placeholder": {
+            "value": "Write your last digit."
+          }
+        },
         "default_outcome": {
           "dest": "Numeric input",
           "feedback": "If you got here, something's gone a bit wrong with this exploration. Sorry about that. If you're wondering, the answer is 121.",
