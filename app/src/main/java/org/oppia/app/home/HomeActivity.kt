@@ -7,15 +7,15 @@ import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject lateinit var homeActivityController: HomeActivityController
+  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    homeActivityController.handleOnCreate()
+    homeActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration() {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this))
+  override fun routeToExploration(explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 }

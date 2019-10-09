@@ -1,6 +1,5 @@
 package org.oppia.app.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +16,11 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TEST_EXPLORATION_ID = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
-class HomeFragmentController @Inject constructor(
+class HomeFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
@@ -51,16 +50,16 @@ class HomeFragmentController @Inject constructor(
     return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
   }
 
-  fun goToExplorationButtonClicked(v: View) {
+  fun playExplorationButton(v: View) {
     explorationDataController.startPlayingExploration(
-      TEST_EXPLORATION_ID
+      EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("HomeFragmentController", "Loading exploration")
-        result.isFailure() -> logger.e("HomeFragmentController", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
+        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d("HomeFragmentController", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration()
+          logger.d("HomeFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
     })
