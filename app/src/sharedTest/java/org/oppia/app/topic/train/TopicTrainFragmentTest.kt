@@ -35,6 +35,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import androidx.test.rule.ActivityTestRule
+import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 
 /** Tests for [TopicTrainFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -83,8 +84,8 @@ class TopicTrainFragmentTest {
     onView(withRecyclerView(R.id.skill_recycler_view).atPosition(1)).perform(click())
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     onView(withId(R.id.topic_train_start_button)).perform(click())
-    intended(hasComponent("org.oppia.app.topic.questionplayer.QuestionPlayerActivity"))
-    intended(hasExtra("QuestionPlayerActivity.skill_id_list", skillIdList))
+    intended(hasComponent(QuestionPlayerActivity::class.java.name))
+    intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
 
   @Test
