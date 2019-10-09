@@ -48,7 +48,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 
-/** Tests for [QuestionDataController]. */
+/** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class QuestionDataControllerTest {
@@ -61,7 +61,7 @@ class QuestionDataControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject
-  lateinit var questionDataController: QuestionDataController
+  lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
   lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
@@ -107,7 +107,7 @@ class QuestionDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataForTopicId0() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionDataController.getQuestionsForTopic(TEST_TOPIC_ID_0)
+    val questionListLiveData = questionTrainingController.getQuestionsForTopic(TEST_TOPIC_ID_0)
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
 
@@ -121,7 +121,7 @@ class QuestionDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_returnsFailureForNonExistentTopic() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionDataController.getQuestionsForTopic("NON_EXISTENT_TOPIC")
+    val questionListLiveData = questionTrainingController.getQuestionsForTopic("NON_EXISTENT_TOPIC")
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())

@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 /** Controller for retrieving an exploration. */
 @Singleton
-class QuestionProgressController @Inject constructor(
+class QuestionAssessmentProgressController @Inject constructor(
 ) {
   fun beginQuestionTrainingSession(questionsList: List<Question>) {
   }

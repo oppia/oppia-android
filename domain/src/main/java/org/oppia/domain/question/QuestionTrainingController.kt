@@ -1,6 +1,5 @@
 package org.oppia.domain.question
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Question
@@ -15,8 +14,8 @@ private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
 /** Controller for retrieving an exploration. */
 @Singleton
-class QuestionDataController @Inject constructor(
-  private val questionProgressController: QuestionProgressController,
+class QuestionTrainingController @Inject constructor(
+  private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val dataProviders: DataProviders
 ) {
 
@@ -32,8 +31,8 @@ class QuestionDataController @Inject constructor(
 
   /**
    * Begins a question training session given a list of questions. This method is not expected to fail.
-   * [QuestionProgressController] should be used to manage the play state, and monitor the load success/failure of
-   * the training session.
+   * [QuestionAssessmentProgressController] should be used to manage the play state, and monitor the load
+   * success/failure of the training session.
    *
    * Questions will be shuffled and then the training session will begin.
    *
@@ -42,7 +41,7 @@ class QuestionDataController @Inject constructor(
    */
   fun startQuestionTrainingSession(questionsList: List<Question>): LiveData<AsyncResult<Any?>> {
     return try {
-      questionProgressController.beginQuestionTrainingSession(questionsList.shuffled())
+      questionAssessmentProgressController.beginQuestionTrainingSession(questionsList.shuffled())
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
@@ -56,7 +55,7 @@ class QuestionDataController @Inject constructor(
    */
   fun stopQuestionTrainingSession(): LiveData<AsyncResult<Any?>> {
     return try {
-      questionProgressController.finishQuestionTrainingSession()
+      questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
