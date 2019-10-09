@@ -1,7 +1,6 @@
 package org.oppia.app.home
 
 import android.os.Bundle
-import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject

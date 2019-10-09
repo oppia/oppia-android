@@ -19,7 +19,7 @@ class ExplorationActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration ID. */
+    /** Returns a new [Intent] to route to [ExplorationActivity] for current exploration. */
     fun createExplorationActivityIntent(context: Context): Intent {
       return Intent(context, ExplorationActivity::class.java)
     }

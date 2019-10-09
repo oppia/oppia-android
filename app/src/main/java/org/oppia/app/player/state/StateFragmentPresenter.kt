@@ -50,7 +50,7 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
 
-    getCurrentState()
+    subscribeToCurrentState()
 
     return binding.root
   }
@@ -92,9 +92,9 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
 
-  private fun getCurrentState() {
+  private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("TAG", "getCurrentState: " + result.state.name)
+      logger.d("StateFragment", "getCurrentState: " + result.state.name)
     })
   }
 
@@ -108,7 +108,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun processCurrentState(ephemeralStateResult: AsyncResult<EphemeralState>): EphemeralState {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragmentPresenter", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
   }
