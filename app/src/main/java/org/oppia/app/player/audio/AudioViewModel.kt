@@ -10,12 +10,14 @@ import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResource
 import javax.inject.Inject
 
 /** [ViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
-  private val audioPlayerController: AudioPlayerController
+  private val audioPlayerController: AudioPlayerController,
+  @DefaultResource private val gcsResource: String
 ) : ViewModel() {
 
   private lateinit var explorationId: String
@@ -111,12 +113,6 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
-    /**
-     * TODO Ask Sean how to get GCS_RESOURCE_BUCKET_NAME and if it is constant
-     * https://github.com/oppia/oppia/blob/4e9825fec36a2cc950e4809f363a6e45643aaf35/core/templates/dev/head/services/AssetsBackendApiService.ts
-     * What should default media source be if voice over is not present?
-     */
-    val prefix = "https://storage.googleapis.com/???/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
-    return voiceover?.fileName ?: ""
+    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
   }
 }

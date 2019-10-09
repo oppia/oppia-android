@@ -14,20 +14,15 @@
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {
-            "en": {
+            "hi-en": {
               "file_size_bytes": 0,
               "needs_update": false,
-              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+              "filename": "content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
             },
             "es": {
               "file_size_bytes": 0,
               "needs_update": false,
-              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-            },
-            "cn": {
-              "file_size_bytes": 0,
-              "needs_update": false,
-              "filename": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+              "filename": "content-es-4lbxy0bwo4g.mp3"
             }
           }
         }
