@@ -18,7 +18,7 @@
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="submitButtonInactive">#56000000</color>
   <color name="grey">#CCCCCC</color>
-  <!-- INPUT LAYOUT EDITTEXT-->
+  <!-- INPUT LAYOUT EDITTEXT -->
   <color name="blue_shade_50">#502D4A9D</color>
   <color name="blue_shade_40">#402D4A9D</color>
   <color name="blue_shade_20">#202D4A9D</color>
