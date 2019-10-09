@@ -15,7 +15,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
     homeActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration() {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this))
+  override fun routeToExploration(explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 }

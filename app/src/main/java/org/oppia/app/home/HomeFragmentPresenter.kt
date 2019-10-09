@@ -16,7 +16,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TEST_EXPLORATION_ID = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
@@ -52,14 +52,14 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun playExplorationButton(v: View) {
     explorationDataController.startPlayingExploration(
-      TEST_EXPLORATION_ID
+      EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("HomeFragmentPresenter", "Loading exploration")
-        result.isFailure() -> logger.e("HomeFragmentPresenter", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
+        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d("HomeFragmentPresenter", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration()
+          logger.d("HomeFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
     })
