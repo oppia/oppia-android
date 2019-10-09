@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BackgroundDispatcher
@@ -205,7 +206,7 @@ class DataProviders @Inject constructor(
     private fun dequeuePendingCoroutineLiveData() {
       coroutineLiveDataLock.withLock {
         pendingCoroutineLiveData?.let {
-          removeSource(it)
+          removeSource(it) // This can trigger onInactive() situations for long-standing operations, leading to them being cancelled.
           pendingCoroutineLiveData = null
         }
       }
@@ -234,7 +235,7 @@ class DataProviders @Inject constructor(
 
     override fun onInactive() {
       super.onInactive()
-      runningJob?.cancel()
+      runningJob?.cancel() // This can cancel downstream operations that may want to complete side effects.
       runningJob = null
     }
   }

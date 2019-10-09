@@ -272,6 +272,19 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  fun testObserver_observeInitPlayer_releasePlayer_initPlayer_checkNoNewUpdates() {
+    arrangeMediaPlayer()
+
+    audioPlayerController.releaseMediaPlayer()
+    audioPlayerController.initializeMediaPlayer()
+
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    // If the observer was still getting updates, the result would be pending
+    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
+  }
+
+  @Test
   @ExperimentalCoroutinesApi
   fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang()
       = runBlockingTest(coroutineContext) {

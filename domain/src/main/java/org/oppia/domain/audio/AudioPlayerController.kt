@@ -13,7 +13,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
@@ -28,7 +30,7 @@ import kotlin.concurrent.withLock
  */
 @Singleton
 class AudioPlayerController @Inject constructor(
-  private val context: Context,
+  private val logger: Logger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
@@ -87,6 +89,7 @@ class AudioPlayerController @Inject constructor(
       check(!mediaPlayerActive) { "Media player has already been initialized" }
       mediaPlayerActive = true
       if (isReleased) {
+        // Recreation is necessary since media player's resources have been released
         mediaPlayer = MediaPlayer()
         isReleased = false
       }
@@ -124,8 +127,12 @@ class AudioPlayerController @Inject constructor(
   }
 
   private fun prepareDataSource(url: String) {
-    mediaPlayer.setDataSource(url)
-    mediaPlayer.prepareAsync()
+    try {
+      mediaPlayer.setDataSource(url)
+      mediaPlayer.prepareAsync()
+    } catch(e: IOException) {
+      logger.e("AudioPlayerController", "Failed to set data source for media player", e)
+    }
     playProgress?.value = AsyncResult.pending()
   }
 

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <integer name="fade_in_duration_ms">1000</integer>
+  <integer name="fade_out_duration_ms">1000</integer>
+
   <dimen name="audio_fragment_corner_radius">8dp</dimen>
   <dimen name="audio_fragment_margin">32dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
+  <dimen name="state_previous_next_button_radius">4dp</dimen>
+  <dimen name="padding_8">8dp</dimen>
 </resources>
