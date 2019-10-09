@@ -17,5 +17,3 @@ message Question {
   int64 created_on_timestamp_ms = 6;
   int64 updated_on_timestamp_ms = 7;
 }
-
-

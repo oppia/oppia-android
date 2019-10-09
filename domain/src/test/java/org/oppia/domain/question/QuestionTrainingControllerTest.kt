@@ -32,7 +32,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.Question
+import org.oppia.domain.topic.TEST_SKILL_ID_0
+import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -48,10 +49,10 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 
-/** Tests for [QuestionDataController]. */
+/** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class QuestionDataControllerTest {
+class QuestionTrainingControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -61,13 +62,13 @@ class QuestionDataControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject
-  lateinit var questionDataController: QuestionDataController
+  lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Inject
   @field:TestDispatcher
@@ -98,7 +99,7 @@ class QuestionDataControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerQuestionDataControllerTest_TestApplicationComponent.builder()
+    DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -106,25 +107,25 @@ class QuestionDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveDataForTopicId0() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionDataController.getQuestionsForTopic(TEST_TOPIC_ID_0)
+  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
-
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    assertThat(questionListResultCaptor.value.getOrThrow()).isNotNull()
-    val questionList = questionListResultCaptor.value.getOrThrow();
-    assertThat(questionList.size).isEqualTo(0)
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_returnsFailureForNonExistentTopic() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionDataController.getQuestionsForTopic("NON_EXISTENT_TOPIC")
+  fun testController_failsToStartQuestionSessionForNonExistentSkillId() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
@@ -189,6 +190,6 @@ class QuestionDataControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(questionDataControllerTest: QuestionDataControllerTest)
+    fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest)
   }
 }
