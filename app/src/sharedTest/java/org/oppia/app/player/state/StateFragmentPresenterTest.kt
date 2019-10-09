@@ -27,7 +27,6 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
-  // The function to test text inputs in interaction view.
   @Test
   fun testTextInputView_displaySoftInputAccordingToInputType_userEnterText() {
     ActivityScenario.launch(HomeActivity::class.java).use {
@@ -37,7 +36,6 @@ class StateFragmentPresenterTest {
     }
   }
 
-  // The function to test number inputs in interaction view.
   @Test
   fun testNumberInputView_displaySoftInputAccordingToInputType_userEnterNumber() {
     ActivityScenario.launch(HomeActivity::class.java).use {
@@ -47,7 +45,6 @@ class StateFragmentPresenterTest {
     }
   }
 
-  // The function to fraction inputs in interaction view.
   @Test
   fun testFractionInputView_displaySoftInputAccordingToInputType_userEnterFraction() {
     ActivityScenario.launch(HomeActivity::class.java).use {
