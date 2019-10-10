@@ -165,7 +165,7 @@
             "value": 1
           },
           "placeholder": {
-            "value": "Write your last digit."
+            "value": "Write digit here."
           }
         },
         "default_outcome": {
