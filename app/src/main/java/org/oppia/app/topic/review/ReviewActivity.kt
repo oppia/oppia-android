@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_ARGUMENT_KEY = "ReviewActivity.skill_id"
+const val REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY = "ReviewActivity.skill_id"
 
 /** Activity for Review in train mode. */
 class ReviewActivity : InjectableAppCompatActivity() {
@@ -24,8 +24,12 @@ class ReviewActivity : InjectableAppCompatActivity() {
     /** Returns a new [Intent] to route to [ReviewActivity] for a specified skill ID list. */
     fun createReviewActivityIntent(context: Context, skillId: String): Intent {
       val intent = Intent(context, ReviewActivity::class.java)
-      intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_ARGUMENT_KEY, skillId)
+      intent.putExtra(REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY, skillId)
       return intent
+    }
+
+    fun getIntentKey():String{
+      return REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY
     }
   }
 }
