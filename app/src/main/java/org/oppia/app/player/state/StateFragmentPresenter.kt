@@ -144,12 +144,12 @@ class StateFragmentPresenter @Inject constructor(
    * This function currently provides important information to decide which button we should display.
    */
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      resultEphemeralState.set(result)
-      logger.d("StateFragment", "stateName: ${result.state.name}")
-      val interactionId = result.state.interaction.id
-      val hasPreviousState = result.hasPreviousState
-      val hasNextState = result.completedState.answerCount > 0
+    ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { it ->
+      resultEphemeralState.set(it)
+      logger.d("StateFragment", "stateName: ${it.state.name}")
+      val interactionId = it.state.interaction.id
+      val hasPreviousState = it.hasPreviousState
+      val hasNextState = it.completedState.answerCount > 0
       controlButtonVisibility(interactionId, hasPreviousState, hasNextState)
     })
   }
@@ -177,9 +177,9 @@ class StateFragmentPresenter @Inject constructor(
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    *  this function will wait for the response from that function and based on which we can move to next state.
    */
-  private fun subscribeToAnswerOutcome(answerOutcomeLiveData: LiveData<AnswerOutcome>) {
-    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
-      logger.d("StateFragment", "subscribeToAnswerOutcome: ${result.stateName}")
+  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
+    val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
+    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
       explorationProgressController.moveToNextState()
     })
   }
@@ -198,10 +198,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   // NB: Any interaction will lead to answer submission,
-  //  meaning we have to submit answer even when user clicks on "Continue".
+  //  meaning we have to submit answer before we can move to next state.
   fun continueButtonClicked(v: View) {
     submitContinueButtonAnswer()
-    moveToNextState()
   }
 
   fun submitButtonClicked(v: View) {
@@ -229,7 +228,6 @@ class StateFragmentPresenter @Inject constructor(
       NUMERIC_WITH_UNITS -> submitNumericWithUnitsInputAnswer(NumberWithUnits.getDefaultInstance())
       TEXT_INPUT -> submitTextInputAnswer(stateWhatLanguageAnswer)
     }
-    moveToNextState()
   }
 
   fun nextButtonClicked(v: View) {
@@ -248,27 +246,33 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun submitContinueButtonAnswer() {
-    explorationProgressController.submitAnswer(createContinueButtonAnswer())
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
   }
 
   private fun submitFractionInputAnswer(fractionAnswer: Fraction) {
-    explorationProgressController.submitAnswer(createFractionInputAnswer(fractionAnswer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createFractionInputAnswer(fractionAnswer)))
   }
 
   private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
-    explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex)))
   }
 
   private fun submitNumericInputAnswer(numericAnswer: Double) {
-    explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer)))
   }
 
   private fun submitNumericWithUnitsInputAnswer(numberWithUnits: NumberWithUnits) {
-    explorationProgressController.submitAnswer(createNumericWithUnitsInputAnswer(numberWithUnits))
+    subscribeToAnswerOutcome(
+      explorationProgressController.submitAnswer(
+        createNumericWithUnitsInputAnswer(
+          numberWithUnits
+        )
+      )
+    )
   }
 
   private fun submitTextInputAnswer(textAnswer: String) {
-    explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer)))
   }
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
