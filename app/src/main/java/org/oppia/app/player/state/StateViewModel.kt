@@ -8,9 +8,7 @@ import javax.inject.Inject
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope
-class StateViewModel @Inject constructor(
-
-  ) : ViewModel() {
+class StateViewModel @Inject constructor() : ViewModel() {
   var isAudioFragmentVisible = ObservableField<Boolean>(false)
   var isContinueButtonVisible = ObservableField<Boolean>(false)
   var isEndExplorationButtonVisible = ObservableField<Boolean>(false)

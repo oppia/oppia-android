@@ -29,7 +29,7 @@ private const val TEXT_INPUT = "TextInput"
 private const val FRACTION_INPUT = "FractionInput"
 private const val NUMERIC_INPUT = "NumericInput"
 private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
-private const val StateFragment_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -88,12 +88,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(StateFragment_CELLULAR_DATA_DIALOG)
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = CellularDataDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, StateFragment_CELLULAR_DATA_DIALOG)
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
   fun setAudioFragmentVisible(isVisible: Boolean) {
