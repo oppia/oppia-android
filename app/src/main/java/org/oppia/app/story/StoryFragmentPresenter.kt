@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 /** The controller for [StoryFragment] */
 class StoryFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
