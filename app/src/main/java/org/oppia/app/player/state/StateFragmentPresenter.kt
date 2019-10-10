@@ -151,5 +151,3 @@ class StateFragmentPresenter @Inject constructor(
     return (dp * Resources.getSystem().getDisplayMetrics().density).toInt()
   }
 }
-
-
