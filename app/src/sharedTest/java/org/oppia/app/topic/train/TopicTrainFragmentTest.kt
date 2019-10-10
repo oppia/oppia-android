@@ -34,8 +34,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import androidx.test.rule.ActivityTestRule
-import org.oppia.app.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 
 /** Tests for [TopicTrainFragment]. */
@@ -53,7 +53,6 @@ class TopicTrainFragmentTest {
   fun setUp() {
     Intents.init()
     skillIdList.add("test_skill_id_0")
-    skillIdList.add("test_skill_id_1")
   }
 
   @Test

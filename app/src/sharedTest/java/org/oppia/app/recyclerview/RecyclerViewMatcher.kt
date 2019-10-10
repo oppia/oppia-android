@@ -1,4 +1,4 @@
-package org.oppia.app
+package org.oppia.app.recyclerview
 
 import android.content.res.Resources
 import android.view.View
@@ -13,7 +13,7 @@ class RecyclerViewMatcher {
   companion object {
 
     /**
-     * This function returns a Matcher for a item inside RecyclerView from a specified position.
+     * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
     fun atPosition(recyclerViewId: Int, position: Int): Matcher<View> {
       return atPositionOnView(recyclerViewId, position, -1)
