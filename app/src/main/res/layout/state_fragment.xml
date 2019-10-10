@@ -42,11 +42,10 @@
       android:id="@+id/llRoot"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-    android:layout_margin="24dp"
+      android:layout_margin="24dp"
       android:orientation="vertical"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toTopOf="@id/dummy_audio_button"/>
-
+      app:layout_constraintBottom_toTopOf="@id/dummy_audio_button"
+      app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/dummy_audio_button"
