@@ -41,6 +41,8 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
+// TODO(163): Remove all loggers.
+
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
@@ -204,6 +206,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun submitButtonClicked(v: View) {
     // TODO(163): Remove these dummy answers and fetch answers from different interaction views.
+    // NB: This sample data will work only with TEST_EXPLORATION_ID_5
     // 0 -> What Language
     // 2 -> Welcome!
     // XX -> What Language
