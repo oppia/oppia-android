@@ -113,20 +113,7 @@ class QuestionTrainingControllerTest {
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testController_failsToStartQuestionSessionForNonExistentSkillId() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
-    advanceUntilIdle()
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
   @Qualifier
