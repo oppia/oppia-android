@@ -11,9 +11,4 @@ import javax.inject.Inject
  * [ReviewSkillSelector].
  */
 @FragmentScope
-class TopicReviewViewModel @Inject constructor(
-  fragment: Fragment,
-  private val topicListController: TopicController
-) : ViewModel() {
-  private val topicReviewSummaryClickListener = fragment as ReviewSkillSelector
-}
+class TopicReviewViewModel @Inject constructor(fragment: Fragment) : ViewModel() {}

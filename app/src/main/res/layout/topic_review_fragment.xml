@@ -7,8 +7,14 @@
       name="viewModel"
       type="org.oppia.app.topic.review.TopicReviewViewModel"/>
   </data>
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/review_skill_recycler_view"
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="match_parent"
+    android:background="@color/oppiaBackground">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/review_skill_recycler_view"
+      android:layout_width="match_parent"
+      android:padding="16dp"
+      android:layout_height="wrap_content"/>
+  </FrameLayout>
 </layout>

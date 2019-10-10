@@ -46,5 +46,7 @@ class ReviewSkillSelectionAdapter(private val reviewSkillSelector: ReviewSkillSe
         reviewSkillSelector.onTopicReviewSummaryClicked(skill)
       }
     }
+
+
   }
 }
