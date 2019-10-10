@@ -2,9 +2,11 @@ package org.oppia.app.player.audio
 
 import android.app.Application
 import android.content.Context
+import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -37,8 +39,10 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.Shadows
 import javax.inject.Singleton
 import org.robolectric.shadows.ShadowMediaPlayer
+import org.robolectric.shadows.util.DataSource
 import javax.inject.Inject
 import javax.inject.Qualifier
 
@@ -46,34 +50,49 @@ import javax.inject.Qualifier
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
-  @get:Rule
-  val activityTestRule = ActivityTestRule(AudioFragmentTestActivity::class.java)
+  @Inject lateinit var context: Context
 
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
 
+  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
+  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-es-4lbxy0bwo4g.mp3"
+
   @Before
   fun setUp() {
-
+    setUpTestApplicationComponent()
+    addMediaInfo()
+    shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
+    shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
   }
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_play_circle_filled_black_24dp)))
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_arrow_back_oppia_dark_blue_24dp)))
     }
   }
 
   @Test
   fun testAudioFragment_clickPlayButtonWhileLoading_showPlayButton() {
+    ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
+      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_play_circle_filled_black_24dp)))
+    }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
+    ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
+      shadowMediaPlayer.invokePreparedListener()
+      Thread.sleep(1000)
+      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_pause_circle_filled_black_24dp)))
+    }
   }
 
   @Test
@@ -99,8 +118,10 @@ class AudioFragmentTest {
     }
 
     override fun matchesSafely(view: View): Boolean {
-      val context = view.context
-      val expectedBitmap = context?.getDrawable(id)?.toBitmap()
+
+      val context = ApplicationProvider.getApplicationContext()
+      val drawable = ResourcesCompat.getDrawable(context.resources, id, null)
+      val expectedBitmap = drawable?.toBitmap()
       return view is ImageView && view.drawable.toBitmap().sameAs(expectedBitmap)
     }
   }
@@ -110,6 +131,14 @@ class AudioFragmentTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  private fun addMediaInfo() {
+    val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
+    val dataSource2 = DataSource.toDataSource(context , Uri.parse(TEST_URL2))
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
+    ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
   }
 
   @Qualifier
