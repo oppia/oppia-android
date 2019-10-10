@@ -23,5 +23,4 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
   override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) = stateFragmentPresenter.handleEnableAudio(saveUserChoice)
   override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) = stateFragmentPresenter.handleDisableAudio(saveUserChoice)
   fun dummyButtonClicked() = stateFragmentPresenter.handleAudioClick()
-
 }

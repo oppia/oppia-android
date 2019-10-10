@@ -74,15 +74,18 @@ class StateFragmentPresenter @Inject constructor(
       setAudioFragmentVisible(useCellularData)
     }
   }
+
   fun handleEnableAudio(saveUserChoice: Boolean) {
     setAudioFragmentVisible(true)
     if (saveUserChoice)
       cellularDialogController.setAlwaysUseCellularDataPreference()
   }
+
   fun handleDisableAudio(saveUserChoice: Boolean) {
     if (saveUserChoice)
       cellularDialogController.setNeverUseCellularDataPreference()
   }
+
   private fun showCellularDataDialogFragment() {
     val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
     if (previousFragment != null) {
@@ -91,9 +94,11 @@ class StateFragmentPresenter @Inject constructor(
     val dialogFragment = CellularDataDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
+
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
+
   fun setAudioFragmentVisible(isVisible: Boolean) {
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }

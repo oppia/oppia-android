@@ -13,9 +13,10 @@
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel" />
+
     <variable
       name="presenter"
-      type="org.oppia.app.player.state.StateFragmentPresenter"/>
+      type="org.oppia.app.player.state.StateFragmentPresenter" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,9 +49,8 @@
       android:layout_margin="24dp"
       android:orientation="vertical"
       app:layout_constraintBottom_toTopOf="@id/dummy_edittext_button"
-      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/dummy_edittext_button"
@@ -59,22 +59,21 @@
       android:layout_margin="8dp"
       android:text="fetch"
       app:layout_constraintBottom_toTopOf="@id/fetched_data_tv"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
       android:id="@+id/fetched_data_tv"
       android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:layout_margin="@dimen/padding_8"
       android:gravity="center"
       android:hint="click the fetch button to fetch data from edit text"
-      android:layout_height="wrap_content"
       app:layout_constraintBottom_toTopOf="@id/dummy_audio_button"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/dummy_audio_button"
@@ -91,7 +90,5 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintVertical_bias="0.935" />
-
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
