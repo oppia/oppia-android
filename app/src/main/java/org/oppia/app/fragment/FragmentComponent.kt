@@ -13,6 +13,7 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.overview.TopicOverviewFragment
 import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
+import org.oppia.app.topic.review.ReviewFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
@@ -31,11 +32,12 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
+  fun inject(reviewFragment: ReviewFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicOverviewFragment: TopicOverviewFragment)
   fun inject(topicPlayFragment: TopicPlayFragment)
-  fun inject(topicReviewFragment: TopicReviewFragment)
+  fun inject(topicTopicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
 }

@@ -12,8 +12,7 @@
     android:layout_height="160dp"
     android:layout_margin="10dp"
     android:clickable="true"
-    android:focusable="true"
-    >
+    android:focusable="true">
     <ImageView
       android:layout_width="0dp"
       android:layout_height="0dp"
@@ -38,7 +37,6 @@
       android:layout_margin="8dp"
       android:fontFamily="sans-serif-medium"
       android:text="@{skill.description}"
-      android:textColor="@color/white"
       android:textSize="14sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar"/>

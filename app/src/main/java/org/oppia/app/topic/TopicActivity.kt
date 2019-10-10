@@ -1,8 +1,10 @@
 package org.oppia.app.topic
 
 import android.os.Bundle
+import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.topic.review.ReviewActivity
 import javax.inject.Inject
 
 /** The activity for tabs in Topic. */
@@ -19,7 +21,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
 
-  override fun routeToReview(reviewId: String) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  override fun routeToReview(skillId: String) {
+    startActivity(ReviewActivity.createReviewActivityIntent(this, skillId))
   }
 }

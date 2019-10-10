@@ -23,7 +23,7 @@ import javax.inject.Singleton
 
 /** Tests for [TopicReviewFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicReviewFragmentTest {
+class TopicTopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_textIsDisplayed() {
