@@ -11,12 +11,12 @@ const val REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY = "ReviewActivity.skill_id"
 /** Activity for Review in train mode. */
 class ReviewActivity : InjectableAppCompatActivity() {
   @Inject
-  lateinit var questionPlayerActivityPresenter: ReviewActivityPresenter
+  lateinit var reviewActivityPresenter: ReviewActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    questionPlayerActivityPresenter.handleOnCreate()
+    reviewActivityPresenter.handleOnCreate()
   }
 
   companion object {
