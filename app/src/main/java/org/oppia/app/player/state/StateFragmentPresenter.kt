@@ -47,12 +47,12 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
+  private val fragment: Fragment,
   private val logger: Logger,
-  viewModelProvider: ViewModelProvider<StateViewModel>
+  private val viewModelProvider: ViewModelProvider<StateViewModel>
 ) {
   private val stateViewModel = viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
 
