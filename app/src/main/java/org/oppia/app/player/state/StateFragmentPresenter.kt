@@ -4,7 +4,9 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -39,6 +41,8 @@ class StateFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var llRoot: LinearLayout? = null
+  private var dummyEditTextButton: Button? = null
+  private var dummyFetchDataTV: TextView? = null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
@@ -57,6 +61,8 @@ class StateFragmentPresenter @Inject constructor(
 
     subscribeToCurrentState()
     llRoot = binding.root.findViewById(R.id.llRoot)
+    dummyEditTextButton = binding.root.findViewById(R.id.dummy_edittext_button)
+    dummyFetchDataTV = binding.root.findViewById(R.id.fetched_data_tv)
     return binding.root
   }
 
@@ -68,18 +74,15 @@ class StateFragmentPresenter @Inject constructor(
       setAudioFragmentVisible(useCellularData)
     }
   }
-
   fun handleEnableAudio(saveUserChoice: Boolean) {
     setAudioFragmentVisible(true)
     if (saveUserChoice)
       cellularDialogController.setAlwaysUseCellularDataPreference()
   }
-
   fun handleDisableAudio(saveUserChoice: Boolean) {
     if (saveUserChoice)
       cellularDialogController.setNeverUseCellularDataPreference()
   }
-
   private fun showCellularDataDialogFragment() {
     val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
     if (previousFragment != null) {
@@ -88,11 +91,9 @@ class StateFragmentPresenter @Inject constructor(
     val dialogFragment = CellularDataDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
-
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
-
   fun setAudioFragmentVisible(isVisible: Boolean) {
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
@@ -121,7 +122,9 @@ class StateFragmentPresenter @Inject constructor(
     )
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot!!.addView(contentComponent, params)
-
+    dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
+      dummyFetchDataTV!!.setText(contentComponent.text)
+    })
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
@@ -143,3 +146,5 @@ class StateFragmentPresenter @Inject constructor(
     return (dp * Resources.getSystem().getDisplayMetrics().density).toInt()
   }
 }
+
+
