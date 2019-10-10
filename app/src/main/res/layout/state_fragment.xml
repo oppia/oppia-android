@@ -112,7 +112,7 @@
         android:id="@+id/end_exploration_state_button"
         style="@style/StateButtonActive"
         android:layout_alignParentEnd="true"
-        android:onClick="@{viewModel::endExplorationButtonClicked}"
+        android:onClick="@{presenter::endExplorationButtonClicked}"
         android:text="@string/state_end_exploration_button"
         android:visibility="@{viewModel.isEndExplorationButtonVisible()? View.VISIBLE: View.GONE}"/>
       <Button
@@ -122,7 +122,7 @@
         android:background="@drawable/state_button_blue_background"
         android:drawableEnd="@drawable/ic_refresh_white_24dp"
         android:drawablePadding="4dp"
-        android:onClick="@{viewModel::learnAgainButtonClicked}"
+        android:onClick="@{presenter::learnAgainButtonClicked}"
         android:text="@string/state_learn_again_button"
         android:visibility="@{viewModel.isLearnAgainButtonVisible()? View.VISIBLE: View.GONE}"/>
     </RelativeLayout>

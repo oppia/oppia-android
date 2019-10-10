@@ -62,19 +62,4 @@ class StateViewModel @Inject constructor() : ViewModel() {
       isSubmitButtonActive.set(false)
     }
   }
-
-  fun continueButtonClicked(v: View) {
-  }
-
-  fun endExplorationButtonClicked(v: View) {
-  }
-
-  fun learnAgainButtonClicked(v: View) {
-  }
-
-  fun nextButtonClicked(v: View) {
-  }
-
-  fun previousButtonClicked(v: View) {
-  }
 }
