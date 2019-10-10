@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.SkillSummary
 import javax.inject.Inject
 
 /** Fragment that card for topic review. */
-class TopicReviewFragment : InjectableFragment() {
+class TopicReviewFragment : InjectableFragment(), TopicReviewSummaryClickListener {
   @Inject
   lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
 
@@ -20,5 +21,9 @@ class TopicReviewFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return topicReviewFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun onTopicReviewSummaryClicked(topicReview: SkillSummary) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="skill"
+      type="org.oppia.app.model.SkillSummary"/>
+  </data>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="140dp"
+    android:layout_height="160dp"
+    android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    >
+    <ImageView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:importantForAccessibility="no"
+      android:paddingStart="20dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="20dp"
+      android:scaleType="centerCrop"
+      app:layout_constraintBottom_toTopOf="@+id/bottom_topic_bar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+    <FrameLayout
+      android:id="@+id/bottom_topic_bar"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="@{skill.description}"
+      android:textColor="@color/white"
+      android:textSize="14sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
