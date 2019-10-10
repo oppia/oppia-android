@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Rule
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -45,6 +46,9 @@ import javax.inject.Qualifier
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
+  @get:Rule
+  val activityTestRule = ActivityTestRule(AudioFragmentTestActivity::class.java)
+
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
@@ -54,7 +58,6 @@ class AudioFragmentTest {
 
   }
 
-
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
@@ -62,6 +65,33 @@ class AudioFragmentTest {
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_play_circle_filled_black_24dp)))
     }
   }
+
+  @Test
+  fun testAudioFragment_clickPlayButtonWhileLoading_showPlayButton() {
+
+  }
+
+  @Test
+  fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
+
+  }
+
+  @Test
+  fun testAudioFragment_invokePrepared_touchSeekBar_checkMediaPlayerPosition() {
+
+  }
+
+  @Test
+  fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+
+  }
+
+  @Test
+  fun testAudioFragment_invokePrepared_changeLanguage_checkSeekBarPositionAndPlayButton() {
+
+  }
+
+
 
   private fun withDrawable(@DrawableRes id: Int) = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
