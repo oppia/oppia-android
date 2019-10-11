@@ -1,22 +1,22 @@
-package org.oppia.app.topic.conceptcard
+package org.oppia.app.player.audio
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
-import androidx.test.espresso.action.ViewActions.click
+import android.content.res.Configuration
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import org.junit.Rule
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -29,8 +29,12 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ConceptCardFragmentTest {
 
-  @get:Rule
-  val activityTestRule = ActivityTestRule(ConceptCardFragmentTestActivity::class.java)
+  private lateinit var activityScenario: ActivityScenario<ConceptCardFragmentTestActivity>
+
+  @Before
+  fun setUp() {
+    activityScenario = ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java)
+  }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_explanationIsDisplayed() {
@@ -60,7 +64,10 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_2)).perform(click())
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    activityScenario.recreate()
     onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
     onView(withText("Second worked example.")).check(matches(isDisplayed()))
   }
