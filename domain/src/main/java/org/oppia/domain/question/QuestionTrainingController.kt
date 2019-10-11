@@ -55,11 +55,11 @@ class QuestionTrainingController @Inject constructor(
     val trainingQuestions = mutableListOf<Question>()
     for (skillId in skillIdsList) {
       trainingQuestions.addAll(questionsList.filter {
-        it.linkedSkillIdsList.contains(skillId)
+        it.linkedSkillIdsList.contains(skillId) &&
+        !trainingQuestions.contains(it)
       }.take(numQuestionsPerSkill + 1))
     }
     return trainingQuestions
-      .distinctBy {it.questionId}
       .take(TOTAL_QUESTIONS_PER_TOPIC)
   }
 
