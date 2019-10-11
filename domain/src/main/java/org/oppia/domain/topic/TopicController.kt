@@ -106,18 +106,21 @@ class TopicController @Inject constructor(
             .setQuestionId(TEST_QUESTION_ID_0)
             .setQuestionState(explorationRetriever.createStateFromJson(
               "question",questionsJSON?.getJSONObject(0)))
+            .addLinkedSkillIds(TEST_SKILL_ID_0)
             .build())
         TEST_SKILL_ID_1 -> questionsList.add(
           Question.newBuilder()
             .setQuestionId(TEST_QUESTION_ID_1)
             .setQuestionState(explorationRetriever.createStateFromJson(
               "question",questionsJSON?.getJSONObject(1)))
+            .addLinkedSkillIds(TEST_SKILL_ID_1)
             .build())
         TEST_SKILL_ID_2 -> questionsList.add(
           Question.newBuilder()
             .setQuestionId(TEST_QUESTION_ID_2)
             .setQuestionState(explorationRetriever.createStateFromJson(
               "question",questionsJSON?.getJSONObject(2)))
+            .addLinkedSkillIds(TEST_SKILL_ID_2)
             .build())
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
