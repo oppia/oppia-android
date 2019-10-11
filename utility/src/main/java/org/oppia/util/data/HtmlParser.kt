@@ -11,9 +11,7 @@ const val CUSTOM_ATTRIBUTE = "filepath-with-value"
 const val HTML_ATTRIBUTE = "src"
 
 /** Html Parser for android TextView to parse Html tag. */
-class HtmlParser(
-  internal var context: Context
-) {
+class HtmlParser(internal var context: Context) {
 
   fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
