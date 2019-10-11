@@ -41,7 +41,7 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
-// TODO(163): Remove all loggers.
+// TODO(#163): Remove all loggers.
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -56,7 +56,7 @@ class StateFragmentPresenter @Inject constructor(
 ) {
   private val stateViewModel = viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
 
-  private val resultEphemeralState = ObservableField<EphemeralState>()
+  private val currentEphemeralState = ObservableField<EphemeralState>()
 
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -116,7 +116,7 @@ class StateFragmentPresenter @Inject constructor(
     stateViewModel.setAudioFragmentVisible(isVisible)
   }
 
-  private fun controlButtonVisibility(interactionId: String, hasPreviousState: Boolean, hasNextState: Boolean) {
+  private fun updateNavigationButtonVisibility(interactionId: String, hasPreviousState: Boolean, hasNextState: Boolean) {
     logger.d("StateFragment", "interactionId: $interactionId")
     logger.d("StateFragment", "hasPreviousState: $hasPreviousState")
     logger.d("StateFragment", "hasNextState: $hasNextState")
@@ -140,17 +140,17 @@ class StateFragmentPresenter @Inject constructor(
 
   /**
    * This function subscribes to current state of the exploration.
-   * Whenever the current state changes it will automatically get called and therefore their is no need to call this separately.
-   * This function currently provides important information to decide which button we should display.
+   * Whenever the current state changes it will automatically get called and therefore there is no need to call this separately.
+   * this function currently provides important information to decide which button we should display.
    */
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { it ->
-      resultEphemeralState.set(it)
+      currentEphemeralState.set(it)
       logger.d("StateFragment", "stateName: ${it.state.name}")
       val interactionId = it.state.interaction.id
       val hasPreviousState = it.hasPreviousState
       val hasNextState = it.completedState.answerCount > 0
-      controlButtonVisibility(interactionId, hasPreviousState, hasNextState)
+      updateNavigationButtonVisibility(interactionId, hasPreviousState, hasNextState)
     })
   }
 
@@ -175,7 +175,7 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
-   *  this function will wait for the response from that function and based on which we can move to next state.
+   * this function will wait for the response from that function and based on which we can move to next state.
    */
   private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
@@ -204,7 +204,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun submitButtonClicked(v: View) {
-    // TODO(163): Remove these dummy answers and fetch answers from different interaction views.
+    // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
     // NB: This sample data will work only with TEST_EXPLORATION_ID_5
     // 0 -> What Language
     // 2 -> Welcome!
@@ -220,7 +220,7 @@ class StateFragmentPresenter @Inject constructor(
     // XX -> Numeric Input
     val stateNumericInputAnswer = 121
 
-    when (resultEphemeralState.get()!!.state.interaction.id) {
+    when (currentEphemeralState.get()!!.state.interaction.id) {
       FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
       ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
       MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
