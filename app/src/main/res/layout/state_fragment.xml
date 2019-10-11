@@ -14,9 +14,6 @@
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel" />
 
-    <variable
-      name="presenter"
-      type="org.oppia.app.player.state.StateFragmentPresenter" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,12 +21,10 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-      android:id="@+id/linearLayout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
-      android:orientation="vertical"
       android:visibility="@{viewModel.isAudioFragmentVisible? View.VISIBLE: View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

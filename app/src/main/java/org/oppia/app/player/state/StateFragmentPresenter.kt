@@ -38,11 +38,12 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) {
 
+  private val numberOfrows: Int =1
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var llRoot: LinearLayout? = null
-  private var dummyEditTextButton: Button? = null
-  private var dummyFetchDataTV: TextView? = null
+  private lateinit var llRoot: LinearLayout
+  private lateinit var dummyEditTextButton: Button
+  private lateinit var dummyFetchDataTV: TextView
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
@@ -105,11 +106,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      try {
-        if (result.state.interaction.id.equals("NumericInput"))
-          addNumberInputContentCard(result.state.interaction.customizationArgsMap.get("placeholder")!!.normalizedString)
-      } catch (e: Exception) {
-      }
+      if (result.state.interaction.id.equals("NumericInput"))
+        addNumberInputContentCard(result.state.interaction.customizationArgsMap.get("placeholder")!!.normalizedString)
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
     })
   }
@@ -119,14 +117,14 @@ class StateFragmentPresenter @Inject constructor(
     var contentComponent = NumberInputInteractionView(
       fragment.context!!,
       placeholder,
-      1
+      numberOfrows
     )
     val params = LinearLayout.LayoutParams(
       LinearLayout.LayoutParams.MATCH_PARENT,
       LinearLayout.LayoutParams.WRAP_CONTENT
     )
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
-    llRoot!!.addView(contentComponent, params)
+    llRoot.addView(contentComponent, params)
     dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
       dummyFetchDataTV!!.setText(contentComponent.text)
     })
