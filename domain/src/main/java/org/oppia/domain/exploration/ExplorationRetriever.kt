@@ -56,7 +56,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
 
   // Loads the JSON string from an asset and converts it to a JSONObject
   @Throws(IOException::class)
-  private fun loadJsonFromAsset(assetName: String): JSONObject? {
+  fun loadJsonFromAsset(assetName: String): JSONObject? {
     val assetManager = context.assets
     val jsonContents = assetManager.open(assetName).bufferedReader().use { it.readText() }
     return JSONObject(jsonContents)
@@ -75,7 +75,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
   }
 
   // Creates a single state object from JSON
-  private fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
+  fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
     return State.newBuilder()
       .setName(stateName)
       .setContent(

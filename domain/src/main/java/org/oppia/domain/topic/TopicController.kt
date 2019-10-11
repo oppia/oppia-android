@@ -19,6 +19,7 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.exploration.ExplorationRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
@@ -37,7 +38,8 @@ private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
 class TopicController @Inject constructor(
-  private val dataProviders: DataProviders
+  private val dataProviders: DataProviders,
+  private val explorationRetriever: ExplorationRetriever
 ) {
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
@@ -95,19 +97,27 @@ class TopicController @Inject constructor(
   @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
   private suspend fun loadQuestions(skillIdsList: List<String>): List<Question> {
     val questionsList = mutableListOf<Question>()
+    val questionsJSON = explorationRetriever.loadJsonFromAsset(
+      "sample_questions.json")?.getJSONArray("questions")
     for (skillId in skillIdsList) {
       when (skillId) {
         TEST_SKILL_ID_0 -> questionsList.add(
           Question.newBuilder()
             .setQuestionId(TEST_QUESTION_ID_0)
+            .setQuestionState(explorationRetriever.createStateFromJson(
+              "question",questionsJSON?.getJSONObject(0)))
             .build())
         TEST_SKILL_ID_1 -> questionsList.add(
           Question.newBuilder()
             .setQuestionId(TEST_QUESTION_ID_1)
+            .setQuestionState(explorationRetriever.createStateFromJson(
+              "question",questionsJSON?.getJSONObject(1)))
             .build())
         TEST_SKILL_ID_2 -> questionsList.add(
           Question.newBuilder()
             .setQuestionId(TEST_QUESTION_ID_2)
+            .setQuestionState(explorationRetriever.createStateFromJson(
+              "question",questionsJSON?.getJSONObject(2)))
             .build())
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
