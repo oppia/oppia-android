@@ -111,7 +111,7 @@ class InteractionAdapter(
    internal fun bind(rawString: String?, position: Int, selectedPosition: Int) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
-      val html: Spannable =  HtmlParser(context,entity_type,entity_id).parseHtml(rawString, binding.root.tv_item_selection_contents)
+      val html: Spannable =  HtmlParser(context,entity_type,entity_id).parseHtml(rawString, binding.root.tv_multiple_choice_contents)
       binding.root.tv_multiple_choice_contents.text = html
 
       if (selectedPosition == position)

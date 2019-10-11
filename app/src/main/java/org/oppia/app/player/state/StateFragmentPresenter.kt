@@ -12,6 +12,7 @@ import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.data.backends.gae.model.GaeCustomizationArgs
@@ -38,7 +39,7 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
 
   private var items: Array<String>? = null
-  var gaeCustomizationArgsMap = HashMap<String, GaeCustomizationArgs>()
+  var gaeCustomizationArgsMap  = HashMap<String,InteractionObject>()
   var interactionInstanceId: String? = null
   private val entity_type: String = "exploration"
   private val entity_id: String = "umPkwp0L1M0-"
@@ -62,8 +63,8 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
 
-    getCurrentState()
-    showInputInteractions(binding)
+    getCurrentState(binding)
+
     return binding.root
   }
 
@@ -104,9 +105,23 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
 
-  private fun getCurrentState() {
+  private fun getCurrentState(binding: StateFragmentBinding) {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("TAG", "getCurrentState: " + result.state.name)
+      val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
+      logger.d("TAG", "getCurrentState: " + result.state)
+      val allKeys: Set<String> = customizationArgsMap.keys
+
+      for (key in allKeys) {
+        logger.d("StateFragment", key)
+      }
+      if (customizationArgsMap.contains("choices")) {
+        val customizationArgs : InteractionObject?= customizationArgsMap["choices"]
+//        val customizationArgs: Collection<InteractionObject> = customizationArgsMap.values
+        // This log should give 3 but it is showing 0. So maybe it would a good idea to use other paramters from InteractionObject, similar to my comments below
+        //val stringList = customizationArgs!!.setOfHtmlString
+        //val stringList = customizationArgs!!.toByteString()
+        logger.d("StateFragment", "value: ${customizationArgs}")
+      }
     })
   }
 
@@ -124,16 +139,9 @@ class StateFragmentPresenter @Inject constructor(
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
   }
-
-  fun createDummyData() {
-    interactionInstanceId = "ItemSelectionInput"
-    var sampleData: GaeCustomizationArgs =
-      GaeCustomizationArgs(true, "<p>The numerator.</p>, <p>The denominator.</p>, <p>I can't remember!</p>]")
-    gaeCustomizationArgsMap?.put("choices", sampleData)
-  }
-
+  
   private fun showInputInteractions(binding: StateFragmentBinding) {
-    val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap!!.get("choices")?.value
+    val gaeCustomizationArgs: Any? = gaeCustomizationArgsMap.values
     if (interactionInstanceId.equals("MultipleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
