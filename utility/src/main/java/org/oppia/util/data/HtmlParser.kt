@@ -5,14 +5,20 @@ import android.text.Html
 import android.text.Spannable
 import android.widget.TextView
 
-const val CUSTOM_TAG = "oppia-noninteractive-image"
-const val HTML_TAG = "img"
-const val CUSTOM_ATTRIBUTE = "filepath-with-value"
-const val HTML_ATTRIBUTE = "src"
+private const val CUSTOM_TAG = "oppia-noninteractive-image"
+private const val HTML_TAG = "img"
+private const val CUSTOM_ATTRIBUTE = "filepath-with-value"
+private const val HTML_ATTRIBUTE = "src"
 
 /** Html Parser for android TextView to parse Html tag. */
 class HtmlParser(internal var context: Context) {
 
+  /***
+   * This method is called to parse HTML from a string-content, it manipulates the HTML elements, attributes and text
+   * @param rawString : rawString argument is the string from the string-content
+   * @param tvContents : tvContents argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
+   * @return Spannable : Spannable represents the styled text.
+   */
   fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
     var htmlContent = rawString
