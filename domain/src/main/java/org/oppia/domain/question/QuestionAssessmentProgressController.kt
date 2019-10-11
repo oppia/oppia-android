@@ -20,9 +20,9 @@ import javax.inject.Singleton
 class QuestionAssessmentProgressController @Inject constructor(
 ) {
   fun beginQuestionTrainingSession(questionsList: DataProvider<List<Question>>) {
+  
   }
 
   fun finishQuestionTrainingSession() {
-
   }
 }

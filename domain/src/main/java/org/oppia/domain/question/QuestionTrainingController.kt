@@ -3,9 +3,6 @@ package org.oppia.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Question
-import org.oppia.domain.topic.TEST_SKILL_ID_0
-import org.oppia.domain.topic.TEST_SKILL_ID_1
-import org.oppia.domain.topic.TEST_SKILL_ID_2
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
