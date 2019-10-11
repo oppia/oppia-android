@@ -47,7 +47,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)

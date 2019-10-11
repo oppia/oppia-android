@@ -40,10 +40,6 @@ import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -487,8 +483,8 @@ class TopicControllerTest {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(2)
@@ -501,8 +497,8 @@ class TopicControllerTest {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
