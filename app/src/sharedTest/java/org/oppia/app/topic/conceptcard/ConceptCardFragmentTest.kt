@@ -1,4 +1,4 @@
-package org.oppia.app.player.audio
+package org.oppia.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
