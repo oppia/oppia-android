@@ -29,6 +29,7 @@ import javax.inject.Inject
 
 private const val CONTINUE = "Continue"
 private const val END_EXPLORATION = "EndExploration"
+private const val LEARN_AGAIN = "LearnAgain"
 private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
 private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
 private const val TEXT_INPUT = "TextInput"
@@ -56,7 +57,9 @@ class StateFragmentPresenter @Inject constructor(
 ) {
   private val stateViewModel = viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
 
-  private val currentEphemeralState = ObservableField<EphemeralState>()
+  val currentEphemeralState = ObservableField<EphemeralState>()
+
+  private val stateName = ObservableField<String>("")
 
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -127,6 +130,10 @@ class StateFragmentPresenter @Inject constructor(
     stateViewModel.setPreviousButtonVisible(hasPreviousState)
     if (!hasNextState) {
       stateViewModel.setObservableInteractionId(interactionId)
+      // TODO(#163): This function controls whether the "Submit" button should be displayed or not.
+      //  Remove this function in final implementation and control this whenever user selects some option in
+      //  MultipleChoiceInput or InputSelectionInput. For now this is `true` because we do not have a mechanism to work
+      //  with MultipleChoiceInput or InputSelectionInput, which will eventually be responsible for controlling this.
       stateViewModel.optionSelected(true)
     } else {
       stateViewModel.clearObservableInteractionId()
@@ -142,10 +149,10 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { it ->
       currentEphemeralState.set(it)
-      logger.d("StateFragment", "stateName: ${it.state.name}")
       val interactionId = it.state.interaction.id
       val hasPreviousState = it.hasPreviousState
       val hasNextState = it.completedState.answerCount > 0
+      stateName.set(it.state.name)
       updateNavigationButtonVisibility(interactionId, hasPreviousState, hasNextState)
     })
   }
@@ -193,16 +200,6 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  // NB: Any interaction will lead to answer submission,
-  //  meaning we have to submit answer before we can move to next state.
-  fun continueButtonClicked(v: View) {
-    submitContinueButtonAnswer()
-  }
-
-  fun submitButtonClicked(v: View) {
-
-  }
-
   fun interactionButtonClicked(v: View) {
     // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
     // NB: This sample data will work only with TEST_EXPLORATION_ID_5
@@ -221,6 +218,8 @@ class StateFragmentPresenter @Inject constructor(
     val stateNumericInputAnswer = 121
 
     when (currentEphemeralState.get()!!.state.interaction.id) {
+      CONTINUE -> submitContinueButtonAnswer()
+      END_EXPLORATION -> endExploration()
       FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
       ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
       MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
@@ -236,13 +235,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun previousButtonClicked(v: View) {
     moveToPreviousState()
-  }
-
-  fun endExplorationButtonClicked(v: View) {
-    endExploration()
-  }
-
-  fun learnAgainButtonClicked(v: View) {
   }
 
   private fun submitContinueButtonAnswer() {

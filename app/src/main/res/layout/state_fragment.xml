@@ -32,6 +32,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     </LinearLayout>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:gravity="center"
+      android:text="@{`State name: ` + presenter.currentEphemeralState.get().state.name + `\n` + `NB: If button does not work, try typing something.`}"
+      app:layout_constraintBottom_toTopOf="@id/dummy_audio_button"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"/>
     <Button
       android:id="@+id/dummy_audio_button"
       android:layout_width="wrap_content"
@@ -95,12 +104,13 @@
         android:id="@+id/interaction_button"
         style="@style/StateButtonActive"
         android:layout_alignParentEnd="true"
-        android:background="@{viewModel.name.get().equals(@string/state_learn_again_button)? @drawable/state_button_blue_background : @drawable/state_button_primary_background}"
         android:clickable="@{viewModel.isInteractionButtonActive()}"
         android:drawableEnd="@{viewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
         android:onClick="@{presenter::interactionButtonClicked}"
         android:text="@{viewModel.name}"
-        android:visibility="@{viewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
+        android:textColor="@{viewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
+        android:visibility="@{viewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"
+        xyz="@{viewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"/>
     </RelativeLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
