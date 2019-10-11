@@ -1,5 +1,6 @@
 package org.oppia.app.recyclerview
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -30,6 +31,7 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import android.view.View
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 
@@ -273,13 +275,15 @@ class BindableAdapterTest {
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false) as TextView
+      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
+    ) as TextView
   }
 
   private fun inflateTextViewForIntWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_int_no_data_binding, viewGroup, /* attachToRoot= */ false) as TextView
+      R.layout.test_text_view_for_int_no_data_binding, viewGroup, /* attachToRoot= */ false
+    ) as TextView
   }
 
   private fun bindTextViewForStringWithoutDataBinding(textView: TextView, data: TestModel) {
@@ -313,7 +317,7 @@ class BindableAdapterTest {
 
   // TODO(#89): Move this to a consolidated test library.
   // https://stackoverflow.com/a/34795431
-  private fun atPosition(position: Int, itemMatcher: Matcher<View>): Matcher<View> {
+  fun atPosition(position: Int, itemMatcher: Matcher<View>): Matcher<View> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
       override fun describeTo(description: Description) {
         description.appendText("has item at position $position: ")
@@ -323,6 +327,56 @@ class BindableAdapterTest {
       override fun matchesSafely(view: RecyclerView): Boolean {
         val viewHolder = view.findViewHolderForAdapterPosition(position) ?: return false
         return itemMatcher.matches(viewHolder.itemView)
+      }
+    }
+  }
+
+  /**
+   * This function returns a Matcher for an item inside RecyclerView from a specified position.
+   */
+  fun atPosition(recyclerViewId: Int, position: Int): Matcher<View> {
+    return atPositionOnView(recyclerViewId, position, -1)
+  }
+
+  /**
+   * This function returns a Matcher for a specific view within the item inside RecyclerView from a specified position.
+   */
+  fun atPositionOnView(recyclerViewId: Int, position: Int, targetViewId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      var resources: Resources? = null
+      var childView: View? = null
+
+      override fun describeTo(description: Description) {
+        var idDescription = Integer.toString(recyclerViewId)
+        if (this.resources != null) {
+          idDescription = try {
+            this.resources!!.getResourceName(recyclerViewId)
+          } catch (var4: Resources.NotFoundException) {
+            String.format(
+              "%s (resource name not found)",
+              recyclerViewId
+            )
+          }
+        }
+        description.appendText("with id: $idDescription")
+      }
+
+      public override fun matchesSafely(view: View): Boolean {
+        this.resources = view.resources
+        if (childView == null) {
+          val recyclerView = view.rootView.findViewById<View>(recyclerViewId) as RecyclerView
+          if (recyclerView.id == recyclerViewId) {
+            childView = recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
+          } else {
+            return false
+          }
+        }
+        return if (targetViewId == -1) {
+          view === childView
+        } else {
+          val targetView = childView!!.findViewById<View>(targetViewId)
+          view === targetView
+        }
       }
     }
   }
