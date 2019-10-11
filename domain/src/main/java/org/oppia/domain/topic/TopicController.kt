@@ -10,6 +10,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
@@ -19,16 +20,25 @@ import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
+const val TEST_QUESTION_ID_0 = "question_id_0"
+const val TEST_QUESTION_ID_1 = "question_id_1"
+const val TEST_QUESTION_ID_2 = "question_id_2"
+
+private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
-class TopicController @Inject constructor() {
+class TopicController @Inject constructor(
+  private val dataProviders: DataProviders
+) {
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
@@ -64,6 +74,47 @@ class TopicController @Inject constructor() {
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
+  }
+
+  fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
+    return dataProviders.createInMemoryDataProviderAsync(QUESTION_DATA_PROVIDER_ID) {
+      loadQuestionsForSkillIds(skillIdsList)
+    }
+  }
+
+  // Loads and returns the questions given a list of skill ids.
+  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
+  private suspend fun loadQuestionsForSkillIds(skillIdsList: List<String>): AsyncResult<List<Question>> {
+    return try {
+      AsyncResult.success(loadQuestions(skillIdsList))
+    } catch (e: Exception) {
+      AsyncResult.failed(e)
+    }
+  }
+
+  @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
+  private suspend fun loadQuestions(skillIdsList: List<String>): List<Question> {
+    val questionsList = mutableListOf<Question>()
+    for (skillId in skillIdsList) {
+      when (skillId) {
+        TEST_SKILL_ID_0 -> questionsList.add(
+          Question.newBuilder()
+            .setQuestionId(TEST_QUESTION_ID_0)
+            .build())
+        TEST_SKILL_ID_1 -> questionsList.add(
+          Question.newBuilder()
+            .setQuestionId(TEST_QUESTION_ID_1)
+            .build())
+        TEST_SKILL_ID_2 -> questionsList.add(
+          Question.newBuilder()
+            .setQuestionId(TEST_QUESTION_ID_2)
+            .build())
+        else -> {
+          throw IllegalStateException("Invalid skill ID: $skillId")
+        }
+      }
+    }
+    return questionsList
   }
 
   private fun createTestTopic0(): Topic {

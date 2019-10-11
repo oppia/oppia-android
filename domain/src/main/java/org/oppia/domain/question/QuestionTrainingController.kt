@@ -6,20 +6,21 @@ import org.oppia.app.model.Question
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
-const val TEST_QUESTION_ID_0 = "question_id_0"
-const val TEST_QUESTION_ID_1 = "question_id_1"
-const val TEST_QUESTION_ID_2 = "question_id_2"
+const val TOTAL_QUESTIONS_PER_TOPIC = 10
+const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
 class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
+  private val topicController: TopicController,
   private val dataProviders: DataProviders
 ) {
   /**
@@ -35,12 +36,30 @@ class QuestionTrainingController @Inject constructor(
    */
    fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any?>> {
     return try {
-        val questionsList = retrieveQuestionsForSkillIds(skillIdsList)
-        questionAssessmentProgressController.beginQuestionTrainingSession(questionsList)
+        questionAssessmentProgressController.beginQuestionTrainingSession(
+          retrieveQuestionsForSkillIds(skillIdsList))
         MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
+  }
+
+  private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
+    val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
+    return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
+      getFilteredQuestionsForTraining(skillIdsList, it, TOTAL_QUESTIONS_PER_TOPIC/skillIdsList.size)
+    }
+  }
+
+  private fun getFilteredQuestionsForTraining(
+    skillIdsList: List<String>, questionsList: List<Question>, numQuestionsPerSkill: Int): List<Question>{
+    val trainingQuestions = mutableListOf<Question>()
+    for (skillId in skillIdsList) {
+      trainingQuestions.addAll(questionsList.filter {
+        it.linkedSkillIdsList.contains(skillId)
+      }.take(numQuestionsPerSkill + 1))
+    }
+    return trainingQuestions.take(TOTAL_QUESTIONS_PER_TOPIC)
   }
 
   /**
@@ -55,47 +74,5 @@ class QuestionTrainingController @Inject constructor(
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
-  }
-
-  private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): LiveData<AsyncResult<List<Question>>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(QUESTION_DATA_PROVIDER_ID) {
-      loadQuestionsForSkillIds(skillIdsList)
-    }
-    return dataProviders.convertToLiveData(dataProvider)
-  }
-
-  // Loads and returns the questions given a list of skill ids.
-  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
-  private suspend fun loadQuestionsForSkillIds(skillIdsList: List<String>): AsyncResult<List<Question>> {
-    return try {
-      AsyncResult.success(loadQuestions(skillIdsList))
-    } catch (e: Exception) {
-      AsyncResult.failed(e)
-    }
-  }
-
-  @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
-  private suspend fun loadQuestions(skillIdsList: List<String>): List<Question> {
-    val questionsList = mutableListOf<Question>()
-    for (skillId in skillIdsList) {
-      when (skillId) {
-      TEST_SKILL_ID_0 -> questionsList.add(
-        Question.newBuilder()
-          .setQuestionId(TEST_QUESTION_ID_0)
-          .build())
-        TEST_SKILL_ID_1 -> questionsList.add(
-          Question.newBuilder()
-            .setQuestionId(TEST_QUESTION_ID_1)
-            .build())
-        TEST_SKILL_ID_2 -> questionsList.add(
-          Question.newBuilder()
-            .setQuestionId(TEST_QUESTION_ID_2)
-            .build())
-        else -> {
-          throw IllegalStateException("Invalid skill ID: $skillId")
-        }
-      }
-    }
-    return questionsList
   }
 }

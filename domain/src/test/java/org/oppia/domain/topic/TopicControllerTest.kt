@@ -2,6 +2,8 @@ package org.oppia.domain.topic
 
 import android.app.Application
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -9,18 +11,46 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [TopicController]. */
 @RunWith(AndroidJUnit4::class)
@@ -29,9 +59,47 @@ class TopicControllerTest {
   @Inject
   lateinit var topicController: TopicController
 
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Rule
+  @JvmField
+  val executorRule = InstantTaskExecutorRule()
+
+  @Mock
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+
+  @Captor
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+
+  @Inject
+  lateinit var dataProviders: DataProviders
+
+  @Inject
+  @field:TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
+  private val coroutineContext by lazy {
+    EmptyCoroutineContext + testDispatcher
+  }
+
+  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
+
   @Before
   fun setUp() {
+    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
+  fun tearDown() {
+    Dispatchers.resetMain()
+    testThread.close()
   }
 
   @Test
@@ -414,6 +482,30 @@ class TopicControllerTest {
     assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
   }
 
+  @Test
+  fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(2)
+    assertThat(questionsList[0].questionId).isEqualTo(TEST_QUESTION_ID_0)
+    assertThat(questionsList[1].questionId).isEqualTo(TEST_QUESTION_ID_1)
+  }
+
+  @Test
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerTopicControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -433,6 +525,9 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
+  @Qualifier
+  annotation class TestDispatcher
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -440,6 +535,28 @@ class TopicControllerTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
     }
   }
 
