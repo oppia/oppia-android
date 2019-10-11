@@ -116,24 +116,20 @@ class StateFragmentPresenter @Inject constructor(
     stateViewModel.setAudioFragmentVisible(isVisible)
   }
 
-  private fun updateNavigationButtonVisibility(interactionId: String, hasPreviousState: Boolean, hasNextState: Boolean) {
+  private fun updateNavigationButtonVisibility(
+    interactionId: String,
+    hasPreviousState: Boolean,
+    hasNextState: Boolean
+  ) {
     logger.d("StateFragment", "interactionId: $interactionId")
     logger.d("StateFragment", "hasPreviousState: $hasPreviousState")
     logger.d("StateFragment", "hasNextState: $hasNextState")
-    stateViewModel.hideAllButtons()
     stateViewModel.setPreviousButtonVisible(hasPreviousState)
     if (!hasNextState) {
-      when (interactionId) {
-        CONTINUE -> stateViewModel.setContinueButtonVisible(true)
-        END_EXPLORATION -> stateViewModel.setEndExplorationButtonVisible(true)
-        FRACTION_INPUT -> stateViewModel.setSubmitButtonVisible(true)
-        ITEM_SELECT_INPUT -> stateViewModel.setSubmitButtonVisible(true)
-        MULTIPLE_CHOICE_INPUT -> stateViewModel.setSubmitButtonVisible(true)
-        NUMERIC_INPUT -> stateViewModel.setSubmitButtonVisible(true)
-        NUMERIC_WITH_UNITS -> stateViewModel.setSubmitButtonVisible(true)
-        TEXT_INPUT -> stateViewModel.setSubmitButtonVisible(true)
-      }
+      stateViewModel.setObservableInteractionId(interactionId)
+      stateViewModel.optionSelected(true)
     } else {
+      stateViewModel.clearObservableInteractionId()
       stateViewModel.setNextButtonVisible(hasNextState)
     }
   }
@@ -204,6 +200,10 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun submitButtonClicked(v: View) {
+
+  }
+
+  fun interactionButtonClicked(v: View) {
     // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
     // NB: This sample data will work only with TEST_EXPLORATION_ID_5
     // 0 -> What Language

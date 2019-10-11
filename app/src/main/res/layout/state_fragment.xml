@@ -92,39 +92,15 @@
         android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
         android:visibility="@{viewModel.isNextButtonVisible()? View.VISIBLE: View.GONE}"/>
       <Button
-        android:id="@+id/continue_state_button"
+        android:id="@+id/interaction_button"
         style="@style/StateButtonActive"
         android:layout_alignParentEnd="true"
-        android:onClick="@{presenter::continueButtonClicked}"
-        android:text="@string/state_continue_button"
-        android:visibility="@{viewModel.isContinueButtonVisible()? View.VISIBLE: View.GONE}"/>
-      <Button
-        android:id="@+id/submit_state_button"
-        style="@style/StateButtonInactive"
-        android:layout_alignParentEnd="true"
-        android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
-        android:clickable="@{viewModel.isSubmitButtonActive()}"
-        android:onClick="@{presenter::submitButtonClicked}"
-        android:text="@string/state_submit_button"
-        android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"
-        android:visibility="@{viewModel.isSubmitButtonVisible()? View.VISIBLE: View.GONE}"/>
-      <Button
-        android:id="@+id/end_exploration_state_button"
-        style="@style/StateButtonActive"
-        android:layout_alignParentEnd="true"
-        android:onClick="@{presenter::endExplorationButtonClicked}"
-        android:text="@string/state_end_exploration_button"
-        android:visibility="@{viewModel.isEndExplorationButtonVisible()? View.VISIBLE: View.GONE}"/>
-      <Button
-        android:id="@+id/learn_again_state_button"
-        style="@style/StateButtonActive"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/state_button_blue_background"
-        android:drawableEnd="@drawable/ic_refresh_white_24dp"
-        android:drawablePadding="4dp"
-        android:onClick="@{presenter::learnAgainButtonClicked}"
-        android:text="@string/state_learn_again_button"
-        android:visibility="@{viewModel.isLearnAgainButtonVisible()? View.VISIBLE: View.GONE}"/>
+        android:background="@{viewModel.name.get().equals(@string/state_learn_again_button)? @drawable/state_button_blue_background : @drawable/state_button_primary_background}"
+        android:clickable="@{viewModel.isInteractionButtonActive()}"
+        android:drawableEnd="@{viewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
+        android:onClick="@{presenter::interactionButtonClicked}"
+        android:text="@{viewModel.name}"
+        android:visibility="@{viewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
     </RelativeLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
