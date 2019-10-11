@@ -6,4 +6,9 @@ import javax.inject.Inject
 
 @FragmentScope
 class StoryViewModel @Inject constructor() : ViewModel() {
+  private lateinit var storyId: String
+
+  fun setStoryId(storyId: String) {
+    this.storyId = storyId
+  }
 }
