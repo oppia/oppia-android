@@ -2,6 +2,7 @@ package org.oppia.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -32,13 +33,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import android.content.Intent
+import android.app.Activity
+import org.oppia.app.R
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -46,12 +49,16 @@ class StateFragmentTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
-    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    ExplorationActivity::class.java, /* initialTouchMode= */ false, /* launchActivity= */ false
   )
+
+  private lateinit var launchedActivity: Activity
 
   @Before
   fun setUp() {
     Intents.init()
+    val intent = Intent(Intent.ACTION_PICK)
+    launchedActivity = activityTestRule.launchActivity(intent)
   }
 
   @Test
@@ -200,7 +207,6 @@ class StateFragmentTest {
   fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_submitButtonIsActive() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      intended(hasComponent(ExplorationActivity::class.java.name))
       onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
       onView(withId(R.id.submit_state_button)).check(matches(isClickable()))
     }
@@ -210,7 +216,6 @@ class StateFragmentTest {
   fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_clearAnswer_submitButtonIsInactive() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      intended(hasComponent(ExplorationActivity::class.java.name))
       onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
       onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
       onView(withId(R.id.submit_state_button)).check(matches(not(isClickable())))
@@ -221,7 +226,6 @@ class StateFragmentTest {
   fun testStateFragmentButtons_loadExplorationTest5_secondState_previousButtonWorks_nextButtonWorks() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      intended(hasComponent(ExplorationActivity::class.java.name))
 
       // State 0
       onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
@@ -246,7 +250,6 @@ class StateFragmentTest {
   fun testStateFragmentButtons_loadExplorationTest5_startToEndTraversal_isSuccessful() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      intended(hasComponent(ExplorationActivity::class.java.name))
 
       // State 0
       onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 1"), closeSoftKeyboard())
@@ -270,7 +273,26 @@ class StateFragmentTest {
       onView(withId(R.id.end_exploration_state_button)).check(matches(isDisplayed()))
       onView(withId(R.id.end_exploration_state_button)).perform(click())
 
-      assertTrue(activityTestRule.activity == null)
+      assertTrue(activityTestRule.activity.isFinishing)
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_configurationChange_submitButtonIsInactive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(withId(R.id.submit_state_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_typeAnswer_configurationChange_submitButtonIsInactive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(withId(R.id.submit_state_button)).check(matches(isClickable()))
     }
   }
 
