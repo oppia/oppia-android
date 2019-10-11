@@ -48,17 +48,19 @@ class QuestionTrainingController @Inject constructor(
     }
   }
 
+  // Attempts to fetch equal number of questions per skill. Removes any duplicates and limits the questions to be
+  // equal to TOTAL_QUESTIONS_PER_TOPIC questions.
   private fun getFilteredQuestionsForTraining(
     skillIdsList: List<String>, questionsList: List<Question>, numQuestionsPerSkill: Int): List<Question>{
     val trainingQuestions = mutableListOf<Question>()
     for (skillId in skillIdsList) {
       trainingQuestions.addAll(questionsList.filter {
         it.linkedSkillIdsList.contains(skillId)
-      }.distinctBy {
-        it.questionId}
-        .take(numQuestionsPerSkill + 1))
+      }.take(numQuestionsPerSkill + 1))
     }
-    return trainingQuestions.take(TOTAL_QUESTIONS_PER_TOPIC)
+    return trainingQuestions
+      .distinctBy {it.questionId}
+      .take(TOTAL_QUESTIONS_PER_TOPIC)
   }
 
   /**
