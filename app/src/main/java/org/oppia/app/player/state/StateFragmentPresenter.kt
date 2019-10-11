@@ -38,13 +38,12 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
 
   private var items: Array<String>? = null
-  var customizationArgsMap  = HashMap<String,InteractionObject>()
+  var customizationArgsMap = HashMap<String, InteractionObject>()
   var interactionInstanceId: String? = null
   private var entity_type: String = ""
   private var entity_id: String = ""
 
   var interactionAdapter: InteractionAdapter? = null
-
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -118,7 +117,7 @@ class StateFragmentPresenter @Inject constructor(
         logger.d("StateFragment", key)
       }
       if (customizationArgsMap.contains("choices")) {
-        val customizationArgs : InteractionObject?= customizationArgsMap["choices"]
+        val customizationArgs: InteractionObject? = customizationArgsMap["choices"]
         logger.d("StateFragment", "value: ${customizationArgs}")
       }
     })
