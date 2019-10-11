@@ -45,7 +45,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var dummyFetchDataTV: TextView
   private lateinit var contentComponent: NumberInputInteractionView
   private lateinit var digit: String
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, digit: String): View? {
+  private  var isFetched: Boolean =false
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, digit: String, isFetched: Boolean): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
@@ -61,6 +62,7 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
     this.digit = digit
+    this.isFetched = isFetched
     subscribeToCurrentState()
     llRoot = binding.root.findViewById(R.id.llRoot)
     dummyEditTextButton = binding.root.findViewById(R.id.dummy_edittext_button)
@@ -79,6 +81,9 @@ class StateFragmentPresenter @Inject constructor(
 
   fun getNumberTextInputText(): String {
     return contentComponent.text.toString()
+  }
+  fun isFetchClicked(): Boolean {
+    return !dummyFetchDataTV.text.isEmpty()
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -131,8 +136,11 @@ class StateFragmentPresenter @Inject constructor(
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot.addView(contentComponent, params)
     contentComponent.setText(digit)
+    if(isFetched)
+      dummyFetchDataTV.setText(digit)
     dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
-      dummyFetchDataTV!!.setText(contentComponent.text)
+      dummyFetchDataTV.setText(contentComponent.text)
+
     })
   }
 
