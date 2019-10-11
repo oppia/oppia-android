@@ -24,7 +24,7 @@
       android:id="@+id/ivPlayPauseAudio"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:contentDescription="@string/audio_pause_play_description"
+      android:contentDescription="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:padding="8dp"
       android:src="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"

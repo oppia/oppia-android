@@ -84,8 +84,10 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Sets selected language code in presenter and ViewModel */
   fun languageSelected(language: String) {
-    selectedLanguageCode = language
-    getAudioViewModel().setAudioLanguageCode(language)
+    if (language != selectedLanguageCode) {
+      selectedLanguageCode = language
+      getAudioViewModel().setAudioLanguageCode(language)
+    }
   }
 
   /** Shows language dialog fragment with language list from exploration */

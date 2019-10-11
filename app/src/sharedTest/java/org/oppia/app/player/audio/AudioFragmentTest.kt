@@ -2,19 +2,23 @@ package org.oppia.app.player.audio
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
+import android.widget.SeekBar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.CoordinatesProvider
+import androidx.test.espresso.action.GeneralClickAction
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.Tap
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.Rule
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -52,6 +56,8 @@ class AudioFragmentTest {
 
   @Inject lateinit var context: Context
 
+  private lateinit var activityScenario: ActivityScenario<AudioFragmentTestActivity>
+
   @Inject
   lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
@@ -65,65 +71,110 @@ class AudioFragmentTest {
     addMediaInfo()
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
+    activityScenario = ActivityScenario.launch(AudioFragmentTestActivity::class.java)
   }
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_arrow_back_oppia_dark_blue_24dp)))
-    }
-  }
-
-  @Test
-  fun testAudioFragment_clickPlayButtonWhileLoading_showPlayButton() {
-    ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
-
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_play_circle_filled_black_24dp)))
-    }
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
   }
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
-    ActivityScenario.launch(AudioFragmentTestActivity::class.java).use {
-      shadowMediaPlayer.invokePreparedListener()
-      Thread.sleep(1000)
-      onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+    shadowMediaPlayer.invokePreparedListener()
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_pause_circle_filled_black_24dp)))
-    }
+    onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
   }
 
   @Test
-  fun testAudioFragment_invokePrepared_touchSeekBar_checkMediaPlayerPosition() {
+  fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
+    shadowMediaPlayer.invokePreparedListener()
 
+    onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
   }
+
+  @Test
+  fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
+    shadowMediaPlayer.invokePreparedListener()
+
+    onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+    onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
+
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+  }
+
 
   @Test
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+    shadowMediaPlayer.invokePreparedListener()
+    onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+    onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
   }
 
   @Test
-  fun testAudioFragment_invokePrepared_changeLanguage_checkSeekBarPositionAndPlayButton() {
+  fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
+    shadowMediaPlayer.invokePreparedListener()
+    onView(withId(R.id.ivPlayPauseAudio)).perform(click())
+    onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
+    onView(withId(R.id.tvAudioLanguage)).perform(click())
+    onView(withText("es")).inRoot(isDialog()).perform(click())
+    onView(withText("OK")).inRoot(isDialog()).perform(click())
+
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
   }
 
+  private fun withContentDescription(contentDescriptionId: Int) = object : TypeSafeMatcher<View>() {
+    private val contentDescription = context.getString(contentDescriptionId)
 
-
-  private fun withDrawable(@DrawableRes id: Int) = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
-      description.appendText("ImageView with drawable same as drawable with id $id")
+      description.appendText("ImageView with contentDescription same as $contentDescription")
     }
 
     override fun matchesSafely(view: View): Boolean {
-
-      val context = ApplicationProvider.getApplicationContext()
-      val drawable = ResourcesCompat.getDrawable(context.resources, id, null)
-      val expectedBitmap = drawable?.toBitmap()
-      return view is ImageView && view.drawable.toBitmap().sameAs(expectedBitmap)
+      return view is ImageView && view.contentDescription.toString() == contentDescription
     }
+  }
+
+  private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("SeekBar with progress same as $position")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view is SeekBar && view.progress == position
+    }
+  }
+
+  private fun clickSeekBar(position: Int): ViewAction {
+    return GeneralClickAction(Tap.SINGLE, object: CoordinatesProvider {
+      override fun calculateCoordinates(view: View?): FloatArray {
+        val seekBar = view as SeekBar
+        val screenPos = IntArray(2)
+        seekBar.getLocationInWindow(screenPos)
+        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+
+        val relativePos = (position / seekBar.max).toFloat()
+        val screenX = trueWith*relativePos + screenPos[0] + seekBar.paddingLeft
+        val screenY = seekBar.height/2f + screenPos[1]
+        val coordinates = FloatArray(2)
+        coordinates[0] = screenX
+        coordinates[1] = screenY
+        return coordinates
+      }
+    }, Press.FINGER, 0, 0)
   }
 
   private fun setUpTestApplicationComponent() {
