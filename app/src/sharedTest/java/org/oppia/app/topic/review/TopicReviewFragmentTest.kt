@@ -2,6 +2,7 @@ package org.oppia.app.topic.review
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -62,6 +63,14 @@ class TopicReviewFragmentTest {
       intended(hasComponent(ReviewActivity::class.java.name))
       intended(hasExtra(ReviewActivity.getIntentKey(), skillId))
     }
+  }
+
+  @Test
+  fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
+    activityTestRule.launchActivity(null)
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    onView(atPosition(R.id.review_skill_recycler_view, 0))
+      .check(matches(hasDescendant(withId(R.id.skill_name))))
   }
 
   @After
