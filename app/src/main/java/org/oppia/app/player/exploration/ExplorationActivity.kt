@@ -3,9 +3,10 @@ package org.oppia.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+
+const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity() {
@@ -19,9 +20,11 @@ class ExplorationActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration ID. */
-    fun createExplorationActivityIntent(context: Context): Intent {
-      return Intent(context, ExplorationActivity::class.java)
+    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified topic ID. */
+    fun createExplorationActivityIntent(context: Context, explorationId: String): Intent {
+      val intent = Intent(context, ExplorationActivity::class.java)
+      intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, explorationId)
+      return intent
     }
   }
 }

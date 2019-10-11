@@ -62,7 +62,7 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
 
-    getCurrentState(binding)
+    subscribeToCurrentState()
 
     return binding.root
   }
@@ -104,9 +104,9 @@ class StateFragmentPresenter @Inject constructor(
     getStateViewModel().setAudioFragmentVisible(isVisible)
   }
 
-  private fun getCurrentState(binding: StateFragmentBinding) {
+  private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-
+      logger.d("StateFragment", "getCurrentState: ${result.state.name}")
       entity_type = "exploration"
       // TODO replace exploration Id from result. Exploration id is missing in proto
       entity_id = "DIWZiVgs0km-"
@@ -134,7 +134,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun processCurrentState(ephemeralStateResult: AsyncResult<EphemeralState>): EphemeralState {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragmentPresenter", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
   }

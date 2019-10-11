@@ -19,10 +19,14 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -32,6 +36,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.domain.UserAppHistoryController
@@ -46,12 +51,15 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
 import org.oppia.app.R
+import org.oppia.app.player.exploration.ExplorationActivity
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
+
   @Before
   fun setUp() {
+    Intents.init()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
   }
@@ -80,10 +88,11 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_dummyGoToExplorationButtonClicked_opensExplorationActivity() {
-    launch(HomeActivity::class.java)
-    onView(withId(R.id.go_to_exploration_button)).perform(click())
-    waitForTheView(withId(R.id.dummy_audio_button))
+  fun testHomeActivity_playExplorationButtonClicked_opensExplorationActivity() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      intended(hasComponent(ExplorationActivity::class.java.name))
+    }
   }
 
   private fun simulateNewAppInstance() {
@@ -109,12 +118,12 @@ class HomeActivityTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
+// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+//  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
@@ -207,11 +216,11 @@ class HomeActivityTest {
     fun getUserAppHistoryController(): UserAppHistoryController
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
+// TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
+//  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
+//  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
+//  and immediate.
+//  NB: This also blocks on #59 to be able to actually create a test-only library.
   /**
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
