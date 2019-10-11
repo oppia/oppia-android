@@ -23,7 +23,6 @@ import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import java.lang.Exception
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
@@ -38,13 +37,15 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) {
 
-  private val numberOfrows: Int =1
+  private val numberOfrows: Int = 1
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var llRoot: LinearLayout
   private lateinit var dummyEditTextButton: Button
   private lateinit var dummyFetchDataTV: TextView
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  private lateinit var contentComponent: NumberInputInteractionView
+  private lateinit var digit: String
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, digit: String): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
@@ -59,7 +60,7 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-
+    this.digit = digit
     subscribeToCurrentState()
     llRoot = binding.root.findViewById(R.id.llRoot)
     dummyEditTextButton = binding.root.findViewById(R.id.dummy_edittext_button)
@@ -74,6 +75,10 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       setAudioFragmentVisible(useCellularData)
     }
+  }
+
+  fun getNumberTextInputText(): String {
+    return contentComponent.text.toString()
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -114,7 +119,7 @@ class StateFragmentPresenter @Inject constructor(
 
   /** The function for adding [NumberInputInteractionView]. */
   fun addNumberInputContentCard(placeholder: String) {
-    var contentComponent = NumberInputInteractionView(
+    contentComponent = NumberInputInteractionView(
       fragment.context!!,
       placeholder,
       numberOfrows
@@ -125,6 +130,7 @@ class StateFragmentPresenter @Inject constructor(
     )
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot.addView(contentComponent, params)
+    contentComponent.setText(digit)
     dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
       dummyFetchDataTV!!.setText(contentComponent.text)
     })

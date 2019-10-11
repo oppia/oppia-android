@@ -29,8 +29,6 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 class StateFragmentPresenterTest {
-  @Inject
-  lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   @Test
   fun testNumberInputView_displaySoftInputAccordingToInputType_userEnterNumber() {
