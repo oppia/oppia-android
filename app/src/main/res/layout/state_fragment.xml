@@ -13,7 +13,6 @@
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel" />
-
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
