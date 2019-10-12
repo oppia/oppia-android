@@ -1,13 +1,16 @@
 package org.oppia.app.home
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -63,5 +66,10 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun openStory(v: View) {
+    val intent = Intent(fragment.activity, StoryActivity::class.java)
+    fragment.activity?.startActivity(intent)
   }
 }

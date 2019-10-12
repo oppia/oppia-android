@@ -13,4 +13,8 @@ class StoryActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     storyActivityPresenter.handleOnCreate()
   }
+
+  override fun onSupportNavigateUp(): Boolean {
+    return storyActivityPresenter.handleOnSupportNavigationUp()
+  }
 }

@@ -11,9 +11,15 @@ import javax.inject.Inject
 class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.story_activity)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.story_fragment_placeholder,
       StoryFragment.newInstace(TEST_STORY_ID_0)
     ).commitNow()
+  }
+
+  fun handleOnSupportNavigationUp(): Boolean {
+    activity.finish()
+    return true
   }
 }
