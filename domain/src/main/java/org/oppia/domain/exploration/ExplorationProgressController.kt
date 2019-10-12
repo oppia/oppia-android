@@ -124,17 +124,22 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.advancePlayStageTo(PlayStage.SUBMITTING_ANSWER)
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
-        val topPendingState = explorationProgress.stateDeck.getPendingTopState()
-        val outcome = answerClassificationController.classify(topPendingState, answer)
-        val answerOutcome = explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
-        explorationProgress.stateDeck.submitAnswer(answer, answerOutcome.feedback)
-        // Follow the answer's outcome to another part of the graph if it's different.
-        if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
-          explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))
+        lateinit var answerOutcome: AnswerOutcome
+        try {
+          val topPendingState = explorationProgress.stateDeck.getPendingTopState()
+          val outcome = answerClassificationController.classify(topPendingState.interaction, answer)
+          answerOutcome = explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+          explorationProgress.stateDeck.submitAnswer(answer, answerOutcome.feedback)
+          // Follow the answer's outcome to another part of the graph if it's different.
+          if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
+            explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))
+          }
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // submitting answer' situation. This can specifically happen if answer classification throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
         }
 
-        // Return to viewing the state.
-        explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
         return MutableLiveData(AsyncResult.success(answerOutcome))
