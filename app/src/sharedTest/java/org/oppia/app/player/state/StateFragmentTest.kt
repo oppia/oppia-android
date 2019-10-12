@@ -26,7 +26,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
@@ -39,8 +38,6 @@ import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import android.content.Intent
-import android.app.Activity
 import org.oppia.app.R
 
 /** Tests for [StateFragment]. */
@@ -52,13 +49,9 @@ class StateFragmentTest {
     ExplorationActivity::class.java, /* initialTouchMode= */ false, /* launchActivity= */ false
   )
 
-  private lateinit var launchedActivity: Activity
-
   @Before
   fun setUp() {
     Intents.init()
-    val intent = Intent(Intent.ACTION_PICK)
-    launchedActivity = activityTestRule.launchActivity(intent)
   }
 
   @Test
@@ -188,113 +181,129 @@ class StateFragmentTest {
     }
   }
 
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_startState_submitButtonIsInactive() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//      intended(hasComponent(ExplorationActivity::class.java.name))
-//      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
-//      onView(withId(R.id.end_exploration_state_button)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.learn_again_state_button)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.next_state_image_view)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.submit_state_button)).check(matches(isDisplayed()))
-//      onView(withId(R.id.submit_state_button)).check(matches(not(isClickable())))
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_submitButtonIsActive() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
-//      onView(withId(R.id.submit_state_button)).check(matches(isClickable()))
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_clearAnswer_submitButtonIsInactive() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
-//      onView(withId(R.id.submit_state_button)).check(matches(not(isClickable())))
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_secondState_previousButtonWorks_nextButtonWorks() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//
-//      // State 0
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
-//      onView(withId(R.id.submit_state_button)).perform(click())
-//
-//      // State 1
-//      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
-//      onView(withId(R.id.previous_state_image_view)).perform(click())
-//
-//      // State 0
-//      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.submit_state_button)).check(matches(not(isDisplayed())))
-//      onView(withId(R.id.next_state_image_view)).check(matches(isDisplayed()))
-//      onView(withId(R.id.next_state_image_view)).perform(click())
-//
-//      //State 1
-//      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_startToEndTraversal_isSuccessful() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//
-//      // State 0
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 1"), closeSoftKeyboard())
-//      onView(withId(R.id.submit_state_button)).perform(click())
-//
-//      // State 1
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 2"), closeSoftKeyboard())
-//      onView(withId(R.id.submit_state_button)).perform(click())
-//
-//      // State 2
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 3"), closeSoftKeyboard())
-//      onView(withId(R.id.submit_state_button)).perform(click())
-//
-//      //State 4
-//      onView(withId(R.id.continue_state_button)).check(matches(isDisplayed()))
-//      onView(withId(R.id.continue_state_button)).perform(click())
-//
-//      //State 5
-//      onView(withId(R.id.end_exploration_state_button)).check(matches(isDisplayed()))
-//      onView(withId(R.id.end_exploration_state_button)).perform(click())
-//
-//      assertTrue(activityTestRule.activity.isFinishing)
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_configurationChange_submitButtonIsInactive() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-//      onView(withId(R.id.submit_state_button)).check(matches(not(isClickable())))
-//    }
-//  }
-//
-//  @Test
-//  fun testStateFragmentButtons_loadExplorationTest5_typeAnswer_configurationChange_submitButtonIsInactive() {
-//    ActivityScenario.launch(HomeActivity::class.java).use {
-//      onView(withId(R.id.play_exploration_button)).perform(click())
-//      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
-//      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-//      onView(withId(R.id.submit_state_button)).check(matches(isClickable()))
-//    }
-//  }
+  // TODO(#163): Update these test cases once MultipleChoiceInput and TextInput is merged.
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_startState_submitButtonIsActive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      intended(hasComponent(ExplorationActivity::class.java.name))
+      // State 0: MultipleChoiceInput
+      onView(withId(R.id.next_state_image_view)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.interaction_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_submitButtonIsInactive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      // State 1: TextInput
+      onView(withId(R.id.interaction_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_submitButtonIsActive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      // State 1: TextInput
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
+      onView(withId(R.id.interaction_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_startState_typeAnswer_clearAnswer_submitButtonIsInactive() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      // State 1: TextInput
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
+      onView(withId(R.id.interaction_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_secondState_previousButtonWorks_nextButtonWorks() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+
+      // State 0
+      onView(withId(R.id.interaction_button)).perform(click())
+
+      // State 1
+      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.previous_state_image_view)).perform(click())
+
+      // State 0
+      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.next_state_image_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.next_state_image_view)).perform(click())
+
+      //State 1
+      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_startToEndTraversal_isSuccessful() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+
+      // State 0
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 1"), closeSoftKeyboard())
+      onView(withId(R.id.interaction_button)).perform(click())
+
+      // State 1
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 2"), closeSoftKeyboard())
+      onView(withId(R.id.interaction_button)).perform(click())
+
+      // State 2
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(clearText())
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text 3"), closeSoftKeyboard())
+      onView(withId(R.id.interaction_button)).perform(click())
+
+      //State 4
+      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(withId(R.id.interaction_button)).perform(click())
+
+      //State 5
+      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      onView(withId(R.id.interaction_button)).perform(click())
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_configurationChange_submitButtonIsInactive() {
+    activityTestRule.launchActivity(null)
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(withId(R.id.interaction_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragmentButtons_loadExplorationTest5_typeAnswer_configurationChange_submitButtonIsInactive() {
+    activityTestRule.launchActivity(null)
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      onView(withId(R.id.dummy_interaction_edit_text)).perform(typeText("Sample text"), closeSoftKeyboard())
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(withId(R.id.interaction_button)).check(matches(isClickable()))
+    }
+  }
 
   @Module
   class TestModule {
