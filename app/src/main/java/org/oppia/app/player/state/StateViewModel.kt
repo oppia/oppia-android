@@ -23,10 +23,9 @@ private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 /** [ViewModel] for state-fragment. */
 @FragmentScope
 class StateViewModel @Inject constructor(val context: Context) : ObservableViewModel() {
-
-  companion object{
+  companion object {
     @JvmStatic
-    @BindingAdapter("xyz")
+    @BindingAdapter("buttonDrawable")
     fun setBackgroundResource(button: Button, resource: Int) {
       button.setBackgroundResource(resource)
     }

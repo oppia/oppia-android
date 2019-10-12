@@ -230,11 +230,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun nextButtonClicked(v: View) {
-    moveToNextState()
+    explorationProgressController.moveToNextState()
   }
 
   fun previousButtonClicked(v: View) {
-    moveToPreviousState()
+    explorationProgressController.moveToPreviousState()
   }
 
   private fun submitContinueButtonAnswer() {
@@ -287,14 +287,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun createTextInputAnswer(textAnswer: String): InteractionObject {
     return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
-  }
-
-  private fun moveToNextState() {
-    explorationProgressController.moveToNextState()
-  }
-
-  private fun moveToPreviousState() {
-    explorationProgressController.moveToPreviousState()
   }
 
   private fun endExploration() {

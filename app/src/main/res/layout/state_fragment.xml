@@ -110,7 +110,7 @@
         android:text="@{viewModel.name}"
         android:textColor="@{viewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
         android:visibility="@{viewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"
-        xyz="@{viewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"/>
+        buttonDrawable="@{viewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"/>
     </RelativeLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
