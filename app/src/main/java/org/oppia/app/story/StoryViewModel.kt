@@ -21,6 +21,10 @@ class StoryViewModel @Inject constructor(
     processStoryLiveData()
   }
 
+  val storyNameLiveData: LiveData<String> by lazy {
+    processStoryNameLiveData()
+  }
+
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
     topicController.getStory(storyId)
   }
@@ -33,11 +37,23 @@ class StoryViewModel @Inject constructor(
     return Transformations.map(storyResultLiveData, ::processStoryResult)
   }
 
+  private fun processStoryNameLiveData(): LiveData<String> {
+    return Transformations.map(storyResultLiveData, ::processStoryName)
+  }
+
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
       logger.e("StoryFragment", "Failed to retrieve Story: " + storyResult.getErrorOrNull())
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance())
+  }
+
+  private fun processStoryName(storyResult: AsyncResult<StorySummary>): String {
+    if (storyResult.isFailure()) {
+      logger.e("StoryFragment", "Failed to retrieve Story: " + storyResult.getErrorOrNull())
+    }
+
+    return storyResult.getOrDefault(StorySummary.getDefaultInstance()).storyName
   }
 }

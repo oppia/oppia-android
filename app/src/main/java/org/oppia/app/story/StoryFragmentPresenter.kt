@@ -3,7 +3,9 @@ package org.oppia.app.story
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -17,6 +19,11 @@ class StoryFragmentPresenter @Inject constructor(
     val viewModel = getStoryViewModel()
     viewModel.setStoryId(storyId)
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
+      (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
+    })
+
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
