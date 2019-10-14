@@ -52,8 +52,8 @@ class ContentCardAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
-      VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html_content.get())
-      VIEW_TYPE_INTERACTION_FEEDBACK -> (holder as InteractionFeedbackViewHolder).bind(contentList!!.get(position).html_content.get())
+      VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).htmlContent.get())
+      VIEW_TYPE_INTERACTION_FEEDBACK -> (holder as InteractionFeedbackViewHolder).bind(contentList!!.get(position).htmlContent.get())
     }
   }
 

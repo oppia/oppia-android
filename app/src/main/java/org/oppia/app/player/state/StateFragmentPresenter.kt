@@ -108,7 +108,7 @@ class StateFragmentPresenter @Inject constructor(
         } else {
           args.putString("content_id", result.state.content.contentId)
         }
-        args.putString("html_content", result.state.content.html)
+        args.putString("htmlContent", result.state.content.html)
         contentListFragment.arguments = args
         fragment.childFragmentManager.beginTransaction().add(
           R.id.content_list_fragment_placeholder,

@@ -45,8 +45,8 @@ class ContentListFragmentPresenter @Inject constructor(
 
   private fun getContentList() {
     getContentViewModel().setContentId(fragment.arguments!!.getString("content_id"))
-    getContentViewModel().setHtmlContent(fragment.arguments!!.getString("html_content"))
-    logger.d("ContentListFragment", "htmlcontent: ${fragment.arguments!!.getString("html_content")}")
+    getContentViewModel().setHtmlContent(fragment.arguments!!.getString("htmlContent"))
+    logger.d("ContentListFragment", "htmlcontent: ${fragment.arguments!!.getString("htmlContent")}")
     contentList.add(getContentViewModel())
     contentCardAdapter!!.notifyDataSetChanged()
   }
