@@ -11,9 +11,6 @@ import org.oppia.app.R
 @SuppressLint("ViewConstructor")
 class NumberInputInteractionView(context: Context, private var placeholder: String, private var rows: Int) :
   EditText(context) {
-
-  private var mContext: Context = context
-
   init {
     attributes()
   }
@@ -21,7 +18,7 @@ class NumberInputInteractionView(context: Context, private var placeholder: Stri
   /** This function contains default attributes of [NumberInputInteractionView]. */
   private fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
-    val paddingPixel =  mContext.resources.getDimension(R.dimen.padding_8)
+    val paddingPixel = context.resources.getDimension(R.dimen.padding_8)
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
     setPadding(paddingDp, paddingDp, paddingDp, paddingDp)
