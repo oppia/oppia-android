@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 /** [ViewModel] for content-card state. */
 @FragmentScope
-class ContentViewModel @Inject constructor(
-) : ViewModel() {
+class ContentViewModel @Inject constructor() : ViewModel() {
 
   val contentId = ObservableField<String>("content_id")
   val html_content = ObservableField<String>("html")
