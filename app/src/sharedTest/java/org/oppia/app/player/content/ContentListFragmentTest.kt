@@ -19,14 +19,29 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import android.app.Activity
+import androidx.databinding.Observable
+import org.junit.Before
+import androidx.databinding.Observable.OnPropertyChangedCallback
+
+
+
+
 
 /** Tests for [ContentListFragment]. */
 @RunWith(AndroidJUnit4::class)
 class ContentListFragmentTest {
 
+  private var viewModel: ContentViewModel? = null
+
+  @Before
+  fun setup() {
+    viewModel = ContentViewModel()
+  }
   @Test
   fun testContentListFragment_loadHtmlContent_isDisplayed() {
     ActivityScenario.launch(ExplorationActivity::class.java).use {
+      viewModel!!.setHtmlContent("hkjhkjd")
       onView(withId(org.oppia.app.R.id.recyclerview)).check(matches(isDisplayed()))
       pauseTestFor(3000)
     }
