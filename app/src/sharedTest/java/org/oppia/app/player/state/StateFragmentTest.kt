@@ -41,8 +41,7 @@ class StateFragmentTest {
   fun testStateFragment_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox))
-        .check(matches(withText("Don\'t show this message again")))
+      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
 
