@@ -117,8 +117,9 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      if (result.state.interaction.id == "NumericInput")
+      if (result.state.interaction.id == "NumericInput") {
         addNumberInputContentCard(result.state.interaction.customizationArgsMap.get("placeholder")!!.normalizedString)
+      }
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
     })
   }

@@ -17,15 +17,15 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
 
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
-
+  private lateinit var digit: String
+  private var isFetched: Boolean = false
   override fun onAttach(context: Context?) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    var digit: String = ""
-    var isFetched: Boolean = false
+
     if (savedInstanceState != null) {
       digit = savedInstanceState.getString(KEY_DIGIT_ID)
       isFetched = savedInstanceState.getBoolean(KEY_FETCHED_ID)
