@@ -21,7 +21,7 @@ class ContentListFragmentPresenter @Inject constructor(
 
   private val entity_type: String = "exploration"
 
-  var contentCardAdapter: ContentCardAdapter? = null
+  lateinit var contentCardAdapter: ContentCardAdapter
 
   var contentList: MutableList<ContentViewModel> = ArrayList()
 
