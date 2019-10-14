@@ -124,7 +124,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** The function for adding [NumberInputInteractionView]. */
-  fun addNumberInputContentCard(placeholder: String) {
+  private fun addNumberInputContentCard(placeholder: String) {
     contentComponent = NumberInputInteractionView(
       fragment.context!!,
       placeholder,

@@ -1,5 +1,6 @@
 package org.oppia.app.customview.inputInteractionView
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputFilter
 import android.text.method.DigitsKeyListener
@@ -7,16 +8,13 @@ import android.widget.EditText
 import org.oppia.app.R
 
 /** The customclass for [NumberInputInteractionView]. */
-class NumberInputInteractionView : EditText {
+@SuppressLint("ViewConstructor")
+class NumberInputInteractionView(context: Context, private var placeholder: String, private var rows: Int) :
+  EditText(context) {
 
-  private var mContext: Context
-  private var placeholder: String
-  private var rows: Int
+  private var mContext: Context = context
 
-  constructor(context: Context, placeholder: String, rows: Int) : super(context) {
-    this.mContext = context
-    this.placeholder = placeholder
-    this.rows = rows
+  init {
     attributes()
   }
 
@@ -27,14 +25,14 @@ class NumberInputInteractionView : EditText {
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
     setPadding(paddingDp, paddingDp, paddingDp, paddingDp)
-    setHint(placeholder)
-    setKeyListener(DigitsKeyListener.getInstance("0123456789."))
-    setEditTextMaxLength(200)
+    hint = placeholder
+    keyListener = DigitsKeyListener.getInstance("0123456789.")
+    this.setEditTextMaxLength(length = 200)
   }
 
   private fun setEditTextMaxLength(length: Int) {
     val filterArray = arrayOfNulls<InputFilter>(1)
     filterArray[0] = InputFilter.LengthFilter(length)
-    setFilters(filterArray)
+    filters = filterArray
   }
 }
