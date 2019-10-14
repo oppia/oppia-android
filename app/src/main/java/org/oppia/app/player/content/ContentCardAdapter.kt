@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.interation_feedback_card_item.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentCardItemsBinding
 import org.oppia.app.databinding.InterationFeedbackCardItemBinding
-import org.oppia.data.backends.gae.model.GaeSubtitledHtml
 import org.oppia.util.data.HtmlParser
 
 // TODO(#172): Make use of generic data-binding-enabled RecyclerView adapter
@@ -22,7 +21,7 @@ class ContentCardAdapter(
   private val context: Context,
   private val entity_type: String,
   private val entity_id: String,
-  val contentList: MutableList<GaeSubtitledHtml>
+  val contentList: MutableList<ContentViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   val VIEW_TYPE_CONTENT = 1
@@ -53,15 +52,15 @@ class ContentCardAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
-      VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html)
-      VIEW_TYPE_INTERACTION_FEEDBACK -> (holder as InteractionFeedbackViewHolder).bind(contentList!!.get(position).html)
+      VIEW_TYPE_CONTENT -> (holder as ContentViewHolder).bind(contentList!!.get(position).html_content.get())
+      VIEW_TYPE_INTERACTION_FEEDBACK -> (holder as InteractionFeedbackViewHolder).bind(contentList!!.get(position).html_content.get())
     }
   }
 
   // Determines the appropriate ViewType according to the content_id.
   override fun getItemViewType(position: Int): Int {
-    return if (!contentList!!.get(position).contentId!!.contains("content") &&
-      !contentList!!.get(position).contentId!!.contains(
+    return if (!contentList!!.get(position).contentId.get()!!.contains("content") &&
+      !contentList!!.get(position).contentId.get()!!.contains(
         "Feedback"
       )
     ) {

@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,11 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.content.ContentListFragment
+import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -33,6 +38,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
+  private val dummyExploration_id: String = "umPkwp0L1M0-"
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -95,9 +101,28 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
+
+      if (getContentListFragment() == null) {
+        val contentListFragment = ContentListFragment()
+        val args = Bundle()
+        args.putString("exploration_id",dummyExploration_id )
+        if(result.state.content.contentId.equals("")) {
+          args.putString("content_id", "content")
+        }else{
+          args.putString("content_id", result.state.content.contentId)
+        }
+        args.putString("html_content", result.state.content.html)
+        contentListFragment.arguments = args
+        fragment.childFragmentManager.beginTransaction().add(
+          R.id.content_list_fragment_placeholder,
+          contentListFragment
+        ).commitNow()
+      }
     })
   }
-
+  private fun getContentListFragment(): ContentListFragment? {
+    return fragment.childFragmentManager.findFragmentById(R.id.content_list_fragment_placeholder) as ContentListFragment?
+  }
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
     getEphemeralState()
   }

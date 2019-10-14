@@ -4,8 +4,11 @@
         xmlns:tools="http://schemas.android.com/tools">
   <data>
     <variable
-      name="contentCardAdapter"
-      type="org.oppia.app.player.content.ContentCardAdapter"/>
+      name="contentFragment"
+      type="org.oppia.app.player.content.ContentListFragment"/>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.content.ContentViewModel"/>
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
