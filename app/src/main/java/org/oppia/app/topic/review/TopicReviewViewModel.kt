@@ -7,8 +7,7 @@ import org.oppia.domain.topic.TopicController
 import javax.inject.Inject
 
 /**
- * [ViewModel] for showing a list of topic summaries. Note that this can only be hosted in fragments that implement
- * [ReviewSkillSelector].
+ * [ViewModel] for showing a list of topic review-skills.
  */
 @FragmentScope
 class TopicReviewViewModel @Inject constructor(fragment: Fragment) : ViewModel() {}

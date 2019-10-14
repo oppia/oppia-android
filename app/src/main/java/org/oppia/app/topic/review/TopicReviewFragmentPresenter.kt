@@ -27,8 +27,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val topicController: TopicController,
-  private val viewModelProvider: ViewModelProvider<TopicReviewViewModel>
+  private val topicController: TopicController
 ): ReviewSkillSelector{
 
   private val routeToReviewListener = activity as RouteToReviewListener
@@ -45,7 +44,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
       layoutManager = GridLayoutManager(context, /* spanCount= */ 2)
     }
     binding.let {
-      it.viewModel = getTopicReviewViewModel()
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
@@ -78,9 +76,5 @@ class TopicReviewFragmentPresenter @Inject constructor(
       logger.e("TopicTrainFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
-  }
-
-  private fun getTopicReviewViewModel(): TopicReviewViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicReviewViewModel::class.java)
   }
 }
