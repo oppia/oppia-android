@@ -29,6 +29,7 @@ interface FragmentComponent {
 
   fun inject(audioFragment: AudioFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(contentListFragment: ContentListFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
@@ -39,5 +40,4 @@ interface FragmentComponent {
   fun inject(topicPlayFragment: TopicPlayFragment)
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
-  fun inject(contentListFragment: ContentListFragment)
 }

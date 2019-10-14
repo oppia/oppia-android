@@ -69,7 +69,6 @@ dependencies {
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
-      'androidx.recyclerview:recyclerview:1.0.0',
   )
   testImplementation(
       'androidx.test:core:1.2.0',
