@@ -45,7 +45,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var dummyFetchDataTV: TextView
   private lateinit var contentComponent: NumberInputInteractionView
   private lateinit var digit: String
-  private  var isFetched: Boolean =false
+  private var isFetched: Boolean = false
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, digit: String, isFetched: Boolean): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
@@ -82,6 +82,7 @@ class StateFragmentPresenter @Inject constructor(
   fun getNumberTextInputText(): String {
     return contentComponent.text.toString()
   }
+
   fun isFetchClicked(): Boolean {
     return !dummyFetchDataTV.text.isEmpty()
   }
@@ -136,8 +137,9 @@ class StateFragmentPresenter @Inject constructor(
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot.addView(contentComponent, params)
     contentComponent.setText(digit)
-    if(isFetched)
+    if (isFetched) {
       dummyFetchDataTV.setText(digit)
+    }
     dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
       dummyFetchDataTV.setText(contentComponent.text)
 
@@ -159,7 +161,7 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
   }
 
-  fun dpToPx(dp: Int): Int {
+  private fun dpToPx(dp: Int): Int {
     return (dp * Resources.getSystem().getDisplayMetrics().density).toInt()
   }
 }

@@ -9,7 +9,6 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.audio.CellularDataInterface
 import javax.inject.Inject
 
-/** Fragment that contains skills for topic train mode. */
 private const val KEY_DIGIT_ID = "DIGIT_ID"
 private const val KEY_FETCHED_ID = "FETCHED_ID"
 

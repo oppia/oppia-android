@@ -21,7 +21,7 @@ class NumberInputInteractionView : EditText {
   }
 
   /** This function contains default attributes of [NumberInputInteractionView]. */
-  fun attributes() {
+  private fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel =  mContext.resources.getDimension(R.dimen.padding_8)
     val density = resources.displayMetrics.density
@@ -32,7 +32,7 @@ class NumberInputInteractionView : EditText {
     setEditTextMaxLength(200)
   }
 
-  fun setEditTextMaxLength(length: Int) {
+  private fun setEditTextMaxLength(length: Int) {
     val filterArray = arrayOfNulls<InputFilter>(1)
     filterArray[0] = InputFilter.LengthFilter(length)
     setFilters(filterArray)

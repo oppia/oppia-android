@@ -25,6 +25,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,6 +41,18 @@ import javax.inject.Singleton
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
+  private lateinit var launchedActivity: Activity
+  @get:Rule
+  var activityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
+    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    val intent = Intent(Intent.ACTION_PICK)
+    launchedActivity = activityTestRule.launchActivity(intent)
+  }
 
   @Test
   fun testStateFragmentTestActivity_loadStateFragment_hasDummyButton() {
@@ -52,7 +65,8 @@ class StateFragmentTest {
   fun testStateFragment_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
+      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox))
+        .check(matches(withText("Don\'t show this message again")))
     }
   }
 
@@ -80,7 +94,8 @@ class StateFragmentTest {
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
       Espresso.onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
+      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox))
+        .check(matches(withText("Don\'t show this message again")))
     }
   }
 
@@ -90,7 +105,8 @@ class StateFragmentTest {
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
       Espresso.onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
+      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox))
+        .check(matches(withText("Don\'t show this message again")))
     }
   }
 
@@ -140,8 +156,6 @@ class StateFragmentTest {
     }
   }
 
-
-
   @Test
   fun testStateFragment_clickCheckBoxAndPositive_restartActivity_clickDummyButton_doesNotShowCellularDialogAndShowsAudioFragment() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
@@ -168,18 +182,6 @@ class StateFragmentTest {
       Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
       Espresso.onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
     }
-  }
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
-    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-  private lateinit var launchedActivity: Activity
-  @Before
-  fun setUp() {
-    Intents.init()
-    val intent = Intent(Intent.ACTION_PICK)
-    launchedActivity = activityTestRule.launchActivity(intent)
   }
 
   @Test
@@ -232,6 +234,10 @@ class StateFragmentTest {
     }
   }
 
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
 
   @Module
   class TestModule {
