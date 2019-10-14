@@ -94,8 +94,7 @@ class StateFragmentTest {
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
       Espresso.onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox))
-        .check(matches(withText("Don\'t show this message again")))
+      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
 
@@ -105,8 +104,7 @@ class StateFragmentTest {
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
       Espresso.onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       Espresso.onView(withId(R.id.dummy_audio_button)).perform(click())
-      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox))
-        .check(matches(withText("Don\'t show this message again")))
+      Espresso.onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
 
