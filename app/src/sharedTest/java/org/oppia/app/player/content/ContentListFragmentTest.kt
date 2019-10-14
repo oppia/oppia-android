@@ -20,40 +20,47 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 import android.app.Activity
+import android.content.Intent
 import androidx.databinding.Observable
 import org.junit.Before
 import androidx.databinding.Observable.OnPropertyChangedCallback
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.intent.Intents
 
-
-
-
+import androidx.test.rule.ActivityTestRule
+import org.junit.After
+import org.junit.Rule
+import org.oppia.app.R
+import org.oppia.app.home.HomeActivity
 
 /** Tests for [ContentListFragment]. */
 @RunWith(AndroidJUnit4::class)
 class ContentListFragmentTest {
+  private lateinit var launchedActivity: Activity
+  @get:Rule
+  var activityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
+    ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
-  private var viewModel: ContentViewModel? = null
+//  @Before
+//  fun setUp() {
+//    Intents.init()
+//    val intent = Intent(Intent.ACTION_PICK)
+////    launchedActivity = activityTestRule.launchActivity(intent)
+//  }
 
-  @Before
-  fun setup() {
-    viewModel = ContentViewModel()
-  }
   @Test
   fun testContentListFragment_loadHtmlContent_isDisplayed() {
-    ActivityScenario.launch(ExplorationActivity::class.java).use {
-      viewModel!!.setHtmlContent("hkjhkjd")
-      onView(withId(org.oppia.app.R.id.recyclerview)).check(matches(isDisplayed()))
-      pauseTestFor(3000)
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.recyclerview)).check(matches(isDisplayed()))
     }
   }
 
-  fun pauseTestFor(milliseconds: Long) {
-    try {
-      Thread.sleep(milliseconds)
-    } catch (e: InterruptedException) {
-      e.printStackTrace();
-    }
-  }
+//  @After
+//  fun tearDown() {
+//    Intents.release()
+//  }
 
   @Module
   class TestModule {
