@@ -11,8 +11,11 @@
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
   <color name="oppiaSecondaryText">#666666</color>
+  <color name="oppiaLightBlue">#F0FFFF</color>
+  <color name="oppiaLightYellow">#FFFFF0</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
+  <color name="black">#000000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
   <!-- SUBMIT BUTTON INACTIVE -->
