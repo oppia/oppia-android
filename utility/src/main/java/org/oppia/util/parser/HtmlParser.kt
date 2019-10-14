@@ -26,7 +26,7 @@ class HtmlParser(
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
     // TODO(#205): Uncomment below code once UrlImageParser is introduced and pass imageGetter in fromHtml as a parameter.
-//    var imageGetter = UrlImageParser(tvContents, context, entity_type, entity_id)
+    // var imageGetter = UrlImageParser(tvContents, context, entity_type, entity_id)
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
       html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, null, null) as Spannable
     } else {
