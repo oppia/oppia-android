@@ -1,0 +1,22 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <variable
+      name="htmlContent"
+      type="String"/>
+  </data>
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:background="@drawable/bg_blue_card"
+    android:orientation="vertical">
+    <TextView
+      android:id="@+id/tv_contents"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="4dp"
+      android:gravity="left"
+      android:padding="8dp"
+      android:text="@{htmlContent}"/>
+  </RelativeLayout>
+</layout>
