@@ -105,10 +105,10 @@ class StateFragmentPresenter @Inject constructor(
       if (getContentListFragment() == null) {
         val contentListFragment = ContentListFragment()
         val args = Bundle()
-        args.putString("exploration_id",dummyExploration_id )
-        if(result.state.content.contentId.equals("")) {
+        args.putString("exploration_id", dummyExploration_id)
+        if (result.state.content.contentId.equals("")) {
           args.putString("content_id", "content")
-        }else{
+        } else {
           args.putString("content_id", result.state.content.contentId)
         }
         args.putString("html_content", result.state.content.html)
@@ -120,9 +120,11 @@ class StateFragmentPresenter @Inject constructor(
       }
     })
   }
+
   private fun getContentListFragment(): ContentListFragment? {
     return fragment.childFragmentManager.findFragmentById(R.id.content_list_fragment_placeholder) as ContentListFragment?
   }
+
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
     getEphemeralState()
   }
