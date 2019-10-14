@@ -117,7 +117,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      if (result.state.interaction.id.equals("NumericInput"))
+      if (result.state.interaction.id == "NumericInput")
         addNumberInputContentCard(result.state.interaction.customizationArgsMap.get("placeholder")!!.normalizedString)
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
     })
@@ -126,9 +126,9 @@ class StateFragmentPresenter @Inject constructor(
   /** The function for adding [NumberInputInteractionView]. */
   private fun addNumberInputContentCard(placeholder: String) {
     contentComponent = NumberInputInteractionView(
-      fragment.context!!,
-      placeholder,
-      numberOfrows
+      context = fragment.context!!,
+      placeholder = placeholder,
+      rows = numberOfrows
     )
     val params = LinearLayout.LayoutParams(
       LinearLayout.LayoutParams.MATCH_PARENT,
@@ -136,12 +136,12 @@ class StateFragmentPresenter @Inject constructor(
     )
     params.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8))
     llRoot.addView(contentComponent, params)
-    contentComponent.setText(digit)
+    contentComponent.setText(this.digit)
     if (isFetched) {
       dummyFetchDataTV.setText(digit)
     }
-    dummyEditTextButton!!.setOnClickListener(View.OnClickListener {
-      dummyFetchDataTV.setText(contentComponent.text)
+    this.dummyEditTextButton.setOnClickListener(View.OnClickListener {
+      this.dummyFetchDataTV.setText(contentComponent.text)
 
     })
   }
