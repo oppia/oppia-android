@@ -2,6 +2,14 @@
 <layout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="presenter"
+      type="org.oppia.app.topic.overview.TopicOverviewFragmentPresenter"/>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.overview.TopicOverviewViewModel"/>
+  </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,7 +28,7 @@
       android:layout_marginTop="24dp"
       android:layout_marginEnd="24dp"
       android:gravity="start"
-      android:text="Fraction"
+      android:text="@{viewModel.topicLiveData.name}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +42,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginEnd="24dp"
       android:gravity="start"
-      android:text="3 Stories"
+      android:text="@{viewModel.topicLiveData.storyCount + ` Stories`}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +56,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="24dp"
       android:gravity="start"
-      android:text="Fractions are important because they tell you what portion of a whole you need, have, or want. Fractions are an integral part of mathematics, but they can even be applied to everyday life."
+      android:text="@{viewModel.topicLiveData.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -62,6 +70,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="24dp"
       android:gravity="start"
+      android:onClick="@{presenter::seeMoreClicked}"
       android:text="See More"
       android:textColor="@color/colorPrimary"
       android:textSize="16sp"
@@ -75,6 +84,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginTop="24dp"
+      downloadDrawable="@{viewModel.downloadStatus.get(), default=@drawable/ic_file_download_primary_24dp}"
       android:src="@drawable/ic_file_download_primary_24dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/see_more_text_view"/>
@@ -83,7 +93,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
-      android:text="3 Stories"
+      android:text="@{viewModel.topicLiveData.storyCount + ` Stories`}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
@@ -94,7 +104,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:text="(24MB)"
+      android:text="@{`(` + viewModel.topicLiveData.getSerializedSize() + ` MB)`}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       android:textStyle="italic"

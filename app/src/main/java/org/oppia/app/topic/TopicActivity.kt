@@ -6,7 +6,8 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
 /** The activity for tabs in Topic. */
-class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener {
+class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToTopicPlayListener {
+
   @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,5 +18,9 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
+  }
+
+  override fun routeToTopicPlayFragment() {
+    // TODO(#135): Change to play tab in this function.
   }
 }
