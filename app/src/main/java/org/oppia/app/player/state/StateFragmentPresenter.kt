@@ -55,7 +55,6 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
     explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-
     getAudioFragment()
     subscribeToCurrentState()
 
