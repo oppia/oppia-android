@@ -99,29 +99,17 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("StateFragment", "getCurrentState: ${result.state.name}")
-      if (getContentListFragment() == null) {
-        val contentListFragment = ContentListFragment()
-        val args = Bundle()
-        args.putString("entityType", entityType)
-        args.putString("exploration_id", dummyExploration_id)
-        if (result.state.content.contentId.equals("")) {
-          args.putString("content_id", "content")
-        } else {
-          args.putString("content_id", result.state.content.contentId)
-        }
-        args.putString("htmlContent", result.state.content.html)
-        contentListFragment.arguments = args
-        fragment.childFragmentManager.beginTransaction().add(
-          R.id.content_list_fragment_placeholder,
-          contentListFragment
-        ).commitNow()
-      }
+      logger.d("StateFragment", "getCurrentState: ${result.state}")
+      val contentListFragment = ContentListFragment()
+      val args = Bundle()
+      args.putString("entityType", entityType)
+      args.putString("exploration_id", dummyExploration_id)
+      contentListFragment.arguments = args
+      fragment.childFragmentManager.beginTransaction().add(
+        R.id.content_list_fragment_placeholder,
+        contentListFragment
+      ).commitNow()
     })
-  }
-
-  private fun getContentListFragment(): ContentListFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.content_list_fragment_placeholder) as ContentListFragment?
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
