@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
+import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_1
@@ -18,6 +19,8 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+
+private const val TAG_TOPIC_DOWNLOAD_DIALOG = "TOPIC_DOWNLOAD_DIALOG"
 
 /** The presenter for [TopicOverviewFragment]. */
 @FragmentScope
@@ -43,8 +46,21 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  private fun showTopicDownloadDialogFragment() {
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_TOPIC_DOWNLOAD_DIALOG)
+    if (previousFragment != null) {
+      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = TopicDownloadDialogFragment.newInstance()
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_TOPIC_DOWNLOAD_DIALOG)
+  }
+
   fun seeMoreClicked(v: View) {
     routeToTopicPlayListener.routeToTopicPlayFragment()
+  }
+
+  fun downloadStatueImageClicked(v: View){
+    showTopicDownloadDialogFragment()
   }
 
   private fun getTopicOverviewViewModel(): TopicOverviewViewModel {
@@ -57,6 +73,12 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       topicOverviewViewModel.topic.set(result)
     })
+  }
+
+  fun handleDownloadTopic(saveUserChoice: Boolean) {
+  }
+
+  fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
   }
 
   // TODO(#135): Get this topic-id from [TopicFragment].

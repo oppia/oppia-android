@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains overview of Topic. */
-class TopicOverviewFragment : InjectableFragment() {
+class TopicOverviewFragment : InjectableFragment(), TopicDownloadListener {
   @Inject
   lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
@@ -20,5 +20,13 @@ class TopicOverviewFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return topicOverviewFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun downloadTopicWhileOnCellular(saveUserChoice: Boolean) {
+    topicOverviewFragmentPresenter.handleDownloadTopic(saveUserChoice)
+  }
+
+  override fun doNotDownloadTopicWhileOnCellular(saveUserChoice: Boolean) {
+    topicOverviewFragmentPresenter.handleDoNotDownloadTopic(saveUserChoice)
   }
 }
