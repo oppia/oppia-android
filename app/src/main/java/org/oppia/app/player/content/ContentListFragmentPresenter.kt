@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.ContentListFragmentBinding
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.data.backends.gae.model.GaeSubtitledHtml
-import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
@@ -19,7 +17,7 @@ class ContentListFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) {
 
-  private val entity_type: String = "exploration"
+  private val entityType: String = "exploration"
 
   lateinit var contentCardAdapter: ContentCardAdapter
 
@@ -35,7 +33,7 @@ class ContentListFragmentPresenter @Inject constructor(
     binding.recyclerview.apply {
       binding.recyclerview.layoutManager = LinearLayoutManager(context)
       contentCardAdapter =
-        ContentCardAdapter(context, entity_type, fragment.arguments!!.getString("exploration_id"), contentList);
+        ContentCardAdapter(context, entityType, fragment.arguments!!.getString("exploration_id"), contentList);
       binding.recyclerview.adapter = contentCardAdapter
     }
     getContentList()
@@ -44,8 +42,8 @@ class ContentListFragmentPresenter @Inject constructor(
   }
 
   private fun getContentList() {
-    getContentViewModel().setContentId(fragment.arguments!!.getString("content_id"))
-    getContentViewModel().setHtmlContent(fragment.arguments!!.getString("htmlContent"))
+    getContentViewModel().contentId = fragment.arguments!!.getString("content_id")
+    getContentViewModel().htmlContent = fragment.arguments!!.getString("htmlContent")
     logger.d("ContentListFragment", "htmlcontent: ${fragment.arguments!!.getString("htmlContent")}")
     contentList.add(getContentViewModel())
     contentCardAdapter!!.notifyDataSetChanged()

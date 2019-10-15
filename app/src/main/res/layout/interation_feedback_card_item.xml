@@ -4,7 +4,7 @@
       name="htmlContent"
       type="String"/>
   </data>
-  <RelativeLayout
+  <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="24dp"
@@ -21,5 +21,5 @@
       android:gravity="right|center"
       android:padding="8dp"
       android:text="@{htmlContent}"/>
-  </RelativeLayout>
+  </FrameLayout>
 </layout>
