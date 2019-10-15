@@ -33,7 +33,7 @@ class TopicDownloadDialogFragment : DialogFragment() {
       .setTitle(R.string.topic_download_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.topic_download_alert_dialog_description)
-      .setPositiveButton(R.string.topic_download_alert_dialog_okay_button) { dialog, whichButton ->
+      .setPositiveButton(R.string.topic_download_alert_dialog_download_button) { dialog, whichButton ->
         topicDownloadListener.downloadTopicWhileOnCellular(checkBox.isChecked)
         dismiss()
       }

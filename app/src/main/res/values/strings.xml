@@ -23,9 +23,12 @@
   <string name="state_end_exploration_button">RETURN TO TOPIC</string>
   <string name="state_learn_again_button">LEARN AGAIN</string>
   <string name="topic_overview_see_more">See More</string>
-  <string name="topic_download_alert_dialog_okay_button">DOWNLOAD NOW</string>
+  <string name="topic_download_alert_dialog_download_button">DOWNLOAD NOW</string>
   <string name="topic_download_alert_dialog_cancel_button">CANCEL</string>
   <string name="topic_download_alert_dialog_title">Currently on Cellular Data</string>
   <string name="topic_download_alert_dialog_description">You can fo to Settings to Download only when connected to Wi-Fi.</string>
   <string name="topic_download_alert_dialog_checkbox">Don\'t show this message again</string>
+  <string name="topic_delete_alert_dialog_delete_button">DELETE</string>
+  <string name="topic_delete_alert_dialog_cancel_button">CANCEL</string>
+  <string name="topic_delete_alert_dialog_description">Delete this topic from the device?</string>
 </resources>

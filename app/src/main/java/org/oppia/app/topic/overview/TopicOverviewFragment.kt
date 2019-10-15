@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains overview of Topic. */
-class TopicOverviewFragment : InjectableFragment(), TopicDownloadListener {
+class TopicOverviewFragment : InjectableFragment(), TopicDownloadListener, TopicDeleteListener {
   @Inject
   lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
@@ -28,5 +28,9 @@ class TopicOverviewFragment : InjectableFragment(), TopicDownloadListener {
 
   override fun doNotDownloadTopicWhileOnCellular(saveUserChoice: Boolean) {
     topicOverviewFragmentPresenter.handleDoNotDownloadTopic(saveUserChoice)
+  }
+
+  override fun deleteTopic() {
+    topicOverviewFragmentPresenter.handleDeleteTopic()
   }
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
@@ -20,6 +21,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+private const val TAG_TOPIC_DELETE_DIALOG = "TOPIC_DELETE_DIALOG"
 private const val TAG_TOPIC_DOWNLOAD_DIALOG = "TOPIC_DOWNLOAD_DIALOG"
 
 /** The presenter for [TopicOverviewFragment]. */
@@ -33,7 +35,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
 ) {
   private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
 
-  private val topicOverviewViewModel  = getTopicOverviewViewModel()
+  private val topicOverviewViewModel = getTopicOverviewViewModel()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -55,12 +57,25 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_TOPIC_DOWNLOAD_DIALOG)
   }
 
+  private fun showTopicDeleteDialogFragment() {
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_TOPIC_DELETE_DIALOG)
+    if (previousFragment != null) {
+      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = TopicDeleteDialogFragment.newInstance()
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_TOPIC_DELETE_DIALOG)
+  }
+
   fun seeMoreClicked(v: View) {
     routeToTopicPlayListener.routeToTopicPlayFragment()
   }
 
-  fun downloadStatueImageClicked(v: View){
-    showTopicDownloadDialogFragment()
+  fun downloadStatueImageClicked(v: View) {
+    when (topicOverviewViewModel.downloadStatus.get()) {
+      STATUS_NOT_DOWNLOADED -> showTopicDownloadDialogFragment()
+      STATUS_DOWNLOADED -> showTopicDeleteDialogFragment()
+      /** STATUS_DOWNLOADING -> TODO(Rajat): Discuss with Ben regarding this case. */
+    }
   }
 
   private fun getTopicOverviewViewModel(): TopicOverviewViewModel {
@@ -76,9 +91,17 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   }
 
   fun handleDownloadTopic(saveUserChoice: Boolean) {
+    // TODO(Rajat): Save this preference and change icon only when download is finished
+    topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
   }
 
   fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
+    // TODO(Rajat): Save this preference
+  }
+
+  fun handleDeleteTopic() {
+    // TODO(Rajat): Delete topic from device.
+    topicOverviewViewModel.downloadStatus.set(STATUS_NOT_DOWNLOADED)
   }
 
   // TODO(#135): Get this topic-id from [TopicFragment].
@@ -96,4 +119,5 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
+
 }
