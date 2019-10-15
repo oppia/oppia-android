@@ -10,7 +10,7 @@ import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TOTAL_QUESTIONS_PER_TOPIC = 10
+const val QUESTION_COUNT_PER_TRAINING_SESSION = 10
 const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
 
 /** Controller for retrieving a set of questions. */
@@ -44,7 +44,8 @@ class QuestionTrainingController @Inject constructor(
   private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
-      getFilteredQuestionsForTraining(skillIdsList, it, TOTAL_QUESTIONS_PER_TOPIC/skillIdsList.size)
+      getFilteredQuestionsForTraining(skillIdsList, it,
+        QUESTION_COUNT_PER_TRAINING_SESSION / skillIdsList.size)
     }
   }
 
@@ -60,7 +61,7 @@ class QuestionTrainingController @Inject constructor(
       }.take(numQuestionsPerSkill + 1))
     }
     return trainingQuestions
-      .take(TOTAL_QUESTIONS_PER_TOPIC)
+      .take(QUESTION_COUNT_PER_TRAINING_SESSION)
   }
 
   /**

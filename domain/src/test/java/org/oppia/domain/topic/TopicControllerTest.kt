@@ -487,9 +487,10 @@ class TopicControllerTest {
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(2)
-    assertThat(questionsList[0].questionId).isEqualTo(TEST_QUESTION_ID_0)
-    assertThat(questionsList[1].questionId).isEqualTo(TEST_QUESTION_ID_1)
+    assertThat(questionsList.size).isEqualTo(5)
+    val questionIds = questionsList.map { it -> it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(mutableListOf(TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
+      TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3))
   }
 
   @Test
