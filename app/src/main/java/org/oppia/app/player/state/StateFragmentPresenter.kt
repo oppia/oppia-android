@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -52,9 +55,15 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
     explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+
+    getAudioFragment()
     subscribeToCurrentState()
 
     return binding.root
+  }
+
+  private fun getAudioFragment(): AudioFragment? {
+    return fragment.childFragmentManager.findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment?
   }
 
   fun handleAudioClick() {
