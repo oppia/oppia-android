@@ -80,7 +80,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun getNumberTextInputText(): String {
+    if(contentComponent!=null)
     return contentComponent.text.toString()
+    else
+    return ""
+
   }
 
   fun isFetchClicked(): Boolean {
