@@ -17,6 +17,7 @@
       android:id="@+id/topic_thumbnail_image_view"
       android:layout_width="0dp"
       android:layout_height="200dp"
+      android:src="@{viewModel.topicLiveData.topicThumbnail.thumbnailGraphicValue}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -71,7 +72,7 @@
       android:layout_marginEnd="24dp"
       android:gravity="start"
       android:onClick="@{presenter::seeMoreClicked}"
-      android:text="See More"
+      android:text="@string/topic_overview_see_more"
       android:textColor="@color/colorPrimary"
       android:textSize="16sp"
       android:textStyle="bold"
@@ -80,12 +81,11 @@
       app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view"/>
     <ImageView
       android:id="@+id/download_status_image_view"
+      downloadDrawable="@{viewModel.downloadStatus.get(), default=@drawable/ic_file_download_primary_24dp}"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginTop="24dp"
-      downloadDrawable="@{viewModel.downloadStatus.get(), default=@drawable/ic_file_download_primary_24dp}"
-      android:src="@drawable/ic_file_download_primary_24dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/see_more_text_view"/>
     <TextView
