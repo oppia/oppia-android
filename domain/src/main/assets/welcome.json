@@ -73,7 +73,7 @@
       "classifier_model_id": null,
       "content": {
         "audio_translations": {},
-        "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
+        "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
       },
       "interaction": {
         "answer_groups": [
@@ -160,14 +160,7 @@
           }
         ],
         "confirmed_unclassified_answers": [],
-        "customization_args": {
-          "rows": {
-            "value": 1
-          },
-          "placeholder": {
-            "value": "Write digit here."
-          }
-        },
+        "customization_args": {},
         "default_outcome": {
           "dest": "Numeric input",
           "feedback": "If you got here, something's gone a bit wrong with this exploration. Sorry about that. If you're wondering, the answer is 121.",
