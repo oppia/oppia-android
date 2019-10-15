@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import org.oppia.app.R
 
 /**
- * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
+ * DialogFragment that indicates to the user they are on cellular when trying to download topic.
  */
 class TopicDownloadDialogFragment : DialogFragment() {
   companion object {
@@ -24,7 +24,7 @@ class TopicDownloadDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val view = activity!!.layoutInflater.inflate(R.layout.topic_download_dialog, null)
+    val view = activity!!.layoutInflater.inflate(R.layout.topic_download_dialog, /* root= */null)
     val checkBox = view.findViewById<CheckBox>(R.id.topic_download_dialog_checkbox)
 
     val topicDownloadListener: TopicDownloadListener = parentFragment as TopicOverviewFragment

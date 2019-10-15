@@ -1,6 +1,6 @@
 package org.oppia.app.topic.overview
 
-/** Interface to check the preference regarding alert for [TopicDownloadDialogFragment]. */
+/** Interface to confirm whether user wants to delete the topic. */
 interface TopicDeleteListener {
   fun deleteTopic()
 }

@@ -5,11 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import android.widget.CheckBox
 import org.oppia.app.R
 
 /**
- * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
+ * DialogFragment that confirms whether user wants to delete the topic or not.
  */
 class TopicDeleteDialogFragment : DialogFragment() {
   companion object {
@@ -24,7 +23,6 @@ class TopicDeleteDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
     val topicDeleteListener: TopicDeleteListener = parentFragment as TopicOverviewFragment
 
     return AlertDialog.Builder(activity as Context)

@@ -8,11 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_1
@@ -78,8 +76,18 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getTopicOverviewViewModel(): TopicOverviewViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicOverviewViewModel::class.java)
+  fun handleDownloadTopic(saveUserChoice: Boolean) {
+    // TODO(Rajat): Save this preference and change icon only when download is finished.
+    topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
+  }
+
+  fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
+    // TODO(Rajat): Save this preference and do not download topic.
+  }
+
+  fun handleDeleteTopic() {
+    // TODO(Rajat): Delete topic from device.
+    topicOverviewViewModel.downloadStatus.set(STATUS_NOT_DOWNLOADED)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
@@ -88,20 +96,6 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       topicOverviewViewModel.topic.set(result)
     })
-  }
-
-  fun handleDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference and change icon only when download is finished
-    topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
-  }
-
-  fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference
-  }
-
-  fun handleDeleteTopic() {
-    // TODO(Rajat): Delete topic from device.
-    topicOverviewViewModel.downloadStatus.set(STATUS_NOT_DOWNLOADED)
   }
 
   // TODO(#135): Get this topic-id from [TopicFragment].
@@ -120,4 +114,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
+  private fun getTopicOverviewViewModel(): TopicOverviewViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicOverviewViewModel::class.java)
+  }
 }
