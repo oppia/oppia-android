@@ -2,16 +2,10 @@ package org.oppia.app.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
 import org.oppia.app.R
 import org.oppia.app.customview.inputInteractionView.NumberInputInteractionView
 
 private const val KEY_DIGIT_ID = "DIGIT_ID"
-private const val KEY_FETCHED_ID = "FETCHED_ID"
 
 class NumericInputInteractionViewTestActivity : AppCompatActivity() {
   private lateinit var digit: String
