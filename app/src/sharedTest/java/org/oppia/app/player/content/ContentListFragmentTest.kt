@@ -37,6 +37,7 @@ class ContentListFragmentTest {
   fun testContentListFragment_loadHtmlContent_isDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
+
       onView(withId(R.id.recyclerview)).check(matches(isDisplayed()))
     }
   }
