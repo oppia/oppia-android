@@ -29,6 +29,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
     if (savedInstanceState != null) {
       digit = savedInstanceState.getString(KEY_DIGIT_ID)
       isFetched = savedInstanceState.getBoolean(KEY_FETCHED_ID)
+    } else {
+      digit = ""
     }
     return stateFragmentPresenter.handleCreateView(inflater, container, digit, isFetched)
   }

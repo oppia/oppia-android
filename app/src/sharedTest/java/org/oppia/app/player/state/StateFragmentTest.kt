@@ -187,7 +187,7 @@ class StateFragmentTest {
       onView(withId(R.id.play_exploration_button)).perform(click())
       val placeholder = "Write digit here."
       onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
-      onView(withId(R.id.dummy_edittext_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.dummy_fetch_button)).check(matches(isDisplayed()))
       onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed()))
     }
   }
@@ -199,7 +199,7 @@ class StateFragmentTest {
       val placeholder = "Write digit here."
       onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
       onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("8"))
-      onView(withId(R.id.dummy_edittext_button)).perform(click())
+      onView(withId(R.id.dummy_fetch_button)).perform(click())
       onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed()))
     }
   }
@@ -210,7 +210,6 @@ class StateFragmentTest {
       onView(withId(R.id.play_exploration_button)).perform(click())
       val placeholder = "Write digit here."
       onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
-      onView(ViewMatchers.withHint(placeholder)).perform(click())
       onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("9"))
       activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed())).check(matches(withText("9")))
@@ -224,10 +223,59 @@ class StateFragmentTest {
       val placeholder = "Write digit here."
       onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
       onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("8"))
-      onView(withId(R.id.dummy_edittext_button)).perform(click())
+      onView(withId(R.id.dummy_fetch_button)).perform(click())
       onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed())).check(matches(withText("8")))
       activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed())).check(matches(withText("8")))
+    }
+  }
+
+ @Test
+  fun testTextInputView_displaySoftInputAccordingToInputType_fieldsAreVisible() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      val placeholder = "test"
+      onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
+      onView(withId(R.id.dummy_fetch_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testTextInputView_typesNumber_fetchDummyButtonClicked_isFetchedDataFromNumericInputViewDisplayedOnDummyTextView() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      val placeholder = "test"
+      onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("a"))
+      onView(withId(R.id.dummy_fetch_button)).perform(click())
+      onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testTextInputView_typesNumber_configurationChange_valuesAreDisplayedOnTextInputView() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      val placeholder = "test"
+      onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("abc"))
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed())).check(matches(withText("abc")))
+    }
+  }
+
+  @Test
+  fun testTextInputView_typesNumber_fetchDummyButtonClicked_fetchedDataFromNumericInputViewDisplayedOnDummyTextView_configurationChanged_isFetchedDataFromTextInputViewDisplayedOnDummyTextViewDisplayed() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      val placeholder = "test"
+      onView(ViewMatchers.withHint(placeholder)).check(matches(isDisplayed()))
+      onView(ViewMatchers.withHint(placeholder)).perform(ViewActions.clearText(), ViewActions.typeText("abc"))
+      onView(withId(R.id.dummy_fetch_button)).perform(click())
+      onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed())).check(matches(withText("abc")))
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+      onView(withId(R.id.fetched_data_tv)).check(matches(isDisplayed())).check(matches(withText("abc")))
     }
   }
 

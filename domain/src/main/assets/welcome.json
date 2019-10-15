@@ -2,7 +2,7 @@
   "author_notes": "",
   "blurb": "",
   "category": "Welcome",
-  "init_state_name": "Numeric input",
+  "init_state_name": "Welcome!",
   "language_code": "en",
   "objective": "become familiar with Oppia's capabilities",
   "param_changes": [],
@@ -73,7 +73,7 @@
       "classifier_model_id": null,
       "content": {
         "audio_translations": {},
-        "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
+        "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
       },
       "interaction": {
         "answer_groups": [
