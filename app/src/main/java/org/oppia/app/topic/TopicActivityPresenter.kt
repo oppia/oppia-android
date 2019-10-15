@@ -3,7 +3,6 @@ package org.oppia.app.topic
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.topic.overview.TopicOverviewFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicActivity]. */
@@ -14,12 +13,12 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getTopicFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        TopicOverviewFragment()
+        TopicFragment()
       ).commitNow()
     }
   }
 
-  private fun getTopicFragment(): TopicOverviewFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicOverviewFragment?
+  private fun getTopicFragment(): TopicFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment?
   }
 }
