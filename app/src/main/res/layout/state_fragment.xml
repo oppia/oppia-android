@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-
   <data>
-
-    <import type="android.view.View" />
-
+    <import type="android.view.View"/>
     <variable
       name="stateFragment"
-      type="org.oppia.app.player.state.StateFragment" />
-
+      type="org.oppia.app.player.state.StateFragment"/>
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.StateViewModel" />
+      type="org.oppia.app.player.state.StateViewModel"/>
   </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -28,47 +23,12 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
-
       <fragment
         android:id="@+id/audio_fragment"
         class="org.oppia.app.player.audio.AudioFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
     </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/llRoot"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="24dp"
-      android:orientation="vertical"
-      app:layout_constraintBottom_toTopOf="@id/dummy_fetch_button"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-      android:id="@+id/dummy_fetch_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:text="fetch"
-      app:layout_constraintBottom_toTopOf="@id/fetched_data_tv"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-      android:id="@+id/fetched_data_tv"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/padding_8"
-      android:gravity="center"
-      android:hint="click the fetch button to fetch data from edit text"
-      app:layout_constraintBottom_toTopOf="@id/dummy_audio_button"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
     <Button
       android:id="@+id/dummy_audio_button"
       android:layout_width="wrap_content"
@@ -82,7 +42,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.935" />
+      app:layout_constraintTop_toTopOf="parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,14 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputFilter
 import android.text.method.DigitsKeyListener
+import android.util.AttributeSet
 import android.widget.EditText
 import org.oppia.app.R
+import org.oppia.app.model.InteractionObject
 
 /** The customclass for [NumberInputInteractionView]. */
-@SuppressLint("ViewConstructor")
-class NumberInputInteractionView(context: Context, private var placeholder: String) :
-  EditText(context) {
+class NumberInputInteractionView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyle: Int = android.R.attr.editTextStyle
+  , private var placeholder: String = "Write the digit here."
+) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
   init {
+    attributes()
+  }
+
+  constructor(context: Context?, placeholder: String) : this(context!!) {
+    this.placeholder = placeholder
     attributes()
   }
 
@@ -31,5 +41,9 @@ class NumberInputInteractionView(context: Context, private var placeholder: Stri
     val filterArray = arrayOfNulls<InputFilter>(1)
     filterArray[0] = InputFilter.LengthFilter(length)
     filters = filterArray
+  }
+
+  override fun getPendingAnswer(): InteractionObject {
+    return InteractionObject.newBuilder().setNormalizedString(text.toString()).build()
   }
 }
