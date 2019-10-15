@@ -37,6 +37,7 @@ class StateFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private val dummyExploration_id: String = "umPkwp0L1M0-"
+  private val entityType: String = "exploration"
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -102,6 +103,7 @@ class StateFragmentPresenter @Inject constructor(
       if (getContentListFragment() == null) {
         val contentListFragment = ContentListFragment()
         val args = Bundle()
+        args.putString("entityType", entityType)
         args.putString("exploration_id", dummyExploration_id)
         if (result.state.content.contentId.equals("")) {
           args.putString("content_id", "content")

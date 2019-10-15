@@ -15,14 +15,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-      android:id="@+id/linearLayout"
+      android:id="@+id/state_content_container"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
       android:visibility="@{viewModel.isAudioFragmentVisible? View.VISIBLE: View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
       <fragment
         android:id="@+id/audio_fragment"
         class="org.oppia.app.player.audio.AudioFragment"
@@ -36,9 +37,11 @@
       android:layout_marginStart="24dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="24dp"
-      android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/dummy_audio_button"
-      app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+      android:layout_marginBottom="8dp"
+      app:layout_constraintBottom_toTopOf="@+id/dummy_audio_button"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/state_content_container">
     </FrameLayout>
     <Button
       android:id="@+id/dummy_audio_button"

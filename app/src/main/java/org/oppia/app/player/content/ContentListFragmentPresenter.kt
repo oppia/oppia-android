@@ -17,7 +17,8 @@ class ContentListFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) {
 
-  private val entityType: String = "exploration"
+  private var entityType: String = ""
+  private var entityId: String = ""
 
   lateinit var contentCardAdapter: ContentCardAdapter
 
@@ -26,22 +27,23 @@ class ContentListFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ContentListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
-      it.viewModel = getContentViewModel()
-      it.contentFragment = fragment as ContentListFragment
       it.lifecycleOwner = fragment
     }
+    entityType = fragment.arguments!!.getString("entityType")
+    entityId = fragment.arguments!!.getString("exploration_id")
+
     binding.recyclerview.apply {
       binding.recyclerview.layoutManager = LinearLayoutManager(context)
       contentCardAdapter =
-        ContentCardAdapter(context, entityType, fragment.arguments!!.getString("exploration_id"), contentList);
+        ContentCardAdapter(context, entityType, entityId, contentList);
       binding.recyclerview.adapter = contentCardAdapter
     }
-    getContentList()
+    bindContentList()
 
     return binding.root
   }
 
-  private fun getContentList() {
+  private fun bindContentList() {
     getContentViewModel().contentId = fragment.arguments!!.getString("content_id")
     getContentViewModel().htmlContent = fragment.arguments!!.getString("htmlContent")
     logger.d("ContentListFragment", "htmlcontent: ${fragment.arguments!!.getString("htmlContent")}")
