@@ -13,6 +13,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.StringList
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
@@ -117,8 +118,13 @@ class StateFragmentPresenter @Inject constructor(
         logger.d("StateFragment", key)
       }
       if (customizationArgsMap.contains("choices")) {
-        val customizationArgs: InteractionObject? = customizationArgsMap["choices"]
-        logger.d("StateFragment", "value: ${customizationArgs}")
+        val customizationArgs: InteractionObject? = customizationArgsMap.get("choices")
+        //        val customizationArgs: Collection<InteractionObject> = customizationArgsMap.values
+        // This log should give 3 but it is showing 0. So maybe it would a good idea to use other paramters from InteractionObject, similar to my comments below
+        val stringList :StringList= customizationArgs!!.setOfHtmlString
+//        val stringList = customizationArgs!!.toByteString()
+
+        logger.d("StateFragment", "value: ${stringList.htmlCount}")
       }
     })
   }

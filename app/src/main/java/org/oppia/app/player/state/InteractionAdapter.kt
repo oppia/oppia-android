@@ -17,7 +17,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.util.data.HtmlParser
-import org.oppia.util.data.UrlImageParser
 
 const val VIEW_TYPE_MULTIPLE_CHOICE = 1
 const val VIEW_TYPE_ITEM_SELECTION = 2
