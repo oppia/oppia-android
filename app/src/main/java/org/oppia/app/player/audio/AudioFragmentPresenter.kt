@@ -63,7 +63,7 @@ class AudioFragmentPresenter @Inject constructor(
     val viewModel = getAudioViewModel()
     viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
-      prepared = it != AudioViewModel.AudioPlayStatus.LOADING
+      prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
       binding.sbAudioProgress.isEnabled = prepared
     })
 

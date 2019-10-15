@@ -89,7 +89,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
       )
       .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
 
-    if (stateJson!= null && stateJson.has("recorded_voiceovers")) {
+    if (stateJson != null && stateJson.has("recorded_voiceovers")) {
       addVoiceOverMappings(stateJson.getJSONObject("recorded_voiceovers"), state)
     }
 

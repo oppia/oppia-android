@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
-    <import type="org.oppia.app.player.audio.AudioViewModel.AudioPlayStatus"/>
+    <import type="org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus"/>
     <variable
       name="audioFragment"
       type="org.oppia.app.player.audio.AudioFragment"/>
@@ -24,11 +24,11 @@
       android:id="@+id/ivPlayPauseAudio"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:contentDescription="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
+      android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:padding="8dp"
-      android:src="@{viewModel.playStatusLiveData == AudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
+      android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
-      android:clickable="@{viewModel.playStatusLiveData != AudioPlayStatus.LOADING}"
+      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
@@ -49,7 +49,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
-      android:clickable="@{viewModel.playStatusLiveData != AudioPlayStatus.LOADING}"
+      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       android:padding="8dp"
       android:text="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"

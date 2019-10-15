@@ -24,7 +24,7 @@ class AudioViewModel @Inject constructor(
   private var voiceoverMap = mapOf<String, Voiceover>()
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
-  enum class AudioPlayStatus {
+  enum class UiAudioPlayStatus {
     LOADING,
     PREPARED,
     PLAYING,
@@ -40,7 +40,7 @@ class AudioViewModel @Inject constructor(
   val positionLiveData: LiveData<Int> by lazy {
     processPositionLiveData()
   }
-  val playStatusLiveData: LiveData<AudioPlayStatus> by lazy {
+  val playStatusLiveData: LiveData<UiAudioPlayStatus> by lazy {
     processPlayStatusLiveData()
   }
 
@@ -59,14 +59,13 @@ class AudioViewModel @Inject constructor(
   }
 
   /** Plays or pauses AudioController depending on passed in state */
-  fun togglePlayPause(type: AudioPlayStatus?) {
-    if (type == AudioPlayStatus.PLAYING) {
+  fun togglePlayPause(type: UiAudioPlayStatus?) {
+    if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
     } else {
       audioPlayerController.play()
     }
   }
-
 
   fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
@@ -84,7 +83,7 @@ class AudioViewModel @Inject constructor(
     return Transformations.map(playProgressResultLiveData, ::processPositionResultLiveData)
   }
 
-  private fun processPlayStatusLiveData(): LiveData<AudioPlayStatus> {
+  private fun processPlayStatusLiveData(): LiveData<UiAudioPlayStatus> {
     return Transformations.map(playProgressResultLiveData, ::processPlayStatusResultLiveData)
   }
 
@@ -102,13 +101,13 @@ class AudioViewModel @Inject constructor(
     return playProgressResult.getOrThrow().position
   }
 
-  private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): AudioPlayStatus {
-    if (playProgressResult.isPending()) return AudioPlayStatus.LOADING
+  private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): UiAudioPlayStatus {
+    if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
     return when (playProgressResult.getOrThrow().type) {
-      PlayStatus.PREPARED -> AudioPlayStatus.PREPARED
-      PlayStatus.PLAYING -> AudioPlayStatus.PLAYING
-      PlayStatus.PAUSED -> AudioPlayStatus.PAUSED
-      PlayStatus.COMPLETED -> AudioPlayStatus.COMPLETED
+      PlayStatus.PREPARED -> UiAudioPlayStatus.PREPARED
+      PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
+      PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
+      PlayStatus.COMPLETED -> UiAudioPlayStatus.COMPLETED
     }
   }
 

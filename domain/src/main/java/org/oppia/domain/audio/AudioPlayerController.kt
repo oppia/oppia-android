@@ -130,7 +130,7 @@ class AudioPlayerController @Inject constructor(
     try {
       mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
-    } catch(e: IOException) {
+    } catch (e: IOException) {
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
     playProgress?.value = AsyncResult.pending()

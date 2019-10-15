@@ -15,12 +15,12 @@
         "voiceovers_mapping": {
           "content": {
             "hi-en": {
-              "file_size_bytes": 0,
+              "file_size_bytes": 750,
               "needs_update": false,
               "filename": "content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
             },
             "es": {
-              "file_size_bytes": 0,
+              "file_size_bytes": 500,
               "needs_update": false,
               "filename": "content-es-4lbxy0bwo4g.mp3"
             }

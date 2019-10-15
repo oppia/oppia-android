@@ -166,15 +166,15 @@ class AudioFragmentTest {
         seekBar.getLocationInWindow(screenPos)
         val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
 
-        val relativePos = (position / seekBar.max).toFloat()
-        val screenX = trueWith*relativePos + screenPos[0] + seekBar.paddingLeft
+        val percentagePos = (position.toFloat() / seekBar.max)
+        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
         val screenY = seekBar.height/2f + screenPos[1]
         val coordinates = FloatArray(2)
         coordinates[0] = screenX
         coordinates[1] = screenY
         return coordinates
       }
-    }, Press.FINGER, 0, 0)
+    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
   }
 
   private fun setUpTestApplicationComponent() {
