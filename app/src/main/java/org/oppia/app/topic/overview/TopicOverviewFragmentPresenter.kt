@@ -11,10 +11,12 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
+import org.oppia.app.model.TopicDownloadPreference
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.domain.topic.TopicController
+import org.oppia.domain.topic.TopicDownloadDialogController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -27,6 +29,7 @@ private const val TAG_TOPIC_DOWNLOAD_DIALOG = "TOPIC_DOWNLOAD_DIALOG"
 class TopicOverviewFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val topicDownloadDialogController: TopicDownloadDialogController,
   private val viewModelProvider: ViewModelProvider<TopicOverviewViewModel>,
   private val logger: Logger,
   private val topicController: TopicController
@@ -35,7 +38,18 @@ class TopicOverviewFragmentPresenter @Inject constructor(
 
   private val topicOverviewViewModel = getTopicOverviewViewModel()
 
+  private var showTopicDownloadDialog = true
+  private var useCellularData = false
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    topicDownloadDialogController.getTopicDownloadPreference()
+      .observe(fragment, Observer<AsyncResult<TopicDownloadPreference>> {
+        if (it.isSuccess()) {
+          val prefs = it.getOrDefault(TopicDownloadPreference.getDefaultInstance())
+          showTopicDownloadDialog = !(prefs.hideDialog)
+          useCellularData = prefs.useCellularData
+        }
+      })
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
@@ -70,24 +84,38 @@ class TopicOverviewFragmentPresenter @Inject constructor(
 
   fun downloadStatusImageClicked(v: View) {
     when (topicOverviewViewModel.downloadStatus.get()) {
-      STATUS_NOT_DOWNLOADED -> showTopicDownloadDialogFragment()
+      STATUS_NOT_DOWNLOADED -> if (showTopicDownloadDialog) {
+        showTopicDownloadDialogFragment()
+      } else {
+        if (useCellularData) {
+          startTopicDownload()
+        }
+      }
       STATUS_DOWNLOADED -> showTopicDeleteDialogFragment()
       /** STATUS_DOWNLOADING -> TODO(Rajat): Discuss with Ben regarding this case. */
     }
   }
 
   fun handleDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference and change icon only when download is finished.
-    topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
+    if (saveUserChoice) {
+      topicDownloadDialogController.setAlwaysUseCellularDataPreference()
+    }
+    startTopicDownload()
   }
 
   fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference and do not download topic.
+    if (saveUserChoice) {
+      topicDownloadDialogController.setNeverUseCellularDataPreference()
+    }
   }
 
   fun handleDeleteTopic() {
     // TODO(Rajat): Delete topic from device.
     topicOverviewViewModel.downloadStatus.set(STATUS_NOT_DOWNLOADED)
+  }
+
+  private fun startTopicDownload() {
+    topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }

@@ -237,3 +237,12 @@ message CellularDataPreference {
   // Preference on whether to use cellular data
   bool use_cellular_data = 2;
 }
+
+// Represents user's preference for downloading topic to device
+message TopicDownloadPreference {
+  // Preference on whether to hide TopicDownloadDialogFragment
+  bool hide_dialog = 1;
+
+  // Preference on whether to download topic on cellular data
+  bool use_cellular_data = 2;
+}
