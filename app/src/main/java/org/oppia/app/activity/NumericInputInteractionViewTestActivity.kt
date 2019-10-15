@@ -7,6 +7,7 @@ import org.oppia.app.customview.inputInteractionView.NumberInputInteractionView
 
 private const val KEY_DIGIT_ID = "DIGIT_ID"
 
+/** NumericInputInteractionViewTestActivity is a dummy activity to test Numeric Input Interaction View. **/
 class NumericInputInteractionViewTestActivity : AppCompatActivity() {
   private lateinit var digit: String
   private lateinit var contentComponent: NumberInputInteractionView
@@ -19,6 +20,7 @@ class NumericInputInteractionViewTestActivity : AppCompatActivity() {
     } else {
       digit = ""
     }
+    contentComponent.setText(digit)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
