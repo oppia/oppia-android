@@ -28,7 +28,7 @@ class QuestionPlayerActivity : InjectableAppCompatActivity() {
       return intent
     }
 
-    fun getIntentKey():String{
+    fun getIntentKey(): String {
       return QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
     }
   }
