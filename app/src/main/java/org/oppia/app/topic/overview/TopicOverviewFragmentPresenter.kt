@@ -68,7 +68,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     routeToTopicPlayListener.routeToTopicPlayFragment()
   }
 
-  fun downloadStatueImageClicked(v: View) {
+  fun downloadStatusImageClicked(v: View) {
     when (topicOverviewViewModel.downloadStatus.get()) {
       STATUS_NOT_DOWNLOADED -> showTopicDownloadDialogFragment()
       STATUS_DOWNLOADED -> showTopicDeleteDialogFragment()
