@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.instanceOf
 import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
+import org.oppia.app.customview.inputInteractionView.TextInputInteractionView
 
 /** Tests for [NumericInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -33,7 +34,7 @@ class NumericInputInteractionViewTestActivityTest {
   )
 
   @Test
-  fun testInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+  fun testNumericInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
@@ -43,19 +44,19 @@ class NumericInputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(ViewActions.clearText(), ViewActions.typeText("9"))
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
+      assertEquals(textAnswerRetriever.getPendingAnswer().objectTypeCase, InteractionObject.ObjectTypeCase.REAL)
       assertThat(textAnswerRetriever.getPendingAnswer().real, `is`("9".toDouble()))
     }
   }
 
   @Test
-  fun testInputInteractionView_withInputtedText_hasCorrectPendingAnswerWithDecimalValues() {
+  fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswerWithDecimalValues() {
     val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(
       ViewActions.clearText(),
@@ -64,13 +65,13 @@ class NumericInputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
+      assertEquals(textAnswerRetriever.getPendingAnswer().objectTypeCase, InteractionObject.ObjectTypeCase.REAL)
       assertThat(textAnswerRetriever.getPendingAnswer().real, `is`(9.5))
     }
   }
 
   @Test
-  fun testInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testNumericInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
@@ -78,6 +79,42 @@ class NumericInputInteractionViewTestActivityTest {
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
+    Intents.release()
+  }
+
+  @Test
+  fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
+    }
+  }
+
+  @Test
+  fun testTextInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_text_input_interaction_view)).perform(ViewActions.clearText(), ViewActions.typeText("abc"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
+      assertEquals(textAnswerRetriever.getPendingAnswer().objectTypeCase, InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
+      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString, `is`("abc"))
+    }
+  }
+
+
+
+  @Test
+  fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    Intents.init()
+    val intent = Intent(Intent.ACTION_PICK)
+    launchedActivity = activityTestRule.launchActivity(intent)
+    onView(withId(R.id.test_text_input_interaction_view)).perform(ViewActions.clearText(), ViewActions.typeText("abc"))
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("abc")))
     Intents.release()
   }
 }
