@@ -26,7 +26,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-// TODO(#239): Update testcases to creating or removing the AudioFragment only when needed.
+// TODO(#239): AudioFragment implementation has been updated in PR #238 and because of which these audio-related test cases are failing.
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
