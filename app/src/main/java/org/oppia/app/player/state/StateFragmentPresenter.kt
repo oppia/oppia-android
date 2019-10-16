@@ -1,6 +1,5 @@
 package org.oppia.app.player.state
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +23,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -37,7 +37,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private lateinit var explorationId: String
+  private var explorationId: String? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -56,36 +56,35 @@ class StateFragmentPresenter @Inject constructor(
     }
     explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
-    if (getAudioFragment() == null) {
-      fragment.childFragmentManager.beginTransaction().add(R.id.audio_fragment_placeholder, AudioFragment()).commitNow()
-    }
     subscribeToCurrentState()
 
     return binding.root
   }
 
-  private fun getAudioFragment(): AudioFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment?
-  }
-
   fun handleAudioClick() {
     if (showCellularDataDialog) {
-      setAudioFragmentVisible(false)
+      showHideAudioFragment(false)
       showCellularDataDialogFragment()
     } else {
-      setAudioFragmentVisible(useCellularData)
+      if (useCellularData) {
+        showHideAudioFragment(getAudioFragment() == null)
+      } else {
+        showHideAudioFragment(false)
+      }
     }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(true)
-    if (saveUserChoice)
+    showHideAudioFragment(true)
+    if (saveUserChoice) {
       cellularDialogController.setAlwaysUseCellularDataPreference()
+    }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
-    if (saveUserChoice)
+    if (saveUserChoice) {
       cellularDialogController.setNeverUseCellularDataPreference()
+    }
   }
 
   private fun showCellularDataDialogFragment() {
@@ -101,8 +100,23 @@ class StateFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
-  fun setAudioFragmentVisible(isVisible: Boolean) {
-    getStateViewModel().setAudioFragmentVisible(isVisible)
+  private fun getAudioFragment(): Fragment? {
+    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+  }
+
+  private fun showHideAudioFragment(isVisible: Boolean) {
+    if (isVisible) {
+      if (getAudioFragment() == null) {
+        fragment.childFragmentManager.beginTransaction().add(
+          R.id.audio_fragment_placeholder, AudioFragment(),
+          TAG_AUDIO_FRAGMENT
+        ).commitNow()
+      }
+    } else {
+      if (getAudioFragment() != null) {
+        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
+      }
+    }
   }
 
   private fun subscribeToCurrentState() {
