@@ -5,7 +5,7 @@
   android:layout_height="match_parent"
   android:gravity="center"
   android:orientation="vertical"
-  tools:context=".activity.NumericInputInteractionViewTestActivity">
+  tools:context=".activity.InputInteractionViewTestActivity">
 
   <org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
     android:id="@+id/test_number_input_interaction_view"
