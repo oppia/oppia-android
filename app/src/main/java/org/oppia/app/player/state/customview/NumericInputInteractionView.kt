@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.app.player.state.customview
 
 import android.content.Context
 import android.text.InputFilter
@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.widget.EditText
 import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 
 /** The custom EditText class for numeric input interaction view. */
 class NumericInputInteractionView @JvmOverloads constructor(

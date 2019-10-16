@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.app.player.state.listener
 
 interface InteractionListener{
   fun onPreviousButtonClicked()

@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.app.player.state.itemviewmodel
 
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope

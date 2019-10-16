@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.app.player.state.itemviewmodel
 
 import android.content.Context
 import android.widget.Button

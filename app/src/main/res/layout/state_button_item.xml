@@ -11,7 +11,7 @@
       type="org.oppia.app.player.state.StateFragmentPresenter"/>
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.StateButtonViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.StateButtonViewModel"/>
   </data>
   <RelativeLayout
     android:id="@+id/button_container_relative_layout"

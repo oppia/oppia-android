@@ -17,6 +17,12 @@ import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.InteractionReadOnlyItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
+import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
+import org.oppia.app.player.state.listener.InputInteractionTextListener
+import org.oppia.app.player.state.listener.InteractionListener
 
 const val VIEW_TYPE_CONTENT = 1
 const val VIEW_TYPE_INTERACTION_READ_ONLY = 2

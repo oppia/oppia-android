@@ -23,6 +23,10 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
+import org.oppia.app.player.state.listener.InteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -85,7 +89,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
 
-    stateAdapter = StateAdapter(itemList, this as InteractionListener )
+    stateAdapter = StateAdapter(itemList, this as InteractionListener)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
