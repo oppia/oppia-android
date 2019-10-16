@@ -10,8 +10,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <org.oppia.app.player.state.customview.NumericInputInteractionView
-      android:id="@+id/numeric_input_interaction_view"
+    <org.oppia.app.player.state.customview.TextInputInteractionView
+      android:id="@+id/text_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/padding_8"

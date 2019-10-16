@@ -16,9 +16,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
@@ -26,6 +24,7 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
 import org.oppia.app.player.state.listener.InteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
@@ -38,15 +37,15 @@ import javax.inject.Inject
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
-private const val CONTINUE = "Continue"
-private const val END_EXPLORATION = "EndExploration"
-private const val LEARN_AGAIN = "LearnAgain"
-private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
-private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
-private const val TEXT_INPUT = "TextInput"
-private const val FRACTION_INPUT = "FractionInput"
-private const val NUMERIC_INPUT = "NumericInput"
-private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
+const val CONTINUE = "Continue"
+const val END_EXPLORATION = "EndExploration"
+const val LEARN_AGAIN = "LearnAgain"
+const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
+const val ITEM_SELECT_INPUT = "ItemSelectionInput"
+const val TEXT_INPUT = "TextInput"
+const val FRACTION_INPUT = "FractionInput"
+const val NUMERIC_INPUT = "NumericInput"
+const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -60,6 +59,7 @@ class StateFragmentPresenter @Inject constructor(
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val numericInputInteractionViewModelProvider: ViewModelProvider<NumericInputInteractionViewModel>,
+  private val textInputInteractionViewModelProvider: ViewModelProvider<TextInputInteractionViewModel>,
   private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
   private val contentViewModelProvider: ViewModelProvider<ContentViewModel>,
   private val explorationDataController: ExplorationDataController,
@@ -141,14 +141,6 @@ class StateFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
-  private fun getStateViewModel(): StateViewModel {
-    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
-  }
-
-  private fun getAudioFragment(): Fragment? {
-    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
-  }
-
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
       if (getAudioFragment() == null) {
@@ -183,17 +175,23 @@ class StateFragmentPresenter @Inject constructor(
       val hasPreviousState = result.hasPreviousState
       val hasNextState = result.completedState.answerCount > 0
 
+      val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
+
       when (interactionId) {
         NUMERIC_INPUT -> {
-          getNumericInputInteractionViewModel().placeholder =
-            result.state.interaction.customizationArgsMap["placeholder"]!!.normalizedString
+          if (customizationArgsMap.containsKey("placeholder")) {
+            getNumericInputInteractionViewModel().placeholder =
+              customizationArgsMap.getValue("placeholder").normalizedString
+          }
           itemList.add(getNumericInputInteractionViewModel())
           stateAdapter.notifyDataSetChanged()
         }
         TEXT_INPUT -> {
-          getNumericInputInteractionViewModel().placeholder =
-            result.state.interaction.customizationArgsMap["placeholder"]!!.normalizedString
-          itemList.add(getNumericInputInteractionViewModel())
+          if (customizationArgsMap.containsKey("placeholder")) {
+            getTextInputInteractionViewModel().placeholder =
+              customizationArgsMap.getValue("placeholder").normalizedString
+          }
+          itemList.add(getTextInputInteractionViewModel())
           stateAdapter.notifyDataSetChanged()
         }
       }
@@ -226,6 +224,14 @@ class StateFragmentPresenter @Inject constructor(
     stateAdapter.notifyDataSetChanged()
   }
 
+  private fun getStateViewModel(): StateViewModel {
+    return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
+  }
+
+  private fun getAudioFragment(): Fragment? {
+    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+  }
+
   private fun getStateButtonViewModel(): StateButtonViewModel {
     return stateButtonViewModelProvider.getForFragment(fragment, StateButtonViewModel::class.java)
   }
@@ -239,6 +245,10 @@ class StateFragmentPresenter @Inject constructor(
       fragment,
       NumericInputInteractionViewModel::class.java
     )
+  }
+
+  private fun getTextInputInteractionViewModel(): TextInputInteractionViewModel {
+    return textInputInteractionViewModelProvider.getForFragment(fragment, TextInputInteractionViewModel::class.java)
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
@@ -281,58 +291,6 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  private fun submitContinueButtonAnswer() {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
-  }
-
-  private fun submitFractionInputAnswer(fractionAnswer: Fraction) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createFractionInputAnswer(fractionAnswer)))
-  }
-
-  private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex)))
-  }
-
-  private fun submitNumericInputAnswer(numericAnswer: Double) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer)))
-  }
-
-  private fun submitNumericWithUnitsInputAnswer(numberWithUnits: NumberWithUnits) {
-    subscribeToAnswerOutcome(
-      explorationProgressController.submitAnswer(
-        createNumericWithUnitsInputAnswer(
-          numberWithUnits
-        )
-      )
-    )
-  }
-
-  private fun submitTextInputAnswer(textAnswer: String) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer)))
-  }
-
-  private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
-
-  private fun createFractionInputAnswer(fractionAnswer: Fraction): InteractionObject {
-    return InteractionObject.newBuilder().setFraction(fractionAnswer).build()
-  }
-
-  private fun createMultipleChoiceAnswer(choiceIndex: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
-  }
-
-  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(numericAnswer).build()
-  }
-
-  private fun createNumericWithUnitsInputAnswer(numberWithUnits: NumberWithUnits): InteractionObject {
-    return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
-  }
-
-  private fun createTextInputAnswer(textAnswer: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
-  }
-
   private fun endExploration() {
     explorationDataController.stopPlayingExploration()
     (activity as ExplorationActivity).finish()
@@ -356,26 +314,37 @@ class StateFragmentPresenter @Inject constructor(
     // XX -> Numeric Input
     val stateNumericInputAnswer = 121
 
+    val interactionObject: InteractionObject = stateAdapter.getInteractionObject()
+
     when (currentEphemeralState.get()!!.state.interaction.id) {
-      CONTINUE -> submitContinueButtonAnswer()
       END_EXPLORATION -> endExploration()
-      FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
-      ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
-      MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
-      NUMERIC_INPUT -> submitNumericInputAnswer(stateNumericInputAnswer.toDouble())
-      NUMERIC_WITH_UNITS -> submitNumericWithUnitsInputAnswer(NumberWithUnits.getDefaultInstance())
-      TEXT_INPUT -> submitTextInputAnswer(stateWhatLanguageAnswer)
+      CONTINUE -> subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
+      MULTIPLE_CHOICE_INPUT -> subscribeToAnswerOutcome(
+        explorationProgressController.submitAnswer(
+          InteractionObject.newBuilder().setNonNegativeInt(
+            stateWelcomeAnswer
+          ).build()
+        )
+      )
+      FRACTION_INPUT,
+      ITEM_SELECT_INPUT,
+      NUMERIC_INPUT,
+      NUMERIC_WITH_UNITS,
+      TEXT_INPUT -> subscribeToAnswerOutcome(
+        explorationProgressController.submitAnswer(interactionObject)
+      )
     }
   }
 
   override fun onPreviousButtonClicked() {
-    Log.d("StateFragment", "previousButtonClicked")
     explorationProgressController.moveToPreviousState()
   }
 
   override fun onNextButtonClicked() {
-    Log.d("StateFragment", "nextButtonClicked")
     explorationProgressController.moveToNextState()
   }
 
+  private fun createContinueButtonAnswer(): InteractionObject {
+    return InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER).build()
+  }
 }
