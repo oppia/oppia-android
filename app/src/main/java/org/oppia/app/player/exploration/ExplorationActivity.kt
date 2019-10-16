@@ -12,11 +12,13 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 class ExplorationActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  private lateinit var explorationId : String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    explorationActivityPresenter.handleOnCreate()
+    explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    explorationActivityPresenter.handleOnCreate(explorationId)
   }
 
   companion object {
