@@ -6,7 +6,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The controller for [ExplorationActivity]. */
+/** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate(explorationId: String) {
