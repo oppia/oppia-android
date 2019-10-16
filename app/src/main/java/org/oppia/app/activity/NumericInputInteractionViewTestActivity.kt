@@ -31,5 +31,4 @@ class NumericInputInteractionViewTestActivity : AppCompatActivity() {
   fun getNumberTextInputText(): String {
     return contentComponent.getPendingAnswer().normalizedString
   }
-
 }
