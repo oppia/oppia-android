@@ -55,7 +55,10 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = getStateViewModel()
     }
     explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-    getAudioFragment()
+
+    if (getAudioFragment() == null) {
+      fragment.childFragmentManager.beginTransaction().add(R.id.audio_fragment_placeholder, AudioFragment()).commitNow()
+    }
     subscribeToCurrentState()
 
     return binding.root
