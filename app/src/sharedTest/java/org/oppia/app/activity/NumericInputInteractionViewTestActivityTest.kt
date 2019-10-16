@@ -33,6 +33,16 @@ class NumericInputInteractionViewTestActivityTest {
   )
 
   @Test
+  fun testInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
+    }
+  }
+
+  @Test
   fun testInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(ViewActions.clearText(), ViewActions.typeText("9"))
@@ -40,7 +50,22 @@ class NumericInputInteractionViewTestActivityTest {
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
       assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
-      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString, `is`("9"))
+      assertThat(textAnswerRetriever.getPendingAnswer().real, `is`("9".toDouble()))
+    }
+  }
+
+  @Test
+  fun testInputInteractionView_withInputtedText_hasCorrectPendingAnswerWithDecimalValues() {
+    val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(
+      ViewActions.clearText(),
+      ViewActions.typeText("9.5")
+    )
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
+      assertThat(textAnswerRetriever.getPendingAnswer().real, `is`(9.5))
     }
   }
 
@@ -56,4 +81,5 @@ class NumericInputInteractionViewTestActivityTest {
     Intents.release()
 
   }
+
 }

@@ -35,6 +35,7 @@ class NumberInputInteractionView @JvmOverloads constructor(
     hint = placeholder
     keyListener = DigitsKeyListener.getInstance("0123456789.")
     this.setEditTextMaxLength(length = 200)
+    setLongClickable(false)
   }
 
   private fun setEditTextMaxLength(length: Int) {
@@ -44,6 +45,9 @@ class NumberInputInteractionView @JvmOverloads constructor(
   }
 
   override fun getPendingAnswer(): InteractionObject {
-    return InteractionObject.newBuilder().setReal(text.toString().toDouble()).build()
+    if (text.isEmpty())
+      return InteractionObject.newBuilder().build()
+    else
+      return InteractionObject.newBuilder().setReal(text.toString().toDouble()).build()
   }
 }
