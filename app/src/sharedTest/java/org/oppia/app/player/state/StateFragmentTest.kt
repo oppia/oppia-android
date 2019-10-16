@@ -26,6 +26,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
+// TODO(#239) : Updated this implementation to creating or removing the AudioFragment only when needed.
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
