@@ -61,8 +61,7 @@ class StateFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
-) {
-
+): InteractionListener {
   private val currentEphemeralState = ObservableField<EphemeralState>()
 
   private val itemList: MutableList<Any> = ArrayList()
@@ -85,7 +84,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
 
-    stateAdapter = StateAdapter(itemList)
+    stateAdapter = StateAdapter(itemList, this as InteractionListener)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
@@ -162,6 +161,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
+      itemList.clear()
       currentEphemeralState.set(result)
       if (result.state.hasContent()) {
         if (result.state.content.contentId != "") {
@@ -253,46 +253,6 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  fun interactionButtonClicked(v: View) {
-    Log.d("StateFragment", "interactionButtonClicked")
-    // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
-    // NB: This sample data will work only with TEST_EXPLORATION_ID_5
-    // 0 -> What Language
-    // 2 -> Welcome!
-    // XX -> What Language
-    val stateWelcomeAnswer = 0
-    // finnish -> Numeric input
-    // suomi -> Numeric input
-    // XX -> What Language
-    val stateWhatLanguageAnswer: String = "finnish"
-    // 121 -> Things You can do
-    // < 121 -> Estimate 100
-    // > 121 -> Numeric Input
-    // XX -> Numeric Input
-    val stateNumericInputAnswer = 121
-
-    when (currentEphemeralState.get()!!.state.interaction.id) {
-      CONTINUE -> submitContinueButtonAnswer()
-      END_EXPLORATION -> endExploration()
-      FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
-      ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
-      MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
-      NUMERIC_INPUT -> submitNumericInputAnswer(stateNumericInputAnswer.toDouble())
-      NUMERIC_WITH_UNITS -> submitNumericWithUnitsInputAnswer(NumberWithUnits.getDefaultInstance())
-      TEXT_INPUT -> submitTextInputAnswer(stateWhatLanguageAnswer)
-    }
-  }
-
-  fun nextButtonClicked(v: View) {
-    Log.d("StateFragment", "nextButtonClicked")
-    explorationProgressController.moveToNextState()
-  }
-
-  fun previousButtonClicked(v: View) {
-    Log.d("StateFragment", "previousButtonClicked")
-    explorationProgressController.moveToPreviousState()
-  }
-
   private fun submitContinueButtonAnswer() {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
   }
@@ -348,5 +308,45 @@ class StateFragmentPresenter @Inject constructor(
   private fun endExploration() {
     explorationDataController.stopPlayingExploration()
     (activity as ExplorationActivity).finish()
+  }
+
+  override fun onInteractionButtonClicked() {
+    Log.d("StateFragment", "interactionButtonClicked")
+    // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
+    // NB: This sample data will work only with TEST_EXPLORATION_ID_5
+    // 0 -> What Language
+    // 2 -> Welcome!
+    // XX -> What Language
+    val stateWelcomeAnswer = 0
+    // finnish -> Numeric input
+    // suomi -> Numeric input
+    // XX -> What Language
+    val stateWhatLanguageAnswer: String = "finnish"
+    // 121 -> Things You can do
+    // < 121 -> Estimate 100
+    // > 121 -> Numeric Input
+    // XX -> Numeric Input
+    val stateNumericInputAnswer = 121
+
+    when (currentEphemeralState.get()!!.state.interaction.id) {
+      CONTINUE -> submitContinueButtonAnswer()
+      END_EXPLORATION -> endExploration()
+      FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
+      ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
+      MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
+      NUMERIC_INPUT -> submitNumericInputAnswer(stateNumericInputAnswer.toDouble())
+      NUMERIC_WITH_UNITS -> submitNumericWithUnitsInputAnswer(NumberWithUnits.getDefaultInstance())
+      TEXT_INPUT -> submitTextInputAnswer(stateWhatLanguageAnswer)
+    }
+  }
+
+  override fun onPreviousButtonClicked() {
+    Log.d("StateFragment", "previousButtonClicked")
+    explorationProgressController.moveToPreviousState()
+  }
+
+  override fun onNextButtonClicked() {
+    Log.d("StateFragment", "nextButtonClicked")
+    explorationProgressController.moveToNextState()
   }
 }

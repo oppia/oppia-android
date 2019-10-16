@@ -10,6 +10,7 @@ import org.oppia.app.R
 import androidx.databinding.library.baseAdapters.BR
 import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.interation_read_only_item.view.*
+import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.InterationReadOnlyItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
@@ -19,7 +20,8 @@ const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
 const val VIEW_TYPE_INTERACTION_READ_WRITE = 3
 const val VIEW_TYPE_STATE_BUTTON = 4
 
-class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StateAdapter(private val itemList: MutableList<Any>, private val interactionListener: InteractionListener) :
+  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     Log.d("StateFragment", "onCreateViewHolder: viewType: $viewType")
@@ -58,7 +60,7 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
             parent,
             /* attachToParent= */false
           )
-        StateButtonViewHolder(binding)
+        StateButtonViewHolder(binding, interactionListener)
       }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
@@ -84,7 +86,7 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
 
   override fun getItemViewType(position: Int): Int {
     Log.d("StateFragment", "getItemViewType: $position")
-    return when(itemList[position]){
+    return when (itemList[position]) {
       is ContentViewModel -> VIEW_TYPE_CONTENT
       is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
       else -> throw IllegalArgumentException("Invalid type of data $position")
@@ -121,10 +123,20 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
     }
   }
 
-  inner class StateButtonViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class StateButtonViewHolder(val binding: ViewDataBinding, val interactionListener: InteractionListener) :
+    RecyclerView.ViewHolder(binding.root) {
     internal fun bind(stateButtonViewModel: StateButtonViewModel) {
       Log.d("StateFragment", "StateButtonViewHolder: bind")
       binding.setVariable(BR.buttonViewModel, stateButtonViewModel)
+      binding.root.interaction_button.setOnClickListener {
+        interactionListener.onInteractionButtonClicked()
+      }
+      binding.root.next_state_image_view.setOnClickListener {
+        interactionListener.onNextButtonClicked()
+      }
+      binding.root.previous_state_image_view.setOnClickListener {
+        interactionListener.onPreviousButtonClicked()
+      }
       binding.executePendingBindings()
     }
   }

@@ -27,7 +27,6 @@
       android:layout_alignParentStart="true"
       android:background="@drawable/previous_next_state_image_view_background"
       android:contentDescription="@string/previous_state_description"
-      android:onClick="@{presenter::previousButtonClicked}"
       android:padding="8dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       android:visibility="@{buttonViewModel.isPreviousButtonVisible()? View.VISIBLE: View.GONE}"/>
@@ -38,7 +37,6 @@
       android:layout_alignParentEnd="true"
       android:background="@drawable/previous_next_state_image_view_background"
       android:contentDescription="@string/next_state_description"
-      android:onClick="@{presenter::nextButtonClicked}"
       android:padding="8dp"
       android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
       android:visibility="@{buttonViewModel.isNextButtonVisible()? View.VISIBLE: View.GONE}"/>
@@ -49,7 +47,6 @@
       android:layout_alignParentEnd="true"
       android:clickable="@{buttonViewModel.isInteractionButtonActive()}"
       android:drawableEnd="@{buttonViewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
-      android:onClick="@{presenter::interactionButtonClicked}"
       android:text="@{buttonViewModel.name}"
       android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
       android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
