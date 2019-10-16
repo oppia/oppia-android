@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.interation_read_only_item.view.*
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.InterationReadOnlyItemBinding
+import org.oppia.app.databinding.StateButtonItemBinding
 
 const val VIEW_TYPE_CONTENT = 1
 const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
@@ -47,6 +48,18 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
           )
         InteractionReadOnlyViewHolder(binding)
       }
+      VIEW_TYPE_STATE_BUTTON -> {
+        Log.d("StateFragment", "onCreateViewHolder: VIEW_TYPE_STATE_BUTTON")
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<StateButtonItemBinding>(
+            inflater,
+            R.layout.state_button_item,
+            parent,
+            /* attachToParent= */false
+          )
+        StateButtonViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
   }
@@ -62,6 +75,10 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
         Log.d("StateFragment", "onBindViewHolder: VIEW_TYPE_INTERACTION_READ_ONLY")
         (holder as InteractionReadOnlyViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
+      VIEW_TYPE_STATE_BUTTON -> {
+        Log.d("StateFragment", "onBindViewHolder: VIEW_TYPE_STATE_BUTTON")
+        (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
+      }
     }
   }
 
@@ -69,6 +86,7 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
     Log.d("StateFragment", "getItemViewType: $position")
     return when(itemList[position]){
       is ContentViewModel -> VIEW_TYPE_CONTENT
+      is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
   }
@@ -100,6 +118,14 @@ class StateAdapter(private val itemList: MutableList<Any>) : RecyclerView.Adapte
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
       binding.root.interaction_read_only_text_view.text = rawString
+    }
+  }
+
+  inner class StateButtonViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(stateButtonViewModel: StateButtonViewModel) {
+      Log.d("StateFragment", "StateButtonViewHolder: bind")
+      binding.setVariable(BR.buttonViewModel, stateButtonViewModel)
+      binding.executePendingBindings()
     }
   }
 }

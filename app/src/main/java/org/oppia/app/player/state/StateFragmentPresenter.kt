@@ -1,8 +1,11 @@
 package org.oppia.app.player.state
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -10,14 +13,20 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.Fraction
+import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.topic.train.SkillSelectionAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -26,16 +35,35 @@ import javax.inject.Inject
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
+private const val CONTINUE = "Continue"
+private const val END_EXPLORATION = "EndExploration"
+private const val LEARN_AGAIN = "LearnAgain"
+private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
+private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
+private const val TEXT_INPUT = "TextInput"
+private const val FRACTION_INPUT = "FractionInput"
+private const val NUMERIC_INPUT = "NumericInput"
+private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
+
+// For context:
+// https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
+private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
+
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
   private val contentViewModelProvider: ViewModelProvider<ContentViewModel>,
+  private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
 ) {
+
+  private val currentEphemeralState = ObservableField<EphemeralState>()
 
   private val itemList: MutableList<Any> = ArrayList()
 
@@ -134,6 +162,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
+      currentEphemeralState.set(result)
       if (result.state.hasContent()) {
         if (result.state.content.contentId != "") {
           getContentViewModel().contentId = result.state.content.contentId
@@ -144,7 +173,40 @@ class StateFragmentPresenter @Inject constructor(
         itemList.add(getContentViewModel())
         stateAdapter.notifyDataSetChanged()
       }
+
+      val interactionId = result.state.interaction.id
+      val hasPreviousState = result.hasPreviousState
+      val hasNextState = result.completedState.answerCount > 0
+      updateNavigationButtonVisibility(interactionId, hasPreviousState, hasNextState)
     })
+  }
+
+  private fun updateNavigationButtonVisibility(
+    interactionId: String,
+    hasPreviousState: Boolean,
+    hasNextState: Boolean
+  ) {
+    logger.d("StateFragment", "interactionId: $interactionId")
+    logger.d("StateFragment", "hasPreviousState: $hasPreviousState")
+    logger.d("StateFragment", "hasNextState: $hasNextState")
+    getStateButtonViewModel().setPreviousButtonVisible(hasPreviousState)
+    if (!hasNextState) {
+      getStateButtonViewModel().setObservableInteractionId(interactionId)
+      // TODO(#163): This function controls whether the "Submit" button should be displayed or not.
+      //  Remove this function in final implementation and control this whenever user selects some option in
+      //  MultipleChoiceInput or InputSelectionInput. For now this is `true` because we do not have a mechanism to work
+      //  with MultipleChoiceInput or InputSelectionInput, which will eventually be responsible for controlling this.
+      getStateButtonViewModel().optionSelected(true)
+    } else {
+      getStateButtonViewModel().clearObservableInteractionId()
+      getStateButtonViewModel().setNextButtonVisible(hasNextState)
+    }
+    itemList.add(getStateButtonViewModel())
+    stateAdapter.notifyDataSetChanged()
+  }
+
+  private fun getStateButtonViewModel(): StateButtonViewModel {
+    return stateButtonViewModelProvider.getForFragment(fragment, StateButtonViewModel::class.java)
   }
 
   private fun getContentViewModel(): ContentViewModel {
@@ -164,5 +226,127 @@ class StateFragmentPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
+  }
+
+  /**
+   * This function listens to the result of submitAnswer.
+   * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
+    val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
+    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
+      explorationProgressController.moveToNextState()
+    })
+  }
+
+  /** Helper for subscribeToAnswerOutcome. */
+  private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
+    return Transformations.map(answerOutcome, ::processAnswerOutcome)
+  }
+
+  /** Helper for subscribeToAnswerOutcome. */
+  private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
+    if (ephemeralStateResult.isFailure()) {
+      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+    }
+    return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
+  }
+
+  fun interactionButtonClicked(v: View) {
+    Log.d("StateFragment", "interactionButtonClicked")
+    // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
+    // NB: This sample data will work only with TEST_EXPLORATION_ID_5
+    // 0 -> What Language
+    // 2 -> Welcome!
+    // XX -> What Language
+    val stateWelcomeAnswer = 0
+    // finnish -> Numeric input
+    // suomi -> Numeric input
+    // XX -> What Language
+    val stateWhatLanguageAnswer: String = "finnish"
+    // 121 -> Things You can do
+    // < 121 -> Estimate 100
+    // > 121 -> Numeric Input
+    // XX -> Numeric Input
+    val stateNumericInputAnswer = 121
+
+    when (currentEphemeralState.get()!!.state.interaction.id) {
+      CONTINUE -> submitContinueButtonAnswer()
+      END_EXPLORATION -> endExploration()
+      FRACTION_INPUT -> submitFractionInputAnswer(Fraction.getDefaultInstance())
+      ITEM_SELECT_INPUT -> submitMultipleChoiceAnswer(0)
+      MULTIPLE_CHOICE_INPUT -> submitMultipleChoiceAnswer(stateWelcomeAnswer)
+      NUMERIC_INPUT -> submitNumericInputAnswer(stateNumericInputAnswer.toDouble())
+      NUMERIC_WITH_UNITS -> submitNumericWithUnitsInputAnswer(NumberWithUnits.getDefaultInstance())
+      TEXT_INPUT -> submitTextInputAnswer(stateWhatLanguageAnswer)
+    }
+  }
+
+  fun nextButtonClicked(v: View) {
+    Log.d("StateFragment", "nextButtonClicked")
+    explorationProgressController.moveToNextState()
+  }
+
+  fun previousButtonClicked(v: View) {
+    Log.d("StateFragment", "previousButtonClicked")
+    explorationProgressController.moveToPreviousState()
+  }
+
+  private fun submitContinueButtonAnswer() {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
+  }
+
+  private fun submitFractionInputAnswer(fractionAnswer: Fraction) {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createFractionInputAnswer(fractionAnswer)))
+  }
+
+  private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex)))
+  }
+
+  private fun submitNumericInputAnswer(numericAnswer: Double) {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer)))
+  }
+
+  private fun submitNumericWithUnitsInputAnswer(numberWithUnits: NumberWithUnits) {
+    subscribeToAnswerOutcome(
+      explorationProgressController.submitAnswer(
+        createNumericWithUnitsInputAnswer(
+          numberWithUnits
+        )
+      )
+    )
+  }
+
+  private fun submitTextInputAnswer(textAnswer: String) {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer)))
+  }
+
+  private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+
+  private fun createFractionInputAnswer(fractionAnswer: Fraction): InteractionObject {
+    return InteractionObject.newBuilder().setFraction(fractionAnswer).build()
+  }
+
+  private fun createMultipleChoiceAnswer(choiceIndex: Int): InteractionObject {
+    return InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+  }
+
+  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
+    return InteractionObject.newBuilder().setReal(numericAnswer).build()
+  }
+
+  private fun createNumericWithUnitsInputAnswer(numberWithUnits: NumberWithUnits): InteractionObject {
+    return InteractionObject.newBuilder().setNumberWithUnits(numberWithUnits).build()
+  }
+
+  private fun createTextInputAnswer(textAnswer: String): InteractionObject {
+    return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+  }
+
+  private fun endExploration() {
+    explorationDataController.stopPlayingExploration()
+    (activity as ExplorationActivity).finish()
   }
 }
