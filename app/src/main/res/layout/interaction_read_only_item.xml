@@ -5,21 +5,18 @@
       type="String"/>
   </data>
   <FrameLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="24dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="4dp"
-    android:layout_marginBottom="4dp"
-    android:orientation="vertical">
+    android:layout_margin="4dp"
+    android:orientation="vertical"
+    android:paddingStart="8dp">
     <TextView
       android:id="@+id/interaction_read_only_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
+      android:layout_gravity="end"
       android:background="@drawable/interaction_read_only_white_background"
-      android:gravity="right|center"
-      android:padding="8dp"
+      android:padding="4dp"
       android:text="@{htmlContent}"/>
   </FrameLayout>
 </layout>

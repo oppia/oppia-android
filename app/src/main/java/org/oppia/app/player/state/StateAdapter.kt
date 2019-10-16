@@ -132,6 +132,7 @@ class StateAdapter(
       is ContentViewModel -> VIEW_TYPE_CONTENT
       is NumericInputInteractionViewModel -> VIEW_TYPE_NUMERIC_INPUT_INTERACTION
       is TextInputInteractionViewModel -> VIEW_TYPE_TEXT_INPUT_INTERACTION
+      is InteractionReadOnlyViewModel -> VIEW_TYPE_INTERACTION_READ_ONLY
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
@@ -232,8 +233,8 @@ class StateAdapter(
   }
 
   fun getInteractionObject(): InteractionObject {
-    if (inputInteractionView !is StateButtonViewModel) {
-      return when (inputInteractionView) {
+    return if (inputInteractionView !is StateButtonViewModel) {
+      when (inputInteractionView) {
         is NumericInputInteractionView -> {
           (inputInteractionView as NumericInputInteractionView).getPendingAnswer()
         }
@@ -245,7 +246,7 @@ class StateAdapter(
         }
       }
     } else {
-      return getDefaultInteractionObject()
+      getDefaultInteractionObject()
     }
   }
 

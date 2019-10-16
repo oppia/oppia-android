@@ -13,6 +13,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
@@ -22,6 +23,7 @@ import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
@@ -58,16 +60,14 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
-  private val numericInputInteractionViewModelProvider: ViewModelProvider<NumericInputInteractionViewModel>,
-  private val textInputInteractionViewModelProvider: ViewModelProvider<TextInputInteractionViewModel>,
   private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
-  private val contentViewModelProvider: ViewModelProvider<ContentViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
 ) : InteractionListener {
 
-  private val currentEphemeralState = ObservableField<EphemeralState>()
+  private val currentEphemeralState = ObservableField<EphemeralState>(EphemeralState.getDefaultInstance())
+  private val currentAnswerOutcome = ObservableField<AnswerOutcome>(AnswerOutcome.getDefaultInstance())
 
   private val itemList: MutableList<Any> = ArrayList()
 
@@ -161,53 +161,99 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState.set(result)
       if (result.state.hasContent()) {
+        val contentViewModel = ContentViewModel()
         if (result.state.content.contentId != "") {
-          getContentViewModel().contentId = result.state.content.contentId
+          contentViewModel.contentId = result.state.content.contentId
         } else {
-          getContentViewModel().contentId = "content"
+          contentViewModel.contentId = "content"
         }
-        getContentViewModel().htmlContent = result.state.content.html
-        itemList.add(getContentViewModel())
+        contentViewModel.htmlContent = result.state.content.html
+        itemList.add(contentViewModel)
         stateAdapter.notifyDataSetChanged()
       }
 
+      val answerResponseList: MutableList<AnswerAndResponse> = result.completedState.answerList
+
       val interactionId = result.state.interaction.id
       val hasPreviousState = result.hasPreviousState
-      val hasNextState = result.completedState.answerCount > 0
+      val hasNextState = answerResponseList.size > 0
 
       val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
 
-      when (interactionId) {
-        NUMERIC_INPUT -> {
-          if (customizationArgsMap.containsKey("placeholder")) {
-            getNumericInputInteractionViewModel().placeholder =
-              customizationArgsMap.getValue("placeholder").normalizedString
+      if (!hasNextState) {
+        when (interactionId) {
+          NUMERIC_INPUT -> {
+            val numericInputInteractionViewModel = NumericInputInteractionViewModel()
+            if (customizationArgsMap.containsKey("placeholder")) {
+              numericInputInteractionViewModel.placeholder =
+                customizationArgsMap.getValue("placeholder").normalizedString
+            }
+            itemList.add(numericInputInteractionViewModel)
+            stateAdapter.notifyDataSetChanged()
           }
-          itemList.add(getNumericInputInteractionViewModel())
-          stateAdapter.notifyDataSetChanged()
+          TEXT_INPUT -> {
+            val textInputInteractionViewModel = TextInputInteractionViewModel()
+            if (customizationArgsMap.containsKey("placeholder")) {
+              textInputInteractionViewModel.placeholder =
+
+                customizationArgsMap.getValue("placeholder").normalizedString
+            }
+            itemList.add(textInputInteractionViewModel)
+            stateAdapter.notifyDataSetChanged()
+          }
         }
-        TEXT_INPUT -> {
-          if (customizationArgsMap.containsKey("placeholder")) {
-            getTextInputInteractionViewModel().placeholder =
-              customizationArgsMap.getValue("placeholder").normalizedString
+      } else {
+        for (answerResponse: AnswerAndResponse in answerResponseList) {
+          if (answerResponse.hasUserAnswer()) {
+            val interactionReadOnlyViewModel = InteractionReadOnlyViewModel()
+            when (interactionId) {
+              NUMERIC_INPUT -> {
+                interactionReadOnlyViewModel.htmlContent = answerResponse.userAnswer.real.toString()
+              }
+              TEXT_INPUT -> {
+                interactionReadOnlyViewModel.htmlContent = answerResponse.userAnswer.normalizedString
+              }
+              MULTIPLE_CHOICE_INPUT -> {
+                interactionReadOnlyViewModel.htmlContent = answerResponse.userAnswer.normalizedString
+              }
+            }
+            itemList.add(interactionReadOnlyViewModel)
+            stateAdapter.notifyDataSetChanged()
           }
-          itemList.add(getTextInputInteractionViewModel())
-          stateAdapter.notifyDataSetChanged()
+
+          if (answerResponse.hasFeedback()) {
+            val feedbackViewModel = ContentViewModel()
+            if (answerResponse.feedback.contentId != "") {
+              feedbackViewModel.contentId = answerResponse.feedback.contentId
+            } else {
+              feedbackViewModel.contentId = "content"
+            }
+            feedbackViewModel.htmlContent = answerResponse.feedback.html
+            itemList.add(feedbackViewModel)
+            stateAdapter.notifyDataSetChanged()
+          }
         }
       }
 
-      updateNavigationButtonVisibility(interactionId, hasPreviousState, hasNextState)
+      updateNavigationButtonVisibility(
+        interactionId,
+        hasPreviousState,
+        hasNextState,
+        !currentAnswerOutcome.get()!!.sameState
+      )
     })
   }
 
   private fun updateNavigationButtonVisibility(
     interactionId: String,
     hasPreviousState: Boolean,
-    hasNextState: Boolean
+    hasNextState: Boolean,
+    hasStateFinished: Boolean
   ) {
     logger.d("StateFragment", "interactionId: $interactionId")
     logger.d("StateFragment", "hasPreviousState: $hasPreviousState")
     logger.d("StateFragment", "hasNextState: $hasNextState")
+    logger.d("StateFragment", "hasStateFinished: $hasStateFinished")
     getStateButtonViewModel().setPreviousButtonVisible(hasPreviousState)
     if (!hasNextState) {
       getStateButtonViewModel().setObservableInteractionId(interactionId)
@@ -217,8 +263,13 @@ class StateFragmentPresenter @Inject constructor(
       //  with MultipleChoiceInput or InputSelectionInput, which will eventually be responsible for controlling this.
       getStateButtonViewModel().optionSelected(true)
     } else {
-      getStateButtonViewModel().clearObservableInteractionId()
-      getStateButtonViewModel().setNextButtonVisible(hasNextState)
+      if (hasStateFinished) {
+        getStateButtonViewModel().clearObservableInteractionId()
+        getStateButtonViewModel().setObservableInteractionId(CONTINUE)
+      } else {
+        getStateButtonViewModel().clearObservableInteractionId()
+        getStateButtonViewModel().setNextButtonVisible(hasNextState)
+      }
     }
     itemList.add(getStateButtonViewModel())
     stateAdapter.notifyDataSetChanged()
@@ -234,21 +285,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getStateButtonViewModel(): StateButtonViewModel {
     return stateButtonViewModelProvider.getForFragment(fragment, StateButtonViewModel::class.java)
-  }
-
-  private fun getContentViewModel(): ContentViewModel {
-    return contentViewModelProvider.getForFragment(fragment, ContentViewModel::class.java)
-  }
-
-  private fun getNumericInputInteractionViewModel(): NumericInputInteractionViewModel {
-    return numericInputInteractionViewModelProvider.getForFragment(
-      fragment,
-      NumericInputInteractionViewModel::class.java
-    )
-  }
-
-  private fun getTextInputInteractionViewModel(): TextInputInteractionViewModel {
-    return textInputInteractionViewModelProvider.getForFragment(fragment, TextInputInteractionViewModel::class.java)
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
@@ -297,7 +333,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   override fun onInteractionButtonClicked() {
-    Log.d("StateFragment", "interactionButtonClicked")
+    Log.d("StateFragment", "interactionButtonClicked: sameState: " + currentAnswerOutcome.get()!!.sameState)
     // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
     // NB: This sample data will work only with TEST_EXPLORATION_ID_5
     // 0 -> What Language
