@@ -12,7 +12,7 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 class ExplorationActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
-  var explorationId: String = ""
+  lateinit var explorationId: String = ""
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
