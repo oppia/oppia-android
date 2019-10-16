@@ -50,7 +50,7 @@ import org.robolectric.shadows.util.DataSource
 import javax.inject.Inject
 import javax.inject.Qualifier
 
-/** Tests for [AudioFragment]. */
+/** Tests for [AudioFragment]. Have to run test with Robolectric */
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 

@@ -18,6 +18,7 @@ import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_K
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -107,8 +108,9 @@ class StateFragmentPresenter @Inject constructor(
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
       if (getAudioFragment() == null) {
+        val audioFragment = AudioFragment.newInstance(TEST_EXPLORATION_ID_5, "END")
         fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, AudioFragment(),
+          R.id.audio_fragment_placeholder, audioFragment,
           TAG_AUDIO_FRAGMENT
         ).commitNow()
       }
