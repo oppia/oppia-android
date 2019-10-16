@@ -79,7 +79,5 @@ class NumericInputInteractionViewTestActivityTest {
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
     Intents.release()
-
   }
-
 }
