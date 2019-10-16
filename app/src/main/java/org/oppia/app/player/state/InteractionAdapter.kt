@@ -125,6 +125,4 @@ class InteractionAdapter(
       }
     }
   }
-
-
 }
