@@ -144,7 +144,7 @@ class StateFragmentPresenter @Inject constructor(
       }
       if (customizationArgsMap.contains("choices")) {
         val customizationArgs: InteractionObject? = customizationArgsMap.get("choices")
-        val stringList :StringList= customizationArgs!!.setOfHtmlString
+        val stringList: StringList = customizationArgs!!.setOfHtmlString
         logger.d(TAG_STATE_FRAGMENT, "value: ${stringList.htmlCount}")
       }
     })
