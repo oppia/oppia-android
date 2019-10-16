@@ -45,9 +45,10 @@ class NumberInputInteractionView @JvmOverloads constructor(
   }
 
   override fun getPendingAnswer(): InteractionObject {
-    if (text.isEmpty())
+    if (text.isEmpty()) {
       return InteractionObject.newBuilder().build()
-    else
+    } else {
       return InteractionObject.newBuilder().setReal(text.toString().toDouble()).build()
+    }
   }
 }
