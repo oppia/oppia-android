@@ -32,15 +32,20 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val contentViewModelProvider: ViewModelProvider<ContentViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
 ) {
+
+  private val itemList: MutableList<Any> = ArrayList()
 
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var explorationId: String? = null
 
   private lateinit var stateAdapter: StateAdapter
+
+  lateinit var binding: StateFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -52,8 +57,9 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
 
-    stateAdapter = StateAdapter()
-    val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    stateAdapter = StateAdapter(itemList)
+
+    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
     }
@@ -128,8 +134,21 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("StateFragment", "getCurrentState: ${result.state.name}")
+      if (result.state.hasContent()) {
+        if (result.state.content.contentId != "") {
+          getContentViewModel().contentId = result.state.content.contentId
+        } else {
+          getContentViewModel().contentId = "content"
+        }
+        getContentViewModel().htmlContent = result.state.content.html
+        itemList.add(getContentViewModel())
+        stateAdapter.notifyDataSetChanged()
+      }
     })
+  }
+
+  private fun getContentViewModel(): ContentViewModel {
+    return contentViewModelProvider.getForFragment(fragment, ContentViewModel::class.java)
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
