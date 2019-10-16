@@ -19,8 +19,8 @@
 //class UrlImageParser(
 //  internal var tvContents: TextView,
 //  internal var context: Context,
-//  entity_type: String,
-//  entity_id: String
+//  entityType: String,
+//  entityId: String
 //) : Html.ImageGetter {
 //
 //  var targets: ArrayList<BitmapTarget>? = null

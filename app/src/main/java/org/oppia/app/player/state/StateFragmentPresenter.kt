@@ -46,8 +46,8 @@ class StateFragmentPresenter @Inject constructor(
   private var items: Array<String>? = null
   var customizationArgsMap = HashMap<String, InteractionObject>()
   var interactionInstanceId: String? = null
-  private var entity_type: String = ""
-  private var entity_id: String = ""
+  private var entityType: String = ""
+  private var entityId: String = ""
 
   var interactionAdapter: InteractionAdapter? = null
 
@@ -134,11 +134,8 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
-      entity_type = "exploration"
-      // TODO replace exploration Id from result. Exploration id is missing in proto
-      entity_id = "DIWZiVgs0km-"
+      entityType = "exploration"
       val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
-      logger.d("TAG", "getCurrentState: " + result.state)
       val allKeys: Set<String> = customizationArgsMap.keys
 
       for (key in allKeys) {
@@ -146,11 +143,7 @@ class StateFragmentPresenter @Inject constructor(
       }
       if (customizationArgsMap.contains("choices")) {
         val customizationArgs: InteractionObject? = customizationArgsMap.get("choices")
-        //        val customizationArgs: Collection<InteractionObject> = customizationArgsMap.values
-        // This log should give 3 but it is showing 0. So maybe it would a good idea to use other paramters from InteractionObject, similar to my comments below
         val stringList :StringList= customizationArgs!!.setOfHtmlString
-//        val stringList = customizationArgs!!.toByteString()
-
         logger.d("StateFragment", "value: ${stringList.htmlCount}")
       }
     })
@@ -176,13 +169,13 @@ class StateFragmentPresenter @Inject constructor(
     if (interactionInstanceId.equals("MultipleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
-      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
+      interactionAdapter = InteractionAdapter(context, entityType, entityId, items, interactionInstanceId);
       binding.rvInteractions.adapter = interactionAdapter
 
     } else if (interactionInstanceId.equals("ItemSelectionInput") || interactionInstanceId.equals("SingleChoiceInput")) {
       val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
-      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
+      interactionAdapter = InteractionAdapter(context, entityType, entityId, items, interactionInstanceId);
       binding.rvInteractions.adapter = interactionAdapter
     } else {
       //Do no show any view

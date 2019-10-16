@@ -24,8 +24,8 @@ const val VIEW_TYPE_ITEM_SELECTION = 2
 /** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
 class InteractionAdapter(
   private val context: Context,
-  private val entity_type: String,
-  private val entity_id: String,
+  private val entityType: String,
+  private val entityId: String,
   val itemList: Array<String>?,
   val interactionInstanceId: String?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -92,7 +92,7 @@ class InteractionAdapter(
    internal fun bind(rawString: String?, position: Int, selectedPosition: Int) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
-      val html: Spannable = HtmlParser(context,entity_type,entity_id).parseHtml(rawString, binding.root.tv_item_selection_contents)
+      val html: Spannable = HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_item_selection_contents)
       binding.root.tv_item_selection_contents.text = html
 
       binding.root.rl_checkbox_container.setOnClickListener {
@@ -110,7 +110,7 @@ class InteractionAdapter(
    internal fun bind(rawString: String?, position: Int, selectedPosition: Int) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
-      val html: Spannable =  HtmlParser(context,entity_type,entity_id).parseHtml(rawString, binding.root.tv_multiple_choice_contents)
+      val html: Spannable =  HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_multiple_choice_contents)
       binding.root.tv_multiple_choice_contents.text = html
 
       if (selectedPosition == position)
