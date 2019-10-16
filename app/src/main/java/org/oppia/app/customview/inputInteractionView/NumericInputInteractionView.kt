@@ -34,7 +34,7 @@ class NumericInputInteractionView @JvmOverloads constructor(
     hint = placeholder
     keyListener = DigitsKeyListener.getInstance("0123456789.")
     this.setEditTextMaxLength(length = 200)
-    setLongClickable(false)
+    isLongClickable = false
   }
 
   private fun setEditTextMaxLength(length: Int) {
