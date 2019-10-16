@@ -27,6 +27,7 @@ import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -133,18 +134,18 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("StateFragment", "getCurrentState: ${result.state.name}")
+      logger.d(TAG_STATE_FRAGMENT, "getCurrentState: ${result.state.name}")
       entityType = "exploration"
       val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
       val allKeys: Set<String> = customizationArgsMap.keys
 
       for (key in allKeys) {
-        logger.d("StateFragment", key)
+        logger.d(TAG_STATE_FRAGMENT, key)
       }
       if (customizationArgsMap.contains("choices")) {
         val customizationArgs: InteractionObject? = customizationArgsMap.get("choices")
         val stringList :StringList= customizationArgs!!.setOfHtmlString
-        logger.d("StateFragment", "value: ${stringList.htmlCount}")
+        logger.d(TAG_STATE_FRAGMENT, "value: ${stringList.htmlCount}")
       }
     })
   }
@@ -159,7 +160,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun processCurrentState(ephemeralStateResult: AsyncResult<EphemeralState>): EphemeralState {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(TAG_STATE_FRAGMENT, "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
   }
