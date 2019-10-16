@@ -1,11 +1,9 @@
 package org.oppia.app.player.state;
 
 import android.content.Context
-import android.text.Html
 import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -16,8 +14,7 @@ import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.util.data.HtmlParser
-import org.oppia.util.data.UrlImageParser
+import org.oppia.util.parser.HtmlParser
 
 const val VIEW_TYPE_MULTIPLE_CHOICE = 1
 const val VIEW_TYPE_ITEM_SELECTION = 2
