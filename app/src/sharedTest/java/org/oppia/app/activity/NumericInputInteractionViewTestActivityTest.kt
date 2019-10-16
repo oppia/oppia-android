@@ -21,7 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.instanceOf
-import org.oppia.app.customview.inputInteractionView.NumberInputInteractionView
+import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
 
 /** Tests for [NumericInputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -37,7 +37,7 @@ class NumericInputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(NumericInputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
       assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
     }
   }
@@ -48,7 +48,7 @@ class NumericInputInteractionViewTestActivityTest {
     onView(withId(R.id.test_number_input_interaction_view)).perform(ViewActions.clearText(), ViewActions.typeText("9"))
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
       assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
       assertThat(textAnswerRetriever.getPendingAnswer().real, `is`("9".toDouble()))
     }
@@ -63,7 +63,7 @@ class NumericInputInteractionViewTestActivityTest {
     )
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
       assertThat(textAnswerRetriever.getPendingAnswer(), instanceOf(InteractionObject::class.java))
       assertThat(textAnswerRetriever.getPendingAnswer().real, `is`(9.5))
     }

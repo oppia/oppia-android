@@ -3,18 +3,18 @@ package org.oppia.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import org.oppia.app.R
-import org.oppia.app.customview.inputInteractionView.NumberInputInteractionView
+import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
 
 private const val KEY_DIGIT_ID = "DIGIT_ID"
 
-/** This is a dummy activity to test [NumberInputInteractionView]. */
+/** This is a dummy activity to test [NumericInputInteractionView]. */
 class NumericInputInteractionViewTestActivity : AppCompatActivity() {
   private lateinit var digit: String
-  private lateinit var contentComponent: NumberInputInteractionView
+  private lateinit var contentComponent: NumericInputInteractionView
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_numeric_input_interaction_view_test)
-    contentComponent = findViewById(R.id.test_number_input_interaction_view) as NumberInputInteractionView
+    contentComponent = findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
     if (savedInstanceState != null) {
       digit = savedInstanceState.getString(KEY_DIGIT_ID)
     } else {

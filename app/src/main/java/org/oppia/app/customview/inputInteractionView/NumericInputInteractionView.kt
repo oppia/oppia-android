@@ -1,6 +1,5 @@
 package org.oppia.app.customview.inputInteractionView
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.InputFilter
 import android.text.method.DigitsKeyListener
@@ -9,8 +8,8 @@ import android.widget.EditText
 import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
 
-/** The customclass for [NumberInputInteractionView]. */
-class NumberInputInteractionView @JvmOverloads constructor(
+/** The custom EditText class for numeric input interaction view. */
+class NumericInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
@@ -25,7 +24,7 @@ class NumberInputInteractionView @JvmOverloads constructor(
     attributes()
   }
 
-  /** This function contains default attributes of [NumberInputInteractionView]. */
+  /** This function contains default attributes of [NumericInputInteractionView]. */
   private fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
     val paddingPixel = context.resources.getDimension(R.dimen.padding_8)
