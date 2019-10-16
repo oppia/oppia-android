@@ -11,7 +11,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.player.state.StateFragment
 import javax.inject.Inject
 
-/** The controller for [ExplorationFragment]. */
+/** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment
