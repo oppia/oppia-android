@@ -15,6 +15,7 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.topic.train.SkillSelectionAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -39,6 +40,8 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
   private var explorationId: String? = null
 
+  private lateinit var stateAdapter: StateAdapter
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
@@ -49,7 +52,11 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
 
+    stateAdapter = StateAdapter()
     val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding.stateRecyclerView.apply {
+      adapter = stateAdapter
+    }
     binding.let {
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
