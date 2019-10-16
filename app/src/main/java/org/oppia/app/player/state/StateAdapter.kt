@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -9,25 +10,30 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import androidx.databinding.library.baseAdapters.BR
 import kotlinx.android.synthetic.main.content_item.view.*
-import kotlinx.android.synthetic.main.interation_read_only_item.view.*
+import kotlinx.android.synthetic.main.interaction_read_only_item.view.*
+import kotlinx.android.synthetic.main.numeric_input_interaction_item.view.*
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.databinding.ContentItemBinding
-import org.oppia.app.databinding.InterationReadOnlyItemBinding
+import org.oppia.app.databinding.InteractionReadOnlyItemBinding
+import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 
 const val VIEW_TYPE_CONTENT = 1
 const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
-const val VIEW_TYPE_INTERACTION_READ_WRITE = 3
+const val VIEW_TYPE_NUMERIC_INTERACTION = 3
 const val VIEW_TYPE_STATE_BUTTON = 4
 
-class StateAdapter(private val itemList: MutableList<Any>, private val interactionListener: InteractionListener) :
-  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StateAdapter(
+  private val itemList: MutableList<Any>,
+  private val interactionListener: InteractionListener
+) :
+  RecyclerView.Adapter<RecyclerView.ViewHolder>(), InputInteractionTextListener {
+
+  lateinit var stateButtonViewModel: StateButtonViewModel
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    Log.d("StateFragment", "onCreateViewHolder: viewType: $viewType")
     return when (viewType) {
       VIEW_TYPE_CONTENT -> {
-        Log.d("StateFragment", "onCreateViewHolder: VIEW_TYPE_CONTENT")
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<ContentItemBinding>(
@@ -39,19 +45,28 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
         ContentViewHolder(binding)
       }
       VIEW_TYPE_INTERACTION_READ_ONLY -> {
-        Log.d("StateFragment", "onCreateViewHolder: VIEW_TYPE_INTERACTION_READ_ONLY")
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          DataBindingUtil.inflate<InterationReadOnlyItemBinding>(
+          DataBindingUtil.inflate<InteractionReadOnlyItemBinding>(
             inflater,
-            R.layout.interation_read_only_item,
+            R.layout.interaction_read_only_item,
             parent,
             /* attachToParent= */false
           )
         InteractionReadOnlyViewHolder(binding)
       }
+      VIEW_TYPE_NUMERIC_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<NumericInputInteractionItemBinding>(
+            inflater,
+            R.layout.numeric_input_interaction_item,
+            parent,
+            /* attachToParent= */false
+          )
+        NumericInputInteractionViewHolder(binding)
+      }
       VIEW_TYPE_STATE_BUTTON -> {
-        Log.d("StateFragment", "onCreateViewHolder: VIEW_TYPE_STATE_BUTTON")
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<StateButtonItemBinding>(
@@ -67,47 +82,40 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-    Log.d("StateFragment", "onBindViewHolder: " + holder.itemViewType)
     when (holder.itemViewType) {
       VIEW_TYPE_CONTENT -> {
-        Log.d("StateFragment", "onBindViewHolder: VIEW_TYPE_CONTENT")
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
       VIEW_TYPE_INTERACTION_READ_ONLY -> {
-        Log.d("StateFragment", "onBindViewHolder: VIEW_TYPE_INTERACTION_READ_ONLY")
-        (holder as InteractionReadOnlyViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
+        (holder as InteractionReadOnlyViewHolder).bind((itemList[position] as InteractionReadOnlyViewModel).htmlContent)
+      }
+      VIEW_TYPE_NUMERIC_INTERACTION -> {
+        (holder as NumericInputInteractionViewHolder).bind((itemList[position] as NumericInputInteractionViewModel).placeholder)
       }
       VIEW_TYPE_STATE_BUTTON -> {
-        Log.d("StateFragment", "onBindViewHolder: VIEW_TYPE_STATE_BUTTON")
         (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
       }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
-    Log.d("StateFragment", "getItemViewType: $position")
     return when (itemList[position]) {
       is ContentViewModel -> VIEW_TYPE_CONTENT
-      is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
+      is NumericInputInteractionViewModel -> VIEW_TYPE_NUMERIC_INTERACTION
+      is StateButtonViewModel -> {
+        stateButtonViewModel = itemList[position] as StateButtonViewModel
+        VIEW_TYPE_STATE_BUTTON
+      }
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
   }
 
   override fun getItemCount(): Int {
-    Log.d("StateFragment", "getItemCount: " + itemList.size)
     return itemList.size
   }
 
-//  fun addItem(item: Any) {
-//    Log.d("StateFragment", "addItem")
-//    this.itemList.add(item)
-//    this.notifyDataSetChanged()
-//    //notifyItemInserted(itemList.size - 1)
-//  }
-
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String?) {
-      Log.d("StateFragment", "ContentViewHolder: bind")
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
       binding.root.content_text_view.text = rawString
@@ -116,17 +124,38 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
 
   inner class InteractionReadOnlyViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String?) {
-      Log.d("StateFragment", "InteractionFeedbackViewHolder: bind")
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
       binding.root.interaction_read_only_text_view.text = rawString
     }
   }
 
-  inner class StateButtonViewHolder(val binding: ViewDataBinding, val interactionListener: InteractionListener) :
+  inner class NumericInputInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(rawString: String?) {
+      binding.setVariable(BR.placeholder, rawString)
+      binding.executePendingBindings()
+      binding.root.numeric_input_interaction_view.hint = rawString
+
+      binding.root.numeric_input_interaction_view.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+          doesTextExists(s.isNotEmpty())
+        }
+
+        override fun afterTextChanged(s: Editable) {
+        }
+      })
+    }
+  }
+
+  inner class StateButtonViewHolder(
+    val binding: ViewDataBinding,
+    private val interactionListener: InteractionListener
+  ) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(stateButtonViewModel: StateButtonViewModel) {
-      Log.d("StateFragment", "StateButtonViewHolder: bind")
       binding.setVariable(BR.buttonViewModel, stateButtonViewModel)
       binding.root.interaction_button.setOnClickListener {
         interactionListener.onInteractionButtonClicked()
@@ -138,6 +167,16 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
         interactionListener.onPreviousButtonClicked()
       }
       binding.executePendingBindings()
+    }
+  }
+
+  override fun doesTextExists(textExists: Boolean) {
+    if (textExists) {
+      stateButtonViewModel.isInteractionButtonActive.set(true)
+      stateButtonViewModel.drawableResourceValue.set(R.drawable.state_button_primary_background)
+    } else {
+      stateButtonViewModel.isInteractionButtonActive.set(false)
+      stateButtonViewModel.drawableResourceValue.set(R.drawable.state_button_transparent_background)
     }
   }
 }

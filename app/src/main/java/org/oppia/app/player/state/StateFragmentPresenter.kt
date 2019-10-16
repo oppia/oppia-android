@@ -23,7 +23,6 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.topic.train.SkillSelectionAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -56,12 +55,14 @@ class StateFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
+  private val numericInputInteractionViewModelProvider: ViewModelProvider<NumericInputInteractionViewModel>,
   private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
   private val contentViewModelProvider: ViewModelProvider<ContentViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger
-): InteractionListener {
+) : InteractionListener {
+
   private val currentEphemeralState = ObservableField<EphemeralState>()
 
   private val itemList: MutableList<Any> = ArrayList()
@@ -84,7 +85,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
 
-    stateAdapter = StateAdapter(itemList, this as InteractionListener)
+    stateAdapter = StateAdapter(itemList, this as InteractionListener )
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
@@ -177,6 +178,22 @@ class StateFragmentPresenter @Inject constructor(
       val interactionId = result.state.interaction.id
       val hasPreviousState = result.hasPreviousState
       val hasNextState = result.completedState.answerCount > 0
+
+      when (interactionId) {
+        NUMERIC_INPUT -> {
+          getNumericInputInteractionViewModel().placeholder =
+            result.state.interaction.customizationArgsMap["placeholder"]!!.normalizedString
+          itemList.add(getNumericInputInteractionViewModel())
+          stateAdapter.notifyDataSetChanged()
+        }
+        TEXT_INPUT -> {
+          getNumericInputInteractionViewModel().placeholder =
+            result.state.interaction.customizationArgsMap["placeholder"]!!.normalizedString
+          itemList.add(getNumericInputInteractionViewModel())
+          stateAdapter.notifyDataSetChanged()
+        }
+      }
+
       updateNavigationButtonVisibility(interactionId, hasPreviousState, hasNextState)
     })
   }
@@ -211,6 +228,13 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getContentViewModel(): ContentViewModel {
     return contentViewModelProvider.getForFragment(fragment, ContentViewModel::class.java)
+  }
+
+  private fun getNumericInputInteractionViewModel(): NumericInputInteractionViewModel {
+    return numericInputInteractionViewModelProvider.getForFragment(
+      fragment,
+      NumericInputInteractionViewModel::class.java
+    )
   }
 
   private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
@@ -349,4 +373,5 @@ class StateFragmentPresenter @Inject constructor(
     Log.d("StateFragment", "nextButtonClicked")
     explorationProgressController.moveToNextState()
   }
+
 }
