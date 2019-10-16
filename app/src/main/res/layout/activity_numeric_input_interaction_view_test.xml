@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".activity.NumericInputInteractionViewTestActivity">
+  tools:context=".activity.InputInteractionViewTestActivity">
 
   <org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
     android:id="@+id/test_number_input_interaction_view"

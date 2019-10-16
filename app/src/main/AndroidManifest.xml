@@ -18,7 +18,7 @@
     <activity android:name=".topic.TopicActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name="org.oppia.app.home.HomeActivity" />
-    <activity android:name=".activity.NumericInputInteractionViewTestActivity">
+    <activity android:name=".activity.InputInteractionViewTestActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

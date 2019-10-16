@@ -8,7 +8,7 @@ import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
 private const val KEY_DIGIT_ID = "DIGIT_ID"
 
 /** This is a dummy activity to test [NumericInputInteractionView]. */
-class NumericInputInteractionViewTestActivity : AppCompatActivity() {
+class InputInteractionViewTestActivity : AppCompatActivity() {
   private lateinit var digit: String
   private lateinit var contentComponent: NumericInputInteractionView
   override fun onCreate(savedInstanceState: Bundle?) {
