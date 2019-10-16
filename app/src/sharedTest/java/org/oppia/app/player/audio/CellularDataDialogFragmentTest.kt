@@ -16,17 +16,14 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.Matchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-// TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
 /** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
 class CellularDataDialogFragmentTest {
