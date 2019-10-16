@@ -44,6 +44,6 @@ class NumberInputInteractionView @JvmOverloads constructor(
   }
 
   override fun getPendingAnswer(): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(text.toString()).build()
+    return InteractionObject.newBuilder().setReal(text.toString().toDouble()).build()
   }
 }
