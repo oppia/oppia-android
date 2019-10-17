@@ -27,8 +27,7 @@ class HtmlParserTestActivityTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivty> = ActivityTestRule(
-    HtmlParserTestActivty::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+    HtmlParserTestActivty::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false)
 
   @Before
   fun setUp() {
