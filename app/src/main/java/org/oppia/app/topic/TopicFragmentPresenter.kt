@@ -23,12 +23,16 @@ import javax.inject.Inject
 class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
-  private var tabLayout: TabLayout? = null
-  var viewPager: ViewPager? = null
+  private lateinit var tabLayout: TabLayout
+  private lateinit var viewPager: ViewPager
 
   private val tabIcons =
-    intArrayOf(R.drawable.ic_overview_white_24dp, R.drawable.ic_overview_white_24dp, R.drawable.ic_overview_white_24dp, R.drawable.ic_overview_white_24dp)
-
+    intArrayOf(
+      R.drawable.ic_overview_white_24dp,
+      R.drawable.ic_overview_white_24dp,
+      R.drawable.ic_overview_white_24dp,
+      R.drawable.ic_overview_white_24dp
+    )
 
   private fun setupTabIcons() {
     tabLayout!!.getTabAt(0)!!.setIcon(tabIcons[0])
@@ -44,7 +48,6 @@ class TopicFragmentPresenter @Inject constructor(
     }
     viewPager = binding.root.findViewById(R.id.viewpager) as ViewPager
     setupViewPager(viewPager!!)
-
     tabLayout = binding.root.findViewById(R.id.tabs) as TabLayout
     tabLayout!!.setupWithViewPager(viewPager)
     setupTabIcons()
@@ -63,7 +66,6 @@ class TopicFragmentPresenter @Inject constructor(
   internal inner class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
     private val mFragmentList = ArrayList<Fragment>()
     private val mFragmentTitleList = ArrayList<String>()
-
     override fun getItem(position: Int): Fragment {
       return mFragmentList[position]
     }

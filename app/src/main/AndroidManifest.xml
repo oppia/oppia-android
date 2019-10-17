@@ -23,7 +23,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
-    <activity
     <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name="org.oppia.app.home.HomeActivity"/>
     <activity
