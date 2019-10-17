@@ -161,6 +161,25 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
+      
+      logger.d(
+        "StateFragment",
+        "subscribeToCurrentState: completedState.answerCount: " + result.completedState.answerCount
+      )
+      logger.d("StateFragment", "subscribeToCurrentState: hasPreviousState: " + result.hasPreviousState)
+      logger.d(
+        "StateFragment",
+        "subscribeToCurrentState: pendingState.wrongAnswerCount: " + result.pendingState.wrongAnswerCount
+      )
+      logger.d("StateFragment", "subscribeToCurrentState: state.name: " + result.state.name)
+      logger.d("StateFragment", "subscribeToCurrentState: terminalState: " + result.terminalState)
+      logger.d("StateFragment", "subscribeToCurrentState: isInitialized: " + result.isInitialized)
+      logger.d("StateFragment", "subscribeToCurrentState: hasState: " + result.hasState())
+      logger.d("StateFragment", "subscribeToCurrentState: getStateTypeCase: " + result.stateTypeCase.number)
+
+      logger.d("StateFragment", "subscribeToCurrentState: ***********************************************************************************************")
+      logger.d("StateFragment", "subscribeToCurrentState: ***********************************************************************************************")
+
       itemList.clear()
       currentEphemeralState.set(result)
       if (result.state.hasContent()) {
@@ -293,6 +312,13 @@ class StateFragmentPresenter @Inject constructor(
         addFeedbackItem(it.feedback)
       }
 
+      if (currentAnswerOutcome != null && !currentAnswerOutcome!!.sameState && !completedStateNameList.contains(
+          currentEphemeralState.get()!!.state.name
+        )
+      ) {
+        completedStateNameList.add(currentEphemeralState.get()!!.state.name)
+      }
+
       if (currentEphemeralState.get()!!.state.interaction.id == CONTINUE) {
         moveToNextState()
       }
@@ -360,17 +386,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    if (!completedStateNameList.contains(currentEphemeralState.get()!!.state.name)) {
-      completedStateNameList.add(currentEphemeralState.get()!!.state.name)
-    }
-
     itemList.clear()
     currentAnswerOutcome = null
     explorationProgressController.moveToNextState()
   }
 
   override fun onPreviousButtonClicked() {
-    logger.d("StateFragment", "onPreviousButtonClicked")
     explorationProgressController.moveToPreviousState()
   }
 
@@ -410,13 +431,15 @@ class StateFragmentPresenter @Inject constructor(
   private fun addFeedbackItem(feedback: SubtitledHtml) {
     Log.d("StateFragment", "addFeedbackItem")
     val feedbackViewModel = ContentViewModel()
+    var feedbackContent = ""
     if (feedback.contentId != "") {
       feedbackViewModel.contentId = feedback.contentId
     } else {
-      feedbackViewModel.contentId = "content"
+      feedbackViewModel.contentId = "feedback"
     }
-    feedbackViewModel.htmlContent = feedback.html
-    if (feedbackViewModel.htmlContent.isNotEmpty()) {
+    feedbackContent = feedback.html
+    if (feedbackContent.isNotEmpty()) {
+      feedbackViewModel.htmlContent = feedbackContent
       itemList.add(feedbackViewModel)
       stateAdapter.notifyDataSetChanged()
     }
