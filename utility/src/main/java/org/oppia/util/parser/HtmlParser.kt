@@ -19,7 +19,7 @@ class HtmlParser(private val context: Context, entityType: String, entityId: Str
    * @param tvContents : tvContents argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
    * @return Spannable : Spannable represents the styled text.
    */
-  fun parseHtml(rawString: String?, tvContents: TextView): Spannable {
+  fun parseOppiaHtml(rawString: String?, tvContents: TextView): Spannable {
     val html: Spannable
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_IMG_TAG)) {
