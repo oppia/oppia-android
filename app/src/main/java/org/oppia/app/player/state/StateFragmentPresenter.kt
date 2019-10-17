@@ -1,6 +1,5 @@
 package org.oppia.app.player.state
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -22,11 +23,11 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  private val context: Context,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
@@ -36,14 +37,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-
-  private var items: Array<String>? = null
-  var customizationArgsMap = HashMap<String, InteractionObject>()
-  var interactionInstanceId: String? = null
-  private var entity_type: String = ""
-  private var entity_id: String = ""
-
-  var interactionAdapter: InteractionAdapter? = null
+  private var explorationId: String? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -60,6 +54,7 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
+    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
     subscribeToCurrentState()
 
@@ -68,22 +63,28 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleAudioClick() {
     if (showCellularDataDialog) {
-      setAudioFragmentVisible(false)
+      showHideAudioFragment(false)
       showCellularDataDialogFragment()
     } else {
-      setAudioFragmentVisible(useCellularData)
+      if (useCellularData) {
+        showHideAudioFragment(getAudioFragment() == null)
+      } else {
+        showHideAudioFragment(false)
+      }
     }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(true)
-    if (saveUserChoice)
+    showHideAudioFragment(true)
+    if (saveUserChoice) {
       cellularDialogController.setAlwaysUseCellularDataPreference()
+    }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
-    if (saveUserChoice)
+    if (saveUserChoice) {
       cellularDialogController.setNeverUseCellularDataPreference()
+    }
   }
 
   private fun showCellularDataDialogFragment() {
@@ -99,27 +100,28 @@ class StateFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
-  fun setAudioFragmentVisible(isVisible: Boolean) {
-    getStateViewModel().setAudioFragmentVisible(isVisible)
+  private fun getAudioFragment(): Fragment? {
+    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+  }
+
+  private fun showHideAudioFragment(isVisible: Boolean) {
+    if (isVisible) {
+      if (getAudioFragment() == null) {
+        fragment.childFragmentManager.beginTransaction().add(
+          R.id.audio_fragment_placeholder, AudioFragment(),
+          TAG_AUDIO_FRAGMENT
+        ).commitNow()
+      }
+    } else {
+      if (getAudioFragment() != null) {
+        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
+      }
+    }
   }
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       logger.d("StateFragment", "getCurrentState: ${result.state.name}")
-      entity_type = "exploration"
-      // TODO replace exploration Id from result. Exploration id is missing in proto
-      entity_id = "DIWZiVgs0km-"
-      val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
-      logger.d("TAG", "getCurrentState: " + result.state)
-      val allKeys: Set<String> = customizationArgsMap.keys
-
-      for (key in allKeys) {
-        logger.d("StateFragment", key)
-      }
-      if (customizationArgsMap.contains("choices")) {
-        val customizationArgs: InteractionObject? = customizationArgsMap["choices"]
-        logger.d("StateFragment", "value: ${customizationArgs}")
-      }
     })
   }
 
@@ -136,23 +138,5 @@ class StateFragmentPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
-  }
-
-  private fun showInputInteractions(binding: StateFragmentBinding) {
-    val gaeCustomizationArgs: Any? = customizationArgsMap.values
-    if (interactionInstanceId.equals("MultipleChoiceInput")) {
-      val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
-      items = gaeCustomArgsInString.split(",").toTypedArray()
-      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
-      binding.rvInteractions.adapter = interactionAdapter
-
-    } else if (interactionInstanceId.equals("ItemSelectionInput") || interactionInstanceId.equals("SingleChoiceInput")) {
-      val gaeCustomArgsInString: String = gaeCustomizationArgs.toString().replace("[", "").replace("]", "")
-      items = gaeCustomArgsInString.split(",").toTypedArray()
-      interactionAdapter = InteractionAdapter(context, entity_type, entity_id, items, interactionInstanceId);
-      binding.rvInteractions.adapter = interactionAdapter
-    } else {
-      //Do no show any view
-    }
   }
 }
