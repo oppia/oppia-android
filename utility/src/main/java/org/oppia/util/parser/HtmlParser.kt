@@ -26,15 +26,16 @@ class HtmlParser(private val context: Context, entityType: String, entityId: Str
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, false);
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-        REPLACE_IMG_FILE_PATH_ATTRIBUTE, false);
+        REPLACE_IMG_FILE_PATH_ATTRIBUTE, false
+      );
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-  // TODO(#205): Integrate UrlImageParser below once it's available.
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      html = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */null, /* tagHandler= */null) as Spannable
+    // TODO(#205): Integrate UrlImageParser below once it's available.
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */null, /* tagHandler= */null) as Spannable
     } else {
-      html = Html.fromHtml(htmlContent, /* imageGetter= */null, /* tagHandler= */null) as Spannable
+      Html.fromHtml(htmlContent, /* imageGetter= */null, /* tagHandler= */null) as Spannable
     }
-    return html
+
   }
 }
