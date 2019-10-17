@@ -15,7 +15,7 @@ import org.oppia.util.R
 // TODO (#169) : Replace this with exploration asset downloader
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser(
-  internal var tvContents: TextView,
+  internal var htmlContentTextView: TextView,
   internal var context: Context,
   private val entity_type: String,
   private val entity_id: String
@@ -48,24 +48,15 @@ class UrlImageParser(
     internal var drawable: Drawable? = null
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
       drawable = BitmapDrawable(context.resources, resource)
-      tvContents.post {
-        val textViewWidth = tvContents.width
+      htmlContentTextView.post {
         val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
         val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
-        // To resize the image keeping aspect ratio.
-        if (drawableWidth > textViewWidth) {
-          val calculatedHeight = textViewWidth * drawableHeight / drawableWidth;
-          val rect = Rect(0, 0, textViewWidth, calculatedHeight)
-          (drawable as BitmapDrawable).bounds = rect
-          urlDrawable.bounds = rect
-        } else {
           val rect = Rect(0, 0, drawableWidth, drawableHeight)
           (drawable as BitmapDrawable).bounds = rect
           urlDrawable.bounds = rect
-        }
         urlDrawable.drawable = drawable
-        tvContents.text = tvContents.text
-        tvContents.invalidate()
+        htmlContentTextView.text = htmlContentTextView.text
+        htmlContentTextView.invalidate()
       }
     }
   }

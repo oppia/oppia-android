@@ -11,7 +11,7 @@ private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 /** Html Parser for android TextView to parse Html tag. */
-class HtmlParser(private val context: Context, entityType: String, entityId: String) {
+class HtmlParser(private val context: Context, private val entityType: String, private val entityId: String) {
 
   /**
    * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
@@ -29,11 +29,11 @@ class HtmlParser(private val context: Context, entityType: String, entityId: Str
       );
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-    // TODO(#205): Integrate UrlImageParser below once it's available.
+    val imageGetter = UrlImageParser(htmlContentTextView, context, entityType, entityId)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */null, /* tagHandler= */null) as Spannable
+      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
     } else {
-      Html.fromHtml(htmlContent, /* imageGetter= */null, /* tagHandler= */null) as Spannable
+      Html.fromHtml(htmlContent, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
     }
 
   }

@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-
 /** Provides image-extraction URL dependencies. */
 @Module
 class ImageParsingModule {
