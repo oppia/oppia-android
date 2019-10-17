@@ -35,21 +35,19 @@ class TopicFragmentPresenter @Inject constructor(
     )
 
   private fun setupTabIcons() {
-    tabLayout!!.getTabAt(0)!!.setIcon(tabIcons[0])
-    tabLayout!!.getTabAt(1)!!.setIcon(tabIcons[1])
-    tabLayout!!.getTabAt(2)!!.setIcon(tabIcons[2])
-    tabLayout!!.getTabAt(3)!!.setIcon(tabIcons[3])
+    tabLayout.getTabAt(0)!!.setIcon(tabIcons[0])
+    tabLayout.getTabAt(1)!!.setIcon(tabIcons[1])
+    tabLayout.getTabAt(2)!!.setIcon(tabIcons[2])
+    tabLayout.getTabAt(3)!!.setIcon(tabIcons[3])
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.let {
-      it.lifecycleOwner = fragment
-    }
+    binding.lifecycleOwner = fragment
     viewPager = binding.root.findViewById(R.id.viewpager) as ViewPager
-    setupViewPager(viewPager!!)
+    setupViewPager(viewPager)
     tabLayout = binding.root.findViewById(R.id.tabs) as TabLayout
-    tabLayout!!.setupWithViewPager(viewPager)
+    tabLayout.setupWithViewPager(viewPager)
     setupTabIcons()
     return binding.root
   }
