@@ -20,7 +20,6 @@ class HtmlParser(private val context: Context, entityType: String, entityId: Str
    * @return Spannable : Spannable represents the styled text.
    */
   fun parseOppiaHtml(rawString: String?, htmlContentTextView: TextView): Spannable {
-    val html: Spannable
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, false);
