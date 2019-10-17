@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
@@ -24,6 +27,10 @@ class StoryFragmentPresenter @Inject constructor(
       (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
     })
 
+    binding.storyChapterList.apply{
+      adapter = createRecyclerViewAdapter()
+    }
+
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
@@ -31,6 +38,15 @@ class StoryFragmentPresenter @Inject constructor(
       it.viewModel = viewModel
     }
     return binding.root
+  }
+
+  private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummary> {
+    return BindableAdapter.Builder
+      .newBuilder<ChapterSummary>()
+      .registerViewDataBinder(
+        inflateDataBinding = StoryChapterViewBinding::inflate,
+        setViewModel = StoryChapterViewBinding::setChapterSummary)
+      .build()
   }
 
   private fun getStoryViewModel(): StoryViewModel {

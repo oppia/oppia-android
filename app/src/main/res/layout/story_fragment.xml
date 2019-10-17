@@ -20,7 +20,7 @@
       app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/test_recycler_view"
+      android:id="@+id/story_chapter_list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintTop_toBottomOf="@id/story_progress_chapter_completed_text"
