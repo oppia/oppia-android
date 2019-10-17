@@ -7,8 +7,6 @@ import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.util.parser.HtmlParser
 
-private const val KEY_CONTENT = "KEY_CONTENT"
-
 /** This is a dummy activity to test Html parsing. */
 class HtmlParserTestActivty : AppCompatActivity() {
 
