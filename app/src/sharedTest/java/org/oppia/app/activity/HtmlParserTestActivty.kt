@@ -3,7 +3,6 @@ package org.oppia.app.activity
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -17,7 +16,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.splash.SplashActivity
 
 /** Tests for [HtmlParserTestActivityTest]. */
 @RunWith(AndroidJUnit4::class)
