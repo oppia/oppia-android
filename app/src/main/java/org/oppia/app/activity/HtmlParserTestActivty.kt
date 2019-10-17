@@ -11,7 +11,7 @@ private const val KEY_CONTENT = "KEY_CONTENT"
 
 /** This is a dummy activity to test Html parsing. */
 class HtmlParserTestActivty : AppCompatActivity() {
-  
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_test_html_parser)
