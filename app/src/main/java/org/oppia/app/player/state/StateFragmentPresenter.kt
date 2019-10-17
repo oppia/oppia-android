@@ -1,9 +1,13 @@
 package org.oppia.app.player.state
 
+import android.app.Activity
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -252,7 +256,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   override fun onInteractionButtonClicked() {
-    // Add code to hide keyboard here.
+    hideKeyboard()
     // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
     // NB: This sample data will work only with TEST_EXPLORATION_ID_5
     // 0 -> What Language
@@ -496,5 +500,10 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getStateButtonViewModel(): StateButtonViewModel {
     return stateButtonViewModelProvider.getForFragment(fragment, StateButtonViewModel::class.java)
+  }
+
+  private fun hideKeyboard() {
+    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
 }
