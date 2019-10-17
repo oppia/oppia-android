@@ -25,7 +25,6 @@ class TopicFragmentPresenter @Inject constructor(
 ) {
   private lateinit var tabLayout: TabLayout
   private lateinit var viewPager: ViewPager
-
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_overview_white_24dp,
