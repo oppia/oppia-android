@@ -8,20 +8,23 @@ import javax.inject.Singleton
 @Module
 class ImageParsingModule {
   @Provides
+  @DefaultGcsPrefix
   @Singleton
-  fun provide_GCS_PREFIX(): String {
+  fun provideDefaultGcsPrefix(): String {
     return "https://storage.googleapis.com/"
   }
 
   @Provides
+  @DefaultGCSResource
   @Singleton
-  fun provide_GCS_RESOURCE_BUCKET_NAME(): String {
+  fun provideDefaultGcsResource(): String {
     return  "oppiaserver-resources/"
   }
 
   @Provides
+  @ImageDownloadUrlTemplate
   @Singleton
-  fun provide_IMAGE_DOWNLOAD_URL_TEMPLATE(): String {
+  fun provideImageDownloadUrlTemplate(): String {
     return "%s/%s/assets/image/%s"
   }
 }

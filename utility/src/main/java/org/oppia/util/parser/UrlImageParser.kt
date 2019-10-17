@@ -11,19 +11,29 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.util.R
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // TODO (#169) : Replace this with exploration asset downloader
 /** UrlImage Parser for android TextView to load Html Image tag. */
-class UrlImageParser(
-  internal var htmlContentTextView: TextView,
-  internal var context: Context,
-  private val entity_type: String,
-  private val entity_id: String
+@Singleton
+class UrlImageParser @Inject constructor(
+  @DefaultGcsPrefix private val gcsPrefix: String,
+  @DefaultGCSResource private val gcsResource: String,
+  @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
 ) : Html.ImageGetter {
 
-  val GCS_PREFIX: String = "https://storage.googleapis.com/"
-  val GCS_RESOURCE_BUCKET_NAME = "oppiaserver-resources/"
-  var IMAGE_DOWNLOAD_URL_TEMPLATE = "%s/%s/assets/image/%s"
+  lateinit var htmlContentTextView: TextView
+  lateinit var context: Context
+  lateinit var entityType: String
+  lateinit var entityId: String
+
+  fun setImageData(htmlContentTextView: TextView, context: Context, entityType: String, entityId: String) {
+    this.htmlContentTextView = htmlContentTextView
+    this.context = context
+    this.entityId = entityId
+    this.entityType = entityType
+  }
 
   /***
    * This method is called when the HTML parser encounters an <img> tag
@@ -32,12 +42,12 @@ class UrlImageParser(
    */
   override fun getDrawable(urlString: String): Drawable {
 
-    IMAGE_DOWNLOAD_URL_TEMPLATE = String.format(IMAGE_DOWNLOAD_URL_TEMPLATE, entity_type, entity_id, urlString)
+    imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
     ImageLoader.load(
       context,
-      GCS_PREFIX + GCS_RESOURCE_BUCKET_NAME + IMAGE_DOWNLOAD_URL_TEMPLATE,
+      gcsPrefix + gcsResource + imageDownloadUrlTemplate,
       R.drawable.abc_ab_share_pack_mtrl_alpha,
       target
     );
@@ -51,9 +61,9 @@ class UrlImageParser(
       htmlContentTextView.post {
         val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
         val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
-          val rect = Rect(0, 0, drawableWidth, drawableHeight)
-          (drawable as BitmapDrawable).bounds = rect
-          urlDrawable.bounds = rect
+        val rect = Rect(0, 0, drawableWidth, drawableHeight)
+        (drawable as BitmapDrawable).bounds = rect
+        urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
         htmlContentTextView.text = htmlContentTextView.text
         htmlContentTextView.invalidate()

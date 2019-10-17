@@ -34,4 +34,5 @@ interface ActivityComponent {
   fun inject(topicActivity: TopicActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
+  fun inject(htmlParserTestActivty: HtmlParserTestActivty)
 }
