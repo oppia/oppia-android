@@ -161,7 +161,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      
+
       logger.d(
         "StateFragment",
         "subscribeToCurrentState: completedState.answerCount: " + result.completedState.answerCount
@@ -173,40 +173,28 @@ class StateFragmentPresenter @Inject constructor(
       )
       logger.d("StateFragment", "subscribeToCurrentState: state.name: " + result.state.name)
       logger.d("StateFragment", "subscribeToCurrentState: terminalState: " + result.terminalState)
-      logger.d("StateFragment", "subscribeToCurrentState: isInitialized: " + result.isInitialized)
       logger.d("StateFragment", "subscribeToCurrentState: hasState: " + result.hasState())
       logger.d("StateFragment", "subscribeToCurrentState: getStateTypeCase: " + result.stateTypeCase.number)
 
-      logger.d("StateFragment", "subscribeToCurrentState: ***********************************************************************************************")
-      logger.d("StateFragment", "subscribeToCurrentState: ***********************************************************************************************")
+      logger.d(
+        "StateFragment",
+        "subscribeToCurrentState: ***********************************************************************************************"
+      )
+      logger.d(
+        "StateFragment",
+        "subscribeToCurrentState: ***********************************************************************************************"
+      )
 
       itemList.clear()
       currentEphemeralState.set(result)
-      if (result.state.hasContent()) {
-        val contentViewModel = ContentViewModel()
-        if (result.state.content.contentId != "") {
-          contentViewModel.contentId = result.state.content.contentId
-        } else {
-          contentViewModel.contentId = "content"
-        }
-        contentViewModel.htmlContent = result.state.content.html
-        itemList.add(contentViewModel)
-        stateAdapter.notifyDataSetChanged()
-      }
 
-      val answerResponseList: MutableList<AnswerAndResponse> = result.completedState.answerList
-      for (answerResponse: AnswerAndResponse in answerResponseList) {
-        if (answerResponse.hasUserAnswer()) {
-          addLearnerAnswerItem(answerResponse.userAnswer)
-        }
-        if (answerResponse.hasFeedback()) {
-          addFeedbackItem(answerResponse.feedback)
-        }
-      }
+      checkAndAddContentItem()
+      checkAndAddCompletedAnswerList()
+      checkAndAddWrongAnswerList()
 
       val interactionId = result.state.interaction.id
       val hasPreviousState = result.hasPreviousState
-      val hasNextState = answerResponseList.size > 0
+      val hasNextState = result.completedState.answerList.size > 0
 
       val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
 
@@ -403,6 +391,66 @@ class StateFragmentPresenter @Inject constructor(
     return InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER).build()
   }
 
+  private fun checkAndAddContentItem() {
+    if (currentEphemeralState.get()!!.state.hasContent()) {
+      addContentItem()
+    } else {
+      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
+    }
+  }
+
+  private fun addContentItem() {
+    val contentViewModel = ContentViewModel()
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.get()!!.state.content
+    if (contentSubtitledHtml.contentId != "") {
+      contentViewModel.contentId = contentSubtitledHtml.contentId
+    } else {
+      contentViewModel.contentId = "content"
+    }
+    contentViewModel.htmlContent = contentSubtitledHtml.html
+    itemList.add(contentViewModel)
+    stateAdapter.notifyDataSetChanged()
+  }
+
+  private fun checkAndAddCompletedAnswerList() {
+    if (currentEphemeralState.get()!!.completedState.answerCount > 0) {
+      addCompletedAnswerList()
+    }
+  }
+
+  private fun addCompletedAnswerList() {
+    val answerResponseList: MutableList<AnswerAndResponse> = currentEphemeralState.get()!!.completedState.answerList
+    for (answerResponse: AnswerAndResponse in answerResponseList) {
+      if (answerResponse.hasUserAnswer()) {
+        addLearnerAnswerItem(answerResponse.userAnswer)
+      }
+      if (answerResponse.hasFeedback()) {
+        addFeedbackItem(answerResponse.feedback)
+      }
+    }
+  }
+
+  private fun checkAndAddWrongAnswerList() {
+    if (currentEphemeralState.get()!!.pendingState.wrongAnswerCount > 0) {
+      addWrongAnswerList()
+    }
+  }
+
+  private fun addWrongAnswerList() {
+    val wrongAnswerResponseList: MutableList<AnswerAndResponse> =
+      currentEphemeralState.get()!!.pendingState.wrongAnswerList
+    for (wrongAnswerResponse: AnswerAndResponse in wrongAnswerResponseList) {
+      checkAndAddLearnerAnswerItem(wrongAnswerResponse)
+      checkAndAddFeedbackItem(wrongAnswerResponse)
+    }
+  }
+
+  private fun checkAndAddLearnerAnswerItem(answerResponse: AnswerAndResponse) {
+    if (answerResponse.hasUserAnswer()) {
+      addLearnerAnswerItem(answerResponse.userAnswer)
+    }
+  }
+
   private fun addLearnerAnswerItem(answerInteractionObject: InteractionObject) {
     Log.d("StateFragment", "addLearnerAnswerItem")
     val interactionReadOnlyViewModel = InteractionReadOnlyViewModel()
@@ -428,18 +476,23 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun checkAndAddFeedbackItem(feedbackResponse: AnswerAndResponse) {
+    if (feedbackResponse.hasFeedback()) {
+      addFeedbackItem(feedbackResponse.feedback)
+    }
+  }
+
   private fun addFeedbackItem(feedback: SubtitledHtml) {
     Log.d("StateFragment", "addFeedbackItem")
     val feedbackViewModel = ContentViewModel()
-    var feedbackContent = ""
     if (feedback.contentId != "") {
       feedbackViewModel.contentId = feedback.contentId
     } else {
       feedbackViewModel.contentId = "feedback"
     }
-    feedbackContent = feedback.html
-    if (feedbackContent.isNotEmpty()) {
-      feedbackViewModel.htmlContent = feedbackContent
+    val feedbackHtml: String = feedback.html
+    if (feedbackHtml.isNotEmpty()) {
+      feedbackViewModel.htmlContent = feedbackHtml
       itemList.add(feedbackViewModel)
       stateAdapter.notifyDataSetChanged()
     }
