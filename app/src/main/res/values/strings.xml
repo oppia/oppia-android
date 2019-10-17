@@ -3,7 +3,8 @@
   <string name="app_name">Oppia</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
-  <string name="audio_pause_play_description">Audio play/pause button</string>
+  <string name="audio_play_description">Play audio</string>
+  <string name="audio_pause_description">Pause audio</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">CANCEL</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
@@ -15,4 +16,11 @@
   <string name="topic_train_master_these_skills">Master These Skills</string>
   <string name="topic_train_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_train_start">Start</string>
+  <string name="state_continue_button">CONTINUE</string>
+  <string name="state_continue_submit">SUBMIT</string>
+  <string name="previous_state_description">Button to go to previous state</string>
+  <string name="next_state_description">Button to go to next state</string>
+  <string name="state_submit_button">SUBMIT</string>
+  <string name="state_end_exploration_button">RETURN TO TOPIC</string>
+  <string name="state_learn_again_button">LEARN AGAIN</string>
 </resources>
