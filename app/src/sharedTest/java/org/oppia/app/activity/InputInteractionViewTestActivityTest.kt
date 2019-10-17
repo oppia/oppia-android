@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.instanceOf
+import org.junit.After
 import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
 import org.oppia.app.customview.inputInteractionView.TextInputInteractionView
 
@@ -119,6 +120,10 @@ class InputInteractionViewTestActivityTest {
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("abc")))
+  }
+
+  @After
+  fun tearDown() {
     Intents.release()
   }
 }
