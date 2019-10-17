@@ -12,8 +12,8 @@ import org.oppia.app.model.InteractionObject
 class NumericInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
-  defStyle: Int = android.R.attr.editTextStyle
-  , private var placeholder: String = "Write the digit here."
+  defStyle: Int = android.R.attr.editTextStyle,
+  private var placeholder: String = "Write the digit here."
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
   init {
     attributes()
