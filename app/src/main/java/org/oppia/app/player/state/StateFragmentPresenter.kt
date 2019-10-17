@@ -67,6 +67,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) : InteractionListener {
 
+  private val completedStateNameList: ArrayList<String> = ArrayList()
+
   private val currentEphemeralState = ObservableField<EphemeralState>(EphemeralState.getDefaultInstance())
   private var currentAnswerOutcome: AnswerOutcome? = null
 
@@ -174,6 +176,14 @@ class StateFragmentPresenter @Inject constructor(
       }
 
       val answerResponseList: MutableList<AnswerAndResponse> = result.completedState.answerList
+      for (answerResponse: AnswerAndResponse in answerResponseList) {
+        if (answerResponse.hasUserAnswer()) {
+          addLearnerAnswerItem(answerResponse.userAnswer)
+        }
+        if (answerResponse.hasFeedback()) {
+          addFeedbackItem(answerResponse.feedback)
+        }
+      }
 
       val interactionId = result.state.interaction.id
       val hasPreviousState = result.hasPreviousState
@@ -181,7 +191,10 @@ class StateFragmentPresenter @Inject constructor(
 
       val customizationArgsMap: Map<String, InteractionObject> = result.state.interaction.customizationArgsMap
 
-      if (!hasNextState) {
+      if ((currentAnswerOutcome == null || currentAnswerOutcome!!.sameState) && !completedStateNameList.contains(
+          currentEphemeralState.get()!!.state.name
+        )
+      ) {
         when (interactionId) {
           NUMERIC_INPUT -> {
             val numericInputInteractionViewModel = NumericInputInteractionViewModel()
@@ -196,20 +209,10 @@ class StateFragmentPresenter @Inject constructor(
             val textInputInteractionViewModel = TextInputInteractionViewModel()
             if (customizationArgsMap.containsKey("placeholder")) {
               textInputInteractionViewModel.placeholder =
-
                 customizationArgsMap.getValue("placeholder").normalizedString
             }
             itemList.add(textInputInteractionViewModel)
             stateAdapter.notifyDataSetChanged()
-          }
-        }
-      } else {
-        for (answerResponse: AnswerAndResponse in answerResponseList) {
-          if (answerResponse.hasUserAnswer()) {
-            addLearnerAnswerItem(answerResponse.userAnswer)
-          }
-          if (answerResponse.hasFeedback()) {
-            addFeedbackItem(answerResponse.feedback)
           }
         }
       }
@@ -357,12 +360,17 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    if (!completedStateNameList.contains(currentEphemeralState.get()!!.state.name)) {
+      completedStateNameList.add(currentEphemeralState.get()!!.state.name)
+    }
+
     itemList.clear()
     currentAnswerOutcome = null
     explorationProgressController.moveToNextState()
   }
 
   override fun onPreviousButtonClicked() {
+    logger.d("StateFragment", "onPreviousButtonClicked")
     explorationProgressController.moveToPreviousState()
   }
 
