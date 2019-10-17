@@ -233,8 +233,8 @@ class StateAdapter(
   }
 
   fun getInteractionObject(): InteractionObject {
-    return if (inputInteractionView !is StateButtonViewModel) {
-      when (inputInteractionView) {
+    if (inputInteractionView !is StateButtonViewModel) {
+      return when (inputInteractionView) {
         is NumericInputInteractionView -> {
           (inputInteractionView as NumericInputInteractionView).getPendingAnswer()
         }
@@ -246,7 +246,7 @@ class StateAdapter(
         }
       }
     } else {
-      getDefaultInteractionObject()
+      return getDefaultInteractionObject()
     }
   }
 
