@@ -11,8 +11,8 @@ import org.oppia.app.model.InteractionObject
 class TextInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
-  defStyle: Int = android.R.attr.editTextStyle
-  , private var placeholder: String = "Write here."
+  defStyle: Int = android.R.attr.editTextStyle,
+  private var placeholder: String = "Write here."
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
   init {
     attributes()
