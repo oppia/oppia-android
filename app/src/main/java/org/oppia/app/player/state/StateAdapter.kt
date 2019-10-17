@@ -36,10 +36,7 @@ const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
 const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
 const val VIEW_TYPE_STATE_BUTTON = 5
 
-class StateAdapter(
-  private val itemList: MutableList<Any>,
-  private val interactionListener: InteractionListener
-) :
+class StateAdapter(private val itemList: MutableList<Any>, private val interactionListener: InteractionListener) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>(), InputInteractionTextListener {
 
   private var inputInteractionView: Any = StateButtonViewModel
@@ -233,8 +230,8 @@ class StateAdapter(
   }
 
   fun getInteractionObject(): InteractionObject {
-    if (inputInteractionView !is StateButtonViewModel) {
-      return when (inputInteractionView) {
+    return if (inputInteractionView !is StateButtonViewModel) {
+      when (inputInteractionView) {
         is NumericInputInteractionView -> {
           (inputInteractionView as NumericInputInteractionView).getPendingAnswer()
         }
@@ -246,7 +243,7 @@ class StateAdapter(
         }
       }
     } else {
-      return getDefaultInteractionObject()
+      getDefaultInteractionObject()
     }
   }
 
