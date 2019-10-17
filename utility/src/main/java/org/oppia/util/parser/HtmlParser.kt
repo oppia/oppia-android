@@ -14,7 +14,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 class HtmlParser(private val context: Context, entityType: String, entityId: String) {
 
   /**
-   * Replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
+   * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
    * @param rawString : rawString argument is the string from the string-content
    * @param tvContents : tvContents argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
    * @return Spannable : Spannable represents the styled text.
