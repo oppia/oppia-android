@@ -14,18 +14,18 @@
     <activity android:name=".player.exploration.ExplorationActivity"/>
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity"/>
     <activity android:name=".topic.TopicActivity"
-              android:theme="@style/OppiaTheme.NoActionBar"/>
-    <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
-    <activity android:name="org.oppia.app.home.HomeActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
+              android:theme="@style/OppiaTheme.NoActionBar"><intent-filter>
+      <action android:name="android.intent.action.MAIN"/>
+      <category android:name="android.intent.category.LAUNCHER"/>
+    </intent-filter>
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+    <activity
+    <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
+    <activity android:name="org.oppia.app.home.HomeActivity"/>
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
