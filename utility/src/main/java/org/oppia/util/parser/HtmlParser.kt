@@ -22,10 +22,10 @@ class HtmlParser(private val context: Context, entityType: String, entityId: Str
   fun parseOppiaHtml(rawString: String?, htmlContentTextView: TextView): Spannable {
     var htmlContent = rawString
     if (htmlContent!!.contains(CUSTOM_IMG_TAG)) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, false);
+      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false);
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-        REPLACE_IMG_FILE_PATH_ATTRIBUTE, false
+        REPLACE_IMG_FILE_PATH_ATTRIBUTE, /* ignoreCase= */false
       );
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
