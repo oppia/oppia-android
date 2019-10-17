@@ -16,21 +16,6 @@
 
     <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name="org.oppia.app.home.HomeActivity">
-      <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN"/>-->
-        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-      <!--</intent-filter>-->
-      <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.VIEW"/>-->
-        <!--<category android:name="android.intent.category.DEFAULT"/>-->
-      <!--</intent-filter>-->
-    </activity>
-    <activity
-      android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme">
-    </activity>
-    <activity android:name=".testing.BindableAdapterTestActivity"/>
-    <activity android:name=".activity.HtmlParserTestActivty">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -40,5 +25,11 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+    <activity
+      android:name=".splash.SplashActivity"
+      android:theme="@style/SplashScreenTheme">
+    </activity>
+    <activity android:name=".testing.BindableAdapterTestActivity"/>
+    <activity android:name=".activity.HtmlParserTestActivty"/>
   </application>
 </manifest>
