@@ -77,6 +77,7 @@ class HtmlParserTest {
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
+  
   @After
   fun tearDown() {
     Intents.release()
