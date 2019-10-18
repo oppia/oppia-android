@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.testing.HtmlParserTestActivty
+import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.UrlImageParser
 
@@ -34,8 +34,8 @@ class HtmlParserTestActivityTest {
   lateinit var urlImageParser: UrlImageParser
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<HtmlParserTestActivty> = ActivityTestRule(
-    HtmlParserTestActivty::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
+    HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Before

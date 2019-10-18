@@ -32,6 +32,6 @@
       android:theme="@style/SplashScreenTheme">
     </activity>
     <activity android:name=".testing.BindableAdapterTestActivity"/>
-    <activity android:name=".testing.HtmlParserTestActivty"/>
+    <activity android:name=".testing.HtmlParserTestActivity"/>
   </application>
 </manifest>
