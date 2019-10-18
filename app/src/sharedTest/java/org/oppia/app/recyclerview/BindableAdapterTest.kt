@@ -45,6 +45,7 @@ class BindableAdapterTest {
     // Ensure that the bindable fragment's test state is properly reset each time.
     BindableAdapterTestFragmentPresenter.testBindableAdapter = null
   }
+
   @After
   fun tearDown() {
     // Ensure that the bindable fragment's test state is properly cleaned up.

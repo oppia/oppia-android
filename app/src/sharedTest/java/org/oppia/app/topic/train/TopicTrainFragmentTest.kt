@@ -2,7 +2,7 @@ package org.oppia.app.topic.train
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -44,6 +44,8 @@ class TopicTrainFragmentTest {
 
   private var skillIdList = ArrayList<String>()
 
+  private lateinit var activityScenario: ActivityScenario<TopicActivity>
+
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -51,6 +53,8 @@ class TopicTrainFragmentTest {
 
   @Before
   fun setUp() {
+    activityScenario = ActivityScenario.launch(TopicActivity::class.java)
+
     Intents.init()
     skillIdList.add("test_skill_id_0")
   }
@@ -59,7 +63,7 @@ class TopicTrainFragmentTest {
   fun testTopicTrainFragment_loadFragment_displaySkills_startButtonIsInactive() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
-      onView(atPosition(R.id.skill_recycler_view,0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
+      onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -67,15 +71,15 @@ class TopicTrainFragmentTest {
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_isSuccessful() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view,1)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 1)).perform(click())
     }
   }
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_startButtonIsActive() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     }
   }
@@ -83,16 +87,16 @@ class TopicTrainFragmentTest {
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_isSuccessful() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     }
   }
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -100,7 +104,7 @@ class TopicTrainFragmentTest {
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_clickStartButton_skillListTransferSuccessfully() {
     activityTestRule.launchActivity(null)
-    onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
+    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     onView(withId(R.id.topic_train_start_button)).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
@@ -108,25 +112,31 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
-    activityTestRule.launchActivity(null)
-    onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    onView(atPositionOnView(R.id.skill_recycler_view,0, R.id.skill_check_box)).check(matches(isChecked()))
+    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    activityScenario.recreate()
+    onView(atPositionOnView(R.id.skill_recycler_view, 0, R.id.skill_check_box)).check(matches(isChecked()))
   }
 
   @Test
   fun testTopicTrainFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
-    activityTestRule.launchActivity(null)
     onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    activityScenario.recreate()
     onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
   }
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
-    activityTestRule.launchActivity(null)
-    onView(atPosition(R.id.skill_recycler_view,0)).perform(click())
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    activityScenario.recreate()
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
   }
 
