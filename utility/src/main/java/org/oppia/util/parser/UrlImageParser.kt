@@ -14,7 +14,7 @@ import org.oppia.util.R
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO (#169) : Replace this with exploration asset downloader
+// TODO(#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
 @Singleton
 class UrlImageParser @Inject constructor(
@@ -23,10 +23,10 @@ class UrlImageParser @Inject constructor(
   @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
 ) : Html.ImageGetter {
 
-  lateinit var htmlContentTextView: TextView
-  lateinit var context: Context
-  lateinit var entityType: String
-  lateinit var entityId: String
+  private lateinit var htmlContentTextView: TextView
+  private lateinit var context: Context
+  private lateinit var entityType: String
+  private lateinit var entityId: String
 
   fun setImageData(htmlContentTextView: TextView, context: Context, entityType: String, entityId: String) {
     this.htmlContentTextView = htmlContentTextView
@@ -36,12 +36,11 @@ class UrlImageParser @Inject constructor(
   }
 
   /***
-   * This method is called when the HTML parser encounters an <img> tag
-   * @param urlString : urlString argument is the string from the "src" attribute
-   * @return Drawable : Drawable representation of the image
+   * This method is called when the HTML parser encounters an <img> tag.
+   * @param urlString : urlString argument is the string from the "src" attribute.
+   * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-
     imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
