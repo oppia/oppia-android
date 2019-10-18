@@ -26,18 +26,6 @@ class UrlImageParser private constructor(
   private val entityId: String
 ) : Html.ImageGetter {
 
-//  private lateinit var htmlContentTextView: TextView
-//  private lateinit var context: Context
-//  private lateinit var entityType: String
-//  private lateinit var entityId: String
-//
-//  fun setImageData(htmlContentTextView: TextView, context: Context, entityType: String, entityId: String) {
-//    this.htmlContentTextView = htmlContentTextView
-//    this.context = context
-//    this.entityId = entityId
-//    this.entityType = entityType
-//  }
-
   /***
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
