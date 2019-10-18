@@ -21,6 +21,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -76,8 +77,7 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_changesIconStatusToDownloaded() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_check_circle_primary_24dp))))
     }
   }
@@ -86,8 +86,7 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickNegative_doesNotChangeIconStatus() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
     }
   }
@@ -96,8 +95,7 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_clickDownloadStatusIcon_showsDeleteDialog() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).perform(click())
       onView(withText(R.string.topic_delete_alert_dialog_description)).check(matches(isDisplayed()))
     }
@@ -107,11 +105,9 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_clickDownloadStatusIcon_clickPositive_changesBackToNotDownloadedStatusIcon() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_delete_alert_dialog_delete_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_delete_alert_dialog_delete_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
     }
   }
@@ -120,11 +116,9 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_clickDownloadStatusIcon_clickNegative_statusIconIsDownloaded() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).perform(click())
-      onView(withText(R.string.topic_delete_alert_dialog_delete_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_delete_alert_dialog_delete_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
     }
   }
@@ -134,8 +128,7 @@ class TopicOverviewFragmentTest {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
       onView(withId(R.id.topic_download_dialog_checkbox)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_check_circle_primary_24dp))))
     }
   }
@@ -145,8 +138,7 @@ class TopicOverviewFragmentTest {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.download_status_image_view)).perform(click())
       onView(withId(R.id.topic_download_dialog_checkbox)).perform(click())
-      onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog()).perform(click())
       onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
     }
   }
@@ -163,19 +155,17 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_configurationChange_changesIconStatusToDownloaded() {
     activityTestRule.launchActivity(null)
     onView(withId(R.id.download_status_image_view)).perform(click())
-    onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-      .check(matches(isDisplayed())).perform(click())
+    onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_check_circle_primary_24dp))))
 
   }
 
   @Test
-  fun testTopicOverviewFragment_clickDownloadStatusIcon_clickNegative_configurationChange_doesNotChangeIconStatus() {
+  fun testTopicOverviewFragment_clickDownloadStatusIcon_clickNegative_configurationChange_doesNotChangeStatusIcon() {
     activityTestRule.launchActivity(null)
     onView(withId(R.id.download_status_image_view)).perform(click())
-    onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog())
-      .check(matches(isDisplayed())).perform(click())
+    onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog()).perform(click())
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
   }
@@ -184,11 +174,34 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_clickDownloadStatusIcon_clickPositive_clickDownloadStatusIcon_configurationChange_showsDeleteDialog() {
     activityTestRule.launchActivity(null)
     onView(withId(R.id.download_status_image_view)).perform(click())
-    onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog())
-      .check(matches(isDisplayed())).perform(click())
+    onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
     onView(withId(R.id.download_status_image_view)).perform(click())
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     onView(withText(R.string.topic_delete_alert_dialog_description)).check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testTopicOverviewFragment_clickDownloadStatusIcon_selectCheckbox_clickNegative_clickDownloadStatusIcon_cellularDialogDoesNotAppear_doesNotChangeStatusIcon() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(withId(R.id.download_status_image_view)).perform(click())
+      onView(withId(R.id.topic_download_dialog_checkbox)).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_cancel_button)).inRoot(isDialog()).perform(click())
+      onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
+      onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_file_download_primary_24dp))))
+    }
+  }
+
+  @Test
+  fun testTopicOverviewFragment_clickDownloadStatusIcon_selectCheckbox_clickPositive_deleteDownload_clickDownloadStatusIcon_cellularDialogDoesNotAppear_changesIconStatusToDownloaded() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(withId(R.id.download_status_image_view)).perform(click())
+      onView(withId(R.id.topic_download_dialog_checkbox)).perform(click())
+      onView(withText(R.string.topic_download_alert_dialog_download_button)).inRoot(isDialog()).perform(click())
+      onView(withId(R.id.download_status_image_view)).perform(click())
+      onView(withText(R.string.topic_delete_alert_dialog_delete_button)).inRoot(isDialog()).perform(click())
+      onView(withId(R.id.download_status_image_view)).perform(click())
+      onView(withId(R.id.download_status_image_view)).check(matches(withTagValue(equalTo(R.drawable.ic_check_circle_primary_24dp))))
+    }
   }
 
   @Module
