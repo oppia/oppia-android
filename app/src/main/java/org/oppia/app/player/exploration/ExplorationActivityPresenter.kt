@@ -1,20 +1,24 @@
 package org.oppia.app.player.exploration
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.home.HomeFragment
 import javax.inject.Inject
 
-/** The controller for [ExplorationActivity]. */
+/** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
     if (getExplorationFragment() == null) {
+      val explorationFragment = ExplorationFragment()
+      val args = Bundle()
+      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, explorationId)
+      explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        ExplorationFragment()
+        explorationFragment
       ).commitNow()
     }
   }

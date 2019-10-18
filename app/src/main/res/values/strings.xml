@@ -3,7 +3,8 @@
   <string name="app_name">Oppia</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
-  <string name="audio_pause_play_description">Audio play/pause button</string>
+  <string name="audio_play_description">Play audio</string>
+  <string name="audio_pause_description">Pause audio</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">CANCEL</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>

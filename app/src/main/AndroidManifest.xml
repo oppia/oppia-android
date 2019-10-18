@@ -15,6 +15,7 @@
     <activity android:name=".player.exploration.ExplorationActivity"/>
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity"/>
     <activity android:name=".topic.TopicActivity"/>
+    <activity android:name=".player.audio.testing.AudioFragmentTestActivity"/>
     <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
