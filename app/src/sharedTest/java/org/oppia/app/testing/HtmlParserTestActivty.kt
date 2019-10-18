@@ -1,4 +1,4 @@
-package org.oppia.app.activity
+package org.oppia.app.testing
 
 import android.app.Activity
 import android.content.Intent
@@ -14,8 +14,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import junit.framework.TestCase.assertNotSame
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -26,9 +29,9 @@ import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.UrlImageParser
 
-/** Tests for [HtmlParserTestActivityTest]. */
+/** Tests for [HtmlParser]. */
 @RunWith(AndroidJUnit4::class)
-class HtmlParserTestActivityTest {
+class HtmlParserTest {
 
   private lateinit var launchedActivity: Activity
   lateinit var urlImageParser: UrlImageParser
@@ -57,9 +60,9 @@ class HtmlParserTestActivityTest {
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e"
       , textView
     )
-    assertEquals(htmlResult.toString(), textView.text.toString())
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(isDisplayed()))
-      .check(matches(withText(htmlResult.toString())))
+    onView(withId(R.id.test_html_content_text_view)).check(matches(withText(textView.text.toString())))
   }
 
   @Test
@@ -71,10 +74,12 @@ class HtmlParserTestActivityTest {
     val htmlResult: Spannable = HtmlParser(
       ApplicationProvider.getApplicationContext(),  /* entityType= */ "",  /* entityId= */"",urlImageParser
     ).parseOppiaHtml(
-      "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e"
-      , textView
+      "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+      textView
     )
-    assertNotSame(htmlResult.toString(), textView.text.toString())
+    // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
+    assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
   @After
   fun tearDown() {
