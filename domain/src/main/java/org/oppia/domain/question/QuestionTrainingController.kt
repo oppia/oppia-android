@@ -63,7 +63,7 @@ class QuestionTrainingController @Inject constructor(
       trainingQuestions.addAll(questionsList.filter {
         it.linkedSkillIdsList.contains(skillId) &&
             !trainingQuestions.contains(it)
-      }.take(numQuestionsPerSkill + 1))
+      }.distinctBy { it.questionId }.take(numQuestionsPerSkill + 1))
     }
     return trainingQuestions
       .take(questionTrainingConstantsProvider.getQuestionCountPerTrainingSession())

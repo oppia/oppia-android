@@ -28,11 +28,17 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Question
+import org.oppia.domain.topic.TEST_QUESTION_ID_0
+import org.oppia.domain.topic.TEST_QUESTION_ID_1
+import org.oppia.domain.topic.TEST_QUESTION_ID_2
+import org.oppia.domain.topic.TEST_QUESTION_ID_3
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.data.AsyncResult
@@ -116,8 +122,13 @@ class QuestionTrainingControllerTest {
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(1)
+    assertThat(questionsList.size).isEqualTo(4)
+    val questionIds = questionsList.map{it.questionId}
+    assertThat(questionIds).containsExactlyElementsIn(mutableListOf(
+      TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3))
   }
+
+
 
   @Qualifier
   annotation class TestDispatcher
@@ -126,7 +137,7 @@ class QuestionTrainingControllerTest {
   @Module
   class TestModule {
     @Mock
-    lateinit var questionsTrainingConstantsProvider: QuestionTrainingConstantsProvider
+    lateinit var questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
 
     @Provides
     @Singleton
@@ -134,13 +145,14 @@ class QuestionTrainingControllerTest {
       return application
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
-//      Mockito.`when`(
-//        questionsTrainingConstantsProvider.getQuestionCountPerTrainingSession()).thenReturn(1)
-//      return questionsTrainingConstantsProvider
-//    }
+    @Provides
+    @Singleton
+    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
+      MockitoAnnotations.initMocks(this)
+      Mockito.`when`(
+        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()).thenReturn(10)
+      return questionTrainingConstantsProvider
+    }
 
     @ExperimentalCoroutinesApi
     @Singleton
