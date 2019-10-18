@@ -8,7 +8,7 @@ import org.oppia.app.R
 import org.oppia.util.parser.HtmlParser
 
 /** This is a dummy activity to test Html parsing. */
-class HtmlParserTestActivty : AppCompatActivity() {
+class HtmlParserTestActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

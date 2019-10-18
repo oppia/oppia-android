@@ -31,8 +31,8 @@ class HtmlParserTestActivityTest {
   private lateinit var launchedActivity: Activity
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<HtmlParserTestActivty> = ActivityTestRule(
-    HtmlParserTestActivty::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
+    HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Before
