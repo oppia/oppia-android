@@ -14,7 +14,7 @@ import org.oppia.util.R
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO(#169): Replace this with exploration asset downloader.
+// TODO   (#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
   @ApplicationContext private val context: Context,
