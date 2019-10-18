@@ -9,9 +9,7 @@ import org.hamcrest.TypeSafeMatcher
 
 // Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
 class RecyclerViewMatcher {
-
   companion object {
-
     /**
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
@@ -61,6 +59,5 @@ class RecyclerViewMatcher {
         }
       }
     }
-
   }
 }
