@@ -40,7 +40,7 @@ class UrlImageParser private constructor(
       gcsPrefix + gcsResource + imageDownloadUrlTemplate,
       R.drawable.abc_ab_share_pack_mtrl_alpha,
       target
-    );
+    )
     return urlDrawable
   }
 
