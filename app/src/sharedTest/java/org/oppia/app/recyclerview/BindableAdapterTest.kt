@@ -10,7 +10,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,12 +25,9 @@ import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
-import androidx.test.espresso.matcher.BoundedMatcher
-import android.view.View
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
@@ -88,7 +84,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_0.strValue))))
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_0.strValue)))
     }
   }
 
@@ -109,9 +105,9 @@ class BindableAdapterTest {
         val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_1.strValue))))
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(1, withText(STR_VALUE_0.strValue))))
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(2, withText(STR_VALUE_2.strValue))))
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withText(STR_VALUE_2.strValue)))
     }
   }
 
@@ -133,11 +129,10 @@ class BindableAdapterTest {
         val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_1.strValue))))
-      onView(withId(R.id.test_recycler_view))
-        .check(matches(atPosition(1, withSubstring(INT_VALUE_0.intValue.toString()))))
-      onView(withId(R.id.test_recycler_view))
-        .check(matches(atPosition(2, withSubstring(INT_VALUE_1.intValue.toString()))))
+
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -159,7 +154,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_0.strValue))))
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_0.strValue)))
     }
   }
 
@@ -180,9 +175,10 @@ class BindableAdapterTest {
         val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_1.strValue))))
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(1, withText(STR_VALUE_0.strValue))))
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(2, withText(STR_VALUE_2.strValue))))
+
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withText(STR_VALUE_2.strValue)))
     }
   }
 
@@ -204,11 +200,10 @@ class BindableAdapterTest {
         val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(withId(R.id.test_recycler_view)).check(matches(atPosition(0, withText(STR_VALUE_1.strValue))))
-      onView(withId(R.id.test_recycler_view))
-        .check(matches(atPosition(1, withSubstring(INT_VALUE_0.intValue.toString()))))
-      onView(withId(R.id.test_recycler_view))
-        .check(matches(atPosition(2, withSubstring(INT_VALUE_1.intValue.toString()))))
+
+      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -311,21 +306,5 @@ class BindableAdapterTest {
   private fun safelyWaitUntilIdle() {
     // This must be done off the main thread for Espresso otherwise it deadlocks.
     onIdle()
-  }
-
-  // TODO(#89): Move this to a consolidated test library.
-  // https://stackoverflow.com/a/34795431
-  fun atPosition(position: Int, itemMatcher: Matcher<View>): Matcher<View> {
-    return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
-      override fun describeTo(description: Description) {
-        description.appendText("has item at position $position: ")
-        itemMatcher.describeTo(description)
-      }
-
-      override fun matchesSafely(view: RecyclerView): Boolean {
-        val viewHolder = view.findViewHolderForAdapterPosition(position) ?: return false
-        return itemMatcher.matches(viewHolder.itemView)
-      }
-    }
   }
 }
