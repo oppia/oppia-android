@@ -19,9 +19,6 @@ class HtmlParser private constructor(
   private val entityId: String
 ) {
 
-//  @Inject
-//  lateinit var urlImageParserFactory : UrlImageParser.Factory
-
   /**
    * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
    * @param rawString rawString argument is the string from the string-content
