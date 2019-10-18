@@ -1,5 +1,6 @@
 package org.oppia.app.player.audio
 
+/*
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
@@ -50,7 +51,9 @@ import org.robolectric.shadows.util.DataSource
 import javax.inject.Inject
 import javax.inject.Qualifier
 
-/** Tests for [AudioFragment]. */
+*/
+/** Tests for [AudioFragment]. *//*
+
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
@@ -174,7 +177,11 @@ class AudioFragmentTest {
         coordinates[1] = screenY
         return coordinates
       }
-    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
+    }, Press.FINGER, */
+/* inputDevice= *//*
+ 0, */
+/* deviceState= *//*
+ 0)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -187,7 +194,11 @@ class AudioFragmentTest {
   private fun addMediaInfo() {
     val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
     val dataSource2 = DataSource.toDataSource(context , Uri.parse(TEST_URL2))
-    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(*/
+/* duration= *//*
+ 1000,*/
+/* preparationDelay= *//*
+ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
     ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
   }
@@ -253,3 +264,4 @@ class AudioFragmentTest {
     fun inject(audioFragmentTest: AudioFragmentTest)
   }
 }
+*/
