@@ -1,6 +1,7 @@
 package org.oppia.domain.exploration
 
 import android.content.Context
+import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -272,10 +273,13 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
-      is List<*> -> if (customizationArgValue.size > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)
-        ).build()
+      else -> {
+        var customizationArgValueTemp = Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
+        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            createStringList(customizationArgValueTemp)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
