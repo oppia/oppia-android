@@ -23,9 +23,10 @@ class UrlImageParser private constructor(
   @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
-  private val entityId: String
-) : Html.ImageGetter,ImageLoader {
-
+  private val entityId: String,
+  private val imageLoader:ImageLoader
+) : Html.ImageGetter {
+  
   /***
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
@@ -35,7 +36,7 @@ class UrlImageParser private constructor(
     imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    load(
+    imageLoader.load(
       context,
       gcsPrefix + gcsResource + imageDownloadUrlTemplate,
       target
