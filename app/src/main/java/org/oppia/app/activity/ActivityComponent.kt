@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -34,6 +35,7 @@ interface ActivityComponent {
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(topicActivity: TopicActivity)
+  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
 }
