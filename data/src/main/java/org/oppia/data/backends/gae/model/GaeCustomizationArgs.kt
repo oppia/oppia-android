@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeCustomizationArgs(
 
-  @Json(name = "parse_with_jinja") val isParseWithJinja: Boolean?,
+  @Json(name = "parse_with_jinja") val isParsedWithJinja: Boolean?,
   @Json(name = "value") val value: Any?
 
 )

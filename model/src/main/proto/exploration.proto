@@ -15,16 +15,39 @@ option java_multiple_files = true;
 message Exploration {
   // The ID of the exploration.
   string id = 1;
-
+  string title = 2;
+  string objective = 3;
+  string init_state_name = 4;
   // Mapping from a state name to a state object
-  map<string, State> states = 2;
-  repeated ParamChange param_changes = 3;
-  repeated ParamSpec param_specs = 4;
-  string init_state_name = 5;
-  string objective = 6;
-  bool correctness_feedback_enabled = 7;
-  string title = 8;
-  string language_code = 9;
+  map<string, State> state = 5;
+  repeated ParamChange param_change = 6;
+  map<string, ParamSpec> param_spec = 7;
+  string language_code = 8;
+  bool correctness_feedback_enabled = 9;
+}
+
+message ExplorationSummary {
+  string id = 1;
+
+  string title = 2;
+
+  string status = 3;
+
+  string category = 4;
+
+  string objective = 5;
+
+  int32 view_count = 6;
+
+  string activity_type = 7;
+
+  int64 created_time_ms = 8;
+
+  int64 last_updated_time_ms = 9;
+
+  map<string, float> rating = 10;
+
+  repeated string tag = 11;
 }
 
 // Structure for a param change.
@@ -70,7 +93,7 @@ message ParamChangeCustomizationArgs {
   bool parse_with_jinja = 1;
   // If the param change has only a single value, we will populate just
   // one element in this list
-  repeated string list_of_values = 3;
+  repeated string value = 3;
 }
 
 // Structure for a single interaction
@@ -92,15 +115,10 @@ message Interaction {
 message AnswerGroup {
   string tagged_skill_misconception_id = 1;
   Outcome outcome = 2;
-  repeated RuleSpec rule_specs = 3;
-  repeated TrainingData training_data = 4;
+  repeated RuleSpec rule_spec = 3;
+  repeated InteractionObject training_data_answer = 4;
 }
 
-// Structure for a single training data instance
-message TrainingData {
-  int32 answer_group_index = 1;
-  repeated string answers = 2;
-}
 
 // Structure for a single solution
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt

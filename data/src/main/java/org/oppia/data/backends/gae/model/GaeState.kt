@@ -16,6 +16,6 @@ data class GaeState(
   @Json(name = "param_changes") val paramChanges: List<GaeParamChange>?,
   @Json(name = "classifier_model_id") val classifierModelId: String?,
   @Json(name = "interaction") val interactionInstance: GaeInteractionInstance?,
-  @Json(name = "solicit_answer_details") val isSolicitAnswerDetails: Boolean?
+  @Json(name = "solicit_answer_details") val doesSolicitAnswerDetails: Boolean?
 
 )

@@ -16,6 +16,7 @@ data class GaeExploration(
   @Json(name = "init_state_name") val initStateName: String?,
   @Json(name = "objective") val objective: String?,
   @Json(name = "correctness_feedback_enabled") val isCorrectnessFeedbackEnabled: Boolean?,
-  @Json(name = "title") val title: String?
+  @Json(name = "title") val title: String?,
+  @Json(name = "language_code") val languageCode: String?
 
 )

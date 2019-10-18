@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package model;
 
+import "exploration.proto";
 import "subtitled_html.proto";
 import "thumbnail.proto";
 import "translation.proto";
@@ -52,6 +53,36 @@ message ConceptCard {
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card that has corresponding
   // translations.
   map<string, TranslationMapping> written_translation = 6;
+}
+
+message Story {
+  string story_id = 1;
+
+  string title = 2;
+
+  string description = 3;
+
+  repeated StoryNode story_node = 4;
+}
+
+message StoryNode {
+  string node_id = 1;
+
+  string title = 2;
+
+  repeated string destination_node_id = 3;
+
+  repeated string acquired_skill_id = 4;
+
+  string outline = 5;
+
+  bool outline_is_finalized = 6;
+
+  string exploration_id = 7;
+
+  ExplorationSummary exploration_summary = 8;
+
+  bool is_completed = 9;
 }
 
 // A summary of a story that can be played within a topic.
