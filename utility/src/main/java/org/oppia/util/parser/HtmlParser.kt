@@ -38,9 +38,9 @@ class HtmlParser private constructor(
 
     val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
+      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, /* tagHandler= */null) as Spannable
     } else {
-      Html.fromHtml(htmlContent, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
+      Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */null) as Spannable
     }
 
   }

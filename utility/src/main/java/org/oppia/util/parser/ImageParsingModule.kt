@@ -21,7 +21,7 @@ class ImageParsingModule {
   @DefaultGCSResource
   @Singleton
   fun provideDefaultGcsResource(): String {
-    return  "oppiaserver-resources/"
+    return "oppiaserver-resources/"
   }
 
   @Provides
