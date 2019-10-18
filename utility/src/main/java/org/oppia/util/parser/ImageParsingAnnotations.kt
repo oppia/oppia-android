@@ -2,6 +2,9 @@ package org.oppia.util.parser
 
 import javax.inject.Qualifier
 
+/**
+ * These 3 variables provides dependencies for image-extraction URL
+ */
 /** Corresponds to the default GCS Resource Bucket Name. */
 @Qualifier annotation class DefaultGcsResource
 
