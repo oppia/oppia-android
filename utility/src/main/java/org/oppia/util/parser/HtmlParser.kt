@@ -13,7 +13,6 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
-  private val context: Context,
   private val urlImageParserFactory : UrlImageParser.Factory,
   private val entityType: String,
   private val entityId: String
@@ -44,11 +43,9 @@ class HtmlParser private constructor(
     }
   }
 
-  class Factory @Inject constructor(
-    @ApplicationContext private val context: Context, private val urlImageParserFactory: UrlImageParser.Factory
-  ) {
+  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
     fun create(entityType: String, entityId: String): HtmlParser {
-      return HtmlParser(context,urlImageParserFactory, entityType, entityId)
+      return HtmlParser(urlImageParserFactory, entityType, entityId)
     }
   }
 }
