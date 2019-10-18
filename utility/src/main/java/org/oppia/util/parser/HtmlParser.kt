@@ -42,7 +42,6 @@ class HtmlParser private constructor(
     } else {
       Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */null) as Spannable
     }
-
   }
 
   class Factory @Inject constructor(
