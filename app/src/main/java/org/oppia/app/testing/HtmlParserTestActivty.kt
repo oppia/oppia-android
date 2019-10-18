@@ -1,4 +1,4 @@
-package org.oppia.app.activity
+package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

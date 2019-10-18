@@ -16,13 +16,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import junit.framework.Assert.assertEquals
 import junit.framework.TestCase.assertNotSame
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.testing.HtmlParserTestActivty
 import org.oppia.util.parser.HtmlParser
 
 /** Tests for [HtmlParserTestActivityTest]. */
