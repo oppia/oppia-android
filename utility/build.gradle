@@ -62,4 +62,6 @@ dependencies {
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
   )
+
+  implementation project(":model")
 }

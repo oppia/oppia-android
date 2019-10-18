@@ -1,4 +1,4 @@
-package org.oppia.domain.profile
+package org.oppia.util.profile
 
 import android.app.Application
 import android.content.Context
@@ -47,19 +47,13 @@ import kotlin.coroutines.EmptyCoroutineContext
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class ProfileManagementControllerTest {
+class DirectoryManagementUtilTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Mock
-  lateinit var mockProfileManagementObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var profileManagementResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var directoryManagementUtil: DirectoryManagementUtil
 
   @Inject
   @field:TestDispatcher
@@ -90,7 +84,7 @@ class ProfileManagementControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
+    DaggerDirectoryManagementUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -98,7 +92,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testProfileManagementController() = runBlockingTest(coroutineContext) {
+  fun testDirectoryManagementUtil() = runBlockingTest(coroutineContext) {
 
   }
 
@@ -163,6 +157,6 @@ class ProfileManagementControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(profileManagementControllerTest: ProfileManagementControllerTest)
+    fun inject(directoryManagementUtilTest: DirectoryManagementUtilTest)
   }
 }
