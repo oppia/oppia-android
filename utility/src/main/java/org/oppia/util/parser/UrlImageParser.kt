@@ -19,12 +19,12 @@ import javax.inject.Singleton
 class UrlImageParser private constructor(
   @ApplicationContext private val context: Context,
   @DefaultGcsPrefix private val gcsPrefix: String,
-  @DefaultGCSResource private val gcsResource: String,
+  @DefaultGcsResource private val gcsResource: String,
   @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String
-) : Html.ImageGetter {
+) : Html.ImageGetter,ImageLoader {
 
   /***
    * This method is called when the HTML parser encounters an <img> tag.
@@ -65,15 +65,17 @@ class UrlImageParser private constructor(
   private inner class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
-      if (drawable != null)
-        drawable!!.draw(canvas)
+      val currentDrawable = drawable
+      if (currentDrawable != null) {
+        currentDrawable.draw(canvas)
+      }
     }
   }
 
   class Factory @Inject constructor(
     @ApplicationContext private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
-    @DefaultGCSResource private val gcsResource: String,
+    @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
   ) {
     fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
