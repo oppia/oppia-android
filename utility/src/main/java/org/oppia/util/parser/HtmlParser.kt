@@ -14,10 +14,14 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val context: Context,
-  private val urlImageParser: UrlImageParser,
+  private val urlImageParserFactory : UrlImageParser.Factory,
   private val entityType: String,
   private val entityId: String
 ) {
+
+//  @Inject
+//  lateinit var urlImageParserFactory : UrlImageParser.Factory
+
   /**
    * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
    * @param rawString rawString argument is the string from the string-content
@@ -34,8 +38,8 @@ class HtmlParser private constructor(
       );
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
-    urlImageParser.setImageData(htmlContentTextView, context, entityType, entityId)
-    val imageGetter = urlImageParser
+
+    val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
       Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
     } else {
@@ -45,10 +49,10 @@ class HtmlParser private constructor(
   }
 
   class Factory @Inject constructor(
-    @ApplicationContext private val context: Context, private val urlImageParser: UrlImageParser
+    @ApplicationContext private val context: Context, private val urlImageParserFactory: UrlImageParser.Factory
   ) {
     fun create(entityType: String, entityId: String): HtmlParser {
-      return HtmlParser(context, urlImageParser, entityType, entityId)
+      return HtmlParser(context,urlImageParserFactory, entityType, entityId)
     }
   }
 }

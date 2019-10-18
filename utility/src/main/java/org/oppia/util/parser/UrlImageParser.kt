@@ -16,24 +16,27 @@ import javax.inject.Singleton
 
 // TODO(#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
-@Singleton
-class UrlImageParser @Inject constructor(
+class UrlImageParser private constructor(
+  @ApplicationContext private val context: Context,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGCSResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
+  @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
+  private val htmlContentTextView: TextView,
+  private val entityType: String,
+  private val entityId: String
 ) : Html.ImageGetter {
 
-  private lateinit var htmlContentTextView: TextView
-  private lateinit var context: Context
-  private lateinit var entityType: String
-  private lateinit var entityId: String
-
-  fun setImageData(htmlContentTextView: TextView, context: Context, entityType: String, entityId: String) {
-    this.htmlContentTextView = htmlContentTextView
-    this.context = context
-    this.entityId = entityId
-    this.entityType = entityType
-  }
+//  private lateinit var htmlContentTextView: TextView
+//  private lateinit var context: Context
+//  private lateinit var entityType: String
+//  private lateinit var entityId: String
+//
+//  fun setImageData(htmlContentTextView: TextView, context: Context, entityType: String, entityId: String) {
+//    this.htmlContentTextView = htmlContentTextView
+//    this.context = context
+//    this.entityId = entityId
+//    this.entityType = entityType
+//  }
 
   /***
    * This method is called when the HTML parser encounters an <img> tag.
@@ -71,11 +74,22 @@ class UrlImageParser @Inject constructor(
     }
   }
 
-  inner class UrlDrawable : BitmapDrawable() {
+  private inner class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       if (drawable != null)
         drawable!!.draw(canvas)
+    }
+  }
+
+  class Factory @Inject constructor(
+    @ApplicationContext private val context: Context,
+    @DefaultGcsPrefix private val gcsPrefix: String,
+    @DefaultGCSResource private val gcsResource: String,
+    @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
+  ) {
+    fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
+      return UrlImageParser(context,gcsPrefix,gcsResource,imageDownloadUrlTemplate,htmlContentTextView, entityType, entityId)
     }
   }
 }
