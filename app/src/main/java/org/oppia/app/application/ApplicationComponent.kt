@@ -13,6 +13,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider
@@ -23,7 +24,8 @@ import javax.inject.Singleton
 @Component(modules = [
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
+  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
+  GcsResourceModule::class
 ])
 interface ApplicationComponent {
   @Component.Builder
