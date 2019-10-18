@@ -54,7 +54,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -115,7 +114,8 @@ class QuestionTrainingControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
@@ -123,12 +123,13 @@ class QuestionTrainingControllerTest {
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(4)
-    val questionIds = questionsList.map{it.questionId}
-    assertThat(questionIds).containsExactlyElementsIn(mutableListOf(
-      TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3))
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3
+      )
+    )
   }
-
-
 
   @Qualifier
   annotation class TestDispatcher
@@ -150,7 +151,8 @@ class QuestionTrainingControllerTest {
     fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
       MockitoAnnotations.initMocks(this)
       Mockito.`when`(
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()).thenReturn(10)
+        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()
+      ).thenReturn(10)
       return questionTrainingConstantsProvider
     }
 
