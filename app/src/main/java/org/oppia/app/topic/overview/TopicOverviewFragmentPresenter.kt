@@ -77,12 +77,12 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   }
 
   fun handleDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference and change icon only when download is finished.
+    // Check PR #237 for this implementation which introduced domain layer controller.
     topicOverviewViewModel.downloadStatus.set(STATUS_DOWNLOADED)
   }
 
   fun handleDoNotDownloadTopic(saveUserChoice: Boolean) {
-    // TODO(Rajat): Save this preference and do not download topic.
+    // Check PR #237 for this implementation which introduced domain layer controller.
   }
 
   fun handleDeleteTopic() {

@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 
 /**
- * DialogFragment that confirms whether user wants to delete the topic or not.
+ * DialogFragment that confirms whether learner wants to delete the topic or not.
  */
 class TopicDeleteDialogFragment : DialogFragment() {
   companion object {

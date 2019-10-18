@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import org.oppia.app.R
 
 /**
- * DialogFragment that indicates to the user they are on cellular when trying to download topic.
+ * DialogFragment that indicates to the learner they are on cellular data when trying to download topic.
  */
 class TopicDownloadDialogFragment : DialogFragment() {
   companion object {
