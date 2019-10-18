@@ -35,7 +35,7 @@ class UrlImageParser private constructor(
     imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    ImageLoader.load(
+    load(
       context,
       gcsPrefix + gcsResource + imageDownloadUrlTemplate,
       R.drawable.abc_ab_share_pack_mtrl_alpha,

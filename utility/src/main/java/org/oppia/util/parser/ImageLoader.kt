@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 
 interface ImageLoader {
-  companion object {
+//  companion object {
 
     fun load(context: Context, path: String, placeholder: Int, target: SimpleTarget<Bitmap>) {
       Glide.with(context)
@@ -15,5 +15,5 @@ interface ImageLoader {
         .placeholder(placeholder)
         .into(target)
     }
-  }
+//  }
 }
