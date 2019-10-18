@@ -72,6 +72,7 @@ class AudioFragmentTest {
     shadowMediaPlayer = Shadows.shadowOf(audioPlayerController.getTestMediaPlayer())
     shadowMediaPlayer.dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
     activityScenario = ActivityScenario.launch(AudioFragmentTestActivity::class.java)
+
   }
 
   @Test
