@@ -6,7 +6,7 @@ import dagger.Provides
 import javax.inject.Named
 import javax.inject.Singleton
 
-/** Provides core infrastructure needed to support all other dependencies in the app. */
+/** Provides Html parsing dependencies. */
 @Module
 class HtmlParsingModule {
   @Provides

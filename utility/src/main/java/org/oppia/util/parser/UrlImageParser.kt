@@ -10,6 +10,7 @@ import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import dagger.Binds
 import org.oppia.util.R
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,9 +25,10 @@ class UrlImageParser private constructor(
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
-  private val imageLoader:ImageLoader
+  @ImageLoaderAnnotation private val imageLoader:ImageLoader
 ) : Html.ImageGetter {
-  
+
+
   /***
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
@@ -76,10 +78,11 @@ class UrlImageParser private constructor(
     @ApplicationContext private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
     @DefaultGcsResource private val gcsResource: String,
-    @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String
+    @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+    @ImageLoaderAnnotation private val imageLoader: ImageLoader
   ) {
     fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
-      return UrlImageParser(context,gcsPrefix,gcsResource,imageDownloadUrlTemplate,htmlContentTextView, entityType, entityId)
+      return UrlImageParser(context,gcsPrefix,gcsResource,imageDownloadUrlTemplate,htmlContentTextView, entityType, entityId,imageLoader)
     }
   }
 }
