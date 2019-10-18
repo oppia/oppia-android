@@ -121,7 +121,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      logger.d("StateFragment", "getCurrentState: ${result.state.interaction.customizationArgs.get("choises")!!.setOfHtmlString.htmlList}")
+      logger.d("StateFragment", "getCurrentState: ${result.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList}")
     })
   }
 
