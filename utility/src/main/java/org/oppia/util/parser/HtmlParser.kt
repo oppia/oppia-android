@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Html
 import android.text.Spannable
 import android.widget.TextView
+import javax.inject.Inject
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val REPLACE_IMG_TAG = "img"
@@ -11,9 +12,12 @@ private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
-class HtmlParser(private val context: Context, private val entityType: String, private val entityId: String,
-                 private val urlImageParser: UrlImageParser) {
-
+class HtmlParser private constructor(
+  private val context: Context,
+  private val urlImageParser: UrlImageParser,
+  private val entityType: String,
+  private val entityId: String
+) {
   /**
    * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
    * @param rawString rawString argument is the string from the string-content
@@ -38,5 +42,13 @@ class HtmlParser(private val context: Context, private val entityType: String, p
       Html.fromHtml(htmlContent, /* imageGetter= */imageGetter, /* tagHandler= */null) as Spannable
     }
 
+  }
+
+  class Factory @Inject constructor(
+    @ApplicationContext private val context: Context, private val urlImageParser: UrlImageParser
+  ) {
+    fun create(entityType: String, entityId: String): HtmlParser {
+      return HtmlParser(context, urlImageParser, entityType, entityId)
+    }
   }
 }
