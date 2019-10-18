@@ -11,11 +11,12 @@
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <activity android:name="org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity"/>
-    <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name=".player.exploration.ExplorationActivity"/>
+    <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity"/>
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity"/>
     <activity android:name=".topic.TopicActivity"
-              android:theme="@style/OppiaTheme.NoActionBar">
+              android:theme="@style/OppiaTheme.NoActionBar"/>
+    <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -25,7 +26,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
-    <activity android:name="org.oppia.app.home.HomeActivity"/>
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
