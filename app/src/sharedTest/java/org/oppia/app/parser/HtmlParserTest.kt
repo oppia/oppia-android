@@ -1,11 +1,10 @@
-package org.oppia.app.testing
+package org.oppia.app.parser
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.widget.TextView
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -15,9 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
-import junit.framework.TestCase.assertNotSame
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -27,7 +23,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.UrlImageParser
 import javax.inject.Inject
 
 /** Tests for [HtmlParser]. */
