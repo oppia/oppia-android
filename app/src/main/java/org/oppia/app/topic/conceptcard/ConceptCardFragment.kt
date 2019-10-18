@@ -9,8 +9,26 @@ import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
+private const val KEY_SKILL_ID = "SKILL_ID"
+
 /* Fragment that displays a fullscreen dialog for concept cards */
 class ConceptCardFragment : InjectableDialogFragment() {
+
+  companion object {
+    /**
+     * Creates a new instance of a DialogFragment to display content
+     * @param skillId Used in TopicController to get correct concept card data.
+     * @return [ConceptCardFragment]: DialogFragment
+     */
+    fun newInstance(skillId: String): ConceptCardFragment {
+      val conceptCardFrag = ConceptCardFragment()
+      val args = Bundle()
+      args.putString(KEY_SKILL_ID, skillId)
+      conceptCardFrag.arguments = args
+      return conceptCardFrag
+    }
+  }
+
   @Inject lateinit var conceptCardPresenter: ConceptCardPresenter
 
   override fun onAttach(context: Context?) {
@@ -25,7 +43,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return conceptCardPresenter.handleCreateView(inflater, container)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to ConceptCardFragment" }
+    val skillId = checkNotNull(args.getString(KEY_SKILL_ID)) { "Expected skillId to be passed to ConceptCardFragment" }
+    return conceptCardPresenter.handleCreateView(inflater, container, skillId)
   }
 
   override fun onStart() {

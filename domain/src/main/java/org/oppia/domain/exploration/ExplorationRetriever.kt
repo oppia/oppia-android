@@ -8,7 +8,7 @@ import org.oppia.domain.util.StateRetriever
 import java.io.IOException
 import javax.inject.Inject
 
-const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
+const val TEST_EXPLORATION_ID_5 = "DIWZiVgs0km-"
 const val TEST_EXPLORATION_ID_6 = "test_exp_id_6"
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
@@ -55,6 +55,5 @@ class ExplorationRetriever @Inject constructor(
     }
     return statesMap
   }
-
 
 }

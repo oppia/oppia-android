@@ -11,8 +11,11 @@
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
   <color name="oppiaSecondaryText">#666666</color>
-  <color name="oppiaLightBlue">#F0FFFF</color>
+  <color name="oppiaLightGreen">#F0FFFF</color>
+  <color name="oppiaLightBlue">#4DA5D3EC</color>
   <color name="oppiaLightYellow">#FFFFF0</color>
+  <color name="oppiaStrokeBlue">#4D395FD0</color>
+  <color name="oppiaStrokeBlack">#CC333333</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="black">#000000</color>
@@ -27,4 +30,6 @@
   <color name="blue_shade_20">#202D4A9D</color>
   <color name="blue_shade_60">#602D4A9D</color>
   <color name="grey_shade_10">#102D4A9D</color>
+  <color name="blue_shade_100">#0F0086FB</color>
+  <color name="blue_shade_200">#6B0086FB</color>
 </resources>
