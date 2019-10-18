@@ -15,13 +15,13 @@ class HtmlParser(private val context: Context, private val entityType: String, p
 
   /**
    * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
-   * @param rawString : rawString argument is the string from the string-content
-   * @param htmlContentTextView : htmlContentTextView argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
-   * @return Spannable : Spannable represents the styled text.
+   * @param rawString rawString argument is the string from the string-content
+   * @param htmlContentTextView htmlContentTextView argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
+   * @return Spannable Spannable represents the styled text.
    */
-  fun parseOppiaHtml(rawString: String?, htmlContentTextView: TextView): Spannable {
+  fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView): Spannable {
     var htmlContent = rawString
-    if (htmlContent!!.contains(CUSTOM_IMG_TAG)) {
+    if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false);
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
