@@ -30,10 +30,10 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
+  fun inject(htmlParserTestActivty: HtmlParserTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
-  fun inject(htmlParserTestActivty: HtmlParserTestActivity)
 }
