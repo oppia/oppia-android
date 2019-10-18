@@ -3,7 +3,6 @@ package org.oppia.app.customview.interaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
-import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
 
 /** The custom EditText class for numeric input interaction view. */
