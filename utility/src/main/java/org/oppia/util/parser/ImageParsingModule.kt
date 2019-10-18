@@ -1,10 +1,7 @@
 package org.oppia.util.parser
 
-import android.app.Application
-import android.content.Context
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 import javax.inject.Singleton
 
 /** Provides image-extraction URL dependencies. */
