@@ -1,4 +1,4 @@
-package org.oppia.app.customview.inputInteractionView
+package org.oppia.app.customview.interaction
 
 import android.content.Context
 import android.text.InputFilter

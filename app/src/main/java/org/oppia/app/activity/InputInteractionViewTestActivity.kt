@@ -3,7 +3,7 @@ package org.oppia.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import org.oppia.app.R
-import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
+import org.oppia.app.customview.interaction.NumericInputInteractionView
 
 private const val KEY_DIGIT_ID = "DIGIT_ID"
 

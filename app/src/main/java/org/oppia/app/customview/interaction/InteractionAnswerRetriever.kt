@@ -1,4 +1,4 @@
-package org.oppia.app.customview.inputInteractionView
+package org.oppia.app.customview.interaction
 
 import org.oppia.app.model.InteractionObject
 

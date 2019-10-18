@@ -22,7 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.instanceOf
 import org.junit.After
-import org.oppia.app.customview.inputInteractionView.NumericInputInteractionView
+import org.oppia.app.customview.interaction.NumericInputInteractionView
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
