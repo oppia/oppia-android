@@ -9,6 +9,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:text="@string/cellular_data_alert_dialog_checkbox">
+    android:text="@string/topic_download_alert_dialog_description">
   </CheckBox>
 </RelativeLayout>

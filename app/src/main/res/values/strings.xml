@@ -3,7 +3,8 @@
   <string name="app_name">Oppia</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
-  <string name="audio_pause_play_description">Audio play/pause button</string>
+  <string name="audio_play_description">Play audio</string>
+  <string name="audio_pause_description">Pause audio</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">CANCEL</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
@@ -26,7 +27,7 @@
   <string name="topic_download_alert_dialog_download_button">DOWNLOAD NOW</string>
   <string name="topic_download_alert_dialog_cancel_button">CANCEL</string>
   <string name="topic_download_alert_dialog_title">Currently on Cellular Data</string>
-  <string name="topic_download_alert_dialog_description">You can fo to Settings to Download only when connected to Wi-Fi.</string>
+  <string name="topic_download_alert_dialog_description">You can go to Settings to Download only when connected to Wi-Fi.</string>
   <string name="topic_download_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="topic_delete_alert_dialog_delete_button">DELETE</string>
   <string name="topic_delete_alert_dialog_cancel_button">CANCEL</string>
