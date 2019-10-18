@@ -16,9 +16,9 @@
     android:focusable="true">
     <ImageView
       android:id="@+id/skill_image_view"
+      skillThumbnail="@{skill.thumbnailUrl}"
       android:layout_width="0dp"
       android:layout_height="105dp"
-      android:src="@{skill.thumbnailUrl}"
       android:importantForAccessibility="no"
       android:scaleType="centerCrop"
       app:layout_constraintEnd_toEndOf="parent"
