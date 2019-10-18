@@ -22,9 +22,18 @@ class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
     @BindingAdapter("downloadDrawable")
     fun setBackgroundResource(downloadImageView: ImageView, downloadStatus: String) {
       when (downloadStatus) {
-        STATUS_NOT_DOWNLOADED -> downloadImageView.setImageResource(R.drawable.ic_file_download_primary_24dp)
-        STATUS_DOWNLOADED -> downloadImageView.setImageResource(R.drawable.ic_check_circle_primary_24dp)
-        STATUS_DOWNLOADING -> downloadImageView.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
+        STATUS_NOT_DOWNLOADED -> {
+          downloadImageView.setImageResource(R.drawable.ic_file_download_primary_24dp)
+          downloadImageView.tag = R.drawable.ic_file_download_primary_24dp
+        }
+        STATUS_DOWNLOADED -> {
+          downloadImageView.setImageResource(R.drawable.ic_check_circle_primary_24dp)
+          downloadImageView.tag = R.drawable.ic_check_circle_primary_24dp
+        }
+        STATUS_DOWNLOADING -> {
+          downloadImageView.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp)
+          downloadImageView.tag = R.drawable.ic_pause_circle_filled_black_24dp
+        }
       }
     }
   }

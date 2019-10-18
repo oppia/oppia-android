@@ -27,7 +27,7 @@
   <string name="topic_download_alert_dialog_download_button">DOWNLOAD NOW</string>
   <string name="topic_download_alert_dialog_cancel_button">CANCEL</string>
   <string name="topic_download_alert_dialog_title">Currently on Cellular Data</string>
-  <string name="topic_download_alert_dialog_description">You can fo to Settings to Download only when connected to Wi-Fi.</string>
+  <string name="topic_download_alert_dialog_description">You can go to Settings to Download only when connected to Wi-Fi.</string>
   <string name="topic_download_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="topic_delete_alert_dialog_delete_button">DELETE</string>
   <string name="topic_delete_alert_dialog_cancel_button">CANCEL</string>
