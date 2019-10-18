@@ -20,7 +20,7 @@ class ReviewActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#159): Use this skillList from TopicTrainFragment to fetch questions and start train mode.
+    // TODO(#159): Use this skillId from TopicReviewFragment.
     /** Returns a new [Intent] to route to [ReviewActivity] for a specified skill ID list. */
     fun createReviewActivityIntent(context: Context, skillId: String): Intent {
       val intent = Intent(context, ReviewActivity::class.java)

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains all questions in Question Player. */
+/** Fragment that review skill deta. */
 class ReviewFragment: InjectableFragment(){
   @Inject
   lateinit var reviewFragmentPresenter: ReviewFragmentPresenter

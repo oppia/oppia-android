@@ -38,6 +38,6 @@ interface FragmentComponent {
   fun inject(topicFragment: TopicFragment)
   fun inject(topicOverviewFragment: TopicOverviewFragment)
   fun inject(topicPlayFragment: TopicPlayFragment)
-  fun inject(topicTopicReviewFragment: TopicReviewFragment)
+  fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
 }

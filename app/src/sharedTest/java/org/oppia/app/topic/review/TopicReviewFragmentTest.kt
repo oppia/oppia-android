@@ -53,7 +53,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_displayReviewSkills_startButtonIsInactive() {
+  fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessfully() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
