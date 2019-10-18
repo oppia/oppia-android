@@ -32,6 +32,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.Question
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.data.AsyncResult
@@ -64,10 +65,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Inject
   @field:TestDispatcher
@@ -112,7 +113,10 @@ class QuestionTrainingControllerTest {
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(1)
   }
 
   @Qualifier
@@ -121,11 +125,22 @@ class QuestionTrainingControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    @Mock
+    lateinit var questionsTrainingConstantsProvider: QuestionTrainingConstantsProvider
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
+//      Mockito.`when`(
+//        questionsTrainingConstantsProvider.getQuestionCountPerTrainingSession()).thenReturn(1)
+//      return questionsTrainingConstantsProvider
+//    }
 
     @ExperimentalCoroutinesApi
     @Singleton

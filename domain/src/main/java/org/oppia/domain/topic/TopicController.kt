@@ -85,9 +85,9 @@ class TopicController @Inject constructor(
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
-     return dataProviders.createInMemoryDataProvider(QUESTION_DATA_PROVIDER_ID) {
-        loadQuestionsForSkillIds(skillIdsList)
-      }
+    return dataProviders.createInMemoryDataProvider(QUESTION_DATA_PROVIDER_ID) {
+      loadQuestionsForSkillIds(skillIdsList)
+    }
   }
 
   // Loads and returns the questions given a list of skill ids.
@@ -98,20 +98,30 @@ class TopicController @Inject constructor(
   private fun loadQuestions(skillIdsList: List<String>): List<Question> {
     val questionsList = mutableListOf<Question>()
     val questionsJSON = jsonAssetRetriever.loadJsonFromAsset(
-      "sample_questions.json")?.getJSONArray("questions")
+      "sample_questions.json"
+    )?.getJSONArray("questions")
     for (skillId in skillIdsList) {
       when (skillId) {
-        TEST_SKILL_ID_0 -> questionsList.addAll(mutableListOf(
-          createTestQuestion0(questionsJSON),
-          createTestQuestion1(questionsJSON),
-          createTestQuestion2(questionsJSON)))
-        TEST_SKILL_ID_1 -> questionsList.addAll(mutableListOf(
-          createTestQuestion0(questionsJSON),
-          createTestQuestion3(questionsJSON)))
-        TEST_SKILL_ID_2 -> questionsList.addAll(mutableListOf(
-        createTestQuestion2(questionsJSON),
-        createTestQuestion4(questionsJSON),
-        createTestQuestion5(questionsJSON)))
+        TEST_SKILL_ID_0 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion0(questionsJSON),
+            createTestQuestion1(questionsJSON),
+            createTestQuestion2(questionsJSON)
+          )
+        )
+        TEST_SKILL_ID_1 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion0(questionsJSON),
+            createTestQuestion3(questionsJSON)
+          )
+        )
+        TEST_SKILL_ID_2 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion2(questionsJSON),
+            createTestQuestion4(questionsJSON),
+            createTestQuestion5(questionsJSON)
+          )
+        )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
         }
@@ -120,61 +130,77 @@ class TopicController @Inject constructor(
     return questionsList
   }
 
-  private fun createTestQuestion0(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion0(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_0)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(0)))
-       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(0)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
       .build()
   }
 
-  private fun createTestQuestion1(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion1(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_1)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(1)))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(1)
+        )
+      )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0))
       .build()
   }
 
-  private fun createTestQuestion2(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion2(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_2)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(2)))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(2)
+        )
+      )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2))
       .build()
   }
 
-  private fun createTestQuestion3(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion3(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_3)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(0)))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(0)
+        )
+      )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_1))
       .build()
   }
 
-  private fun createTestQuestion4(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion4(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_4)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(1)))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(1)
+        )
+      )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
       .build()
   }
 
-  private fun createTestQuestion5(questionsJSON: JSONArray?): Question {
+  private fun createTestQuestion5(questionsJson: JSONArray?): Question {
     return Question.newBuilder()
       .setQuestionId(TEST_QUESTION_ID_5)
-      .setQuestionState(stateRetriever.createStateFromJson(
-        "question",questionsJSON?.getJSONObject(2)))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(2)
+        )
+      )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
       .build()
   }
-
-
 
   private fun createTestTopic0(): Topic {
     return Topic.newBuilder()

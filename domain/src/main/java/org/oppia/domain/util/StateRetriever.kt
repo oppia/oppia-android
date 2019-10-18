@@ -12,9 +12,11 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import javax.inject.Inject
 
+/** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor() {
-  // Creates a single state object from JSON
-  public fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
+
+  /** Creates a single state object from JSON */
+  fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
     return State.newBuilder()
       .setName(stateName)
       .setContent(
