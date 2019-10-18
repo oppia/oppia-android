@@ -21,6 +21,6 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    // TODO(#135): Change to play tab in this function.
+    // TODO(#135): Change to play tab in this function. Also do add test-case for testing this.
   }
 }
