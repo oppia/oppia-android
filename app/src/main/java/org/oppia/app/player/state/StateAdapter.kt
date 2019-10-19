@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import android.text.Editable
+import android.text.Spannable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
 import org.oppia.app.player.state.listener.InputInteractionTextListener
 import org.oppia.app.player.state.listener.InteractionListener
+import org.oppia.util.parser.HtmlParser
 
 const val VIEW_TYPE_CONTENT = 1
 const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
@@ -36,7 +38,13 @@ const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
 const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
 const val VIEW_TYPE_STATE_BUTTON = 5
 
-class StateAdapter(private val itemList: MutableList<Any>, private val interactionListener: InteractionListener) :
+class StateAdapter(
+  private val itemList: MutableList<Any>,
+  private val interactionListener: InteractionListener,
+  private val htmlParserFactory: HtmlParser.Factory,
+  private val entityType: String,
+  private val explorationId: String
+) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>(), InputInteractionTextListener {
 
   private var inputInteractionView: Any = StateButtonViewModel
@@ -143,10 +151,14 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
   }
 
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: String?) {
+    internal fun bind(rawString: String) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
-      binding.root.content_text_view.text = rawString
+      val htmlResult: Spannable = htmlParserFactory.create( entityType,explorationId).parseOppiaHtml(
+        rawString,
+        binding.root.content_text_view
+      )
+      binding.root.content_text_view.text = htmlResult
     }
   }
 

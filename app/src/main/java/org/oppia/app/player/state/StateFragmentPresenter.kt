@@ -1,13 +1,11 @@
 package org.oppia.app.player.state
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -38,6 +36,7 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
@@ -67,7 +66,9 @@ class StateFragmentPresenter @Inject constructor(
   private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
-  private val logger: Logger
+  private val logger: Logger,
+  private val htmlParserFactory: HtmlParser.Factory
+
 ) : InteractionListener {
 
   private val oldStateNameList: ArrayList<String> = ArrayList()
@@ -81,7 +82,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var explorationId: String? = null
+  private var explorationId: String = ""
+  private val entityType: String = "exploration"
 
   private lateinit var stateAdapter: StateAdapter
 
@@ -96,8 +98,9 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
+    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
-    stateAdapter = StateAdapter(itemList, this as InteractionListener)
+    stateAdapter = StateAdapter(itemList, this as InteractionListener, htmlParserFactory, entityType, explorationId)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
@@ -107,7 +110,6 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
     subscribeToCurrentState()
 
