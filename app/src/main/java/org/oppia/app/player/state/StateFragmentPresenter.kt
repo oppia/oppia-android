@@ -81,7 +81,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var explorationId: String = ""
+  private lateinit var explorationId: String
   private val entityType: String = "exploration"
 
   private lateinit var stateAdapter: StateAdapter
