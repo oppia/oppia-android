@@ -154,7 +154,7 @@ class StateAdapter(
     internal fun bind(rawString: String) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
-      val htmlResult: Spannable = htmlParserFactory.create( entityType,explorationId).parseOppiaHtml(
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString,
         binding.root.content_text_view
       )

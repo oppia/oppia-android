@@ -68,7 +68,6 @@ class StateFragmentPresenter @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory
-
 ) : InteractionListener {
 
   private val oldStateNameList: ArrayList<String> = ArrayList()
