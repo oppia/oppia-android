@@ -28,11 +28,19 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Question
+import org.oppia.domain.topic.TEST_QUESTION_ID_0
+import org.oppia.domain.topic.TEST_QUESTION_ID_1
+import org.oppia.domain.topic.TEST_QUESTION_ID_2
+import org.oppia.domain.topic.TEST_QUESTION_ID_3
+import org.oppia.domain.topic.TEST_SKILL_ID_0
+import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -46,12 +54,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
-
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class QuestionDataControllerTest {
+class QuestionTrainingControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -98,7 +104,7 @@ class QuestionDataControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerQuestionDataControllerTest_TestApplicationComponent.builder()
+    DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -106,26 +112,23 @@ class QuestionDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveDataForTopicId0() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionTrainingController.getQuestionsForTopic(TEST_TOPIC_ID_0)
+  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
-
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    assertThat(questionListResultCaptor.value.getOrThrow()).isNotNull()
-    val questionList = questionListResultCaptor.value.getOrThrow();
-    assertThat(questionList.size).isEqualTo(0)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testController_returnsFailureForNonExistentTopic() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionTrainingController.getQuestionsForTopic("NON_EXISTENT_TOPIC")
-    advanceUntilIdle()
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(4)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3
+      )
+    )
   }
 
   @Qualifier
@@ -134,10 +137,23 @@ class QuestionDataControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    @Mock
+    lateinit var questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
+    }
+
+    @Provides
+    @Singleton
+    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
+      MockitoAnnotations.initMocks(this)
+      Mockito.`when`(
+        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()
+      ).thenReturn(10)
+      return questionTrainingConstantsProvider
     }
 
     @ExperimentalCoroutinesApi
@@ -189,6 +205,6 @@ class QuestionDataControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(questionDataControllerTest: QuestionDataControllerTest)
+    fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest)
   }
 }

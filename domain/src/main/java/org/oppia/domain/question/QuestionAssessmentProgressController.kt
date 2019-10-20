@@ -10,11 +10,12 @@ import org.oppia.app.model.PendingState
 import org.oppia.app.model.Question
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an practice training
+ * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training
  * session. Note that this controller only supports one active training session at a time.
  *
  * The current training session is started via the question training controller.
@@ -27,7 +28,7 @@ class QuestionAssessmentProgressController @Inject constructor() {
   private lateinit var inProgressQuestionList: List<Question>
   private var playing: Boolean = false
 
-  internal fun beginQuestionTrainingSession(questionsList: List<Question>) {
+  internal fun beginQuestionTrainingSession(questionsList: DataProvider<List<Question>>) {
     check(!playing) { "Cannot start a new training session until the previous one is completed" }
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
     inProgressQuestionList = questionsList
