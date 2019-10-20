@@ -21,31 +21,4 @@
     android:maxLength="200"
     android:padding="@dimen/padding_8dp"
     android:singleLine="true" />
-  <org.oppia.app.customview.interaction.TextInputInteractionView
-    android:id="@+id/test_text_input_interaction_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/padding_8dp"
-    android:background="@drawable/edit_text_background"
-    android:focusable="true"
-    android:hint="Write here."
-    android:inputType="text"
-    android:longClickable="false"
-    android:maxLength="200"
-    android:padding="@dimen/padding_8dp"
-    android:singleLine="true" />
-  <org.oppia.app.customview.interaction.FractionInputInteractionView
-    android:id="@+id/test_fraction_input_interaction_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/padding_8dp"
-    android:background="@drawable/edit_text_background"
-    android:focusable="true"
-    android:digits="0123456789/"
-    android:hint="Write fraction here."
-    android:inputType="number"
-    android:longClickable="false"
-    android:maxLength="200"
-    android:padding="@dimen/padding_8dp"
-    android:singleLine="true" />
 </LinearLayout>
