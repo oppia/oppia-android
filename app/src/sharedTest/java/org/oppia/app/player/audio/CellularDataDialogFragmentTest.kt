@@ -1,6 +1,5 @@
 package org.oppia.app.player.audio
 
-/*
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ActivityScenario
@@ -26,9 +25,7 @@ import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
 // TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
-*/
-/** Tests for [CellularDataDialogFragment]. *//*
-
+/** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
 class CellularDataDialogFragmentTest {
 
@@ -86,4 +83,3 @@ class CellularDataDialogFragmentTest {
     }
   }
 }
-*/
