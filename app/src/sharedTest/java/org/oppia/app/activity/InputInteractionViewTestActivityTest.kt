@@ -13,7 +13,9 @@ import org.oppia.app.model.InteractionObject
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.action.ViewActions.typeText
 import com.google.common.truth.Truth.assertThat
+import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
+import org.oppia.app.customview.interaction.TextInputInteractionView
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -58,4 +60,58 @@ class InputInteractionViewTestActivityTest {
       assertThat(textAnswerRetriever.getPendingAnswer().real).isEqualTo(9.5)
     }
   }
+
+  @Test
+  fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString).isEqualTo("")
+    }
+  }
+
+  @Test
+  fun testTextInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
+      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString).isEqualTo("abc")
+    }
+  }
+
+  @Test
+  fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(0)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(0)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testFractionInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/10"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+    }
+  }
+
+
+
 }

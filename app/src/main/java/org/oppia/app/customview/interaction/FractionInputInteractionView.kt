@@ -14,8 +14,9 @@ class FractionInputInteractionView @JvmOverloads constructor(
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
 
   override fun getPendingAnswer(): InteractionObject {
+
     return if (text.isNullOrEmpty()) (InteractionObject.newBuilder().build()) else (InteractionObject.newBuilder().setFraction(
-      text.toString()as Fraction
+  Fraction.newBuilder().setDenominator(text.toString().substringAfterLast("/").toInt()).setNumerator(text.toString().substringBeforeLast("/").toInt())
     ).build())
   }
 }
