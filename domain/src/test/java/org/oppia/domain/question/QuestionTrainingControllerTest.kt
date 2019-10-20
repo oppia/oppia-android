@@ -70,7 +70,13 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+
+  @Mock
   lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+
+  @Captor
+  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Captor
   lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
@@ -112,14 +118,27 @@ class QuestionTrainingControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+  fun testStartQuestionSession_forExistingSkillIds_succeeds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
+    questionListLiveData.observeForever(mockAsyncResultLiveDataObserver)
     advanceUntilIdle()
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
+    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGenerateQuestionSession_forExistingSkillIds_providesValidAssessment() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.generateQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    advanceUntilIdle()
+
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(4)

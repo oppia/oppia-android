@@ -10,7 +10,8 @@ import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
+private const val TRAINING_QUESTIONS_PROVIDER_ID = "TrainingQuestionsProvider"
+private const val START_QUESTION_TRAINING_SESSION_DATA_PROVIDER_ID = "StartQuestionTrainingSessionDataProvider"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -31,13 +32,16 @@ class QuestionTrainingController @Inject constructor(
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    * The training session may still fail to load, but this provides early-failure detection.
    */
-  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<List<Question>>> {
+  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any?>> {
     return try {
       val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       questionAssessmentProgressController.beginQuestionTrainingSession(
         retrieveQuestionsDataProvider
       )
-      dataProviders.convertToLiveData(retrieveQuestionsDataProvider)
+      val hiddenTypeDataProvider: DataProvider<Any?> = dataProviders.transform(
+        START_QUESTION_TRAINING_SESSION_DATA_PROVIDER_ID, retrieveQuestionsDataProvider
+      ) { null }
+      dataProviders.convertToLiveData(hiddenTypeDataProvider)
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
@@ -45,12 +49,18 @@ class QuestionTrainingController @Inject constructor(
 
   private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
-    return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
-      getFilteredQuestionsForTraining(
-        skillIdsList, it,
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession() / skillIdsList.size
-      )
+    return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER_ID, questionsDataProvider) {
+      val questionsPerSkill =
+        if (skillIdsList.isNotEmpty())
+          questionTrainingConstantsProvider.getQuestionCountPerTrainingSession() / skillIdsList.size
+        else 0
+      getFilteredQuestionsForTraining(skillIdsList, it, questionsPerSkill)
     }
+  }
+
+  /** Returns a [LiveData] representing a valid question assessment generated from the list of specified skill IDs. */
+  fun generateQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<List<Question>>> {
+    return dataProviders.convertToLiveData(retrieveQuestionsForSkillIds(skillIdsList))
   }
 
   // Attempts to fetch equal number of questions per skill. Removes any duplicates and limits the questions to be

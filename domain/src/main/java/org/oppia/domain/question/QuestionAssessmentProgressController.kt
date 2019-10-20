@@ -11,8 +11,12 @@ import org.oppia.app.model.Question
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val EPHEMERAL_QUESTION_DATA_PROVIDER_ID = "EphemeralQuestionDataProvider"
+private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training
@@ -24,18 +28,25 @@ import javax.inject.Singleton
  * that uses of this class do not specifically depend on ordering.
  */
 @Singleton
-class QuestionAssessmentProgressController @Inject constructor() {
-  private lateinit var inProgressQuestionList: List<Question>
+class QuestionAssessmentProgressController @Inject constructor(private val dataProviders: DataProviders) {
+  private var inProgressQuestionsListDataProvider: DataProvider<List<Question>> = createEmptyQuestionsListDataProvider()
   private var playing: Boolean = false
+  private val ephemeralQuestionDataSource: DataProvider<EphemeralQuestion> by lazy {
+    dataProviders.transformAsync(
+      EPHEMERAL_QUESTION_DATA_PROVIDER_ID, inProgressQuestionsListDataProvider, this::computeEphemeralQuestionStateAsync
+    )
+  }
 
-  internal fun beginQuestionTrainingSession(questionsList: DataProvider<List<Question>>) {
+  internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
     check(!playing) { "Cannot start a new training session until the previous one is completed" }
-    check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
-    inProgressQuestionList = questionsList
+    inProgressQuestionsListDataProvider = questionsListDataProvider
+    playing = true
   }
 
   internal fun finishQuestionTrainingSession() {
     check(playing) { "Cannot stop a new training session which wasn't started" }
+    playing = false
+    inProgressQuestionsListDataProvider = createEmptyQuestionsListDataProvider()
   }
 
   /**
@@ -126,15 +137,38 @@ class QuestionAssessmentProgressController @Inject constructor() {
    * return a pending state.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
-    val currentQuestion = inProgressQuestionList.first()
-    val ephemeralQuestion = EphemeralQuestion.newBuilder()
+    return dataProviders.convertToLiveData(ephemeralQuestionDataSource)
+  }
+
+  @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
+  private suspend fun computeEphemeralQuestionStateAsync(
+    questionsList: List<Question>
+  ): AsyncResult<EphemeralQuestion> {
+    if (!playing) {
+      return AsyncResult.pending()
+    }
+    return try {
+      AsyncResult.success(computeEphemeralQuestionState(questionsList))
+    } catch (e: Exception) {
+      AsyncResult.failed(e)
+    }
+  }
+
+  private fun computeEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
+    check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
+    val currentQuestion = questionsList.first()
+    return EphemeralQuestion.newBuilder()
       .setEphemeralState(EphemeralState.newBuilder()
         .setState(currentQuestion.questionState)
         .setPendingState(PendingState.getDefaultInstance()))
       .setCurrentQuestionIndex(0)
-      .setTotalQuestionCount(inProgressQuestionList.size)
-      .setInitialTotalQuestionCount(inProgressQuestionList.size)
+      .setTotalQuestionCount(questionsList.size)
+      .setInitialTotalQuestionCount(questionsList.size)
       .build()
-    return MutableLiveData(AsyncResult.success(ephemeralQuestion))
+  }
+
+  /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
+  private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) { listOf<Question>() }
   }
 }
