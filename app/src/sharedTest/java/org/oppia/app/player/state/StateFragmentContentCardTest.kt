@@ -60,40 +60,28 @@ class StateFragmentContentCardTest {
 
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(ViewActions.click())
-      onView(withId(R.id.state_recycler_view)).check(matches(ViewMatchers.isDisplayed()))
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.content_text_view))))
-      val textView = activityTestRule.activity.findViewById(R.id.content_text_view) as TextView
-    val htmlResult: Spannable = htmlParserFactory.create( /* entityType= */ "",  /* entityId= */ "")
-      .parseOppiaHtml(
-        "<p>Hi, welcome to Oppia! <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link> is a tool that helps you create interactive learning activities that can be continually improved over time.<br><br>Incidentally, do you know where the name 'Oppia' comes from?<br></p>",
-      textView
-    )
-
-      onView(atPosition(R.id.state_recycler_view, 1)).check(matches(hasDescendant(withText(htmlResult.toString()))))
-    }
-  }
-
-  @Test
-  fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-//    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-//    val htmlResult: Spannable = htmlParserFactory.create( /* entityType= */ "",  /* entityId= */ "")
+//      val textView = activityTestRule.activity.findViewById(R.id.content_text_view) as? TextView
+//     val htmlResult: Spannable = htmlParserFactory.create( /* entityType= */ "",  /* entityId= */ "")
 //      .parseOppiaHtml(
 //        "<p>Hi, welcome to Oppia! <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link> is a tool that helps you create interactive learning activities that can be continually improved over time.<br><br>Incidentally, do you know where the name 'Oppia' comes from?<br></p>",
 //      textView
 //    )
-//    // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
-//    assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
-//    onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
-    ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.play_exploration_button)).perform(ViewActions.click())
-      val htmlResult ="<p>Hi, welcome to Oppia! <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link> is a tool that helps you create interactive learning activities that can be continually improved over time.<br><br>Incidentally, do you know where the name 'Oppia' comes from?<br></p>"
+      val htmlResult =  "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n" +
+            "\n" +
+            "    Incidentally, do you know where the name 'Oppia' comes from?"
 
-//        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n" +
-//            "\n" +
-//            "    Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
+          onView(atPosition(R.id.state_recycler_view, 1)).check(matches(hasDescendant(withText(htmlResult))))
     }
   }
+
+//  @Test
+//  fun testHtmlContent_nonCustomOppiaTags_notParsed() {
+//    ActivityScenario.launch(HomeActivity::class.java).use {
+//      onView(withId(R.id.play_exploration_button)).perform(ViewActions.click())
+//      val htmlResult ="<p>Hi, welcome to Oppia! <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link> is a tool that helps you create interactive learning activities that can be continually improved over time.<br><br>Incidentally, do you know where the name 'Oppia' comes from?<br></p>"
+//     onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
+//    }
+//  }
 
 
   @After
