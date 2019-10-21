@@ -65,7 +65,7 @@ class StateAdapter(
     return itemList.size
   }
 
-  inner class StateButtonViewHolder(
+  private class StateButtonViewHolder(
     val binding: ViewDataBinding,
     private val buttonInteractionListener: ButtonInteractionListener
   ) : RecyclerView.ViewHolder(binding.root) {
