@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -420,8 +421,26 @@ class StateFragmentPresenter @Inject constructor(
         TEXT_INPUT -> {
           addTextInputItem()
         }
+        MULTIPLE_CHOICE_INPUT -> {
+          addMultipleChoiceInputItem()
+        }
+        TEXT_INPUT -> {
+          addTextInputItem()
+        }
       }
     }
+  }
+
+  private fun addMultipleChoiceInputItem() {
+    val multipleChoiceItems: Map<String, InteractionObject> =
+      currentEphemeralState.get()!!.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList
+    val numericInputInteractionViewModel = NumericInputInteractionViewModel()
+    if (customizationArgsMap.containsKey("placeholder")) {
+      numericInputInteractionViewModel.placeholder =
+        customizationArgsMap.getValue("placeholder").normalizedString
+    }
+    itemList.add(numericInputInteractionViewModel)
+    stateAdapter.notifyDataSetChanged()
   }
 
   private fun addNumericInputItem() {
