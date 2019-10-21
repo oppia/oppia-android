@@ -12,7 +12,7 @@ import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -73,14 +73,14 @@ class InputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_number_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_number_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("9"))
+        matches(ViewMatchers.withText("9"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_number_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_number_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("9"))
+        matches(ViewMatchers.withText("9"))
       )
   }
 
@@ -113,14 +113,14 @@ class InputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_text_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_text_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("abc"))
+        matches(ViewMatchers.withText("abc"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_text_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_text_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("abc"))
+        matches(ViewMatchers.withText("abc"))
       )
   }
 
@@ -172,14 +172,14 @@ class InputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("9/5"))
+        matches(ViewMatchers.withText("9/5"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
       .check(
-        ViewAssertions.matches(ViewMatchers.withText("9/5"))
+        matches(ViewMatchers.withText("9/5"))
       )
   }
 }

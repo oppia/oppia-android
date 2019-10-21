@@ -20,7 +20,7 @@ class TextInputInteractionView @JvmOverloads constructor(
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.setNormalizedString(text.toString())
+      interactionObjectBuilder.normalizedString = text.toString()
     }
     return interactionObjectBuilder.build()
   }

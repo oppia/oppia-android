@@ -7,7 +7,7 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView],[TextInputInteractionView] and [FractionInputInteractionView].
+ * It contains [NumericInputInteractionView] , [TextInputInteractionView]  and  [FractionInputInteractionView].
  */
 class InputInteractionViewTestActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
