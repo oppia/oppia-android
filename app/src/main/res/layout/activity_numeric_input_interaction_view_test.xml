@@ -48,4 +48,17 @@
     android:maxLength="200"
     android:padding="@dimen/padding_8dp"
     android:singleLine="true" />
+  <org.oppia.app.customview.interaction.NumberWithUnitsInteractionView
+    android:id="@+id/test_number_with_unit_input_interaction_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/padding_8dp"
+    android:background="@drawable/edit_text_background"
+    android:focusable="true"
+    android:hint="Write number with unit here."
+    android:inputType="number"
+    android:longClickable="false"
+    android:maxLength="200"
+    android:padding="@dimen/padding_8dp"
+    android:singleLine="true" />
 </LinearLayout>
