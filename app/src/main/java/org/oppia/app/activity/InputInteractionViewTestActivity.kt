@@ -3,8 +3,12 @@ package org.oppia.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import org.oppia.app.R
+import org.oppia.app.customview.interaction.NumericInputInteractionView
 
-/** This is a dummy activity to test input interaction views. */
+/**
+ * This is a dummy activity to test input interaction views.
+ * It contains [NumericInputInteractionView],[TextInputInteractionView] and [FractionInputInteractionView].
+ */
 class InputInteractionViewTestActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

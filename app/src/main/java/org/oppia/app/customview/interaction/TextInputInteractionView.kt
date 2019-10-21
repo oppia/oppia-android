@@ -4,6 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
 import org.oppia.app.model.InteractionObject
+// TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
+//  hint="Write here."
+//  inputType="text"
+//  background="@drawable/edit_text_background"
+//  maxLength="200".
 
 /** The custom EditText class for text input interaction view. */
 class TextInputInteractionView @JvmOverloads constructor(
@@ -13,8 +18,10 @@ class TextInputInteractionView @JvmOverloads constructor(
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
 
   override fun getPendingAnswer(): InteractionObject {
-    return if (text.isNullOrEmpty()) (InteractionObject.newBuilder().build()) else (InteractionObject.newBuilder().setNormalizedString(
-      text.toString()
-    ).build())
+    val interactionObjectBuilder = InteractionObject.newBuilder()
+    if (!text.isNullOrEmpty()) {
+      interactionObjectBuilder.setNormalizedString(text.toString())
+    }
+    return interactionObjectBuilder.build()
   }
 }

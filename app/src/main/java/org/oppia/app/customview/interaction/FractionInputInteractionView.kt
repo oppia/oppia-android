@@ -6,7 +6,14 @@ import android.widget.EditText
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 
-/** The custom EditText class for text input interaction view. */
+// TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
+//  digits="0123456789/-"
+//  hint="Write fraction here."
+//  inputType="text"
+//  background="@drawable/edit_text_background"
+//  maxLength="200".
+
+/** The custom EditText class for fraction input interaction view. */
 class FractionInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -14,12 +21,16 @@ class FractionInputInteractionView @JvmOverloads constructor(
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
 
   override fun getPendingAnswer(): InteractionObject {
-    return if (text.isNullOrEmpty()) (InteractionObject.newBuilder().build()) else (InteractionObject.newBuilder().setFraction(
-      Fraction.newBuilder().setDenominator(text.toString().substringAfterLast("/").toInt()).setNumerator(
-        text.toString().substringBeforeLast(
-          "/"
-        ).toInt()
+    val interactionObjectBuilder = InteractionObject.newBuilder()
+    if (!text.isNullOrEmpty()) {
+      interactionObjectBuilder.setFraction(
+        Fraction.newBuilder().setDenominator(text.toString().substringAfterLast("/").toInt()).setNumerator(
+          text.toString().substringBeforeLast(
+            "/"
+          ).toInt()
+        )
       )
-    ).build())
+    }
+    return interactionObjectBuilder.build()
   }
 }
