@@ -5,8 +5,6 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 
-private const val KEY_NUMERIC_INPUT_ID = "NUMERIC_INPUT_ID"
-
 /**
  * This is a dummy activity to test input interaction views.
  * It contains [NumericInputInteractionView] .
