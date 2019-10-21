@@ -108,7 +108,7 @@ class StateFragmentPresenter @Inject constructor(
     if (isVisible) {
       if (getAudioFragment() == null) {
         fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment, AudioFragment(),
+          R.id.audio_fragment_placeholder, AudioFragment(),
           TAG_AUDIO_FRAGMENT
         ).commitNow()
       }

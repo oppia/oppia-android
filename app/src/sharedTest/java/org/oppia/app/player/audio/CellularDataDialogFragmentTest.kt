@@ -35,7 +35,7 @@ class CellularDataDialogFragmentTest {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.cellular_data_alert_dialog_okay_button)).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches(isDisplayed()))
       onView(withId(R.id.tvAudioLanguage)).perform(click())
       onView(withText(R.string.audio_language_select_dialog_title)).check(matches(isDisplayed()))
     }
@@ -47,7 +47,7 @@ class CellularDataDialogFragmentTest {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.cellular_data_alert_dialog_cancel_button)).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches(not(isDisplayed())))
     }
   }
 
