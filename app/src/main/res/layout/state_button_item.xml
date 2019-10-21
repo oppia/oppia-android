@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <import type="android.view.View"/>
+    <variable
+      name="buttonViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.StateButtonViewModel"/>
+  </data>
+  <RelativeLayout
+    android:id="@+id/button_container_relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:gravity="center_vertical"
+    android:padding="16dp">
+    <ImageView
+      android:id="@+id/previous_state_image_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:background="@drawable/previous_next_state_image_view_background"
+      android:contentDescription="@string/previous_state_description"
+      android:padding="8dp"
+      android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
+      android:visibility="@{buttonViewModel.isPreviousButtonVisible()? View.VISIBLE: View.GONE}"/>
+    <ImageView
+      android:id="@+id/next_state_image_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:background="@drawable/previous_next_state_image_view_background"
+      android:contentDescription="@string/next_state_description"
+      android:padding="8dp"
+      android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
+      android:visibility="@{buttonViewModel.isNextButtonVisible()? View.VISIBLE: View.GONE}"/>
+    <Button
+      android:id="@+id/interaction_button"
+      style="@style/StateButtonActive"
+      buttonDrawable="@{buttonViewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"
+      android:layout_alignParentEnd="true"
+      android:clickable="@{buttonViewModel.isInteractionButtonActive()}"
+      android:drawableEnd="@{buttonViewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
+      android:text="@{buttonViewModel.name}"
+      android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
+      android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
+  </RelativeLayout>
+</layout>
