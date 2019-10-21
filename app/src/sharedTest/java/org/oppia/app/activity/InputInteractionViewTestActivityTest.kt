@@ -37,7 +37,6 @@ class InputInteractionViewTestActivityTest {
   @Before
   fun setUp() {
     activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Intents.init()
   }
 
   @Test
@@ -74,7 +73,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
