@@ -5,6 +5,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
+/** The presenter for [ProfileActivity] */
 @ActivityScope
 class ProfileActivityPresenter @Inject constructor(private val activity: AppCompatActivity){
   fun handleOnCreate() {

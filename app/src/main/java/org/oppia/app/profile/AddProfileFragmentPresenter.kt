@@ -9,6 +9,7 @@ import org.oppia.app.databinding.AddProfileFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
+/** The presenter for [AddProfileFragment] */
 @FragmentScope
 class AddProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment

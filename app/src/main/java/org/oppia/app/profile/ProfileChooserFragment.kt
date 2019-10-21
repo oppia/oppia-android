@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that allows user to select a profile or create new ones */
 class ProfileChooserFragment : InjectableFragment() {
   @Inject lateinit var profileChooserFragmentPresenter: ProfileChooserFragmentPresenter
 

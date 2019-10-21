@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that allows users to create new profiles */
 class AddProfileFragment : InjectableFragment() {
-  @Inject lateinit var addProfileFragmentPresenter: AdminAuthFragmentPresenter
+  @Inject lateinit var addProfileFragmentPresenter: AddProfileFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
