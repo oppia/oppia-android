@@ -27,7 +27,7 @@ import javax.inject.Singleton
 // TODO(#116): Write test-cases when the user enables/disables on cellular with/without saving the setting.
 /** Tests for [CellularDataDialogFragment]. */
 @RunWith(AndroidJUnit4::class)
-class CellularDataDialogFragmentTest {/**/
+class CellularDataDialogFragmentTest {
 
   @Test
   fun testCellularDataDialogFragment_loadCellularDialogFragment_loadAudioFragment_loadLanguageFragment_isDisplayed() {
@@ -35,7 +35,7 @@ class CellularDataDialogFragmentTest {/**/
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.cellular_data_alert_dialog_okay_button)).perform(click())
-      onView(withId(R.id.audio_fragment_placeholder)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
       onView(withId(R.id.tvAudioLanguage)).perform(click())
       onView(withText(R.string.audio_language_select_dialog_title)).check(matches(isDisplayed()))
     }
