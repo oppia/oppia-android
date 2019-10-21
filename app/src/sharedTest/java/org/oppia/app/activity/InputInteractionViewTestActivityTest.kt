@@ -51,6 +51,7 @@ class InputInteractionViewTestActivityTest {
       assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
       assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
       assertThat(textAnswerRetriever.getPendingAnswer().real).isEqualTo(9.0)
+
     }
   }
 
