@@ -3,6 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.app.story.StoryViewModel" />
@@ -16,16 +17,20 @@
       android:id="@+id/story_progress_chapter_completed_text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      android:layout_margin="8dp"
+      android:fontFamily="sans-serif-medium"
+      android:textColor="@color/black"
+      android:textSize="14sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/story_chapter_list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toBottomOf="@id/story_progress_chapter_completed_text"
-      app:layout_constraintStart_toStartOf="parent"
+      app:data="@{viewModel.storyChapterLiveData}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:data="@{viewModel.storyChapterLiveData}"/>
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/story_progress_chapter_completed_text" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,16 +10,24 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+    android:layout_width="350dp"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:padding="16dp"
+    app:roundedRectDrawableWithColor="@{chapterSummary.chapterThumbnail.backgroundColorRgb}">
 
     <ImageView
       android:id="@+id/chapter_thumbnail"
-      android:layout_width="36dp"
-      android:layout_height="36dp"
-
-      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_width="match_parent"
+      android:layout_height="180dp"
+      android:paddingStart="40dp"
+      android:paddingTop="40dp"
+      android:paddingEnd="40dp"
+      android:scaleType="centerCrop"
+      android:src="@{chapterSummary.chapterThumbnail.thumbnailGraphic}"
+      app:layout_constraintBottom_toTopOf="@id/chapter_title"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,16 +35,24 @@
       android:id="@+id/chapter_title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{chapterSummary.getName()}"
-      app:layout_constraintStart_toEndOf="@id/chapter_thumbnail"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_margin="8dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="@{chapterSummary.name}"
+      android:textColor="@color/black"
+      android:textSize="14sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/chapter_thumbnail" />
 
     <TextView
       android:id="@+id/chapter_summary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{chapterSummary.getSummary()}"
-      app:layout_constraintStart_toEndOf="@id/chapter_thumbnail"
+      android:layout_margin="8dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="@{chapterSummary.summary}"
+      android:textColor="@color/black"
+      android:textSize="12sp"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/chapter_title" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
