@@ -236,6 +236,19 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_submitAnswer_clickPreviousButton_clickNextButton_continueButtonIsDisplayed() {
+    ActivityScenario.launch(HomeActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      onView(withId(R.id.interaction_button)).perform(click())
+      onView(withId(R.id.previous_state_image_view)).perform(click())
+      onView(withId(R.id.next_state_image_view)).perform(click())
+      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_continue_button)))
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_configurationChange_previousAndInteractionButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
