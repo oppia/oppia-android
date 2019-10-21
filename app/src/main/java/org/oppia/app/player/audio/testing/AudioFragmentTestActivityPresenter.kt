@@ -17,13 +17,13 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
     if (getAudioFragment() == null) {
       val audioFragment = AudioFragment.newInstance(TEST_EXPLORATION_ID_5, "END")
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.audio_fragment_placeholder,
+        R.id.audio_fragment,
         audioFragment
       ).commitNow()
     }
   }
 
   private fun getAudioFragment(): AudioFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.audio_fragment) as AudioFragment?
   }
 }
