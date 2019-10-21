@@ -111,7 +111,4 @@ class InputInteractionViewTestActivityTest {
       assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
     }
   }
-
-
-
 }
