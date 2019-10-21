@@ -27,8 +27,8 @@ class FractionInputInteractionView @JvmOverloads constructor(
         Fraction.newBuilder().setDenominator(text.toString().substringAfterLast("/").toInt()).setNumerator(
           text.toString().substringBeforeLast(
             "/"
-          ).toInt()
-        )
+          ).replace("-","").toInt()
+        ).setIsNegative(if(text.toString().startsWith("-"))true else false)
       )
     }
     return interactionObjectBuilder.build()
