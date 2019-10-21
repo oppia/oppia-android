@@ -7,7 +7,10 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-// Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
+/** Returns a matcher that matches a descendant of [RecyclerView] that is displaying the string associated with the given resource id and position of the item.
+ * Reference Link:
+ * https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
+*/
 class RecyclerViewMatcher {
   companion object {
     /**
