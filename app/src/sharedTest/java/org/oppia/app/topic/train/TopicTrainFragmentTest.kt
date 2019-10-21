@@ -61,7 +61,7 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_displaySkills_startButtonIsInactive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    activityScenario.use {
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
       onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
@@ -70,7 +70,7 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_isSuccessful() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    activityScenario.use {
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 1)).perform(click())
     }
@@ -78,7 +78,7 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_startButtonIsActive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    activityScenario.use {
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     }
@@ -86,7 +86,7 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_isSuccessful() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    activityScenario.use {
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     }
@@ -94,7 +94,7 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    activityScenario.use {
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
