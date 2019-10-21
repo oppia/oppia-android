@@ -34,7 +34,7 @@ class StoryFragmentPresenter @Inject constructor(
           .size
       val totalChapters = chapterList.size
       binding.storyProgressChapterCompletedText.text =
-        completedChapters.toString() + " of " + totalChapters.toString() + " Chapters Completed"
+        "$completedChapters of $totalChapters Chapters Completed"
     })
 
     binding.storyChapterList.apply {
