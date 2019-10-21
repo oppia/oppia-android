@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -31,6 +32,8 @@ import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -182,7 +185,7 @@ class StateFragmentTest {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
-      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.interaction_button))))
     }
   }
 
@@ -190,7 +193,7 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_submitButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.interaction_button))))
     }
   }
 
@@ -198,9 +201,21 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_submitAnswer_submitChangesToContinueButton() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_submit_button)))
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.interaction_button
+        )
+      ).check(matches(withText(R.string.state_submit_button)))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.interaction_button
+        )
+      ).check(matches(withText(R.string.state_continue_button)))
     }
   }
 
@@ -208,8 +223,20 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_previousAndNextButtonIsNotDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.next_state_image_view)).check(matches(not(isDisplayed())))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).check(
+        matches(
+          not(
+            isDisplayed()
+          )
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.next_state_image_view
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
@@ -217,9 +244,15 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.previous_state_image_view
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -227,11 +260,17 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_clickPreviousButton_previousButtonIsHiddenAndNextButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.next_state_image_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).check(
+        matches(
+          not(
+            isDisplayed()
+          )
+        )
+      )
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.next_state_image_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -239,12 +278,18 @@ class StateFragmentTest {
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_submitAnswer_clickPreviousButton_clickNextButton_continueButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).perform(click())
-      onView(withId(R.id.next_state_image_view)).perform(click())
-      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.next_state_image_view)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.interaction_button
+        )
+      ).check(matches(withText(R.string.state_continue_button)))
     }
   }
 
@@ -253,13 +298,19 @@ class StateFragmentTest {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       // State 0: MultipleChoiceInput
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
-      onView(withId(R.id.previous_state_image_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.interaction_button)).check(matches(isDisplayed()))
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.previous_state_image_view
+        )
+      ).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -268,18 +319,24 @@ class StateFragmentTest {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       // State 0: Welcome! - MultipleChoiceInout Interaction
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       // State 1: What language - TextInput Interaction
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       // State 2: Things you can do - Continue Interaction
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       // State 3: Numeric input - NumericInput Interaction
-      onView(withId(R.id.interaction_button)).perform(click())
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       // State 4: END -> EndExploration
-      onView(withId(R.id.interaction_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      onView(
+        atPositionOnView(
+          R.id.state_recycler_view,
+          0,
+          R.id.interaction_button
+        )
+      ).check(matches(withText(R.string.state_end_exploration_button)))
     }
   }
 
@@ -288,18 +345,18 @@ class StateFragmentTest {
     homeActivityTestRule.launchActivity(null)
     onView(withId(R.id.play_exploration_button)).perform(click())
     // State 0: Welcome! - MultipleChoiceInout Interaction
-    onView(withId(R.id.interaction_button)).perform(click())
-    onView(withId(R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     // State 1: What language - TextInput Interaction
-    onView(withId(R.id.interaction_button)).perform(click())
-    onView(withId(R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     // State 2: Things you can do - Continue Interaction
-    onView(withId(R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     // State 3: Numeric input - NumericInput Interaction
-    onView(withId(R.id.interaction_button)).perform(click())
-    onView(withId(R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     // State 4: END - EndExploration
-    onView(withId(R.id.interaction_button)).perform(click())
+    onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     intended(hasComponent(HomeActivity::class.java.name))
   }
 
