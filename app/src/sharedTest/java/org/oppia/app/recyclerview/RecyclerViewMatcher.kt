@@ -1,4 +1,4 @@
-package org.oppia.app.recyclerview;
+package org.oppia.app.recyclerview
 
 import android.content.res.Resources
 import android.view.View
@@ -32,8 +32,8 @@ class RecyclerViewMatcher {
               this.resources!!.getResourceName(recyclerViewId)
             } catch (var4: Resources.NotFoundException) {
               String.format(
-                  "%s (resource name not found)",
-                  recyclerViewId
+                "%s (resource name not found)",
+                recyclerViewId
               )
             }
           }
@@ -54,7 +54,7 @@ class RecyclerViewMatcher {
             view === childView
           } else {
             val targetView = childView!!.findViewById<View>(targetViewId)
-                view === targetView
+            view === targetView
           }
         }
       }
