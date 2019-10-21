@@ -51,7 +51,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches((isDisplayed())))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches((isDisplayed())))
     }
   }
 
@@ -60,7 +60,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -140,7 +140,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches(isDisplayed()))
     }
   }
 
@@ -154,7 +154,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.audio_fragment_placeholder)).check(matches(not(isDisplayed())))
     }
   }
 

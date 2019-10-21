@@ -13,8 +13,10 @@ class NumericInputInteractionView @JvmOverloads constructor(
 ) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
 
   override fun getPendingAnswer(): InteractionObject {
-    return if (text.isNullOrEmpty()) (InteractionObject.newBuilder().build()) else (InteractionObject.newBuilder().setReal(
-      text.toString().toDouble()
-    ).build())
+    val interactionObjectBuilder = InteractionObject.newBuilder()
+    if (!text.isNullOrEmpty()) {
+      interactionObjectBuilder.setReal(text.toString().toDouble())
+    }
+    return interactionObjectBuilder.build()
   }
 }

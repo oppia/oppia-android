@@ -11,7 +11,7 @@
     android:id="@+id/test_number_input_interaction_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/padding_8dp"
+    android:layout_margin="8dp"
     android:background="@drawable/edit_text_background"
     android:digits="0123456789."
     android:focusable="true"
@@ -19,6 +19,6 @@
     android:inputType="numberDecimal"
     android:longClickable="false"
     android:maxLength="200"
-    android:padding="@dimen/padding_8dp"
+    android:padding="8dp"
     android:singleLine="true" />
 </LinearLayout>
