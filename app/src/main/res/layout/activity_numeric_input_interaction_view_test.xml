@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:gravity="center"
+  tools:context=".activity.InputInteractionViewTestActivity">
+
+  <org.oppia.app.customview.interaction.NumericInputInteractionView
+    android:id="@+id/test_number_input_interaction_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/edit_text_background"
+    android:digits="0123456789."
+    android:focusable="true"
+    android:hint="Write the digit here."
+    android:inputType="numberDecimal"
+    android:longClickable="false"
+    android:maxLength="200"
+    android:padding="8dp"
+    android:singleLine="true" />
+</LinearLayout>
