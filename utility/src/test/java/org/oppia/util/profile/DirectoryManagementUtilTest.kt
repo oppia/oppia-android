@@ -44,7 +44,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-/** Tests for [ProfileManagementControllerTest]. */
+/** Tests for [DirectoryManagementUtil]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
