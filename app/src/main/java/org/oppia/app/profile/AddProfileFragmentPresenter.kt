@@ -14,7 +14,7 @@ import javax.inject.Inject
 class AddProfileFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = AddProfileFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     return binding.root
   }

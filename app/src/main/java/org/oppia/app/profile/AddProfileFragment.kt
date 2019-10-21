@@ -21,6 +21,6 @@ class AddProfileFragment : InjectableFragment() {
     inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return addProfileFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
+    return addProfileFragmentPresenter.handleCreateView(inflater, container)
   }
 }

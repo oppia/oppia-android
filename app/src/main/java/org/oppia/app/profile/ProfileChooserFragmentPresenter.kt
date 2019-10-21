@@ -16,7 +16,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = getProfileChooserViewModel()

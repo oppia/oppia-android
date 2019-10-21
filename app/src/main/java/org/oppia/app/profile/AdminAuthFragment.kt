@@ -21,6 +21,6 @@ class AdminAuthFragment : InjectableFragment() {
     inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return adminAuthFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
+    return adminAuthFragmentPresenter.handleCreateView(inflater, container)
   }
 }
