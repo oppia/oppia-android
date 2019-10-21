@@ -432,12 +432,13 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addMultipleChoiceInputItem() {
-    val multipleChoiceItems: Map<String, InteractionObject> =
+    if (state.interaction.customizationArgsMap.ha) {
+    val multipleChoiceItems: MutableList<String>? =
       currentEphemeralState.get()!!.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList
     val numericInputInteractionViewModel = NumericInputInteractionViewModel()
-    if (customizationArgsMap.containsKey("placeholder")) {
+    if (multipleChoiceItems.containsKey("placeholder")) {
       numericInputInteractionViewModel.placeholder =
-        customizationArgsMap.getValue("placeholder").normalizedString
+        multipleChoiceItems.getValue("placeholder").normalizedString
     }
     itemList.add(numericInputInteractionViewModel)
     stateAdapter.notifyDataSetChanged()
