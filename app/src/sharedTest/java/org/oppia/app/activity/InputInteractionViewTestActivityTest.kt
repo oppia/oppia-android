@@ -2,7 +2,6 @@ package org.oppia.app.activity
 
 import android.content.res.Configuration
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import org.junit.Rule
@@ -13,7 +12,9 @@ import org.oppia.app.model.InteractionObject
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.oppia.app.customview.interaction.FractionInputInteractionView
@@ -73,14 +74,14 @@ class InputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_number_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed()))
       .check(
-        matches(ViewMatchers.withText("9"))
+        matches(withText("9"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_number_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed()))
       .check(
-        matches(ViewMatchers.withText("9"))
+        matches(withText("9"))
       )
   }
 
@@ -113,15 +114,12 @@ class InputInteractionViewTestActivityTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_text_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed()))
       .check(
-        matches(ViewMatchers.withText("abc"))
+        matches(withText("abc"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_text_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
-      .check(
-        matches(ViewMatchers.withText("abc"))
-      )
+    onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("abc")))
   }
 
   @Test
@@ -166,20 +164,21 @@ class InputInteractionViewTestActivityTest {
       assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
     }
   }
+
   @Test
   fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
       .check(
-        matches(ViewMatchers.withText("9/5"))
+        matches(withText("9/5"))
       )
     activityScenario.recreate()
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(ViewMatchers.isDisplayed()))
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
       .check(
-        matches(ViewMatchers.withText("9/5"))
+        matches(withText("9/5"))
       )
   }
 }
