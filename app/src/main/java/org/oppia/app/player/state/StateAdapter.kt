@@ -12,11 +12,13 @@ import androidx.databinding.library.baseAdapters.BR
 import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.interaction_read_only_item.view.*
 import kotlinx.android.synthetic.main.numeric_input_interaction_item.view.*
+import kotlinx.android.synthetic.main.selection_interaction_item.view.*
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import kotlinx.android.synthetic.main.text_input_interaction_item.view.*
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.InteractionReadOnlyItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
+import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.InteractionObject
@@ -25,18 +27,27 @@ import org.oppia.app.player.state.customview.TextInputInteractionView
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
 import org.oppia.app.player.state.listener.InputInteractionTextListener
 import org.oppia.app.player.state.listener.InteractionListener
+import org.oppia.util.parser.HtmlParser
 
 const val VIEW_TYPE_CONTENT = 1
 const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
 const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
 const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
 const val VIEW_TYPE_STATE_BUTTON = 5
+const val VIEW_TYPE_SELECTION_INTERACTION = 6
 
-class StateAdapter(private val itemList: MutableList<Any>, private val interactionListener: InteractionListener) :
+class StateAdapter(
+  private val itemList: MutableList<Any>,
+  private val interactionListener: InteractionListener,
+  private val htmlParserFactory: HtmlParser.Factory,
+  private val entityType: String,
+  private val explorationId: String
+) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>(), InputInteractionTextListener {
 
   private var inputInteractionView: Any = StateButtonViewModel
@@ -100,6 +111,17 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
           )
         StateButtonViewHolder(binding, interactionListener)
       }
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<SelectionInteractionItemBinding>(
+            inflater,
+            R.layout.state_button_item,
+            parent,
+            /* attachToParent= */false
+          )
+        SelectionInteractionViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
   }
@@ -120,6 +142,9 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
       }
       VIEW_TYPE_STATE_BUTTON -> {
         (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
+      }
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        (holder as SelectionInteractionViewHolder).bind((itemList[position] as SelectionInteractionViewModel))
       }
     }
   }
@@ -216,6 +241,20 @@ class StateAdapter(private val itemList: MutableList<Any>, private val interacti
         interactionListener.onPreviousButtonClicked()
       }
       binding.executePendingBindings()
+    }
+  }
+
+  inner class SelectionInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(choiceList: SelectionInteractionViewModel) {
+      var items: Array<String>? = null
+      binding.setVariable(BR.choiceItems, choiceList)
+      binding.executePendingBindings()
+
+      val gaeCustomArgsInString: String = choiceList.toString().replace("[", "").replace("]", "")
+      items = gaeCustomArgsInString.split(",").toTypedArray()
+      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId);
+        binding.root.selection_interactions_recyclerview.adapter = interactionAdapter
+
     }
   }
 

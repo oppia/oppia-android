@@ -26,6 +26,7 @@ import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_K
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
@@ -36,10 +37,12 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
 const val CONTINUE = "Continue"
 const val END_EXPLORATION = "EndExploration"
@@ -65,7 +68,8 @@ class StateFragmentPresenter @Inject constructor(
   private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
-  private val logger: Logger
+  private val logger: Logger,
+  private val htmlParserFactory: HtmlParser.Factory
 ) : InteractionListener {
 
   private val oldStateNameList: ArrayList<String> = ArrayList()
@@ -79,7 +83,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var explorationId: String? = null
+  private lateinit var explorationId: String
+  private val entityType: String = "exploration"
 
   private lateinit var stateAdapter: StateAdapter
 
@@ -94,8 +99,9 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
+    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
-    stateAdapter = StateAdapter(itemList, this as InteractionListener)
+    stateAdapter = StateAdapter(itemList, this as InteractionListener,htmlParserFactory, entityType, explorationId)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
@@ -105,7 +111,6 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
     subscribeToCurrentState()
 
@@ -432,15 +437,20 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addMultipleChoiceInputItem() {
-    if (state.interaction.customizationArgsMap.ha) {
-    val multipleChoiceItems: MutableList<String>? =
-      currentEphemeralState.get()!!.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList
-    val numericInputInteractionViewModel = NumericInputInteractionViewModel()
-    if (multipleChoiceItems.containsKey("placeholder")) {
-      numericInputInteractionViewModel.placeholder =
-        multipleChoiceItems.getValue("placeholder").normalizedString
+    val customizationArgsMap: Map<String, InteractionObject> =
+      currentEphemeralState.get()!!.state.interaction.customizationArgsMap
+    val multipleChoiceInputInteractionViewModel = SelectionInteractionViewModel()
+    val allKeys: Set<String> = customizationArgsMap.keys
+
+    for (key in allKeys) {
+      logger.d(TAG_STATE_FRAGMENT, key)
     }
-    itemList.add(numericInputInteractionViewModel)
+    if (customizationArgsMap.contains("choices")) {
+      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.get()!!.state.interaction.id
+      multipleChoiceInputInteractionViewModel.choiceItems =
+        currentEphemeralState.get()!!.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList
+    }
+    itemList.add(multipleChoiceInputInteractionViewModel)
     stateAdapter.notifyDataSetChanged()
   }
 

@@ -1,12 +1,8 @@
 package org.oppia.app.player.state;
 
-import android.content.Context
-import android.text.Html
 import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
@@ -16,18 +12,19 @@ import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.util.data.HtmlParser
+import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
+import org.oppia.util.parser.HtmlParser
 
 const val VIEW_TYPE_MULTIPLE_CHOICE = 1
 const val VIEW_TYPE_ITEM_SELECTION = 2
 
 /** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
 class InteractionAdapter(
-  private val context: Context,
+  private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
-  private val entityId: String,
+  private val explorationId: String,
   val itemList: Array<String>?,
-  val interactionInstanceId: String?
+  private val interactionId: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var mSelectedItem = -1
@@ -63,12 +60,12 @@ class InteractionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
-        itemList!!.get(position),
+        itemList!!.get(position) as SelectionContentViewModel,
         position,
         mSelectedItem
       )
       VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
-        itemList!!.get(position),
+        itemList!!.get(position) as SelectionContentViewModel,
         position,
         mSelectedItem
       )
@@ -77,7 +74,7 @@ class InteractionAdapter(
 
   // Determines the appropriate ViewType according to the interaction type.
   override fun getItemViewType(position: Int): Int {
-    return if (interactionInstanceId.equals("ItemSelectionInput")) {
+    return if (interactionId.equals("ItemSelectionInput")) {
       VIEW_TYPE_ITEM_SELECTION
     } else {
       VIEW_TYPE_MULTIPLE_CHOICE
@@ -89,29 +86,35 @@ class InteractionAdapter(
   }
 
   private inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-   internal fun bind(rawString: String?, position: Int, selectedPosition: Int) {
-      binding.setVariable(BR.htmlContent, rawString)
+    internal fun bind(rawString: SelectionContentViewModel, position: Int, selectedPosition: Int) {
+      binding.setVariable(BR.htmlContent, rawString.htmlContent)
       binding.executePendingBindings();
-      val html: Spannable = HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_item_selection_contents)
-      binding.root.tv_item_selection_contents.text = html
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+        rawString.htmlContent,
+        binding.root.tv_item_selection_contents
+      )
+//      val html: Spannable = HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_item_selection_contents)
+      binding.root.tv_item_selection_contents.text = htmlResult
 
       binding.root.rl_checkbox_container.setOnClickListener {
         if (binding.root.cb_item_selection.isChecked)
           binding.root.cb_item_selection.setChecked(false)
         else
           binding.root.cb_item_selection.setChecked(true)
-        Toast.makeText(context, "" + binding.root.tv_item_selection_contents.text, Toast.LENGTH_LONG).show()
         notifyDataSetChanged()
       }
     }
   }
 
   private inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-   internal fun bind(rawString: String?, position: Int, selectedPosition: Int) {
-      binding.setVariable(BR.htmlContent, rawString)
+    internal fun bind(rawString: SelectionContentViewModel, position: Int, selectedPosition: Int) {
+      binding.setVariable(BR.htmlContent, rawString.htmlContent)
       binding.executePendingBindings();
-      val html: Spannable =  HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_multiple_choice_contents)
-      binding.root.tv_multiple_choice_contents.text = html
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+        rawString.htmlContent,
+        binding.root.tv_multiple_choice_contents
+      )
+      binding.root.tv_item_selection_contents.text = htmlResult
 
       if (selectedPosition == position)
         binding.root.rb_multiple_choice.setChecked(true)
@@ -119,7 +122,6 @@ class InteractionAdapter(
         binding.root.rb_multiple_choice.setChecked(false)
 
       binding.root.rl_radio_container.setOnClickListener {
-        Toast.makeText(context, "" + binding.root.tv_multiple_choice_contents.text, Toast.LENGTH_LONG).show()
         mSelectedItem = getAdapterPosition()
         notifyDataSetChanged()
       }
