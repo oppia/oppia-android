@@ -24,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -180,19 +181,20 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#163): Add more test-cases
+  //  1. Actually going through each of the exploration states with typing text/clicking the correct answers for each of the interactions.
+  //  2. Verifying the button visibility state based on whether text is missing, then present/missing for text input or numeric input.
+  //  3. Testing providing the wrong answer and showing feedback and the same question again.
+  //  4. Configuration change with typed text (e.g. for numeric or text input) retains that temporary text and you can continue with the exploration after rotating.
+  //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask of the question stay the same.
+  //  6. Backward/forward navigation along with configuration changes to verify that you stay on the navigated state.
+  //  7. Verifying that old answers were present when navigation backward/forward.
+
   @Test
   fun testStateFragment_clickPlayExploration_explorationLoadsSuccessfully() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.interaction_button))))
-    }
-  }
-
-  @Test
-  fun testStateFragment_loadExplorationTest5_submitButtonIsDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.interaction_button))))
     }
   }
@@ -274,12 +276,15 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#257): This test case corresponds to the special test-case mentioned in #257 and discussed in #251.
   @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_submitAnswer_clickPreviousButton_clickNextButton_continueButtonIsDisplayed() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
+      // State 0: Welcome! - MultipleChoiceInout Interaction
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
+      // State 1: What language - TextInput Interaction
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.next_state_image_view)).perform(click())
@@ -358,6 +363,11 @@ class StateFragmentTest {
     // State 4: END - EndExploration
     onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     intended(hasComponent(HomeActivity::class.java.name))
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   @Module
