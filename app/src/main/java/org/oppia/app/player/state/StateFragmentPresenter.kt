@@ -101,7 +101,7 @@ class StateFragmentPresenter @Inject constructor(
       })
     explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
 
-    stateAdapter = StateAdapter(itemList, this as InteractionListener,htmlParserFactory, entityType, explorationId)
+    stateAdapter = StateAdapter(itemList, this as InteractionListener, htmlParserFactory, entityType, explorationId)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {

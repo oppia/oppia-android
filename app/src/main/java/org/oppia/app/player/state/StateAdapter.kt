@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import android.text.Editable
+import android.text.Spannable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -169,10 +170,14 @@ class StateAdapter(
   }
 
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: String?) {
+    internal fun bind(rawString: String) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
-      binding.root.content_text_view.text = rawString
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+        rawString,
+        binding.root.content_text_view
+      )
+      binding.root.content_text_view.text = htmlResult
     }
   }
 
