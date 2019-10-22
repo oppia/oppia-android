@@ -121,7 +121,7 @@ class StateAdapter(
             parent,
             /* attachToParent= */false
           )
-        SelectionInteractionViewHolder(binding, interactionListener)
+        SelectionInteractionViewHolder(binding)
       }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
@@ -251,8 +251,7 @@ class StateAdapter(
   }
 
   inner class SelectionInteractionViewHolder(
-    val binding: ViewDataBinding,
-    private val interactionListener: InteractionListener
+    val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(choiceList: SelectionInteractionViewModel) {
       var items: Array<String>? = null
