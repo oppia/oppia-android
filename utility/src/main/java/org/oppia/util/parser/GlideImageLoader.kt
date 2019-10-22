@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import javax.inject.Inject
 
+/** An [ImageLoader] that uses Glide. */
 class GlideImageLoader @Inject constructor() : ImageLoader {
   override fun load(context: Context, path: String, target: SimpleTarget<Bitmap>) {
     Glide.with(context)
