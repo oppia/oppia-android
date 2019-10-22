@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -20,7 +19,6 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
-import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
@@ -32,6 +30,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
@@ -65,7 +64,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var explorationId: String? = null
+  private lateinit var explorationId: String
 
   // TODO(#257): Remove this once domain layer is capable to provide this information.
   private val oldStateNameList: ArrayList<String> = ArrayList()
@@ -102,7 +101,7 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    explorationId = checkNotNull(fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY))
 
     subscribeToCurrentState()
 
@@ -155,8 +154,9 @@ class StateFragmentPresenter @Inject constructor(
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
       if (getAudioFragment() == null) {
+        val audioFragment = AudioFragment.newInstance(explorationId, "END")
         fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, AudioFragment(),
+          R.id.audio_fragment_placeholder, audioFragment,
           TAG_AUDIO_FRAGMENT
         ).commitNow()
       }

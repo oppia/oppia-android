@@ -39,7 +39,6 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-// TODO(#239): AudioFragment implementation has been updated in PR #238 and because of which these audio-related test cases are failing.
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
@@ -74,7 +73,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches((isDisplayed())))
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches((isDisplayed())))
     }
   }
 
@@ -83,7 +82,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
     }
   }
 
@@ -163,7 +162,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.audio_fragment)).check(matches(isDisplayed()))
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
     }
   }
 
@@ -177,7 +176,7 @@ class StateFragmentTest {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
       onView(withId(R.id.dummy_audio_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.audio_fragment)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
     }
   }
 
