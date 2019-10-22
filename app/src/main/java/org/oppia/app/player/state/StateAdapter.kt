@@ -256,7 +256,6 @@ class StateAdapter(
       items = gaeCustomArgsInString.split(",").toTypedArray()
       val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId, interactionListener);
         binding.root.selection_interactions_recyclerview.adapter = interactionAdapter
-
     }
   }
 
@@ -275,9 +274,6 @@ class StateAdapter(
       when (inputInteractionView) {
         is NumericInputInteractionView -> {
           (inputInteractionView as NumericInputInteractionView).getPendingAnswer()
-        }
-        is TextInputInteractionView -> {
-          (inputInteractionView as TextInputInteractionView).getPendingAnswer()
         }
         is TextInputInteractionView -> {
           (inputInteractionView as TextInputInteractionView).getPendingAnswer()
