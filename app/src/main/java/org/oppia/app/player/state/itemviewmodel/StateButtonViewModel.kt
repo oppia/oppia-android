@@ -102,16 +102,6 @@ class StateButtonViewModel @Inject constructor(val context: Context) : Observabl
     isPreviousButtonVisible.set(isVisible)
   }
 
-  fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-    if (s.isNotEmpty()) {
-      isInteractionButtonActive.set(true)
-      drawableResourceValue.set(R.drawable.state_button_primary_background)
-    } else {
-      isInteractionButtonActive.set(false)
-      drawableResourceValue.set(R.drawable.state_button_transparent_background)
-    }
-  }
-
   fun optionSelected(isOptionSelected: Boolean) {
     isInteractionButtonVisible.set(isOptionSelected)
   }
