@@ -26,11 +26,12 @@ class InteractionAdapter(
   private val entityType: String,
   private val explorationId: String,
   val itemList: Array<String>?,
-  private val interactionId: String,
-  private val interactionListener: InteractionListener
-  ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  private val interactionId: String
+  ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
   private var mSelectedItem = -1
+
+  private var selectedAnswerIndex = -1
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -103,7 +104,6 @@ class InteractionAdapter(
           binding.root.cb_item_selection.setChecked(false)
         else
           binding.root.cb_item_selection.setChecked(true)
-        interactionListener.onInteractionButtonClicked()
         notifyDataSetChanged()
       }
     }
@@ -126,9 +126,19 @@ class InteractionAdapter(
 
       binding.root.rl_radio_container.setOnClickListener {
         mSelectedItem = getAdapterPosition()
-        interactionListener.onInteractionButtonClicked()
+        selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()
       }
     }
+  }
+
+  override fun getPendingAnswer(): InteractionObject {
+
+    return if (selectedAnswerIndex>=0) {
+      InteractionObject.newBuilder().setNonNegativeInt(selectedAnswerIndex).build()
+    } else {
+      InteractionObject.newBuilder().build()
+    }
+
   }
 }
