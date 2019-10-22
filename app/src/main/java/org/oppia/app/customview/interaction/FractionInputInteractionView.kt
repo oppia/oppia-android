@@ -3,7 +3,6 @@ package org.oppia.app.customview.interaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
-import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.parser.StringToFractionParser
 
