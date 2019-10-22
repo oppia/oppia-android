@@ -38,7 +38,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var explorationId: String? = null
+  private lateinit var explorationId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -55,7 +55,7 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)
+    explorationId = checkNotNull(fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY))
 
     subscribeToCurrentState()
 
@@ -108,7 +108,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
       if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(TEST_EXPLORATION_ID_5, "END")
+        val audioFragment = AudioFragment.newInstance(explorationId, "END")
         fragment.childFragmentManager.beginTransaction().add(
           R.id.audio_fragment_placeholder, audioFragment,
           TAG_AUDIO_FRAGMENT

@@ -14,14 +14,14 @@ class StateFragment : InjectableFragment(), CellularDataInterface {
 
   companion object {
     /**
-     * Creates a new instance of a StateFragment
-     * @param explorationId used by StateFragment
-     * @return a new instance of [StateFragment]
+     * Creates a new instance of a StateFragment.
+     * @param explorationId used by StateFragment.
+     * @return a new instance of [StateFragment].
      */
-    fun newInstance(topicId: String): StateFragment {
+    fun newInstance(explorationId: String): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
-      args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, topicId)
+      args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       stateFragment.arguments = args
       return stateFragment
     }
