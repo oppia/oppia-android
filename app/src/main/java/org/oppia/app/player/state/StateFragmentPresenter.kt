@@ -67,13 +67,15 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
   private var explorationId: String? = null
 
+  // TODO(#257): Remove this once domain layer is capable to provide this information.
   private val oldStateNameList: ArrayList<String> = ArrayList()
 
-  private lateinit var currentEphemeralState : EphemeralState
+  private lateinit var currentEphemeralState: EphemeralState
   private var currentAnswerOutcome: AnswerOutcome? = null
 
   private val itemList: MutableList<Any> = ArrayList()
 
+  // TODO(#257): Remove this once domain layer is capable to provide this information.
   private var hasGeneralContinueButton: Boolean = false
 
   private lateinit var stateAdapter: StateAdapter
@@ -225,6 +227,13 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
       currentAnswerOutcome = it
 
+      // 'CONTINUE' button has two different types of functionality in different scenarios.
+      // If the interaction-id is 'Continue', then learner can click the 'CONTINUE' button which will submit an answer
+      // and move to next state. In other cases, learner submits an answer and if the answer is correct than the `SUBMIT`
+      // button changes to 'CONTINUE' and in that case click on 'CONTINUE' button does not submit any answer and
+      // directly moves to next state.
+      // Here, after submitting an answer it checks whether the interaction-id was 'Continue', if it is continue then move
+      // to next state.
       if (currentEphemeralState.state.interaction.id == CONTINUE) {
         moveToNextState()
       }
@@ -360,7 +369,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   // TODO(#163): Remove this function, this is just for dummy testing purposes.
-  private fun updateDummyStateName(){
+  private fun updateDummyStateName() {
     getStateViewModel().setStateName(currentEphemeralState.state.name)
   }
 
