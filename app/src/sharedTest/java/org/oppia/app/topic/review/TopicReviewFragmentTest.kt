@@ -38,17 +38,8 @@ class TopicReviewFragmentTest {
 
   private var skillId = "test_skill_id_0"
 
-  private lateinit var activityScenario: ActivityScenario<TopicActivity>
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
   @Before
   fun setUp() {
-    activityScenario = ActivityScenario.launch(TopicActivity::class.java)
-
     Intents.init()
   }
 
