@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.EditText
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.parser.StringToFractionParser
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
@@ -23,13 +24,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.setFraction(
-        Fraction.newBuilder().setDenominator(text.toString().substringAfterLast("/").toInt()).setNumerator(
-          text.toString().substringBeforeLast(
-            "/"
-          ).replace("-","").toInt()
-        ).setIsNegative(text.toString().startsWith("-"))
-      )
+      interactionObjectBuilder.fraction = StringToFractionParser().getFractionFromString(text = text.toString())
     }
     return interactionObjectBuilder.build()
   }
