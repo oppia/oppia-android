@@ -15,7 +15,7 @@ import javax.inject.Inject
 class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
   companion object {
     @JvmStatic
-    @BindingAdapter("downloadDrawable")
+    @BindingAdapter("android:src")
     fun setBackgroundResource(downloadStatus: ImageView, resource: Int) {
       downloadStatus.setImageResource(resource)
     }
