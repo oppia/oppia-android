@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that allows users to create new profiles */
+/** Fragment that allows users to create new profiles. */
 class AddProfileFragment : InjectableFragment() {
   @Inject lateinit var addProfileFragmentPresenter: AddProfileFragmentPresenter
 
@@ -17,10 +17,7 @@ class AddProfileFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    super.onCreateView(inflater, container, savedInstanceState)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return addProfileFragmentPresenter.handleCreateView(inflater, container)
   }
 }

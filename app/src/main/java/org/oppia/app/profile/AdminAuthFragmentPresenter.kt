@@ -9,7 +9,7 @@ import org.oppia.app.databinding.AdminAuthFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** The presenter for [AdminAuthFragment] */
+/** The presenter for [AdminAuthFragment]. */
 @FragmentScope
 class AdminAuthFragmentPresenter @Inject constructor(
   private val fragment: Fragment

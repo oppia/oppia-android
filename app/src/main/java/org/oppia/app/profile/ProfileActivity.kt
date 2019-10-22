@@ -4,7 +4,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** Activity that controls profile creation and selection */
+/** Activity that controls profile creation and selection. */
 class ProfileActivity : InjectableAppCompatActivity() {
   @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
 

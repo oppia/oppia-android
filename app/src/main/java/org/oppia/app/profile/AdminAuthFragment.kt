@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that authenticates by checking for admin's PIN */
+/** Fragment that authenticates by checking for admin's PIN. */
 class AdminAuthFragment : InjectableFragment() {
   @Inject lateinit var adminAuthFragmentPresenter: AdminAuthFragmentPresenter
 
@@ -17,10 +17,7 @@ class AdminAuthFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-  ): View? {
-    super.onCreateView(inflater, container, savedInstanceState)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return adminAuthFragmentPresenter.handleCreateView(inflater, container)
   }
 }
