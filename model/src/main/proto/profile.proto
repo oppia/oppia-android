@@ -5,47 +5,50 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
-// Top level proto used to store last used id and all profiles
-message Profiles {
-  // Represents the last used unique ID for adding a profile
+// Top level proto used to store last used id and all profiles.
+message ProfileDatabase {
+  // Represents the last used unique ID for adding a profile.
   int32 last_used_id = 1;
 
-  // Mapping from unique ID to profile
+  // Mapping from unique ID to profile.
   map<int32, Profile> profiles = 2;
 }
 
-// Structure for a single profile
+// Structure for a single profile.
 message Profile {
-  // Unique ID given to each profile
-  int32 id = 1;
+  // Unique ID given to each profile.
+  ProfileId id = 1;
 
-  // Name of the user
+  // Name of the user.
   string name = 2;
 
-  // Determines whether profile uses PIN
+  // Determines whether profile is locked by a PIN.
   bool hasPin = 3;
 
-  // PIN of the profile
+  // PIN of the profile.
   string pin = 4;
 
-  // User selected image or gravatar
-  string image_url = 5;
+  // User selected image or gravatar.
+  string avatar_image_uri = 5;
 
-  // Determines whether profile is admin
+  // Determines whether profile is admin.
   bool is_admin = 6;
 
-  // Determine whether profile can download content
+  // Determine whether profile can download content.
   bool allow_download_access = 7;
 
-  // Represents the time the user was last logged in
+  // Represents the time the user was last logged in.
   int64 last_logged_in_timestamp_ms = 8;
 
-  // Represents the time the user's profile was created
+  // Represents the time the user's profile was created.
   int64 date_created_timestamp_ms = 9;
 }
 
-// Opaque data structure to pass ID
+// Opaque data structure to pass ID.
 message ProfileId {
-  // Unique ID used to identify a single profile
-  int32 id = 1;
+  /**
+   * Unique ID used to identify a single profile.
+   * Should not be used directory outside of the profile system.
+   */
+  int32 internal_id = 1;
 }
