@@ -20,12 +20,14 @@ class ReviewSkillSelectionAdapter(private val reviewSkillSelector: ReviewSkillSe
 
   companion object {
     @JvmStatic
-    @BindingAdapter("skillThumbnail")
+    @BindingAdapter("android:src")
     fun loadSkillThumbnail(view: ImageView, imageUrl: String) {
+      val requestOptions = RequestOptions()
+      requestOptions.placeholder(R.drawable.review_placeholder)
+
       Glide.with(view.context)
         .load(imageUrl)
-        .apply(RequestOptions())
-        //TODO (#143): Add code for placeholder image here.
+        .apply(requestOptions)
         .into(view)
     }
   }
