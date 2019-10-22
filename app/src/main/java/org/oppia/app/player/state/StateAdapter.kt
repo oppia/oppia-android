@@ -12,12 +12,17 @@ import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
 
-const val VIEW_TYPE_CONTENT = 1
-const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
-const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
-const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
-const val VIEW_TYPE_STATE_BUTTON = 5
+@Suppress("unused")
+private const val VIEW_TYPE_CONTENT = 1
+@Suppress("unused")
+private const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
+@Suppress("unused")
+private const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
+@Suppress("unused")
+private const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
+private const val VIEW_TYPE_STATE_BUTTON = 5
 
+/** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
   private val itemList: MutableList<Any>,
   private val buttonInteractionListener: ButtonInteractionListener
@@ -28,6 +33,7 @@ class StateAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
+      // TODO(#249): Generalize this binding to make adding future interactions easier.
       VIEW_TYPE_STATE_BUTTON -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
@@ -46,7 +52,7 @@ class StateAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_STATE_BUTTON -> {
-        (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
+        (holder as StateButtonViewHolder).bind(itemList[position] as StateButtonViewModel)
       }
     }
   }

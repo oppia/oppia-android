@@ -25,7 +25,7 @@ private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 class StateButtonViewModel @Inject constructor(val context: Context) : ObservableViewModel() {
   companion object {
     @JvmStatic
-    @BindingAdapter("buttonDrawable")
+    @BindingAdapter("android:button")
     fun setBackgroundResource(button: Button, resource: Int) {
       button.setBackgroundResource(resource)
     }
@@ -46,6 +46,7 @@ class StateButtonViewModel @Inject constructor(val context: Context) : Observabl
   fun setObservableInteractionId(interactionId: String) {
     setNextButtonVisible(false)
     observableInteractionId.set(interactionId)
+    // TODO(#249): Generalize this binding to make adding future interactions easier.
     when (interactionId) {
       CONTINUE -> {
         isInteractionButtonActive.set(true)

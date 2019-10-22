@@ -18,7 +18,6 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.InteractionObjectOrBuilder
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
@@ -36,15 +35,16 @@ import javax.inject.Inject
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
-const val CONTINUE = "Continue"
-const val END_EXPLORATION = "EndExploration"
-const val LEARN_AGAIN = "LearnAgain"
-const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
-const val ITEM_SELECT_INPUT = "ItemSelectionInput"
-const val TEXT_INPUT = "TextInput"
-const val FRACTION_INPUT = "FractionInput"
-const val NUMERIC_INPUT = "NumericInput"
-const val NUMERIC_WITH_UNITS = "NumberWithUnits"
+private const val CONTINUE = "Continue"
+private const val END_EXPLORATION = "EndExploration"
+@Suppress("unused")
+private const val LEARN_AGAIN = "LearnAgain"
+private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
+private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
+private const val TEXT_INPUT = "TextInput"
+private const val FRACTION_INPUT = "FractionInput"
+private const val NUMERIC_INPUT = "NumericInput"
+private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts
@@ -69,7 +69,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private val oldStateNameList: ArrayList<String> = ArrayList()
 
-  private val currentEphemeralState = ObservableField<EphemeralState>(EphemeralState.getDefaultInstance())
+  private lateinit var currentEphemeralState : EphemeralState
   private var currentAnswerOutcome: AnswerOutcome? = null
 
   private val itemList: MutableList<Any> = ArrayList()
@@ -78,7 +78,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private lateinit var stateAdapter: StateAdapter
 
-  lateinit var binding: StateFragmentBinding
+  private lateinit var binding: StateFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -167,38 +167,36 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      if (result.hasState()) {
-        itemList.clear()
-        currentEphemeralState.set(result)
+      itemList.clear()
+      currentEphemeralState = result
 
-        updateDummyStateName()
+      updateDummyStateName()
 
-        val interactionId = result.state.interaction.id
-        val hasPreviousState = result.hasPreviousState
-        var hasNextState = false
-        hasGeneralContinueButton = false
+      val interactionId = result.state.interaction.id
+      val hasPreviousState = result.hasPreviousState
+      var canContinueToNextState = false
+      hasGeneralContinueButton = false
 
-        if (!result.terminalState) {
-          if (result.stateTypeCase.number == EphemeralState.COMPLETED_STATE_FIELD_NUMBER
-            && !oldStateNameList.contains(currentEphemeralState.get()!!.state.name)
-          ) {
-            hasGeneralContinueButton = true
-            hasNextState = false
-          } else if (result.completedState.answerList.size > 0
-            && oldStateNameList.contains(currentEphemeralState.get()!!.state.name)
-          ) {
-            hasNextState = true
-            hasGeneralContinueButton = false
-          }
+      if (result.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
+        if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
+          && !oldStateNameList.contains(result.state.name)
+        ) {
+          hasGeneralContinueButton = true
+          canContinueToNextState = false
+        } else if (result.completedState.answerList.size > 0
+          && oldStateNameList.contains(result.state.name)
+        ) {
+          canContinueToNextState = true
+          hasGeneralContinueButton = false
         }
-
-        updateNavigationButtonVisibility(
-          interactionId,
-          hasPreviousState,
-          hasNextState,
-          hasGeneralContinueButton
-        )
       }
+
+      updateNavigationButtonVisibility(
+        interactionId,
+        hasPreviousState,
+        canContinueToNextState,
+        hasGeneralContinueButton
+      )
     })
   }
 
@@ -227,7 +225,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
       currentAnswerOutcome = it
 
-      if (currentEphemeralState.get()!!.state.interaction.id == CONTINUE) {
+      if (currentEphemeralState.state.interaction.id == CONTINUE) {
         moveToNextState()
       }
     })
@@ -271,7 +269,7 @@ class StateFragmentPresenter @Inject constructor(
 
     if (!hasGeneralContinueButton) {
       val interactionObject: InteractionObject = getDummyInteractionObject()
-      when (currentEphemeralState.get()!!.state.interaction.id) {
+      when (currentEphemeralState.state.interaction.id) {
         END_EXPLORATION -> endExploration()
         CONTINUE -> subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
         MULTIPLE_CHOICE_INPUT -> subscribeToAnswerOutcome(
@@ -316,16 +314,16 @@ class StateFragmentPresenter @Inject constructor(
   private fun checkAndUpdateOldStateNameList() {
     if (currentAnswerOutcome != null
       && !currentAnswerOutcome!!.sameState
-      && !oldStateNameList.contains(currentEphemeralState.get()!!.state.name)
+      && !oldStateNameList.contains(currentEphemeralState.state.name)
     ) {
-      oldStateNameList.add(currentEphemeralState.get()!!.state.name)
+      oldStateNameList.add(currentEphemeralState.state.name)
     }
   }
 
   private fun updateNavigationButtonVisibility(
     interactionId: String,
     hasPreviousState: Boolean,
-    hasNextState: Boolean,
+    canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean
   ) {
     getStateButtonViewModel().setPreviousButtonVisible(hasPreviousState)
@@ -335,9 +333,9 @@ class StateFragmentPresenter @Inject constructor(
         getStateButtonViewModel().clearObservableInteractionId()
         getStateButtonViewModel().setObservableInteractionId(CONTINUE)
       }
-      hasNextState -> {
+      canContinueToNextState -> {
         getStateButtonViewModel().clearObservableInteractionId()
-        getStateButtonViewModel().setNextButtonVisible(hasNextState)
+        getStateButtonViewModel().setNextButtonVisible(canContinueToNextState)
       }
       else -> {
         getStateButtonViewModel().setObservableInteractionId(interactionId)
@@ -363,13 +361,13 @@ class StateFragmentPresenter @Inject constructor(
 
   // TODO(#163): Remove this function, this is just for dummy testing purposes.
   private fun updateDummyStateName(){
-    getStateViewModel().setStateName(currentEphemeralState.get()!!.state.name)
+    getStateViewModel().setStateName(currentEphemeralState.state.name)
   }
 
   // TODO(#163): Remove this function and fetch this InteractionObject from [StateAdapter].
   private fun getDummyInteractionObject(): InteractionObject {
     val interactionObjectBuilder: InteractionObject.Builder = InteractionObject.newBuilder()
-    when (currentEphemeralState.get()!!.state.name) {
+    when (currentEphemeralState.state.name) {
       "Welcome!" -> interactionObjectBuilder.nonNegativeInt = 0
       "What language" -> interactionObjectBuilder.normalizedString = "finnish"
       "Things you can do" -> createContinueButtonAnswer()

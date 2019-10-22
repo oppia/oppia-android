@@ -37,7 +37,7 @@
     <Button
       android:id="@+id/interaction_button"
       style="@style/StateButtonActive"
-      buttonDrawable="@{buttonViewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"
+      android:button="@{buttonViewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"
       android:layout_alignParentEnd="true"
       android:clickable="@{buttonViewModel.isInteractionButtonActive()}"
       android:drawableEnd="@{buttonViewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
