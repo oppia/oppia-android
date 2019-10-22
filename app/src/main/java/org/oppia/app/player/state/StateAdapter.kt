@@ -116,11 +116,11 @@ class StateAdapter(
         val binding =
           DataBindingUtil.inflate<SelectionInteractionItemBinding>(
             inflater,
-            R.layout.state_button_item,
+            R.layout.selection_interaction_item,
             parent,
             /* attachToParent= */false
           )
-        SelectionInteractionViewHolder(binding)
+        SelectionInteractionViewHolder(binding, interactionListener)
       }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
@@ -155,6 +155,7 @@ class StateAdapter(
       is NumericInputInteractionViewModel -> VIEW_TYPE_NUMERIC_INPUT_INTERACTION
       is TextInputInteractionViewModel -> VIEW_TYPE_TEXT_INPUT_INTERACTION
       is InteractionReadOnlyViewModel -> VIEW_TYPE_INTERACTION_READ_ONLY
+      is SelectionInteractionViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
@@ -244,15 +245,16 @@ class StateAdapter(
     }
   }
 
-  inner class SelectionInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class SelectionInteractionViewHolder(
+    val binding: ViewDataBinding,
+    private val interactionListener: InteractionListener
+  ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(choiceList: SelectionInteractionViewModel) {
       var items: Array<String>? = null
-      binding.setVariable(BR.choiceItems, choiceList)
       binding.executePendingBindings()
-
-      val gaeCustomArgsInString: String = choiceList.toString().replace("[", "").replace("]", "")
+      val gaeCustomArgsInString: String = choiceList.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
-      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId);
+      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId, interactionListener);
         binding.root.selection_interactions_recyclerview.adapter = interactionAdapter
 
     }
@@ -273,6 +275,9 @@ class StateAdapter(
       when (inputInteractionView) {
         is NumericInputInteractionView -> {
           (inputInteractionView as NumericInputInteractionView).getPendingAnswer()
+        }
+        is TextInputInteractionView -> {
+          (inputInteractionView as TextInputInteractionView).getPendingAnswer()
         }
         is TextInputInteractionView -> {
           (inputInteractionView as TextInputInteractionView).getPendingAnswer()

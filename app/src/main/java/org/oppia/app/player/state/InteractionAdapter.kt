@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
+import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.listener.InteractionAnswerRetriever
+import org.oppia.app.player.state.listener.InteractionListener
 import org.oppia.util.parser.HtmlParser
 
 const val VIEW_TYPE_MULTIPLE_CHOICE = 1
@@ -24,8 +26,9 @@ class InteractionAdapter(
   private val entityType: String,
   private val explorationId: String,
   val itemList: Array<String>?,
-  private val interactionId: String
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+  private val interactionId: String,
+  private val interactionListener: InteractionListener
+  ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var mSelectedItem = -1
 
@@ -60,12 +63,12 @@ class InteractionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
-        itemList!!.get(position) as SelectionContentViewModel,
+        itemList!!.get(position),
         position,
         mSelectedItem
       )
       VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
-        itemList!!.get(position) as SelectionContentViewModel,
+        itemList!!.get(position),
         position,
         mSelectedItem
       )
@@ -86,14 +89,13 @@ class InteractionAdapter(
   }
 
   private inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: SelectionContentViewModel, position: Int, selectedPosition: Int) {
-      binding.setVariable(BR.htmlContent, rawString.htmlContent)
+    internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
+      binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-        rawString.htmlContent,
+        rawString,
         binding.root.tv_item_selection_contents
       )
-//      val html: Spannable = HtmlParser(context,entityType,entityId).parseHtml(rawString, binding.root.tv_item_selection_contents)
       binding.root.tv_item_selection_contents.text = htmlResult
 
       binding.root.rl_checkbox_container.setOnClickListener {
@@ -101,20 +103,21 @@ class InteractionAdapter(
           binding.root.cb_item_selection.setChecked(false)
         else
           binding.root.cb_item_selection.setChecked(true)
+        interactionListener.onInteractionButtonClicked()
         notifyDataSetChanged()
       }
     }
   }
 
   private inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: SelectionContentViewModel, position: Int, selectedPosition: Int) {
-      binding.setVariable(BR.htmlContent, rawString.htmlContent)
+    internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
+      binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings();
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-        rawString.htmlContent,
+        rawString,
         binding.root.tv_multiple_choice_contents
       )
-      binding.root.tv_item_selection_contents.text = htmlResult
+      binding.root.tv_multiple_choice_contents.text = htmlResult
 
       if (selectedPosition == position)
         binding.root.rb_multiple_choice.setChecked(true)
@@ -123,6 +126,7 @@ class InteractionAdapter(
 
       binding.root.rl_radio_container.setOnClickListener {
         mSelectedItem = getAdapterPosition()
+        interactionListener.onInteractionButtonClicked()
         notifyDataSetChanged()
       }
     }
