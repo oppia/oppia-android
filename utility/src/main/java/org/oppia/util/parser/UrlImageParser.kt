@@ -18,7 +18,7 @@ import javax.inject.Singleton
 // TODO(#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
-  @ApplicationContext private val context: Context,
+  private val context: Context,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
   @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
@@ -75,14 +75,23 @@ class UrlImageParser private constructor(
   }
 
   class Factory @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
     @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     @ImageLoaderAnnotation private val imageLoader: ImageLoader
   ) {
     fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
-      return UrlImageParser(context,gcsPrefix,gcsResource,imageDownloadUrlTemplate,htmlContentTextView, entityType, entityId,imageLoader)
+      return UrlImageParser(
+        context,
+        gcsPrefix,
+        gcsResource,
+        imageDownloadUrlTemplate,
+        htmlContentTextView,
+        entityType,
+        entityId,
+        imageLoader
+      )
     }
   }
 }

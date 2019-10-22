@@ -19,19 +19,28 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".activity.InputInteractionViewTestActivity" />
     <activity android:name="org.oppia.app.home.HomeActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
+      <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+      <!--</intent-filter>-->
+      <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.VIEW" />-->
+        <!--<category android:name="android.intent.category.DEFAULT" />-->
+      <!--</intent-filter>-->
     </activity>
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
-    <activity android:name=".testing.HtmlParserTestActivity"/>
+    <activity android:name=".testing.HtmlParserTestActivity">
+    <intent-filter>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+    <intent-filter>
+      <action android:name="android.intent.action.VIEW" />
+      <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+    </activity>
   </application>
 </manifest>

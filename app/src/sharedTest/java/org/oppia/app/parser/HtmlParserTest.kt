@@ -47,9 +47,6 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmldisplaysStyledText() {
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlResult: Spannable = htmlParserFactory.create( /* entityType= */ "",  /* entityId= */ "")
       .parseOppiaHtml(
@@ -63,9 +60,6 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlResult: Spannable = htmlParserFactory.create( /* entityType= */ "",  /* entityId= */ "")
       .parseOppiaHtml(
