@@ -27,5 +27,9 @@ class QuestionPlayerActivity : InjectableAppCompatActivity() {
       intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
       return intent
     }
+
+    fun getIntentKey(): String {
+      return QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
+    }
   }
 }
