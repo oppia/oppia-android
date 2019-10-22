@@ -26,20 +26,6 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 @RunWith(AndroidJUnit4::class)
 class StateFragmentContentCardTest {
 
-  private lateinit var launchedActivity: Activity
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
-    HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Before
-  fun setUp() {
-    Intents.init()
-    val intent = Intent(Intent.ACTION_PICK)
-    launchedActivity = activityTestRule.launchActivity(intent)
-  }
-
   @Test
   fun testContentCard_loadExplorationTest5_handleCustomOppiaTags_parsedHtmlDisplaysCorrectly() {
     ActivityScenario.launch(HomeActivity::class.java).use {
@@ -48,9 +34,5 @@ class StateFragmentContentCardTest {
             "Incidentally, do you know where the name 'Oppia' comes from?\n\n"
       onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
     }
-  }
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 }
