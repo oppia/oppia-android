@@ -18,8 +18,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.oppia.app.customview.interaction.FractionInputInteractionView
+import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
+import org.oppia.app.model.NumberUnit
+import org.oppia.app.model.NumberWithUnits
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -167,6 +170,63 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
+      .check(
+        matches(withText("9/5"))
+      )
+    activityScenario.recreate()
+    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
+      .check(
+        matches(withText("9/5"))
+      )
+  }
+ @Test
+  fun testNumberWithUnitsInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_fraction_input_interaction_view) as NumberWithUnitsInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().numberWithUnits.real).isEqualTo(0)
+      assertThat(textAnswerRetriever.getPendingAnswer().numberWithUnits.getUnit(0)).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testNumberWithUnitsInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9 cm"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_fraction_input_interaction_view) as NumberWithUnitsInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(textAnswerRetriever.getPendingAnswer().numberWithUnits.real).isEqualTo(9)
+      assertThat(textAnswerRetriever.getPendingAnswer().numberWithUnits.getUnit(0)).isEqualTo(NumberUnit.newBuilder().setUnit("cm"))
+    }
+  }
+
+  @Test
+  fun testNumberWithUnitsInputInteractionView_withInputtedNegativeValue_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9/10"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_fraction_input_interaction_view) as NumberWithUnitsInputInteractionView
+      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
+      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(true)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
+      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+    }
+  }
+
+  @Test
+  fun testNumberWithUnitsInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
