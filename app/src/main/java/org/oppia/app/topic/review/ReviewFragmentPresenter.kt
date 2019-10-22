@@ -10,9 +10,7 @@ import javax.inject.Inject
 
 /** The presenter for [ReviewFragment]. */
 @FragmentScope
-class ReviewFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
-) {
+class ReviewFragmentPresenter @Inject constructor(private val fragment: Fragment) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {

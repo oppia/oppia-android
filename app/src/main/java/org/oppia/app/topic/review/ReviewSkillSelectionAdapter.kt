@@ -57,7 +57,7 @@ class ReviewSkillSelectionAdapter(private val reviewSkillSelector: ReviewSkillSe
   }
 
   inner class SkillViewHolder(val binding: TopicReviewSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(skill: SkillSummary, position: Int) {
+    internal fun bind(skill: SkillSummary, @Suppress("UNUSED_PARAMETER") position: Int) {
       binding.setVariable(BR.skill, skill)
       binding.root.setOnClickListener {
         reviewSkillSelector.onTopicReviewSummaryClicked(skill)

@@ -71,12 +71,14 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      it.recreate()
+      onView(atPosition(R.id.review_skill_recycler_view, 0))
+        .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
-    activityScenario.recreate()
-    onView(atPosition(R.id.review_skill_recycler_view, 0))
-      .check(matches(hasDescendant(withId(R.id.skill_name))))
   }
 
   @After

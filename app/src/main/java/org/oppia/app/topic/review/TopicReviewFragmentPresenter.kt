@@ -14,7 +14,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToReviewListener
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -73,7 +72,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicTrainFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicReviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }

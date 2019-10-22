@@ -6,9 +6,9 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY = "ReviewActivity.skill_id"
+private const val REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY = "ReviewActivity.skill_id"
 
-/** Activity for Review in train mode. */
+/** Activity for skill review from Review tab. */
 class ReviewActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var reviewActivityPresenter: ReviewActivityPresenter
@@ -28,6 +28,7 @@ class ReviewActivity : InjectableAppCompatActivity() {
       return intent
     }
 
+    @Suppress("unused")
     fun getIntentKey():String{
       return REVIEW_ACTIVITY_SKILL_ID_ARGUMENT_KEY
     }

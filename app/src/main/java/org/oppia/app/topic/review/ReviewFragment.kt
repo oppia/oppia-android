@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that review skill deta. */
+/** Fragment to show content for skill review. */
 class ReviewFragment: InjectableFragment(){
   @Inject
   lateinit var reviewFragmentPresenter: ReviewFragmentPresenter
