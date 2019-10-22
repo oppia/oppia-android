@@ -99,11 +99,11 @@ class InteractionAdapter(
       )
       binding.root.tv_item_selection_contents.text = htmlResult
 
-      binding.root.rl_checkbox_container.setOnClickListener {
-        if (binding.root.cb_item_selection.isChecked)
-          binding.root.cb_item_selection.setChecked(false)
+      binding.root.checkbox_container.setOnClickListener {
+        if (binding.root.item_selection_checkbox.isChecked)
+          binding.root.item_selection_checkbox.setChecked(false)
         else
-          binding.root.cb_item_selection.setChecked(true)
+          binding.root.item_selection_checkbox.setChecked(true)
         notifyDataSetChanged()
       }
     }
@@ -120,11 +120,11 @@ class InteractionAdapter(
       binding.root.tv_multiple_choice_contents.text = htmlResult
 
       if (selectedPosition == position)
-        binding.root.rb_multiple_choice.setChecked(true)
+        binding.root.multiple_choice_radio_button.setChecked(true)
       else
-        binding.root.rb_multiple_choice.setChecked(false)
+        binding.root.multiple_choice_radio_button.setChecked(false)
 
-      binding.root.rl_radio_container.setOnClickListener {
+      binding.root.radio_container.setOnClickListener {
         mSelectedItem = getAdapterPosition()
         selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()

@@ -6,13 +6,13 @@
       type="String"/>
   </data>
   <RelativeLayout
-    android:id="@+id/rl_checkbox_container"
+    android:id="@+id/checkbox_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:orientation="vertical">
     <androidx.appcompat.widget.AppCompatCheckBox
-      android:id="@+id/cb_item_selection"
+      android:id="@+id/item_selection_checkbox"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:padding="4dp"
@@ -21,7 +21,7 @@
       android:id="@+id/tv_item_selection_contents"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@+id/cb_item_selection"
+      android:layout_toRightOf="@+id/item_selection_checkbox"
       android:padding="4dp"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaDarkBlue"/>
