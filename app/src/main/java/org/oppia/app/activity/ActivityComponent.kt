@@ -13,7 +13,6 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.review.ReviewActivity
 import javax.inject.Provider
 
 /** Root subcomponent for all activities. */
@@ -33,7 +32,6 @@ interface ActivityComponent {
   fun inject(homeActivity: HomeActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(reviewActivity: ReviewActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)

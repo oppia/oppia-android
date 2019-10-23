@@ -1,15 +1,17 @@
 package org.oppia.app.topic
 
 import android.os.Bundle
-import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.review.ReviewActivity
 import javax.inject.Inject
+
+private const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
 
 /** The activity for tabs in Topic. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToReviewListener {
-  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject
+  lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -22,6 +24,13 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToReview(skillId: String) {
-    startActivity(ReviewActivity.createReviewActivityIntent(this, skillId))
+    if (getConceptCardFragment() == null) {
+      val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
+      conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
+    }
+  }
+
+  private fun getConceptCardFragment(): ConceptCardFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
   }
 }
