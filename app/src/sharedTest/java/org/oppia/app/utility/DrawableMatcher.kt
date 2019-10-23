@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 
 // https://github.com/dbottillo/Blog/blob/espresso_match_imageview/app/src/androidTest/java/com/danielebottillo/blog/config/DrawableMatcher.java
-/** This class mainly provides a custom matcher to test cases whether the drawable-image is correctly shown in ImageView. */
+/** This class mainly provides a custom matcher to test whether the drawable-image is correctly shown in ImageView. */
 class DrawableMatcher internal constructor(private val expectedId: Int) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
     internal const val EMPTY = -1
