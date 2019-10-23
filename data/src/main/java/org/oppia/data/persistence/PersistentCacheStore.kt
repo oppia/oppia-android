@@ -203,7 +203,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
-  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for cross-module circular
+  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for cross-module circular_progress
   // dependencies. Currently, the data module cannot depend on the app module.
   /**
    * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable from central
