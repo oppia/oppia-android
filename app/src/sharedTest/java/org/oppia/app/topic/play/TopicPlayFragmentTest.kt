@@ -2,20 +2,24 @@ package org.oppia.app.topic.play
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -25,11 +29,38 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicPlayFragmentTest {
 
+  // TODO(#137): Add following test-cases once story-progress function is implemented and expandable list is introduced.
+  //  Story progress is is displayed correctly.
+  //  Click on arrow to show and hide expandable list is working correctly.
+  //  Expandable list is showing correct chapter names.
+  //  Upon configuration change expanded list should remain expanded.
+  //  Click on story-title or entire item should open [StoryActivity].
+  //  Click on chapter in expandable list should start exploration.
+
+  @get:Rule
+  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Test
-  fun testTopicPlayFragment_loadFragment_textIsDisplayed() {
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyName_isCorrect() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(withId(R.id.dummy_text_view)).check(matches(withText("This is dummy TextView for testing")))
+      onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("First Story"))))
     }
+  }
+
+  @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCount_isCorrect() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("1 Chapter"))))
+    }
+  }
+
+  @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
+    activityTestRule.launchActivity(null)
+    activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("1 Chapter"))))
   }
 
   @Module
