@@ -77,7 +77,7 @@ class InteractionAdapter(
 
   // Determines the appropriate ViewType according to the interaction type.
   override fun getItemViewType(position: Int): Int {
-    return if (interactionId.equals("ItemSelectionInput")) {
+    return if (interactionId == "ItemSelectionInput") {
       VIEW_TYPE_ITEM_SELECTION
     } else {
       VIEW_TYPE_MULTIPLE_CHOICE
