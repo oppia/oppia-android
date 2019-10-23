@@ -94,9 +94,9 @@ class InteractionAdapter(
       binding.executePendingBindings();
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString,
-        binding.root.tv_item_selection_contents
+        binding.root.item_selection_contents_text_view
       )
-      binding.root.tv_item_selection_contents.text = htmlResult
+      binding.root.item_selection_contents_text_view.text = htmlResult
 
       binding.root.checkbox_container.setOnClickListener {
         if (binding.root.item_selection_checkbox.isChecked)
@@ -114,9 +114,9 @@ class InteractionAdapter(
       binding.executePendingBindings();
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString,
-        binding.root.tv_multiple_choice_contents
+        binding.root.multiple_choice_content_text_view
       )
-      binding.root.tv_multiple_choice_contents.text = htmlResult
+      binding.root.multiple_choice_content_text_view.text = htmlResult
 
       if (selectedPosition == position)
         binding.root.multiple_choice_radio_button.setChecked(true)

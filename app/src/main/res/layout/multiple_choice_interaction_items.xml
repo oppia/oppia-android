@@ -19,7 +19,7 @@
       android:focusable="false"
       app:buttonTint="@color/oppiaDarkBlue"/>
     <TextView
-      android:id="@+id/tv_multiple_choice_contents"
+      android:id="@+id/multiple_choice_content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@+id/multiple_choice_radio_button"
