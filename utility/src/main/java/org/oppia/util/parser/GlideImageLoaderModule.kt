@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 /** Provides image loading dependencies. */
 @Module
-class ImageLoaderModule {
+class GlideImageLoaderModule {
 
   @Provides
   @Singleton
