@@ -1,4 +1,4 @@
-package org.oppia.app.activity
+package org.oppia.app.testing
 
 import android.content.res.Configuration
 import androidx.test.espresso.Espresso.onView
