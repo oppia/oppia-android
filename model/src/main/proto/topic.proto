@@ -74,7 +74,7 @@ message ChapterSummary {
   // The chapter's name (which is the same as the exploration's title).
   string name = 2;
 
-  // Summary of this chapter
+  // Summary of this chapter.
   string summary = 3;
 
   enum Playability {

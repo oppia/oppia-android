@@ -68,6 +68,7 @@ class HomeFragmentPresenter @Inject constructor(
     })
   }
 
+  // TODO(#134): Remove this method once it is possible to navigate to story activity in normal flow
   fun openStory(v: View) {
     val intent = Intent(fragment.activity, StoryActivity::class.java)
     fragment.activity?.startActivity(intent)

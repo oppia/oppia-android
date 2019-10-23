@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 private const val KEY_STORY_ID = "STORY_ID"
 
-/** A fragment that contains stories*/
+/** Fragment for displaying a story. */
 class StoryFragment : InjectableFragment() {
 
   companion object {
@@ -27,6 +27,7 @@ class StoryFragment : InjectableFragment() {
       return storyFragment
     }
   }
+
   @Inject lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
   override fun onAttach(context: Context?) {

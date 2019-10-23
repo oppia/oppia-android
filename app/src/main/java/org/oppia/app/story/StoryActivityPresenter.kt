@@ -6,7 +6,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.topic.TEST_STORY_ID_1
 import javax.inject.Inject
 
-/** The controller for [StoryActivity]. */
+/** The presenter for [StoryActivity]. */
 @ActivityScope
 class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {

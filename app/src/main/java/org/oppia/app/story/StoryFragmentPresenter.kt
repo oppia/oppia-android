@@ -14,7 +14,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The controller for [StoryFragment] */
+/** The presented for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
