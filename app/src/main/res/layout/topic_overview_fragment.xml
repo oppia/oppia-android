@@ -87,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view"/>
       <ImageView
         android:id="@+id/download_status_image_view"
-        android:src="@{viewModel.downloadStatus, default=@drawable/ic_file_download_primary_24dp}"
+        android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_file_download_primary_24dp}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

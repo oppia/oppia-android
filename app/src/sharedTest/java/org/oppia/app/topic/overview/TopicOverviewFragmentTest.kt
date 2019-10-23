@@ -35,7 +35,7 @@ class TopicOverviewFragmentTest {
   )
 
   @Test
-  fun testTopicOverviewFragment_loadFragmentTest1_topicNameIsDisplayed() {
+  fun testTopicOverviewFragment_loadFragment_topicNameIsDisplayed() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.topic_name_text_view)).check(matches(withText("Second Test Topic")))
     }
@@ -43,14 +43,14 @@ class TopicOverviewFragmentTest {
 
   // TODO(#135): Update this test case to check on click of See More play tab is shown.
   @Test
-  fun testTopicOverviewFragment_loadFragmentTest1_seeMoreIsClickable() {
+  fun testTopicOverviewFragment_loadFragment_seeMoreIsClickable() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.see_more_text_view)).check(matches(isClickable()))
     }
   }
 
   @Test
-  fun testTopicOverviewFragment_loadFragmentTest1_configuration_change_topicNameIsDisplayed() {
+  fun testTopicOverviewFragment_loadFragment_configurationChange_topicNameIsDisplayed() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     onView(withId(R.id.topic_name_text_view)).check(matches(withText("Second Test Topic")))
