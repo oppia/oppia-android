@@ -26,6 +26,16 @@ class DirectoryManagementUtil @Inject constructor(private val context: Context) 
    * @return whether directory was successfully deleted.
    */
   fun deleteDir(profileId: String): Boolean {
-    return context.deleteFile(profileId)
+    return deleteRecursive(getOrCreateDir(profileId))
+  }
+
+  /** Directories must be empty first before deleting */
+  private fun deleteRecursive(file: File): Boolean {
+    if (file.isDirectory) {
+      file.listFiles().forEach {
+        deleteRecursive(it)
+      }
+    }
+    return file.delete()
   }
 }

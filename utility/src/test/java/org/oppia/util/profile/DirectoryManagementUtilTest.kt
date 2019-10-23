@@ -49,23 +49,13 @@ import kotlin.coroutines.EmptyCoroutineContext
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var directoryManagementUtil: DirectoryManagementUtil
 
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
 
   @Inject
   lateinit var context: Context
-
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -87,6 +77,11 @@ class DirectoryManagementUtilTest {
     testThread.close()
   }
 
+  private val TEST_DIRECTORY_1 = "TEST_DIRECTORY_1"
+  private val TEST_DIRECTORY_2 = "TEST_DIRECTORY_2"
+  private val TEST_FILE_1 = "TEST_FILE_1"
+  private val TEST_FILE_2 = "TEST_FILE_2"
+
   private fun setUpTestApplicationComponent() {
     DaggerDirectoryManagementUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -95,17 +90,70 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testDirectoryManagementUtil() = runBlockingTest(coroutineContext) {
-    // TODO(#16): Finish test cases with full implementation
-    val f1 = directoryManagementUtil.getOrCreateDir("hello1")
-    directoryManagementUtil.getOrCreateDir("hello2")
-    val test = directoryManagementUtil.getOrCreateDir("hello3")
-    val files = context.filesDir
-    val huh = File(files, "yeah")
-    huh.createNewFile()
-    val list = context.fileList()
-    val yes = File(context.filesDir.toString().dropLast(5) + "app_" + "hello1").exists()
+  fun testUtil_createDir_checkDirExists() {
+    directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    val dir = File(getAbsoluteDirPath(TEST_DIRECTORY_1))
+
+    assertThat(dir.exists()).isTrue()
+  }
+
+  @Test
+  fun testUtil_createDir_getSameDir_checkDirsEquality() {
+    val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    val sameDir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    assertThat(dir).isEqualTo(sameDir)
+  }
+
+  @Test
+  fun testUtil_createDir_createDifferentDir_checkDirsNotEqual() {
+    val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    val diffDir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_2)
+
+    assertThat(dir).isNotEqualTo(diffDir)
+  }
+
+  @Test
+  fun testUtil_createDir_restartApplication_checkDirExists() {
+    directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    setUpTestApplicationComponent()
+
+    val dir = File(getAbsoluteDirPath(TEST_DIRECTORY_1))
+    assertThat(dir.exists()).isTrue()
+  }
+
+
+  @Test
+  fun testUtil_createDir_deleteDir_checkDirDoesNotExist() {
+    directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    val success = directoryManagementUtil.deleteDir(TEST_DIRECTORY_1)
+
+    val dir = File(getAbsoluteDirPath(TEST_DIRECTORY_1))
+    assertThat(dir.exists()).isFalse()
+    assertThat(success).isTrue()
+  }
+
+  @Test
+  fun testUtil_createDir_createFilesUnderDir_deleteDir_checkDirDoesNotExist() {
+    val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+    val file1 = File(dir, TEST_FILE_1)
+    file1.createNewFile()
+    val file2 = File(dir, TEST_FILE_2)
+    file2.createNewFile()
+
+    val success = directoryManagementUtil.deleteDir(TEST_DIRECTORY_1)
+
+    assertThat(dir.exists()).isFalse()
+    assertThat(success).isTrue()
+  }
+
+  private fun getAbsoluteDirPath(path: String): String {
+    return context.filesDir.toString().dropLast(5) + "app_" + path
   }
 
   @Qualifier
