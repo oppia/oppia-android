@@ -7,25 +7,23 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
-import org.junit.After
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -34,12 +32,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicReviewFragmentTest {
 
-  private var skillId = "test_skill_id_0"
-
-  @Before
-  fun setUp() {
-    Intents.init()
-  }
+  @get:Rule
+  var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Test
   fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessfully() {
@@ -51,11 +47,11 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_opensReviewActivity() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.review_skill_recycler_view, 0)).perform(click())
-      //intended(hasComponent(ReviewActivity::class.java.name))
-      //intended(hasExtra(ReviewActivity.getIntentKey(), skillId))
-    }
+    topicActivityTestRule.launchActivity(null)
+    onView(atPosition(R.id.review_skill_recycler_view, 0)).perform(click())
+    val conceptCardFragment: ConceptCardFragment? = topicActivityTestRule.activity.supportFragmentManager
+      .findFragmentByTag(TopicActivity.getConceptCardFragmentTag()) as ConceptCardFragment
+    assertTrue(conceptCardFragment != null)
   }
 
   @Test
@@ -68,11 +64,6 @@ class TopicReviewFragmentTest {
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   @Module

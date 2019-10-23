@@ -33,4 +33,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   private fun getConceptCardFragment(): ConceptCardFragment? {
     return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
   }
+
+  companion object {
+    fun getConceptCardFragmentTag(): String {
+      return TAG_CONCEPT_CARD_DIALOG
+    }
+  }
 }
