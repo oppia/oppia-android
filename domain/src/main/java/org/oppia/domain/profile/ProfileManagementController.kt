@@ -3,11 +3,13 @@ package org.oppia.domain.profile
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,17 +18,30 @@ import javax.inject.Singleton
 @Singleton
 class ProfileManagementController @Inject constructor(
   private val logger: Logger,
-  private val persistentCacheStore: PersistentCacheStore<ProfileDatabase>
+  cacheStoreFactory: PersistentCacheStore.Factory,
+  private val dataProviders: DataProviders
 ){
   private var currentProfileId: Int = -1
+  private val cellularDataStore = cacheStoreFactory.create("cellular_data_preference", ProfileDatabase.getDefaultInstance())
+  private var profileData = ProfileDatabase.getDefaultInstance()
+
+  init {
+    dataProviders.convertToLiveData(cellularDataStore).observeForever {
+      if (it.isSuccess()) {
+        profileData = it.getOrDefault(ProfileDatabase.getDefaultInstance())
+      }
+    }
+  }
 
   /** Returns the list of created profiles. */
   fun getProfiles(): LiveData<AsyncResult<List<Profile>>> {
+    // iterate through map.keys() of profileDatabase
     return MutableLiveData(AsyncResult.success(mutableListOf()))
   }
 
   /** Returns a single profile, specified by profiledId. */
   fun getProfile(profileId: ProfileId): LiveData<AsyncResult<Profile>> {
+    // use map in profileDatabase to get correct profile
     return MutableLiveData(AsyncResult.success(Profile.getDefaultInstance()))
   }
 
@@ -42,6 +57,7 @@ class ProfileManagementController @Inject constructor(
   fun addProfile(
     name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean
   ): LiveData<AsyncResult<Any?>> {
+    // check name is unique first, then add profile to list and store it, mergeFrom(Message other)
     return MutableLiveData(AsyncResult.success<Any?>(null))
   }
 
