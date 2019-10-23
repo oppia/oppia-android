@@ -47,10 +47,9 @@ class UrlImageParser private constructor(
   }
 
   private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : SimpleTarget<Bitmap>() {
-    internal var drawable: Drawable? = null
 
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      drawable = BitmapDrawable(context.resources, resource)
+      val  drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
         val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
         val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
