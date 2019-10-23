@@ -1,10 +1,10 @@
 package org.oppia.app.settings.profile
 
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** The ViewModel for [ProfileListFragment] */
+/** The ViewModel for [ProfileListFragment]. */
 @FragmentScope
-class ProfileListViewModel @Inject constructor(): ViewModel() {
+class ProfileListViewModel @Inject constructor(): ObservableViewModel() {
 }

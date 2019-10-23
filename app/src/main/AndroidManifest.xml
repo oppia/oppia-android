@@ -19,6 +19,8 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".activity.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
+    <activity android:name=".settings.profile.ProfileRenameActivity" />
+    <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

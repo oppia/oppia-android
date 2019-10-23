@@ -9,7 +9,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presenter for [ProfileEditFragment] */
+/** The presenter for [ProfileEditFragment]. */
 @FragmentScope
 class ProfileEditFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
