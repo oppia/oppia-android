@@ -6,7 +6,7 @@ import java.io.File
 
 /** Utility to manage creation and deletion of directories. */
 @Singleton
-class DirectoryManagementUtil @Inject constructor(){
+class DirectoryManagementUtil @Inject constructor() {
 
   /**
    * Gets or creates a directory associated with the given profileId.
@@ -22,8 +22,9 @@ class DirectoryManagementUtil @Inject constructor(){
    * Deletes a directory with the name specified by profileId.
    *
    * @param profileId name of directory to be deleted.
+   * @return a boolean value for whether directory was successfully deleted
    */
-  fun deleteDir(profileId: String) {
-
+  fun deleteDir(profileId: String): Boolean {
+    return true
   }
 }
