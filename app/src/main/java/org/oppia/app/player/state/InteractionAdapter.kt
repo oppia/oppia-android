@@ -35,24 +35,24 @@ class InteractionAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> {
-        val inflater = LayoutInflater.from(parent.getContext())
+        val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<MultipleChoiceInteractionItemsBinding>(
             inflater,
             R.layout.multiple_choice_interaction_items,
             parent,
-            false
+            /* attachToParent= */ false
           )
         MultipleChoiceViewHolder(binding)
       }
       VIEW_TYPE_ITEM_SELECTION -> {
-        val inflater = LayoutInflater.from(parent.getContext())
+        val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<ItemSelectionInteractionItemsBinding>(
             inflater,
             R.layout.item_selection_interaction_items,
             parent,
-            false
+            /* attachToParent= */ false
           )
         ItemSelectionViewHolder(binding)
       }
