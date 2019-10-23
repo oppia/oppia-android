@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.util.Log
@@ -23,6 +24,9 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
+import junit.framework.Assert.assertNull
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Assert
@@ -63,35 +67,32 @@ class UrlImageParserTest {
   }
 
   @Test
+  fun testImageLoader_returnSuccess() {
+    var drawable: Drawable? = null
+    imageLoader.load(
+      OK_IMAGE_URL, object : SimpleTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+          drawable =  BitmapDrawable(activityTestRule.activity.getResources(), resource);
+        }
+      }
+    )
+    assertNotNull(drawable)
+  }
+
+  @Test
   fun testImageLoader_returnError() {
     var bitmap : Bitmap? = null
-    val imageView = activityTestRule.activity.findViewById(R.id.test_url_parser_image_view) as ImageView
+    var drawable: Drawable? = null
     imageLoader.load(
       FAKE_IMAGE_URL, object : SimpleTarget<Bitmap>() {
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
            bitmap = resource
-          assertWithMessage("Failed",bitmap)
+          drawable =  BitmapDrawable(activityTestRule.activity.getResources(), bitmap);
           System.out.println(bitmap.toString() + " - Failed");
-          imageView.setImageBitmap(bitmap)
         }
       }
     )
-  }
-
-  @Test
-  fun testImageLoader_returnSuccess() {
-    var bitmap : Bitmap? = null
-    val imageView = activityTestRule.activity.findViewById(R.id.test_url_parser_image_view) as ImageView
-    imageLoader.load(
-      OK_IMAGE_URL, object : SimpleTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-          bitmap = resource
-          assertWithMessage("Pass",bitmap)
-          System.out.println(bitmap.toString() + " - passed");
-          imageView.setImageBitmap(bitmap)
-        }
-      }
-    )
+    assertNull(drawable)
   }
 
   @After
