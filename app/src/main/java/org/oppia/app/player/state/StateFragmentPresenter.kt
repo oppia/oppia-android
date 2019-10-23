@@ -99,7 +99,7 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
-    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)!!
 
     stateAdapter = StateAdapter(itemList, this as InteractionListener, htmlParserFactory, entityType, explorationId)
 
@@ -428,9 +428,6 @@ class StateFragmentPresenter @Inject constructor(
         }
         MULTIPLE_CHOICE_INPUT -> {
           addMultipleChoiceInputItem()
-        }
-        TEXT_INPUT -> {
-          addTextInputItem()
         }
       }
     }
