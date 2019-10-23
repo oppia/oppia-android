@@ -13,7 +13,7 @@ import org.oppia.app.databinding.TopicReviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToReviewListener
+import org.oppia.app.topic.RouteToConceptCardListener
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -27,9 +27,9 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
-): ReviewSkillSelector{
+) : ReviewSkillSelector {
 
-  private val routeToReviewListener = activity as RouteToReviewListener
+  private val routeToReviewListener = activity as RouteToConceptCardListener
 
   private lateinit var reviewSkillSelectionAdapter: ReviewSkillSelectionAdapter
 
@@ -50,7 +50,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicReviewSummaryClicked(skillSummary: SkillSummary) {
-    routeToReviewListener.routeToReview(skillSummary.skillId)
+    routeToReviewListener.routeToConceptCard(skillSummary.skillId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }

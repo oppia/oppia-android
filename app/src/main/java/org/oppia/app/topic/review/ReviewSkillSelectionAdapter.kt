@@ -7,30 +7,12 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.TopicReviewSummaryViewBinding
 import org.oppia.app.model.SkillSummary
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.Glide
-import androidx.databinding.BindingAdapter
-import android.widget.ImageView
 import org.oppia.app.R
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicReviewFragment]. */
 class ReviewSkillSelectionAdapter(private val reviewSkillSelector: ReviewSkillSelector) :
   RecyclerView.Adapter<ReviewSkillSelectionAdapter.SkillViewHolder>() {
-
-  companion object {
-    @JvmStatic
-    @BindingAdapter("android:src")
-    fun loadSkillThumbnail(view: ImageView, imageUrl: String) {
-      val requestOptions = RequestOptions()
-      requestOptions.placeholder(R.drawable.review_placeholder)
-
-      Glide.with(view.context)
-        .load(imageUrl)
-        .apply(requestOptions)
-        .into(view)
-    }
-  }
 
   private var skillList: List<SkillSummary> = ArrayList()
 

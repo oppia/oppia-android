@@ -9,7 +9,7 @@ import javax.inject.Inject
 private const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
 
 /** The activity for tabs in Topic. */
-class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToReviewListener {
+class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener {
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -23,7 +23,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
 
-  override fun routeToReview(skillId: String) {
+  override fun routeToConceptCard(skillId: String) {
     if (getConceptCardFragment() == null) {
       val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
       conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
