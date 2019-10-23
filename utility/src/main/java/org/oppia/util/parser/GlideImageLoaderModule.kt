@@ -9,7 +9,6 @@ import javax.inject.Singleton
 class GlideImageLoaderModule {
 
   @Provides
-  @Singleton
   @ImageLoaderAnnotation
   fun providesGlideImageLoader(): ImageLoader {
     return GlideImageLoader()
