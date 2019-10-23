@@ -53,7 +53,7 @@ class StateAdapter(
 
   private var inputInteractionView: Any = StateButtonViewModel
 
-  lateinit var stateButtonViewModel: StateButtonViewModel
+  private lateinit var stateButtonViewModel: StateButtonViewModel
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -123,7 +123,7 @@ class StateAdapter(
           )
         SelectionInteractionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type") as Throwable
+      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
@@ -254,11 +254,11 @@ class StateAdapter(
     val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(choiceList: SelectionInteractionViewModel) {
-      var items: Array<String>? = null
+      val items: Array<String>?
       binding.executePendingBindings()
       val gaeCustomArgsInString = choiceList.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
-      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId);
+      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId)
         binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
     }
   }
