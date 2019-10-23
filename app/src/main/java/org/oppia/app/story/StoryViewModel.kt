@@ -11,6 +11,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+/** The ViewModel for [StoryFragment]. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
   private val topicController: TopicController,
@@ -19,15 +20,15 @@ class StoryViewModel @Inject constructor(
   private lateinit var storyId: String
 
   val storyLiveData: LiveData<StorySummary> by lazy {
-    processStoryLiveData()
+    Transformations.map(storyResultLiveData, ::processStoryResult)
   }
 
   val storyNameLiveData: LiveData<String> by lazy {
-    processStoryNameLiveData()
+    Transformations.map(storyResultLiveData, ::processStoryName)
   }
 
   val storyChapterLiveData: LiveData<List<ChapterSummary>> by lazy {
-    processStoryChapterLiveData()
+    Transformations.map(storyResultLiveData, ::processStoryChapterList)
   }
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
@@ -38,21 +39,9 @@ class StoryViewModel @Inject constructor(
     this.storyId = storyId
   }
 
-  private fun processStoryLiveData(): LiveData<StorySummary> {
-    return Transformations.map(storyResultLiveData, ::processStoryResult)
-  }
-
-  private fun processStoryNameLiveData(): LiveData<String> {
-    return Transformations.map(storyResultLiveData, ::processStoryName)
-  }
-
-  private fun processStoryChapterLiveData(): LiveData<List<ChapterSummary>> {
-    return Transformations.map(storyResultLiveData, ::processStoryChapterList)
-  }
-
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: " + storyResult.getErrorOrNull())
+      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance())
@@ -60,7 +49,7 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryName(storyResult: AsyncResult<StorySummary>): String {
     if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: " + storyResult.getErrorOrNull())
+      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance()).storyName
@@ -68,7 +57,7 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryChapterList(storyResult: AsyncResult<StorySummary>): List<ChapterSummary> {
     if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: " + storyResult.getErrorOrNull())
+      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
