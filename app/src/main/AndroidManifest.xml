@@ -20,6 +20,7 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name="org.oppia.app.home.HomeActivity" />
     <activity android:name=".activity.InputInteractionViewTestActivity" />
+    <activity android:name=".profile.ProfileActivity" />
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
