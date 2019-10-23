@@ -15,11 +15,11 @@
     <activity android:name="org.oppia.app.player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".player.exploration.ExplorationActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
-    <activity android:name=".topic.TopicActivity" />
+    <activity android:name=".home.HomeActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".activity.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
-    <activity android:name="org.oppia.app.home.HomeActivity">
+    <activity android:name=".topic.TopicActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
