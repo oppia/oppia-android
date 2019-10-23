@@ -11,6 +11,7 @@ import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.app.testing.UrlImageParserTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
@@ -31,6 +32,7 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivty: HtmlParserTestActivity)
+  fun inject(urlImageParserTestActivity: UrlImageParserTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(topicActivity: TopicActivity)
