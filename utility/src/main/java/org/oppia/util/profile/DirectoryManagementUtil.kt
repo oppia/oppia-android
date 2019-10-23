@@ -22,7 +22,7 @@ class DirectoryManagementUtil @Inject constructor() {
    * Deletes a directory with the name specified by profileId.
    *
    * @param profileId name of directory to be deleted.
-   * @return a boolean value for whether directory was successfully deleted
+   * @return whether directory was successfully deleted.
    */
   fun deleteDir(profileId: String): Boolean {
     return true

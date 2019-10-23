@@ -23,7 +23,7 @@ message Profile {
   string name = 2;
 
   // Determines whether profile is locked by a PIN.
-  bool hasPin = 3;
+  bool has_pin = 3;
 
   // PIN of the profile.
   string pin = 4;
@@ -34,7 +34,7 @@ message Profile {
   // Determines whether profile is admin.
   bool is_admin = 6;
 
-  // Determine whether profile can download content.
+  // Determines whether profile can download content.
   bool allow_download_access = 7;
 
   // Represents the time the user was last logged in.

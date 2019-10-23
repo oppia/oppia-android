@@ -20,12 +20,12 @@ class ProfileManagementController @Inject constructor(
 ){
   private var currentProfileId: Int = -1
 
-  /** @return the list of created profiles. */
+  /** Returns the list of created profiles. */
   fun getProfiles(): LiveData<AsyncResult<List<Profile>>> {
     return MutableLiveData(AsyncResult.success(mutableListOf()))
   }
 
-  /** @return a single profile, specified by profiledId. */
+  /** Returns a single profile, specified by profiledId. */
   fun getProfile(profileId: ProfileId): LiveData<AsyncResult<Profile>> {
     return MutableLiveData(AsyncResult.success(Profile.getDefaultInstance()))
   }
@@ -48,8 +48,8 @@ class ProfileManagementController @Inject constructor(
   /**
    * Updates the name of an existing profile.
    *
-   * @param profileId Contains internal id for the profile to be updated.
-   * @param newName New name for the profile to be updated.
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param newName New name for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateName(profileId: ProfileId, newName: String): LiveData<AsyncResult<Any?>> {
@@ -59,8 +59,8 @@ class ProfileManagementController @Inject constructor(
   /**
    * Updates the PIN of an existing profile.
    *
-   * @param profileId Contains internal id for the profile to be updated.
-   * @param newPin New pin for the profile to be updated.
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param newPin New pin for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updatePin(profileId: ProfileId, newPin: String): LiveData<AsyncResult<Any?>> {
@@ -70,8 +70,8 @@ class ProfileManagementController @Inject constructor(
   /**
    * Updates the download access of an existing profile.
    *
-   * @param profileId Contains internal id for the profile to be updated.
-   * @param allowDownloadAccess New download access status for the profile to be updated.
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param allowDownloadAccess New download access status for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateDownloadAccess(
@@ -83,7 +83,7 @@ class ProfileManagementController @Inject constructor(
   /**
    * Deletes an existing profile.
    *
-   * @param profileId Contains internal id for the profile to be deleted.
+   * @param profileId the ID corresponding to the profile being deleted.
    * @return a [LiveData] that indicates the success/failure of this delete operation.
    */
   fun deleteProfile(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
@@ -91,8 +91,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * @return The ProfileId of the current profile.
-   *     The default value is -1 if currentProfileId hasn't been set.
+   * Returns the ProfileId of the current profile. The default value is -1 if currentProfileId
+   * hasn't been set.
    */
   fun getCurrentProfileId(): ProfileId {
     return ProfileId.newBuilder().setInternalId(currentProfileId).build()
@@ -102,7 +102,7 @@ class ProfileManagementController @Inject constructor(
    * Sets the currentProfileId to the selected profile in ProfileChooserFragment.
    * Checks to ensure that profileId corresponds to an existing profile.
    *
-   * @param profileId Contains internal id for the profile to be set.
+   * @param profileId the ID corresponding to the profile being set.
    * @return a [LiveData] that indicates the success/failure of this set operation.
    */
   fun setCurrentProfileId(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
