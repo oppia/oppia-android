@@ -9,5 +9,5 @@ import javax.inject.Inject
 class SelectionInteractionViewModel @Inject constructor() : ViewModel() {
 
   var choiceItems: MutableList<String>? = null
-  var interactionId: String =""
+  var interactionId: String = ""
 }
