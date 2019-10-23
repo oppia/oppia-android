@@ -29,7 +29,7 @@ class StateSelectionInteractionTest {
   fun testMultipleChoiceInput_showsRadioButtons_loadExplorationTest5_handleCustomOppiaTags_userSelectsDesiredOption() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(RecyclerViewMatcher.atPosition(R.id.selection_interactions_recyclerview, 0)).perform(click())
+      onView(RecyclerViewMatcher.atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
     }
   }
 

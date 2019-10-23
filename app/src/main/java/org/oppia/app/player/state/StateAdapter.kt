@@ -259,7 +259,7 @@ class StateAdapter(
       val gaeCustomArgsInString: String = choiceList.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
       val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId);
-        binding.root.selection_interactions_recyclerview.adapter = interactionAdapter
+        binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
     }
   }
 
