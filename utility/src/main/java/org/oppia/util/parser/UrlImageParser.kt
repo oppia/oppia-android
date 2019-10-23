@@ -29,7 +29,7 @@ class UrlImageParser private constructor(
 ) : Html.ImageGetter {
 
 
-  /***
+  /**
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
    * @return Drawable : Drawable representation of the image.
