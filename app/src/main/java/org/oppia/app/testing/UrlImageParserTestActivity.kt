@@ -2,7 +2,6 @@ package org.oppia.app.testing
 
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 
