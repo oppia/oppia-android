@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-
   <data>
-
     <variable
       name="storySummary"
       type="org.oppia.app.model.StorySummary" />
   </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="32dp">
-
     <FrameLayout
       android:id="@+id/story_progress_container"
       android:layout_width="50dp"
       android:layout_height="50dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
-
       <ProgressBar
         android:id="@+id/story_progress"
         style="?android:attr/progressBarStyleHorizontal"
@@ -32,7 +27,6 @@
         android:progress="55"
         android:progressDrawable="@drawable/circular_progress"
         android:secondaryProgress="100" />
-
       <TextView
         android:id="@+id/story_progress_percentage"
         android:layout_width="match_parent"
@@ -42,7 +36,6 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="14sp" />
     </FrameLayout>
-
     <TextView
       android:id="@+id/story_name_text_view"
       android:layout_width="0dp"
@@ -57,7 +50,6 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/story_progress_container"
       app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
       android:id="@+id/chapter_count"
       android:layout_width="0dp"
@@ -69,7 +61,6 @@
       app:layout_constraintEnd_toEndOf="@+id/story_name_text_view"
       app:layout_constraintStart_toStartOf="@+id/story_name_text_view"
       app:layout_constraintTop_toBottomOf="@+id/story_name_text_view" />
-
     <ImageView
       android:id="@+id/imageView"
       android:layout_width="wrap_content"
@@ -80,6 +71,6 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/chapter_count"
       app:layout_constraintTop_toBottomOf="@+id/story_name_text_view"
-      app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp" />
+      android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

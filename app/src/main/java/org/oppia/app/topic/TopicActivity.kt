@@ -20,6 +20,6 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
   override fun routeToStory(storyId: String) {
-    // TODO(135): Once StoryActivity is introduced from PR #195, intent this to that activity.
+    // TODO(135): Once StoryActivity is introduced in develop from PR #195, intent this to that activity with story-id.
   }
 }
