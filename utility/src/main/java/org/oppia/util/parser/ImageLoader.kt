@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import androidx.annotation.DrawableRes
 
-/** Helper that handles loading and caching images from remote URLs.*/
+/** Loads an image from the provided URL into the specified target, optionally caching it. */
 interface ImageLoader {
 
-  fun load(context: Context, path: String, target: SimpleTarget<Bitmap>)
+  fun load(imageUrl: String, target: SimpleTarget<Bitmap>)
 }

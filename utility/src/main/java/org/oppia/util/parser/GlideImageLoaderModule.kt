@@ -1,5 +1,6 @@
 package org.oppia.util.parser
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -10,7 +11,7 @@ class GlideImageLoaderModule {
 
   @Provides
   @ImageLoaderAnnotation
-  fun providesGlideImageLoader(): ImageLoader {
-    return GlideImageLoader()
+  fun providesGlideImageLoader(context: Context): ImageLoader {
+    return GlideImageLoader(context)
   }
 }
