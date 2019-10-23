@@ -21,7 +21,8 @@ class StringToFractionParser {
     } else {
       inputText
     }
-    inputText = inputText.replace(wholeNumber, "").replace(" ", "")
+    inputText =
+      if (inputText.contains(" ")) inputText.substringAfter(" ").replace(" ", "") else inputText.replace(" ", "")
     if (inputText.contains("/")) {
       numerator = inputText.substringBefore("/")
       denominator = inputText.substringAfter("/")
