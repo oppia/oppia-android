@@ -39,6 +39,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -58,6 +59,9 @@ class DirectoryManagementUtilTest {
   @Inject
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var context: Context
 
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
@@ -94,6 +98,14 @@ class DirectoryManagementUtilTest {
   @ExperimentalCoroutinesApi
   fun testDirectoryManagementUtil() = runBlockingTest(coroutineContext) {
     // TODO(#16): Finish test cases with full implementation
+    val f1 = directoryManagementUtil.getOrCreateDir("hello1")
+    directoryManagementUtil.getOrCreateDir("hello2")
+    val test = directoryManagementUtil.getOrCreateDir("hello3")
+    val files = context.filesDir
+    val huh = File(files, "yeah")
+    huh.createNewFile()
+    val list = context.fileList()
+    val yes = File(context.filesDir.toString().dropLast(5) + "app_" + "hello1").exists()
   }
 
   @Qualifier
