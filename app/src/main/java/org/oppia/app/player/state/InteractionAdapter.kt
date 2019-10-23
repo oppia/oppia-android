@@ -17,8 +17,8 @@ import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.app.player.state.listener.InteractionListener
 import org.oppia.util.parser.HtmlParser
 
-const val VIEW_TYPE_MULTIPLE_CHOICE = 1
-const val VIEW_TYPE_ITEM_SELECTION = 2
+private const val VIEW_TYPE_MULTIPLE_CHOICE = 1
+private const val VIEW_TYPE_ITEM_SELECTION = 2
 
 /** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
 class InteractionAdapter(
