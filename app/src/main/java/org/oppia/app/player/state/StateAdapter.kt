@@ -79,6 +79,28 @@ class StateAdapter(
           )
         InteractionReadOnlyViewHolder(binding)
       }
+      VIEW_TYPE_NUMERIC_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<NumericInputInteractionItemBinding>(
+            inflater,
+            R.layout.numeric_input_interaction_item,
+            parent,
+            /* attachToParent= */false
+          )
+        NumericInputInteractionViewHolder(binding)
+      }
+      VIEW_TYPE_TEXT_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<TextInputInteractionItemBinding>(
+            inflater,
+            R.layout.text_input_interaction_item,
+            parent,
+            /* attachToParent= */false
+          )
+        TextInputInteractionViewHolder(binding)
+      }
       VIEW_TYPE_STATE_BUTTON -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
@@ -112,6 +134,12 @@ class StateAdapter(
       }
       VIEW_TYPE_INTERACTION_READ_ONLY -> {
         (holder as InteractionReadOnlyViewHolder).bind((itemList[position] as InteractionReadOnlyViewModel).htmlContent)
+      }
+      VIEW_TYPE_NUMERIC_INPUT_INTERACTION -> {
+        (holder as NumericInputInteractionViewHolder).bind((itemList[position] as NumericInputInteractionViewModel).placeholder)
+      }
+      VIEW_TYPE_TEXT_INPUT_INTERACTION -> {
+        (holder as TextInputInteractionViewHolder).bind((itemList[position] as TextInputInteractionViewModel).placeholder)
       }
       VIEW_TYPE_STATE_BUTTON -> {
         (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
@@ -158,6 +186,48 @@ class StateAdapter(
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
       binding.root.interaction_read_only_text_view.text = rawString
+    }
+  }
+
+  inner class NumericInputInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(rawString: String?) {
+      inputInteractionView = binding.root.numeric_input_interaction_view
+      binding.setVariable(BR.placeholder, rawString)
+      binding.executePendingBindings()
+      binding.root.numeric_input_interaction_view.hint = rawString
+
+      binding.root.numeric_input_interaction_view.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+          doesTextExists(s.isNotEmpty())
+        }
+
+        override fun afterTextChanged(s: Editable) {
+        }
+      })
+    }
+  }
+
+  inner class TextInputInteractionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(rawString: String?) {
+      inputInteractionView = binding.root.text_input_interaction_view
+      binding.setVariable(BR.placeholder, rawString)
+      binding.executePendingBindings()
+      binding.root.text_input_interaction_view.hint = rawString
+
+      binding.root.text_input_interaction_view.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+          doesTextExists(s.isNotEmpty())
+        }
+
+        override fun afterTextChanged(s: Editable) {
+        }
+      })
     }
   }
 
