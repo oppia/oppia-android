@@ -14,7 +14,6 @@ import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
-import org.oppia.app.player.state.listener.InteractionListener
 import org.oppia.util.parser.HtmlParser
 
 private const val VIEW_TYPE_MULTIPLE_CHOICE = 1
@@ -29,7 +28,7 @@ class InteractionAdapter(
   private val interactionId: String
   ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
-  private var mSelectedItem = -1
+  private var itemSelectedPosition = -1
 
   private var selectedAnswerIndex = -1
 
@@ -66,12 +65,12 @@ class InteractionAdapter(
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
         itemList!!.get(position),
         position,
-        mSelectedItem
+        itemSelectedPosition
       )
       VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
         itemList!!.get(position),
         position,
-        mSelectedItem
+        itemSelectedPosition
       )
     }
   }
@@ -125,7 +124,7 @@ class InteractionAdapter(
         binding.root.multiple_choice_radio_button.setChecked(false)
 
       binding.root.radio_container.setOnClickListener {
-        mSelectedItem = getAdapterPosition()
+        itemSelectedPosition = getAdapterPosition()
         selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()
       }
