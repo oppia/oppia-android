@@ -21,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -29,15 +30,25 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicOverviewFragmentTest {
 
+  private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
+
+  private val topicName = "Second Test Topic"
+
+  private val topicDescription =
+    "A topic considering the various implications of having especially long topic descriptions. " +
+        "These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on " +
+        "small screens). Consider also that there may even be multiple points pertaining to a topic, some of which " +
+        "may require expanding the description section in order to read the whole topic description."
+
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Test
-  fun testTopicOverviewFragment_loadFragment_topicNameIsDisplayed() {
+  fun testTopicOverviewFragment_loadFragment_checkTopicName_isCorrect() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText("Second Test Topic")))
+      onView(withId(R.id.topic_name_text_view)).check(matches(withText(topicName)))
     }
   }
 
@@ -50,10 +61,24 @@ class TopicOverviewFragmentTest {
   }
 
   @Test
-  fun testTopicOverviewFragment_loadFragment_configurationChange_topicNameIsDisplayed() {
+  fun testTopicOverviewFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(withId(R.id.topic_description_text_view)).check(matches(withText(topicDescription)))
+    }
+  }
+
+  @Test
+  fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
+    }
+  }
+
+  @Test
+  fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    onView(withId(R.id.topic_name_text_view)).check(matches(withText("Second Test Topic")))
+    onView(withId(R.id.topic_name_text_view)).check(matches(withText(topicName)))
   }
 
   @Module
