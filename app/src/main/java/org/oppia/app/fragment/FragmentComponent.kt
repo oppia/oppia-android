@@ -11,6 +11,9 @@ import org.oppia.app.settings.profile.ProfileEditFragment
 import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.settings.profile.ProfileRenameFragment
 import org.oppia.app.settings.profile.ProfileResetPinFragment
+import org.oppia.app.profile.AddProfileFragment
+import org.oppia.app.profile.AdminAuthFragment
+import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -46,4 +49,7 @@ interface FragmentComponent {
   fun inject(profileEditFragment: ProfileEditFragment)
   fun inject(profileRenameFragment: ProfileRenameFragment)
   fun inject(profileResetPinFragment: ProfileResetPinFragment)
+  fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(adminAuthFragment: AdminAuthFragment)
+  fun inject(addProfileFragment: AddProfileFragment)
 }

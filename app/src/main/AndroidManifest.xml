@@ -17,8 +17,9 @@
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
     <activity android:name=".topic.TopicActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name="org.oppia.app.home.HomeActivity" />
-    <activity android:name=".activity.InputInteractionViewTestActivity">
+    <activity android:name=".activity.InputInteractionViewTestActivity" />
+    <activity android:name=".profile.ProfileActivity" />
+    <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -30,7 +31,7 @@
     </activity>
     <activity
       android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme"></activity>
+      android:theme="@style/SplashScreenTheme" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
   </application>
 </manifest>
