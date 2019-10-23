@@ -14,9 +14,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.state_fragment_test_activity)
     if (getStateFragment() == null) {
+      val stateFragment = StateFragment.newInstance("test")
       activity.supportFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
-        StateFragment()
+        stateFragment
       ).commitNow()
     }
   }
