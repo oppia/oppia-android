@@ -1,4 +1,4 @@
-package org.oppia.app.activity
+package org.oppia.app.testing
 
 import android.content.res.Configuration
 import androidx.test.espresso.Espresso.onView
@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.oppia.app.activity.InputInteractionViewTestActivity
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
