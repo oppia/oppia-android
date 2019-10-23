@@ -127,10 +127,10 @@ class InteractionAdapter(
   }
 
   override fun getPendingAnswer(): InteractionObject {
-    return if (selectedAnswerIndex>=0) {
-      InteractionObject.newBuilder().setNonNegativeInt(selectedAnswerIndex).build()
-    } else {
-      InteractionObject.newBuilder().build()
+    val interactionObjectBuilder = InteractionObject.newBuilder()
+    if (selectedAnswerIndex>=0) {
+      interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
     }
+    return interactionObjectBuilder.build()
   }
 }
