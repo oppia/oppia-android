@@ -24,7 +24,7 @@ class InteractionAdapter(
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
   private val explorationId: String,
-  val itemList: Array<String>?,
+  private val itemList: Array<String>,
   private val interactionId: String
   ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
@@ -63,14 +63,12 @@ class InteractionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
-        itemList!!.get(position),
+        itemList.get(position),
         position,
         itemSelectedPosition
       )
       VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
-        itemList!!.get(position),
-        position,
-        itemSelectedPosition
+        itemList.get(position)
       )
     }
   }
@@ -85,13 +83,13 @@ class InteractionAdapter(
   }
 
   override fun getItemCount(): Int {
-    return itemList!!.size
+    return itemList.size
   }
 
   private inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
+    internal fun bind(rawString: String) {
       binding.setVariable(BR.htmlContent, rawString)
-      binding.executePendingBindings();
+      binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString,
         binding.root.item_selection_contents_text_view
@@ -99,10 +97,7 @@ class InteractionAdapter(
       binding.root.item_selection_contents_text_view.text = htmlResult
 
       binding.root.checkbox_container.setOnClickListener {
-        if (binding.root.item_selection_checkbox.isChecked)
-          binding.root.item_selection_checkbox.setChecked(false)
-        else
-          binding.root.item_selection_checkbox.setChecked(true)
+        binding.root.item_selection_checkbox.isChecked = !binding.root.item_selection_checkbox.isChecked
         notifyDataSetChanged()
       }
     }
@@ -111,7 +106,7 @@ class InteractionAdapter(
   private inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
       binding.setVariable(BR.htmlContent, rawString)
-      binding.executePendingBindings();
+      binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString,
         binding.root.multiple_choice_content_text_view
@@ -119,12 +114,12 @@ class InteractionAdapter(
       binding.root.multiple_choice_content_text_view.text = htmlResult
 
       if (selectedPosition == position)
-        binding.root.multiple_choice_radio_button.setChecked(true)
+        binding.root.multiple_choice_radio_button.isChecked = true
       else
-        binding.root.multiple_choice_radio_button.setChecked(false)
+        binding.root.multiple_choice_radio_button.isChecked = false
 
       binding.root.radio_container.setOnClickListener {
-        itemSelectedPosition = getAdapterPosition()
+        itemSelectedPosition = adapterPosition
         selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()
       }
