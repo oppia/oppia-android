@@ -11,7 +11,6 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity android:name=".story.StoryActivity"></activity>
     <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".player.exploration.ExplorationActivity" />
@@ -20,6 +19,7 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
+    <activity android:name=".story.StoryActivity"/>
     <activity android:name=".home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

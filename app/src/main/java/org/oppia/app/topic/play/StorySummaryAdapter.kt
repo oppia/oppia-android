@@ -11,7 +11,10 @@ import org.oppia.app.model.StorySummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
-class StorySummaryAdapter(private var storyList: MutableList<StorySummary>) :
+class StorySummaryAdapter(
+  private var storyList: MutableList<StorySummary>,
+  private val storySummarySelector: StorySummarySelector
+) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
@@ -35,6 +38,9 @@ class StorySummaryAdapter(private var storyList: MutableList<StorySummary>) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
       binding.setVariable(BR.storySummary, storySummary)
+      binding.root.setOnClickListener {
+        storySummarySelector.selectedStorySummary(storySummary)
+      }
     }
   }
 }

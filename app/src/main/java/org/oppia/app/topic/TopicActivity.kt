@@ -1,6 +1,7 @@
 package org.oppia.app.topic
 
 import android.os.Bundle
+import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -25,6 +26,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToStory(storyId: String) {
+    Log.d("TAG", "" + storyId)
     startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
   }
 

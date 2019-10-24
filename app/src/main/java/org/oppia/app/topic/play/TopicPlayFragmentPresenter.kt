@@ -13,7 +13,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -52,7 +51,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      val storySummaryAdapter = StorySummaryAdapter(it.storyList)
+      val storySummaryAdapter = StorySummaryAdapter(it.storyList, this as StorySummarySelector)
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }

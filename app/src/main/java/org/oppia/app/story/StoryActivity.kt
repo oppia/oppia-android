@@ -6,8 +6,6 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY = "StoryActivity.story_id"
-
 /** Activity for stories. */
 class StoryActivity : InjectableAppCompatActivity() {
   @Inject lateinit var storyActivityPresenter: StoryActivityPresenter
@@ -19,7 +17,9 @@ class StoryActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [StoryActivity] for a specified topic ID. */
+    const val STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY = "StoryActivity.story_id"
+
+    /** Returns a new [Intent] to route to [StoryActivity] for a specified story ID. */
     fun createStoryActivityIntent(context: Context, storyId: String): Intent {
       val intent = Intent(context, StoryActivity::class.java)
       intent.putExtra(STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
