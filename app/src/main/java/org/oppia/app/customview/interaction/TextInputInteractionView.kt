@@ -6,14 +6,13 @@ import android.widget.EditText
 import org.oppia.app.model.InteractionObject
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
-//  digits="0123456789."
-//  hint="Write the digit here."
-//  inputType="numberDecimal"
+//  hint="Write here."
+//  inputType="text"
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
-/** The custom EditText class for numeric input interaction view. */
-class NumericInputInteractionView @JvmOverloads constructor(
+/** The custom EditText class for text input interaction view. */
+class TextInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
@@ -22,7 +21,7 @@ class NumericInputInteractionView @JvmOverloads constructor(
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.real = text.toString().toDouble()
+      interactionObjectBuilder.normalizedString = text.toString()
     }
     return interactionObjectBuilder.build()
   }

@@ -3,8 +3,23 @@ package org.oppia.app.databinding
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.Glide
 import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
+
+/**
+ * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
+ */
+@BindingAdapter("android:src")
+fun setImageDrawable(imageView: ImageView, imageUrl: String) {
+  val requestOptions = RequestOptions().placeholder(R.drawable.review_placeholder)
+
+  Glide.with(imageView.context)
+    .load(imageUrl)
+    .apply(requestOptions)
+    .into(imageView)
+}
 
 /**
  * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
@@ -20,14 +35,16 @@ fun setImageDrawable(imageView: ImageView, @DrawableRes drawableResourceId: Int)
  */
 @BindingAdapter("android:src")
 fun setImageDrawable(imageView: ImageView, thumbnailGraphic: LessonThumbnailGraphic) {
-  setImageDrawable(imageView, when (thumbnailGraphic) {
-    LessonThumbnailGraphic.BAKER -> R.drawable.lesson_thumbnail_graphic_baker
-    LessonThumbnailGraphic.CHILD_WITH_BOOK -> R.drawable.lesson_thumbnail_graphic_child_with_book
-    LessonThumbnailGraphic.CHILD_WITH_CUPCAKES -> R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
-    LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
-      R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-    LessonThumbnailGraphic.DUCK_AND_CHICKEN -> R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-    LessonThumbnailGraphic.PERSON_WITH_PIE_CHART -> R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
-    else -> R.drawable.lesson_thumbnail_default
-  })
+  setImageDrawable(
+    imageView, when (thumbnailGraphic) {
+      LessonThumbnailGraphic.BAKER -> R.drawable.lesson_thumbnail_graphic_baker
+      LessonThumbnailGraphic.CHILD_WITH_BOOK -> R.drawable.lesson_thumbnail_graphic_child_with_book
+      LessonThumbnailGraphic.CHILD_WITH_CUPCAKES -> R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
+      LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
+        R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+      LessonThumbnailGraphic.DUCK_AND_CHICKEN -> R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+      LessonThumbnailGraphic.PERSON_WITH_PIE_CHART -> R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
+      else -> R.drawable.lesson_thumbnail_default
+    }
+  )
 }
