@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="storySummary"
+      type="org.oppia.app.model.StorySummary" />
+  </data>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="32dp">
+    <FrameLayout
+      android:id="@+id/story_progress_container"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+      <ProgressBar
+        android:id="@+id/story_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="55"
+        android:progressDrawable="@drawable/circular_progress"
+        android:secondaryProgress="100" />
+      <TextView
+        android:id="@+id/story_progress_percentage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="55%"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp" />
+    </FrameLayout>
+    <TextView
+      android:id="@+id/story_name_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginEnd="48dp"
+      android:text="@{storySummary.storyName}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/story_progress_container"
+      app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+      android:id="@+id/chapter_count"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:text="@{@plurals/chapter_count(storySummary.chapterCount, storySummary.chapterCount)}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="@+id/story_name_text_view"
+      app:layout_constraintStart_toStartOf="@+id/story_name_text_view"
+      app:layout_constraintTop_toBottomOf="@+id/story_name_text_view" />
+    <ImageView
+      android:id="@+id/chapter_list_view_control"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="24dp"
+      android:layout_marginEnd="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/chapter_count"
+      app:layout_constraintTop_toBottomOf="@+id/story_name_text_view"
+      android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

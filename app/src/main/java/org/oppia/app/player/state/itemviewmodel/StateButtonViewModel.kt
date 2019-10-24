@@ -25,7 +25,7 @@ private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 class StateButtonViewModel @Inject constructor(val context: Context) : ObservableViewModel() {
   companion object {
     @JvmStatic
-    @BindingAdapter("buttonDrawable")
+    @BindingAdapter("android:button")
     fun setBackgroundResource(button: Button, resource: Int) {
       button.setBackgroundResource(resource)
     }
@@ -46,6 +46,7 @@ class StateButtonViewModel @Inject constructor(val context: Context) : Observabl
   fun setObservableInteractionId(interactionId: String) {
     setNextButtonVisible(false)
     observableInteractionId.set(interactionId)
+    // TODO(#249): Generalize this binding to make adding future interactions easier.
     when (interactionId) {
       CONTINUE -> {
         isInteractionButtonActive.set(true)
@@ -72,10 +73,13 @@ class StateButtonViewModel @Inject constructor(val context: Context) : Observabl
         drawableResourceValue.set(R.drawable.state_button_primary_background)
       }
       FRACTION_INPUT, NUMERIC_INPUT, NUMERIC_WITH_UNITS, TEXT_INPUT -> {
-        isInteractionButtonActive.set(false)
+        // TODO(#163): The value of isInteractionButtonVisible should be false in this case and it should be updated.
+        //  We are keeping this true for now so that the submit button can work even without any interaction.
+        isInteractionButtonActive.set(true)
         isInteractionButtonVisible.set(true)
         name.set(context.getString(R.string.state_submit_button))
-        drawableResourceValue.set(R.drawable.state_button_transparent_background)
+        // TODO(#163): The value of drawable should be R.drawable.state_button_transparent_background as per above explanation.
+        drawableResourceValue.set(R.drawable.state_button_primary_background)
       }
     }
   }
@@ -96,16 +100,6 @@ class StateButtonViewModel @Inject constructor(val context: Context) : Observabl
 
   fun setPreviousButtonVisible(isVisible: Boolean) {
     isPreviousButtonVisible.set(isVisible)
-  }
-
-  fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-    if (s.isNotEmpty()) {
-      isInteractionButtonActive.set(true)
-      drawableResourceValue.set(R.drawable.state_button_primary_background)
-    } else {
-      isInteractionButtonActive.set(false)
-      drawableResourceValue.set(R.drawable.state_button_transparent_background)
-    }
   }
 
   fun optionSelected(isOptionSelected: Boolean) {

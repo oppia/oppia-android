@@ -20,10 +20,9 @@ class ExplorationFragmentPresenter @Inject constructor(
     val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
 
     if (getStateFragment() == null) {
-      val stateFragment = StateFragment()
-      val args = Bundle()
-      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY))
-      stateFragment.arguments = args
+      val explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+      checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
+      val stateFragment = StateFragment.newInstance(explorationId)
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
         stateFragment
