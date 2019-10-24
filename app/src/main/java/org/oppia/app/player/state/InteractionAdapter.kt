@@ -16,6 +16,7 @@ import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.util.parser.HtmlParser
 
@@ -28,7 +29,7 @@ class InteractionAdapter(
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
   private val explorationId: String,
-  private val itemList: Array<String>,
+  private val itemList: MutableList<SelectionContentViewModel>,
   private val customizationArgs: CustomizationArgsInteractionViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
@@ -67,7 +68,7 @@ class InteractionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
-        itemList[position],
+        itemList[position].htmlContent,
         position,
         itemSelectedPosition
       )
@@ -95,32 +96,36 @@ class InteractionAdapter(
   }
 
   private inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(rawString: String) {
-      binding.setVariable(BR.htmlContent, rawString)
+    internal fun bind(selectionContentViewModel: SelectionContentViewModel) {
+      binding.setVariable(BR.htmlContent, selectionContentViewModel.htmlContent)
       binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-        rawString,
+        selectionContentViewModel.htmlContent,
         binding.root.item_selection_contents_text_view
       )
       binding.root.item_selection_contents_text_view.text = htmlResult
+      binding.root.item_selection_checkbox.isChecked = selectionContentViewModel.isAnswerSelected
+      Log.d(
+        INTERACTION_ADAPTER_TAG,
+        "You cannot select more than " + selectedHtmlStringList.size + " "+binding.root.item_selection_checkbox
+      )
 
       binding.root.checkbox_container.setOnClickListener {
-
         if (binding.root.item_selection_checkbox.isChecked) {
-          binding.root.item_selection_checkbox.isChecked = false
+          itemList[adapterPosition].isAnswerSelected = false
           selectedHtmlStringList.remove(binding.root.item_selection_contents_text_view.text.toString())
         } else {
-          if (selectedHtmlStringList.size == customizationArgs.maxAllowableSelectionCount) {
+          if (selectedHtmlStringList.size != customizationArgs.maxAllowableSelectionCount) {
+            itemList[adapterPosition].isAnswerSelected = true
+            selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
+          } else {
             Log.d(
               INTERACTION_ADAPTER_TAG,
               "You cannot select more than " + selectedHtmlStringList.size + " " + customizationArgs.maxAllowableSelectionCount + " options"
             )
-          } else {
-            binding.root.item_selection_checkbox.isChecked = true
-            selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
           }
-          notifyDataSetChanged()
         }
+        notifyDataSetChanged()
       }
     }
   }

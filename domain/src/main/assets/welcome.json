@@ -260,7 +260,7 @@
         "confirmed_unclassified_answers": [],
         "customization_args":{
           "maxAllowableSelectionCount":{
-            "value":2
+            "value":3
           },
           "minAllowableSelectionCount":{
             "value":1

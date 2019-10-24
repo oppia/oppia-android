@@ -54,6 +54,7 @@ class StateSelectionInteractionTest {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
     }
   }
 
@@ -62,6 +63,7 @@ class StateSelectionInteractionTest {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
     }
   }
 

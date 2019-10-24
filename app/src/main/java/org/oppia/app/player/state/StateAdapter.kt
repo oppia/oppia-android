@@ -7,15 +7,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import androidx.databinding.library.baseAdapters.BR
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.interaction_read_only_item.view.*
 import kotlinx.android.synthetic.main.numeric_input_interaction_item.view.*
 import kotlinx.android.synthetic.main.selection_interaction_item.view.*
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import kotlinx.android.synthetic.main.text_input_interaction_item.view.*
+import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.InteractionReadOnlyItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
@@ -26,9 +26,10 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.customview.NumericInputInteractionView
 import org.oppia.app.player.state.customview.TextInputInteractionView
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
 import org.oppia.app.player.state.listener.InputInteractionTextListener
@@ -255,11 +256,18 @@ class StateAdapter(
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(customizationArgs: CustomizationArgsInteractionViewModel) {
       val items: Array<String>?
+      val choiceContentList: MutableList<SelectionContentViewModel> = ArrayList()
       binding.executePendingBindings()
       val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
+      for (values in items) {
+        val selectionContentViewModel = SelectionContentViewModel()
+        selectionContentViewModel.htmlContent = values
+        selectionContentViewModel.isAnswerSelected = false
+        choiceContentList.add(selectionContentViewModel)
+      }
       val interactionAdapter =
-        InteractionAdapter(htmlParserFactory, entityType, explorationId, items, customizationArgs)
+        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceContentList, customizationArgs)
       binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
     }
   }
