@@ -55,7 +55,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get skillList from [StoryFragment].
+  // TODO(#135): Get this topic-id or get skillList from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(TEST_TOPIC_ID_0)
   }

@@ -8,7 +8,7 @@ import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** The controller for [StoryFragment]. */
+/** The presenter for [StoryFragment]. */
 @FragmentScope
 class StoryFragmentPresenter @Inject constructor(
   private val fragment: Fragment

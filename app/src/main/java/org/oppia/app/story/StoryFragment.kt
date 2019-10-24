@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that story with chapter list. */
+/** Fragment that displays story with chapter list. */
 class StoryFragment : InjectableFragment() {
   @Inject
   lateinit var storyFragmentPresenter: StoryFragmentPresenter
