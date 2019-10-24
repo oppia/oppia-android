@@ -17,7 +17,7 @@
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
     <activity android:name=".topic.TopicActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name=".activity.InputInteractionViewTestActivity" />
+    <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
     <activity android:name="org.oppia.app.home.HomeActivity">
       <intent-filter>
