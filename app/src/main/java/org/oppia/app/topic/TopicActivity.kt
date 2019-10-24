@@ -6,10 +6,9 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
-//internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
-
 /** The activity for tabs in Topic. */
-class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener {
+class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
+  RouteToTopicPlayListener {
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -21,6 +20,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
+  }
+
+  override fun routeToTopicPlayFragment() {
+    // TODO(#135): Change to play tab in this function.
   }
 
   override fun routeToConceptCard(skillId: String) {

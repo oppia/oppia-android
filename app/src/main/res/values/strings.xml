@@ -23,4 +23,14 @@
   <string name="state_submit_button">SUBMIT</string>
   <string name="state_end_exploration_button">RETURN TO TOPIC</string>
   <string name="state_learn_again_button">LEARN AGAIN</string>
+  <string name="topic_overview_see_more">See More</string>
+  <string name="topic_download_text"> (%s MB)</string>
+  <plurals name="story_count">
+    <item quantity="one">
+      1 Story
+    </item>
+    <item quantity="other">
+      %d Stories
+    </item>
+  </plurals>
 </resources>

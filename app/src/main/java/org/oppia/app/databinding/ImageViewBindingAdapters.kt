@@ -35,14 +35,16 @@ fun setImageDrawable(imageView: ImageView, @DrawableRes drawableResourceId: Int)
  */
 @BindingAdapter("android:src")
 fun setImageDrawable(imageView: ImageView, thumbnailGraphic: LessonThumbnailGraphic) {
-  setImageDrawable(imageView, when (thumbnailGraphic) {
-    LessonThumbnailGraphic.BAKER -> R.drawable.lesson_thumbnail_graphic_baker
-    LessonThumbnailGraphic.CHILD_WITH_BOOK -> R.drawable.lesson_thumbnail_graphic_child_with_book
-    LessonThumbnailGraphic.CHILD_WITH_CUPCAKES -> R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
-    LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
-      R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-    LessonThumbnailGraphic.DUCK_AND_CHICKEN -> R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-    LessonThumbnailGraphic.PERSON_WITH_PIE_CHART -> R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
-    else -> R.drawable.lesson_thumbnail_default
-  })
+  setImageDrawable(
+    imageView, when (thumbnailGraphic) {
+      LessonThumbnailGraphic.BAKER -> R.drawable.lesson_thumbnail_graphic_baker
+      LessonThumbnailGraphic.CHILD_WITH_BOOK -> R.drawable.lesson_thumbnail_graphic_child_with_book
+      LessonThumbnailGraphic.CHILD_WITH_CUPCAKES -> R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
+      LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
+        R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+      LessonThumbnailGraphic.DUCK_AND_CHICKEN -> R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+      LessonThumbnailGraphic.PERSON_WITH_PIE_CHART -> R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
+      else -> R.drawable.lesson_thumbnail_default
+    }
+  )
 }
