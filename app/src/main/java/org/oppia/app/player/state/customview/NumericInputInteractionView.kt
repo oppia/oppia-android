@@ -23,7 +23,7 @@ class NumericInputInteractionView @JvmOverloads constructor(
   /** This function contains default attributes of [NumericInputInteractionView]. */
   private fun attributes() {
     setBackgroundResource(R.drawable.edit_text_background)
-    val paddingPixel = context.resources.getDimension(R.dimen.padding_8)
+    val paddingPixel = context.resources.getDimension(8)
     val density = resources.displayMetrics.density
     val paddingDp = (paddingPixel * density).toInt()
     setPadding(paddingDp, paddingDp, paddingDp, paddingDp)
