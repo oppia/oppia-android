@@ -6,7 +6,7 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
-private const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
+//internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
 
 /** The activity for tabs in Topic. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener {
@@ -35,8 +35,6 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   companion object {
-    fun getConceptCardFragmentTag(): String {
-      return TAG_CONCEPT_CARD_DIALOG
-    }
+    internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
   }
 }

@@ -9,13 +9,14 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +39,7 @@ class TopicReviewFragmentTest {
   )
 
   @Test
-  fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessfully() {
+  fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessful() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
@@ -50,8 +51,29 @@ class TopicReviewFragmentTest {
     topicActivityTestRule.launchActivity(null)
     onView(atPosition(R.id.review_skill_recycler_view, 0)).perform(click())
     val conceptCardFragment: ConceptCardFragment? = topicActivityTestRule.activity.supportFragmentManager
-      .findFragmentByTag(TopicActivity.getConceptCardFragmentTag()) as ConceptCardFragment
-    assertTrue(conceptCardFragment != null)
+      .findFragmentByTag(TopicActivity.TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment
+    assertThat(conceptCardFragment).isNotNull()
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
+      onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
+    }
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectWorkedExamples() {
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
+      onView(
+        atPosition(
+          R.id.worked_examples,
+          0
+        )
+      ).check(matches(hasDescendant(withText("Worked example with <i>rich text</i>."))))
+    }
   }
 
   @Test
