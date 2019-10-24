@@ -9,7 +9,7 @@ import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.parser.StringToFractionParser
 import java.util.regex.Pattern
 
-/** The custom EditText class for numeric input interaction view. */
+/** The custom EditText class for number input with units interaction view. */
 class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
