@@ -7,6 +7,8 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
+import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
@@ -38,7 +40,20 @@ class StorySummaryAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
       binding.setVariable(BR.storySummary, storySummary)
-      binding.root.setOnClickListener {
+
+      val totalChapterCount = storySummary.chapterCount
+      val chapterSummaries = storySummary.chapterList
+      val completedChapterCount =
+        chapterSummaries.map(ChapterSummary::getChapterPlayState)
+          .filter {
+            it == ChapterPlayState.COMPLETED
+          }
+          .size
+
+      val storyProgressPercentage: Int = (completedChapterCount / totalChapterCount) * 100
+      binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
+
+      binding.storyNameTextView.setOnClickListener {
         storySummarySelector.selectedStorySummary(storySummary)
       }
     }

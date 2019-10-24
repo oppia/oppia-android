@@ -42,7 +42,6 @@ import javax.inject.Singleton
 class TopicPlayFragmentTest {
 
   // TODO(#137): Add following test-cases once story-progress function is implemented and expandable list is introduced.
-  //  - Story progress is displayed correctly.
   //  - Click on arrow to show and hide expandable list is working correctly.
   //  - Expandable list is showing correct chapter names.
   //  - Upon configuration change expanded list should remain expanded.
@@ -91,6 +90,17 @@ class TopicPlayFragmentTest {
         1
       )
     ).check(matches(hasDescendant(withText(containsString("3 Chapters")))))
+  }
+
+  @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyProgress_isDisplayed() {
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        0
+      )
+    ).check(matches(hasDescendant(withText(containsString("100%")))))
   }
 
   @Test
