@@ -3,8 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
   android:gravity="center"
+  android:orientation="vertical"
   tools:context=".testing.InputInteractionViewTestActivity">
 
   <org.oppia.app.customview.interaction.NumericInputInteractionView
@@ -21,6 +21,7 @@
     android:maxLength="200"
     android:padding="8dp"
     android:singleLine="true" />
+
   <org.oppia.app.customview.interaction.TextInputInteractionView
     android:id="@+id/test_text_input_interaction_view"
     android:layout_width="match_parent"
@@ -34,28 +35,30 @@
     android:maxLength="200"
     android:padding="8dp"
     android:singleLine="true" />
+
   <org.oppia.app.customview.interaction.FractionInputInteractionView
     android:id="@+id/test_fraction_input_interaction_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@drawable/edit_text_background"
-    android:focusable="true"
     android:digits="0123456789/- "
+    android:focusable="true"
     android:hint="Write fraction here."
     android:inputType="number"
     android:longClickable="false"
     android:maxLength="200"
     android:padding="8dp"
     android:singleLine="true" />
+
   <org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
     android:id="@+id/test_number_with_units_input_interaction_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@drawable/edit_text_background"
-    android:focusable="true"
     android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ $.-/*^()"
+    android:focusable="true"
     android:hint="Write number with units here."
     android:inputType="number"
     android:longClickable="false"
