@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ViewModel] for multiple or item-selection input choice list. */
+/** [ObservableViewModel] for multiple or item-selection input choice list. */
 @FragmentScope
 class CustomizationArgsInteractionViewModel @Inject constructor() : ViewModel() {
 
