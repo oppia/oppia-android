@@ -25,8 +25,8 @@ import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
@@ -429,6 +429,9 @@ class StateFragmentPresenter @Inject constructor(
         MULTIPLE_CHOICE_INPUT -> {
           addMultipleChoiceInputItem()
         }
+        ITEM_SELECT_INPUT -> {
+          addMultipleChoiceInputItem()
+        }
       }
     }
   }
@@ -436,16 +439,26 @@ class StateFragmentPresenter @Inject constructor(
   private fun addMultipleChoiceInputItem() {
     val customizationArgsMap: Map<String, InteractionObject> =
       currentEphemeralState.get()!!.state.interaction.customizationArgsMap
-    val multipleChoiceInputInteractionViewModel = SelectionInteractionViewModel()
+    val multipleChoiceInputInteractionViewModel = CustomizationArgsInteractionViewModel()
     val allKeys: Set<String> = customizationArgsMap.keys
 
     for (key in allKeys) {
       logger.d(TAG_STATE_FRAGMENT, key)
     }
-    if (customizationArgsMap.contains("choices")) {
-      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.get()!!.state.interaction.id
-      multipleChoiceInputInteractionViewModel.choiceItems =
-        currentEphemeralState.get()!!.state.interaction.customizationArgsMap.get("choices")!!.setOfHtmlString.htmlList
+    when {
+      customizationArgsMap.contains("choices") -> {
+        when {
+          customizationArgsMap.contains("maxAllowableSelectionCount") -> {
+            multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+              currentEphemeralState.get()!!.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
+            multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+              currentEphemeralState.get()!!.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
+          }
+        }
+        multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.get()!!.state.interaction.id
+        multipleChoiceInputInteractionViewModel.choiceItems =
+          currentEphemeralState.get()!!.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+      }
     }
     itemList.add(multipleChoiceInputInteractionViewModel)
     stateAdapter.notifyDataSetChanged()

@@ -16,6 +16,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:padding="4dp"
+      android:clickable="false"
       app:buttonTint="@color/oppiaDarkBlue"/>
     <TextView
       android:id="@+id/item_selection_contents_text_view"

@@ -1,6 +1,7 @@
-package org.oppia.app.player.state;
+package org.oppia.app.player.state
 
 import android.text.Spannable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -13,11 +14,14 @@ import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.StringList
+import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.util.parser.HtmlParser
 
 private const val VIEW_TYPE_MULTIPLE_CHOICE = 1
 private const val VIEW_TYPE_ITEM_SELECTION = 2
+private const val INTERACTION_ADAPTER_TAG = "Interaction Adapter"
 
 /** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
 class InteractionAdapter(
@@ -25,12 +29,12 @@ class InteractionAdapter(
   private val entityType: String,
   private val explorationId: String,
   private val itemList: Array<String>,
-  private val interactionId: String
-  ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
+  private val customizationArgs: CustomizationArgsInteractionViewModel
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
   private var itemSelectedPosition = -1
-
   private var selectedAnswerIndex = -1
+  private var selectedHtmlStringList = mutableListOf<String>()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -63,20 +67,24 @@ class InteractionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
-        itemList.get(position),
+        itemList[position],
         position,
         itemSelectedPosition
       )
       VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
-        itemList.get(position)
+        itemList[position]
       )
     }
   }
 
   // Determines the appropriate ViewType according to the interaction type.
   override fun getItemViewType(position: Int): Int {
-    return if (interactionId == "ItemSelectionInput") {
-      VIEW_TYPE_ITEM_SELECTION
+    return if (customizationArgs.interactionId == "ItemSelectionInput") {
+      if (customizationArgs.maxAllowableSelectionCount > 1) {
+        VIEW_TYPE_ITEM_SELECTION
+      } else {
+        VIEW_TYPE_MULTIPLE_CHOICE
+      }
     } else {
       VIEW_TYPE_MULTIPLE_CHOICE
     }
@@ -97,8 +105,22 @@ class InteractionAdapter(
       binding.root.item_selection_contents_text_view.text = htmlResult
 
       binding.root.checkbox_container.setOnClickListener {
-        binding.root.item_selection_checkbox.isChecked = !binding.root.item_selection_checkbox.isChecked
-        notifyDataSetChanged()
+
+        if (binding.root.item_selection_checkbox.isChecked) {
+          binding.root.item_selection_checkbox.isChecked = false
+          selectedHtmlStringList.remove(binding.root.item_selection_contents_text_view.text.toString())
+        } else {
+          if (selectedHtmlStringList.size == customizationArgs.maxAllowableSelectionCount) {
+            Log.d(
+              INTERACTION_ADAPTER_TAG,
+              "You cannot select more than " + selectedHtmlStringList.size + " " + customizationArgs.maxAllowableSelectionCount + " options"
+            )
+          } else {
+            binding.root.item_selection_checkbox.isChecked = true
+            selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
+          }
+          notifyDataSetChanged()
+        }
       }
     }
   }
@@ -112,12 +134,7 @@ class InteractionAdapter(
         binding.root.multiple_choice_content_text_view
       )
       binding.root.multiple_choice_content_text_view.text = htmlResult
-
-      if (selectedPosition == position)
-        binding.root.multiple_choice_radio_button.isChecked = true
-      else
-        binding.root.multiple_choice_radio_button.isChecked = false
-
+      binding.root.multiple_choice_radio_button.isChecked = selectedPosition == position
       binding.root.radio_container.setOnClickListener {
         itemSelectedPosition = adapterPosition
         selectedAnswerIndex = adapterPosition
@@ -128,8 +145,15 @@ class InteractionAdapter(
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (selectedAnswerIndex>=0) {
-      interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
+    if (customizationArgs.interactionId == "ItemSelectionInput") {
+      if (selectedHtmlStringList.size >= 0) {
+        interactionObjectBuilder.setOfHtmlString = StringList.newBuilder().addAllHtml(selectedHtmlStringList).build()
+      } else {
+        if (selectedAnswerIndex >= 0) {
+          interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
+        }
+
+      }
     }
     return interactionObjectBuilder.build()
   }

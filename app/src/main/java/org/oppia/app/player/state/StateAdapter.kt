@@ -28,7 +28,7 @@ import org.oppia.app.player.state.customview.TextInputInteractionView
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionReadOnlyViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputInteractionViewModel
 import org.oppia.app.player.state.listener.InputInteractionTextListener
@@ -145,7 +145,7 @@ class StateAdapter(
         (holder as StateButtonViewHolder).bind((itemList[position] as StateButtonViewModel))
       }
       VIEW_TYPE_SELECTION_INTERACTION -> {
-        (holder as SelectionInteractionViewHolder).bind((itemList[position] as SelectionInteractionViewModel))
+        (holder as SelectionInteractionViewHolder).bind((itemList[position] as CustomizationArgsInteractionViewModel))
       }
     }
   }
@@ -156,7 +156,7 @@ class StateAdapter(
       is NumericInputInteractionViewModel -> VIEW_TYPE_NUMERIC_INPUT_INTERACTION
       is TextInputInteractionViewModel -> VIEW_TYPE_TEXT_INPUT_INTERACTION
       is InteractionReadOnlyViewModel -> VIEW_TYPE_INTERACTION_READ_ONLY
-      is SelectionInteractionViewModel -> VIEW_TYPE_SELECTION_INTERACTION
+      is CustomizationArgsInteractionViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
@@ -253,13 +253,14 @@ class StateAdapter(
   inner class SelectionInteractionViewHolder(
     val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(choiceList: SelectionInteractionViewModel) {
+    internal fun bind(customizationArgs: CustomizationArgsInteractionViewModel) {
       val items: Array<String>?
       binding.executePendingBindings()
-      val gaeCustomArgsInString = choiceList.choiceItems.toString().replace("[", "").replace("]", "")
+      val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
-      val  interactionAdapter = InteractionAdapter(htmlParserFactory,entityType, explorationId, items, choiceList.interactionId)
-        binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
+      val interactionAdapter =
+        InteractionAdapter(htmlParserFactory, entityType, explorationId, items, customizationArgs)
+      binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
     }
   }
 

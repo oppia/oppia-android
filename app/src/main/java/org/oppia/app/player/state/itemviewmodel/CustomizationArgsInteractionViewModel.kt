@@ -6,8 +6,10 @@ import javax.inject.Inject
 
 /** [ViewModel] for multiple or item-selection input choice list. */
 @FragmentScope
-class SelectionInteractionViewModel @Inject constructor() : ViewModel() {
+class CustomizationArgsInteractionViewModel @Inject constructor() : ViewModel() {
 
   var choiceItems: MutableList<String>? = null
   var interactionId: String = ""
+  var maxAllowableSelectionCount: Int = 0
+  var minAllowableSelectionCount: Int = 0
 }
