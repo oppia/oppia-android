@@ -22,7 +22,7 @@
       android:id="@+id/multiple_choice_content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@+id/multiple_choice_radio_button"
+      android:layout_toEndOf="@+id/multiple_choice_radio_button"
       android:padding="4dp"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaDarkBlue"/>
