@@ -110,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@{`(` + viewModel.topic.getSerializedSize() + ` MB)`}"
+        android:text="@{String.format(@string/topic_download_text, viewModel.topic.getSerializedSize())}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         android:textStyle="italic"
