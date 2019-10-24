@@ -1,4 +1,4 @@
-package org.oppia.app.topic
+package org.oppia.app.story
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** The controller for [StoryFragment]. */
 @FragmentScope
-class TopicFragmentPresenter @Inject constructor(
+class StoryFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {

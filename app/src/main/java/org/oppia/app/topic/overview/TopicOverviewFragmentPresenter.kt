@@ -59,7 +59,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     })
   }
 
-  // TODO(#135): Get this topic-id from [TopicFragment].
+  // TODO(#135): Get this topic-id from [StoryFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(TEST_TOPIC_ID_1)
   }

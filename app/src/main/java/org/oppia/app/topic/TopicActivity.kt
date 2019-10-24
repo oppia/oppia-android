@@ -2,6 +2,7 @@ package org.oppia.app.topic
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
@@ -22,8 +23,9 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
+
   override fun routeToStory(storyId: String) {
-    // TODO(135): Once StoryActivity is introduced in develop from PR #195, intent this to that activity with story-id.
+    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
   }
 
   override fun routeToTopicPlayFragment() {
