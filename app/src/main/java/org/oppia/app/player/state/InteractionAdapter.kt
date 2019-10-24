@@ -105,11 +105,6 @@ class InteractionAdapter(
       )
       binding.root.item_selection_contents_text_view.text = htmlResult
       binding.root.item_selection_checkbox.isChecked = selectionContentViewModel.isAnswerSelected
-      Log.d(
-        INTERACTION_ADAPTER_TAG,
-        "You cannot select more than " + selectedHtmlStringList.size + " "+binding.root.item_selection_checkbox
-      )
-
       binding.root.checkbox_container.setOnClickListener {
         if (binding.root.item_selection_checkbox.isChecked) {
           itemList[adapterPosition].isAnswerSelected = false
@@ -121,7 +116,7 @@ class InteractionAdapter(
           } else {
             Log.d(
               INTERACTION_ADAPTER_TAG,
-              "You cannot select more than " + selectedHtmlStringList.size + " " + customizationArgs.maxAllowableSelectionCount + " options"
+              "You cannot select more than " + customizationArgs.maxAllowableSelectionCount + " options"
             )
           }
         }
