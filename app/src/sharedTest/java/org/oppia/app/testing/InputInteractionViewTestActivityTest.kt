@@ -367,7 +367,8 @@ class InputInteractionViewTestActivityTest {
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Km/m^2")
     }
   }
- @Test
+
+  @Test
   fun testNumberWithUnitsInputInteractionView_withInputtedWithBracketsSymbols_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100.50 m^(-2)"))
@@ -378,7 +379,9 @@ class InputInteractionViewTestActivityTest {
       assertThat(numberWithUnits.real).isEqualTo(100.50f)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("m^(-2)")
     }
-  } @Test
+  }
+
+  @Test
   fun testNumberWithUnitsInputInteractionView_withInputtedWithDays_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("3 1/2 days"))
