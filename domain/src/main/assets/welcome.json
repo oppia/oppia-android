@@ -267,9 +267,9 @@
           },
           "choices":{
             "value":[
-              "\u003cp\u003e\u003coppia-noninteractive-math raw_latex-with-value=\"\u0026amp;quot;\\\\frac{1}{3}\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-math\u003e\u003cbr\u003e\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
               "\u003cp\u003e3/7\u003c/p\u003e",
-              "\u003cp\u003e\u003coppia-noninteractive-math raw_latex-with-value=\"\u0026amp;quot;\\\\frac{3}{4}\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-math\u003e\u003cbr\u003e\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
               "\u003cp\u003e2/3\u003c/p\u003e"
             ]
           }
