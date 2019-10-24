@@ -3,7 +3,6 @@ package org.oppia.app.topic.play
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -15,6 +14,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,12 +30,12 @@ import javax.inject.Singleton
 class TopicPlayFragmentTest {
 
   // TODO(#137): Add following test-cases once story-progress function is implemented and expandable list is introduced.
-  //  Story progress is is displayed correctly.
-  //  Click on arrow to show and hide expandable list is working correctly.
-  //  Expandable list is showing correct chapter names.
-  //  Upon configuration change expanded list should remain expanded.
-  //  Click on story-title or entire item should open [StoryActivity].
-  //  Click on chapter in expandable list should start exploration.
+  //  - Story progress is displayed correctly.
+  //  - Click on arrow to show and hide expandable list is working correctly.
+  //  - Expandable list is showing correct chapter names.
+  //  - Upon configuration change expanded list should remain expanded.
+  //  - Click on story-title or entire item should open [StoryActivity].
+  //  - Click on chapter in expandable list should start exploration.
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -44,23 +44,37 @@ class TopicPlayFragmentTest {
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyName_isCorrect() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("First Story"))))
-    }
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        0
+      )
+    ).check(matches(hasDescendant(withText(containsString("First Story")))))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCount_isCorrect() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("1 Chapter"))))
-    }
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        0
+      )
+    ).check(matches(hasDescendant(withText(containsString("1 Chapter")))))
+
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    onView(atPosition(R.id.story_summary_recycler_view, 0)).check(matches(hasDescendant(withText("1 Chapter"))))
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        0
+      )
+    ).check(matches(hasDescendant(withText(containsString("First Story")))))
   }
 
   @Module

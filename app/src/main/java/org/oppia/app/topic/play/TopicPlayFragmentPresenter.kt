@@ -26,8 +26,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val topicController: TopicController,
-  private val viewModelProvider: ViewModelProvider<TopicPlayViewModel>
+  private val topicController: TopicController
 ) : StorySummarySelector {
 
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -38,7 +37,6 @@ class TopicPlayFragmentPresenter @Inject constructor(
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     binding.let {
-      it.viewModel = getTopicPlayViewModel()
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
@@ -70,10 +68,6 @@ class TopicPlayFragmentPresenter @Inject constructor(
       logger.e("TopicPlayFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
-  }
-
-  private fun getTopicPlayViewModel(): TopicPlayViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicPlayViewModel::class.java)
   }
 
   override fun selectedStorySummary(storySummary: StorySummary) {

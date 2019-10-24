@@ -31,7 +31,7 @@ class StorySummaryAdapter(private var storyList: MutableList<StorySummary>) :
     return storyList.size
   }
 
-  inner class StorySummaryViewHolder(val binding: TopicPlayStorySummaryBinding) :
+  inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
       binding.setVariable(BR.storySummary, storySummary)
