@@ -90,7 +90,7 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  fun testUtil_createDir_checkDirExists() {
+  fun testGetOrCreateDir_forCreatedDir_dirIsCreated() {
     directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
 
     val dir = File(getAbsoluteDirPath(TEST_DIRECTORY_1))
@@ -99,7 +99,7 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  fun testUtil_createDir_getSameDir_checkDirsEquality() {
+  fun testGetOrCreateDir_forCreatedDir_getSameDir_checkDirsAreEqual() {
     val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
 
     val sameDir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
@@ -108,7 +108,7 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  fun testUtil_createDir_createDifferentDir_checkDirsNotEqual() {
+  fun testGetOrCreateDir_forCreatedDir_createDifferentDir_checkDirsAreNotEqual() {
     val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
 
     val diffDir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_2)
@@ -117,7 +117,7 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  fun testUtil_createDir_restartApplication_checkDirExists() {
+  fun testGetOrCreateDir_forCreatedDir_restartApplication_dirIsCreated() {
     directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
 
     setUpTestApplicationComponent()
@@ -126,9 +126,8 @@ class DirectoryManagementUtilTest {
     assertThat(dir.exists()).isTrue()
   }
 
-
   @Test
-  fun testUtil_createDir_deleteDir_checkDirDoesNotExist() {
+  fun testDeleteDir_forCreatedDir_deleteDir_checkDirDoesNotExist() {
     directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
 
     val success = directoryManagementUtil.deleteDir(TEST_DIRECTORY_1)
@@ -139,7 +138,7 @@ class DirectoryManagementUtilTest {
   }
 
   @Test
-  fun testUtil_createDir_createFilesUnderDir_deleteDir_checkDirDoesNotExist() {
+  fun testDeleteDir_forCreatedDir_withContainedFiles_dirIsDeleted() {
     val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
     val file1 = File(dir, TEST_FILE_1)
     file1.createNewFile()
@@ -150,9 +149,31 @@ class DirectoryManagementUtilTest {
 
     assertThat(dir.exists()).isFalse()
     assertThat(success).isTrue()
+    assertThat(File(getAbsoluteDirPath(TEST_DIRECTORY_1) + "/" + TEST_FILE_1).exists()).isFalse()
+    assertThat(File(getAbsoluteDirPath(TEST_DIRECTORY_1) + "/" + TEST_FILE_2).exists()).isFalse()
+  }
+
+  @Test
+  fun testDeleteDir_forCreatedDir_withContainedFiles_deleteDir_createSameDir_checkDirIsEmpty() {
+    val dir = directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+    val file1 = File(dir, TEST_FILE_1)
+    file1.createNewFile()
+    val file2 = File(dir, TEST_FILE_2)
+    file2.createNewFile()
+
+    val success = directoryManagementUtil.deleteDir(TEST_DIRECTORY_1)
+    directoryManagementUtil.getOrCreateDir(TEST_DIRECTORY_1)
+
+    assertThat(success).isTrue()
+    assertThat(dir.exists()).isTrue()
+    assertThat(dir.listFiles().isEmpty()).isTrue()
   }
 
   private fun getAbsoluteDirPath(path: String): String {
+    /**
+     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.util.test-dataDir/files
+     * dropLast(5) removes files from the path and then it appends the real path with "app_" as a prefix
+     */
     return context.filesDir.toString().dropLast(5) + "app_" + path
   }
 
