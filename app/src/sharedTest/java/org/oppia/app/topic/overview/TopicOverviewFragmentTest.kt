@@ -16,6 +16,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +49,7 @@ class TopicOverviewFragmentTest {
   @Test
   fun testTopicOverviewFragment_loadFragment_checkTopicName_isCorrect() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(topicName)))
+      onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(topicName))))
     }
   }
 
@@ -63,7 +64,7 @@ class TopicOverviewFragmentTest {
   @Test
   fun testTopicOverviewFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(withId(R.id.topic_description_text_view)).check(matches(withText(topicDescription)))
+      onView(withId(R.id.topic_description_text_view)).check(matches(withText(containsString(topicDescription))))
     }
   }
 
@@ -78,7 +79,7 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    onView(withId(R.id.topic_name_text_view)).check(matches(withText(topicName)))
+    onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(topicName))))
   }
 
   @Module

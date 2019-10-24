@@ -13,6 +13,6 @@ object EspressoTestsMatchers {
 
   @Suppress("unused")
   fun noDrawable(): Matcher<View> {
-    return DrawableMatcher(-1)
+    return DrawableMatcher(DrawableMatcher.NONE)
   }
 }

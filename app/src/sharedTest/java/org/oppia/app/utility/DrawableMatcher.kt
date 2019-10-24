@@ -12,7 +12,7 @@ import android.widget.ImageView
 /** This class mainly provides a custom matcher to test whether the drawable-image is correctly shown in ImageView. */
 class DrawableMatcher internal constructor(private val expectedId: Int) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
-    internal const val EMPTY = -1
+    internal const val NONE = -1
     internal const val ANY = -2
   }
 
@@ -22,7 +22,7 @@ class DrawableMatcher internal constructor(private val expectedId: Int) : TypeSa
     if (target !is ImageView) {
       return false
     }
-    if (expectedId == EMPTY) {
+    if (expectedId == NONE) {
       return target.drawable == null
     }
     if (expectedId == ANY) {
@@ -36,17 +36,17 @@ class DrawableMatcher internal constructor(private val expectedId: Int) : TypeSa
       return false
     }
 
-    val bitmap = getBitmap(target.drawable)
-    val otherBitmap = getBitmap(expectedDrawable)
-    return bitmap.sameAs(otherBitmap)
+    val targetBitmap = getBitmap(target.drawable)
+    val expectedBitmap = getBitmap(expectedDrawable)
+    return targetBitmap.sameAs(expectedBitmap)
   }
 
   private fun getBitmap(drawable: Drawable): Bitmap {
-    val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
+    val targetBitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(targetBitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)
     drawable.draw(canvas)
-    return bitmap
+    return targetBitmap
   }
 
   override fun describeTo(description: Description) {
