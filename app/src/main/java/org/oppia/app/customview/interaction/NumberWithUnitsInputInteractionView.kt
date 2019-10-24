@@ -20,7 +20,8 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     var units = ""
     lateinit var value: String
     val rawInput = text.toString()
-    val interactionObjectBuilder = InteractionObject.newBuilder().setNumberWithUnits(NumberWithUnits.getDefaultInstance())
+    val interactionObjectBuilder =
+      InteractionObject.newBuilder().setNumberWithUnits(NumberWithUnits.getDefaultInstance())
     if (text.isNullOrEmpty()) {
       return interactionObjectBuilder.build()
     }
@@ -38,8 +39,15 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     }
     if (value.contains("/").or(value.contains("-"))) {
       interactionObjectBuilder.setNumberWithUnits(
-        NumberWithUnits.newBuilder().setFraction(StringToFractionParser().getFractionFromString(value)).addUnit(NumberUnit.newBuilder().setUnit(units)))
-    } else interactionObjectBuilder.setNumberWithUnits(NumberWithUnits.newBuilder().setReal(value.toFloat()).addUnit(NumberUnit.newBuilder().setUnit(units)))
+        NumberWithUnits.newBuilder().setFraction(StringToFractionParser().getFractionFromString(value)).addUnit(
+          NumberUnit.newBuilder().setUnit(units)
+        )
+      )
+    } else interactionObjectBuilder.setNumberWithUnits(
+      NumberWithUnits.newBuilder().setReal(value.toFloat()).addUnit(
+        NumberUnit.newBuilder().setUnit(units)
+      )
+    )
     return interactionObjectBuilder.build()
   }
 }
