@@ -375,18 +375,16 @@ class StateFragmentPresenter @Inject constructor(
     for (key in allKeys) {
       logger.d(TAG_STATE_FRAGMENT, key)
     }
-    when {
-      customizationArgsMap.contains("choices") -> {
-        if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
-          multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
-            currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
-          multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
-            currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
-        }
-        multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
-        multipleChoiceInputInteractionViewModel.choiceItems =
-          currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+    if (customizationArgsMap.contains("choices")) {
+      if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
+        multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
+        multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
       }
+      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
+      multipleChoiceInputInteractionViewModel.choiceItems =
+        currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
     }
     itemList.add(multipleChoiceInputInteractionViewModel)
     stateAdapter.notifyDataSetChanged()
