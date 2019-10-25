@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 @FragmentScope
-class SelectionContentViewModel @Inject constructor() : ViewModel() {
+class SelectionContentViewModel : ViewModel() {
   var htmlContent: String =""
   var isAnswerSelected = false
 }

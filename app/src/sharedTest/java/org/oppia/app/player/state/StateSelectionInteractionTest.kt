@@ -7,7 +7,6 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -62,7 +61,7 @@ class StateSelectionInteractionTest {
   @Test
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
     }
@@ -71,7 +70,7 @@ class StateSelectionInteractionTest {
   @Test
   fun testMultipleChoiceInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.play_exploration_button)).perform(click())
+      onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
       counter++
       onView(atPosition(R.id.selection_interaction_recyclerview, 5)).perform(click())
