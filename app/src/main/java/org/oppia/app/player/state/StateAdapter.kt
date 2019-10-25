@@ -59,7 +59,7 @@ class StateAdapter(
             inflater,
             R.layout.content_item,
             parent,
-            /* attachToParent= */false
+            /* attachToParent= */ false
           )
         ContentViewHolder(binding)
       }

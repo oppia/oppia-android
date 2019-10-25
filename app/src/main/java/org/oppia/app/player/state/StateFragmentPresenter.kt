@@ -96,7 +96,7 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
-    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)
+    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
 
@@ -335,7 +335,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
   private fun checkAndAddContentItem() {
-    if (currentEphemeralState!!.state.hasContent()) {
+    if (currentEphemeralState.state.hasContent()) {
       addContentItem()
     } else {
       logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
@@ -344,7 +344,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addContentItem() {
     val contentViewModel = ContentViewModel()
-    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState!!.state.content
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
     if (contentSubtitledHtml.contentId != "") {
       contentViewModel.contentId = contentSubtitledHtml.contentId
     } else {
