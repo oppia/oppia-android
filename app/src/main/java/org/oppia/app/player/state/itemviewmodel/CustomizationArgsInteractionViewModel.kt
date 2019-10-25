@@ -5,7 +5,6 @@ import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
 /** [ViewModel] for multiple or item-selection input choice list. */
-@FragmentScope
 class CustomizationArgsInteractionViewModel : ViewModel() {
 
   var choiceItems: MutableList<String>? = null
