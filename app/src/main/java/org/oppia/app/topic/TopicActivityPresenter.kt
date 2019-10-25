@@ -3,7 +3,6 @@ package org.oppia.app.topic
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.topic.play.TopicPlayFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicActivity]. */
@@ -14,7 +13,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getTopicFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        TopicPlayFragment()
+        TopicFragment()
       ).commitNow()
     }
   }
