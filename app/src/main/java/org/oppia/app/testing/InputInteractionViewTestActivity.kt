@@ -6,10 +6,11 @@ import org.oppia.app.R
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.customview.interaction.FractionInputInteractionView
+import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView], [TextInputInteractionView] and [FractionInputInteractionView].
+ * It contains [NumericInputInteractionView], [TextInputInteractionView], [FractionInputInteractionView] and [NumberWithUnitsInputInteractionView].
  */
 class InputInteractionViewTestActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
