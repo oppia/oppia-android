@@ -131,6 +131,27 @@ class QuestionTrainingControllerTest {
     )
   }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_successfullyStartsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    advanceUntilIdle()
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
+      )
+    )
+  }
+
   @Qualifier
   annotation class TestDispatcher
 
@@ -182,13 +203,16 @@ class QuestionTrainingControllerTest {
 
   @Module
   class TestQuestionModule {
+    companion object {
+      var questionSeed = 0L
+    }
     @Provides
     @QuestionCountPerTrainingSession
     fun provideQuestionCountPerTrainingSession(): Int = 3
 
     @Provides
     @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = 0L
+    fun provideQuestionTrainingSeed(): Long = questionSeed ++
   }
 
   // TODO(#89): Move this to a common test application component.
