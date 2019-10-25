@@ -178,7 +178,7 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
       checkAndAddContentItem()
-      checkAndAddInteraction()
+      addInteractionForPendingState()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
@@ -356,7 +356,7 @@ class StateFragmentPresenter @Inject constructor(
     stateAdapter.notifyDataSetChanged()
   }
 
-  private fun checkAndAddInteraction() {
+  private fun addInteractionForPendingState() {
     if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
       when (currentEphemeralState.state.interaction.id) {
         MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
