@@ -22,7 +22,7 @@ import javax.inject.Inject
 /** The presenter for [TopicPlayFragment]. */
 @FragmentScope
 class TopicPlayFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
@@ -51,7 +51,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      val storySummaryAdapter = StorySummaryAdapter(it.storyList, this as StorySummarySelector)
+      val storySummaryAdapter = StorySummaryAdapter(it.storyList, this as StorySummarySelector, activity)
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
