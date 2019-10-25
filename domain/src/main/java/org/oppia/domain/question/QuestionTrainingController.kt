@@ -7,8 +7,10 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import java.io.RandomAccessFile
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
 
@@ -18,7 +20,8 @@ class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val topicController: TopicController,
   private val dataProviders: DataProviders,
-  private val questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
+  @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
+  @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
   /**
    * Begins a question training session given a list of skill Ids and a total number of questions.
@@ -47,8 +50,8 @@ class QuestionTrainingController @Inject constructor(
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
       getFilteredQuestionsForTraining(
-        skillIdsList, it,
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession() / skillIdsList.size
+        skillIdsList, it.shuffled(Random(questionTrainingSeed)),
+        questionCountPerSession / skillIdsList.size
       )
     }
   }
@@ -65,9 +68,10 @@ class QuestionTrainingController @Inject constructor(
             !trainingQuestions.contains(it)
       }.distinctBy { it.questionId }.take(numQuestionsPerSkill + 1))
     }
-    return trainingQuestions
-      .take(questionTrainingConstantsProvider.getQuestionCountPerTrainingSession())
+    return trainingQuestions.take(questionCountPerSession)
   }
+
+
 
   /**
    * Finishes the most recent training session started by [startQuestionTrainingSession].

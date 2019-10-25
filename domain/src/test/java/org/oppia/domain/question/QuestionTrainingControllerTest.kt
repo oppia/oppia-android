@@ -122,11 +122,11 @@ class QuestionTrainingControllerTest {
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(4)
+    assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
       )
     )
   }
@@ -137,23 +137,10 @@ class QuestionTrainingControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    @Mock
-    lateinit var questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
-      MockitoAnnotations.initMocks(this)
-      Mockito.`when`(
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()
-      ).thenReturn(10)
-      return questionTrainingConstantsProvider
     }
 
     @ExperimentalCoroutinesApi
@@ -193,9 +180,20 @@ class QuestionTrainingControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestQuestionModule {
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = 0L
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestQuestionModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
