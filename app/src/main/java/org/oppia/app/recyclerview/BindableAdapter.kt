@@ -17,6 +17,8 @@ const val DEFAULT_VIEW_TYPE = 0
 
 private typealias ViewHolderFactory<T> = (ViewGroup) -> BindableAdapter.BindableViewHolder<T>
 
+
+
 /**
  * A generic [RecyclerView.Adapter] that can be initialized using Android data-binding, and bind its
  * own child views using Android data-binding (or custom View bind methods).
@@ -41,6 +43,7 @@ class BindableAdapter<T : Any> internal constructor(
     //  rather than re-binding the entire list upon any change.
     notifyDataSetChanged()
   }
+
 
   /**
    * Sets the data of this adapter in the same way as [setData], except with a different type.
@@ -75,6 +78,7 @@ class BindableAdapter<T : Any> internal constructor(
     return dataList.size
   }
 
+  
   override fun getItemViewType(position: Int): Int {
     return computeViewType(dataList[position])
   }
