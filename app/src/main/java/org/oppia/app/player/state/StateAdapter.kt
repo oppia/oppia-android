@@ -93,7 +93,7 @@ class StateAdapter(
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
       VIEW_TYPE_SELECTION_INTERACTION -> {
-        (holder as SelectionInteractionViewHolder).bind((itemList[position] as CustomizationArgsInteractionViewModel))
+        (holder as SelectionInteractionViewHolder).bind(itemList[position] as CustomizationArgsInteractionViewModel)
       }
     }
   }
