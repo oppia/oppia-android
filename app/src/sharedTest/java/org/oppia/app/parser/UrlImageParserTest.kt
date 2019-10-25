@@ -9,10 +9,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getArguments
 import androidx.test.rule.ActivityTestRule
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import dagger.BindsInstance
@@ -28,10 +32,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.doAnswer
+import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
+import org.oppia.app.R
+import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.UrlImageParserTestActivity
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.logging.EnableConsoleLog
@@ -39,6 +47,7 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.ImageLoader
+import org.oppia.util.parser.UrlImageParser
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
@@ -69,33 +78,36 @@ class UrlImageParserTest {
 
   @Test
   fun testImageLoader_returnSuccess() {
-
-
+    val imageView = activityTestRule.activity.findViewById(R.id.test_url_parser_image_view) as ImageView
     var drawable: Drawable? = null
-    imageLoader.load(
-      OK_IMAGE_URL, object : SimpleTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-          drawable =  BitmapDrawable(activityTestRule.activity.getResources(), resource);
-        }
+    val testBitmap: Bitmap? = null
+    val target = object : CustomTarget<Bitmap>() {
+      override fun onLoadCleared(placeholder: Drawable?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
       }
-    )
+      override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+        drawable = BitmapDrawable(activityTestRule.activity.getResources(), resource);
+        imageView.setImageDrawable(drawable)
+      }
+    }
+    doAnswer { invocation ->
+      invocation.getArgument<CustomTarget<Bitmap>>(1).onResourceReady(testBitmap!!, null)
+      imageView.setImageBitmap(testBitmap)
 
-
-//    doAnswer( Answer() { invocation -> <SimpleTarget<Bitmap>>() {
-//       fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-//        drawable =  BitmapDrawable(activityTestRule.activity.getResources(), resource);
-//      }.when(imageLoader).load(anyString(), any())
-
-    assertNotNull(drawable)
+    }.`when`(imageLoader).load(OK_IMAGE_URL, target)
   }
 
   @Test
   fun testImageLoader_returnError() {
     var drawable: Drawable? = null
     imageLoader.load(
-      FAKE_IMAGE_URL, object : SimpleTarget<Bitmap>() {
+      FAKE_IMAGE_URL, object : CustomTarget<Bitmap>() {
+        override fun onLoadCleared(placeholder: Drawable?) {
+          TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-          drawable =  BitmapDrawable(activityTestRule.activity.getResources(), resource);
+          drawable = BitmapDrawable(activityTestRule.activity.getResources(), resource);
         }
       }
     )
@@ -111,6 +123,7 @@ class UrlImageParserTest {
     const val FAKE_IMAGE_URL = ""
     const val OK_IMAGE_URL = "https://teorico.net/images/test-dgt-1.png"
   }
+
   @Module
   class TestModule {
     @Provides

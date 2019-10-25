@@ -8,12 +8,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
 import android.widget.TextView
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import dagger.Binds
 import org.oppia.util.R
 import javax.inject.Inject
-import javax.inject.Singleton
+
+
 
 // TODO(#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
@@ -45,8 +47,10 @@ class UrlImageParser private constructor(
     return urlDrawable
   }
 
-  private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : SimpleTarget<Bitmap>() {
-
+  private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
+    override fun onLoadCleared(placeholder: Drawable?) {
+      TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
       val  drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
@@ -62,7 +66,7 @@ class UrlImageParser private constructor(
     }
   }
 
-  private inner class UrlDrawable : BitmapDrawable() {
+   class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
