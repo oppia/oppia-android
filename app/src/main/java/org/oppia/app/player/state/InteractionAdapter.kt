@@ -8,8 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_selection_interaction_items.view.*
-import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
+import kotlinx.android.synthetic.main.item_selection_interaction_items.view.item_selection_checkbox
+import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.multiple_choice_content_text_view
 import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
