@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /** [ObservableViewModel] for multiple or item-selection input choice list. */
 @FragmentScope
-class CustomizationArgsInteractionViewModel @Inject constructor() : ViewModel() {
+class CustomizationArgsInteractionViewModel : ViewModel() {
 
   var choiceItems: MutableList<String>? = null
   var interactionId: String = ""
