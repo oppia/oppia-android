@@ -146,7 +146,7 @@ class StateAdapter(
   }
 
   inner class SelectionInteractionViewHolder(
-    val binding: ViewDataBinding
+   private val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(customizationArgs: CustomizationArgsInteractionViewModel) {
       val items: Array<String>?
