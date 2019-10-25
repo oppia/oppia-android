@@ -36,3 +36,4 @@
     <activity android:name=".testing.BindableAdapterTestActivity" />
   </application>
 </manifest>
+
