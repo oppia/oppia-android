@@ -57,7 +57,8 @@ class StateAdapter(
             /* attachToParent= */false
           )
         StateButtonViewHolder(binding, buttonInteractionListener)
-      } VIEW_TYPE_CONTENT -> {
+      }
+      VIEW_TYPE_CONTENT -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<ContentItemBinding>(
@@ -89,8 +90,8 @@ class StateAdapter(
         (holder as StateButtonViewHolder).bind(itemList[position] as StateButtonViewModel)
       }
       VIEW_TYPE_CONTENT -> {
-      (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
-    }
+        (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
+      }
       VIEW_TYPE_SELECTION_INTERACTION -> {
         (holder as SelectionInteractionViewHolder).bind((itemList[position] as CustomizationArgsInteractionViewModel))
       }
@@ -112,6 +113,7 @@ class StateAdapter(
   override fun getItemCount(): Int {
     return itemList.size
   }
+
   inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String) {
       binding.setVariable(BR.htmlContent, rawString)
@@ -123,6 +125,7 @@ class StateAdapter(
       binding.root.content_text_view.text = htmlResult
     }
   }
+
   private class StateButtonViewHolder(
     val binding: ViewDataBinding,
     private val buttonInteractionListener: ButtonInteractionListener

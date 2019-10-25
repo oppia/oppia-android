@@ -1,4 +1,4 @@
-package org.oppia.app.player.state
+package org.oppia.util.parser
 
 import dagger.Module
 import dagger.Provides
