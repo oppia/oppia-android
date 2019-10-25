@@ -151,7 +151,6 @@ class StateAdapter(
     internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
       val items: Array<String>?
       val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
-      binding.executePendingBindings()
       val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
       for (values in items) {
