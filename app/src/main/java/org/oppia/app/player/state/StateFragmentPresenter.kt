@@ -355,14 +355,11 @@ class StateFragmentPresenter @Inject constructor(
     itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
   }
-  
+
   private fun checkAndAddInteraction() {
     if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
       when (currentEphemeralState.state.interaction.id) {
-        MULTIPLE_CHOICE_INPUT -> {
-          addMultipleChoiceInputItem()
-        }
-        ITEM_SELECT_INPUT -> {
+        MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
           addMultipleChoiceInputItem()
         }
       }
