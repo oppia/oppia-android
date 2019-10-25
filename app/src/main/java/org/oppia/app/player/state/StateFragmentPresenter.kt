@@ -360,13 +360,13 @@ class StateFragmentPresenter @Inject constructor(
     if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
       when (currentEphemeralState.state.interaction.id) {
         MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
-          addMultipleChoiceInputItem()
+          addSelectionInteraction()
         }
       }
     }
   }
 
-  private fun addMultipleChoiceInputItem() {
+  private fun addSelectionInteraction() {
     val customizationArgsMap: Map<String, InteractionObject> =
       currentEphemeralState.state.interaction.customizationArgsMap
     val multipleChoiceInputInteractionViewModel = CustomizationArgsInteractionViewModel()
