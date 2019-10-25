@@ -23,6 +23,8 @@ class QuestionTrainingController @Inject constructor(
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
   @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
+
+  private val random = Random(questionTrainingSeed)
   /**
    * Begins a question training session given a list of skill Ids and a total number of questions.
    *
@@ -50,7 +52,7 @@ class QuestionTrainingController @Inject constructor(
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
       getFilteredQuestionsForTraining(
-        skillIdsList, it.shuffled(Random(questionTrainingSeed)),
+        skillIdsList, it.shuffled(random),
         questionCountPerSession / skillIdsList.size
       )
     }
@@ -70,8 +72,6 @@ class QuestionTrainingController @Inject constructor(
     }
     return trainingQuestions.take(questionCountPerSession)
   }
-
-
 
   /**
    * Finishes the most recent training session started by [startQuestionTrainingSession].

@@ -126,14 +126,14 @@ class QuestionTrainingControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
       )
     )
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_successfullyStartsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+  fun testController_startsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
@@ -147,7 +147,7 @@ class QuestionTrainingControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
       )
     )
   }
@@ -206,6 +206,7 @@ class QuestionTrainingControllerTest {
     companion object {
       var questionSeed = 0L
     }
+
     @Provides
     @QuestionCountPerTrainingSession
     fun provideQuestionCountPerTrainingSession(): Int = 3
