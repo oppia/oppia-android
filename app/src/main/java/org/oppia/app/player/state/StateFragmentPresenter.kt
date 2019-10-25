@@ -377,13 +377,11 @@ class StateFragmentPresenter @Inject constructor(
     }
     when {
       customizationArgsMap.contains("choices") -> {
-        when {
-          customizationArgsMap.contains("maxAllowableSelectionCount") -> {
-            multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
-              currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
-            multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
-              currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
-          }
+        if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
+          multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+            currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
+          multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+            currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
         }
         multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
         multipleChoiceInputInteractionViewModel.choiceItems =
