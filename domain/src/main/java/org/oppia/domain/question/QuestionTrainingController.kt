@@ -7,7 +7,6 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import java.io.RandomAccessFile
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
