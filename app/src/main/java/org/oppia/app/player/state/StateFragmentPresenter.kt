@@ -355,6 +355,7 @@ class StateFragmentPresenter @Inject constructor(
     itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
   }
+  
   private fun checkAndAddInteraction() {
     if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
       when (currentEphemeralState.state.interaction.id) {
