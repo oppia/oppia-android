@@ -392,7 +392,19 @@ class InputInteractionViewTestActivityTest {
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(3)
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(1)
       assertThat(numberWithUnits.fraction.denominator).isEqualTo(2)
-      assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("days")
+      assertThat(numberWithUnits.getUnit( 0).unit).isEqualTo("days")
+    }
+  }
+  @Test
+  fun testNumberWithUnitsInputInteractionView_withInputtedNegativeDecimal_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("-10.00 m"))
+    activityScenario.onActivity { activity ->
+      val textAnswerRetriever =
+        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
+      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      assertThat(numberWithUnits.real).isEqualTo(-10.0f)
+      assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("m")
     }
   }
 

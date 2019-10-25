@@ -37,7 +37,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
       value = rawInput
       units = ""
     }
-    if (value.contains("/").or(value.contains("-"))) {
+    if (!value.contains(".")) {
       interactionObjectBuilder.setNumberWithUnits(
         NumberWithUnits.newBuilder().setFraction(StringToFractionParser().getFractionFromString(value)).addUnit(
           NumberUnit.newBuilder().setUnit(units)
