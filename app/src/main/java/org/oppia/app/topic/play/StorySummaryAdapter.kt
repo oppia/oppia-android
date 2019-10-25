@@ -2,7 +2,6 @@ package org.oppia.app.topic.play
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,8 @@ import org.oppia.app.model.StorySummary
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
-  private val storySummarySelector: StorySummarySelector) :
+  private val storySummarySelector: StorySummarySelector
+) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
@@ -51,9 +51,12 @@ class StorySummaryAdapter(
           }
           .size
 
-      binding.chapterListView.adapter = ChapterSelectionAdapter(storySummary.chapterList)
-      val storyProgressPercentage: Int = (completedChapterCount / totalChapterCount) * 100
+      val chapterList = storySummary.chapterList
+      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList)
+
+      val storyProgressPercentage: Int = (completedChapterCount * 100 / totalChapterCount)
       binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
+
       binding.storyNameTextView.setOnClickListener {
         storySummarySelector.selectedStorySummary(storySummary)
       }
