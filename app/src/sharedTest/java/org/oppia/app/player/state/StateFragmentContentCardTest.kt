@@ -22,6 +22,7 @@ import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 
+// TODO(#205): Add test case for image parsing once PR #205 is merged.
 /** Tests for [VIEW_TYPE_CONTENT]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentContentCardTest {
