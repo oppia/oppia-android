@@ -20,8 +20,8 @@ import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.util.parser.HtmlParser
 
-private const val VIEW_TYPE_MULTIPLE_CHOICE = 1
-private const val VIEW_TYPE_ITEM_SELECTION = 2
+private const val VIEW_TYPE_RADIO_BUTTONS = 1
+private const val VIEW_TYPE_CHECKBOXES = 2
 private const val INTERACTION_ADAPTER_TAG = "Interaction Adapter"
 
 /**
@@ -42,7 +42,7 @@ class InteractionAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      VIEW_TYPE_MULTIPLE_CHOICE -> {
+      VIEW_TYPE_RADIO_BUTTONS -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<MultipleChoiceInteractionItemsBinding>(
@@ -53,7 +53,7 @@ class InteractionAdapter(
           )
         MultipleChoiceViewHolder(binding)
       }
-      VIEW_TYPE_ITEM_SELECTION -> {
+      VIEW_TYPE_CHECKBOXES -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<ItemSelectionInteractionItemsBinding>(
@@ -70,12 +70,12 @@ class InteractionAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
-      VIEW_TYPE_MULTIPLE_CHOICE -> (holder as MultipleChoiceViewHolder).bind(
+      VIEW_TYPE_RADIO_BUTTONS -> (holder as MultipleChoiceViewHolder).bind(
         itemList[position].htmlContent,
         position,
         itemSelectedPosition
       )
-      VIEW_TYPE_ITEM_SELECTION -> (holder as ItemSelectionViewHolder).bind(
+      VIEW_TYPE_CHECKBOXES -> (holder as ItemSelectionViewHolder).bind(
         itemList[position]
       )
     }
@@ -85,12 +85,12 @@ class InteractionAdapter(
   override fun getItemViewType(position: Int): Int {
     return if (customizationArgs.interactionId == "ItemSelectionInput") {
       if (customizationArgs.maxAllowableSelectionCount > 1) {
-        VIEW_TYPE_ITEM_SELECTION
+        VIEW_TYPE_CHECKBOXES
       } else {
-        VIEW_TYPE_MULTIPLE_CHOICE
+        VIEW_TYPE_RADIO_BUTTONS
       }
     } else {
-      VIEW_TYPE_MULTIPLE_CHOICE
+      VIEW_TYPE_RADIO_BUTTONS
     }
   }
 
