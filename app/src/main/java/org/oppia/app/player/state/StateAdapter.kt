@@ -17,8 +17,8 @@ import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
-import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
@@ -93,7 +93,7 @@ class StateAdapter(
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
       VIEW_TYPE_SELECTION_INTERACTION -> {
-        (holder as SelectionInteractionViewHolder).bind(itemList[position] as CustomizationArgsInteractionViewModel)
+        (holder as SelectionInteractionViewHolder).bind(itemList[position] as SelectionInteractionCustomizationArgsViewModel)
       }
     }
   }
@@ -101,7 +101,7 @@ class StateAdapter(
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
       is ContentViewModel -> VIEW_TYPE_CONTENT
-      is CustomizationArgsInteractionViewModel -> VIEW_TYPE_SELECTION_INTERACTION
+      is SelectionInteractionCustomizationArgsViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
@@ -148,20 +148,20 @@ class StateAdapter(
   inner class SelectionInteractionViewHolder(
    private val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(customizationArgs: CustomizationArgsInteractionViewModel) {
+    internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
       val items: Array<String>?
-      val choiceContentList: MutableList<SelectionContentViewModel> = ArrayList()
+      val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
       binding.executePendingBindings()
       val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
       items = gaeCustomArgsInString.split(",").toTypedArray()
       for (values in items) {
-        val selectionContentViewModel = SelectionContentViewModel()
+        val selectionContentViewModel = SelectionInteractionContentViewModel()
         selectionContentViewModel.htmlContent = values
         selectionContentViewModel.isAnswerSelected = false
-        choiceContentList.add(selectionContentViewModel)
+        choiceInteractionContentList.add(selectionContentViewModel)
       }
       val interactionAdapter =
-        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceContentList, customizationArgs)
+        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs)
       binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
     }
   }

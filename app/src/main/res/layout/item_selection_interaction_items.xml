@@ -3,7 +3,7 @@
   <data>
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
   </data>
   <RelativeLayout
     android:id="@+id/checkbox_container"

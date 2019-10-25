@@ -22,7 +22,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
-import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -369,7 +369,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun addSelectionInteraction() {
     val customizationArgsMap: Map<String, InteractionObject> =
       currentEphemeralState.state.interaction.customizationArgsMap
-    val multipleChoiceInputInteractionViewModel = CustomizationArgsInteractionViewModel()
+    val multipleChoiceInputInteractionViewModel = SelectionInteractionCustomizationArgsViewModel()
     val allKeys: Set<String> = customizationArgsMap.keys
 
     for (key in allKeys) {

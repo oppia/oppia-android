@@ -19,8 +19,8 @@ import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
-import org.oppia.app.player.state.itemviewmodel.CustomizationArgsInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.util.parser.HtmlParser
 
@@ -36,8 +36,8 @@ class InteractionAdapter(
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
   private val explorationId: String,
-  private val itemList: MutableList<SelectionContentViewModel>,
-  private val customizationArgs: CustomizationArgsInteractionViewModel
+  private val itemList: MutableList<SelectionInteractionContentViewModel>,
+  private val selectionInteractionCustomizationArgsViewModel: SelectionInteractionCustomizationArgsViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
 
   private var itemSelectedPosition = -1
@@ -87,8 +87,8 @@ class InteractionAdapter(
 
   // Determines the appropriate ViewType according to the interaction type.
   override fun getItemViewType(position: Int): Int {
-    return if (customizationArgs.interactionId == "ItemSelectionInput") {
-      if (customizationArgs.maxAllowableSelectionCount > 1) {
+    return if (selectionInteractionCustomizationArgsViewModel.interactionId == "ItemSelectionInput") {
+      if (selectionInteractionCustomizationArgsViewModel.maxAllowableSelectionCount > 1) {
         VIEW_TYPE_CHECKBOXES
       } else {
         VIEW_TYPE_RADIO_BUTTONS
@@ -103,27 +103,27 @@ class InteractionAdapter(
   }
 
   private inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(selectionContentViewModel: SelectionContentViewModel) {
-      binding.setVariable(BR.htmlContent, selectionContentViewModel.htmlContent)
+    internal fun bind(selectionInteractionContentViewModel: SelectionInteractionContentViewModel) {
+      binding.setVariable(BR.htmlContent, selectionInteractionContentViewModel.htmlContent)
       binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-        selectionContentViewModel.htmlContent,
+        selectionInteractionContentViewModel.htmlContent,
         binding.root.item_selection_contents_text_view
       )
       binding.root.item_selection_contents_text_view.text = htmlResult
-      binding.root.item_selection_checkbox.isChecked = selectionContentViewModel.isAnswerSelected
+      binding.root.item_selection_checkbox.isChecked = selectionInteractionContentViewModel.isAnswerSelected
       binding.root.checkbox_container.setOnClickListener {
         if (binding.root.item_selection_checkbox.isChecked) {
           itemList[adapterPosition].isAnswerSelected = false
           selectedHtmlStringList.remove(binding.root.item_selection_contents_text_view.text.toString())
         } else {
-          if (selectedHtmlStringList.size != customizationArgs.maxAllowableSelectionCount) {
+          if (selectedHtmlStringList.size != selectionInteractionCustomizationArgsViewModel.maxAllowableSelectionCount) {
             itemList[adapterPosition].isAnswerSelected = true
             selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
           } else {
             Log.d(
               INTERACTION_ADAPTER_TAG,
-              "You cannot select more than ${customizationArgs.maxAllowableSelectionCount} options"
+              "You cannot select more than ${selectionInteractionCustomizationArgsViewModel.maxAllowableSelectionCount} options"
             )
           }
         }
@@ -152,7 +152,7 @@ class InteractionAdapter(
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (customizationArgs.interactionId == "ItemSelectionInput") {
+    if (selectionInteractionCustomizationArgsViewModel.interactionId == "ItemSelectionInput") {
       if (selectedHtmlStringList.size >= 0) {
         interactionObjectBuilder.setOfHtmlString = StringList.newBuilder().addAllHtml(selectedHtmlStringList).build()
       } else {
