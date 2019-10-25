@@ -85,13 +85,12 @@
       app:layout_constraintStart_toEndOf="@+id/chapter_count"
       app:layout_constraintTop_toBottomOf="@+id/story_name_text_view" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
       android:id="@+id/chapter_list_view"
       android:layout_width="0dp"
       android:layout_height="200dp"
       android:layout_marginTop="8dp"
       android:layout_marginBottom="8dp"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@+id/chapter_count"
       app:layout_constraintStart_toEndOf="@+id/story_progress_container"

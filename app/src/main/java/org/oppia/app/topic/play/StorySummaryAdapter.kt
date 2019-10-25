@@ -17,9 +17,7 @@ import org.oppia.app.model.StorySummary
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
-  private val storySummarySelector: StorySummarySelector,
-  private val activity: AppCompatActivity
-) :
+  private val storySummarySelector: StorySummarySelector) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
@@ -53,11 +51,9 @@ class StorySummaryAdapter(
           }
           .size
 
+      binding.chapterListView.adapter = ChapterSelectionAdapter(storySummary.chapterList)
       val storyProgressPercentage: Int = (completedChapterCount / totalChapterCount) * 100
       binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
-
-      binding.chapterListView.adapter = ChapterSelectionAdapter(storySummary.chapterList)
-
       binding.storyNameTextView.setOnClickListener {
         storySummarySelector.selectedStorySummary(storySummary)
       }
