@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 const val TEST_EXPLORATION_ID_5 = "DIWZiVgs0km-"
 const val TEST_EXPLORATION_ID_6 = "test_exp_id_6"
+const val TEST_EXPLORATION_ID_7 = "DIWZiVgs0km-"
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -32,6 +33,7 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
     return when (explorationId) {
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
+      TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }

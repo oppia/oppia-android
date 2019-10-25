@@ -24,7 +24,10 @@ private const val VIEW_TYPE_MULTIPLE_CHOICE = 1
 private const val VIEW_TYPE_ITEM_SELECTION = 2
 private const val INTERACTION_ADAPTER_TAG = "Interaction Adapter"
 
-/** Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput and ItemSelectionInput interaction views. */
+/**
+ * Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput
+ * and ItemSelectionInput interaction views.
+ * */
 class InteractionAdapter(
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
