@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
+/** [ViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 @FragmentScope
 class SelectionContentViewModel : ViewModel() {
   var htmlContent: String =""
