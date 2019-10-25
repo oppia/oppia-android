@@ -8,7 +8,7 @@ import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** The controller for [TopicFragment]. */
+/** The presenter for [TopicFragment]. */
 @FragmentScope
 class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment
