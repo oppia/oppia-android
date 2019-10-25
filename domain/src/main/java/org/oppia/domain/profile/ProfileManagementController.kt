@@ -28,6 +28,7 @@ import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
+private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -91,11 +92,12 @@ class ProfileManagementController @Inject constructor(
         }
       } else {
         // gravatar url is a md5 hash of an email address
-        imageUri = md5("$name$nextProfileId@gmail.com")
+        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase()}$nextProfileId@gmail.com")
       }
 
       val newProfile = Profile.newBuilder()
-        .setName(name).setPin(pin).setAvatarImageUri(imageUri).setAllowDownloadAccess(allowDownloadAccess)
+        .setName(name).setPin(pin).setAvatarImageUri(imageUri)
+        .setAllowDownloadAccess(allowDownloadAccess).setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .build()
 
       val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
@@ -188,7 +190,7 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.success(null))
       } else {
         logger.e("ProfileManagementController", "Failed when storing the updated allowDownLoadAccess for profile with ID: ${profileId.internalId}", it)
-        pendingLiveData.postValue(AsyncResult.failed())
+        pendingLiveData.postValue(AsyncResult.failed(it))
       }
     }
     return pendingLiveData

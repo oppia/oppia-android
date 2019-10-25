@@ -31,6 +31,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -56,10 +58,21 @@ class ProfileManagementControllerTest {
   lateinit var profileManagementController: ProfileManagementController
 
   @Mock
-  lateinit var mockProfileManagementObserver: Observer<AsyncResult<Any?>>
-
+  lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
   @Captor
-  lateinit var profileManagementResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
+
+  @Mock
+  lateinit var mockProfileObserver: Observer<AsyncResult<Profile>>
+  @Captor
+  lateinit var profileResultCaptor: ArgumentCaptor<AsyncResult<Profile>>
+
+  @Mock
+  lateinit var mockProfileStatusObserver: Observer<AsyncResult<Any?>>
+  @Captor
+  lateinit var profileManagementStatusCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  private val profilesList = mutableListOf<Profile>()
 
   @Inject
   @field:TestDispatcher
@@ -79,6 +92,7 @@ class ProfileManagementControllerTest {
   fun setUp() {
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
+    addTestProfiles()
   }
 
   @After
@@ -98,8 +112,131 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testProfileManagementController() = runBlockingTest(coroutineContext) {
-    // TODO(#16): Finish test cases with full implementation
+  fun testAddProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
+    profileManagementController.addProfile("James", "123", null, true)
+    advanceUntilIdle()
+
+    profileManagementController.getProfile(ProfileId.newBuilder().setInternalId(0).build())
+      .observeForever(mockProfileObserver)
+
+    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+    val profile = profileResultCaptor.value.getOrThrow()
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("123")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfile_addManyProfiles_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
+    addManyProfiles()
+    advanceUntilIdle()
+
+    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+
+    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+    val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+    assertThat(profiles.size).isEqualTo(profilesList.size)
+    checkOriginalProfilesArePresent(profiles)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfile_addProfileWithUri_checkImageIsSaved() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfile_addProfileWithNotUniqueName_checkResultIsFailure() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetProfile_addManyProfiles_checkGetProfileIsCorrect() = runBlockingTest(coroutineContext) {
+    addManyProfiles()
+    advanceUntilIdle()
+
+    profileManagementController.getProfile(ProfileId.newBuilder().setInternalId(3).build())
+      .observeForever(mockProfileObserver)
+
+    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+    assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+    val profile = profileResultCaptor.value.getOrThrow()
+    assertThat(profile.name).isEqualTo("Rajat")
+    assertThat(profile.pin).isEqualTo("456")
+    assertThat(profile.allowDownloadAccess).isEqualTo(false)
+    assertThat(profile.id.internalId).isEqualTo(3)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetProfiles_addManyProfiles_restartApplication_addProfile_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
+    addManyProfiles()
+    advanceUntilIdle()
+    // TODO: Restarting application deletes cache?
+    setUpTestApplicationComponent()
+    profileManagementController.addProfile("Nikita", "678", null, false)
+    advanceUntilIdle()
+
+    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+
+    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+    val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+    assertThat(profiles.size).isEqualTo(profilesList.size + 1)
+    checkOriginalProfilesArePresent(profiles)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateName_addManyProfiles_updateWithUniqueName_checkResultIsSuccess() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateName_addManyProfiles_updateWithNotUniqueName_checkResultIsFailure() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdatePin_addManyProfiles_updatePin_checkPinIsUpdated() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAllowDownloadAccess_addManyProfiles_updateDownloadAccess_checkDownloadAccessIsUpdated()
+      = runBlockingTest(coroutineContext) {
+
+  }
+  
+  private fun addTestProfiles() {
+    profilesList.add(Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build())
+    profilesList.add(Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build())
+    profilesList.add(Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build())
+    profilesList.add(Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build())
+    profilesList.add(Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build())
+  }
+
+  private fun addManyProfiles() {
+    profilesList.forEach {
+      profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess)
+    }
+  }
+
+  private fun checkOriginalProfilesArePresent(resultList: List<Profile>) {
+    profilesList.forEachIndexed { idx, profile ->
+      assertThat(resultList[idx].name).isEqualTo(profile.name)
+      assertThat(resultList[idx].pin).isEqualTo(profile.pin)
+      assertThat(resultList[idx].allowDownloadAccess).isEqualTo(profile.allowDownloadAccess)
+      assertThat(resultList[idx].id.internalId).isEqualTo(idx)
+    }
   }
 
   @Qualifier
