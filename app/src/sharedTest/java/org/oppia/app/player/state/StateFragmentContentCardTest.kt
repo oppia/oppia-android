@@ -27,7 +27,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 class StateFragmentContentCardTest {
 
   @Test
-  fun testContentCard_loadExplorationTest5_handleCustomOppiaTags_parsedHtmlDisplaysCorrectly() {
+  fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       val htmlResult =  "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
