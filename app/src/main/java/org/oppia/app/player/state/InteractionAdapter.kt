@@ -119,7 +119,7 @@ class InteractionAdapter(
           } else {
             Log.d(
               INTERACTION_ADAPTER_TAG,
-              "You cannot select more than " + customizationArgs.maxAllowableSelectionCount + " options"
+              "You cannot select more than ${customizationArgs.maxAllowableSelectionCount} options"
             )
           }
         }
