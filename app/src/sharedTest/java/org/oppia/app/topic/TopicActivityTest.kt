@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -27,7 +26,7 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_loadTopicFragment_hasDummyString() {
-    ActivityScenario.launch(ExplorationActivity::class.java).use {
+    ActivityScenario.launch(TopicActivity::class.java).use {
       onView(withId(R.id.dummy_text_view)).check(matches(withText("This is dummy TextView for testing")))
     }
   }
