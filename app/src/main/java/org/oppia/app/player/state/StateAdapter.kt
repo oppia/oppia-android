@@ -76,7 +76,7 @@ class StateAdapter(
             inflater,
             R.layout.selection_interaction_item,
             parent,
-            /* attachToParent= */false
+            /* attachToParent= */ false
           )
         SelectionInteractionViewHolder(binding)
       }
