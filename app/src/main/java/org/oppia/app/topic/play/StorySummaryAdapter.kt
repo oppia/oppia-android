@@ -40,6 +40,9 @@ class StorySummaryAdapter(
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
+      var isChapterListVisible = false
+
+      binding.setVariable(BR.isListExpanded, isChapterListVisible)
       binding.setVariable(BR.storySummary, storySummary)
 
       val totalChapterCount = storySummary.chapterCount
@@ -59,6 +62,11 @@ class StorySummaryAdapter(
 
       binding.storyNameTextView.setOnClickListener {
         storySummarySelector.selectedStorySummary(storySummary)
+      }
+
+      binding.chapterListViewControl.setOnClickListener {
+        isChapterListVisible = !isChapterListVisible
+        binding.setVariable(BR.isListExpanded, isChapterListVisible)
       }
     }
   }
