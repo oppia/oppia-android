@@ -51,4 +51,3 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     return interactionObjectBuilder.build()
   }
 }
-

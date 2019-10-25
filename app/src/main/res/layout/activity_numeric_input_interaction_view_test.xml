@@ -60,7 +60,7 @@
     android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ $.-/*^()"
     android:focusable="true"
     android:hint="Write number with units here."
-    android:inputType="number"
+
     android:longClickable="false"
     android:maxLength="200"
     android:padding="8dp"

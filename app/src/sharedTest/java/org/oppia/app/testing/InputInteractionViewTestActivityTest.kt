@@ -3,8 +3,6 @@ package org.oppia.app.testing
 import android.content.res.Configuration
 import androidx.test.espresso.Espresso.onView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -16,29 +14,18 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
-import org.junit.Before
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
-import org.oppia.app.testing.InputInteractionViewTestActivity
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 class InputInteractionViewTestActivityTest {
-  @get:Rule
-  var activityTestRule: ActivityTestRule<InputInteractionViewTestActivity> = ActivityTestRule(
-    InputInteractionViewTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-  private lateinit var activityScenario: ActivityScenario<InputInteractionViewTestActivity>
-
-  @Before
-  fun setUp() {
-    activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-  }
 
   @Test
   fun testNumericInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
@@ -49,6 +36,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
@@ -61,6 +49,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswerWithDecimalValues() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9.5"))
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
@@ -72,6 +61,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -104,6 +94,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -216,6 +207,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -267,7 +259,7 @@ class InputInteractionViewTestActivityTest {
       assertThat(interactionObject).isInstanceOf(InteractionObject::class.java)
       assertThat(interactionObject.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS)
       assertThat(interactionObject.numberWithUnits.fraction.isNegative).isEqualTo(false)
-      assertThat(interactionObject.numberWithUnits.real).isEqualTo(9f)
+      assertThat(interactionObject.numberWithUnits.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -309,7 +301,7 @@ class InputInteractionViewTestActivityTest {
         activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
       val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Rs")
-      assertThat(numberWithUnits.real).isEqualTo(10000f)
+      assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(10000)
     }
   }
 
@@ -337,7 +329,7 @@ class InputInteractionViewTestActivityTest {
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
       val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
-      assertThat(numberWithUnits.real).isEqualTo(100f)
+      assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(100)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Rs.")
     }
   }
@@ -392,9 +384,10 @@ class InputInteractionViewTestActivityTest {
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(3)
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(1)
       assertThat(numberWithUnits.fraction.denominator).isEqualTo(2)
-      assertThat(numberWithUnits.getUnit( 0).unit).isEqualTo("days")
+      assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("days")
     }
   }
+
   @Test
   fun testNumberWithUnitsInputInteractionView_withInputtedNegativeDecimal_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
@@ -410,6 +403,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   fun testNumberWithUnitsInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("10.0 m"))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -417,5 +411,4 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_number_with_units_input_interaction_view)).check(matches(isDisplayed()))
       .check(matches(withText("10.0 m")))
   }
-
 }
