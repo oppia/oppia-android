@@ -16,6 +16,7 @@ import org.oppia.app.model.StorySummary
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
+  private val chapterSummarySelector: ChapterSummarySelector,
   private val storySummarySelector: StorySummarySelector
 ) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
@@ -55,7 +56,7 @@ class StorySummaryAdapter(
           .size
 
       val chapterList = storySummary.chapterList
-      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList)
+      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
       val storyProgressPercentage: Int = (completedChapterCount * 100 / totalChapterCount)
       binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)

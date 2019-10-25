@@ -13,7 +13,10 @@ import org.oppia.app.model.ChapterSummary
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
 /** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicPlayFragment]. */
-class ChapterSummaryAdapter(private val chapterList: List<ChapterSummary>) :
+class ChapterSummaryAdapter(
+  private val chapterList: List<ChapterSummary>,
+  private val chapterSummarySelector: ChapterSummarySelector
+) :
   RecyclerView.Adapter<ChapterSummaryAdapter.ChapterSummaryViewHolder>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterSummaryViewHolder {
     val chapterSummaryListItemBinding = DataBindingUtil.inflate<PlayChapterViewBinding>(
@@ -38,7 +41,7 @@ class ChapterSummaryAdapter(private val chapterList: List<ChapterSummary>) :
       binding.setVariable(BR.chapter, chapterSummary)
       binding.setVariable(BR.isChapterCompleted, (chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED))
       binding.chapterName.setOnClickListener {
-
+        chapterSummarySelector.selectedChapterSummary(chapterSummary)
       }
     }
   }
