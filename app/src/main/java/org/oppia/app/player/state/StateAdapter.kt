@@ -64,7 +64,7 @@ class StateAdapter(
           )
         ContentViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type") as Throwable
+      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
