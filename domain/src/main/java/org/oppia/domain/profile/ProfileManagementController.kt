@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
@@ -40,9 +41,10 @@ class ProfileManagementController @Inject constructor(
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 
-  class ProfileNameNotUniqueError(msg: String) : Error(msg)
-  class ProfileFailedToStoreImageError(msg: String) : Error(msg)
-  class ProfileFailedToDeleteError(msg: String) : Error(msg)
+  class ProfileNameNotUniqueException(msg: String) : Exception(msg)
+  class FailedToStoreImageException(msg: String) : Exception(msg)
+  class FailedToDeleteExceptionProfile(msg: String) : Exception(msg)
+  class FailedToSetCurrentProfileException(msg: String): Exception(msg)
 
   /** Returns the list of created profiles. */
   fun getProfiles(): LiveData<AsyncResult<List<Profile>>> {
@@ -75,7 +77,7 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!isUniqueName(name, it)) {
-        throw ProfileNameNotUniqueError("New profile name is not unique to other profiles")
+        throw ProfileNameNotUniqueException("New profile name is not unique to other profiles")
       }
 
       val nextProfileId = it.nextProfileId
@@ -85,7 +87,7 @@ class ProfileManagementController @Inject constructor(
       if (avatarImagePath != null) {
         imageUri = saveImageToInternalStorage(avatarImagePath, profileDir)
         if (imageUri.isEmpty()) {
-          throw ProfileFailedToStoreImageError("Failed to store user submitted profile image")
+          throw FailedToStoreImageException("Failed to store user submitted profile image")
         }
       } else {
         // gravatar url is a md5 hash of an email address
@@ -96,9 +98,8 @@ class ProfileManagementController @Inject constructor(
         .setName(name).setPin(pin).setAvatarImageUri(imageUri).setAllowDownloadAccess(allowDownloadAccess)
         .build()
 
-      it.profilesMap[nextProfileId] = newProfile
-      ProfileDatabase.newBuilder().mergeFrom(it).setNextProfileId(nextProfileId + 1)
-        .build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
+      profileDatabaseBuilder.build()
     }.invokeOnCompletion {
       if (it == null) {
         pendingLiveData.postValue(AsyncResult.success(null))
@@ -121,13 +122,13 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!isUniqueName(newName, it)) {
-        throw ProfileNameNotUniqueError("Updated profile name is not unique to other profiles")
+        throw ProfileNameNotUniqueException("Updated profile name is not unique to other profiles")
       }
       val profile = it.profilesMap[profileId.internalId]
       checkNotNull(profile) { "ProfileId is not associated with a Profile" }
-      val updatedProfile = Profile.newBuilder().mergeFrom(profile).setName(newName).build()
-      it.profilesMap[profileId.internalId] = updatedProfile
-      it
+      val updatedProfile = profile.toBuilder().setName(newName).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      profileDatabaseBuilder.build()
     }.invokeOnCompletion {
       if (it == null) {
         pendingLiveData.postValue(AsyncResult.success(null))
@@ -151,9 +152,9 @@ class ProfileManagementController @Inject constructor(
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId]
       checkNotNull(profile) { "ProfileId is not associated with a Profile" }
-      val updatedProfile = Profile.newBuilder().mergeFrom(profile).setPin(newPin).build()
-      it.profilesMap[profileId.internalId] = updatedProfile
-      it
+      val updatedProfile = profile.toBuilder().setPin(newPin).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      profileDatabaseBuilder.build()
     }.invokeOnCompletion {
       if (it == null) {
         pendingLiveData.postValue(AsyncResult.success(null))
@@ -179,15 +180,15 @@ class ProfileManagementController @Inject constructor(
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId]
       checkNotNull(profile) { "ProfileId is not associated with a Profile" }
-      val updatedProfile = Profile.newBuilder().mergeFrom(profile).setAllowDownloadAccess(allowDownloadAccess).build()
-      it.profilesMap[profileId.internalId] = updatedProfile
-      it
+      val updatedProfile = profile.toBuilder().setAllowDownloadAccess(allowDownloadAccess).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      profileDatabaseBuilder.build()
     }.invokeOnCompletion {
       if (it == null) {
         pendingLiveData.postValue(AsyncResult.success(null))
       } else {
         logger.e("ProfileManagementController", "Failed when storing the updated allowDownLoadAccess for profile with ID: ${profileId.internalId}", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
+        pendingLiveData.postValue(AsyncResult.failed())
       }
     }
     return pendingLiveData
@@ -203,13 +204,13 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
-        throw ProfileFailedToDeleteError("ProfileId does not match an existing Profile")
+        throw FailedToDeleteExceptionProfile("ProfileId does not match an existing Profile")
       }
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
-        throw ProfileFailedToDeleteError("Failed to delete directory")
+        throw FailedToDeleteExceptionProfile("Failed to delete directory")
       }
-      it.profilesMap.remove(profileId.internalId)
-      it
+      val profileDatabaseBuilder = it.toBuilder().removeProfiles(profileId.internalId)
+      profileDatabaseBuilder.build()
     }.invokeOnCompletion {
       if (it == null) {
         pendingLiveData.postValue(AsyncResult.success(null))
@@ -237,8 +238,27 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this set operation.
    */
   fun setCurrentProfileId(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
-    currentProfileId = profileId.internalId
-    return MutableLiveData(AsyncResult.success<Any?>(null))
+    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
+    val profileLiveData = dataProviders.convertToLiveData(profileDataStore)
+    // TODO: Update DataProviders to allow for a one time access read operation
+    profileLiveData.observeForever(object : Observer<AsyncResult<ProfileDatabase>> {
+      override fun onChanged(result: AsyncResult<ProfileDatabase>?) {
+        result?.let {
+          if (it.isSuccess()) {
+            if (result.getOrDefault(ProfileDatabase.getDefaultInstance()).profilesMap.containsKey(profileId.internalId)) {
+              currentProfileId = profileId.internalId
+              pendingLiveData.postValue(AsyncResult.success(null))
+            } else {
+              pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("ProfileId is not associated with an existing profile")))
+            }
+          } else {
+            pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("Failed to read ProfileDatabase, could not validate profileId")))
+          }
+        }
+        profileLiveData.removeObserver(this)
+      }
+    })
+    return pendingLiveData
   }
 
   private fun isUniqueName(newName: String, profileDatabase: ProfileDatabase): Boolean {
