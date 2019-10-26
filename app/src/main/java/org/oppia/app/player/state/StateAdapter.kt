@@ -7,11 +7,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
+import kotlinx.android.synthetic.main.content_item.view.content_text_view
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
+import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
