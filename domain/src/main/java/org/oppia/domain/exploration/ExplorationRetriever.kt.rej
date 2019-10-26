@@ -1,0 +1,38 @@
+diff a/domain/src/main/java/org/oppia/domain/exploration/ExplorationRetriever.kt b/domain/src/main/java/org/oppia/domain/exploration/ExplorationRetriever.kt	(rejected hunks)
+@@ -1,6 +1,7 @@
+ package org.oppia.domain.exploration
+ 
+ import android.content.Context
++import com.google.gson.Gson
+ import org.json.JSONArray
+ import org.json.JSONObject
+ import org.oppia.app.model.AnswerGroup
+@@ -233,6 +234,9 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
+       "MultipleChoiceInput" -> InteractionObject.newBuilder()
+         .setNonNegativeInt(inputJson.getInt(keyName))
+         .build()
++      "ItemSelectionInput" -> InteractionObject.newBuilder()
++        .setNonNegativeInt(inputJson.getInt(keyName))
++        .build()
+       "TextInput" -> InteractionObject.newBuilder()
+         .setNormalizedString(inputJson.getString(keyName))
+         .build()
+@@ -272,10 +276,14 @@ class ExplorationRetriever @Inject constructor(private val context: Context) {
+         .setSignedInt(customizationArgValue).build()
+       is Double -> return interactionObjectBuilder
+         .setReal(customizationArgValue).build()
+-      is List<*> -> if (customizationArgValue.size > 0) {
+-        return interactionObjectBuilder.setSetOfHtmlString(
+-          createStringList(customizationArgValue)
+-        ).build()
++      else -> {
++        var customizationArgValueTemp: ArrayList<*> =
++          Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
++        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
++          return interactionObjectBuilder.setSetOfHtmlString(
++            createStringList(customizationArgValueTemp)
++          ).build()
++        }
+       }
+     }
+     return InteractionObject.getDefaultInstance()

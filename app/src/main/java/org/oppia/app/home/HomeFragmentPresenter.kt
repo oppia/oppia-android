@@ -17,6 +17,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_6
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
@@ -51,6 +52,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun playExplorationButton(v: View) {
+    explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -60,6 +62,21 @@ class HomeFragmentPresenter @Inject constructor(
         else -> {
           logger.d("HomeFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(EXPLORATION_ID)
+        }
+      }
+    })
+  }
+  fun playExplorationButton_1(v: View) {
+    explorationDataController.stopPlayingExploration()
+    explorationDataController.startPlayingExploration(
+      EXPLORATION_ID_1
+    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
+        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        else -> {
+          logger.d("HomeFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(EXPLORATION_ID_1)
         }
       }
     })

@@ -33,6 +33,7 @@ import javax.inject.Inject
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
 private const val CONTINUE = "Continue"
 private const val END_EXPLORATION = "EndExploration"

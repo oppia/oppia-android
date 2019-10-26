@@ -21,6 +21,7 @@ private const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
 @Suppress("unused")
 private const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
 private const val VIEW_TYPE_STATE_BUTTON = 5
+const val VIEW_TYPE_SELECTION_INTERACTION = 6
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
@@ -89,4 +90,25 @@ class StateAdapter(
       binding.executePendingBindings()
     }
   }
+
+  inner class SelectionInteractionViewHolder(
+   private val binding: ViewDataBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
+      val items: Array<String>?
+      val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
+      val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
+      items = gaeCustomArgsInString.split(",").toTypedArray()
+      for (values in items) {
+        val selectionContentViewModel = SelectionInteractionContentViewModel()
+        selectionContentViewModel.htmlContent = values
+        selectionContentViewModel.isAnswerSelected = false
+        choiceInteractionContentList.add(selectionContentViewModel)
+      }
+      val interactionAdapter =
+        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs)
+      binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
+    }
+  }
+
 }
