@@ -21,11 +21,8 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
-<<<<<<< HEAD
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
-=======
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
->>>>>>> content-card-from-develop
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -181,11 +178,8 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
 
-<<<<<<< HEAD
-      addInteractionForPendingState()
-=======
       checkAndAddContentItem()
->>>>>>> content-card-from-develop
+      addInteractionForPendingState()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
