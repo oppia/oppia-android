@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -73,9 +74,9 @@ class StateSelectionInteractionTest {
       onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 5)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 12)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recyclerview, 3)).perform(click())
       counter++
       assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
     }
