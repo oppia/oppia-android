@@ -34,5 +34,7 @@
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
+    <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.UrlImageParserTestActivity" />
   </application>
 </manifest>
