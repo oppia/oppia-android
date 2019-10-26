@@ -12,6 +12,7 @@ import org.oppia.app.R
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
 private const val VIEW_TYPE_CONTENT = 1
@@ -33,8 +34,6 @@ class StateAdapter(
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  lateinit var stateButtonViewModel: StateButtonViewModel
-
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       // TODO(#249): Generalize this binding to make adding future interactions easier.
@@ -49,6 +48,17 @@ class StateAdapter(
           )
         StateButtonViewHolder(binding, buttonInteractionListener)
       }
+      VIEW_TYPE_CONTENT -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<ContentItemBinding>(
+            inflater,
+            R.layout.content_item,
+            parent,
+            /* attachToParent= */false
+          )
+        ContentViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
   }
@@ -58,14 +68,19 @@ class StateAdapter(
       VIEW_TYPE_STATE_BUTTON -> {
         (holder as StateButtonViewHolder).bind(itemList[position] as StateButtonViewModel)
       }
+      VIEW_TYPE_CONTENT -> {
+        (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
+      }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
       is StateButtonViewModel -> {
-        stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
+      }
+      is ContentViewHolder -> {
+        VIEW_TYPE_CONTENT
       }
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
@@ -91,6 +106,18 @@ class StateAdapter(
         buttonInteractionListener.onPreviousButtonClicked()
       }
       binding.executePendingBindings()
+    }
+  }
+
+  inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(rawString: String) {
+      binding.setVariable(BR.htmlContent, rawString)
+      binding.executePendingBindings()
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+        rawString,
+        binding.root.content_text_view
+      )
+      binding.root.content_text_view.text = htmlResult
     }
   }
 }
