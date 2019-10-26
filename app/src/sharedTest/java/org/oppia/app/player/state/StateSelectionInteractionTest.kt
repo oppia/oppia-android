@@ -5,10 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,9 +15,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.CoreMatchers.anything
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -56,8 +52,8 @@ class StateSelectionInteractionTest {
   fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recycleview, 0)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recycleview, 1)).perform(click())
     }
   }
 
@@ -65,8 +61,8 @@ class StateSelectionInteractionTest {
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recycleview, 0)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recycleview, 1)).perform(click())
     }
   }
 
@@ -74,9 +70,9 @@ class StateSelectionInteractionTest {
   fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
+      onView(atPosition(R.id.selection_interaction_recycleview, 0)).perform(click())
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 5)).perform(scrollTo()).perform(click())
+//      onView(atPosition(R.id.selection_interaction_recycleview, 5)).perform(nestedScrollTo).perform(scrollTo()).perform(click())
 //      counter++
 //      onView(atPosition(R.id.selection_interaction_recyclerview, 3)).perform(click())
 //      counter++

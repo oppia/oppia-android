@@ -1,7 +1,6 @@
 package org.oppia.app.player.state
 
 import android.text.Spannable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -9,7 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
 import kotlinx.android.synthetic.main.content_item.view.content_text_view
-import kotlinx.android.synthetic.main.selection_interaction_item.view.selection_interaction_recyclerview
+import kotlinx.android.synthetic.main.selection_interaction_item.view.selection_interaction_frameLayout
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
@@ -177,7 +176,7 @@ class StateAdapter(
           customizationArgs,
           this as ItemClickListener
         )
-      binding.root.selection_interaction_recyclerview.setAdapter(interactionAdapter)
+      binding.root.selection_interaction_frameLayout.setAdapter(interactionAdapter)
     }
   }
 

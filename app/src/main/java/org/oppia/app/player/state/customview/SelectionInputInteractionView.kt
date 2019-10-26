@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.InteractionAdapter
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
@@ -23,6 +24,7 @@ internal class SelectionInputInteractionView @JvmOverloads constructor(
   private val recyclerView: RecyclerView = RecyclerView(context, attrs, defaultStyle)
 
   init {
+    recyclerView.id = R.id.selection_interaction_recycleview
     val params = LayoutParams(
       LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT
     )
