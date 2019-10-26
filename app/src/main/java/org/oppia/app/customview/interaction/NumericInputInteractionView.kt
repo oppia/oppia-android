@@ -22,7 +22,7 @@ class NumericInputInteractionView @JvmOverloads constructor(
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.setReal(text.toString().toDouble())
+      interactionObjectBuilder.real = text.toString().toDouble()
     }
     return interactionObjectBuilder.build()
   }

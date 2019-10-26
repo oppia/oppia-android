@@ -50,7 +50,12 @@ import org.robolectric.shadows.util.DataSource
 import javax.inject.Inject
 import javax.inject.Qualifier
 
-/** Tests for [AudioFragment]. */
+/**
+ * TODO(#59): Make this test work with Espresso.
+ * NOTE TO DEVELOPERS: This test will not build for Espresso,
+ * and may prevent other tests from being built or running.
+ * Tests for [AudioFragment].
+ */
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
