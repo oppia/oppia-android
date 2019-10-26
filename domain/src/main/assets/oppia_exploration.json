@@ -258,15 +258,43 @@
           }
         ],
         "confirmed_unclassified_answers": [],
-        "customization_args": {
-          "choices": {
-            "value": [
-              "It's translated from a different language.",
-              "It's a nonsense word that someone made up.",
-              "It's the name of a popular cartoon character."
+        "customization_args":{
+          "maxAllowableSelectionCount":{
+            "value":3
+          },
+          "minAllowableSelectionCount":{
+            "value":1
+          },
+          "choices":{
+            "value":[
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e",
+              "\u003cp\u003e2/4\u003c/p\u003e",
+              "\u003cp\u003e3/7\u003c/p\u003e",
+              "\u003cp\u003e5/8\u003c/p\u003e",
+              "\u003cp\u003e2/3\u003c/p\u003e"
             ]
           }
         },
+        "id":"ItemSelectionInput",
         "default_outcome": {
           "dest": "What language",
           "feedback": "Hm, it certainly looks like it! But it's actually a word from a different language.",
@@ -274,7 +302,6 @@
           "labelled_as_correct": false
         },
         "hints": [],
-        "id": "MultipleChoiceInput",
         "solution": null
       },
       "param_changes": []

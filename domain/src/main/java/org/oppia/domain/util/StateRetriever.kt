@@ -1,5 +1,6 @@
 package org.oppia.domain.util
 
+import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -147,6 +148,9 @@ class StateRetriever @Inject constructor() {
       "MultipleChoiceInput" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
+      "ItemSelectionInput" -> InteractionObject.newBuilder()
+        .setNonNegativeInt(inputJson.getInt(keyName))
+        .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
@@ -186,10 +190,14 @@ class StateRetriever @Inject constructor() {
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
-      is List<*> -> if (customizationArgValue.size > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)
-        ).build()
+      else -> {
+        var customizationArgValueTemp: ArrayList<*> =
+          Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
+        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            createStringList(customizationArgValueTemp)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
