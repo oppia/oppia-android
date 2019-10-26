@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
@@ -23,6 +24,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
@@ -183,7 +185,12 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
 
-      checkAndAddContentItem()
+      addContentItem()
+      if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+        addPreviousAnswers(currentEphemeralState.pendingState.wrongAnswerList)
+      } else if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+        addPreviousAnswers(currentEphemeralState.completedState.answerList)
+      }
       addInteractionForPendingState()
       updateDummyStateName()
 
@@ -365,24 +372,24 @@ class StateFragmentPresenter @Inject constructor(
     stateAdapter.notifyDataSetChanged()
   }
 
-  private fun checkAndAddContentItem() {
-    if (currentEphemeralState.state.hasContent()) {
-      addContentItem()
-    } else {
-      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
+  private fun addContentItem() {
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
+    itemList.add(ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html))
+    stateAdapter.notifyDataSetChanged()
+  }
+
+  private fun addPreviousAnswers(answersAndResponses: List<AnswerAndResponse>) {
+    // TODO: add support for displaying the previous answer, too.
+    for (answerAndResponse in answersAndResponses) {
+      addFeedbackItem(answerAndResponse.feedback)
     }
   }
 
-  private fun addContentItem() {
-    val contentViewModel = ContentViewModel()
-    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
-    if (contentSubtitledHtml.contentId != "") {
-      contentViewModel.contentId = contentSubtitledHtml.contentId
-    } else {
-      contentViewModel.contentId = "content"
+  private fun addFeedbackItem(feedback: SubtitledHtml) {
+    // Only show feedback if there's some to show.
+    if (feedback.html.isNotEmpty()) {
+      itemList.add(FeedbackViewModel(feedback.contentId, feedback.html))
     }
-    contentViewModel.htmlContent = contentSubtitledHtml.html
-    itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
   }
 

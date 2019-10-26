@@ -108,11 +108,13 @@ class StateRetriever @Inject constructor() {
     if (outcomeJson == null) {
       return Outcome.getDefaultInstance()
     }
+    val feedback = outcomeJson.getJSONObject("feedback")
     return Outcome.newBuilder()
       .setDestStateName(outcomeJson.getString("dest"))
       .setFeedback(
         SubtitledHtml.newBuilder()
-          .setHtml(outcomeJson.getString("feedback"))
+          .setContentId(feedback.getString("content_id"))
+          .setHtml(feedback.getString("html"))
       )
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
