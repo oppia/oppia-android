@@ -4,6 +4,7 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -26,8 +27,9 @@ import javax.inject.Singleton
 @Component(modules = [
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
-  GcsResourceModule::class, ImageParsingModule::class, GlideImageLoaderModule::class
+  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+  InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+  HtmlParserEntityTypeModule::class
 ])
 interface ApplicationComponent {
   @Component.Builder
