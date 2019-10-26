@@ -82,10 +82,10 @@ class StateAdapter(
       is StateButtonViewModel -> {
         VIEW_TYPE_STATE_BUTTON
       }
-      is ContentViewHolder -> {
+      is ContentViewModel -> {
         VIEW_TYPE_CONTENT
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      else -> throw IllegalArgumentException("Invalid type of data at $position: ${itemList[position]}")
     }
   }
 

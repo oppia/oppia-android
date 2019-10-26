@@ -17,9 +17,11 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -174,6 +176,7 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
 
+      checkAndAddContentItem()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
@@ -329,6 +332,27 @@ class StateFragmentPresenter @Inject constructor(
     ) {
       oldStateNameList.add(currentEphemeralState.state.name)
     }
+  }
+
+  private fun checkAndAddContentItem() {
+    if (currentEphemeralState.state.hasContent()) {
+      addContentItem()
+    } else {
+      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
+    }
+  }
+
+  private fun addContentItem() {
+    val contentViewModel = ContentViewModel()
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
+    if (contentSubtitledHtml.contentId != "") {
+      contentViewModel.contentId = contentSubtitledHtml.contentId
+    } else {
+      contentViewModel.contentId = "content"
+    }
+    contentViewModel.htmlContent = contentSubtitledHtml.html
+    itemList.add(contentViewModel)
+    stateAdapter.notifyDataSetChanged()
   }
 
   private fun updateNavigationButtonVisibility(
