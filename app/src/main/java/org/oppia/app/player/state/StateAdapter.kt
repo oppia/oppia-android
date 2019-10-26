@@ -8,13 +8,17 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
 import kotlinx.android.synthetic.main.content_item.view.content_text_view
+import kotlinx.android.synthetic.main.selection_interaction_item.view.selection_interaction_recyclerview
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
+import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
@@ -63,6 +67,17 @@ class StateAdapter(
           )
         ContentViewHolder(binding)
       }
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<SelectionInteractionItemBinding>(
+            inflater,
+            R.layout.selection_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        SelectionInteractionViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
   }
@@ -75,17 +90,19 @@ class StateAdapter(
       VIEW_TYPE_CONTENT -> {
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        (holder as SelectionInteractionViewHolder).bind(
+          itemList[position] as SelectionInteractionCustomizationArgsViewModel
+        )
+      }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is StateButtonViewModel -> {
-        VIEW_TYPE_STATE_BUTTON
-      }
-      is ContentViewHolder -> {
-        VIEW_TYPE_CONTENT
-      }
+      is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
+      is ContentViewHolder -> VIEW_TYPE_CONTENT
+      is SelectionInteractionCustomizationArgsViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
   }

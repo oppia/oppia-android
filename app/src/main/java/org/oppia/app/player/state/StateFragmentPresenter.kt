@@ -20,6 +20,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -175,6 +176,7 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
 
+      addInteractionForPendingState()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
@@ -330,6 +332,40 @@ class StateFragmentPresenter @Inject constructor(
     ) {
       oldStateNameList.add(currentEphemeralState.state.name)
     }
+  }
+
+  private fun addInteractionForPendingState() {
+    if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
+      when (currentEphemeralState.state.interaction.id) {
+        MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
+          addSelectionInteraction()
+        }
+      }
+    }
+  }
+
+  private fun addSelectionInteraction() {
+    val customizationArgsMap: Map<String, InteractionObject> =
+      currentEphemeralState.state.interaction.customizationArgsMap
+    val multipleChoiceInputInteractionViewModel = SelectionInteractionCustomizationArgsViewModel()
+    val allKeys: Set<String> = customizationArgsMap.keys
+
+    for (key in allKeys) {
+      logger.d(TAG_STATE_FRAGMENT, key)
+    }
+    if (customizationArgsMap.contains("choices")) {
+      if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
+        multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
+        multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
+      }
+      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
+      multipleChoiceInputInteractionViewModel.choiceItems =
+        currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+    }
+    itemList.add(multipleChoiceInputInteractionViewModel)
+    stateAdapter.notifyDataSetChanged()
   }
 
   private fun updateNavigationButtonVisibility(
