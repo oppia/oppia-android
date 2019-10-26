@@ -12,25 +12,33 @@ import kotlinx.android.synthetic.main.selection_interaction_item.view.selection_
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
+import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.NumberWithUnitsInputInteractionItemBinding
+import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.databinding.TextInputInteractionItemBinding
+import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
+import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.app.player.state.listener.InteractionAnswerRetriever
 import org.oppia.util.parser.HtmlParser
 
-@Suppress("unused")
 private const val VIEW_TYPE_CONTENT = 1
-@Suppress("unused")
 private const val VIEW_TYPE_INTERACTION_READ_ONLY = 2
-@Suppress("unused")
-private const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
-@Suppress("unused")
-private const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
-private const val VIEW_TYPE_STATE_BUTTON = 5
-const val VIEW_TYPE_SELECTION_INTERACTION = 6
+private const val VIEW_TYPE_STATE_BUTTON = 3
+private const val VIEW_TYPE_SELECTION_INTERACTION = 4
+private const val VIEW_TYPE_FRACTION_INPUT_INTERACTION = 5
+private const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 6
+private const val VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION = 7
+private const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 8
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
@@ -78,7 +86,51 @@ class StateAdapter(
           )
         SelectionInteractionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type") as Throwable
+      VIEW_TYPE_FRACTION_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<FractionInteractionItemBinding>(
+            inflater,
+            R.layout.fraction_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        FractionInteractionViewHolder(binding)
+      }
+      VIEW_TYPE_NUMERIC_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<NumericInputInteractionItemBinding>(
+            inflater,
+            R.layout.numeric_input_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        NumericInputInteractionViewHolder(binding)
+      }
+      VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<NumberWithUnitsInputInteractionItemBinding>(
+            inflater,
+            R.layout.number_with_units_input_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        NumberWithUnitsInputInteractionViewHolder(binding)
+      }
+      VIEW_TYPE_TEXT_INPUT_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<TextInputInteractionItemBinding>(
+            inflater,
+            R.layout.text_input_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        TextInputInteractionViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
@@ -92,23 +144,61 @@ class StateAdapter(
       }
       VIEW_TYPE_SELECTION_INTERACTION -> {
         (holder as SelectionInteractionViewHolder).bind(
-          itemList[position] as SelectionInteractionCustomizationArgsViewModel
+          itemList[position] as SelectionInteractionViewModel
         )
+      }
+      VIEW_TYPE_FRACTION_INPUT_INTERACTION -> {
+        (holder as FractionInteractionViewHolder).bind(itemList[position] as FractionInteractionViewModel)
+      }
+      VIEW_TYPE_NUMERIC_INPUT_INTERACTION -> {
+        (holder as NumericInputInteractionViewHolder).bind(itemList[position] as NumericInputViewModel)
+      }
+      VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION -> {
+        (holder as NumberWithUnitsInputInteractionViewHolder).bind(itemList[position] as NumberWithUnitsViewModel)
+      }
+      VIEW_TYPE_TEXT_INPUT_INTERACTION -> {
+        (holder as TextInputInteractionViewHolder).bind(itemList[position] as TextInputViewModel)
       }
     }
   }
 
-  override fun getItemViewType(position: Int): Int {
-    return when (itemList[position]) {
+  override fun getItemViewType(position: Int): Int = getTypeForItem(itemList[position])
+
+  private fun getTypeForItem(item: Any): Int {
+    return when (item) {
       is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
       is ContentViewModel -> VIEW_TYPE_CONTENT
-      is SelectionInteractionCustomizationArgsViewModel -> VIEW_TYPE_SELECTION_INTERACTION
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      is SelectionInteractionViewModel -> VIEW_TYPE_SELECTION_INTERACTION
+      is FractionInteractionViewModel -> VIEW_TYPE_FRACTION_INPUT_INTERACTION
+      is NumericInputViewModel -> VIEW_TYPE_NUMERIC_INPUT_INTERACTION
+      is NumberWithUnitsViewModel -> VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION
+      is TextInputViewModel -> VIEW_TYPE_TEXT_INPUT_INTERACTION
+      else -> throw IllegalArgumentException("Invalid type of data: $item")
     }
   }
 
   override fun getItemCount(): Int {
     return itemList.size
+  }
+
+  // TODO(BenHenning): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
+  fun getPendingAnswer(): InteractionObject {
+    // TODO(BenHenning): Find a better way to do this. First, the search is bad. Second, the implication that more than
+    // one interaction view can be active is bad.
+    val pendingAnswerModel = itemList.findLast(this::isMutableInteractionType)
+    return (pendingAnswerModel as InteractionAnswerRetriever).getPendingAnswer()
+  }
+
+  // TODO(BenHenning): Find a better way to do this (maybe an enum or sealed class?)
+  private fun isMutableInteractionType(item: Any): Boolean {
+    return when (getTypeForItem(item)) {
+      VIEW_TYPE_SELECTION_INTERACTION,
+      VIEW_TYPE_FRACTION_INPUT_INTERACTION,
+      VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
+      VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION,
+      VIEW_TYPE_TEXT_INPUT_INTERACTION -> true
+      else -> false
+    }
   }
 
   private class StateButtonViewHolder(
@@ -145,20 +235,55 @@ class StateAdapter(
   inner class SelectionInteractionViewHolder(
     private val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
-      val items: Array<String>?
+    internal fun bind(customizationArgs: SelectionInteractionViewModel) {
       val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
       val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
-      items = gaeCustomArgsInString.split(",").toTypedArray()
-      for (values in items) {
-        val selectionContentViewModel = SelectionInteractionContentViewModel()
-        selectionContentViewModel.htmlContent = values
+      val items = gaeCustomArgsInString.split(",").toTypedArray()
+      for (itemIndex in 0 until items.size) {
+        val selectionContentViewModel = SelectionInteractionContentViewModel(itemIndex)
+        selectionContentViewModel.htmlContent = items[itemIndex]
         selectionContentViewModel.isAnswerSelected = false
         choiceInteractionContentList.add(selectionContentViewModel)
       }
       val interactionAdapter =
-        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs)
+        SelectionInteractionAdapter(htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs)
       binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
+    }
+  }
+
+  inner class FractionInteractionViewHolder(
+    private val binding: FractionInteractionItemBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(viewModel: FractionInteractionViewModel) {
+      // TODO(BenHenning): Bind custom hint text.
+      binding.viewModel = viewModel
+    }
+  }
+
+  inner class NumericInputInteractionViewHolder(
+    private val binding: NumericInputInteractionItemBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(viewModel: NumericInputViewModel) {
+      // TODO(BenHenning): Bind custom hint text.
+      binding.viewModel = viewModel
+    }
+  }
+
+  inner class NumberWithUnitsInputInteractionViewHolder(
+    private val binding: NumberWithUnitsInputInteractionItemBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(viewModel: NumberWithUnitsViewModel) {
+      // TODO(BenHenning): Bind custom hint text.
+      binding.viewModel = viewModel
+    }
+  }
+
+  inner class TextInputInteractionViewHolder(
+    private val binding: TextInputInteractionItemBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(viewModel: TextInputViewModel) {
+      // TODO(BenHenning): Bind custom hint text.
+      binding.viewModel = viewModel
     }
   }
 }

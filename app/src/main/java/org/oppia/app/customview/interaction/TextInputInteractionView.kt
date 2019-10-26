@@ -16,13 +16,4 @@ class TextInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
-
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.normalizedString = text.toString()
-    }
-    return interactionObjectBuilder.build()
-  }
-}
+) : EditText(context, attrs, defStyle)

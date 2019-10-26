@@ -35,10 +35,10 @@ internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject const
     return extractRealValue(input).approximatelyEquals(extractRealValue(answer))
   }
 
-  private fun extractRealValue(number: NumberWithUnits): Float {
+  private fun extractRealValue(number: NumberWithUnits): Double {
     return when (number.numberTypeCase) {
       NumberWithUnits.NumberTypeCase.REAL -> number.real
-      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat()
+      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat().toDouble()
       else -> throw IllegalArgumentException("Invalid number type: ${number.numberTypeCase.name}")
     }
   }

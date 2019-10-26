@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -22,8 +23,12 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
+import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
@@ -268,40 +273,12 @@ class StateFragmentPresenter @Inject constructor(
 
   override fun onInteractionButtonClicked() {
     hideKeyboard()
-    // TODO(#163): Remove these dummy answers and fetch answers from different interaction views.
-    // NB: This sample data will work only with TEST_EXPLORATION_ID_5
-    // 0 -> What Language
-    // 2 -> Welcome!
-    // XX -> What Language
-    val stateWelcomeAnswer = 0
-    // finnish -> Numeric input
-    // suomi -> Numeric input
-    // XX -> What Language
-    val stateWhatLanguageAnswer: String = "finnish"
-    // 121 -> Things You can do
-    // < 121 -> Estimate 100
-    // > 121 -> Numeric Input
-    // XX -> Numeric Input
-    val stateNumericInputAnswer = 121
-
     if (!hasGeneralContinueButton) {
-      val interactionObject: InteractionObject = getDummyInteractionObject()
       when (currentEphemeralState.state.interaction.id) {
         END_EXPLORATION -> endExploration()
         CONTINUE -> subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
-        MULTIPLE_CHOICE_INPUT -> subscribeToAnswerOutcome(
-          explorationProgressController.submitAnswer(
-            InteractionObject.newBuilder().setNonNegativeInt(
-              stateWelcomeAnswer
-            ).build()
-          )
-        )
-        FRACTION_INPUT,
-        ITEM_SELECT_INPUT,
-        NUMERIC_INPUT,
-        NUMERIC_WITH_UNITS,
-        TEXT_INPUT -> subscribeToAnswerOutcome(
-          explorationProgressController.submitAnswer(interactionObject)
+        else -> subscribeToAnswerOutcome(
+          explorationProgressController.submitAnswer(stateAdapter.getPendingAnswer())
         )
       }
     } else {
@@ -337,12 +314,18 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  // TODO(BenHenning): Generalize adding interactions.
+
   private fun addInteractionForPendingState() {
-    if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
+    if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       when (currentEphemeralState.state.interaction.id) {
         MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
           addSelectionInteraction()
         }
+        FRACTION_INPUT -> addInteraction(FractionInteractionViewModel())
+        NUMERIC_INPUT -> addInteraction(NumericInputViewModel())
+        NUMERIC_WITH_UNITS -> addInteraction(NumberWithUnitsViewModel())
+        TEXT_INPUT -> addInteraction(TextInputViewModel())
       }
     }
   }
@@ -350,24 +333,35 @@ class StateFragmentPresenter @Inject constructor(
   private fun addSelectionInteraction() {
     val customizationArgsMap: Map<String, InteractionObject> =
       currentEphemeralState.state.interaction.customizationArgsMap
-    val multipleChoiceInputInteractionViewModel = SelectionInteractionCustomizationArgsViewModel()
     val allKeys: Set<String> = customizationArgsMap.keys
 
     for (key in allKeys) {
       logger.d(TAG_STATE_FRAGMENT, key)
     }
+    var maxAllowableSelectionCount = 0
+    var minAllowableSelectionCount = 0
+    lateinit var choiceItems: List<String>
     if (customizationArgsMap.contains("choices")) {
       if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
-        multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+        maxAllowableSelectionCount =
           currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
-        multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+        minAllowableSelectionCount =
           currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
       }
-      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
-      multipleChoiceInputInteractionViewModel.choiceItems =
-        currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+      choiceItems = currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+    } else {
+      choiceItems = listOf()
     }
-    itemList.add(multipleChoiceInputInteractionViewModel)
+    itemList.add(
+      SelectionInteractionViewModel(
+        choiceItems, currentEphemeralState.state.interaction.id, maxAllowableSelectionCount, minAllowableSelectionCount
+      )
+    )
+    stateAdapter.notifyDataSetChanged()
+  }
+
+  private fun addInteraction(viewModel: ViewModel) {
+    itemList.add(viewModel)
     stateAdapter.notifyDataSetChanged()
   }
 
@@ -434,18 +428,5 @@ class StateFragmentPresenter @Inject constructor(
   // TODO(#163): Remove this function, this is just for dummy testing purposes.
   private fun updateDummyStateName() {
     getStateViewModel().setStateName(currentEphemeralState.state.name)
-  }
-
-  // TODO(#163): Remove this function and fetch this InteractionObject from [StateAdapter].
-  private fun getDummyInteractionObject(): InteractionObject {
-    val interactionObjectBuilder: InteractionObject.Builder = InteractionObject.newBuilder()
-    when (currentEphemeralState.state.name) {
-      "Welcome!" -> interactionObjectBuilder.nonNegativeInt = 0
-      "What language" -> interactionObjectBuilder.normalizedString = "finnish"
-      "Things you can do" -> createContinueButtonAnswer()
-      "Numeric input" -> interactionObjectBuilder.real = 121.0
-      else -> InteractionObject.getDefaultInstance()
-    }
-    return interactionObjectBuilder.build()
   }
 }

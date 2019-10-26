@@ -4,8 +4,11 @@ import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.Fraction
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.NumberUnit
+import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
@@ -149,16 +152,55 @@ class StateRetriever @Inject constructor() {
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
       "ItemSelectionInput" -> InteractionObject.newBuilder()
-        .setNonNegativeInt(inputJson.getInt(keyName))
+        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
         .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
+      "NumberWithUnits" -> InteractionObject.newBuilder()
+        .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
+        .build()
       "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
+      "FractionInput" -> InteractionObject.newBuilder()
+        .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
+    val stringListBuilder = StringList.newBuilder()
+    for (i in 0 until itemSelectionAnswer.length()) {
+      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+    }
+    return stringListBuilder.build()
+  }
+
+  private fun parseNumberWithUnitsObject(numberWithUnitsAnswer: JSONObject): NumberWithUnits {
+    val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
+    when (numberWithUnitsAnswer.getString("type")) {
+      "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
+      "fraction" -> numberWithUnitsBuilder.fraction = parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
+    }
+    val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
+    for (i in 0 until unitsArray.length()) {
+      val unit = unitsArray.getJSONObject(i)
+      numberWithUnitsBuilder.addUnit(NumberUnit.newBuilder()
+        .setUnit(unit.getString("unit"))
+        .setExponent(unit.getInt("exponent")))
+    }
+    return numberWithUnitsBuilder.build()
+  }
+
+  private fun parseFraction(fractionAnswer: JSONObject): Fraction {
+    return Fraction.newBuilder()
+      .setWholeNumber(fractionAnswer.getInt("wholeNumber"))
+      .setDenominator(fractionAnswer.getInt("denominator"))
+      .setNumerator(fractionAnswer.getInt("numerator"))
+      .setIsNegative(fractionAnswer.getBoolean("isNegative"))
+      .build()
   }
 
   // Creates a customization arg mapping from JSON
@@ -184,12 +226,10 @@ class StateRetriever @Inject constructor() {
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when (customizationArgValue) {
-      is String -> return interactionObjectBuilder
-        .setNormalizedString(customizationArgValue).build()
-      is Int -> return interactionObjectBuilder
-        .setSignedInt(customizationArgValue).build()
-      is Double -> return interactionObjectBuilder
-        .setReal(customizationArgValue).build()
+      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue).build()
+      is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
+      is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
+      is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
       else -> {
         var customizationArgValueTemp: ArrayList<*> =
           Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)

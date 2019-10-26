@@ -42,7 +42,7 @@ internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructo
     }
   }
 
-  private fun realMatches(answer: Float, input: Float): Boolean {
+  private fun realMatches(answer: Double, input: Double): Boolean {
     return input.approximatelyEquals(answer)
   }
 
