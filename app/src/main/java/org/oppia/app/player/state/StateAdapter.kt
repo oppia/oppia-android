@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import android.text.Spannable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -16,9 +17,11 @@ import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.player.state.listener.ItemClickListener
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
@@ -43,6 +46,7 @@ class StateAdapter(
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   lateinit var stateButtonViewModel: StateButtonViewModel
+  private var interactionObjectBuilder: InteractionObject = InteractionObject.newBuilder().build()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -146,8 +150,13 @@ class StateAdapter(
   }
 
   inner class SelectionInteractionViewHolder(
-   private val binding: ViewDataBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
+    private val binding: ViewDataBinding
+  ) : RecyclerView.ViewHolder(binding.root), ItemClickListener {
+
+    override fun onItemClick(interactionObject: InteractionObject) {
+      interactionObjectBuilder = interactionObject
+    }
+
     internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
       val items: Array<String>?
       val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
@@ -160,8 +169,15 @@ class StateAdapter(
         choiceInteractionContentList.add(selectionContentViewModel)
       }
       val interactionAdapter =
-        InteractionAdapter(htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs)
-      binding.root.selection_interaction_recyclerview.adapter = interactionAdapter
+        InteractionAdapter(
+          htmlParserFactory,
+          entityType,
+          explorationId,
+          choiceInteractionContentList,
+          customizationArgs,
+          this as ItemClickListener
+        )
+      binding.root.selection_interaction_recyclerview.setAdapter(interactionAdapter)
     }
   }
 

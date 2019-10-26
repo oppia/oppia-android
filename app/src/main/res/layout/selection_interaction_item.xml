@@ -17,7 +17,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       tools:layout_editor_absoluteX="8dp">
-      <androidx.recyclerview.widget.RecyclerView
+      <org.oppia.app.player.state.customview.SelectionInputInteractionView
         android:id="@+id/selection_interaction_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

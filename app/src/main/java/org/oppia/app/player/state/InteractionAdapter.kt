@@ -8,20 +8,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_selection_interaction_items.view.item_selection_contents_text_view
-import kotlinx.android.synthetic.main.item_selection_interaction_items.view.checkbox_container
 import kotlinx.android.synthetic.main.item_selection_interaction_items.view.item_selection_checkbox
+import kotlinx.android.synthetic.main.item_selection_interaction_items.view.item_selection_contents_text_view
 import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.multiple_choice_content_text_view
 import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.multiple_choice_radio_button
-import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.radio_container
 import org.oppia.app.R
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.app.player.state.listener.InteractionAnswerRetriever
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.listener.ItemClickListener
 import org.oppia.util.parser.HtmlParser
 
 private const val VIEW_TYPE_RADIO_BUTTONS = 1
@@ -37,8 +35,9 @@ class InteractionAdapter(
   private val entityType: String,
   private val explorationId: String,
   private val itemList: MutableList<SelectionInteractionContentViewModel>,
-  private val selectionInteractionCustomizationArgsViewModel: SelectionInteractionCustomizationArgsViewModel
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), InteractionAnswerRetriever {
+  private val selectionInteractionCustomizationArgsViewModel: SelectionInteractionCustomizationArgsViewModel,
+  private val itemClickListener: ItemClickListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var itemSelectedPosition = -1
   private var selectedAnswerIndex = -1
@@ -112,7 +111,7 @@ class InteractionAdapter(
       )
       binding.root.item_selection_contents_text_view.text = htmlResult
       binding.root.item_selection_checkbox.isChecked = selectionInteractionContentViewModel.isAnswerSelected
-      binding.root.checkbox_container.setOnClickListener {
+      binding.root.setOnClickListener {
         if (binding.root.item_selection_checkbox.isChecked) {
           itemList[adapterPosition].isAnswerSelected = false
           selectedHtmlStringList.remove(binding.root.item_selection_contents_text_view.text.toString())
@@ -128,6 +127,16 @@ class InteractionAdapter(
           }
         }
         notifyDataSetChanged()
+        val interactionObjectBuilder = InteractionObject.newBuilder()
+        if (selectedHtmlStringList.size >= 0) {
+          interactionObjectBuilder.setOfHtmlString = StringList.newBuilder().addAllHtml(selectedHtmlStringList).build()
+        } else {
+          if (selectedAnswerIndex >= 0) {
+            interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
+          }
+
+        }
+        itemClickListener.onItemClick(interactionObjectBuilder.build())
       }
     }
   }
@@ -142,26 +151,16 @@ class InteractionAdapter(
       )
       binding.root.multiple_choice_content_text_view.text = htmlResult
       binding.root.multiple_choice_radio_button.isChecked = selectedPosition == position
-      binding.root.radio_container.setOnClickListener {
+      binding.root.setOnClickListener {
         itemSelectedPosition = adapterPosition
         selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()
-      }
-    }
-  }
-
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (selectionInteractionCustomizationArgsViewModel.interactionId == "ItemSelectionInput") {
-      if (selectedHtmlStringList.size >= 0) {
-        interactionObjectBuilder.setOfHtmlString = StringList.newBuilder().addAllHtml(selectedHtmlStringList).build()
-      } else {
+        val interactionObjectBuilder = InteractionObject.newBuilder()
         if (selectedAnswerIndex >= 0) {
           interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
         }
-
+        itemClickListener.onItemClick(interactionObjectBuilder.build())
       }
     }
-    return interactionObjectBuilder.build()
   }
 }

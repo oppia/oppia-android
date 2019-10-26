@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -18,6 +19,7 @@ import dagger.Module
 import dagger.Provides
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.CoreMatchers.anything
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -69,16 +71,16 @@ class StateSelectionInteractionTest {
   }
 
   @Test
-  fun testMultipleChoiceInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
+  fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
-      counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 3)).perform(click())
-      counter++
-      assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
+      onView(atPosition(R.id.selection_interaction_recyclerview, 5)).perform(scrollTo()).perform(click())
+//      counter++
+//      onView(atPosition(R.id.selection_interaction_recyclerview, 3)).perform(click())
+//      counter++
+//      assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
     }
   }
 
