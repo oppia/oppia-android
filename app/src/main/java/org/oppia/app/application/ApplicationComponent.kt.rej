@@ -1,0 +1,11 @@
+diff a/app/src/main/java/org/oppia/app/application/ApplicationComponent.kt b/app/src/main/java/org/oppia/app/application/ApplicationComponent.kt	(rejected hunks)
+@@ -28,7 +29,8 @@ import javax.inject.Singleton
+   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
+   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+   NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
+-  GcsResourceModule::class, ImageParsingModule::class, HtmlParsingModule::class, ImageLoaderModule::class
++  GcsResourceModule::class, ImageParsingModule::class, HtmlParsingModule::class, ImageLoaderModule::class,
++  HtmlParserEntityTypeModule::class
+ ])
+ interface ApplicationComponent {
+   @Component.Builder

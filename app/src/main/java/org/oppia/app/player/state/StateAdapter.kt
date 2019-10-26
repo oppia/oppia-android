@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -25,7 +26,10 @@ private const val VIEW_TYPE_STATE_BUTTON = 5
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
   private val itemList: MutableList<Any>,
-  private val buttonInteractionListener: ButtonInteractionListener
+  private val buttonInteractionListener: ButtonInteractionListener,
+  private val htmlParserFactory: HtmlParser.Factory,
+  private val entityType: String,
+  private val explorationId: String
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
