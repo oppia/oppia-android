@@ -28,6 +28,8 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
@@ -53,6 +55,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
+  @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
@@ -60,7 +63,8 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
-  private val logger: Logger
+  private val logger: Logger,
+  private val htmlParserFactory: HtmlParser.Factory
 ) : ButtonInteractionListener {
 
   private var showCellularDataDialog = true
@@ -91,9 +95,8 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
-
-    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener)
-
+    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
@@ -102,7 +105,6 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = checkNotNull(fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY))
 
     subscribeToCurrentState()
 
