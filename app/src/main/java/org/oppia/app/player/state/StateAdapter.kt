@@ -101,7 +101,7 @@ class StateAdapter(
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
       is StateButtonViewModel -> VIEW_TYPE_STATE_BUTTON
-      is ContentViewHolder -> VIEW_TYPE_CONTENT
+      is ContentViewModel -> VIEW_TYPE_CONTENT
       is SelectionInteractionCustomizationArgsViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
