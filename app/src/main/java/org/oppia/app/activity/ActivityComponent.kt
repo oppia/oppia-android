@@ -12,6 +12,7 @@ import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
@@ -29,15 +30,16 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
+  fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
-  fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(topicActivity: TopicActivity)
-  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(profileActivity: ProfileActivity)
+  fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(storyActivity: StoryActivity)
+  fun inject(topicActivity: TopicActivity)
 }
