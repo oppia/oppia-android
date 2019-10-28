@@ -5,10 +5,15 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -17,6 +22,8 @@ import dagger.Module
 import dagger.Provides
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.EasyMock2Matchers.equalTo
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -53,8 +60,12 @@ class StateSelectionInteractionTest {
   fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
+      )
     }
   }
 
@@ -62,23 +73,42 @@ class StateSelectionInteractionTest {
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 1)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+      )
     }
   }
 
   @Test
-  fun testMultipleChoiceInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
+  fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
     ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
-      onView(atPosition(R.id.selection_interaction_recyclerview, 0)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+      )
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 5)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+      )
       counter++
-      onView(atPosition(R.id.selection_interaction_recyclerview, 12)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(7, click())
+      )
+      counter++
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(4, click())
+      )
       counter++
       assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
     }
+  }
+
+  fun withItemContent(expectedText: String): Matcher<Object> {
+    checkNotNull(expectedText)
+    return withItemContent(equalTo(expectedText))
   }
 
   @After

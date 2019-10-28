@@ -177,7 +177,6 @@ class StateFragmentPresenter @Inject constructor(
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       itemList.clear()
       currentEphemeralState = result
-
       checkAndAddContentItem()
       addInteractionForPendingState()
       updateDummyStateName()
@@ -336,6 +335,26 @@ class StateFragmentPresenter @Inject constructor(
       oldStateNameList.add(currentEphemeralState.state.name)
     }
   }
+  private fun checkAndAddContentItem() {
+    if (currentEphemeralState.state.hasContent()) {
+      addContentItem()
+    } else {
+      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
+    }
+  }
+
+  private fun addContentItem() {
+    val contentViewModel = ContentViewModel()
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
+    if (contentSubtitledHtml.contentId != "") {
+      contentViewModel.contentId = contentSubtitledHtml.contentId
+    } else {
+      contentViewModel.contentId = "content"
+    }
+    contentViewModel.htmlContent = contentSubtitledHtml.html
+    itemList.add(contentViewModel)
+    stateAdapter.notifyDataSetChanged()
+  }
 
   private fun addInteractionForPendingState() {
     if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
@@ -368,27 +387,6 @@ class StateFragmentPresenter @Inject constructor(
         currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
     }
     itemList.add(multipleChoiceInputInteractionViewModel)
-    stateAdapter.notifyDataSetChanged()
-  }
-
-  private fun checkAndAddContentItem() {
-    if (currentEphemeralState.state.hasContent()) {
-      addContentItem()
-    } else {
-      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
-    }
-  }
-
-  private fun addContentItem() {
-    val contentViewModel = ContentViewModel()
-    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
-    if (contentSubtitledHtml.contentId != "") {
-      contentViewModel.contentId = contentSubtitledHtml.contentId
-    } else {
-      contentViewModel.contentId = "content"
-    }
-    contentViewModel.htmlContent = contentSubtitledHtml.html
-    itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
   }
 
