@@ -118,10 +118,13 @@ class QuestionAssessmentProgressController @Inject constructor(
           val outcome = answerClassificationController.classify(topPendingState.interaction, answer)
           answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
-          progress.completeCurrentCard()
-          // Only push a new state if the assessment isn't completed.
-          if (!progress.isAssessmentCompleted()) {
-            progress.stateDeck.pushState(progress.getNextState())
+          // Do not proceed unless the user submitted the correct answer.
+          if (answeredQuestionOutcome.isCorrectAnswer) {
+            progress.completeCurrentCard()
+            // Only push a new state if the assessment isn't completed.
+            if (!progress.isAssessmentCompleted()) {
+              progress.stateDeck.pushState(progress.getNextState())
+            }
           }
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
