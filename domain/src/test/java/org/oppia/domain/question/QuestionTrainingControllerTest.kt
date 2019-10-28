@@ -78,16 +78,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
-
-  @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
 
   @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Inject
   @field:TestDispatcher
@@ -126,34 +120,44 @@ class QuestionTrainingControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testStartQuestionSession_forExistingSkillIds_succeeds() = runBlockingTest(coroutineContext) {
+  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
-    questionListLiveData.observeForever(mockAsyncResultLiveDataObserver)
     advanceUntilIdle()
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
+      )
+    )
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGenerateQuestionSession_forExistingSkillIds_providesValidAssessment() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionTrainingController.generateQuestionTrainingSession(
+  fun testController_startsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
-    questionListLiveData.observeForever(mockQuestionListObserver)
     advanceUntilIdle()
-
+    questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(4)
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
+    assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_2, TEST_QUESTION_ID_3
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
       )
     )
   }
@@ -220,12 +224,27 @@ class QuestionTrainingControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestQuestionModule {
+    companion object {
+      var questionSeed = 0L
+    }
+
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = questionSeed ++
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
+    TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder
