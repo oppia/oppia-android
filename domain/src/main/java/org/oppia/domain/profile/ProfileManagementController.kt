@@ -29,6 +29,7 @@ import javax.inject.Singleton
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
 private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
+private const val GRAVATAR_QUERY_STRING = "?s=100&d=identicon&r=g"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -97,7 +98,7 @@ class ProfileManagementController @Inject constructor(
         }
       } else {
         // gravatar url is a md5 hash of an email address
-        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase()}$nextProfileId@gmail.com")
+        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase()}$nextProfileId@gmail.com") + GRAVATAR_QUERY_STRING
       }
 
       val newProfile = Profile.newBuilder()
