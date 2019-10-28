@@ -14,6 +14,8 @@
   <color name="oppiaLightGreen">#F0FFFF</color>
   <color name="oppiaLightBlue">#4DA5D3EC</color>
   <color name="oppiaLightYellow">#FFFFF0</color>
+  <color name="oppiaBrown">#C55F45</color>
+  <color name="oppiaBackground">#F2F2F2</color>
   <color name="oppiaStrokeBlue">#4D395FD0</color>
   <color name="oppiaStrokeBlack">#CC333333</color>
   <!-- BASIC COLORS -->

@@ -32,6 +32,11 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.Question
+import org.oppia.domain.topic.TEST_QUESTION_ID_0
+import org.oppia.domain.topic.TEST_QUESTION_ID_1
+import org.oppia.domain.topic.TEST_QUESTION_ID_2
+import org.oppia.domain.topic.TEST_QUESTION_ID_3
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.data.AsyncResult
@@ -46,8 +51,6 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
-
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -65,10 +68,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Inject
   @field:TestDispatcher
@@ -109,11 +112,42 @@ class QuestionTrainingControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
     advanceUntilIdle()
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
+      )
+    )
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    advanceUntilIdle()
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+      )
+    )
   }
 
   @Qualifier
@@ -165,9 +199,24 @@ class QuestionTrainingControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestQuestionModule {
+    companion object {
+      var questionSeed = 0L
+    }
+
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = questionSeed ++
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestQuestionModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
