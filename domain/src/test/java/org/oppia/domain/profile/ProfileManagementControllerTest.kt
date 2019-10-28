@@ -92,7 +92,11 @@ class ProfileManagementControllerTest {
   fun setUp() {
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
-    addTestProfiles()
+    profilesList.add(Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build())
+    profilesList.add(Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build())
+    profilesList.add(Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build())
+    profilesList.add(Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build())
+    profilesList.add(Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build())
   }
 
   @After
@@ -112,7 +116,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testAddProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
+  fun testAddAndGetProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
     profileManagementController.addProfile("James", "123", null, true)
     advanceUntilIdle()
 
@@ -129,8 +133,8 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testAddProfile_addManyProfiles_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
-    addManyProfiles()
+  fun testAddAndGetProfiles_addManyProfiles_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
     advanceUntilIdle()
 
     profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -156,8 +160,8 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetProfile_addManyProfiles_checkGetProfileIsCorrect() = runBlockingTest(coroutineContext) {
-    addManyProfiles()
+  fun testGetProfile_addManyProfiles_checkGetCorrectProfile() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
     advanceUntilIdle()
 
     profileManagementController.getProfile(ProfileId.newBuilder().setInternalId(3).build())
@@ -175,7 +179,7 @@ class ProfileManagementControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testGetProfiles_addManyProfiles_restartApplication_addProfile_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
-    addManyProfiles()
+    addTestProfiles()
     advanceUntilIdle()
     // TODO: Restarting application deletes cache?
     setUpTestApplicationComponent()
@@ -193,21 +197,83 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateName_addManyProfiles_updateWithUniqueName_checkResultIsSuccess() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithUniqueName_checkIsSuccessful() = runBlockingTest(coroutineContext) {
 
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateName_addManyProfiles_updateWithNotUniqueName_checkResultIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithNotUniqueName_checkIsFailure() = runBlockingTest(coroutineContext) {
 
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdatePin_addManyProfiles_updatePin_checkPinIsUpdated() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
 
   }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdatePin_addProfiles_updatePin_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdatePin_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAllowDownloadAccess_addProfiles_updateDownloadAccess_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testDeleteProfile_addProfile_deleteProfile_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testDeleteProfile_addProfiles_deleteProfiles_addProfile_checkIdIsNotReused() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testDeleteProfile_addProfiles_deleteProfiles_restartApplication_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSetCurrentProfileId_addProfiles_setValidProfile_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSetCurrentProfileId_addProfiles_setInvalidProfile_checkIsFailure() = runBlockingTest(coroutineContext) {
+
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetProfileId_addProfiles_setProfile_checkGetProfileIdIsCorrect() = runBlockingTest(coroutineContext) {
+
+  }
+
+
 
   @Test
   @ExperimentalCoroutinesApi
@@ -215,16 +281,8 @@ class ProfileManagementControllerTest {
       = runBlockingTest(coroutineContext) {
 
   }
-  
-  private fun addTestProfiles() {
-    profilesList.add(Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build())
-    profilesList.add(Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build())
-    profilesList.add(Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build())
-    profilesList.add(Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build())
-    profilesList.add(Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build())
-  }
 
-  private fun addManyProfiles() {
+  private fun addTestProfiles() {
     profilesList.forEach {
       profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess)
     }
