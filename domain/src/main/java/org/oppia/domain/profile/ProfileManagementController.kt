@@ -47,6 +47,11 @@ class ProfileManagementController @Inject constructor(
   class FailedToDeleteExceptionProfile(msg: String) : Exception(msg)
   class FailedToSetCurrentProfileException(msg: String): Exception(msg)
 
+  init {
+    // is this necessary?
+    profileDataStore.primeCacheAsync(true)
+  }
+
   /** Returns the list of created profiles. */
   fun getProfiles(): LiveData<AsyncResult<List<Profile>>> {
     val transformedDataProvider = dataProviders.transform(TRANSFORMED_GET_PROFILES_PROVIDER_ID, profileDataStore) {
