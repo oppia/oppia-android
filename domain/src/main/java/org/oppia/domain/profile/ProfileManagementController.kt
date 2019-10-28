@@ -49,8 +49,11 @@ class ProfileManagementController @Inject constructor(
   class FailedToSetCurrentProfileException(msg: String): Exception(msg)
 
   init {
-    // is this necessary?
-    profileDataStore.primeCacheAsync(true)
+    profileDataStore.primeCacheAsync().invokeOnCompletion {
+      it?.let {
+        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.", it)
+      }
+    }
   }
 
   /** Returns the list of created profiles. */
