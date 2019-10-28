@@ -45,7 +45,7 @@ class ProfileManagementController @Inject constructor(
 
   class ProfileNameNotUniqueException(msg: String) : Exception(msg)
   class FailedToStoreImageException(msg: String) : Exception(msg)
-  class FailedToDeleteExceptionProfile(msg: String) : Exception(msg)
+  class FailedToDeleteProfileException(msg: String) : Exception(msg)
   class FailedToSetCurrentProfileException(msg: String): Exception(msg)
 
   init {
@@ -215,10 +215,10 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
-        throw FailedToDeleteExceptionProfile("ProfileId does not match an existing Profile")
+        throw FailedToDeleteProfileException("ProfileId does not match an existing Profile")
       }
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
-        throw FailedToDeleteExceptionProfile("Failed to delete directory")
+        throw FailedToDeleteProfileException("Failed to delete directory")
       }
       val profileDatabaseBuilder = it.toBuilder().removeProfiles(profileId.internalId)
       profileDatabaseBuilder.build()
