@@ -78,10 +78,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Inject
   @field:TestDispatcher

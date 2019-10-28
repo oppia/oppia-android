@@ -84,7 +84,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver2: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
@@ -93,7 +93,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
   @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
