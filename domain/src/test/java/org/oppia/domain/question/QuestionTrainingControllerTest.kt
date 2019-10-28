@@ -70,10 +70,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Inject
   @field:TestDispatcher
@@ -112,7 +112,7 @@ class QuestionTrainingControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testStartQuestionSession_forExistingSkillIds_succeeds() = runBlockingTest(coroutineContext) {
+  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
@@ -121,7 +121,8 @@ class QuestionTrainingControllerTest {
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
     assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -138,24 +139,12 @@ class QuestionTrainingControllerTest {
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     advanceUntilIdle()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGenerateQuestionSession_forExistingSkillIds_providesValidAssessment() = runBlockingTest(coroutineContext) {
-    val questionListLiveData = questionTrainingController.generateQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
-    )
     questionListLiveData.observeForever(mockQuestionListObserver)
-    advanceUntilIdle()
-
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
     assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(

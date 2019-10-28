@@ -64,13 +64,13 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
 
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
   @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
@@ -174,9 +174,9 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(6)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralQuestion.ephemeralState.state.content.html).contains("What fraction does 'quarter'")
+    assertThat(ephemeralQuestion.ephemeralState.state.content.html).contains("What is the numerator")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -192,6 +192,18 @@ class QuestionAssessmentProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    companion object {
+      var questionSeed = 0L
+    }
+
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = questionSeed ++
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
