@@ -194,6 +194,16 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyCount).isEqualTo(1)
+    assertThat(topic.skillCount).isEqualTo(3)
+  }
+
+  @Test
   fun testRetrieveTopic_invalidTopic_returnsFailure() {
     val topicLiveData = topicController.getTopic("invalid_topic_id")
 

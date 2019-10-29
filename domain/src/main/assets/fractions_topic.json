@@ -21,19 +21,13 @@
         "skill_ids": [
           "5RM9KPfQxobH",
           "B39yK4cbHZYI",
-          "T8kGrGsZWhEy",
           "UxTGIJqaHMLa",
-          "bJt9lXLuDndj"
         ],
         "id": 1,
         "title": "What is a Fraction?"
       },
       {
-        "skill_ids": [
-          "RfXd6ZPdU65E",
-          "jTGTytbmavKm",
-          "rMmYigm1vvth"
-        ],
+        "skill_ids": [],
         "id": 2,
         "title": "Fractions of a group"
       },

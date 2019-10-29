@@ -61,7 +61,7 @@ class TopicListController @Inject constructor(
       .setCanonicalStoryCount(fractionsJson.getJSONArray("canonical_story_references").length())
       .setUncategorizedSkillCount(fractionsJson.getJSONArray("uncategorized_skill_ids").length())
       .setAdditionalStoryCount(fractionsJson.getJSONArray("additional_story_references").length())
-      .setTotalSkillCount(8)
+      .setTotalSkillCount(3)
       .setTotalChapterCount(2)
       .setTopicThumbnail(createFractionsThumbnail())
       .build()
