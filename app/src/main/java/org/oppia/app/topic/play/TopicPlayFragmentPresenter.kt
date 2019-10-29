@@ -32,14 +32,24 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private val topicController: TopicController
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
-
   private val routeToStoryListener = activity as RouteToStoryListener
+
+  private var currentExpandedChapterListIndex = NO_INDEX
 
   private lateinit var binding: TopicPlayFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+  private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    currentExpandedChapterListIndex: Int,
+    expandedChapterListIndexListener: ExpandedChapterListIndexListener
+  ): View? {
+    this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
+    this.expandedChapterListIndexListener = expandedChapterListIndexListener
+
+    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
     }
@@ -57,7 +67,13 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
       val storySummaryAdapter =
-        StorySummaryAdapter(it.storyList, this as ChapterSummarySelector, this as StorySummarySelector)
+        StorySummaryAdapter(
+          it.storyList,
+          this as ChapterSummarySelector,
+          this as StorySummarySelector,
+          expandedChapterListIndexListener,
+          currentExpandedChapterListIndex
+        )
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }

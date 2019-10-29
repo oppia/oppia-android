@@ -11,19 +11,17 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 
-private const val NO_INDEX = -1
-
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
   private val chapterSummarySelector: ChapterSummarySelector,
-  private val storySummarySelector: StorySummarySelector
+  private val storySummarySelector: StorySummarySelector,
+  private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
+  private var currentExpandedChapterListIndex: Int
 ) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
-
-  private var currentExpandedChapterListIndex = NO_INDEX
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
     val storySummaryListItemBinding = DataBindingUtil.inflate<TopicPlayStorySummaryBinding>(
@@ -74,6 +72,8 @@ class StorySummaryAdapter(
         } else {
           position
         }
+
+        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
         notifyDataSetChanged()
       }
     }

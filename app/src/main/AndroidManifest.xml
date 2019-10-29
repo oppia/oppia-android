@@ -15,12 +15,12 @@
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".player.exploration.ExplorationActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
-    <activity android:name=".home.HomeActivity" />
+    <activity android:name=".topic.TopicActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
-    <activity android:name=".story.StoryActivity"/>
-    <activity android:name=".topic.TopicActivity">
+    <activity android:name=".story.StoryActivity" />
+    <activity android:name=".home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
