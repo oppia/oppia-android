@@ -52,3 +52,10 @@ message ProfileId {
    */
   int32 internal_id = 1;
 }
+
+message ProfileChooserModel {
+  oneof model_type {
+    Profile profile = 1;
+    bool addProfile = 2;
+  }
+}

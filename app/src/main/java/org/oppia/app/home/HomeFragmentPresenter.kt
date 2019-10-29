@@ -1,5 +1,6 @@
 package org.oppia.app.home
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -63,5 +65,9 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun startProfileActivity(v: View) {
+    fragment.activity?.startActivity(Intent(fragment.context, ProfileActivity::class.java))
   }
 }
