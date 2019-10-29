@@ -5,15 +5,11 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -22,8 +18,6 @@ import dagger.Module
 import dagger.Provides
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.EasyMock2Matchers.equalTo
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,7 +25,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -104,11 +97,6 @@ class StateSelectionInteractionTest {
       counter++
       assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
     }
-  }
-
-  fun withItemContent(expectedText: String): Matcher<Object> {
-    checkNotNull(expectedText)
-    return withItemContent(equalTo(expectedText))
   }
 
   @After
