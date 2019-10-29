@@ -8,10 +8,4 @@ import javax.inject.Inject
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope
-class StateViewModel @Inject constructor() : ObservableViewModel() {
-  var stateName = ObservableField<String>()
-
-  fun setStateName(state: String) {
-    stateName.set(state)
-  }
-}
+class StateViewModel @Inject constructor() : ObservableViewModel()

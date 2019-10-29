@@ -50,9 +50,6 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
-private const val END_EXPLORATION = "EndExploration"
-@Suppress("unused")
-private const val LEARN_AGAIN = "LearnAgain"
 private const val CONTINUE = "Continue"
 private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
 private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
@@ -76,24 +73,12 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory
 ) : StateNavigationButtonListener {
 
+  private val itemList: MutableList<Any> = ArrayList()
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var explorationId: String
-
-  // TODO(#257): Remove this once domain layer is capable to provide this information.
-  private val oldStateNameList: ArrayList<String> = ArrayList()
-
-  private lateinit var currentEphemeralState: EphemeralState
-  private var currentAnswerOutcome: AnswerOutcome? = null
-
-  private val itemList: MutableList<Any> = ArrayList()
-
-  // TODO(#257): Remove this once domain layer is capable to provide this information.
-  private var hasGeneralContinueButton: Boolean = false
-
   private lateinit var stateAdapter: StateAdapter
-
-  private lateinit var binding: StateFragmentBinding
+  private lateinit var currentStateName: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -105,8 +90,10 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    stateAdapter = StateAdapter(itemList, this as StateNavigationButtonListener, htmlParserFactory, entityType, explorationId)
-    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    stateAdapter = StateAdapter(
+      itemList, this as StateNavigationButtonListener, htmlParserFactory, entityType, explorationId
+    )
+    val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
     }
@@ -171,7 +158,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
       if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(explorationId, "END")
+        val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction().add(
           R.id.audio_fragment_placeholder, audioFragment,
           TAG_AUDIO_FRAGMENT
@@ -187,30 +174,24 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       itemList.clear()
-      currentEphemeralState = result
 
-      addContentItem()
+      addContentItem(result)
       val interaction = result.state.interaction
-      if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-        addPreviousAnswers(interaction, currentEphemeralState.pendingState.wrongAnswerList)
+      if (result.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+        addPreviousAnswers(interaction, result.pendingState.wrongAnswerList)
         addInteractionForPendingState(interaction)
-      } else if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-        addPreviousAnswers(interaction, currentEphemeralState.completedState.answerList)
+      } else if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+        addPreviousAnswers(interaction, result.completedState.answerList)
       }
-      updateDummyStateName()
 
       val hasPreviousState = result.hasPreviousState
       var canContinueToNextState = false
-      hasGeneralContinueButton = false
+      var hasGeneralContinueButton = false
 
       if (result.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-        if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-          && !oldStateNameList.contains(result.state.name)
-        ) {
+        if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE && !result.hasNextState) {
           hasGeneralContinueButton = true
-        } else if (result.completedState.answerList.size > 0
-          && oldStateNameList.contains(result.state.name)
-        ) {
+        } else if (result.completedState.answerList.size > 0 && result.hasNextState) {
           canContinueToNextState = true
         }
       }
@@ -221,6 +202,8 @@ class StateFragmentPresenter @Inject constructor(
         hasGeneralContinueButton,
         result.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
       )
+
+      stateAdapter.notifyDataSetChanged()
     })
   }
 
@@ -246,11 +229,9 @@ class StateFragmentPresenter @Inject constructor(
    */
   private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
-    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
-      currentAnswerOutcome = it
-
+    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
-      if (currentEphemeralState.state.interaction.id == CONTINUE) {
+      if (result.state.interaction.id == CONTINUE) {
         moveToNextState()
       }
     })
@@ -293,24 +274,11 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.moveToPreviousState()
   }
 
-  override fun onNextButtonClicked() {
-    moveToNextState()
-  }
+  override fun onNextButtonClicked() = moveToNextState()
 
   private fun moveToNextState() {
-    checkAndUpdateOldStateNameList()
     itemList.clear()
-    currentAnswerOutcome = null
     explorationProgressController.moveToNextState()
-  }
-
-  private fun checkAndUpdateOldStateNameList() {
-    if (currentAnswerOutcome != null
-      && !currentAnswerOutcome!!.sameState
-      && !oldStateNameList.contains(currentEphemeralState.state.name)
-    ) {
-      oldStateNameList.add(currentEphemeralState.state.name)
-    }
   }
 
   // TODO(BenHenning): Generalize adding interactions.
@@ -352,18 +320,15 @@ class StateFragmentPresenter @Inject constructor(
       choiceItems, interaction.id, fragment as InteractionAnswerReceiver, maxAllowableSelectionCount,
       minAllowableSelectionCount, existingAnswer, isReadOnly
     )
-    stateAdapter.notifyDataSetChanged()
   }
 
   private fun addInteraction(viewModel: ViewModel) {
     itemList.add(viewModel)
-    stateAdapter.notifyDataSetChanged()
   }
 
-  private fun addContentItem() {
-    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
+  private fun addContentItem(ephemeralState: EphemeralState) {
+    val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
     itemList.add(ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html))
-    stateAdapter.notifyDataSetChanged()
   }
 
   private fun addPreviousAnswers(interaction: Interaction, answersAndResponses: List<AnswerAndResponse>) {
@@ -379,7 +344,6 @@ class StateFragmentPresenter @Inject constructor(
     if (feedback.html.isNotEmpty()) {
       itemList.add(FeedbackViewModel(feedback.contentId, feedback.html))
     }
-    stateAdapter.notifyDataSetChanged()
   }
 
   private fun updateNavigationButtonVisibility(
@@ -420,7 +384,6 @@ class StateFragmentPresenter @Inject constructor(
       }
     }
     itemList.add(getStateButtonViewModel())
-    stateAdapter.notifyDataSetChanged()
   }
 
   private fun getStateButtonViewModel(): StateNavigationButtonViewModel {
@@ -430,10 +393,5 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
-  }
-
-  // TODO(#163): Remove this function, this is just for dummy testing purposes.
-  private fun updateDummyStateName() {
-    getStateViewModel().setStateName(currentEphemeralState.state.name)
   }
 }
