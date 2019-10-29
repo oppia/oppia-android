@@ -67,6 +67,7 @@ class HomeFragmentPresenter @Inject constructor(
       }
     })
   }
+
   fun playExplorationButton_1(v: View) {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
