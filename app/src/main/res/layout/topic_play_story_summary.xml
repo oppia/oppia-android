@@ -15,9 +15,6 @@
       type="Integer" />
 
     <variable
-      name="storyProgressPercentage"
-      type="Integer" />
-    <variable
       name="storySummary"
       type="org.oppia.app.model.StorySummary" />
   </data>
@@ -101,6 +98,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginBottom="8dp"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
+      android:nestedScrollingEnabled="false"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@+id/chapter_count"
