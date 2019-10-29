@@ -105,6 +105,7 @@ class SelectionInteractionAdapter(
               )
             }
           }
+          selectionInteractionViewModel.handleItemSelected()
           notifyDataSetChanged()
         }
       }
@@ -128,6 +129,7 @@ class SelectionInteractionAdapter(
           selectionInteractionViewModel.selectedItems.clear()
           itemList[adapterPosition].isAnswerSelected = true
           selectionInteractionViewModel.selectedItems += adapterPosition
+          selectionInteractionViewModel.handleItemSelected()
           notifyDataSetChanged()
         }
       }

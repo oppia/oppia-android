@@ -5,13 +5,13 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.parser.StringToFractionParser
-import org.oppia.app.player.state.listener.InteractionAnswerRetriever
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.toAnswerString
 import java.util.regex.Pattern
 
 class NumberWithUnitsViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): ViewModel(), InteractionAnswerRetriever {
+): ViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun getPendingAnswer(): InteractionObject {

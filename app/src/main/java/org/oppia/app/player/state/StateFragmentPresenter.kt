@@ -23,16 +23,18 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
-import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.app.player.state.listener.ButtonInteractionListener
+import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -48,20 +50,16 @@ private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
-private const val CONTINUE = "Continue"
 private const val END_EXPLORATION = "EndExploration"
 @Suppress("unused")
 private const val LEARN_AGAIN = "LearnAgain"
+private const val CONTINUE = "Continue"
 private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
 private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
 private const val TEXT_INPUT = "TextInput"
 private const val FRACTION_INPUT = "FractionInput"
 private const val NUMERIC_INPUT = "NumericInput"
 private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
-
-// For context:
-// https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts
-private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -70,13 +68,13 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
-  private val stateButtonViewModelProvider: ViewModelProvider<StateButtonViewModel>,
+  private val stateNavigationButtonViewModelProvider: ViewModelProvider<StateNavigationButtonViewModel>,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory
-) : ButtonInteractionListener {
+) : StateNavigationButtonListener {
 
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -107,7 +105,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
+    stateAdapter = StateAdapter(itemList, this as StateNavigationButtonListener, htmlParserFactory, entityType, explorationId)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
@@ -146,6 +144,11 @@ class StateFragmentPresenter @Inject constructor(
     if (saveUserChoice) {
       cellularDialogController.setNeverUseCellularDataPreference()
     }
+  }
+
+  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+    // An interaction has indicated that an answer is ready for submission.
+    handleSubmitAnswer(answer)
   }
 
   private fun showCellularDataDialogFragment() {
@@ -196,7 +199,6 @@ class StateFragmentPresenter @Inject constructor(
       }
       updateDummyStateName()
 
-      val interactionId = interaction.id
       val hasPreviousState = result.hasPreviousState
       var canContinueToNextState = false
       hasGeneralContinueButton = false
@@ -206,20 +208,18 @@ class StateFragmentPresenter @Inject constructor(
           && !oldStateNameList.contains(result.state.name)
         ) {
           hasGeneralContinueButton = true
-          canContinueToNextState = false
         } else if (result.completedState.answerList.size > 0
           && oldStateNameList.contains(result.state.name)
         ) {
           canContinueToNextState = true
-          hasGeneralContinueButton = false
         }
       }
 
       updateNavigationButtonVisibility(
-        interactionId,
         hasPreviousState,
         canContinueToNextState,
-        hasGeneralContinueButton
+        hasGeneralContinueButton,
+        result.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
       )
     })
   }
@@ -249,13 +249,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> {
       currentAnswerOutcome = it
 
-      // 'CONTINUE' button has two different types of functionality in different scenarios.
-      // If the interaction-id is 'Continue', then learner can click the 'CONTINUE' button which will submit an answer
-      // and move to next state. In other cases, learner submits an answer and if the answer is correct than the `SUBMIT`
-      // button changes to 'CONTINUE' and in that case click on 'CONTINUE' button does not submit any answer and
-      // directly moves to next state.
-      // Here, after submitting an answer it checks whether the interaction-id was 'Continue', if it is continue then move
-      // to next state.
+      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (currentEphemeralState.state.interaction.id == CONTINUE) {
         moveToNextState()
       }
@@ -275,24 +269,24 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  private fun endExploration() {
+  override fun onReturnToTopicButtonClicked() {
+    hideKeyboard()
     explorationDataController.stopPlayingExploration()
-    (activity as ExplorationActivity).finish()
+    activity.finish()
   }
 
-  override fun onInteractionButtonClicked() {
+  override fun onSubmitButtonClicked() {
     hideKeyboard()
-    if (!hasGeneralContinueButton) {
-      when (currentEphemeralState.state.interaction.id) {
-        END_EXPLORATION -> endExploration()
-        CONTINUE -> subscribeToAnswerOutcome(explorationProgressController.submitAnswer(createContinueButtonAnswer()))
-        else -> subscribeToAnswerOutcome(
-          explorationProgressController.submitAnswer(stateAdapter.getPendingAnswer())
-        )
-      }
-    } else {
-      moveToNextState()
-    }
+    handleSubmitAnswer(stateAdapter.getPendingAnswer())
+  }
+
+  override fun onContinueButtonClicked() {
+    hideKeyboard()
+    moveToNextState()
+  }
+
+  private fun handleSubmitAnswer(answer: InteractionObject) {
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
   override fun onPreviousButtonClicked() {
@@ -308,10 +302,6 @@ class StateFragmentPresenter @Inject constructor(
     itemList.clear()
     currentAnswerOutcome = null
     explorationProgressController.moveToNextState()
-  }
-
-  private fun createContinueButtonAnswer(): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER).build()
   }
 
   private fun checkAndUpdateOldStateNameList() {
@@ -336,7 +326,10 @@ class StateFragmentPresenter @Inject constructor(
   private fun addInteraction(
     interaction: Interaction, existingAnswer: InteractionObject? = null, isReadOnly: Boolean = false) {
     when (interaction.id) {
-      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> { addSelectionInteraction(interaction, existingAnswer, isReadOnly) }
+      CONTINUE -> addInteraction(
+        ContinueInteractionViewModel(fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly)
+      )
+      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> addSelectionInteraction(interaction, existingAnswer, isReadOnly)
       FRACTION_INPUT -> addInteraction(FractionInteractionViewModel(existingAnswer, isReadOnly))
       NUMERIC_INPUT -> addInteraction(NumericInputViewModel(existingAnswer, isReadOnly))
       NUMERIC_WITH_UNITS -> addInteraction(NumberWithUnitsViewModel(existingAnswer, isReadOnly))
@@ -350,11 +343,14 @@ class StateFragmentPresenter @Inject constructor(
     val argsMap = interaction.customizationArgsMap
     argsMap.keys.forEach { logger.d(TAG_STATE_FRAGMENT, it) }
 
-    val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: 0
-    val minAllowableSelectionCount = argsMap["minAllowableSelectionCount"]?.signedInt ?: 0
+    // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
+    // when either of the counts are not specified.
+    val minAllowableSelectionCount = argsMap["minAllowableSelectionCount"]?.signedInt ?: 1
+    val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
     val choiceItems = argsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
     itemList += SelectionInteractionViewModel(
-      choiceItems, interaction.id, maxAllowableSelectionCount, minAllowableSelectionCount, existingAnswer, isReadOnly
+      choiceItems, interaction.id, fragment as InteractionAnswerReceiver, maxAllowableSelectionCount,
+      minAllowableSelectionCount, existingAnswer, isReadOnly
     )
     stateAdapter.notifyDataSetChanged()
   }
@@ -387,37 +383,48 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun updateNavigationButtonVisibility(
-    interactionId: String,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
-    hasGeneralContinueButton: Boolean
+    hasGeneralContinueButton: Boolean,
+    stateIsTerminal: Boolean
   ) {
-    getStateButtonViewModel().setPreviousButtonVisible(hasPreviousState)
+    getStateButtonViewModel().updatePreviousButton(isEnabled = hasPreviousState)
 
+    // Set continuation button.
     when {
       hasGeneralContinueButton -> {
-        getStateButtonViewModel().clearObservableInteractionId()
-        getStateButtonViewModel().setObservableInteractionId(CONTINUE)
+        getStateButtonViewModel().updateContinuationButton(
+          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = true
+        )
       }
       canContinueToNextState -> {
-        getStateButtonViewModel().clearObservableInteractionId()
-        getStateButtonViewModel().setNextButtonVisible(canContinueToNextState)
+        getStateButtonViewModel().updateContinuationButton(
+          ContinuationNavigationButtonType.NEXT_BUTTON, isEnabled = canContinueToNextState
+        )
+      }
+      stateIsTerminal -> {
+        getStateButtonViewModel().updateContinuationButton(
+          ContinuationNavigationButtonType.RETURN_TO_TOPIC_BUTTON, isEnabled = true
+        )
+      }
+      stateAdapter.doesPendingInteractionRequireExplicitSubmission() -> {
+        getStateButtonViewModel().updateContinuationButton(
+          ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = true
+        )
       }
       else -> {
-        getStateButtonViewModel().setObservableInteractionId(interactionId)
-        // TODO(#163): This function controls whether the "Submit" button should be displayed or not.
-        //  Remove this function in final implementation and control this whenever user selects some option in
-        //  MultipleChoiceInput or InputSelectionInput. For now this is `true` because we do not have a mechanism to work
-        //  with MultipleChoiceInput or InputSelectionInput, which will eventually be responsible for controlling this.
-        getStateButtonViewModel().optionSelected(true)
+        // No continuation button needs to be set since the interaction itself will push for answer submission.
+        getStateButtonViewModel().updateContinuationButton(
+          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = false
+        )
       }
     }
     itemList.add(getStateButtonViewModel())
     stateAdapter.notifyDataSetChanged()
   }
 
-  private fun getStateButtonViewModel(): StateButtonViewModel {
-    return stateButtonViewModelProvider.getForFragment(fragment, StateButtonViewModel::class.java)
+  private fun getStateButtonViewModel(): StateNavigationButtonViewModel {
+    return stateNavigationButtonViewModelProvider.getForFragment(fragment, StateNavigationButtonViewModel::class.java)
   }
 
   private fun hideKeyboard() {

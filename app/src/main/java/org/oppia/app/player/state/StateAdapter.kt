@@ -1,24 +1,23 @@
 package org.oppia.app.player.state
 
-import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import androidx.databinding.library.baseAdapters.BR
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
+import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NumberWithUnitsInputInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
-import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
-import org.oppia.app.player.state.listener.ButtonInteractionListener
+import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
+import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
@@ -27,13 +26,13 @@ import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.app.player.state.listener.InteractionAnswerRetriever
+import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.util.parser.HtmlParser
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
   private val itemList: MutableList<Any>,
-  private val buttonInteractionListener: ButtonInteractionListener,
+  private val stateNavigationButtonListener: StateNavigationButtonListener,
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
   private val explorationId: String
@@ -42,7 +41,8 @@ class StateAdapter(
   private enum class ViewType {
     VIEW_TYPE_CONTENT,
     VIEW_TYPE_FEEDBACK,
-    VIEW_TYPE_STATE_BUTTON,
+    VIEW_TYPE_STATE_NAVIGATION_BUTTON,
+    VIEW_TYPE_CONTINUE_INTERACTION,
     VIEW_TYPE_SELECTION_INTERACTION,
     VIEW_TYPE_FRACTION_INPUT_INTERACTION,
     VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
@@ -53,7 +53,7 @@ class StateAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (ViewType.values()[viewType]) {
       // TODO(#249): Generalize this binding to make adding future interactions easier.
-      ViewType.VIEW_TYPE_STATE_BUTTON -> {
+      ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
           DataBindingUtil.inflate<StateButtonItemBinding>(
@@ -62,7 +62,7 @@ class StateAdapter(
             parent,
             /* attachToParent= */false
           )
-        StateButtonViewHolder(binding, buttonInteractionListener)
+        StateButtonViewHolder(binding, stateNavigationButtonListener)
       }
       ViewType.VIEW_TYPE_CONTENT -> {
         val inflater = LayoutInflater.from(parent.context)
@@ -85,6 +85,17 @@ class StateAdapter(
             /* attachToParent= */false
           )
         FeedbackViewHolder(binding)
+      }
+      ViewType.VIEW_TYPE_CONTINUE_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<ContinueInteractionItemBinding>(
+            inflater,
+            R.layout.continue_interaction_item,
+            parent,
+            /* attachToParent= */false
+          )
+        ContinueInteractionViewHolder(binding)
       }
       ViewType.VIEW_TYPE_SELECTION_INTERACTION -> {
         val inflater = LayoutInflater.from(parent.context)
@@ -146,14 +157,17 @@ class StateAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (ViewType.values()[holder.itemViewType]) {
-      ViewType.VIEW_TYPE_STATE_BUTTON -> {
-        (holder as StateButtonViewHolder).bind(itemList[position] as StateButtonViewModel)
+      ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON -> {
+        (holder as StateButtonViewHolder).bind(itemList[position] as StateNavigationButtonViewModel)
       }
       ViewType.VIEW_TYPE_CONTENT -> {
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
       ViewType.VIEW_TYPE_FEEDBACK -> {
         (holder as FeedbackViewHolder).bind((itemList[position] as FeedbackViewModel).htmlContent)
+      }
+      ViewType.VIEW_TYPE_CONTINUE_INTERACTION -> {
+        (holder as ContinueInteractionViewHolder).bind(itemList[position] as ContinueInteractionViewModel)
       }
       ViewType.VIEW_TYPE_SELECTION_INTERACTION -> {
         (holder as SelectionInteractionViewHolder).bind(
@@ -179,9 +193,10 @@ class StateAdapter(
 
   private fun getTypeForItem(item: Any): ViewType {
     return when (item) {
-      is StateButtonViewModel -> ViewType.VIEW_TYPE_STATE_BUTTON
+      is StateNavigationButtonViewModel -> ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON
       is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT
       is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK
+      is ContinueInteractionViewModel -> ViewType.VIEW_TYPE_CONTINUE_INTERACTION
       is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION
       is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION
       is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION
@@ -195,40 +210,39 @@ class StateAdapter(
     return itemList.size
   }
 
-  // TODO(BenHenning): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
-  fun getPendingAnswer(): InteractionObject {
-    // TODO(BenHenning): Find a better way to do this. First, the search is bad. Second, the implication that more than
-    // one interaction view can be active is bad.
-    val pendingAnswerModel = itemList.findLast(this::isMutableInteractionType)
-    return (pendingAnswerModel as InteractionAnswerRetriever).getPendingAnswer()
+  /**
+   * Returns whether there is currently a pending interaction that requires an additional user action to submit the
+   * answer.
+   */
+  fun doesPendingInteractionRequireExplicitSubmission(): Boolean {
+    return getPendingAnswerHandler()?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
-  // TODO(BenHenning): Find a better way to do this (maybe an enum or sealed class?)
-  private fun isMutableInteractionType(item: Any): Boolean {
-    return when (getTypeForItem(item)) {
-      ViewType.VIEW_TYPE_SELECTION_INTERACTION,
-      ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION,
-      ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
-      ViewType.VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION,
-      ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION -> true
-      else -> false
-    }
+  // TODO(BenHenning): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
+  fun getPendingAnswer(): InteractionObject {
+    return getPendingAnswerHandler()?.getPendingAnswer() ?: InteractionObject.getDefaultInstance()
+  }
+
+  private fun getPendingAnswerHandler(): InteractionAnswerHandler? {
+    // TODO(BenHenning): Find a better way to do this. First, the search is bad. Second, the implication that more than
+    // one interaction view can be active is bad.
+    return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
   }
 
   private class StateButtonViewHolder(
     val binding: StateButtonItemBinding,
-    private val buttonInteractionListener: ButtonInteractionListener
+    private val stateNavigationButtonListener: StateNavigationButtonListener
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(stateButtonViewModel: StateButtonViewModel) {
-      binding.buttonViewModel = stateButtonViewModel
+    internal fun bind(viewModel: StateNavigationButtonViewModel) {
+      binding.buttonViewModel = viewModel
       binding.interactionButton.setOnClickListener {
-        buttonInteractionListener.onInteractionButtonClicked()
+        viewModel.triggerContinuationNavigationButtonCallback(stateNavigationButtonListener)
       }
       binding.nextStateImageView.setOnClickListener {
-        buttonInteractionListener.onNextButtonClicked()
+        stateNavigationButtonListener.onNextButtonClicked()
       }
       binding.previousStateImageView.setOnClickListener {
-        buttonInteractionListener.onPreviousButtonClicked()
+        stateNavigationButtonListener.onPreviousButtonClicked()
       }
     }
   }
@@ -246,6 +260,14 @@ class StateAdapter(
       binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
         rawString, binding.feedbackTextView
       )
+    }
+  }
+
+  inner class ContinueInteractionViewHolder(
+    val binding: ContinueInteractionItemBinding
+  ): RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(viewModel: ContinueInteractionViewModel) {
+      binding.viewModel = viewModel
     }
   }
 

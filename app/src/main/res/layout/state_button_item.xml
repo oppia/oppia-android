@@ -5,7 +5,7 @@
     <import type="android.view.View"/>
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.StateButtonViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel"/>
   </data>
   <RelativeLayout
     android:id="@+id/button_container_relative_layout"
@@ -40,8 +40,8 @@
       android:button="@{buttonViewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"
       android:layout_alignParentEnd="true"
       android:clickable="@{buttonViewModel.isInteractionButtonActive()}"
-      android:drawableEnd="@{buttonViewModel.name.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
-      android:text="@{buttonViewModel.name}"
+      android:drawableEnd="@{buttonViewModel.interactionButtonName.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
+      android:text="@{buttonViewModel.interactionButtonName}"
       android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
       android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
   </RelativeLayout>
