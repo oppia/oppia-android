@@ -179,5 +179,4 @@ class StateAdapter(
       binding.root.selection_interaction_frameLayout.setAdapter(interactionAdapter)
     }
   }
-
 }
