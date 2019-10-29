@@ -12,6 +12,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -30,6 +31,7 @@ class HomeFragmentPresenter @Inject constructor(
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
+  private val routeToTopicListener = activity as RouteToTopicListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -63,5 +65,10 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun topicButtonClick(v: View) {
+    logger.d("HomeFragment", "Successfully loaded topic")
+    routeToTopicListener.routeToTopic(TEST_TOPIC_ID_1)
   }
 }

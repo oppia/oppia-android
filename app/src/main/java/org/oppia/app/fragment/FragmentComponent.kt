@@ -7,6 +7,10 @@ import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.audio.AudioFragment
+import org.oppia.app.profile.AddProfileFragment
+import org.oppia.app.profile.AdminAuthFragment
+import org.oppia.app.profile.ProfileChooserFragment
+import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -22,17 +26,23 @@ import org.oppia.app.topic.train.TopicTrainFragment
 interface FragmentComponent {
   @Subcomponent.Builder
   interface Builder {
-    @BindsInstance fun setFragment(fragment: Fragment): Builder
+    @BindsInstance
+    fun setFragment(fragment: Fragment): Builder
+
     fun build(): FragmentComponent
   }
 
+  fun inject(addProfileFragment: AddProfileFragment)
+  fun inject(adminAuthFragment: AdminAuthFragment)
   fun inject(audioFragment: AudioFragment)
+  fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(stateFragment: StateFragment)
-  fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
+  fun inject(storyFragment: StoryFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicOverviewFragment: TopicOverviewFragment)
   fun inject(topicPlayFragment: TopicPlayFragment)

@@ -1,19 +1,26 @@
 package org.oppia.app.topic
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.player.exploration.ExplorationFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(topicId: String) {
     activity.setContentView(R.layout.topic_activity)
     if (getTopicFragment() == null) {
+      val topicFragment = TopicFragment()
+      val args = Bundle()
+      args.putString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        TopicFragment()
+        topicFragment
       ).commitNow()
     }
   }

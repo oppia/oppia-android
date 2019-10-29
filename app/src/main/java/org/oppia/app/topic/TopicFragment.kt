@@ -11,6 +11,7 @@ import javax.inject.Inject
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
   @Inject lateinit var topicFragmentPresenter: TopicFragmentPresenter
+  private lateinit var topicId: String
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -18,6 +19,7 @@ class TopicFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicFragmentPresenter.handleCreateView(inflater, container)
+    topicId = arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    return topicFragmentPresenter.handleCreateView(inflater, container,topicId)
   }
 }
