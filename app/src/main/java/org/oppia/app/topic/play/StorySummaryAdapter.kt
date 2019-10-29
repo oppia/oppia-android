@@ -72,7 +72,6 @@ class StorySummaryAdapter(
         } else {
           position
         }
-
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
         notifyDataSetChanged()
       }

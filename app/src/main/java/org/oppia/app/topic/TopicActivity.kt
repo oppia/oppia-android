@@ -10,7 +10,6 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
 /** The activity for tabs in Topic. */
-
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
 
