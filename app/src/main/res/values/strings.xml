@@ -29,6 +29,7 @@
   <string name="number_input_hint_text">Write numbers here.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="text_input_hint_text">Write here.</string>
+  <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter

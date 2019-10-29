@@ -20,4 +20,6 @@ class ExplorationFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return explorationFragmentPresenter.handleCreateView(inflater, container)
   }
+
+  fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()
 }

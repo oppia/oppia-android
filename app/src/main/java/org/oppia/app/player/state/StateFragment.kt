@@ -52,5 +52,5 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     stateFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
 
-  fun dummyButtonClicked() = stateFragmentPresenter.handleAudioClick()
+  fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 }
