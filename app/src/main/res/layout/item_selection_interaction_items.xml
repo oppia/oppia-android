@@ -18,7 +18,7 @@
       android:padding="4dp"
       android:clickable="false"
       android:checked="@{viewModel.answerSelected}"
-      app:buttonTint="@color/oppiaDarkBlue"/>
+      app:buttonTint="@color/oppiaDarkBlue" />
     <TextView
       android:id="@+id/item_selection_contents_text_view"
       android:layout_width="match_parent"
@@ -26,6 +26,6 @@
       android:layout_toEndOf="@+id/item_selection_checkbox"
       android:padding="4dp"
       android:text="@{viewModel.htmlContent}"
-      android:textColor="@color/oppiaDarkBlue"/>
+      android:textColor="@color/oppiaDarkBlue" />
   </RelativeLayout>
 </layout>
