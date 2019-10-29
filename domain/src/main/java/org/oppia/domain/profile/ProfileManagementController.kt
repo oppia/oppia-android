@@ -84,7 +84,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
   fun addProfile(
-    name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean
+    name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean, isAdmin: Boolean = false
   ): LiveData<AsyncResult<Any?>> {
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
@@ -109,7 +109,7 @@ class ProfileManagementController @Inject constructor(
       val newProfile = Profile.newBuilder()
         .setName(name).setPin(pin).setAvatarImageUri(imageUri)
         .setAllowDownloadAccess(allowDownloadAccess).setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(Date().time).setIsAdmin(false)
+        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
         .build()
 
       val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
