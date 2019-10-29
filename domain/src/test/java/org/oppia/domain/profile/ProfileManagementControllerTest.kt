@@ -33,6 +33,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -43,6 +44,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import java.io.File
+import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -121,35 +123,20 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testAddAndGetProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
-    profileManagementController.addProfile("James", "123", null, true)
+  fun testAddProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
+    profileManagementController.addProfile("James", "123", null, true).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
-    profileManagementController.getProfile(ProfileId.newBuilder().setInternalId(0).build())
-      .observeForever(mockProfileObserver)
+    val profileDatabase = ProfileDatabase.parseFrom(FileInputStream(File(context.filesDir, "profile_database.cache")))
 
-    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
-    val profile = profileResultCaptor.value.getOrThrow()
-    assertThat(profile.name).isEqualTo("James")
-    assertThat(profile.pin).isEqualTo("123")
-    assertThat(profile.allowDownloadAccess).isEqualTo(true)
-    assertThat(profile.id.internalId).isEqualTo(0)
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    val profile = profileDatabase.profilesMap[0]
+    assertThat(profile?.name).isEqualTo("James")
+    assertThat(profile?.pin).isEqualTo("123")
+    assertThat(profile?.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile?.id?.internalId).isEqualTo(0)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testAddAndGetProfiles_addManyProfiles_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
-
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
-    assertThat(profiles.size).isEqualTo(profilesList.size)
-    checkTestProfilesArePresent(profiles)
   }
 
   @Test
@@ -177,7 +164,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetProfile_addManyProfiles_checkGetCorrectProfile() = runBlockingTest(coroutineContext) {
+  fun testGetProfile_addManyProfiles_checkGetProfileIsCorrect() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -191,6 +178,21 @@ class ProfileManagementControllerTest {
     assertThat(profile.pin).isEqualTo("456")
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.internalId).isEqualTo(3)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetProfiles_addManyProfiles_checkAllProfilesAreAdded() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+
+    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+    val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+    assertThat(profiles.size).isEqualTo(profilesList.size)
+    checkTestProfilesArePresent(profiles)
   }
 
   @Test

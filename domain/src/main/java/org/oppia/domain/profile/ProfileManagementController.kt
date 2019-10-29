@@ -48,6 +48,7 @@ class ProfileManagementController @Inject constructor(
   class FailedToDeleteProfileException(msg: String) : Exception(msg)
   class FailedToSetCurrentProfileException(msg: String): Exception(msg)
 
+  // TODO(#272): Remove init block when storeDataAsync is fixed
   init {
     profileDataStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
