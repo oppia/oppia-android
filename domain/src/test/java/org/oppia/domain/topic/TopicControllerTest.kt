@@ -491,7 +491,8 @@ class TopicControllerTest {
   @Test
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
@@ -499,14 +500,19 @@ class TopicControllerTest {
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(5)
     val questionIds = questionsList.map { it -> it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(mutableListOf(TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
-      TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3))
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+      )
+    )
   }
 
   @Test
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+    )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
