@@ -101,7 +101,7 @@ class InteractionAdapter(
     return itemList.size
   }
 
-   inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(selectionInteractionContentViewModel: SelectionInteractionContentViewModel) {
       binding.setVariable(BR.htmlContent, selectionInteractionContentViewModel.htmlContent)
       binding.executePendingBindings()
@@ -141,7 +141,7 @@ class InteractionAdapter(
     }
   }
 
-   inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
