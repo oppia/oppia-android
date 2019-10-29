@@ -5,6 +5,10 @@
   <data>
 
     <variable
+      name="isListExpanded"
+      type="Boolean" />
+
+    <variable
       name="storyProgressPercentage"
       type="Integer" />
 
@@ -80,7 +84,7 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="24dp"
       android:layout_marginEnd="16dp"
-      android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+      android:src="@{isListExpanded? @drawable/ic_keyboard_arrow_up_black_24dp : @drawable/ic_keyboard_arrow_down_black_24dp}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/chapter_count"
       app:layout_constraintTop_toBottomOf="@+id/story_name_text_view" />
@@ -92,6 +96,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginBottom="8dp"
       android:nestedScrollingEnabled="false"
+      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@+id/chapter_count"

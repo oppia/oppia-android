@@ -11,6 +11,8 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 
+private const val NO_INDEX = -1
+
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
@@ -20,6 +22,8 @@ class StorySummaryAdapter(
   private val storySummarySelector: StorySummarySelector
 ) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
+
+  private var currentExpandedChapterListIndex = NO_INDEX
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
     val storySummaryListItemBinding = DataBindingUtil.inflate<TopicPlayStorySummaryBinding>(
@@ -41,8 +45,7 @@ class StorySummaryAdapter(
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
-      var isChapterListVisible = false
-
+      val isChapterListVisible = currentExpandedChapterListIndex == position
       binding.setVariable(BR.isListExpanded, isChapterListVisible)
       binding.setVariable(BR.storySummary, storySummary)
 
@@ -66,8 +69,12 @@ class StorySummaryAdapter(
       }
 
       binding.chapterListViewControl.setOnClickListener {
-        isChapterListVisible = !isChapterListVisible
-        binding.setVariable(BR.isListExpanded, isChapterListVisible)
+        currentExpandedChapterListIndex = if (currentExpandedChapterListIndex == position) {
+          NO_INDEX
+        } else {
+          position
+        }
+        notifyDataSetChanged()
       }
     }
   }
