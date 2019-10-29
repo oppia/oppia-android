@@ -51,7 +51,7 @@ class StorySummaryAdapter(
           }
           .size
 
-      val storyProgressPercentage: Int = (completedChapterCount / totalChapterCount) * 100
+      val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
       binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
 
       binding.storyNameTextView.setOnClickListener {

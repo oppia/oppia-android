@@ -90,7 +90,7 @@ class TopicPlayFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyProgress_isDisplayed() {
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_completeStoryProgress_isDisplayed() {
     activityTestRule.launchActivity(null)
     onView(
       atPosition(
@@ -98,6 +98,17 @@ class TopicPlayFragmentTest {
         0
       )
     ).check(matches(hasDescendant(withText(containsString("100%")))))
+  }
+
+  @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_partialStoryProgress_isDisplayed() {
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        1
+      )
+    ).check(matches(hasDescendant(withText(containsString("33%")))))
   }
 
   @Test
