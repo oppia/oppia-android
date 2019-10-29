@@ -1,8 +1,6 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import javax.inject.Inject
 
 /** [ViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionCustomizationArgsViewModel : ViewModel() {
