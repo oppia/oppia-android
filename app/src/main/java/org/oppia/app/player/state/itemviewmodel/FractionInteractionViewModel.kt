@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.listener.InteractionAnswerRetriever
+import org.oppia.domain.util.toAnswerString
 
-class FractionInteractionViewModel: ViewModel(), InteractionAnswerRetriever {
-  private var interactionObject: InteractionObject = InteractionObject.getDefaultInstance()
-
-  var answerText: CharSequence = ""
+class FractionInteractionViewModel(
+  existingAnswer: InteractionObject?, val isReadOnly: Boolean
+): ViewModel(), InteractionAnswerRetriever {
+  var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()

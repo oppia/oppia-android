@@ -10,9 +10,10 @@ import javax.inject.Inject
 /** [ViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
   val choiceItems: List<String>, val interactionId: String, val maxAllowableSelectionCount: Int,
-  @Suppress("unused") val minAllowableSelectionCount: Int
+  @Suppress("unused") val minAllowableSelectionCount: Int,
+  existingAnswer: InteractionObject?, val isReadOnly: Boolean
 ): ViewModel(), InteractionAnswerRetriever {
-  val selectedItems = mutableListOf<Int>()
+  val selectedItems = computeSelectedItems(existingAnswer ?: InteractionObject.getDefaultInstance())
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
@@ -24,5 +25,15 @@ class SelectionInteractionViewModel(
       interactionObjectBuilder.nonNegativeInt = selectedItems.first()
     }
     return interactionObjectBuilder.build()
+  }
+
+  private fun computeSelectedItems(answer: InteractionObject): MutableList<Int> {
+    return if (interactionId == "ItemSelectionInput") {
+      answer.setOfHtmlString.htmlList.map(choiceItems::indexOf).toMutableList()
+    } else if (answer.objectTypeCase == InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT) {
+      mutableListOf(answer.nonNegativeInt)
+    } else {
+      mutableListOf()
+    }
   }
 }

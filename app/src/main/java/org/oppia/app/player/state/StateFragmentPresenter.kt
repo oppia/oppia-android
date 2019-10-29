@@ -18,6 +18,7 @@ import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
@@ -186,15 +187,16 @@ class StateFragmentPresenter @Inject constructor(
       currentEphemeralState = result
 
       addContentItem()
+      val interaction = result.state.interaction
       if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-        addPreviousAnswers(currentEphemeralState.pendingState.wrongAnswerList)
+        addPreviousAnswers(interaction, currentEphemeralState.pendingState.wrongAnswerList)
+        addInteractionForPendingState(interaction)
       } else if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-        addPreviousAnswers(currentEphemeralState.completedState.answerList)
+        addPreviousAnswers(interaction, currentEphemeralState.completedState.answerList)
       }
-      addInteractionForPendingState()
       updateDummyStateName()
 
-      val interactionId = result.state.interaction.id
+      val interactionId = interaction.id
       val hasPreviousState = result.hasPreviousState
       var canContinueToNextState = false
       hasGeneralContinueButton = false
@@ -323,46 +325,36 @@ class StateFragmentPresenter @Inject constructor(
 
   // TODO(BenHenning): Generalize adding interactions.
 
-  private fun addInteractionForPendingState() {
-    if (currentEphemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      when (currentEphemeralState.state.interaction.id) {
-        MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
-          addSelectionInteraction()
-        }
-        FRACTION_INPUT -> addInteraction(FractionInteractionViewModel())
-        NUMERIC_INPUT -> addInteraction(NumericInputViewModel())
-        NUMERIC_WITH_UNITS -> addInteraction(NumberWithUnitsViewModel())
-        TEXT_INPUT -> addInteraction(TextInputViewModel())
-      }
+  private fun addInteractionForPendingState(interaction: Interaction) {
+    addInteraction(interaction)
+  }
+
+  private fun addInteractionForCompletedState(interaction: Interaction, existingAnswer: InteractionObject) {
+    addInteraction(interaction, existingAnswer = existingAnswer, isReadOnly = true)
+  }
+
+  private fun addInteraction(
+    interaction: Interaction, existingAnswer: InteractionObject? = null, isReadOnly: Boolean = false) {
+    when (interaction.id) {
+      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> { addSelectionInteraction(interaction, existingAnswer, isReadOnly) }
+      FRACTION_INPUT -> addInteraction(FractionInteractionViewModel(existingAnswer, isReadOnly))
+      NUMERIC_INPUT -> addInteraction(NumericInputViewModel(existingAnswer, isReadOnly))
+      NUMERIC_WITH_UNITS -> addInteraction(NumberWithUnitsViewModel(existingAnswer, isReadOnly))
+      TEXT_INPUT -> addInteraction(TextInputViewModel(existingAnswer, isReadOnly))
     }
   }
 
-  private fun addSelectionInteraction() {
-    val customizationArgsMap: Map<String, InteractionObject> =
-      currentEphemeralState.state.interaction.customizationArgsMap
-    val allKeys: Set<String> = customizationArgsMap.keys
+  private fun addSelectionInteraction(
+    interaction: Interaction, existingAnswer: InteractionObject?, isReadOnly: Boolean
+  ) {
+    val argsMap = interaction.customizationArgsMap
+    argsMap.keys.forEach { logger.d(TAG_STATE_FRAGMENT, it) }
 
-    for (key in allKeys) {
-      logger.d(TAG_STATE_FRAGMENT, key)
-    }
-    var maxAllowableSelectionCount = 0
-    var minAllowableSelectionCount = 0
-    lateinit var choiceItems: List<String>
-    if (customizationArgsMap.contains("choices")) {
-      if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
-        maxAllowableSelectionCount =
-          currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
-        minAllowableSelectionCount =
-          currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
-      }
-      choiceItems = currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
-    } else {
-      choiceItems = listOf()
-    }
-    itemList.add(
-      SelectionInteractionViewModel(
-        choiceItems, currentEphemeralState.state.interaction.id, maxAllowableSelectionCount, minAllowableSelectionCount
-      )
+    val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: 0
+    val minAllowableSelectionCount = argsMap["minAllowableSelectionCount"]?.signedInt ?: 0
+    val choiceItems = argsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
+    itemList += SelectionInteractionViewModel(
+      choiceItems, interaction.id, maxAllowableSelectionCount, minAllowableSelectionCount, existingAnswer, isReadOnly
     )
     stateAdapter.notifyDataSetChanged()
   }
@@ -378,9 +370,10 @@ class StateFragmentPresenter @Inject constructor(
     stateAdapter.notifyDataSetChanged()
   }
 
-  private fun addPreviousAnswers(answersAndResponses: List<AnswerAndResponse>) {
+  private fun addPreviousAnswers(interaction: Interaction, answersAndResponses: List<AnswerAndResponse>) {
     // TODO: add support for displaying the previous answer, too.
     for (answerAndResponse in answersAndResponses) {
+      addInteractionForCompletedState(interaction, answerAndResponse.userAnswer)
       addFeedbackItem(answerAndResponse.feedback)
     }
   }

@@ -5,7 +5,9 @@ import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
 /** [ViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
-class SelectionInteractionContentViewModel(val itemIndex: Int): ViewModel() {
+class SelectionInteractionContentViewModel(
+  isAnswerInitiallySelected: Boolean, val isReadOnly: Boolean
+): ViewModel() {
   var htmlContent: String = ""
-  var isAnswerSelected = false
+  var isAnswerSelected = isAnswerInitiallySelected
 }

@@ -42,7 +42,6 @@ class StateAdapter(
   private enum class ViewType {
     VIEW_TYPE_CONTENT,
     VIEW_TYPE_FEEDBACK,
-    VIEW_TYPE_INTERACTION_READ_ONLY,
     VIEW_TYPE_STATE_BUTTON,
     VIEW_TYPE_SELECTION_INTERACTION,
     VIEW_TYPE_FRACTION_INPUT_INTERACTION,
@@ -142,7 +141,6 @@ class StateAdapter(
           )
         TextInputInteractionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
@@ -254,18 +252,20 @@ class StateAdapter(
   inner class SelectionInteractionViewHolder(
     private val binding: SelectionInteractionItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(customizationArgs: SelectionInteractionViewModel) {
+    internal fun bind(viewModel: SelectionInteractionViewModel) {
       val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
-      val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
-      val items = gaeCustomArgsInString.split(",").toTypedArray()
+      val items = viewModel.choiceItems
       for (itemIndex in 0 until items.size) {
-        val selectionContentViewModel = SelectionInteractionContentViewModel(itemIndex)
+        val isAnswerSelected = itemIndex in viewModel.selectedItems
+        val selectionContentViewModel = SelectionInteractionContentViewModel(
+          isAnswerInitiallySelected = isAnswerSelected, isReadOnly = viewModel.isReadOnly
+        )
         selectionContentViewModel.htmlContent = items[itemIndex]
-        selectionContentViewModel.isAnswerSelected = false
+        selectionContentViewModel.isAnswerSelected = isAnswerSelected
         choiceInteractionContentList.add(selectionContentViewModel)
       }
       val interactionAdapter = SelectionInteractionAdapter(
-        htmlParserFactory, entityType, explorationId, choiceInteractionContentList, customizationArgs
+        htmlParserFactory, entityType, explorationId, choiceInteractionContentList, viewModel
       )
       binding.selectionInteractionRecyclerview.adapter = interactionAdapter
     }

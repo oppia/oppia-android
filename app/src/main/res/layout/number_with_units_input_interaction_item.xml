@@ -24,6 +24,7 @@
       android:maxLength="200"
       android:padding="8dp"
       android:singleLine="true"
-      android:text="@={viewModel.answerText}"/>
+      android:text="@={viewModel.answerText}"
+      android:enabled="@{!viewModel.isReadOnly}"/>
   </FrameLayout>
 </layout>

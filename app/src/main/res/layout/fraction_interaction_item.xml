@@ -32,6 +32,7 @@
         android:maxLength="200"
         android:padding="8dp"
         android:singleLine="true"
+        android:enabled="@{!viewModel.isReadOnly}"
         android:text="@={viewModel.answerText}"/>
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

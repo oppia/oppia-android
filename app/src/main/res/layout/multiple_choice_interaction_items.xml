@@ -3,7 +3,10 @@
   <data>
     <variable
       name="htmlContent"
-      type="String"/>
+      type="CharSequence"/>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
   </data>
   <RelativeLayout
     android:id="@+id/radio_container"
@@ -17,6 +20,7 @@
       android:layout_height="wrap_content"
       android:padding="4dp"
       android:clickable="false"
+      android:enabled="@{!viewModel.isReadOnly}"
       app:buttonTint="@color/oppiaDarkBlue"/>
     <TextView
       android:id="@+id/multiple_choice_content_text_view"

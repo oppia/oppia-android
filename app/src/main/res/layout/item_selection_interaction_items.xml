@@ -2,6 +2,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
     <variable
+      name="htmlContent"
+      type="CharSequence"/>
+    <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
   </data>
@@ -17,7 +20,7 @@
       android:layout_height="wrap_content"
       android:padding="4dp"
       android:clickable="false"
-      android:checked="@{viewModel.answerSelected}"
+      android:enabled="@{!viewModel.isReadOnly}"
       app:buttonTint="@color/oppiaDarkBlue"/>
     <TextView
       android:id="@+id/item_selection_contents_text_view"
@@ -25,7 +28,7 @@
       android:layout_height="wrap_content"
       android:layout_toEndOf="@+id/item_selection_checkbox"
       android:padding="4dp"
-      android:text="@{viewModel.htmlContent}"
+      android:text="@{htmlContent}"
       android:textColor="@color/oppiaDarkBlue"/>
   </RelativeLayout>
 </layout>
