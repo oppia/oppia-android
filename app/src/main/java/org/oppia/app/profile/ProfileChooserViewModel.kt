@@ -19,18 +19,23 @@ class ProfileChooserViewModel @Inject constructor(
 ): ObservableViewModel() {
 
   val profiles: LiveData<List<ProfileChooserModel>> by lazy {
-    Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
+    val liveData = profileManagementController.getProfiles()
+    val size = liveData.value?.isSuccess()
+    val newLD = Transformations.map(liveData, ::processGetProfilesResult)
+    MutableLiveData(listOf<ProfileChooserModel>(
+      ProfileChooserModel.newBuilder().setProfile(Profile.getDefaultInstance()).build(),
+      ProfileChooserModel.newBuilder().setAddProfile(true).build(),
+      ProfileChooserModel.newBuilder().setAddProfile(true).build())
+    )
   }
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserModel> {
     if (profilesResult.isFailure()) {
       logger.e("ProfileChooserViewModel", "Failed to retrieve the list of profiles: " + profilesResult.getErrorOrNull())
     }
+    checkNotNull(null)
     val profileList = profilesResult.getOrDefault(emptyList()).map {
       ProfileChooserModel.newBuilder().setProfile(it).build()
-    }
-    if (profileList.size < 10) {
-      profileList.toMutableList().add(ProfileChooserModel.newBuilder().setAddProfile(true).build())
     }
     return profileList
   }
