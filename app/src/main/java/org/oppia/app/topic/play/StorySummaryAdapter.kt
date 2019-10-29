@@ -67,13 +67,15 @@ class StorySummaryAdapter(
       }
 
       binding.chapterListViewControl.setOnClickListener {
+        val previousIndex = currentExpandedChapterListIndex
         currentExpandedChapterListIndex = if (currentExpandedChapterListIndex == position) {
           NO_INDEX
         } else {
           position
         }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        notifyDataSetChanged()
+        notifyItemChanged(previousIndex)
+        notifyItemChanged(currentExpandedChapterListIndex)
       }
     }
   }

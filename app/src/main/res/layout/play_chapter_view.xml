@@ -6,12 +6,10 @@
 
     <import type="android.view.View" />
 
-    <variable
-      name="isChapterCompleted"
-      type="Boolean" />
+    <import type="org.oppia.app.model.ChapterPlayState" />
 
     <variable
-      name="chapter"
+      name="chapterSummary"
       type="org.oppia.app.model.ChapterSummary" />
   </data>
 
@@ -30,7 +28,7 @@
       android:src="@drawable/ic_check_24dp"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:visibility="@{isChapterCompleted?View.VISIBLE : View.INVISIBLE}"
+      android:visibility="@{(chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +39,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginEnd="8dp"
-      android:text="@{chapter.name}"
+      android:text="@{chapterSummary.name}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="12sp"
       app:layout_constraintBottom_toBottomOf="parent"

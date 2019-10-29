@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import androidx.databinding.library.baseAdapters.BR
 import org.oppia.app.databinding.PlayChapterViewBinding
-import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
@@ -38,8 +37,7 @@ class ChapterSummaryAdapter(
   inner class ChapterSummaryViewHolder(private val binding: PlayChapterViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(chapterSummary: ChapterSummary, @Suppress("UNUSED_PARAMETER") position: Int) {
-      binding.setVariable(BR.chapter, chapterSummary)
-      binding.setVariable(BR.isChapterCompleted, (chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED))
+      binding.setVariable(BR.chapterSummary, chapterSummary)
       binding.chapterName.setOnClickListener {
         chapterSummarySelector.selectedChapterSummary(chapterSummary)
       }
