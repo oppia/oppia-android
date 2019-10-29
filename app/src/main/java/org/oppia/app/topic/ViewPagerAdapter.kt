@@ -17,24 +17,24 @@ class ViewPagerAdapter(fm: FragmentManager, private val numOfTabs: Int, private 
     args.putString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
     when (position) {
       0 -> {
-        val tab1 = TopicOverviewFragment()
-        tab1.arguments = args
-        return tab1
+        val topicOverviewTab = TopicOverviewFragment()
+        topicOverviewTab.arguments = args
+        return topicOverviewTab
       }
       1 -> {
-        val tab2 = TopicPlayFragment()
-        tab2.arguments = args
-        return tab2
+        val topicPlayTab = TopicPlayFragment()
+        topicPlayTab.arguments = args
+        return topicPlayTab
       }
       2 -> {
-        val tab3 = TopicTrainFragment()
-        tab3.arguments = args
-        return tab3
+        val topicTrainTab = TopicTrainFragment()
+        topicTrainTab.arguments = args
+        return topicTrainTab
       }
       3 -> {
-        val tab4 = TopicReviewFragment()
-        tab4.arguments = args
-        return tab4
+        val topicReviewTab = TopicReviewFragment()
+        topicReviewTab.arguments = args
+        return topicReviewTab
       }
       else -> return null
     }

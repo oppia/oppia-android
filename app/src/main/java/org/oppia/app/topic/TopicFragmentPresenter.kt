@@ -34,20 +34,19 @@ class TopicFragmentPresenter @Inject constructor(
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
-    viewPager = binding.root.findViewById(R.id.viewpager) as ViewPager
-    tabLayout = binding.root.findViewById(R.id.tabs) as TabLayout
-    setUpViewPager(viewPager,topicId)
+    viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
+    tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
+    setUpViewPager(viewPager, topicId)
     return binding.root
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
-    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, tabLayout.tabCount, topicId!!)
+    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, tabIcons.size, topicId!!)
     viewPager.adapter = adapter
-    tabLayout.addTab(tabLayout.newTab().setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0]))
-    tabLayout.addTab(tabLayout.newTab().setText(fragment.getString(R.string.play)).setIcon(tabIcons[1]))
-    tabLayout.addTab(tabLayout.newTab().setText(fragment.getString(R.string.train)).setIcon(tabIcons[2]))
-    tabLayout.addTab(tabLayout.newTab().setText(fragment.getString(R.string.review)).setIcon(tabIcons[3]))
-    tabLayout.setTabGravity(TabLayout.GRAVITY_FILL)
     tabLayout.setupWithViewPager(viewPager)
+    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
+    tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
+    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
+    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
   }
 }
