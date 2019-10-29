@@ -4,15 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,9 +27,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -42,7 +39,6 @@ import javax.inject.Singleton
 class TopicPlayFragmentTest {
 
   // TODO(#137): Add following test-cases once story-progress function is implemented and expandable list is introduced.
-  //  - Story progress is displayed correctly.
   //  - Click on arrow to show and hide expandable list is working correctly.
   //  - Expandable list is showing correct chapter names.
   //  - Upon configuration change expanded list should remain expanded.
@@ -94,6 +90,28 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_completeStoryProgress_isDisplayed() {
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        0
+      )
+    ).check(matches(hasDescendant(withText(containsString("100%")))))
+  }
+
+  @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_partialStoryProgress_isDisplayed() {
+    activityTestRule.launchActivity(null)
+    onView(
+      atPosition(
+        R.id.story_summary_recycler_view,
+        1
+      )
+    ).check(matches(hasDescendant(withText(containsString("33%")))))
+  }
+
+  @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -108,7 +126,7 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickStoryItem_opensStoryActivityWithCorrectIntent() {
     activityTestRule.launchActivity(null)
-    onView(atPosition(R.id.story_summary_recycler_view, 0)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.story_name_text_view)).perform(click())
     intended(hasComponent(StoryActivity::class.java.name))
     intended(hasExtra(StoryActivity.STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId))
   }
