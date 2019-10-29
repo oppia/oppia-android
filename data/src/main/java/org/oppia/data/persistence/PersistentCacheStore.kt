@@ -8,6 +8,7 @@ import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.InMemoryBlockingCache
+import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -30,13 +31,14 @@ import kotlin.concurrent.withLock
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
   context: Context, cacheFactory: InMemoryBlockingCache.Factory,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String, private val initialValue: T
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String,
+  private val initialValue: T, directory: File = context.filesDir
 ) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
 
-  private val cacheFile = File(context.filesDir, cacheFileName)
+  private val cacheFile = File(directory, cacheFileName)
   @GuardedBy("failureLock") private var deferredLoadCacheFailure: Throwable? = null
   private val cache = cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
@@ -212,11 +214,17 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   @Singleton
   class Factory @Inject constructor(
     private val context: Context, private val cacheFactory: InMemoryBlockingCache.Factory,
-    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private val directoryManagementUtil: DirectoryManagementUtil
   ) {
     /** Returns a new [PersistentCacheStore] with the specified cache name and initial value. */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
       return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue)
+    }
+
+    fun <T : MessageLite> create(cacheName: String, initialValue: T, profileId: Int): PersistentCacheStore<T> {
+      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.toString())
+      return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue, profileDirectory)
     }
   }
 }
