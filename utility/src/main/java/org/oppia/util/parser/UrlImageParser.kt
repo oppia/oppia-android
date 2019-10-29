@@ -9,13 +9,8 @@ import android.graphics.drawable.Drawable
 import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import dagger.Binds
-import org.oppia.util.R
 import javax.inject.Inject
-
-
 
 // TODO(#169): Replace this with exploration asset downloader.
 /** UrlImage Parser for android TextView to load Html Image tag. */
@@ -27,9 +22,8 @@ class UrlImageParser private constructor(
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
-  @ImageLoaderAnnotation private val imageLoader:ImageLoader
+  private val imageLoader:ImageLoader
 ) : Html.ImageGetter {
-
 
   /**
    * This method is called when the HTML parser encounters an <img> tag.
@@ -81,7 +75,7 @@ class UrlImageParser private constructor(
     @DefaultGcsPrefix private val gcsPrefix: String,
     @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-    @ImageLoaderAnnotation private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader
   ) {
     fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
       return UrlImageParser(
