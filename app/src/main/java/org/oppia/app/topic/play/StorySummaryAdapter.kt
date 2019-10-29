@@ -61,7 +61,7 @@ class StorySummaryAdapter(
       val chapterList = storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
-      val storyProgressPercentage: Int = (completedChapterCount * 100 / totalChapterCount)
+      val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
       binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
 
       binding.storyNameTextView.setOnClickListener {

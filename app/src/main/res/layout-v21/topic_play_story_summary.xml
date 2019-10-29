@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@{String.format(@string/topic_story_progress_percentage, storyProgressPercentage)}"
+        android:text="@{@string/topic_story_progress_percentage(storyProgressPercentage)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="14sp" />
     </FrameLayout>
