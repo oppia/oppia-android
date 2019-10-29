@@ -23,6 +23,7 @@ import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -108,6 +109,7 @@ class ProfileManagementController @Inject constructor(
       val newProfile = Profile.newBuilder()
         .setName(name).setPin(pin).setAvatarImageUri(imageUri)
         .setAllowDownloadAccess(allowDownloadAccess).setId(ProfileId.newBuilder().setInternalId(nextProfileId))
+        .setDateCreatedTimestampMs(Date().time).setIsAdmin(false)
         .build()
 
       val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
