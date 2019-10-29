@@ -50,7 +50,6 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
 
   companion object {
     internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
-
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(context: Context, topicId: String): Intent {
       val intent = Intent(context, TopicActivity::class.java)

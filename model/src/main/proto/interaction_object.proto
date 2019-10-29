@@ -17,15 +17,13 @@ message InteractionObject {
     // repeated fields cannot be within a oneof so lists are
     // wrapped into a new message.
     StringList set_of_html_string = 7;
-    StringList set_of_string = 8;
-    Fraction fraction = 9;
+    Fraction fraction = 8;
   }
 }
 
 // Structure containing a string list.
 message StringList {
   repeated string html = 1;
-  repeated string string = 2;
 }
 
 // Structure for a number with units object.
@@ -50,4 +48,3 @@ message Fraction {
   int32 numerator = 3;
   int32 denominator = 4;
 }
-
