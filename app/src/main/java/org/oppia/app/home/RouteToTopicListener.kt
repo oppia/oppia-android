@@ -1,6 +1,6 @@
 package org.oppia.app.home
 
-/** Listener for when an activity should route to a exploration. */
+/** Listener for when an activity should route to a topic. */
 interface RouteToTopicListener {
-  fun routeToTopic(explorationId: String)
+  fun routeToTopic(topicId: String)
 }

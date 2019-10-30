@@ -87,8 +87,7 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'androidx.test:runner:1.2.0',
-      'com.google.truth:truth:0.43',
-      'androidx.test.espresso:espresso-intents:3.1.0',
+      'com.google.truth:truth:0.43'
   )
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',

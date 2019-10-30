@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
-/** The activity for tabs in Topic. */
+/** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener {
   private lateinit var topicId: String
