@@ -12,14 +12,20 @@ class StoryActivityPresenter @Inject constructor(private val activity: AppCompat
   fun handleOnCreate() {
     activity.setContentView(R.layout.story_activity)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.story_fragment_placeholder,
-      StoryFragment.newInstace(TEST_STORY_ID_1)
-    ).commitNow()
+    if (getStoryFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.story_fragment_placeholder,
+        StoryFragment.newInstace(TEST_STORY_ID_1)
+      ).commitNow()
+    }
   }
 
   fun handleOnSupportNavigationUp(): Boolean {
     activity.finish()
     return true
+  }
+
+  private fun getStoryFragment(): StoryFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
   }
 }
