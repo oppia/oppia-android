@@ -191,7 +191,7 @@ class StateRetriever @Inject constructor() {
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
       else -> {
-        var customizationArgValueTemp: ArrayList<*> =
+        val customizationArgValueTemp: ArrayList<*> =
           Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
         if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
           return interactionObjectBuilder.setSetOfHtmlString(
