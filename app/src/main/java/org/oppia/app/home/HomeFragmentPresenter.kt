@@ -1,5 +1,6 @@
 package org.oppia.app.home
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -70,7 +72,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   // TODO(#134): Remove this method once it is possible to navigate to story activity in normal flow
   fun openStory(v: View) {
-    val intent = Intent(fragment.activity, StoryActivity::class.java)
+    val intent = StoryActivity.createStoryActivityIntent(fragment.activity as Context, TEST_STORY_ID_1)
     fragment.activity?.startActivity(intent)
   }
 }

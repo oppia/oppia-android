@@ -30,14 +30,14 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
+  fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
-  fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(topicActivity: TopicActivity)
-  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(profileActivity: ProfileActivity)
+  fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(topicActivity: TopicActivity)
 }

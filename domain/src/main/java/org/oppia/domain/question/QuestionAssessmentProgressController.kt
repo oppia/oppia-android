@@ -1,8 +1,7 @@
 package org.oppia.domain.question
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.Question
-import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,10 +17,9 @@ import javax.inject.Singleton
 @Singleton
 class QuestionAssessmentProgressController @Inject constructor(
 ) {
-  fun beginQuestionTrainingSession(questionsList: LiveData<AsyncResult<List<Question>>>) {
+  fun beginQuestionTrainingSession(questionsList: DataProvider<List<Question>>) {
   }
 
   fun finishQuestionTrainingSession() {
-
   }
 }

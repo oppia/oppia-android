@@ -2,6 +2,7 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -10,6 +11,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
@@ -18,17 +20,33 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
+const val TEST_QUESTION_ID_0 = "question_id_0"
+const val TEST_QUESTION_ID_1 = "question_id_1"
+const val TEST_QUESTION_ID_2 = "question_id_2"
+const val TEST_QUESTION_ID_3 = "question_id_3"
+const val TEST_QUESTION_ID_4 = "question_id_4"
+const val TEST_QUESTION_ID_5 = "question_id_5"
+
+private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
-class TopicController @Inject constructor() {
+class TopicController @Inject constructor(
+  private val dataProviders: DataProviders,
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val stateRetriever: StateRetriever
+) {
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
@@ -64,6 +82,124 @@ class TopicController @Inject constructor() {
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
+  }
+
+  fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
+    return dataProviders.createInMemoryDataProvider(QUESTION_DATA_PROVIDER_ID) {
+      loadQuestionsForSkillIds(skillIdsList)
+    }
+  }
+
+  // Loads and returns the questions given a list of skill ids.
+  private fun loadQuestionsForSkillIds(skillIdsList: List<String>): List<Question> {
+    return loadQuestions(skillIdsList)
+  }
+
+  private fun loadQuestions(skillIdsList: List<String>): List<Question> {
+    val questionsList = mutableListOf<Question>()
+    val questionsJSON = jsonAssetRetriever.loadJsonFromAsset(
+      "sample_questions.json"
+    )?.getJSONArray("questions")
+    for (skillId in skillIdsList) {
+      when (skillId) {
+        TEST_SKILL_ID_0 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion0(questionsJSON),
+            createTestQuestion1(questionsJSON),
+            createTestQuestion2(questionsJSON)
+          )
+        )
+        TEST_SKILL_ID_1 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion0(questionsJSON),
+            createTestQuestion3(questionsJSON)
+          )
+        )
+        TEST_SKILL_ID_2 -> questionsList.addAll(
+          mutableListOf(
+            createTestQuestion2(questionsJSON),
+            createTestQuestion4(questionsJSON),
+            createTestQuestion5(questionsJSON)
+          )
+        )
+        else -> {
+          throw IllegalStateException("Invalid skill ID: $skillId")
+        }
+      }
+    }
+    return questionsList
+  }
+
+  private fun createTestQuestion0(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_0)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(0)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      .build()
+  }
+
+  private fun createTestQuestion1(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_1)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(1)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0))
+      .build()
+  }
+
+  private fun createTestQuestion2(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_2)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(2)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2))
+      .build()
+  }
+
+  private fun createTestQuestion3(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_3)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(0)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_1))
+      .build()
+  }
+
+  private fun createTestQuestion4(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_4)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(1)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
+      .build()
+  }
+
+  private fun createTestQuestion5(questionsJson: JSONArray?): Question {
+    return Question.newBuilder()
+      .setQuestionId(TEST_QUESTION_ID_5)
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionsJson?.getJSONObject(2)
+        )
+      )
+      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
+      .build()
   }
 
   private fun createTestTopic0(): Topic {

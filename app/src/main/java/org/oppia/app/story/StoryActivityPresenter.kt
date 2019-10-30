@@ -3,19 +3,18 @@ package org.oppia.app.story
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.domain.topic.TEST_STORY_ID_1
 import javax.inject.Inject
 
 /** The presenter for [StoryActivity]. */
 @ActivityScope
 class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(storyId: String) {
     activity.setContentView(R.layout.story_activity)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     if (getStoryFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.story_fragment_placeholder,
-        StoryFragment.newInstace(TEST_STORY_ID_1)
+        StoryFragment.newInstace(storyId)
       ).commitNow()
     }
   }
