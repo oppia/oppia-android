@@ -7,4 +7,14 @@
   <dimen name="audio_fragment_margin">32dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
   <dimen name="state_previous_next_button_radius">4dp</dimen>
+
+  <dimen name="margin_4dp">4dp</dimen>
+  <dimen name="margin_8dp">8dp</dimen>
+  <dimen name="margin_16dp">16dp</dimen>
+  <dimen name="margin_20dp">20dp</dimen>
+  <dimen name="margin_24dp">24dp</dimen>
+  <dimen name="margin_28dp">28dp</dimen>
+  <dimen name="margin_32dp">32dp</dimen>
+  <dimen name="margin_46dp">46dp</dimen>
+  <dimen name="margin_48dp">48dp</dimen>
 </resources>

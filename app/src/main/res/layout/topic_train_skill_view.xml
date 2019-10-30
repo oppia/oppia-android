@@ -13,13 +13,15 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <CheckBox
       android:id="@+id/skill_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="4dp"
       android:checked="@{isChecked}"
-      android:drawablePadding="4dp"
+      android:drawablePadding="@dimen/margin_8dp"
+      android:fontFamily="@font/roboto_regular"
       android:gravity="center_vertical"
       android:text="@{skill.description}"
       android:textColor="@color/oppiaPrimaryText"
@@ -27,6 +29,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
