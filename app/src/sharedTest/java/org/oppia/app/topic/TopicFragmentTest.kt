@@ -312,6 +312,19 @@ class TopicFragmentTest {
       )
     )
   }
+  @Test
+  @UiThread
+  fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
+    activityTestRule.launchActivity(null)
+    onView(
+      allOf(
+        withText("See More"),
+        isDisplayed()
+      )
+    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle("PLAY")))
+    onView(withText("First Story")).check(matches(isDisplayed()))
+  }
 
   @Module
   class TestModule {

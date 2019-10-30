@@ -9,7 +9,12 @@ import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
-class ViewPagerAdapter(fm: FragmentManager, private val numOfTabs: Int, private val topicId: String) :
+class ViewPagerAdapter(
+  fm: FragmentManager,
+  private val numOfTabs: Int,
+  private val topicId: String,
+  private val  topicFragmentPresenter: TopicFragmentPresenter
+) :
   FragmentStatePagerAdapter(fm) {
 
   override fun getItem(position: Int): Fragment? {
@@ -17,7 +22,7 @@ class ViewPagerAdapter(fm: FragmentManager, private val numOfTabs: Int, private 
     args.putString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
     when (position) {
       0 -> {
-        val topicOverviewTab = TopicOverviewFragment()
+        val topicOverviewTab = TopicOverviewFragment(topicFragmentPresenter)
         topicOverviewTab.arguments = args
         return topicOverviewTab
       }

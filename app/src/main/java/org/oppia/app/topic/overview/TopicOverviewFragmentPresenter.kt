@@ -11,7 +11,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToTopicPlayListener
+import org.oppia.app.topic.TopicFragmentPresenter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.domain.topic.TopicController
@@ -28,11 +28,15 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController
 ) {
-  private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
+  private lateinit var topicFragmentPresenter: TopicFragmentPresenter
 
   private val topicOverviewViewModel  = getTopicOverviewViewModel()
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    topicFragmentPresenter: TopicFragmentPresenter
+  ): View? {
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
@@ -40,11 +44,12 @@ class TopicOverviewFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = topicOverviewViewModel
     }
+    this.topicFragmentPresenter=topicFragmentPresenter;
     return binding.root
   }
 
   fun seeMoreClicked(v: View) {
-    routeToTopicPlayListener.routeToTopicPlayFragment()
+    topicFragmentPresenter.setCurrentTab(1)
   }
 
   private fun getTopicOverviewViewModel(): TopicOverviewViewModel {

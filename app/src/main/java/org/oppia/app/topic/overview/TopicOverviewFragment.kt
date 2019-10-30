@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.topic.TopicFragmentPresenter
 import javax.inject.Inject
 
 /** Fragment that contains overview of Topic. */
-class TopicOverviewFragment : InjectableFragment() {
+class TopicOverviewFragment(private  val topicFragmentPresenter: TopicFragmentPresenter) : InjectableFragment() {
   @Inject
   lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
@@ -19,6 +20,6 @@ class TopicOverviewFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicOverviewFragmentPresenter.handleCreateView(inflater, container)
+    return topicOverviewFragmentPresenter.handleCreateView(inflater, container,topicFragmentPresenter)
   }
 }
