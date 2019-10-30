@@ -1,6 +1,5 @@
 package org.oppia.app.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
@@ -117,6 +115,7 @@ class HomeFragmentPresenter @Inject constructor(
       if (getPromotedStoryViewModel() != null) {
         itemList.add(getPromotedStoryViewModel()!!)
       }
+      itemList.addAll(result.topicSummaryList)
       topicListAdapter.notifyDataSetChanged()
     })
   }
@@ -155,4 +154,5 @@ class HomeFragmentPresenter @Inject constructor(
     vals += list
     return vals
   }
+
 }

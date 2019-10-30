@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.home.topiclist.TopicSummaryViewModel"/>
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="140dp"
+    android:layout_height="160dp"
+    android:layout_margin="10dp"
+    app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{viewModel::clickOnSummaryTile}">
+    <ImageView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+      android:scaleType="centerCrop"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:paddingTop="20dp"
+      android:importantForAccessibility="no"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/bottom_topic_bar" />
+    <FrameLayout
+      android:id="@+id/bottom_topic_bar"
+      android:layout_width="match_parent"
+      android:layout_height="70dp"
+      android:background="@{viewModel.darkerBackgroundOverlayColor}"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@{viewModel.name}"
+      android:textColor="@color/white"
+      android:fontFamily="sans-serif-medium"
+      android:textSize="14sp"
+      android:layout_margin="8dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white"
+      android:fontFamily="sans-serif-light"
+      android:textStyle="italic"
+      android:textSize="14sp"
+      android:layout_margin="8dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

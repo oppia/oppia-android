@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
 import org.oppia.app.R
 import org.oppia.app.databinding.PromotedStoryCardBinding
+import org.oppia.app.databinding.TopicSummaryViewBinding
+import org.oppia.app.model.TopicSummary
 
 private const val VIEW_TYPE_PROMOTED_STORY = 1
+private const val VIEW_TYPE_TOPIC_LIST = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
@@ -33,6 +36,17 @@ class TopicListAdapter(
           )
         PromotedStoryViewHolder(binding)
       }
+      VIEW_TYPE_TOPIC_LIST -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<TopicSummaryViewBinding>(
+            inflater,
+            R.layout.topic_summary_view,
+            parent,
+            /* attachToParent= */false
+          )
+        TopicListViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type") as Throwable
     }
   }
@@ -42,6 +56,9 @@ class TopicListAdapter(
       VIEW_TYPE_PROMOTED_STORY -> {
         (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
+      VIEW_TYPE_TOPIC_LIST -> {
+        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummary)
+      }
     }
   }
 
@@ -50,6 +67,11 @@ class TopicListAdapter(
       is PromotedStoryViewModel -> {
         promotedStoryViewModel = itemList[position] as PromotedStoryViewModel
         VIEW_TYPE_PROMOTED_STORY
+      }
+
+      is TopicSummary -> {
+        itemList[position] as TopicSummary
+        VIEW_TYPE_TOPIC_LIST
       }
       else -> throw IllegalArgumentException("Invalid type of data $position")
     }
@@ -66,4 +88,18 @@ class TopicListAdapter(
       binding.setVariable(BR.viewModel, promotedStoryViewModel)
     }
   }
+
+  private class TopicListViewHolder(
+    val binding: ViewDataBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(topicSummary: TopicSummary) {
+
+      val topicSummaryViewModel = TopicSummaryViewModel(topicSummary)
+
+      binding.setVariable(BR.viewModel, topicSummaryViewModel)
+    }
+  }
+
+
+
 }
