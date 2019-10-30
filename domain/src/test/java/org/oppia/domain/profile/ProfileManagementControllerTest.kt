@@ -293,7 +293,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testAllowDownloadAccess_addProfiles_updateDownloadAccess_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testUpdateAllowDownloadAccess_addProfiles_updateDownloadAccess_checkIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -311,12 +311,44 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdateAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
     val profileId = ProfileId.newBuilder().setInternalId(6).build()
     profileManagementController.updateAllowDownloadAccess(profileId, false).observeForever(mockUpdateResultObserver)
+    advanceUntilIdle()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateLastLoggedIn_addProfiles_updateLastLoggedIn_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    profileManagementController.updateLastLoggedIn(profileId).observeForever(mockUpdateResultObserver)
+    advanceUntilIdle()
+    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs).isNotEqualTo(0)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateLastLoggedIn_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    val profileId = ProfileId.newBuilder().setInternalId(6).build()
+    profileManagementController.updateLastLoggedIn(profileId).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())

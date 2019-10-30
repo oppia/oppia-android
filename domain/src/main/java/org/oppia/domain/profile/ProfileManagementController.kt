@@ -136,7 +136,7 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!isUniqueName(newName, it)) {
-        throw ProfileNameNotUniqueException("Updated profile name is not unique to other profiles")
+        throw ProfileNameNotUniqueException("Profile name $newName is not unique to other profiles")
       }
       val profile = it.profilesMap[profileId.internalId]
       checkNotNull(profile) { "ProfileId is not associated with a Profile" }
@@ -209,6 +209,32 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Updates the last logged in timestamp of an existing profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateLastLoggedIn(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
+    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
+    profileDataStore.storeDataAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId]
+      checkNotNull(profile) { "ProfileId is not associated with a Profile" }
+      val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(Date().time).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      profileDatabaseBuilder.build()
+    }.invokeOnCompletion {
+      if (it == null) {
+        pendingLiveData.postValue(AsyncResult.success(null))
+      } else {
+        logger.e("ProfileManagementController", "Failed when storing the updated lastLoggedInTimestampMs for profile with ID: ${profileId.internalId}", it)
+        pendingLiveData.postValue(AsyncResult.failed(it))
+      }
+    }
+    return pendingLiveData
+  }
+
+
+  /**
    * Deletes an existing profile.
    *
    * @param profileId the ID corresponding to the profile being deleted.
@@ -218,10 +244,10 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     profileDataStore.storeDataAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
-        throw FailedToDeleteProfileException("ProfileId does not match an existing Profile")
+        throw FailedToDeleteProfileException("ProfileId ${profileId.internalId} does not match an existing Profile")
       }
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
-        throw FailedToDeleteProfileException("Failed to delete directory")
+        throw FailedToDeleteProfileException("Failed to delete directory with ${profileId.internalId}")
       }
       val profileDatabaseBuilder = it.toBuilder().removeProfiles(profileId.internalId)
       profileDatabaseBuilder.build()
@@ -263,10 +289,10 @@ class ProfileManagementController @Inject constructor(
               currentProfileId = profileId.internalId
               pendingLiveData.postValue(AsyncResult.success(null))
             } else {
-              pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("ProfileId is not associated with an existing profile")))
+              pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("ProfileId ${profileId.internalId} is not associated with an existing profile")))
             }
           } else {
-            pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("Failed to read ProfileDatabase, could not validate profileId")))
+            pendingLiveData.postValue(AsyncResult.failed(FailedToSetCurrentProfileException("Failed to read ProfileDatabase, could not validate profileId ${profileId.internalId}")))
           }
         }
         profileLiveData.removeObserver(this)
