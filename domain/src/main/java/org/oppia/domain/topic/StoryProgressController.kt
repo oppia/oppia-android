@@ -2,25 +2,33 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import org.json.JSONArray
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.StorySummary
+import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_1 = "test_story_id_1"
 const val TEST_STORY_ID_2 = "test_story_id_2"
+const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+const val FRACTIONS_EXPLORATION_ID_0 = "0"
+const val FRACTIONS_EXPLORATION_ID_1 = "16"
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
-class StoryProgressController @Inject constructor() {
+class StoryProgressController @Inject constructor(
+  private val jsonAssetRetriever: JsonAssetRetriever
+) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
@@ -69,8 +77,34 @@ class StoryProgressController @Inject constructor() {
     return mapOf(
       TEST_STORY_ID_0 to createStoryProgress0(),
       TEST_STORY_ID_1 to createStoryProgress1(),
-      TEST_STORY_ID_2 to createStoryProgress2()
+      TEST_STORY_ID_2 to createStoryProgress2(),
+      FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0)
     )
+  }
+
+  private fun createStoryProgressForJsonStory(fileName: String, index: Int): TrackedStoryProgress {
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    if (storyData.length() < index) {
+      return TrackedStoryProgress(
+        chapterList = listOf(),
+        completedChapters = setOf()
+      )
+    }
+    val explorationIdList = getExplorationIdsFromStory(
+      storyData.getJSONObject(index).getJSONObject("story").getJSONObject("story_contents").getJSONArray("nodes"))
+    return TrackedStoryProgress(
+      chapterList = explorationIdList,
+      completedChapters = setOf()
+    )
+  }
+
+  private fun getExplorationIdsFromStory(chapterData: JSONArray): List<String> {
+    val explorationIdList = mutableListOf<String>()
+    for (i in 0 until chapterData.length()) {
+      val chapter = chapterData.getJSONObject(i)
+      explorationIdList.add(chapter.getString("exploration_id"))
+    }
+    return explorationIdList
   }
 
   private fun createStoryProgress0(): TrackedStoryProgress {

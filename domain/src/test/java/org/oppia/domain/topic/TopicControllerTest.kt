@@ -236,6 +236,22 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyName).isEqualTo("Matthew")
+  }
+
+  @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapter() {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
 

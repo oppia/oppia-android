@@ -69,6 +69,7 @@ class TopicController @Inject constructor(
         TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
         TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
         TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
+        FRACTIONS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("fractions_stories.json", /* index= */ 0))
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
@@ -281,6 +282,15 @@ class TopicController @Inject constructor(
       storyList.add(createStoryFromJson(storyData.getJSONObject(i).getJSONObject("story")))
     }
     return storyList
+  }
+
+  /** Utility to create a story of a topic given its json representation and the index of the story in json. */
+  private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    if (storyData.length() < index) {
+      return StorySummary.getDefaultInstance()
+    }
+    return createStoryFromJson(storyData.getJSONObject(index).getJSONObject("story"))
   }
 
   private fun createStoryFromJson(storyData: JSONObject): StorySummary {
