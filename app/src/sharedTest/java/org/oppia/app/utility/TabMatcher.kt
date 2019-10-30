@@ -3,10 +3,6 @@ package org.oppia.app.utility
 import android.view.View
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.widget.ImageView
 import androidx.test.espresso.PerformException
 import com.google.android.material.tabs.TabLayout
 import org.hamcrest.Matcher
