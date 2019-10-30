@@ -99,14 +99,11 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-
       getPromotedStoryViewModel()!!.setPromotedStory(result.promotedStory)
-
       if (getPromotedStoryViewModel() != null) {
         itemList.add(getPromotedStoryViewModel()!!)
       }
       topicListAdapter.notifyDataSetChanged()
-
     })
   }
 
