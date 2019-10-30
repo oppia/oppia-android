@@ -25,6 +25,7 @@
       android:layout_marginBottom="8dp"
       android:onClick="@{(v) -> stateFragment.dummyButtonClicked()}"
       android:text="Dummy Audio Button"
+      android:visibility="gone"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
