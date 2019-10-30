@@ -40,7 +40,9 @@ class StateAdapter(
   private val buttonInteractionListener: ButtonInteractionListener,
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
-  private val explorationId: String
+  private val explorationId: String,
+  private val selectedInputItemIndexes: ArrayList<Int>,
+  private val selectInputItemsListener: SelectInputItemsListener
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -174,7 +176,9 @@ class StateAdapter(
           explorationId,
           choiceInteractionContentList,
           customizationArgs,
-          this as ItemClickListener
+          this as ItemClickListener,
+          selectedInputItemIndexes,
+          selectInputItemsListener
         )
       binding.root.selection_interaction_frameLayout.setAdapter(interactionAdapter)
     }

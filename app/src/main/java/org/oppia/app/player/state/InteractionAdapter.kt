@@ -36,7 +36,9 @@ class InteractionAdapter(
   private val explorationId: String,
   private val itemList: MutableList<SelectionInteractionContentViewModel>,
   private val selectionInteractionCustomizationArgsViewModel: SelectionInteractionCustomizationArgsViewModel,
-  private val itemClickListener: ItemClickListener
+  private val itemClickListener: ItemClickListener,
+  private val selectedInputItemIndexes: ArrayList<Int>,
+  private val selectInputItemsListener: SelectInputItemsListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var itemSelectedPosition = -1
@@ -79,7 +81,8 @@ class InteractionAdapter(
         itemSelectedPosition
       )
       VIEW_TYPE_CHECKBOXES -> (holder as ItemSelectionViewHolder).bind(
-        itemList[position]
+        itemList[position],
+        position
       )
     }
   }
@@ -102,7 +105,14 @@ class InteractionAdapter(
   }
 
   inner class ItemSelectionViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(selectionInteractionContentViewModel: SelectionInteractionContentViewModel) {
+    internal fun bind(selectionInteractionContentViewModel: SelectionInteractionContentViewModel, position: Int) {
+
+      var isOptionSelected = false
+
+      if (selectedInputItemIndexes.contains(position) || selectionInteractionContentViewModel.isAnswerSelected) {
+        isOptionSelected = true
+      }
+
       binding.setVariable(BR.htmlContent, selectionInteractionContentViewModel.htmlContent)
       binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
@@ -110,15 +120,28 @@ class InteractionAdapter(
         binding.root.item_selection_contents_text_view
       )
       binding.root.item_selection_contents_text_view.text = htmlResult
-      binding.root.item_selection_checkbox.isChecked = selectionInteractionContentViewModel.isAnswerSelected
+      binding.root.item_selection_checkbox.isChecked = isOptionSelected
       binding.root.setOnClickListener {
         if (binding.root.item_selection_checkbox.isChecked) {
+          if (!selectedInputItemIndexes.contains(position)) {
+            selectedInputItemIndexes.add(position)
+          }
+          else{
+            selectedInputItemIndexes.remove(position)
+          }
+          selectInputItemsListener.onInputItemSelection(selectedInputItemIndexes)
           itemList[adapterPosition].isAnswerSelected = false
           selectedHtmlStringList.remove(binding.root.item_selection_contents_text_view.text.toString())
         } else {
           if (selectedHtmlStringList.size != selectionInteractionCustomizationArgsViewModel.maxAllowableSelectionCount) {
             itemList[adapterPosition].isAnswerSelected = true
             selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
+            if (selectedInputItemIndexes.contains(position)) {
+              selectedInputItemIndexes.remove(position)
+            }
+            else{
+              selectedInputItemIndexes.add(position)
+            }
           } else {
             Log.d(
               INTERACTION_ADAPTER_TAG,
@@ -136,6 +159,7 @@ class InteractionAdapter(
           }
 
         }
+        selectInputItemsListener.onInputItemSelection(selectedInputItemIndexes)
         itemClickListener.onItemClick(interactionObjectBuilder.build())
       }
     }
@@ -143,6 +167,13 @@ class InteractionAdapter(
 
   inner class MultipleChoiceViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(rawString: String, position: Int, selectedPosition: Int) {
+
+      var isOptionSelected = false
+
+      if (selectedInputItemIndexes.contains(position) || selectedPosition == position) {
+        isOptionSelected = true
+      }
+
       binding.setVariable(BR.htmlContent, rawString)
       binding.executePendingBindings()
       val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
@@ -150,8 +181,13 @@ class InteractionAdapter(
         binding.root.multiple_choice_content_text_view
       )
       binding.root.multiple_choice_content_text_view.text = htmlResult
-      binding.root.multiple_choice_radio_button.isChecked = selectedPosition == position
+      binding.root.multiple_choice_radio_button.isChecked = isOptionSelected
       binding.root.setOnClickListener {
+
+        selectedInputItemIndexes.clear()
+        selectedInputItemIndexes.add(position)
+        selectInputItemsListener.onInputItemSelection(selectedInputItemIndexes)
+
         itemSelectedPosition = adapterPosition
         selectedAnswerIndex = adapterPosition
         notifyDataSetChanged()

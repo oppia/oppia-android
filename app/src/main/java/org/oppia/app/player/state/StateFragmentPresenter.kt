@@ -89,7 +89,15 @@ class StateFragmentPresenter @Inject constructor(
 
   private lateinit var binding: StateFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  private var selectedInputItemIndexes = ArrayList<Int>()
+
+  private lateinit var selectInputItemsListener: SelectInputItemsListener
+
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, selectedInputItemIndexes: ArrayList<Int>, selectInputItemsListener: SelectInputItemsListener): View? {
+
+    this.selectedInputItemIndexes = selectedInputItemIndexes
+    this.selectInputItemsListener = selectInputItemsListener
+
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
@@ -99,7 +107,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
+    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId, selectedInputItemIndexes, selectInputItemsListener)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
