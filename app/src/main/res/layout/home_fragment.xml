@@ -15,8 +15,9 @@
       type="org.oppia.app.home.HomeFragmentPresenter" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@color/white">
 
@@ -36,9 +37,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
       android:layout_marginTop="32dp"
+      android:background="@color/oppiaPrimaryText"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -55,5 +58,5 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>
 </layout>
