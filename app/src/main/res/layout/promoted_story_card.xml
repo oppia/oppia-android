@@ -10,7 +10,7 @@
       name="viewModel"
       type="org.oppia.app.home.topiclist.PromotedStoryViewModel" />
   </data>
-  <!-- Although this FrameLayout has multiple children, only one should be visible at any given time. -->
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -43,55 +43,74 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/promoted_story_tile"
       android:layout_width="match_parent"
-      android:layout_height="220dp"
+      android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
+      android:layout_marginTop="8dp"
       android:layout_marginEnd="24dp"
-      android:layout_marginBottom="24dp"
-      android:clickable="true"
-      android:elevation="3dp"
-      android:focusable="true"
+      android:layout_marginBottom="8dp"
+      android:elevation="4dp"
       android:onClick="@{viewModel::clickOnStoryTile}"
       android:visibility="@{viewModel.topicListLookupSucceeded &amp;&amp; !viewModel.promotedStoryLiveData.storyId.isEmpty() ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:roundedRectDrawableWithColor="@{viewModel.promotedStoryLiveData.lessonThumbnail.backgroundColorRgb}">
+      app:layout_constraintTop_toTopOf="parent">
 
       <ImageView
+        android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="120dp"
         android:importantForAccessibility="no"
-        android:paddingStart="40dp"
-        android:paddingTop="40dp"
-        android:paddingEnd="40dp"
         android:scaleType="centerCrop"
         android:src="@{viewModel.promotedStoryLiveData.lessonThumbnail.thumbnailGraphic}"
-        app:layout_constraintBottom_toTopOf="@+id/story_details_section"
+        app:layout_constraintDimensionRatio="V,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-      <FrameLayout
-        android:id="@+id/story_details_section"
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-      <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@{viewModel.promotedStoryLiveData.storyName}"
-        android:textColor="@color/black"
-        android:textSize="14sp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/story_details_section" />
+        app:layout_constraintTop_toBottomOf="@id/lesson_thumbnail">
+
+        <TextView
+          android:id="@+id/chapter_name"
+          style="@style/TextAppearance.AppCompat.Headline"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="16dp"
+          android:text="TextView" />
+
+        <TextView
+          android:id="@+id/story_name"
+          style="@style/TextAppearance.AppCompat.Body1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="16dp"
+          android:text="@{viewModel.promotedStoryLiveData.storyName}" />
+
+        <TextView
+          android:id="@+id/topic_name"
+          style="@style/TextAppearance.AppCompat.Caption"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="16dp"
+          android:layout_marginBottom="8dp"
+          android:text="TextView"
+          android:textAllCaps="true" />
+      </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
