@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
-import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -26,15 +25,6 @@ class StoryFragmentPresenter @Inject constructor(
 
     viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
       (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
-    })
-
-    viewModel.storyChapterLiveData.observe(fragment, Observer<List<ChapterSummary>> { chapterList ->
-      val completedChapters =
-        chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }
-          .size
-      val totalChapters = chapterList.size
-      binding.storyProgressChapterCompletedText.text =
-        "$completedChapters of $totalChapters Chapters Completed"
     })
 
     binding.storyChapterList.apply {

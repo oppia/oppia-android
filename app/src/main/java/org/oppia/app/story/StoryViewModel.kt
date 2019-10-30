@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.domain.topic.TopicController
@@ -29,6 +30,10 @@ class StoryViewModel @Inject constructor(
 
   val storyChapterLiveData: LiveData<List<ChapterSummary>> by lazy {
     Transformations.map(storyResultLiveData, ::processStoryChapterList)
+  }
+
+  val storyChaptersCompletedCountLiveData: LiveData<Int> by lazy {
+    Transformations.map(storyResultLiveData, ::processStoryChaptersCompleted)
   }
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
@@ -61,5 +66,16 @@ class StoryViewModel @Inject constructor(
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
+  }
+
+  private fun processStoryChaptersCompleted(storyResult: AsyncResult<StorySummary>): Int {
+    if (storyResult.isFailure()) {
+      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
+    }
+
+    val chapterList = storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
+
+    return chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }
+      .size
   }
 }
