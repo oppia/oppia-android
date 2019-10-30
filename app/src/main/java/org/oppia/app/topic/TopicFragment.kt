@@ -10,8 +10,9 @@ import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
-  @Inject lateinit var topicFragmentPresenter: TopicFragmentPresenter
-  private var topicId: String=""
+  @Inject
+  lateinit var topicFragmentPresenter: TopicFragmentPresenter
+  private var topicId: String = ""
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -20,7 +21,10 @@ class TopicFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    topicId =if(arguments!=null && arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)!=null) arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) else ""
-    return topicFragmentPresenter.handleCreateView(inflater, container,topicId)
+    topicId =
+      if (arguments != null && arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null) arguments!!.getString(
+        TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+      ) else ""
+    return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
   }
 }

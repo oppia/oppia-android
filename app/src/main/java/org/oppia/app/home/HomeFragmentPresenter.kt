@@ -32,7 +32,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-
+  private val TAG_HOME_FRAGMENT = "HomeFragment"
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -57,10 +57,10 @@ class HomeFragmentPresenter @Inject constructor(
       EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
-        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d(TAG_HOME_FRAGMENT, "Loading exploration")
+        result.isFailure() -> logger.e(TAG_HOME_FRAGMENT, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d("HomeFragment", "Successfully loaded exploration")
+          logger.d(TAG_HOME_FRAGMENT, "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
@@ -68,7 +68,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun topicButtonClick(v: View) {
-    logger.d("HomeFragment", "Successfully loaded topic")
+    logger.d(TAG_HOME_FRAGMENT, "Successfully loaded topic")
     routeToTopicListener.routeToTopic(TEST_TOPIC_ID_1)
   }
 }
