@@ -26,6 +26,11 @@
   <string name="topic_overview_see_more">See More</string>
   <string name="topic_download_text">(%s MB)</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="continue_lesson">Continue with your Lesson</string>
+  <string name="more">MORE</string>
+  <string name="loading_topics_list_text">Loading topics list…</string>
+  <string name="error_loading_topics_list_text">Error loading topics list</string>
+  <string name="empty_topics_list_text">There are no topics to show</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
