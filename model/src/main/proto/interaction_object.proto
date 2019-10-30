@@ -48,5 +48,3 @@ message Fraction {
   int32 numerator = 3;
   int32 denominator = 4;
 }
-
-
