@@ -17,9 +17,11 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -28,6 +30,8 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
@@ -52,6 +56,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
+  @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
@@ -59,7 +64,8 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
-  private val logger: Logger
+  private val logger: Logger,
+  private val htmlParserFactory: HtmlParser.Factory
 ) : ButtonInteractionListener {
 
   private var showCellularDataDialog = true
@@ -90,9 +96,8 @@ class StateFragmentPresenter @Inject constructor(
           useCellularData = prefs.useCellularData
         }
       })
-
-    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener)
-
+    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
@@ -101,7 +106,6 @@ class StateFragmentPresenter @Inject constructor(
       it.stateFragment = fragment as StateFragment
       it.viewModel = getStateViewModel()
     }
-    explorationId = checkNotNull(fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY))
 
     subscribeToCurrentState()
 
@@ -171,7 +175,7 @@ class StateFragmentPresenter @Inject constructor(
     ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
       itemList.clear()
       currentEphemeralState = result
-
+      checkAndAddContentItem()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
@@ -327,6 +331,26 @@ class StateFragmentPresenter @Inject constructor(
     ) {
       oldStateNameList.add(currentEphemeralState.state.name)
     }
+  }
+  private fun checkAndAddContentItem() {
+    if (currentEphemeralState.state.hasContent()) {
+      addContentItem()
+    } else {
+      logger.e("StateFragment", "checkAndAddContentItem: State does not have content.")
+    }
+  }
+
+  private fun addContentItem() {
+    val contentViewModel = ContentViewModel()
+    val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
+    if (contentSubtitledHtml.contentId != "") {
+      contentViewModel.contentId = contentSubtitledHtml.contentId
+    } else {
+      contentViewModel.contentId = "content"
+    }
+    contentViewModel.htmlContent = contentSubtitledHtml.html
+    itemList.add(contentViewModel)
+    stateAdapter.notifyDataSetChanged()
   }
 
   private fun updateNavigationButtonVisibility(
