@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-import org.oppia.app.player.exploration.ExplorationFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicActivity]. */
