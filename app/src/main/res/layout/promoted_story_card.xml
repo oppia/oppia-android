@@ -27,15 +27,18 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      app:layout_constraintTop_toTopOf="parent"
+      app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.get().lessonThumbnail.backgroundColorRgb}">
 
       <ImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="120dp"
         android:importantForAccessibility="no"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="V,4:3"
+        android:src="@{viewModel.promotedStoryObservable.get().lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -67,8 +70,8 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
-          android:textColor="@color/oppiaPrimaryText"
-          android:text="@{viewModel.promotedStoryObservable.get()}" />
+          android:text="@{viewModel.promotedStoryObservable.get().storyName}"
+          android:textColor="@color/oppiaPrimaryText" />
 
         <TextView
           android:id="@+id/topic_name"

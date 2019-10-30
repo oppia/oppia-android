@@ -16,48 +16,20 @@ import javax.inject.Inject
 
 /** [ViewModel] for displaying a promoted story. */
 @FragmentScope
-class PromotedStoryViewModel @Inject constructor(
-  private val topicListController: TopicListController
-) : ObservableViewModel() {
+class PromotedStoryViewModel @Inject constructor() : ObservableViewModel() {
   /**
    * The retrieved [LiveData] for retrieving topic summaries. This model should ensure only one
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
    * always in sync.
    */
 
-  var promotedStoryObservable = ObservableField<String>()
+  var promotedStoryObservable = ObservableField<PromotedStory>()
 
-  fun setPromotedStory(promotedStory: PromotedStory){
-    promotedStoryObservable.set(promotedStory.storyName)
+  fun setPromotedStory(promotedStory: PromotedStory) {
+    promotedStoryObservable.set(promotedStory)
   }
-
-  private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList()
-  }
-  val promotedStoryLiveData: LiveData<PromotedStory> by lazy { getPromotedStory() }
-  val topicListLookupSucceeded: LiveData<Boolean> by lazy { getWhetherTopicListLookupSucceeded() }
-  val topicListLookupFailed: LiveData<Boolean> by lazy { getWhetherTopicListLookupFailed() }
-  val topicListIsLoading: LiveData<Boolean> by lazy { getWhetherTopicListIsLoading() }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    Log.d("TAG","clickOnStoryTile")
-  }
-
-  private fun getPromotedStory(): LiveData<PromotedStory> {
-    return Transformations.map(topicListSummaryResultLiveData) {
-      it.getOrDefault(TopicList.getDefaultInstance()).promotedStory
-    }
-  }
-
-  private fun getWhetherTopicListLookupSucceeded(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isSuccess() }
-  }
-
-  private fun getWhetherTopicListLookupFailed(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isFailure() }
-  }
-
-  private fun getWhetherTopicListIsLoading(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isPending() }
+    Log.d("TAG", "clickOnStoryTile")
   }
 }
