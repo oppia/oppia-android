@@ -81,19 +81,27 @@ class UrlImageParserTest {
   private fun prepareImageLoaderForResponse(expectedUrl: String, bitmap: Bitmap) {
     val imageView = activityTestRule.activity.findViewById(R.id.test_url_parser_image_view) as ImageView
     doAnswer { invocation ->
-      // Note to Veena: this is called each time production code calls load() via the injected ImageLoader.
-      // The returned value here will be what load() returns, however that's void so we just return null.
-      // However, the invocation includes arguments like the target that we can use to provide the bitmap.
       val customTarget: CustomTarget<Bitmap> = invocation.getArgument(1)
       customTarget.onResourceReady(bitmap, /* transition= */ null)
       imageView.setImageBitmap(bitmap)
-    }.`when`(mockImageLoader).load(anyString(), any())
+    }.`when`(mockImageLoader).load(expectedUrl, any())
   }
-
 
   @Test
   fun testImageLoader_returnSuccess() {
-    val bitmap: Bitmap? = null
+    var bitmap: Bitmap? = null
+    var drawable: Drawable? = null
+    val target = object : CustomTarget<Bitmap>() {
+      override fun onLoadCleared(placeholder: Drawable?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+      }
+      override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+        drawable = BitmapDrawable(activityTestRule.activity.getResources(), resource);
+        bitmap = resource
+
+      }
+    }
+    mockImageLoader.load(OK_IMAGE_URL,target)
     prepareImageLoaderForResponse(OK_IMAGE_URL, bitmap!!)
   }
   @After
