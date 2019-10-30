@@ -42,4 +42,7 @@
       %d Stories
     </item>
   </plurals>
+  <string name="profile_admin">Administrator</string>
+  <string name="profile_select_text">Select your profile</string>
+  <string name="add_profile_text">Add Profile</string>
 </resources>

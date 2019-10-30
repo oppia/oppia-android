@@ -23,6 +23,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = getProfileChooserViewModel()
+      lifecycleOwner = fragment
     }
     binding.recyclerView.apply {
       adapter = createRecyclerViewAdapter()

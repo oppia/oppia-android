@@ -2,17 +2,43 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
+    <import type="android.view.View" />
     <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserModel" />
   </data>
   <LinearLayout
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:gravity="center">
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:profileUrl="@{viewModel.profile.avatarImageUri}"
+      app:civ_border_width="0.75dp"
+      app:civ_border_color="@color/white"
+      android:layout_marginBottom="5dp"
+      />
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Profile" />
+      android:textColor="@color/white"
+      android:text="@{viewModel.profile.name}" />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white"
+      android:textSize="10sp"
+      android:profileDate="@{viewModel.profile.lastLoggedInTimestampMs}"
+      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs == 0 ? View.GONE : View.VISIBLE}"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white"
+      android:text="@string/profile_admin"
+      android:textSize="10sp"
+      android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}"/>
   </LinearLayout>
   </layout>

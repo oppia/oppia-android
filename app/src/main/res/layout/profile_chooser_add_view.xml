@@ -8,11 +8,22 @@
   </data>
   <LinearLayout
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:gravity="center">
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:src="@drawable/review_placeholder"
+      app:civ_border_width="0.75dp"
+      app:civ_border_color="@color/white"
+      android:layout_marginBottom="5dp"
+      />
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Add Profile" />
+      android:textColor="@color/white"
+      android:text="@string/add_profile_text" />
   </LinearLayout>
 </layout>
