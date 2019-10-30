@@ -72,7 +72,11 @@ class TopicController @Inject constructor(
         TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
         TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
         TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
-        FRACTIONS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("fractions_stories.json", /* index= */ 0))
+        FRACTIONS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "fractions_stories.json", /* index= */ 0
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
@@ -85,9 +89,21 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_0 -> AsyncResult.success(createTestConceptCardForSkill0())
         TEST_SKILL_ID_1 -> AsyncResult.success(createTestConceptCardForSkill1())
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
-        FRACTIONS_SKILL_ID_0 -> AsyncResult.success(createConceptCardFromJson("fractions_skills.json", /* index= */0))
-        FRACTIONS_SKILL_ID_1 -> AsyncResult.success(createConceptCardFromJson("fractions_skills.json", /* index= */1))
-        FRACTIONS_SKILL_ID_2 -> AsyncResult.success(createConceptCardFromJson("fractions_skills.json", /* index= */2))
+        FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */0
+          )
+        )
+        FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */1
+          )
+        )
+        FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */2
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
@@ -303,7 +319,11 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(storyData.getString("id"))
       .setStoryName(storyData.getString("title"))
-      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
+      .addAllChapter(
+        createChaptersFromJson(
+          storyData.getJSONObject("story_contents").getJSONArray("nodes")
+        )
+      )
       .build()
   }
 
@@ -456,7 +476,7 @@ class TopicController @Inject constructor(
   }
 
   private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
-    val skillList =  jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
     if (skillList.length() < index) {
       return ConceptCard.getDefaultInstance()
     }
@@ -479,9 +499,9 @@ class TopicController @Inject constructor(
     for (i in 0 until workedExampleData.length()) {
       workedExampleList.add(
         SubtitledHtml.newBuilder()
-        .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
-        .setHtml(workedExampleData.getJSONObject(i).getString("html"))
-        .build()
+          .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
+          .setHtml(workedExampleData.getJSONObject(i).getString("html"))
+          .build()
       )
     }
     return workedExampleList

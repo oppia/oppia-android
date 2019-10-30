@@ -91,7 +91,9 @@ class StoryProgressController @Inject constructor(
       )
     }
     val explorationIdList = getExplorationIdsFromStory(
-      storyData.getJSONObject(index).getJSONObject("story").getJSONObject("story_contents").getJSONArray("nodes"))
+      storyData.getJSONObject(index).getJSONObject("story")
+        .getJSONObject("story_contents").getJSONArray("nodes")
+    )
     return TrackedStoryProgress(
       chapterList = explorationIdList,
       completedChapters = setOf()

@@ -513,11 +513,13 @@ class TopicControllerTest {
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
     assertThat(conceptCard.skillDescription).isEqualTo(
-      "Given a picture divided into unequal parts, write the fraction.")
+      "Given a picture divided into unequal parts, write the fraction."
+    )
     assertThat(conceptCard.explanation.html).isEqualTo(
       "<p>First, divide the picture into equal parts, so that you can figure out what the denominator " +
           "(the total number of parts) is.<br>\n<br>\n" +
-          "Then, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>")
+          "Then, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
+    )
   }
 
   @Test
