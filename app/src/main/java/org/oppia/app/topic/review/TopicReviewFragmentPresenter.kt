@@ -28,7 +28,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController
 ) : ReviewSkillSelector {
-  private var topicId: String=""
+  private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToConceptCardListener
 
   private lateinit var reviewSkillSelectionAdapter: ReviewSkillSelectionAdapter

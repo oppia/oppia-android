@@ -31,7 +31,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private val routeToStoryListener = activity as RouteToStoryListener
 
   private lateinit var binding: TopicPlayFragmentBinding
-  private var topicId: String=""
+  private lateinit var topicId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

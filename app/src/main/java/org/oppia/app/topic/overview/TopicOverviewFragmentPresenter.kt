@@ -30,8 +30,8 @@ class TopicOverviewFragmentPresenter @Inject constructor(
 ) {
   private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
 
-  private val topicOverviewViewModel  = getTopicOverviewViewModel()
-  private var topicId: String=""
+  private val topicOverviewViewModel = getTopicOverviewViewModel()
+  private lateinit var topicId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
