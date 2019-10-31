@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
@@ -14,7 +16,7 @@ const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
-  RouteToTopicPlayListener, RouteToStoryListener {
+  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   private lateinit var topicId: String
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -22,8 +24,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId =
-      if (intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_0
+    topicId = if (intent==null|| intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_0
       else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     topicActivityPresenter.handleOnCreate(topicId)
   }
@@ -45,6 +46,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
       conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
+  }
+
+  override fun routeToExploration(explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {

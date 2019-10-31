@@ -29,6 +29,7 @@
   <string name="play">PLAY</string>
   <string name="train">TRAIN</string>
   <string name="review">REVIEW</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter

@@ -18,7 +18,8 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
-private val TAG_HOME_FRAGMENT = "HomeFragment"
+private const val TAG_HOME_FRAGMENT = "HomeFragment"
+
 /** The controller for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
