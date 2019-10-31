@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import org.oppia.app.model.InteractionObject
@@ -8,8 +7,6 @@ import org.oppia.app.model.StringList
 import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-
-private const val INTERACTION_ADAPTER_TAG = "SelectionInteraction"
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
@@ -42,14 +39,6 @@ class SelectionInteractionViewModel(
     return interactionObjectBuilder.build()
   }
 
-  //TODO(BenHenning): Inline this.
-  fun handleItemSelected() {
-    // Only push the answer if explicit submission isn't required.
-    if (maxAllowableSelectionCount == 1) {
-      interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
-    }
-  }
-
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
   fun getSelectionItemInputType(): SelectionItemInputType {
     return if (areCheckboxesBound()) {
@@ -59,32 +48,33 @@ class SelectionInteractionViewModel(
     }
   }
 
-  /** Catalogs an item being clicked by the user. */
-  fun handleItemClicked(itemViewModel: SelectionInteractionContentViewModel, itemIndex: Int, isSelected: Boolean) {
+  /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
+  fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
     if (areCheckboxesBound()) {
-      if (isSelected) {
-        itemViewModel.isAnswerSelected.set(false)
+      if (isCurrentlySelected) {
         selectedItems -= itemIndex
-      } else {
-        val selectedItemCount = selectedItems.size
-        if (selectedItemCount < maxAllowableSelectionCount) {
-          itemViewModel.isAnswerSelected.set(true)
-          selectedItems += itemIndex
-        } else {
-          Log.d(
-            INTERACTION_ADAPTER_TAG,
-            "You cannot select more than ${maxAllowableSelectionCount} options"
-          )
-        }
+        return false
+      } else if (selectedItems.size < maxAllowableSelectionCount) {
+        // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
+        //  number required.
+        selectedItems += itemIndex
+        return true
       }
-      handleItemSelected()
     } else {
+      // Disable all items to simulate a radio button group.
       choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
       selectedItems.clear()
-      itemViewModel.isAnswerSelected.set(true)
       selectedItems += itemIndex
-      handleItemSelected()
+
+      // Only push the answer if explicit submission isn't required.
+      if (maxAllowableSelectionCount == 1) {
+        interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
+      }
+      return true
     }
+
+    // Do not change the current status if it isn't valid to do so.
+    return isCurrentlySelected
   }
 
   private fun areCheckboxesBound(): Boolean {

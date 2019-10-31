@@ -21,16 +21,16 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the
    * answer.
    */
-  fun doesPendingInteractionRequireExplicitSubmission(): Boolean {
-    return getPendingAnswerHandler()?.isExplicitAnswerSubmissionRequired() ?: true
+  fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
+    return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
   // TODO(BenHenning): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
   fun getPendingAnswer(): InteractionObject {
-    return getPendingAnswerHandler()?.getPendingAnswer() ?: InteractionObject.getDefaultInstance()
+    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: InteractionObject.getDefaultInstance()
   }
 
-  private fun getPendingAnswerHandler(): InteractionAnswerHandler? {
+  private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
     // TODO(BenHenning): Find a better way to do this. First, the search is bad. Second, the implication that more than
     // one interaction view can be active is bad.
     return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler

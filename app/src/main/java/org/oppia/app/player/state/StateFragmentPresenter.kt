@@ -93,6 +93,9 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
+  private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
+    explorationProgressController.getCurrentState()
+  }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -272,52 +275,54 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<EphemeralState> { result ->
-      viewModel.itemList.clear()
-
-      addContentItem(result)
-      val interaction = result.state.interaction
-      if (result.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-        addPreviousAnswers(interaction, result.pendingState.wrongAnswerList)
-        addInteractionForPendingState(interaction)
-      } else if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-        addPreviousAnswers(interaction, result.completedState.answerList)
-      }
-
-      val hasPreviousState = result.hasPreviousState
-      var canContinueToNextState = false
-      var hasGeneralContinueButton = false
-
-      if (result.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-        if (result.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE && !result.hasNextState) {
-          hasGeneralContinueButton = true
-        } else if (result.completedState.answerList.size > 0 && result.hasNextState) {
-          canContinueToNextState = true
-        }
-      }
-
-      updateNavigationButtonVisibility(
-        hasPreviousState,
-        canContinueToNextState,
-        hasGeneralContinueButton,
-        result.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
-      )
+    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
+      processEphemeralStateResult(result)
     })
   }
 
-  private val ephemeralStateLiveData: LiveData<EphemeralState> by lazy {
-    getEphemeralState()
-  }
-
-  private fun getEphemeralState(): LiveData<EphemeralState> {
-    return Transformations.map(explorationProgressController.getCurrentState(), ::processCurrentState)
-  }
-
-  private fun processCurrentState(ephemeralStateResult: AsyncResult<EphemeralState>): EphemeralState {
-    if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", ephemeralStateResult.getErrorOrNull()!!)
+  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
+    if (result.isFailure()) {
+      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      return
+    } else if (result.isPending()) {
+      // Display nothing until a valid result is available.
+      return
     }
-    return ephemeralStateResult.getOrDefault(EphemeralState.getDefaultInstance())
+
+    val ephemeralState = result.getOrThrow()
+    val pendingItemList = mutableListOf<StateItemViewModel>()
+    addContentItem(pendingItemList, ephemeralState)
+    val interaction = ephemeralState.state.interaction
+    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+      addPreviousAnswers(pendingItemList, interaction, ephemeralState.pendingState.wrongAnswerList)
+      addInteractionForPendingState(pendingItemList, interaction)
+    } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+      addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
+    }
+
+    val hasPreviousState = ephemeralState.hasPreviousState
+    var canContinueToNextState = false
+    var hasGeneralContinueButton = false
+
+    if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
+      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
+        && !ephemeralState.hasNextState) {
+        hasGeneralContinueButton = true
+      } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
+        canContinueToNextState = true
+      }
+    }
+
+    updateNavigationButtonVisibility(
+      pendingItemList,
+      hasPreviousState,
+      canContinueToNextState,
+      hasGeneralContinueButton,
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    )
+
+    viewModel.itemList.clear()
+    viewModel.itemList += pendingItemList
   }
 
   /**
@@ -375,36 +380,44 @@ class StateFragmentPresenter @Inject constructor(
   override fun onNextButtonClicked() = moveToNextState()
 
   private fun moveToNextState() {
-    viewModel.itemList.clear()
     explorationProgressController.moveToNextState()
   }
 
   // TODO(BenHenning): Generalize adding interactions.
 
-  private fun addInteractionForPendingState(interaction: Interaction) {
-    addInteraction(interaction)
+  private fun addInteractionForPendingState(
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
+  ) {
+    addInteraction(pendingItemList, interaction)
   }
 
-  private fun addInteractionForCompletedState(interaction: Interaction, existingAnswer: InteractionObject) {
-    addInteraction(interaction, existingAnswer = existingAnswer, isReadOnly = true)
+  private fun addInteractionForCompletedState(
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
+  ) {
+    addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
   }
 
   private fun addInteraction(
-    interaction: Interaction, existingAnswer: InteractionObject? = null, isReadOnly: Boolean = false) {
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
+    InteractionObject? = null, isReadOnly: Boolean = false) {
     when (interaction.id) {
       CONTINUE -> addInteraction(
+        pendingItemList,
         ContinueInteractionViewModel(fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly)
       )
-      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> addSelectionInteraction(interaction, existingAnswer, isReadOnly)
-      FRACTION_INPUT -> addInteraction(FractionInteractionViewModel(existingAnswer, isReadOnly))
-      NUMERIC_INPUT -> addInteraction(NumericInputViewModel(existingAnswer, isReadOnly))
-      NUMERIC_WITH_UNITS -> addInteraction(NumberWithUnitsViewModel(existingAnswer, isReadOnly))
-      TEXT_INPUT -> addInteraction(TextInputViewModel(existingAnswer, isReadOnly))
+      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
+        addSelectionInteraction(pendingItemList, interaction, existingAnswer, isReadOnly)
+      }
+      FRACTION_INPUT -> addInteraction(pendingItemList, FractionInteractionViewModel(existingAnswer, isReadOnly))
+      NUMERIC_INPUT -> addInteraction(pendingItemList, NumericInputViewModel(existingAnswer, isReadOnly))
+      NUMERIC_WITH_UNITS -> addInteraction(pendingItemList, NumberWithUnitsViewModel(existingAnswer, isReadOnly))
+      TEXT_INPUT -> addInteraction(pendingItemList, TextInputViewModel(existingAnswer, isReadOnly))
     }
   }
 
   private fun addSelectionInteraction(
-    interaction: Interaction, existingAnswer: InteractionObject?, isReadOnly: Boolean
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject?,
+    isReadOnly: Boolean
   ) {
     val argsMap = interaction.customizationArgsMap
     argsMap.keys.forEach { logger.d(TAG_STATE_FRAGMENT, it) }
@@ -414,37 +427,41 @@ class StateFragmentPresenter @Inject constructor(
     val minAllowableSelectionCount = argsMap["minAllowableSelectionCount"]?.signedInt ?: 1
     val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
     val choiceItemStrings = argsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
-    viewModel.itemList += SelectionInteractionViewModel(
+    pendingItemList += SelectionInteractionViewModel(
       choiceItemStrings, explorationId, interaction.id, fragment as InteractionAnswerReceiver,
       maxAllowableSelectionCount, minAllowableSelectionCount, existingAnswer, isReadOnly
     )
   }
 
-  private fun addInteraction(stateItemViewModel: StateItemViewModel) {
-    viewModel.itemList += stateItemViewModel
+  private fun addInteraction(pendingItemList: MutableList<StateItemViewModel>, stateItemViewModel: StateItemViewModel) {
+    pendingItemList += stateItemViewModel
   }
 
-  private fun addContentItem(ephemeralState: EphemeralState) {
+  private fun addContentItem(pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    viewModel.itemList += ContentViewModel(contentSubtitledHtml.html)
+    pendingItemList += ContentViewModel(contentSubtitledHtml.html)
   }
 
-  private fun addPreviousAnswers(interaction: Interaction, answersAndResponses: List<AnswerAndResponse>) {
+  private fun addPreviousAnswers(
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction,
+    answersAndResponses: List<AnswerAndResponse>
+  ) {
     // TODO: add support for displaying the previous answer, too.
     for (answerAndResponse in answersAndResponses) {
-      addInteractionForCompletedState(interaction, answerAndResponse.userAnswer)
-      addFeedbackItem(answerAndResponse.feedback)
+      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
+      addFeedbackItem(pendingItemList, answerAndResponse.feedback)
     }
   }
 
-  private fun addFeedbackItem(feedback: SubtitledHtml) {
+  private fun addFeedbackItem(pendingItemList: MutableList<StateItemViewModel>, feedback: SubtitledHtml) {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      viewModel.itemList  += FeedbackViewModel(feedback.html)
+      pendingItemList += FeedbackViewModel(feedback.html)
     }
   }
 
   private fun updateNavigationButtonVisibility(
+    pendingItemList: MutableList<StateItemViewModel>,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
@@ -470,7 +487,7 @@ class StateFragmentPresenter @Inject constructor(
           ContinuationNavigationButtonType.RETURN_TO_TOPIC_BUTTON, isEnabled = true
         )
       }
-      viewModel.doesPendingInteractionRequireExplicitSubmission() -> {
+      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> {
         stateNavigationButtonViewModel.updateContinuationButton(
           ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = true
         )
@@ -482,7 +499,7 @@ class StateFragmentPresenter @Inject constructor(
         )
       }
     }
-    viewModel.itemList += stateNavigationButtonViewModel
+    pendingItemList += stateNavigationButtonViewModel
   }
 
   private fun hideKeyboard() {
