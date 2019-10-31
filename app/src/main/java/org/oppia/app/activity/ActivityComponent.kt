@@ -7,13 +7,13 @@ import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 
