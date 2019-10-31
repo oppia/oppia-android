@@ -7,6 +7,9 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
+import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -28,12 +31,8 @@ class StoryViewModel @Inject constructor(
     Transformations.map(storyResultLiveData, ::processStoryName)
   }
 
-  val storyChapterLiveData: LiveData<List<ChapterSummary>> by lazy {
+  val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
     Transformations.map(storyResultLiveData, ::processStoryChapterList)
-  }
-
-  val storyChaptersCompletedCountLiveData: LiveData<Int> by lazy {
-    Transformations.map(storyResultLiveData, ::processStoryChaptersCompleted)
   }
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
@@ -60,22 +59,25 @@ class StoryViewModel @Inject constructor(
     return storyResult.getOrDefault(StorySummary.getDefaultInstance()).storyName
   }
 
-  private fun processStoryChapterList(storyResult: AsyncResult<StorySummary>): List<ChapterSummary> {
+  private fun processStoryChapterList(storyResult: AsyncResult<StorySummary>): List<StoryItemViewModel> {
     if (storyResult.isFailure()) {
       logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
     }
 
-    return storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
-  }
+    val chapterList: List<ChapterSummary> =
+      storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
+    val completedCount =
+      chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }.size
+    val finalList: MutableList<StoryItemViewModel> = ArrayList<StoryItemViewModel>()
 
-  private fun processStoryChaptersCompleted(storyResult: AsyncResult<StorySummary>): Int {
-    if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
+    // Add header
+    finalList.add(StoryHeaderViewModel(completedCount, chapterList.size))
+
+    // Add the rest of the list
+    chapterList.forEach { chapter ->
+      finalList.add(StoryChapterSummaryViewModel(chapter))
     }
 
-    val chapterList = storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
-
-    return chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }
-      .size
+    return finalList
   }
 }

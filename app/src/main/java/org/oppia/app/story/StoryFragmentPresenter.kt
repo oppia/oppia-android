@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
-import org.oppia.app.model.ChapterSummary
+import org.oppia.app.databinding.StoryHeaderViewBinding
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
+import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
@@ -40,17 +43,37 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummary> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
     return BindableAdapter.Builder
-      .newBuilder<ChapterSummary>()
-      .registerViewDataBinderWithSameModelType(
+      .newBuilder<StoryItemViewModel>()
+      .registerViewTypeComputer { viewModel ->
+        when (viewModel) {
+          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER.ordinal
+          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER.ordinal
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_HEADER.ordinal,
+        inflateDataBinding = StoryHeaderViewBinding::inflate,
+        setViewModel = StoryHeaderViewBinding::setViewModel,
+        transformViewModel = { it as StoryHeaderViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_CHAPTER.ordinal,
         inflateDataBinding = StoryChapterViewBinding::inflate,
-        setViewModel = StoryChapterViewBinding::setChapterSummary
+        setViewModel = StoryChapterViewBinding::setViewModel,
+        transformViewModel = { it as StoryChapterSummaryViewModel }
       )
       .build()
   }
 
   private fun getStoryViewModel(): StoryViewModel {
     return viewModelProvider.getForFragment(fragment, StoryViewModel::class.java)
+  }
+
+  private enum class ViewType {
+    VIEW_TYPE_HEADER,
+    VIEW_TYPE_CHAPTER
   }
 }

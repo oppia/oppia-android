@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
-    <variable name="chapterSummary" type="org.oppia.app.model.ChapterSummary" />
+    <variable name="viewModel" type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,7 +11,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:padding="16dp"
-    app:roundedRectDrawableWithColor="@{chapterSummary.chapterThumbnail.backgroundColorRgb}">
+    app:roundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}">
 
     <ImageView
       android:id="@+id/chapter_thumbnail"
@@ -21,7 +21,7 @@
       android:paddingTop="40dp"
       android:paddingEnd="40dp"
       android:scaleType="centerCrop"
-      android:src="@{chapterSummary.chapterThumbnail.thumbnailGraphic}"
+      android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
       app:layout_constraintBottom_toTopOf="@id/chapter_title"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:fontFamily="sans-serif-medium"
-      android:text="@{chapterSummary.name}"
+      android:text="@{viewModel.name}"
       android:textColor="@color/black"
       android:textSize="14sp"
       app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:fontFamily="sans-serif-medium"
-      android:text="@{chapterSummary.summary}"
+      android:text="@{viewModel.summary}"
       android:textColor="@color/black"
       android:textSize="12sp"
       app:layout_constraintStart_toStartOf="parent"

@@ -9,25 +9,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-      android:id="@+id/story_progress_chapter_completed_text"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:fontFamily="sans-serif-medium"
-      android:textColor="@color/black"
-      android:textSize="14sp"
-      android:text="@{@plurals/story_total_chapters(viewModel.storyChapterLiveData.size(), viewModel.storyChaptersCompletedCountLiveData, viewModel.storyChapterLiveData.size())}"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/story_chapter_list"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       app:data="@{viewModel.storyChapterLiveData}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_progress_chapter_completed_text" />
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
