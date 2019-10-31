@@ -34,7 +34,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 
-  private var currentExpandedChapterListIndex = NO_INDEX
+  private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicPlayFragmentBinding
 
@@ -43,7 +43,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    currentExpandedChapterListIndex: Int,
+    currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
@@ -91,11 +91,11 @@ class TopicPlayFragmentPresenter @Inject constructor(
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
-  override fun selectedStorySummary(storySummary: StorySummary) {
+  override fun selectStorySummary(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(storySummary.storyId)
   }
 
-  override fun selectedChapterSummary(chapterSummary: ChapterSummary) {
+  override fun selectChapterSummary(chapterSummary: ChapterSummary) {
     playExploration(chapterSummary.explorationId)
   }
 

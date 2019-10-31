@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import androidx.databinding.DataBindingUtil
 import android.view.LayoutInflater
-import androidx.databinding.library.baseAdapters.BR
 import org.oppia.app.databinding.PlayChapterViewBinding
 import org.oppia.app.model.ChapterSummary
 
@@ -31,15 +30,15 @@ class ChapterSummaryAdapter(
   }
 
   override fun onBindViewHolder(chapterSummaryViewHolder: ChapterSummaryViewHolder, position: Int) {
-    chapterSummaryViewHolder.bind(chapterList[position], position)
+    chapterSummaryViewHolder.bind(chapterList[position])
   }
 
   inner class ChapterSummaryViewHolder(private val binding: PlayChapterViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(chapterSummary: ChapterSummary, @Suppress("UNUSED_PARAMETER") position: Int) {
-      binding.setVariable(BR.chapterSummary, chapterSummary)
+    internal fun bind(chapterSummary: ChapterSummary) {
+      binding.chapterSummary = chapterSummary
       binding.chapterName.setOnClickListener {
-        chapterSummarySelector.selectedChapterSummary(chapterSummary)
+        chapterSummarySelector.selectChapterSummary(chapterSummary)
       }
     }
   }

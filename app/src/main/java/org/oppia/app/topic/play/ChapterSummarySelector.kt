@@ -4,5 +4,5 @@ import org.oppia.app.model.ChapterSummary
 
 /** Interface to transfer the selected chapter summary to [TopicPlayFragmentPresenter]. */
 interface ChapterSummarySelector {
-  fun selectedChapterSummary(chapterSummary: ChapterSummary)
+  fun selectChapterSummary(chapterSummary: ChapterSummary)
 }

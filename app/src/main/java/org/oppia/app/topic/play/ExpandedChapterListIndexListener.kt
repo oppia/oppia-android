@@ -5,5 +5,5 @@ package org.oppia.app.topic.play
  * This mainly helps to maintain the state during configuration change.
  */
 interface ExpandedChapterListIndexListener {
-  fun onExpandListIconClicked(index: Int)
+  fun onExpandListIconClicked(index: Int?)
 }

@@ -11,7 +11,7 @@
       type="Boolean" />
 
     <variable
-      name="storyProgressPercentage"
+      name="storyPercentage"
       type="Integer" />
 
     <variable
@@ -38,7 +38,7 @@
         android:layout_height="match_parent"
         android:indeterminate="false"
         android:max="100"
-        android:progress="@{storyProgressPercentage}"
+        android:progress="@{storyPercentage}"
         android:progressDrawable="@drawable/circular_progress"
         android:secondaryProgress="100" />
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@{@string/topic_story_progress_percentage(storyProgressPercentage)}"
+        android:text="@{@string/topic_story_progress_percentage(storyPercentage)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="14sp" />
     </FrameLayout>

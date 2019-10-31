@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-internal const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
-internal const val NO_INDEX = -1
+private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /** Fragment that contains subtopic list for play mode. */
 class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener {
   @Inject
   lateinit var topicPlayFragmentPresenter: TopicPlayFragmentPresenter
 
-  private var currentExpandedChapterListIndex = NO_INDEX
+  private var currentExpandedChapterListIndex: Int? = null
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -37,10 +36,10 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex)
+    outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex!!)
   }
 
-  override fun onExpandListIconClicked(index: Int) {
+  override fun onExpandListIconClicked(index: Int?) {
     currentExpandedChapterListIndex = index
   }
 }
