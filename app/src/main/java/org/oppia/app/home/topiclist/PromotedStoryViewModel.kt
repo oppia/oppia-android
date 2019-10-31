@@ -29,7 +29,6 @@ class PromotedStoryViewModel @Inject constructor(
 
   fun setPromotedStory(promotedStory: PromotedStory) {
     promotedStoryObservable.set(promotedStory)
-    Log.d("TAG", "promotedStory: $promotedStory")
   }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {

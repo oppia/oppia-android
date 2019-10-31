@@ -14,10 +14,9 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
-import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
-import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.model.UserAppHistory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -62,7 +61,7 @@ class HomeFragmentPresenter @Inject constructor(
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position == 0) {
+        return if (position == 0 || position == 1) {
           /* number of spaces this item should occupy = */ 2
         } else {
           /* number of spaces this item should occupy = */ 1
@@ -76,13 +75,13 @@ class HomeFragmentPresenter @Inject constructor(
       layoutManager = homeLayoutManager
     }
     binding.let {
-      it.viewModel = getUserAppHistoryViewModel()
       it.presenter = this
       it.lifecycleOwner = fragment
     }
 
     userAppHistoryController.markUserOpenedApp()
 
+    subscribeToUserAppHistory()
     subscribeToTopicList()
 
     return binding.root
@@ -129,6 +128,26 @@ class HomeFragmentPresenter @Inject constructor(
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
+  }
+
+  private fun subscribeToUserAppHistory() {
+    getUserAppHistory()!!.observe(fragment, Observer<UserAppHistory> { result ->
+      getUserAppHistoryViewModel().setAlreadyAppOpened(result.alreadyOpenedApp)
+      itemList.add(0, getUserAppHistoryViewModel())
+      topicListAdapter.notifyDataSetChanged()
+    })
+  }
+
+  private fun getUserAppHistory(): LiveData<UserAppHistory>? {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
+  }
+
+  private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
+    if (appHistoryResult.isFailure()) {
+      logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
+    }
+    return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
