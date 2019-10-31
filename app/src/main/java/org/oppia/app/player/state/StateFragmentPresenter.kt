@@ -290,6 +290,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    currentStateName = ephemeralState.state.name
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
     val interaction = ephemeralState.state.interaction
