@@ -13,5 +13,3 @@ interface ImageLoader {
 
   fun load(imageUrl: String, target: CustomTarget<Bitmap>)
 }
-
-
