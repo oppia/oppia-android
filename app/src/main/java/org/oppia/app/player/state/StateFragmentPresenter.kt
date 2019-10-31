@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
@@ -39,9 +38,9 @@ import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
@@ -62,15 +61,6 @@ import javax.inject.Inject
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
-private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
-
-private const val CONTINUE = "Continue"
-private const val MULTIPLE_CHOICE_INPUT = "MultipleChoiceInput"
-private const val ITEM_SELECT_INPUT = "ItemSelectionInput"
-private const val TEXT_INPUT = "TextInput"
-private const val FRACTION_INPUT = "FractionInput"
-private const val NUMERIC_INPUT = "NumericInput"
-private const val NUMERIC_WITH_UNITS = "NumberWithUnits"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -84,7 +74,8 @@ class StateFragmentPresenter @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val context: Context
+  private val context: Context,
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
 ) : StateNavigationButtonListener {
 
   private var showCellularDataDialog = true
@@ -335,7 +326,7 @@ class StateFragmentPresenter @Inject constructor(
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
-      if (result.state.interaction.id == CONTINUE) {
+      if (result.state.interaction.id == "Continue") {
         moveToNextState()
       }
     })
@@ -384,58 +375,21 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.moveToNextState()
   }
 
-  // TODO(BenHenning): Generalize adding interactions.
-
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
-  ) {
-    addInteraction(pendingItemList, interaction)
-  }
+  ) = addInteraction(pendingItemList, interaction)
 
   private fun addInteractionForCompletedState(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) {
-    addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
-  }
+  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
 
   private fun addInteraction(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
     InteractionObject? = null, isReadOnly: Boolean = false) {
-    when (interaction.id) {
-      CONTINUE -> addInteraction(
-        pendingItemList,
-        ContinueInteractionViewModel(fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly)
-      )
-      MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
-        addSelectionInteraction(pendingItemList, interaction, existingAnswer, isReadOnly)
-      }
-      FRACTION_INPUT -> addInteraction(pendingItemList, FractionInteractionViewModel(existingAnswer, isReadOnly))
-      NUMERIC_INPUT -> addInteraction(pendingItemList, NumericInputViewModel(existingAnswer, isReadOnly))
-      NUMERIC_WITH_UNITS -> addInteraction(pendingItemList, NumberWithUnitsViewModel(existingAnswer, isReadOnly))
-      TEXT_INPUT -> addInteraction(pendingItemList, TextInputViewModel(existingAnswer, isReadOnly))
-    }
-  }
-
-  private fun addSelectionInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject?,
-    isReadOnly: Boolean
-  ) {
-    val argsMap = interaction.customizationArgsMap
-    argsMap.keys.forEach { logger.d(TAG_STATE_FRAGMENT, it) }
-
-    // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
-    // when either of the counts are not specified.
-    val minAllowableSelectionCount = argsMap["minAllowableSelectionCount"]?.signedInt ?: 1
-    val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
-    val choiceItemStrings = argsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
-    pendingItemList += SelectionInteractionViewModel(
-      choiceItemStrings, explorationId, interaction.id, fragment as InteractionAnswerReceiver,
-      maxAllowableSelectionCount, minAllowableSelectionCount, existingAnswer, isReadOnly
+    val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
+    pendingItemList += interactionViewModelFactory(
+      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
     )
-  }
-
-  private fun addInteraction(pendingItemList: MutableList<StateItemViewModel>, stateItemViewModel: StateItemViewModel) {
-    pendingItemList += stateItemViewModel
   }
 
   private fun addContentItem(pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState) {

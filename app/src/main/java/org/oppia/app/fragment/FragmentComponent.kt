@@ -7,6 +7,7 @@ import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.audio.AudioFragment
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AddProfileFragment
 import org.oppia.app.profile.AdminAuthFragment
 import org.oppia.app.profile.ProfileChooserFragment
@@ -23,7 +24,7 @@ import org.oppia.app.view.ViewComponent
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [FragmentModule::class])
+@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder

@@ -2,6 +2,7 @@ package org.oppia.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.player.state.SelectionItemInputType
@@ -10,11 +11,21 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  choiceStrings: List<String>, val explorationId: String, val interactionId: String,
-  private val interactionAnswerReceiver: InteractionAnswerReceiver, val maxAllowableSelectionCount: Int,
-  @Suppress("unused") val minAllowableSelectionCount: Int,
+  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
 ): StateItemViewModel(), InteractionAnswerHandler {
+  val interactionId: String = interaction.id
+  private val choiceStrings: List<String> by lazy {
+    interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
+  }
+  private val minAllowableSelectionCount: Int by lazy {
+    interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
+  }
+  private val maxAllowableSelectionCount: Int by lazy {
+    // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
+    // when either of the counts are not specified.
+    interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
+  }
   val selectedItems = computeSelectedItems(
     existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
   )
