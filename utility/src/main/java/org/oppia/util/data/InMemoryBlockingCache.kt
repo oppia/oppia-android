@@ -96,6 +96,20 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
   }
 
   /**
+   * Returns a [Deferred] in the same way as [updateAsync], excepted this update is expected to occur after cache
+   * creation otherwise an exception will be thrown.
+   *
+   * @return a deferred result of a custom type based on the update function.
+   */
+  fun<V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T,V>): Deferred<V> {
+    return blockingScope.async {
+      val (updatedValue, customResult) = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
+      value = updatedValue
+      customResult
+    }
+  }
+
+  /**
    * Returns a [Deferred] in the same way and for the same conditions as [updateIfPresentAsync] except the provided
    * function is expected to update the cache in-place and return a custom value to propagate to the result of the
    * [Deferred] object.

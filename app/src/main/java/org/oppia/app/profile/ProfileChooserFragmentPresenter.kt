@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -25,6 +26,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  @ExperimentalCoroutinesApi
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
@@ -41,6 +43,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
   }
 
+  @ExperimentalCoroutinesApi
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserModel> {
     return BindableAdapter.Builder
       .newBuilder<ProfileChooserModel>()
@@ -58,16 +61,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       .build()
   }
 
+  @ExperimentalCoroutinesApi
   private fun bindProfileView(binding: ProfileChooserProfileViewBinding, data: ProfileChooserModel) {
     binding.viewModel = data
     binding.profileAvatarImg.setOnClickListener {
-      profileManagementController.updateLastLoggedIn(data.profile.id).observe(fragment, Observer { loggedInResult ->
-        if (loggedInResult.isSuccess()) {
-          profileManagementController.setCurrentProfileId(data.profile.id).observe(fragment, Observer { setProfileResult ->
-            if (setProfileResult.isSuccess()) {
-              fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
-            }
-          })
+      profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
+        if (it.isSuccess()) {
+          fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
         }
       })
     }
