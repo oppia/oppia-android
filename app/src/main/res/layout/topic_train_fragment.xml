@@ -33,22 +33,22 @@
           android:id="@+id/master_skills_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:fontFamily="@font/roboto_medium"
+          android:layout_marginStart="@dimen/margin_28dp"
+          android:layout_marginTop="@dimen/margin_48dp"
+          android:layout_marginEnd="@dimen/margin_28dp"
+          android:fontFamily="sans-serif-medium"
           android:text="@string/topic_train_master_these_skills"
           android:textColor="@color/oppiaPrimaryText"
-          android:layout_marginTop="@dimen/margin_48dp"
-          android:layout_marginStart="@dimen/margin_28dp"
-          android:layout_marginEnd="@dimen/margin_28dp"
           android:textSize="20sp" />
 
         <TextView
           android:id="@+id/skills_description_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_8dp"
           android:layout_marginStart="@dimen/margin_28dp"
+          android:layout_marginTop="@dimen/margin_8dp"
           android:layout_marginEnd="@dimen/margin_28dp"
-          android:fontFamily="@font/roboto_regular"
+          android:fontFamily="sans-serif"
           android:text="@string/topic_train_skills_description"
           android:textColor="@color/oppiaSecondaryText"
           android:textSize="16sp" />
