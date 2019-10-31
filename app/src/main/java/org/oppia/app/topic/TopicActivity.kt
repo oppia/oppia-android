@@ -37,7 +37,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    // TODO(#135): Change to play tab in this function.
+    (supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment).topicFragmentPresenter.setCurrentTab(1)
   }
 
   override fun routeToConceptCard(skillId: String) {

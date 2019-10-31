@@ -38,7 +38,9 @@ class TopicFragmentPresenter @Inject constructor(
     setUpViewPager(viewPager, topicId)
     return binding.root
   }
-
+  fun setCurrentTab(tabNumber: Int){
+    viewPager.setCurrentItem(tabNumber,true)
+  }
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
     val adapter = ViewPagerAdapter(fragment.fragmentManager!!, tabIcons.size, topicId!!)
     viewPager.adapter = adapter

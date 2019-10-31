@@ -14,6 +14,7 @@ import org.oppia.app.R
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -87,7 +88,7 @@ class TopicFragmentTest {
           Matchers.containsString(topicName)
         )
       )
-    )
+    ).perform(scrollTo())
   }
 
   @Test
@@ -215,7 +216,7 @@ class TopicFragmentTest {
           Matchers.containsString(topicName)
         )
       )
-    )
+    ).perform(scrollTo())
   }
 
   @Test
@@ -296,7 +297,7 @@ class TopicFragmentTest {
           Matchers.containsString(topicName)
         )
       )
-    )
+    ).perform(scrollTo())
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     onView(
       allOf(
@@ -310,7 +311,17 @@ class TopicFragmentTest {
           Matchers.containsString(topicName)
         )
       )
-    )
+    ).perform(scrollTo())
+  }
+  @Test
+  @UiThread
+  fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
+    activityTestRule.launchActivity(null)
+    onView(
+      withId(R.id.see_more_text_view)
+    ).perform(scrollTo(),click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle("PLAY")))
+    onView(withText("First Story")).check(matches(isDisplayed()))
   }
 
   @Module
