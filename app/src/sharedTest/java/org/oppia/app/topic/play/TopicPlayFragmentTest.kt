@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -33,6 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.story.StoryActivity
@@ -231,16 +233,19 @@ class TopicPlayFragmentTest {
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
-    activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    onView(
-      atPositionOnView(
-        R.id.story_summary_recycler_view,
-        0,
-        R.id.chapter_recycler_view
-      )
-    ).check(matches(isDisplayed()))
+    ActivityScenario.launch(TopicActivity::class.java).use {
+      onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      onView(
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          0,
+          R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
+    }
   }
 
   @After
