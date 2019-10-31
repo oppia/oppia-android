@@ -85,3 +85,4 @@ class HtmlParserTest {
     Intents.release()
   }
 }
+
