@@ -461,11 +461,29 @@ class ProfileManagementControllerTest {
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
     profileManagementController.setCurrentProfileId(profileId).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
-    val currentProfileId = profileManagementController.getCurrentProfileId()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentProfileId.internalId).isEqualTo(2)
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testLoginToProfile_addProfiles_loginToProfile_checkGetProfileIdAndLoginTimestampIsCorrect() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    profileManagementController.loginToProfile(profileId).observeForever(mockUpdateResultObserver)
+    advanceUntilIdle()
+    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
+    assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs).isNotEqualTo(0)
   }
 
   private fun addTestProfiles() {
