@@ -43,7 +43,7 @@ class StoryFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummary> {
     return BindableAdapter.Builder
       .newBuilder<ChapterSummary>()
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         inflateDataBinding = StoryChapterViewBinding::inflate,
         setViewModel = StoryChapterViewBinding::setChapterSummary
       )
