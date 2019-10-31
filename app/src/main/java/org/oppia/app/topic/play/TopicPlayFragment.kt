@@ -36,7 +36,9 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex!!)
+    if(currentExpandedChapterListIndex!=null) {
+      outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex!!)
+    }
   }
 
   override fun onExpandListIconClicked(index: Int?) {
