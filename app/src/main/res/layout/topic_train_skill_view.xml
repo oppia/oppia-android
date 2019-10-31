@@ -25,7 +25,7 @@
       android:text="@{skill.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:button="@drawable/selecto_checkbox"
+      android:button="@drawable/selector_checkbox"
       android:paddingLeft="@dimen/padding_checkbox"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
