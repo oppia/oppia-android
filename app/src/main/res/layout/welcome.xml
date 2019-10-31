@@ -14,6 +14,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+      android:id="@+id/welcome_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
