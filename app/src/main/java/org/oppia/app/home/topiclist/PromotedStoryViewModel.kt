@@ -32,7 +32,7 @@ class PromotedStoryViewModel @Inject constructor(
   }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    (activity as HomeActivity).routeToStory(promotedStoryObservable.get()!!.storyId)
+    (activity as HomeActivity).routeToTopicPlayStory(promotedStoryObservable.get()!!.topicId,promotedStoryObservable.get()!!.storyId)
   }
 
   fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
