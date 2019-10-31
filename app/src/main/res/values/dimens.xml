@@ -17,4 +17,7 @@
   <dimen name="margin_32dp">32dp</dimen>
   <dimen name="margin_46dp">46dp</dimen>
   <dimen name="margin_48dp">48dp</dimen>
+
+  <dimen name="padding_checkbox">18dp</dimen>
+
 </resources>
