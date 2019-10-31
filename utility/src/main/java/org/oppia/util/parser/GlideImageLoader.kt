@@ -18,5 +18,3 @@ class GlideImageLoader @Inject constructor(private val context: Context) : Image
       .into(target)
   }
 }
-
-
