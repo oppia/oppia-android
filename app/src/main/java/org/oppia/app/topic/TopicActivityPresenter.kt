@@ -3,7 +3,6 @@ package org.oppia.app.topic
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.topic.review.TopicReviewFragment
 import javax.inject.Inject
 
 /** The presenter for [TopicActivity]. */
