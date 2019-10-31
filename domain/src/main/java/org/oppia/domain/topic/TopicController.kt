@@ -3,6 +3,7 @@ package org.oppia.domain.topic
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
+import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
@@ -53,6 +54,7 @@ class TopicController @Inject constructor(
       when (topicId) {
         TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
         TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
+        FRACTIONS_TOPIC_ID -> AsyncResult.success(createTopicFromJson("fractions_topic.json"))
         else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
       }
     )
@@ -236,6 +238,84 @@ class TopicController @Inject constructor(
       .addSkill(createTestTopic1Skill0())
       .setTopicThumbnail(createTestTopic1Thumbnail())
       .build()
+  }
+
+  /** Utility to create a topic from its json representation. The json file is expected to have
+   * a key called 'topic' that holds the topic data. */
+  private fun createTopicFromJson(fileName: String): Topic {
+    val topicData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONObject("topic")!!
+    return Topic.newBuilder()
+      .setTopicId(topicData.getString("id"))
+      .setName(topicData.getString("name"))
+      .setDescription(topicData.getString("description"))
+      .addAllSkill(createSkillsFromJson("fractions_skills.json"))
+      .addAllStory(createStoriesFromJson("fractions_stories.json"))
+      .setTopicThumbnail(createTopicThumbnail(fileName))
+      .build()
+  }
+
+  /** Utility to create the skill list of a topic from its json representation. The json file is expected to have
+   * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'. */
+  private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
+    val skillList = mutableListOf<SkillSummary>()
+    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    for (i in 0 until skillData.length()) {
+      skillList.add(createSkillFromJson(skillData.getJSONObject(i).getJSONObject("skill")))
+    }
+    return skillList
+  }
+
+  private fun createSkillFromJson(skillData: JSONObject): SkillSummary {
+    return SkillSummary.newBuilder()
+      .setSkillId(skillData.getString("id"))
+      .setDescription(skillData.getString("description"))
+      .build()
+  }
+
+  /** Utility to create the story list of a topic from its json representation. The json file is expected to have
+   * a key called 'story_list' that contains an array of story objects, each with the key 'story'. */
+  private fun createStoriesFromJson(fileName: String): List<StorySummary> {
+    val storyList = mutableListOf<StorySummary>()
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    for (i in 0 until storyData.length()) {
+      storyList.add(createStoryFromJson(storyData.getJSONObject(i).getJSONObject("story")))
+    }
+    return storyList
+  }
+
+  private fun createStoryFromJson(storyData: JSONObject): StorySummary {
+    return StorySummary.newBuilder()
+      .setStoryId(storyData.getString("id"))
+      .setStoryName(storyData.getString("title"))
+      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
+      .build()
+  }
+
+  private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {
+    val chapterList = mutableListOf<ChapterSummary>()
+    for (i in 0 until chapterData.length()) {
+      val chapter = chapterData.getJSONObject(i)
+      chapterList.add(
+        ChapterSummary.newBuilder()
+          .setExplorationId(chapter.getString("exploration_id"))
+          .setName(chapter.getString("title"))
+          .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+          .build()
+      )
+    }
+    return chapterList
+  }
+
+  private fun createTopicThumbnail(fileName: String): LessonThumbnail {
+    return when (fileName) {
+      "fractions_topic.json" -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+      else -> LessonThumbnail.newBuilder().setThumbnailGraphic(LessonThumbnailGraphic.UNRECOGNIZED)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+    }
   }
 
   private fun createTestTopic1Thumbnail(): LessonThumbnail {
