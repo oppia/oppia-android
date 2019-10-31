@@ -14,12 +14,12 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getTopicFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        TopicReviewFragment()
+        TopicFragment()
       ).commitNow()
     }
   }
 
-  private fun getTopicFragment(): TopicReviewFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicReviewFragment?
+  private fun getTopicFragment(): TopicFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment?
   }
 }
