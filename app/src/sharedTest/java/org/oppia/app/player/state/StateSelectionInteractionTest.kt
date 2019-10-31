@@ -43,6 +43,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -56,8 +57,8 @@ class StateSelectionInteractionTest {
   private lateinit var launchedActivity: Activity
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
-    HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  var activityTestRule: ActivityTestRule<ContentCardTestActivity> = ActivityTestRule(
+    ContentCardTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Before
@@ -69,7 +70,6 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
-    onView(withId(R.id.play_exploration_button)).perform(click())
     onView(withId(R.id.selection_interaction_recyclerview)).perform(
       actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
     )
@@ -80,7 +80,6 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
-    onView(withId(R.id.play_exploration_button1)).perform(click())
     onView(withId(R.id.selection_interaction_recyclerview)).perform(
       actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
     )
@@ -91,10 +90,8 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
-
     activityTestRule.launchActivity(null)
-    onView(withId(R.id.play_exploration_button1)).perform(click())
-    onView(withId(R.id.selection_interaction_recyclerview)).perform(
+     onView(withId(R.id.selection_interaction_recyclerview)).perform(
       actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
     )
     counter++
