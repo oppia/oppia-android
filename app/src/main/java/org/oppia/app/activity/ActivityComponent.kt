@@ -40,5 +40,4 @@ interface ActivityComponent {
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
-  fun inject(urlImageParserTestActivity: UrlImageParserTestActivity)
 }
