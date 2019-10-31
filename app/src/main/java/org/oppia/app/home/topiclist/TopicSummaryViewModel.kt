@@ -17,7 +17,7 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** The view model corresponding to topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
-  val topicSummary: TopicSummary
+  val topicSummary: TopicSummary, private val topicSummaryClickListener: TopicSummaryClickListener
 ) {
   val name: String = topicSummary.name
   val canonicalStoryCount: Int = topicSummary.canonicalStoryCount
@@ -26,7 +26,7 @@ class TopicSummaryViewModel(
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-
+    topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
   @ColorInt

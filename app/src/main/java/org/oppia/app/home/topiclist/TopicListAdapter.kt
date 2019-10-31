@@ -16,7 +16,8 @@ private const val VIEW_TYPE_TOPIC_LIST = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
-  private val itemList: MutableList<Any>
+  private val itemList: MutableList<Any>,
+  private val topicSummaryClickListener: TopicSummaryClickListener
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -57,7 +58,7 @@ class TopicListAdapter(
         (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
       VIEW_TYPE_TOPIC_LIST -> {
-        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummary)
+        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummary, topicSummaryClickListener)
       }
     }
   }
@@ -92,14 +93,12 @@ class TopicListAdapter(
   private class TopicListViewHolder(
     val binding: ViewDataBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(topicSummary: TopicSummary) {
+    internal fun bind(topicSummary: TopicSummary, topicSummaryClickListener: TopicSummaryClickListener) {
 
-      val topicSummaryViewModel = TopicSummaryViewModel(topicSummary)
+      val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, topicSummaryClickListener)
 
       binding.setVariable(BR.viewModel, topicSummaryViewModel)
     }
   }
-
-
 
 }

@@ -1,5 +1,7 @@
 package org.oppia.app.topic
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.story.StoryActivity
@@ -45,5 +47,13 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
 
   companion object {
     internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
+    internal const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
+
+    /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
+    fun createTopicActivityIntent(context: Context, topicId: String): Intent {
+      val intent = Intent(context, TopicActivity::class.java)
+      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      return intent
+    }
   }
 }

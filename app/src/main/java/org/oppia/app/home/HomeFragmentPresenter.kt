@@ -13,7 +13,9 @@ import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
+import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.model.TopicList
+import org.oppia.app.model.TopicSummary
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -38,6 +40,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val logger: Logger
 ) {
 
+  private val routeToTopicListener = activity as RouteToTopicListener
+
   private val itemList: MutableList<Any> = ArrayList()
 
   private lateinit var topicListAdapter: TopicListAdapter
@@ -51,7 +55,7 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    topicListAdapter = TopicListAdapter(itemList)
+    topicListAdapter = TopicListAdapter(itemList, fragment as TopicSummaryClickListener)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -155,4 +159,7 @@ class HomeFragmentPresenter @Inject constructor(
     return vals
   }
 
+  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+    routeToTopicListener.routeToTopic(topicSummary.topicId)
+  }
 }

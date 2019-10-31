@@ -31,6 +31,7 @@
   <string name="loading_topics_list_text">Loading topics list…</string>
   <string name="error_loading_topics_list_text">Error loading topics list</string>
   <string name="empty_topics_list_text">There are no topics to show</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -45,6 +46,14 @@
     </item>
     <item quantity="other">
       %d Stories
+    </item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
     </item>
   </plurals>
 </resources>

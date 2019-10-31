@@ -51,6 +51,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/white"
+      android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
       android:fontFamily="sans-serif-light"
       android:textStyle="italic"
       android:textSize="14sp"
