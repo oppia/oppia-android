@@ -4,15 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
 /** The activity for tabs in Topic. */
-
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
-  RouteToTopicPlayListener, RouteToStoryListener {
+  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
+
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -39,6 +41,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
       conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
+  }
+
+  override fun routeToExploration(explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {
