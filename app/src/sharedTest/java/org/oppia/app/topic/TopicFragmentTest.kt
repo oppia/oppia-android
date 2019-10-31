@@ -3,23 +3,18 @@ package org.oppia.app.topic
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import androidx.annotation.UiThread
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.oppia.app.R
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -27,6 +22,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matchers
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.util.threading.BackgroundDispatcher
@@ -42,10 +41,12 @@ class TopicFragmentTest {
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
   private fun getResourceString(id: Int): String {
     val resources = InstrumentationRegistry.getInstrumentation().targetContext.resources
     return resources.getString(id)
   }
+
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
     activityTestRule.launchActivity(null)
@@ -95,7 +96,7 @@ class TopicFragmentTest {
 
   @Test
   @UiThread
-  fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected(){
+  fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected() {
     activityTestRule.launchActivity(null)
     onView(
       allOf(
