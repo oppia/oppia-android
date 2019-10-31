@@ -5,16 +5,13 @@ import android.widget.Button
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
-import org.oppia.app.viewmodel.ObservableViewModel
-import java.lang.IllegalStateException
 
 /** [ViewModel] for State navigation buttons. */
-@FragmentScope
-class StateNavigationButtonViewModel @Inject constructor(val context: Context) : ObservableViewModel() {
+class StateNavigationButtonViewModel(
+  val context: Context, val stateNavigationButtonListener: StateNavigationButtonListener
+) : StateItemViewModel() {
   companion object {
     @JvmStatic
     @BindingAdapter("android:button")
@@ -78,7 +75,7 @@ class StateNavigationButtonViewModel @Inject constructor(val context: Context) :
     }
   }
 
-  fun triggerContinuationNavigationButtonCallback(stateNavigationButtonListener: StateNavigationButtonListener) {
+  fun triggerContinuationNavigationButtonCallback() {
     when (currentContinuationNavigationButtonType) {
       ContinuationNavigationButtonType.NEXT_BUTTON -> stateNavigationButtonListener.onNextButtonClicked()
       ContinuationNavigationButtonType.SUBMIT_BUTTON -> stateNavigationButtonListener.onSubmitButtonClicked()

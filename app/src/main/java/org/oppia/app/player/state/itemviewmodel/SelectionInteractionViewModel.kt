@@ -1,19 +1,26 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.lifecycle.ViewModel
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
+import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
-/** [ViewModel] for multiple or item-selection input choice list. */
+/** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val choiceItems: List<String>, val interactionId: String,
+  choiceStrings: List<String>, val interactionId: String,
   private val interactionAnswerReceiver: InteractionAnswerReceiver, val maxAllowableSelectionCount: Int,
   @Suppress("unused") val minAllowableSelectionCount: Int,
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): ViewModel(), InteractionAnswerHandler {
-  val selectedItems = computeSelectedItems(existingAnswer ?: InteractionObject.getDefaultInstance())
+): StateItemViewModel(), InteractionAnswerHandler {
+  val selectedItems = computeSelectedItems(
+    existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
+  )
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
+    choiceStrings, selectedItems, isReadOnly
+  )
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean {
     // If more than one answer is allowed, then a submission button is needed.
@@ -24,7 +31,7 @@ class SelectionInteractionViewModel(
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (interactionId == "ItemSelectionInput") {
       interactionObjectBuilder.setOfHtmlString = StringList.newBuilder()
-        .addAllHtml(selectedItems.map(choiceItems::get))
+        .addAllHtml(selectedItems.map(choiceItems::get).map { it.htmlContent })
         .build()
     } else if (selectedItems.size == 1) {
       interactionObjectBuilder.nonNegativeInt = selectedItems.first()
@@ -39,13 +46,43 @@ class SelectionInteractionViewModel(
     }
   }
 
-  private fun computeSelectedItems(answer: InteractionObject): MutableList<Int> {
+  /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
+  fun getSelectionItemInputType(): SelectionItemInputType {
     return if (interactionId == "ItemSelectionInput") {
-      answer.setOfHtmlString.htmlList.map(choiceItems::indexOf).toMutableList()
-    } else if (answer.objectTypeCase == InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT) {
-      mutableListOf(answer.nonNegativeInt)
+      if (maxAllowableSelectionCount > 1) {
+        SelectionItemInputType.CHECKBOXES
+      } else {
+        SelectionItemInputType.RADIO_BUTTONS
+      }
     } else {
-      mutableListOf()
+      SelectionItemInputType.RADIO_BUTTONS
+    }
+  }
+
+  companion object {
+    private fun computeSelectedItems(
+      answer: InteractionObject, interactionId: String, choiceStrings: List<String>
+    ): MutableList<Int> {
+      return if (interactionId == "ItemSelectionInput") {
+        answer.setOfHtmlString.htmlList.map(choiceStrings::indexOf).toMutableList()
+      } else if (answer.objectTypeCase == InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT) {
+        mutableListOf(answer.nonNegativeInt)
+      } else {
+        mutableListOf()
+      }
+    }
+
+    private fun computeChoiceItems(
+      choiceStrings: List<String>, selectedItems: List<Int>, isReadOnly: Boolean
+    ): ObservableArrayList<SelectionInteractionContentViewModel> {
+      val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
+      observableList += choiceStrings.mapIndexed { index, choiceString ->
+        val isAnswerSelected = index in selectedItems
+        SelectionInteractionContentViewModel(
+          htmlContent = choiceString, isAnswerInitiallySelected = isAnswerSelected, isReadOnly = isReadOnly
+        )
+      }
+      return observableList
     }
   }
 }

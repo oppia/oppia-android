@@ -23,7 +23,8 @@
       android:contentDescription="@string/previous_state_description"
       android:padding="8dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
-      android:visibility="@{buttonViewModel.isPreviousButtonVisible()? View.VISIBLE: View.GONE}"/>
+      android:visibility="@{buttonViewModel.isPreviousButtonVisible()? View.VISIBLE: View.GONE}"
+      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onPreviousButtonClicked()}"/>
     <ImageView
       android:id="@+id/next_state_image_view"
       android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
       android:contentDescription="@string/next_state_description"
       android:padding="8dp"
       android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
-      android:visibility="@{buttonViewModel.isNextButtonVisible()? View.VISIBLE: View.GONE}"/>
+      android:visibility="@{buttonViewModel.isNextButtonVisible()? View.VISIBLE: View.GONE}"
+      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onNextButtonClicked()}"/>
     <Button
       android:id="@+id/interaction_button"
       style="@style/StateButtonActive"
@@ -43,6 +45,7 @@
       android:drawableEnd="@{buttonViewModel.interactionButtonName.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
       android:text="@{buttonViewModel.interactionButtonName}"
       android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
-      android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"/>
+      android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE}"
+      android:onClick="@{(v) -> buttonViewModel.triggerContinuationNavigationButtonCallback()}"/>
   </RelativeLayout>
 </layout>

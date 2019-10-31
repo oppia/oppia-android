@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.lifecycle.ViewModel
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -14,7 +13,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
   val isReadOnly: Boolean
-): ViewModel(), InteractionAnswerHandler {
+): StateItemViewModel(), InteractionAnswerHandler {
   val answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false

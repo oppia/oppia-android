@@ -3,10 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
-    <import type="android.view.View"/>
-    <variable
-      name="stateFragment"
-      type="org.oppia.app.player.state.StateFragment"/>
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel"/>
@@ -23,6 +19,7 @@
       android:dividerHeight="8dp"
       android:padding="16dp"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:data="@{viewModel.itemList}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

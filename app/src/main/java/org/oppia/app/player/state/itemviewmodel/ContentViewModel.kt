@@ -1,6 +1,6 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.lifecycle.ViewModel
+import org.oppia.util.parser.HtmlParser
 
 /** [ViewModel] for content-card state. */
-class ContentViewModel(val contentId: String, val htmlContent: String): ViewModel()
+class ContentViewModel(val htmlContent: CharSequence): StateItemViewModel()
