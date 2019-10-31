@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Handler
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -100,8 +101,7 @@ class StateSelectionInteractionTest {
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(7, click())
       )
-      onView(withId(R.id.selection_interaction_recyclerview)).check(matches(isDisplayed()));
-
+      activityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       counter++
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(4, click())
