@@ -415,8 +415,8 @@ class StateFragmentPresenter @Inject constructor(
     val maxAllowableSelectionCount = argsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
     val choiceItemStrings = argsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
     viewModel.itemList += SelectionInteractionViewModel(
-      choiceItemStrings, interaction.id, fragment as InteractionAnswerReceiver, maxAllowableSelectionCount,
-      minAllowableSelectionCount, existingAnswer, isReadOnly
+      choiceItemStrings, explorationId, interaction.id, fragment as InteractionAnswerReceiver,
+      maxAllowableSelectionCount, minAllowableSelectionCount, existingAnswer, isReadOnly
     )
   }
 

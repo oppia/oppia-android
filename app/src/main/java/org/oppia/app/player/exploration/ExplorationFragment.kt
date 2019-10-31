@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ExplorationFragment : InjectableFragment() {
   @Inject lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

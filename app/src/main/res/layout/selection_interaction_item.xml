@@ -34,6 +34,7 @@
         android:dividerHeight="8dp"
         app:data="@{viewModel.choiceItems}"
         app:itemInputType="@{viewModel.getSelectionItemInputType()}"
+        app:explorationId="@{viewModel.explorationId}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,12 +2,19 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import androidx.databinding.BindingAdapter
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.HtmlParser
+import javax.inject.Inject
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -25,8 +32,17 @@ class SelectionInteractionView @JvmOverloads constructor(
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var selectionItemInputType: SelectionItemInputType = SelectionItemInputType.CHECKBOXES
 
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject @field:ExplorationHtmlParserEntityType lateinit var entityType: String
+  private lateinit var explorationId: String
+
   init {
     adapter = createAdapter()
+  }
+
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
   }
 
   fun setItemInputType(selectionItemInputType: SelectionItemInputType) {
@@ -38,28 +54,59 @@ class SelectionInteractionView @JvmOverloads constructor(
     adapter!!.notifyDataSetChanged()
   }
 
+  // TODO(BenHenning): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
+  //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
+  fun setExplorationId(explorationId: String) {
+    this.explorationId = explorationId
+  }
+
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
     return BindableAdapter.Builder
       .newBuilder<SelectionInteractionContentViewModel>()
       .registerViewTypeComputer { selectionItemInputType.ordinal }
-      .registerViewDataBinderWithSameModelType(
+      .registerViewBinder(
         viewType = SelectionItemInputType.CHECKBOXES.ordinal,
-        inflateDataBinding = ItemSelectionInteractionItemsBinding::inflate,
-        setViewModel = ItemSelectionInteractionItemsBinding::setViewModel
+        inflateView = { parent ->
+          ItemSelectionInteractionItemsBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
+          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+            viewModel.htmlContent, binding.itemSelectionContentsTextView
+          )
+          binding.viewModel = viewModel
+        }
       )
-      .registerViewDataBinderWithSameModelType(
+      .registerViewBinder(
         viewType = SelectionItemInputType.RADIO_BUTTONS.ordinal,
-        inflateDataBinding = MultipleChoiceInteractionItemsBinding::inflate,
-        setViewModel = MultipleChoiceInteractionItemsBinding::setViewModel
+        inflateView = { parent ->
+          MultipleChoiceInteractionItemsBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
+          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+            viewModel.htmlContent, binding.multipleChoiceContentTextView
+          )
+          binding.viewModel = viewModel
+        }
       )
       .build()
   }
 }
 
-/**
- * Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. This also initializes
- */
+/** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("itemInputType")
 fun setItemInputType(
   selectionInteractionView: SelectionInteractionView, selectionItemInputType: SelectionItemInputType
 ) = selectionInteractionView.setItemInputType(selectionItemInputType)
+
+
+/** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
+@BindingAdapter("explorationId")
+fun setExplorationId(
+  selectionInteractionView: SelectionInteractionView, explorationId: String
+) = selectionInteractionView.setExplorationId(explorationId)
