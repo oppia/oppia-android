@@ -8,9 +8,21 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+const val KEY_ADMIN_PIN = "ADMIN_PIN"
+
 /** Fragment that authenticates by checking for admin's PIN. */
 class AdminAuthFragment : InjectableFragment() {
   @Inject lateinit var adminAuthFragmentPresenter: AdminAuthFragmentPresenter
+
+  companion object {
+    fun newInstance(adminPin: String): AdminAuthFragment {
+      val adminAuthFragment = AdminAuthFragment()
+      val args = Bundle()
+      args.putString(KEY_ADMIN_PIN, adminPin)
+      adminAuthFragment.arguments = args
+      return adminAuthFragment
+    }
+  }
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)

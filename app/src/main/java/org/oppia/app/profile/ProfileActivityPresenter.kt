@@ -15,6 +15,7 @@ ProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity, private val profileManagementController: ProfileManagementController
 ) {
   fun handleOnCreate() {
+    profileManagementController.addProfile("James", "12345", null, true, true)
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

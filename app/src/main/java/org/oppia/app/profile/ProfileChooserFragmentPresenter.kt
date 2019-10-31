@@ -76,11 +76,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
     binding.profileAddButton.setOnClickListener {
       if (getAdminAuthFragment() == null) {
+        val adminAuthFragment = AdminAuthFragment.newInstance(getProfileChooserViewModel().adminPin)
         fragment.requireActivity().supportFragmentManager.beginTransaction()
           .setCustomAnimations(R.anim.slide_up, R.anim.slide_down, R.anim.slide_up, R.anim.slide_down).add(
-          R.id.profile_chooser_fragment_placeholder,
-          AdminAuthFragment()
-        ).addToBackStack(null).commit()
+            R.id.profile_chooser_fragment_placeholder, adminAuthFragment
+          ).addToBackStack(null).commit()
       }
     }
   }
