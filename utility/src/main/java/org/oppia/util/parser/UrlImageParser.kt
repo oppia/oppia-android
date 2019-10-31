@@ -13,6 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
+// TODO(#277): Add test cases for loading image.
+
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
   private val context: Context,

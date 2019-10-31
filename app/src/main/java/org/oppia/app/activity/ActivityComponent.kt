@@ -13,7 +13,6 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
-import org.oppia.app.testing.UrlImageParserTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
@@ -41,5 +40,4 @@ interface ActivityComponent {
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
-  fun inject(urlImageParserTestActivity: UrlImageParserTestActivity)
 }
