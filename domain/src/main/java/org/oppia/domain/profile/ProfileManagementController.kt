@@ -45,10 +45,11 @@ class ProfileManagementController @Inject constructor(
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 
-  class ProfileNameNotUniqueException(msg: String) : Exception(msg)
-  class FailedToStoreImageException(msg: String) : Exception(msg)
-  class FailedToDeleteDirException(msg: String) : Exception(msg)
-  class ProfileNotFoundException(msg: String) : Exception(msg)
+  class ProfileNameNotUniqueException(msg: String): Exception(msg)
+  class ProfileNameOnlyLettersException(msg: String): Exception(msg)
+  class FailedToStoreImageException(msg: String): Exception(msg)
+  class FailedToDeleteDirException(msg: String): Exception(msg)
+  class ProfileNotFoundException(msg: String): Exception(msg)
   class FailedToReadProfilesException(msg: String): Exception(msg)
 
   enum class ProfileActionStatus {
@@ -97,6 +98,9 @@ class ProfileManagementController @Inject constructor(
   fun addProfile(
     name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean, isAdmin: Boolean = false
   ): LiveData<AsyncResult<Any?>> {
+    if (!onlyLetters(name)) {
+      return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
+    }
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!isUniqueName(name, it)) {
@@ -149,6 +153,9 @@ class ProfileManagementController @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun updateName(profileId: ProfileId, newName: String): LiveData<AsyncResult<Any?>> {
+    if (!onlyLetters(newName)) {
+      return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$newName does not contain only letters")))
+    }
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!isUniqueName(newName, it)) {
@@ -364,8 +371,9 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun isUniqueName(newName: String, profileDatabase: ProfileDatabase): Boolean {
+    val lowerCaseNewName = newName.toLowerCase()
     profileDatabase.profilesMap.values.forEach {
-      if (it.name == newName) {
+      if (it.name.toLowerCase() == lowerCaseNewName) {
         return false
       }
     }
@@ -390,6 +398,10 @@ class ProfileManagementController @Inject constructor(
       }
     }
     return imageFile.absolutePath
+  }
+
+  private fun onlyLetters(name: String): Boolean {
+    return name.matches(Regex("[a-zA-Z]+"))
   }
 
   // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
