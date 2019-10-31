@@ -15,7 +15,8 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.testing.ContentCardTestActivity
 
-// TODO(#277): Add test case for image parsing once PR #277 is merged.
+// TODO(#277): Add tests for image parsing.
+
 /** Tests for [VIEW_TYPE_CONTENT]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentContentCardTest {
@@ -23,7 +24,8 @@ class StateFragmentContentCardTest {
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
     ActivityScenario.launch(ContentCardTestActivity::class.java).use {
-      val htmlResult =  "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
+      val htmlResult =
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
             "Incidentally, do you know where the name 'Oppia' comes from?\n\n"
       onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
     }
