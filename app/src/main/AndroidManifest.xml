@@ -19,7 +19,7 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
-    <activity android:name=".story.StoryActivity"/>
+    <activity android:name=".story.StoryActivity" />
     <activity android:name=".home.HomeActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
