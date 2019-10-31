@@ -21,10 +21,8 @@ class TopicFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    topicId =
-      if (arguments != null && arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null) arguments!!.getString(
-        TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-      ) else ""
+    topicId = if (arguments != null && arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null)
+      arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) else ""
     return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
   }
 }
