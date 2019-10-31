@@ -343,11 +343,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun addContentItem() {
     val contentViewModel = ContentViewModel()
     val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
-    if (contentSubtitledHtml.contentId != "") {
-      contentViewModel.contentId = contentSubtitledHtml.contentId
-    } else {
-      contentViewModel.contentId = "content"
-    }
+     contentViewModel.contentId = contentSubtitledHtml.contentId
     contentViewModel.htmlContent = contentSubtitledHtml.html
     itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
