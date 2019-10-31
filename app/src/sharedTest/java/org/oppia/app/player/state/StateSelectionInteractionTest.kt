@@ -62,7 +62,6 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
@@ -70,12 +69,10 @@ class StateSelectionInteractionTest {
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
       )
-    }
   }
 
   @Test
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
@@ -83,12 +80,10 @@ class StateSelectionInteractionTest {
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
       )
-    }
   }
 
   @Test
   fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button1)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
@@ -108,7 +103,6 @@ class StateSelectionInteractionTest {
       )
       counter++
       assertTrue("Error, You cannot select more than $maxSelectionAllowedCount", counter >= maxSelectionAllowedCount)
-    }
   }
 
   @After
