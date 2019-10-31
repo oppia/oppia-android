@@ -9,6 +9,7 @@
       android:id="@+id/review_skill_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:clipToPadding="false"
       android:padding="16dp"/>
   </FrameLayout>
 </layout>
