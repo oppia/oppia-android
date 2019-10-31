@@ -90,7 +90,7 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
-          android:text="@{viewModel.promotedStoryObservable.get().storyName}" />
+          android:text="@{viewModel.promotedStoryObservable.get().nextChapterName}" />
 
         <TextView
           android:id="@+id/story_name"

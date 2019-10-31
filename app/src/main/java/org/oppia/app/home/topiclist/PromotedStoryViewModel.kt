@@ -1,5 +1,6 @@
 package org.oppia.app.home.topiclist
 
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
@@ -28,6 +29,7 @@ class PromotedStoryViewModel @Inject constructor(
 
   fun setPromotedStory(promotedStory: PromotedStory) {
     promotedStoryObservable.set(promotedStory)
+    Log.d("TAG", "promotedStory: $promotedStory")
   }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
