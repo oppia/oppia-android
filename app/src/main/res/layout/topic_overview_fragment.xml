@@ -22,8 +22,10 @@
       <ImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
+        android:paddingTop="22dp"
         android:foreground="@drawable/thumbnail_gradient"
+        android:background="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
         android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
