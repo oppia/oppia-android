@@ -97,7 +97,8 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    stateAdapter = StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
+    stateAdapter =
+      StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
@@ -332,6 +333,7 @@ class StateFragmentPresenter @Inject constructor(
       oldStateNameList.add(currentEphemeralState.state.name)
     }
   }
+  
   private fun checkAndAddContentItem() {
     if (currentEphemeralState.state.hasContent()) {
       addContentItem()
@@ -343,7 +345,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun addContentItem() {
     val contentViewModel = ContentViewModel()
     val contentSubtitledHtml: SubtitledHtml = currentEphemeralState.state.content
-     contentViewModel.contentId = contentSubtitledHtml.contentId
+    contentViewModel.contentId = contentSubtitledHtml.contentId
     contentViewModel.htmlContent = contentSubtitledHtml.html
     itemList.add(contentViewModel)
     stateAdapter.notifyDataSetChanged()
