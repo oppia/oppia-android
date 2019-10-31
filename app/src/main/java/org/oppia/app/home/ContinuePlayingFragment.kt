@@ -10,7 +10,6 @@ import javax.inject.Inject
 
 /** Fragment that contains all recently played stories. */
 class ContinuePlayingFragment : InjectableFragment() {
-
   @Inject lateinit var continuePlayingFragmentPresenter: ContinuePlayingFragmentPresenter
 
   override fun onAttach(context: Context?) {
@@ -21,5 +20,4 @@ class ContinuePlayingFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return continuePlayingFragmentPresenter.handleCreateView(inflater, container)
   }
-
 }

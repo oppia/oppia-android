@@ -9,7 +9,6 @@ import javax.inject.Inject
 /** [ViewModel] for user app usage history. */
 @FragmentScope
 class UserAppHistoryViewModel @Inject constructor() : ObservableViewModel() {
-
   var isAppAlreadyOpened = ObservableField<Boolean>(false)
 
   fun setAlreadyAppOpened(alreadyOpenedApp: Boolean) {

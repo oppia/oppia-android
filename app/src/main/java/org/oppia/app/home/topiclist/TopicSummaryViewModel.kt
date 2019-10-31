@@ -3,9 +3,6 @@ package org.oppia.app.home.topiclist
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import org.oppia.app.R
-import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.TopicSummary
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.

@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -97,7 +96,6 @@ class StateFragmentPresenter @Inject constructor(
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
-      layoutManager = GridLayoutManager(context, /* spanCount= */ 2)
     }
     binding.let {
       it.stateFragment = fragment as StateFragment

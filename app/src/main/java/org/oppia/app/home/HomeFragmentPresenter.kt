@@ -40,7 +40,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val logger: Logger
 ) {
-
+  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
 
   private val itemList: MutableList<Any> = ArrayList()
@@ -48,8 +48,6 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var topicListAdapter: TopicListAdapter
 
   private lateinit var binding: HomeFragmentBinding
-
-  private val routeToExplorationListener = activity as RouteToExplorationListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
