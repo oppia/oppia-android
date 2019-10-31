@@ -250,11 +250,11 @@ class ProfileManagementController @Inject constructor(
         updateLastLoggedIn(profileId).observeForever { updateLoggedInResult ->
           if (updateLoggedInResult.isSuccess()) {
             pendingLiveData.postValue(AsyncResult.success(null))
-          } else {
+          } else if (updateLoggedInResult.isFailure()) {
             pendingLiveData.postValue(AsyncResult.failed(updateLoggedInResult.getErrorOrNull()!!))
           }
         }
-      } else {
+      } else if (setIdResult.isFailure()) {
         pendingLiveData.postValue(AsyncResult.failed(setIdResult.getErrorOrNull()!!))
       }
     }
