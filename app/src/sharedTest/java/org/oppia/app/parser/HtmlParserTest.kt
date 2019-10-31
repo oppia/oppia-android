@@ -67,13 +67,13 @@ class HtmlParserTest {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "")
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-            "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-            " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-            "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-            "red cherries in the pineapple slices?\u003c/p\u003e",
-        textView
-      )
+      "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
+          "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+          " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+          "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+          "red cherries in the pineapple slices?\u003c/p\u003e",
+      textView
+    )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))

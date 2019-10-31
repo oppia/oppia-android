@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
 import android.widget.TextView
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -60,7 +62,7 @@ class UrlImageParser private constructor(
     }
   }
 
-   class UrlDrawable : BitmapDrawable() {
+  class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
