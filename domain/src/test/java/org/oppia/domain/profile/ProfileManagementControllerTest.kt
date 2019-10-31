@@ -156,7 +156,19 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     advanceUntilIdle()
 
-    profileManagementController.addProfile("James", "321", null, true).observeForever(mockUpdateResultObserver)
+    profileManagementController.addProfile("JAMES", "321", null, true).observeForever(mockUpdateResultObserver)
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfile_addProfileWithNumberInName_checkResultIsFailure() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    profileManagementController.addProfile("James034", "321", null, true).observeForever(mockUpdateResultObserver)
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
