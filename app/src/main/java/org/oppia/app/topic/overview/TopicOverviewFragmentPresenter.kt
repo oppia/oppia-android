@@ -12,8 +12,8 @@ import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToTopicPlayListener
+import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -33,11 +33,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val topicOverviewViewModel  = getTopicOverviewViewModel()
   private var topicId: String=""
 
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    topicId: String
-  ): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
@@ -45,7 +41,6 @@ class TopicOverviewFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = topicOverviewViewModel
     }
-    this.topicId=topicId
     return binding.root
   }
 
@@ -66,6 +61,10 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+    topicId =
+      if (fragment.arguments != null && fragment.arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null) fragment.arguments!!.getString(
+        TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+      ) else ""
     topicController.getTopic(topicId)
   }
 

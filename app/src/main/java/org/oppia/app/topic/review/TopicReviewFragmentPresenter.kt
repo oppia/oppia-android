@@ -14,7 +14,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToConceptCardListener
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -45,7 +45,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
     }
-    this.topicId=topicId
     subscribeToTopicLiveData()
     return binding.root
   }
@@ -57,6 +56,10 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+    topicId =
+      if (fragment.arguments != null && fragment.arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null) fragment.arguments!!.getString(
+        TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+      ) else ""
     topicController.getTopic(topicId)
   }
 
