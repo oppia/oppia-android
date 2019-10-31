@@ -67,6 +67,7 @@ class HomeActivityTest {
   @After
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    Intents.release()
   }
 
   @Test
