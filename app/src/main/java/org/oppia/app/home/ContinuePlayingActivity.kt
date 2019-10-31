@@ -17,7 +17,6 @@ class ContinuePlayingActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-
     /** Returns a new [Intent] to route to [ContinuePlayingActivity]. */
     fun createContinuePlayingActivityIntent(context: Context): Intent {
       return Intent(context, ContinuePlayingActivity::class.java)

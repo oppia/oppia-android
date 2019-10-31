@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener, RouteToTopicListener,
-  RouteToTopicPlayStoryListener {
+  RouteToTopicPlayStoryListener, RouteToContinuePlayingListener {
   @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,5 +27,9 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener, 
 
   override fun routeToTopic(topicId: String) {
     startActivity(TopicActivity.createTopicActivityIntent(this, topicId))
+  }
+
+  override fun routeToContinuePlaying() {
+    startActivity(ContinuePlayingActivity.createContinuePlayingActivityIntent(this))
   }
 }

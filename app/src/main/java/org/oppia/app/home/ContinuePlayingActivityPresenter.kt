@@ -5,7 +5,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The controller for [ContinuePlayingActivity]. */
+/** The presenter for [ContinuePlayingActivity]. */
 @ActivityScope
 class ContinuePlayingActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {

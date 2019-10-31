@@ -1,6 +1,5 @@
 package org.oppia.app.home.topiclist
 
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
@@ -18,7 +17,7 @@ import javax.inject.Inject
 @FragmentScope
 class PromotedStoryViewModel @Inject constructor(
   private val activity: AppCompatActivity
-  ) : ObservableViewModel() {
+) : ObservableViewModel() {
   /**
    * The retrieved [LiveData] for retrieving topic summaries. This model should ensure only one
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
@@ -32,10 +31,13 @@ class PromotedStoryViewModel @Inject constructor(
   }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    (activity as HomeActivity).routeToTopicPlayStory(promotedStoryObservable.get()!!.topicId,promotedStoryObservable.get()!!.storyId)
+    (activity as HomeActivity).routeToTopicPlayStory(
+      promotedStoryObservable.get()!!.topicId,
+      promotedStoryObservable.get()!!.storyId
+    )
   }
 
   fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
-    // TODO(#282): Route to TopicPlayFragment with correct story-id and expand the chapter-list in that item.
+    (activity as HomeActivity).routeToContinuePlaying()
   }
 }
