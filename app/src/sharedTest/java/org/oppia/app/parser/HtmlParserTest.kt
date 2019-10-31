@@ -46,7 +46,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_handleCustomOppiaTags_parsedHtmldisplaysStyledText() {
+  fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "")
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
