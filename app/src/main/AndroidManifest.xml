@@ -11,17 +11,8 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity android:name=".home.HomeActivity" >
-    <intent-filter>
-      <action android:name="android.intent.action.MAIN" />
-      <category android:name="android.intent.category.LAUNCHER" />
-    </intent-filter>
-    <intent-filter>
-      <action android:name="android.intent.action.VIEW" />
-      <category android:name="android.intent.category.DEFAULT" />
-    </intent-filter>
-    </activity>
     <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".player.exploration.ExplorationActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
@@ -29,8 +20,17 @@
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
-    <activity android:name=".story.StoryActivity"/>
-    <activity android:name=".testing.ContentCardTestActivity" />
+    <activity android:name=".story.StoryActivity" />
+    <activity android:name=".home.HomeActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme" />
