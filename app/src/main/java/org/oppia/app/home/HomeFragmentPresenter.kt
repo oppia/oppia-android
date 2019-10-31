@@ -66,8 +66,4 @@ class HomeFragmentPresenter @Inject constructor(
       }
     })
   }
-
-  fun startProfileActivity(v: View) {
-    fragment.activity?.startActivity(Intent(fragment.context, ProfileActivity::class.java))
-  }
 }

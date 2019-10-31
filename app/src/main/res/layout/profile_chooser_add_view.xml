@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-  <data>
-    <variable
-      name="viewModel"
-      type="org.oppia.app.model.ProfileChooserModel" />
-  </data>
   <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="20dp"
     android:gravity="center">
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
+      android:id="@+id/profile_add_button"
       android:layout_width="70dp"
       android:layout_height="70dp"
       android:src="@drawable/review_placeholder"
-      app:civ_border_width="0.75dp"
-      app:civ_border_color="@color/white"
-      android:layout_marginBottom="5dp"
-      />
+      android:layout_marginBottom="5dp" />
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

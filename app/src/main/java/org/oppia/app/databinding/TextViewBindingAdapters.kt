@@ -11,6 +11,6 @@ import java.util.*
  */
 @BindingAdapter("android:profileDate")
 fun setTextWithDate(textView: TextView, timeMs: Long) {
-  val dateText = "Last used " + DateUtils.getRelativeTimeSpanString(timeMs, Date().time, DateUtils.HOUR_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE)
+  val dateText = "Last used " + DateUtils.getRelativeTimeSpanString(timeMs, Date().time, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE)
   textView.text = dateText
 }
