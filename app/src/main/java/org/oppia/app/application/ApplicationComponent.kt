@@ -15,6 +15,8 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -25,7 +27,7 @@ import javax.inject.Singleton
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
   NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
-  GcsResourceModule::class
+  GcsResourceModule::class, ImageParsingModule::class, GlideImageLoaderModule::class
 ])
 interface ApplicationComponent {
   @Component.Builder
