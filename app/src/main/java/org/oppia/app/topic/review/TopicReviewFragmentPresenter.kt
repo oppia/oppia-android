@@ -28,7 +28,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController
 ) : ReviewSkillSelector {
-
+  private var topicId: String=""
   private val routeToReviewListener = activity as RouteToConceptCardListener
 
   private lateinit var reviewSkillSelectionAdapter: ReviewSkillSelectionAdapter
@@ -45,6 +45,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
     }
+    this.topicId=topicId
     subscribeToTopicLiveData()
     return binding.root
   }
@@ -55,9 +56,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get skillList from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId)
   }
 
   private fun subscribeToTopicLiveData() {

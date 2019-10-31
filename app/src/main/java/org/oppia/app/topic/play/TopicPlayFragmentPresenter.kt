@@ -13,7 +13,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -29,24 +28,28 @@ class TopicPlayFragmentPresenter @Inject constructor(
 ) : StorySummarySelector {
 
   private val routeToStoryListener = activity as RouteToStoryListener
-
   private lateinit var binding: TopicPlayFragmentBinding
+  private var topicId: String=""
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    topicId: String
+  ): View? {
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     binding.let {
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
+    this.topicId= this.topicId
     return binding.root
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get storyList from [StoryFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId)
   }
 
   private fun subscribeToTopicLiveData() {

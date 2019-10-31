@@ -317,7 +317,6 @@ class TopicFragmentTest {
   @UiThread
   fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
     activityTestRule.launchActivity(null)
-
     onView(
       withId(R.id.see_more_text_view)
     ).perform(scrollTo(),click())

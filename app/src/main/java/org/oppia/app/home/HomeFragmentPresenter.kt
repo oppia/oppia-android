@@ -18,7 +18,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
-
+private val TAG_HOME_FRAGMENT = "HomeFragment"
 /** The controller for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
@@ -32,7 +32,6 @@ class HomeFragmentPresenter @Inject constructor(
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-  private val TAG_HOME_FRAGMENT = "HomeFragment"
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to

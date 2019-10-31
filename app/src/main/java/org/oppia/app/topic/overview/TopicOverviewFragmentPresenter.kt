@@ -31,8 +31,13 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
 
   private val topicOverviewViewModel  = getTopicOverviewViewModel()
+  private var topicId: String=""
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    topicId: String
+  ): View? {
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
@@ -40,6 +45,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = topicOverviewViewModel
     }
+    this.topicId=topicId
     return binding.root
   }
 
@@ -59,9 +65,8 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     })
   }
 
-  // TODO(#135): Get this topic-id from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_1)
+    topicController.getTopic(topicId)
   }
 
   private fun getTopicList(): LiveData<Topic> {
