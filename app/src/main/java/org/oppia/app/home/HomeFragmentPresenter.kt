@@ -14,8 +14,10 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
+import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -115,8 +117,8 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      getPromotedStoryViewModel()!!.setPromotedStory(result.promotedStory)
       if (getPromotedStoryViewModel() != null) {
+        getPromotedStoryViewModel()!!.setPromotedStory(result.promotedStory)
         itemList.add(getPromotedStoryViewModel()!!)
       }
       itemList.addAll(result.topicSummaryList)
@@ -127,36 +129,6 @@ class HomeFragmentPresenter @Inject constructor(
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
-  }
-
-  private fun getWhetherTopicListLookupSucceeded(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isSuccess() }
-  }
-
-  private fun getWhetherTopicListLookupFailed(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isFailure() }
-  }
-
-  private fun getWhetherTopicListIsLoading(): LiveData<Boolean> {
-    return Transformations.map(topicListSummaryResultLiveData) { it.isPending() }
-  }
-
-  private fun <T> expandList(list: List<T>): List<T> {
-    val vals = mutableListOf<T>()
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    vals += list
-    return vals
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
