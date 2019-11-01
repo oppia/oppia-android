@@ -61,4 +61,5 @@
   <string name="confirm_pin_wrong">PIN and confirm PIN do not match.</string>
   <string name="name_not_unique">Name is not unique. Please enter a different name and try again.</string>
   <string name="failed_image_store">We failed to store your avatar image. Please try again.</string>
+  <string name="name_only_letters">Name must not be empty and only contain letters. Please enter a different name and try again.</string>
 </resources>

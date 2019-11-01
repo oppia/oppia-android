@@ -89,6 +89,12 @@ class AddProfileActivityPresenter @Inject constructor(
               activity.resources.getString(R.string.failed_image_store),
               Toast.LENGTH_SHORT
             ).show()
+          } else {
+            Toast.makeText(
+              activity,
+              activity.resources.getString(R.string.name_only_letters),
+              Toast.LENGTH_SHORT
+            ).show()
           }
         }
       })
