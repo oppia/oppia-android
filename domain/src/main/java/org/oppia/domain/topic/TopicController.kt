@@ -30,6 +30,9 @@ import org.oppia.util.data.DataProviders
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
+const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
+const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
+const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
 const val TEST_QUESTION_ID_0 = "question_id_0"
@@ -38,6 +41,18 @@ const val TEST_QUESTION_ID_2 = "question_id_2"
 const val TEST_QUESTION_ID_3 = "question_id_3"
 const val TEST_QUESTION_ID_4 = "question_id_4"
 const val TEST_QUESTION_ID_5 = "question_id_5"
+const val FRACTIONS_QUESTION_ID_0 = "dobbibJorU9T"
+const val FRACTIONS_QUESTION_ID_1 = "EwbUb5oITtUX"
+const val FRACTIONS_QUESTION_ID_2 = "ryIPWUmts8rN"
+const val FRACTIONS_QUESTION_ID_3 = "7LcsKDzzfImQ"
+const val FRACTIONS_QUESTION_ID_4 = "gDQxuodXI3Uo"
+const val FRACTIONS_QUESTION_ID_5 = "Ep2t5mulNUsi"
+const val FRACTIONS_QUESTION_ID_6 = "wTfCaDBKMixD"
+const val FRACTIONS_QUESTION_ID_7 = "leeSNRVbbBwp"
+const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
+const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
+const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
+
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
@@ -102,6 +117,9 @@ class TopicController @Inject constructor(
     val questionsJSON = jsonAssetRetriever.loadJsonFromAsset(
       "sample_questions.json"
     )?.getJSONArray("questions")
+    val fractionQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
+      "fractions_questions.json"
+    )?.getJSONArray("questions")!!
     for (skillId in skillIdsList) {
       when (skillId) {
         TEST_SKILL_ID_0 -> questionsList.addAll(
@@ -124,12 +142,42 @@ class TopicController @Inject constructor(
             createTestQuestion5(questionsJSON)
           )
         )
+        FRACTIONS_SKILL_ID_0 -> questionsList.addAll(
+          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(1)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(2)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(3)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(4)))
+        )
+        FRACTIONS_SKILL_ID_1 -> questionsList.addAll(
+          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10)))
+        )
+        FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
+          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10)))
+        )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
         }
       }
     }
     return questionsList
+  }
+
+  private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {
+    return Question.newBuilder()
+      .setQuestionId(questionJson.getString("id"))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionJson.getJSONObject("question_state_data")
+        )
+      )
+      .addAllLinkedSkillIds(jsonAssetRetriever.getStringsFromJSONArray(questionJson.getJSONArray("linked_skill_ids")))
+      .build()
   }
 
   private fun createTestQuestion0(questionsJson: JSONArray?): Question {

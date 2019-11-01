@@ -14,7 +14,9 @@ import org.oppia.app.model.SubtitledHtml
 import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
-class StateRetriever @Inject constructor() {
+class StateRetriever @Inject constructor(
+  private val jsonAssetRetriever: JsonAssetRetriever
+) {
 
   /** Creates a single state object from JSON */
   fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
@@ -170,19 +172,13 @@ class StateRetriever @Inject constructor() {
             .setWholeNumber(inputJson.getJSONObject(keyName).getInt("wholeNumber"))
         ).build()
        "ItemSelectionInput" -> InteractionObject.newBuilder()
-         .setSetOfHtmlString(StringList.newBuilder().addAllHtml(getStringsFromJSONArray(inputJson.getJSONArray(keyName))))
+         .setSetOfHtmlString(StringList.newBuilder().addAllHtml(
+           jsonAssetRetriever.getStringsFromJSONArray(inputJson.getJSONArray(keyName))))
          .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
 
-  private fun getStringsFromJSONArray(jsonData: JSONArray): List<String> {
-    val stringList = mutableListOf<String>()
-    for (i in 0 until jsonData.length()) {
-      stringList.add(jsonData.getString(i))
-    }
-    return stringList
-  }
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
     customizationArgsJson: JSONObject?
