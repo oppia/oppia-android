@@ -401,7 +401,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun onlyLetters(name: String): Boolean {
-    return name.matches(Regex("[a-zA-Z]+"))
+    return name.matches(Regex("^[ A-Za-z]+\$"))
   }
 
   // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android

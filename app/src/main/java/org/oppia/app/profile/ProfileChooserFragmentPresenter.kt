@@ -64,7 +64,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   @ExperimentalCoroutinesApi
   private fun bindProfileView(binding: ProfileChooserProfileViewBinding, data: ProfileChooserModel) {
     binding.viewModel = data
-    binding.profileAvatarImg.setOnClickListener {
+    binding.root.setOnClickListener {
       profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
         if (it.isSuccess()) {
           fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
@@ -74,7 +74,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
-    binding.profileAddButton.setOnClickListener {
+    binding.root.setOnClickListener {
       if (getAdminAuthFragment() == null) {
         val adminAuthFragment = AdminAuthFragment.newInstance(getProfileChooserViewModel().adminPin)
         fragment.requireActivity().supportFragmentManager.beginTransaction()
