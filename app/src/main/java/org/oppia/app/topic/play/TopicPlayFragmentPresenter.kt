@@ -10,9 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.TopicPlayFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -25,16 +28,28 @@ class TopicPlayFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
+  private val explorationDataController: ExplorationDataController,
   private val topicController: TopicController
-) : StorySummarySelector {
-
+) : StorySummarySelector, ChapterSummarySelector {
+  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
+
+  private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicPlayFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+  private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    currentExpandedChapterListIndex: Int?,
+    expandedChapterListIndexListener: ExpandedChapterListIndexListener
+  ): View? {
+    this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
+    this.expandedChapterListIndexListener = expandedChapterListIndexListener
+
+    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
     }
@@ -51,7 +66,14 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      val storySummaryAdapter = StorySummaryAdapter(it.storyList, this as StorySummarySelector)
+      val storySummaryAdapter =
+        StorySummaryAdapter(
+          it.storyList,
+          this as ChapterSummarySelector,
+          this as StorySummarySelector,
+          expandedChapterListIndexListener,
+          currentExpandedChapterListIndex
+        )
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
@@ -69,7 +91,26 @@ class TopicPlayFragmentPresenter @Inject constructor(
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
-  override fun selectedStorySummary(storySummary: StorySummary) {
+  override fun selectStorySummary(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(storySummary.storyId)
+  }
+
+  override fun selectChapterSummary(chapterSummary: ChapterSummary) {
+    playExploration(chapterSummary.explorationId)
+  }
+
+  private fun playExploration(explorationId: String) {
+    explorationDataController.startPlayingExploration(
+      explorationId
+    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("TopicPlayFragment", "Loading exploration")
+        result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        else -> {
+          logger.d("TopicPlayFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(explorationId)
+        }
+      }
+    })
   }
 }

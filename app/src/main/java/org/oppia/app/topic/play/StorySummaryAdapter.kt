@@ -3,7 +3,6 @@ package org.oppia.app.topic.play
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
@@ -16,7 +15,10 @@ import org.oppia.app.model.StorySummary
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
-  private val storySummarySelector: StorySummarySelector
+  private val chapterSummarySelector: ChapterSummarySelector,
+  private val storySummarySelector: StorySummarySelector,
+  private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
+  private var currentExpandedChapterListIndex: Int?
 ) :
   RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
 
@@ -39,8 +41,13 @@ class StorySummaryAdapter(
 
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(storySummary: StorySummary, @Suppress("UNUSED_PARAMETER") position: Int) {
-      binding.setVariable(BR.storySummary, storySummary)
+    internal fun bind(storySummary: StorySummary, position: Int) {
+      var isChapterListVisible = false
+      if(currentExpandedChapterListIndex!=null){
+        isChapterListVisible = currentExpandedChapterListIndex!! == position
+      }
+      binding.isListExpanded = isChapterListVisible
+      binding.storySummary = storySummary
 
       val totalChapterCount = storySummary.chapterCount
       val chapterSummaries = storySummary.chapterList
@@ -51,11 +58,31 @@ class StorySummaryAdapter(
           }
           .size
 
+      val chapterList = storySummary.chapterList
+      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
+
       val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
-      binding.setVariable(BR.storyProgressPercentage, storyProgressPercentage)
+
+      binding.storyPercentage = storyProgressPercentage
 
       binding.storyNameTextView.setOnClickListener {
-        storySummarySelector.selectedStorySummary(storySummary)
+        storySummarySelector.selectStorySummary(storySummary)
+      }
+
+      binding.chapterListViewControl.setOnClickListener {
+        val previousIndex: Int? = currentExpandedChapterListIndex
+        currentExpandedChapterListIndex = if (currentExpandedChapterListIndex!=null && currentExpandedChapterListIndex == position) {
+          null
+        } else {
+          position
+        }
+        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        if(previousIndex!=null) {
+          notifyItemChanged(previousIndex)
+        }
+        if(currentExpandedChapterListIndex!=null) {
+          notifyItemChanged(currentExpandedChapterListIndex!!)
+        }
       }
     }
   }
