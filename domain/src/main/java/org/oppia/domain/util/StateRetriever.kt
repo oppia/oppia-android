@@ -3,6 +3,7 @@ package org.oppia.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.Fraction
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
@@ -129,7 +130,14 @@ class StateRetriever @Inject constructor() {
       val inputKeysIterator = inputsJson.keys()
       while (inputKeysIterator.hasNext()) {
         val inputName = inputKeysIterator.next()
-        ruleSpecBuilder.putInput(inputName, createInputFromJson(inputsJson, inputName, interactionId))
+        when (ruleSpecBuilder.ruleType) {
+          "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(inputName,
+            InteractionObject.newBuilder()
+              .setReal(inputsJson.getDouble(inputName))
+              .build())
+            else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
+        }
+
       }
       ruleSpecList.add(ruleSpecBuilder.build())
     }
@@ -137,7 +145,7 @@ class StateRetriever @Inject constructor() {
   }
 
   // Creates an input interaction object from JSON
-  private fun createInputFromJson(
+  private fun createExactInputFromJson(
     inputJson: JSONObject?, keyName: String, interactionId: String
   ): InteractionObject {
     if (inputJson == null) {
@@ -153,10 +161,28 @@ class StateRetriever @Inject constructor() {
       "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
+      "FractionInput" -> InteractionObject.newBuilder()
+        .setFraction(
+          Fraction.newBuilder()
+            .setDenominator(inputJson.getJSONObject(keyName).getInt("denominator"))
+            .setNumerator(inputJson.getJSONObject(keyName).getInt("numerator"))
+            .setIsNegative(inputJson.getJSONObject(keyName).getBoolean("isNegative"))
+            .setWholeNumber(inputJson.getJSONObject(keyName).getInt("wholeNumber"))
+        ).build()
+       "ItemSelectionInput" -> InteractionObject.newBuilder()
+         .setSetOfHtmlString(StringList.newBuilder().addAllHtml(getStringsFromJSONArray(inputJson.getJSONArray(keyName))))
+         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
 
+  private fun getStringsFromJSONArray(jsonData: JSONArray): List<String> {
+    val stringList = mutableListOf<String>()
+    for (i in 0 until jsonData.length()) {
+      stringList.add(jsonData.getString(i))
+    }
+    return stringList
+  }
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
     customizationArgsJson: JSONObject?

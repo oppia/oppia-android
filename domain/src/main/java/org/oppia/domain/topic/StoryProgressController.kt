@@ -17,6 +17,8 @@ const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+const val FRACTIONS_EXPLORATION_ID_0 = "0"
+const val FRACTIONS_EXPLORATION_ID_1 = "16"
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
