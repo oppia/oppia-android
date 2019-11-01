@@ -53,7 +53,6 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 
-
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
 /** Controller for retrieving all aspects of a topic. */
@@ -143,22 +142,28 @@ class TopicController @Inject constructor(
           )
         )
         FRACTIONS_SKILL_ID_0 -> questionsList.addAll(
-          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(1)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(2)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(3)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(4)))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(4))
+          )
         )
         FRACTIONS_SKILL_ID_1 -> questionsList.addAll(
-          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10)))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+          )
         )
         FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
-          mutableListOf(createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10)))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+          )
         )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")

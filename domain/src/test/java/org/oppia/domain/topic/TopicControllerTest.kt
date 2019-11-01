@@ -568,7 +568,6 @@ class TopicControllerTest {
     )
   }
 
-
   @Test
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(

@@ -133,11 +133,13 @@ class StateRetriever @Inject constructor(
       while (inputKeysIterator.hasNext()) {
         val inputName = inputKeysIterator.next()
         when (ruleSpecBuilder.ruleType) {
-          "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(inputName,
+          "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
+            inputName,
             InteractionObject.newBuilder()
               .setReal(inputsJson.getDouble(inputName))
-              .build())
-            else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
+              .build()
+          )
+          else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
         }
 
       }
@@ -171,10 +173,13 @@ class StateRetriever @Inject constructor(
             .setIsNegative(inputJson.getJSONObject(keyName).getBoolean("isNegative"))
             .setWholeNumber(inputJson.getJSONObject(keyName).getInt("wholeNumber"))
         ).build()
-       "ItemSelectionInput" -> InteractionObject.newBuilder()
-         .setSetOfHtmlString(StringList.newBuilder().addAllHtml(
-           jsonAssetRetriever.getStringsFromJSONArray(inputJson.getJSONArray(keyName))))
-         .build()
+      "ItemSelectionInput" -> InteractionObject.newBuilder()
+        .setSetOfHtmlString(
+          StringList.newBuilder().addAllHtml(
+            jsonAssetRetriever.getStringsFromJSONArray(inputJson.getJSONArray(keyName))
+          )
+        )
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }

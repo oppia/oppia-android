@@ -19,7 +19,8 @@ const val TEST_EXPLORATION_ID_6 = "test_exp_id_6"
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever) {
+  private val stateRetriever: StateRetriever
+) {
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
   internal suspend fun loadExploration(explorationId: String): Exploration {
