@@ -20,23 +20,31 @@ class ProfileChooserViewModel @Inject constructor(
     Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
   }
 
-  var adminPin = ""
+  lateinit var adminPin: String
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserModel> {
     if (profilesResult.isFailure()) {
       logger.e("ProfileChooserViewModel", "Failed to retrieve the list of profiles: ", profilesResult.getErrorOrNull()!!)
     }
     val profileList = profilesResult.getOrDefault(emptyList()).map {
-      if (it.isAdmin) {
-        adminPin = it.pin
-      }
       ProfileChooserModel.newBuilder().setProfile(it).build()
+    }.toMutableList()
+
+    val sortedProfileList = profileList.sortedByDescending {
+      it.profile.lastLoggedInTimestampMs
+    }.toMutableList()
+
+    val adminProfile = sortedProfileList.find { it.profile.isAdmin }
+    adminProfile?.let {
+      sortedProfileList.remove(adminProfile)
+      adminPin = it.profile.pin
+      sortedProfileList.add(0, it)
     }
-    if (profileList.size < 10) {
-      val mutableProfileList = profileList.toMutableList()
-      mutableProfileList.add(ProfileChooserModel.newBuilder().setAddProfile(true).build())
-      return mutableProfileList
+
+    if (sortedProfileList.size < 10) {
+      sortedProfileList.add(ProfileChooserModel.newBuilder().setAddProfile(true).build())
     }
-    return profileList
+
+    return sortedProfileList
   }
 }

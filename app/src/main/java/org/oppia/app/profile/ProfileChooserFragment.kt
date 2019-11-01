@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -17,6 +18,7 @@ class ProfileChooserFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
+  @ExperimentalCoroutinesApi
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return profileChooserFragmentPresenter.handleCreateView(inflater, container)
   }
