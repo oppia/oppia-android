@@ -15,4 +15,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     addProfileFragmentPresenter.handleOnCreate()
   }
+
+  override fun onSupportNavigateUp(): Boolean {
+    finish()
+    return false
+  }
 }

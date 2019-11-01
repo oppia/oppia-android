@@ -18,6 +18,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     activity.title = "Add Profile"
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+
     val binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
     val adminPin = activity.intent.getStringExtra(KEY_ADMIN_PIN)
     binding.submitButton.setOnClickListener {
