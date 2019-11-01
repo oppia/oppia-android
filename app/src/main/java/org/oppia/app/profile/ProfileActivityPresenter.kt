@@ -16,6 +16,7 @@ ProfileActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     profileManagementController.addProfile("James", "12345", null, true, true)
+    //profileManagementController.deleteProfile(ProfileId.newBuilder().setInternalId(2).build())
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

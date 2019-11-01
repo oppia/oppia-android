@@ -26,11 +26,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  val chooserViewModel: ProfileChooserViewModel by lazy {
+    getProfileChooserViewModel()
+  }
+
   @ExperimentalCoroutinesApi
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
-      viewModel = getProfileChooserViewModel()
+      viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
     binding.recyclerView.apply {
@@ -76,16 +80,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
     binding.root.setOnClickListener {
       if (getAdminAuthFragment() == null) {
-        val adminAuthFragment = AdminAuthFragment.newInstance(getProfileChooserViewModel().adminPin)
-        fragment.requireActivity().supportFragmentManager.beginTransaction()
-          .setCustomAnimations(R.anim.slide_up, R.anim.slide_down, R.anim.slide_up, R.anim.slide_down).add(
-            R.id.profile_chooser_fragment_placeholder, adminAuthFragment
-          ).addToBackStack(null).commit()
+        fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
       }
     }
   }
 
-  private fun getAdminAuthFragment(): AdminAuthFragment? {
-    return fragment.requireActivity().supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as? AdminAuthFragment?
+  private fun getAdminAuthFragment(): AdminAuthActivity? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as? AdminAuthActivity?
   }
 }
