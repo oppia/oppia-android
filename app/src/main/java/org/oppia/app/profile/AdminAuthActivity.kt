@@ -30,4 +30,9 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     adminAuthFragmentPresenter.handleOnCreate()
   }
+
+  override fun onSupportNavigateUp(): Boolean {
+    finish()
+    return false
+  }
 }

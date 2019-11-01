@@ -42,7 +42,12 @@
       %d Stories
     </item>
   </plurals>
+
   <string name="profile_admin">Administrator</string>
   <string name="profile_select_text">Select your profile</string>
   <string name="add_profile_text">Add Profile</string>
+  <string name="admin_auth_heading_text">Administrator Authorization Required</string>
+  <string name="admin_auth_sub_text">Administrator\'s PIN required to create a new account.</string>
+  <string name="admin_auth_pin_text">Administrator\'s PIN</string>
+  <string name="incorrect_admin_pin">Inputted PIN is incorrect. Try Again.</string>
 </resources>
