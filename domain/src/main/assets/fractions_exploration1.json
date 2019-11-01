@@ -1,0 +1,2924 @@
+{
+  "param_changes": [],
+  "states": {
+    "Final Test A second try": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right! Well done.</p>"
+              },
+              "dest": "Final Test B",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, you forgot to divide the shape into equal parts first! (No one is going to remind you to do that -- you have to remember that for yourself!)<br></p><p>Let's go back and practice that again.<br></p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, try again. You can do this!</p>"
+          },
+          "dest": "Final Test A second try",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>You can divide the shape into four small triangles.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Try dividing the black square into two smaller triangles, so that all the parts have the same shape.</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>\"Let's try that again,\" said Mr. Baker.</p><p>\"Here’s a picture. What fraction of it is shaded?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Triangle with a square inscribed in it, shaded black.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014420_i1qi82fg94_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Introduction": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": ""
+          },
+          "dest": "Recap 1",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "buttonText": {
+            "value": "Continue"
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "Continue",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Matthew liked the coconut cake he got from the bakery so much that he returned there to get more cake to share with his friends! He also hoped to learn more about fractions. </p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Picture of Matthew&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014627_u0tqody8mr_height_264_width_210.png&amp;quot;\"></oppia-noninteractive-image><p>But before we join Matthew, make sure you know the following:</p><ul><li>What a fraction is, and what \"numerator\" and \"denominator\" mean</li><li>How to write the fraction represented by a picture</li></ul><p>Also, it's a good idea to get some paper and a pen or pencil to write with, and find a quiet place to work. Take your time, and go through the story at your own pace -- there's no need to rush :)</p><p>When you’re ready, click <strong>Continue</strong> to get started!</p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Thinking in fractions Q3": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 8,
+            "numerator": 5,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Start by drawing a rectangle cut into 8 equal pieces.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;2x4 rectangle with 3 squares shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014216_fi55mr3x5v_height_156_width_263.png&amp;quot;\"></oppia-noninteractive-image><p>3 pieces are shaded. The pieces that are left over are white. There are 5 white pieces, and there are 8 pieces in total. So the answer is 5/8.</p>"
+          },
+          "answer_is_exclusive": false
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done!</p>"
+              },
+              "dest": "Thinking in fractions Q4",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 8,
+                    "numerator": 5,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Draw a picture!</p>"
+          },
+          "dest": "Thinking in fractions Q3",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Try to visualize the picture in your head. But if you can’t see it in your head, that’s fine. You can draw a picture in your notebook!<br></p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>It might be simpler to draw rectangles instead of circles. That's because rectangles are easier to divide into equal parts.<br></p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Here's one way to draw it:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;A 2x4 rectangle.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014208_775l3nwy8r_height_156_width_263.png&amp;quot;\"></oppia-noninteractive-image><p>Now, if 3/8 of this gets eaten, can you figure out the remaining part?</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "solution": {},
+          "content": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“You’re starting to solve problems using fractions!” said Mr. Baker. “That’s a great skill to have!</p><p>“Now, Matthew,” he said, “see if you can figure this out without the cake in front of you. Let’s say I have a cake, and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{3}{8}&amp;quot;\"></oppia-noninteractive-math> of it gets eaten. What fraction of the cake remains?”<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "solution": {},
+          "content": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Thinking in fractions Q2": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 9,
+            "numerator": 4,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Let's start by drawing a picture. We can represent the cake using 9 equal parts, since that will make it easy to colour Matthew's and Mr. Baker's parts later. Here's a drawing:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with 2 pieces shaded brown and 3 shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014147_hh39sip4u3_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image><p>Matthew gets 2/9 of the cake (the brown parts) and Mr. Baker gets 3/9 of the cake (the green parts). There are 4 squares left over (the white parts), and there are 9 squares in total. So the answer is 4/9.</p>"
+          },
+          "answer_is_exclusive": false
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's correct!</p>"
+              },
+              "dest": "Thinking in fractions Q3",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 4,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try drawing a picture!</p>"
+          },
+          "dest": "Thinking in fractions Q2",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>It's always a good idea to draw a picture!</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>The fractions all have denominator 9, so it makes sense to start by drawing a cake divided into 9 parts.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Here's what the cake might look like after Matthew's part is coloured brown:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with two squares coloured brown&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014105_1s0k96nm1n_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image><p>Try shading Mr. Baker's part next.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>Mr. Baker took 3/9 of the cake, so we can shade 3 more of the small pieces for him:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with 2 squares shaded brown and 3 squares shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014138_16xo3uv9mr_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction of the cake is left over?</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "solution": {},
+          "hint_4": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Excellent!” said Mr. Baker. He took a knife, and cut another 3/9ths of the cake, which he took for himself.</p><p>“Now, Matthew,” he said. “You’ve got 2/9 of the cake, and I’ve got 3/9. What fraction of the cake is left on the table?”<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "solution": {},
+          "hint_4": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Thinking in fractions Q1": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 9,
+            "numerator": 7,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Here's a picture showing the 2/9 of the cake that Crumb gave Matthew:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with two squares shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014117_air3fe1d2i_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image><p>The fraction of the cake that's left over is represented by the white pieces. There are 7 white pieces, and there are 9 pieces in total. So the answer is 7/9.</p>"
+          },
+          "answer_is_exclusive": true
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "dest": "Thinking in fractions Q2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 7,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's the amount of cake that Crumb gave Matthew. The question is asking for something different -- how much cake is left over after that? Try again.</p>"
+              },
+              "dest": "Thinking in fractions Q1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Follow Mr. Baker's advice, and draw a picture!</p>"
+          },
+          "dest": "Thinking in fractions Q1",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Follow Mr. Baker's advice, and draw a picture! Start with a square cake divided into 9 equal parts. Make sure that, in your drawing, the parts are equal.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Your picture doesn't have to look really pretty, but it should be as accurate as possible. Something like this, perhaps:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid divided into nine squares.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013959_jza0jm6rwi_height_131_width_134.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Crumb gave Matthew 2/9 of the cake. So let's shade 2/9 of the picture to represent that.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;3x3 grid with 2 squares shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014013_1bvpmo2rw7_height_131_width_134.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction is left over?</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>\"Great, Matthew!\" said Mr. Baker.</p><p>\"Now, can you figure out what fraction of the cake remained, after Crumb gave you 2/9 of it? Use your notebook and draw a picture if it helps. Try to do this without looking at the cake from before, if possible.\"<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Thinking in fractions Q4": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 4,
+            "numerator": 3,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>We can draw a square and colour <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> of it, like this:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014341_d4xcjhor2y_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>To find the resulting fraction, we divide the square into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into 4 equal parts, with 3 coloured red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014351_n1q2kla08b_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>There are 4 equal parts, and 3 of them are red, so the answer is 3/4.</p><p>(Notice that just adding the tops and bottoms of the fractions gives the <strong>wrong</strong> result! It's the amount that matters, not the numbers on the fraction.)</p>"
+          },
+          "answer_is_exclusive": true
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done! You got it right!</p><p>We've seen a question like this before, by the way. Remember this picture?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle with 1/2 and 1/4 shaded, with the fractions 1/2 and 1/4 written on those pieces respectively.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014250_yi7719hplv_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>"
+              },
+              "dest": "Final Test A",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 3,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. As Mr. Baker says, don't just look at the numbers.</p><p>Instead, draw a picture! That will help you figure out what's going on. After you've drawn a picture and figured out what each fraction represents, try again.</p>"
+              },
+              "dest": "Thinking in fractions Q4",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 6,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not correct. Try again. (You may want to draw a picture!)</p>"
+          },
+          "dest": "Thinking in fractions Q4",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Draw a picture. You can start with a square -- divide that square into half, and shade one of the halves. That represents <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math>.</p><p>Now, how can you represent <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> in a similar way?</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here's what a square with <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014308_8pzg1hebrl_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>And here's what the same square with <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/4 coloured red&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014317_6ofzoqoyvu_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>Now, what do you get when you add these amounts together?</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>Here's what combining <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> looks like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014327_4pcd2jbbdw_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction does this represent?</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_5",
+              "html": "<p>Remember to divide the whole into equal parts before writing down the fraction.</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Mr. Baker chuckled. “OK, Matthew,” he said. “Two more questions, and if you answer them correctly, you can have my piece of cake as well!”</p><p>Matthew smiled. He liked cake!</p><p>\"OK,\" Mr. Baker said. \"Let’s say I wanted to add <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>. What fraction does that give me?\"</p><p>“Oh, that’s easy!” said Matthew. “1 + 1 is 2, and ...”</p><p>“Are you sure?” said Mr. Baker. “Don’t just look at the numbers -- that would be misleading. You’ll need to think about how much cake the fractions represent.”</p><p>“What is <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2} + \\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>?”<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Matthew gets conned": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 4,
+            "numerator": 3,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Start by dividing the cake into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into four quadrants; three of them are shaded red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012913_s492a4ywqy_height_188_width_180.png&amp;quot;\"></oppia-noninteractive-image><p>Three of the four equal parts are red. So, the answer is 3/4.</p>"
+          },
+          "answer_is_exclusive": true
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right! Well done.</p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 3,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Remember, you must cut the whole cake into <strong>equal parts </strong>before you can even write down a fraction! Try again.<br></p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 3,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Remember to divide the whole cake into equal parts first.</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>The denominator is correct -- you can divide the whole cake into 4 equal parts. But the numerator is wrong. How many of those 4 equal parts are darkened?</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 4
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. Remember to divide the larger part into two smaller parts first, so that all the parts represent the same amount. Try again.</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasNumeratorEqualTo",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try again!</p>"
+          },
+          "dest": "Matthew gets conned",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>The first step is always to ensure that all the pieces are equal. Try dividing the larger part of the circle into smaller parts, so that all the pieces are equal.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here's what your picture should look like after dividing it up:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle, divided into 4 equal parts, with 3 coloured red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012928_vq4cmw38wb_height_188_width_180.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>There are 4 equal parts, and 3 of them are red. Can you use this information to figure out the fraction of the circle that is red?</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "feedback_5": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Matthew took the smaller piece of cake. Just then, Mr. Baker appeared. “Crumb!” he said, “I need you to help me clean up the storeroom.” Grumbling, Crumb went to the back room.</p><p>“Hi, Mr. Baker,” said Matthew. “I’ve just bought half a cake!”</p><p>Mr. Baker frowned. \"That's not half,\" he said. \"In a fraction, the pieces representing the denominator must be <strong>equal</strong>. But here, one piece is much bigger than the other! In order to figure out what fraction something represents, you must always <strong>divide the whole into equal parts first</strong>. Let me show you an example.\" He drew a circle on a napkin, and coloured some parts of it red.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Napkin sketch of a cake divided into halves, and one half divided into quarters; the half and one of the quarters is darkened.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012857_kw6366m522_height_188_width_180.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction of the above circle is red?<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "feedback_5": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Into the Bakery": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right -- congratulations, you figured out Crumb's trick!</p><p>Let's see what happens to Matthew, though...</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Actually, that's not right. The word \"half\" means exactly the same thing as <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math>. Try again!</p>"
+              },
+              "dest": "Into the Bakery",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>Are you sure? Matthew asked Crumb for <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> a cake. What does the fraction <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> mean? Think back to the previous lesson.</p><p>Try again!</p>"
+          },
+          "dest": "Into the Bakery",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "choices": {
+            "value": [
+              "<p>Yes, because the cake is cut into two pieces, and Crumb is giving one piece to Matthew.<br></p>",
+              "<p>Yes, because Crumb can cut any piece of cake he likes, and that results in two halves.<br></p>",
+              "<p>No, because \"half\" is not the same as ½.<br></p>",
+              "<p>No, because, in a fraction, the pieces must be the same size.<br></p>"
+            ]
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "MultipleChoiceInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Excellent! You’ve learned as much about fractions as Matthew has!</p><p>Matthew was happy to go back to the bakery, because he wanted to get more cake for his friends. However, when he got there, he met a lazy-looking Assistant Baker behind the counter, named Crumb.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Crumb, the assistant baker. White cap, white shirt, crossed hands, grimacing.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012810_qzizpndzb_height_228_width_71.png&amp;quot;\"></oppia-noninteractive-image><p> </p><p>“Hi, Mr Crumb,” said Matthew. “I'd like to buy half of that chocolate cake, please.”</p><p>“Yes, fine,” said Crumb. He pulled out a knife and cut off a small corner of the cake for Matthew, like this:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square cake with 2/9ths cut off.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012836_bc4n3gxsab_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image><p>Is Crumb giving Matthew the correct amount of cake?<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Question 4": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 16,
+            "numerator": 8,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>The smallest piece is a triangle, so let's start by dividing the square into triangles. Here is the result:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square fully divided into triangles&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013913_bt2oew3022_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image><p>There are 16 equal pieces. 8 of them are blue. So the answer is 8/16.</p>"
+          },
+          "answer_is_exclusive": false
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right. Well done! That was tricky.</p>"
+              },
+              "dest": "Question 5",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 2,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Before writing a fraction, we must <strong>always</strong> divide the whole into equal parts first. Let's go back and look at Mr. Baker's advice to Matthew.</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 5,
+                    "numerator": 3,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              },
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 5
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Figure out the numerator only after you've divided the whole picture into equal parts.<br></p>"
+              },
+              "dest": "Question 4",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 16,
+                    "numerator": 3,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>The denominator is correct -- you can divide the whole cake into 16 equal parts. But the numerator is wrong. How many of those 16 equal parts are blue?<br></p>"
+              },
+              "dest": "Question 4",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 16
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>That's not right. Try again!</p><p>Make sure to divide the square carefully into equal pieces before doing anything else. Use your pen and paper if you need to.<br></p>"
+          },
+          "dest": "Question 4",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Start by dividing the square into equal pieces. You might find it easier to make a copy of the original picture on a piece of paper, then draw more lines to divide it up.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>It's possible to divide the square into triangles that are all the same size.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Here's a bit more of the division. Can you see how to complete it?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Same image as before, with an extra line.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013837_uyvy28ttm4_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>Here's even more of the division. Can you see how to complete it?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Same image as before, with another line.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013850_udl59d9v40_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_5",
+              "html": "<p>Here's a final hint with the right half of the rectangle divided into triangles. Can you do the same for the left half?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Same square, with left half divided into triangles.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013901_pzz0xh6mh2_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "feedback_3": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“You’re getting good at this!” said Mr. Baker. “Let’s try just one more.”</p><p>“What fraction of this picture is blue in colour?”<br></p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into five irregular pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013818_cq8ki4w7wb_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "feedback_3": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Question 5": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": ""
+              },
+              "dest": "Thinking in fractions Q1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's the part of the cake that Crumb cut for himself! Try again.</p>"
+              },
+              "dest": "Question 5",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 7,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Oh no, it looks like you haven't learned this properly yet! Remember, you need to divide the cake into equal pieces before writing down any fractions.</p><p>Let's go back and look at Mr. Baker's advice to Matthew, so that we can practice a bit more.</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 8,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              },
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 8,
+                    "numerator": 7,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              },
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 2,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right! Please try again.</p>"
+          },
+          "dest": "Question 5",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“That’s great!” said Mr. Baker. “Now let’s take a look at that cake from earlier.”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square cake with 2/9 broken off&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013929_hialzr1eih_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image><p>“What fraction of the cake did Crumb cut for you?”<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Question 2": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 8,
+            "numerator": 2,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>Start by dividing the cake into equal pieces:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;The same cake, divided into 8 equal pieces.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013632_ki2i2r5you_height_196_width_196.png&amp;quot;\"></oppia-noninteractive-image><p>Two of the eight equal pieces are darkened. So the answer is 2/8.</p>"
+          },
+          "answer_is_exclusive": false
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "dest": "Question 3",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Let's go back and look at Mr. Baker's advice to Matthew.<br></p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>The denominator is correct -- you can divide the whole cake into 8 equal parts. But the numerator is wrong. How many of those 8 equal parts are darkened?<br></p>"
+              },
+              "dest": "Question 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 8
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. Make sure to divide the cake <strong>accurately</strong> into equal pieces -- you have the right idea, but you need to be careful when doing the dividing!<br></p>"
+              },
+              "dest": "Question 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 7
+                }
+              },
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 9
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try again! Use your pen and paper if you need to.</p>"
+          },
+          "dest": "Question 2",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Start by dividing the cake into equal pieces.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here's what the divided cake should look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;The same cake as before, divided into 8 equal parts.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013648_p011ap8pb2_height_196_width_196.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>\"That's great, Matthew! Let’s try another one,” said Mr. Baker.</p><p>\"What fraction of this cake is shaded?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into four pieces: 1/8, 1/8, 3/8, 3/8. The two smaller pieces are shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013614_237o6ry8k9_height_196_width_196.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Question 3": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 8,
+            "numerator": 1,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>First, divide the whole square into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into eight equal rectangles, with one of them coloured green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013742_fnlbm20e8j_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image><p>Of these 8 equal parts, exactly 1 is green. So the answer is 1/8.</p>"
+          },
+          "answer_is_exclusive": false
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right. Well done!</p>"
+              },
+              "dest": "Question 4",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 8,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. You've forgotten the thing to do first when figuring out a fraction from a picture! Let's go back and take a look at Mr. Baker's advice to Matthew.</p>"
+              },
+              "dest": "Matthew gets conned",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 5,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              },
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 5
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>The denominator is correct -- you can divide the whole cake into 8 equal parts. But the numerator is wrong. How many of those 8 equal parts are darkened?<br></p>"
+              },
+              "dest": "Question 3",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 8
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. The square already starts out with 5 parts, so you can't get a denominator of 4 by dividing it further. Try again!</p>"
+              },
+              "dest": "Question 3",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 4
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try again! Use your pen and paper if you need to.<br></p>"
+          },
+          "dest": "Question 3",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Start by dividing the big square into equal parts. It's possible to do this in a way that makes the green section one of those equal parts.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here's part of the division, to get you started:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Original image, with an extra division made.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013719_d0epf5gfps_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Here's a bit more of the division. Can you complete it?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Same square as before, but with a little more of the division.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013730_vzb73l9nak_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Mr. Baker, can you give me a harder question, please?” asked Matthew. “It’s fun to try to figure out how to divide these cakes into equal parts!”</p><p>“Sure!” said Mr. Baker. “What fraction of this picture is coloured green?”<br></p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square, cut into four pieces; one piece is cut into two equal pieces; one of those latter two pieces is shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013706_4b87se5xzu_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_4": {},
+          "solution": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Question 1": {
+      "param_changes": [],
+      "interaction": {
+        "solution": {
+          "correct_answer": {
+            "denominator": 9,
+            "numerator": 4,
+            "wholeNumber": 0,
+            "isNegative": false
+          },
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>First, divide the cake up into equal pieces:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square cake divided into 9 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013539_gce1d5fvdf_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image><p>Four of the nine equal pieces are darkened. So, the answer is 4/9.</p>"
+          },
+          "answer_is_exclusive": true
+        },
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "dest": "Question 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 9,
+                    "numerator": 4,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Remember to divide the whole cake into equal parts first!</p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsExactlyEqualTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 3,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              },
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Figure out the numerator only <strong>after</strong> you've divided the whole picture into equal parts.</p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasNumeratorEqualTo",
+                "inputs": {
+                  "x": 2
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try again!</p>"
+          },
+          "dest": "Question 1",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": true
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Remember: before writing a fraction at all, start by dividing the whole cake into equal parts.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here's what the cake should look like after you've divided it up:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Same cake as before, but divided into a 3x3 square grid.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_013523_4df8t9pi3m_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Remember: the denominator of a fraction is the total number of <strong>equal pieces</strong> that the \"whole\" is divided into.</p><p>In this case, the whole is divided into 9 equal pieces, so the denominator of the fraction is 9.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>The numerator of the fraction is the number of pieces that have been selected (after making sure that all the pieces are equal).<br></p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_5",
+              "html": "<p>Four of the 9 equal pieces have been darkened, so the numerator is 4.<br></p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_3": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Good! Here's another cake,” said Mr. Baker, pointing to it. “What fraction of the cake is darkened?”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Brownie with 4/9 darker.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012948_ie3kg9r6t1_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_3": {},
+          "solution": {},
+          "feedback_2": {},
+          "hint_5": {},
+          "feedback_1": {},
+          "hint_4": {},
+          "hint_1": {},
+          "hint_2": {},
+          "hint_3": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Congratulations": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [],
+        "default_outcome": null,
+        "customization_args": {
+          "recommendedExplorationIds": {
+            "value": []
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "EndExploration",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Congratulations on completing another lesson in the bakery. Sweet!</p><p>Matthew visited the bakery again the next day. He found Mr. Baker looking unhappy, and there were lots of egg cartons on the table around him. What happened? Join them in the next lesson to find out!</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;A teaser image of eggs/chickens.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014511_9uhgx5zgrz_height_167_width_225.png&amp;quot;\"></oppia-noninteractive-image><p> </p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Final Test A": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done!</p>"
+              },
+              "dest": "Happy ending",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 2,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, you forgot to divide the shape into equal parts first! (No one is going to remind you to do that -- you have to remember that for yourself!)</p><p>Let's go back and practice that again.</p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right! Let's take a closer look.</p>"
+          },
+          "dest": "Final Test A second try",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Well done!” said Mr. Baker. “You’ve learned a lot about fractions! Now, if you answer one more tricky question correctly on the first try, I’ll give you my piece of cake!”</p><p>“All right,” said Matthew. “Make it hard! I can do it!”<br></p><p>“OK,” said Mr. Baker, smiling. “Here’s a picture. What fraction of it is shaded?”<br></p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Triangle with a square inscribed in it, shaded black.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014405_i1ug5ku0nu_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Final Test B": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done! That's correct!</p>"
+              },
+              "dest": "Happy ending",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 10,
+                    "numerator": 6,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, you forgot to divide the shape into equal parts first! (No one is going to remind you to do that -- you have to remember that for yourself!)</p><p>Let's go back and practice that again.<br></p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 9
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right! Let's take a closer look.<br></p>"
+          },
+          "dest": "Final Test B second try",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Don’t worry, Matthew,” said Mr. Baker. “That one was a bit tricky. Let's do another one, and see if you can get it right on the first try.”</p><p>“Can you tell me what fraction of this picture is shaded?”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Rectangle divided into 5 smaller rectangles; 4 non-center rectangles are halved. One of each half and the center rectangle are shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014432_ep3wt381pz_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Final Test C": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right! Well done.</p>"
+              },
+              "dest": "Happy ending",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 4,
+                    "numerator": 1,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, you forgot to divide the shape into equal parts first! (No one is going to remind you to do that -- you have to remember that for yourself.)</p><p>Let's go back and practice that again.</p>"
+              },
+              "dest": "Final Test C",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 5
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Try again!</p>"
+          },
+          "dest": "Final Test C",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“That was also a bit tricky, but you’re learning!” said Mr. Baker. “Let’s try one more.”</p><p>“What fraction of this picture is shaded?”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/4 coloured brown.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014454_s9s3j42uby_height_120_width_132.png&amp;quot;\"></oppia-noninteractive-image><p></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Final Test B second try": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done!</p>"
+              },
+              "dest": "Final Test C",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEquivalentTo",
+                "inputs": {
+                  "f": {
+                    "denominator": 10,
+                    "numerator": 6,
+                    "wholeNumber": 0,
+                    "isNegative": false
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, you forgot to divide the shape into equal parts first! (No one is going to remind you to do that -- you have to remember that for yourself!)</p><p>Let's go back and practice that again.<br></p>"
+              },
+              "dest": "Question 1",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasDenominatorEqualTo",
+                "inputs": {
+                  "x": 9
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, try again. You can do this!<br></p>"
+          },
+          "dest": "Final Test B second try",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "allowNonzeroIntegerPart": {
+            "value": true
+          },
+          "requireSimplestForm": {
+            "value": false
+          },
+          "allowImproperFraction": {
+            "value": true
+          },
+          "customPlaceholder": {
+            "value": ""
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "FractionInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>You can divide the rectangle in the center, to make all the pieces into triangles of the same size.</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Let's try that again,” said Mr. Baker. \"What fraction of this picture is shaded?”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Rectangle divided into 5 smaller rectangles; 4 non-center rectangles are halved. One of each half and the center rectangle are shaded green.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_014444_u61koytz9a_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Happy ending": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": ""
+          },
+          "dest": "Congratulations",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "buttonText": {
+            "value": "Continue"
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "Continue",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>“Well done!” said Mr. Baker. He gave Matthew his piece of chocolate cake. “Look,” he said, combining the pieces, “that’s more than ½ of a cake!! So you should have enough, and a little extra as well!”</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Picture of 5/9 pieces shaded in a 3x3 square.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180109_235103_fmqdio0bxf_height_120_width_120.png&amp;quot;\"></oppia-noninteractive-image><p>“Thanks, Mr. Baker!” said Matthew. He took the cake home to his friends, and they enjoyed it so much that Matthew knew he’d be back for more!</p><p>Before leaving the bakery, Matthew wrote down some important things he learned in his notebook. You might want to write them down too!</p><ul><li><strong>Always </strong>divide a picture into <strong>equal </strong><strong>pieces</strong>, before trying to tell what fraction it represents.</li><li>When solving a fractions problem, try drawing a picture. Also, think about what <strong>amount </strong>the fraction represents, not the numbers in the fraction.</li></ul>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Recap 2": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!<br></p>"
+              },
+              "dest": "Recap 3",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": "numerator"
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's almost right! Check your spelling.</p>"
+              },
+              "dest": "Recap 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": "numerator"
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. The 6 is the denominator, and it represents the number of equal pieces that the whole is divided into. But what is the 5 called?</p>"
+              },
+              "dest": "Recap 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": "denominator"
+                }
+              },
+              {
+                "rule_type": "FuzzyEquals",
+                "inputs": {
+                  "x": "denominator"
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>That's not correct. Go ahead and try the previous lesson again, to practice your skills. We'll be using those words throughout this lesson, so you'll need to remember what they mean!</p>"
+          },
+          "dest": "Recap 2",
+          "refresher_exploration_id": "G8ZgSj1O4rjE",
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "rows": {
+            "value": 1
+          },
+          "placeholder": {
+            "value": "Enter your answer here"
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "TextInput",
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>The answer starts with \"n\".</p>"
+            }
+          }
+        ]
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Great! Let's try another one.</p><p>In the fraction 5/6, what name is given to the \"5\"?<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "hint_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Recap 3": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "dest": "Into the Bakery",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 3
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>No, that's not right. Knowing how to tell what fraction a picture represents is an important skill, so try playing through the previous lesson again first to refresh your memory!</p>"
+          },
+          "dest": "Recap 3",
+          "refresher_exploration_id": "G8ZgSj1O4rjE",
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "choices": {
+            "value": [
+              "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Two circles with 1 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012713_bigt91gi4c_height_120_width_245.png&amp;quot;\"></oppia-noninteractive-image>",
+              "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into 9 equal parts, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012727_6pbgqwz6x6_height_132_width_136.png&amp;quot;\"></oppia-noninteractive-image>",
+              "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into 9 equal parts, with 5 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012737_qkbi2hneic_height_133_width_134.png&amp;quot;\"></oppia-noninteractive-image>",
+              "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into 5 equal parts, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_012750_3cu93mzjsi_height_131_width_132.png&amp;quot;\"></oppia-noninteractive-image>"
+            ]
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "MultipleChoiceInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_1": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Very good! Last one:</p><p>Which of these pictures shows 4/5?</p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_1": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "Recap 1": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right!</p>"
+              },
+              "dest": "Recap 2",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": true
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Sorry, that's incorrect. The <strong>numerator</strong> (in this case, the 3) represents the total number of chosen parts.<br></p><p>Perhaps you should try the previous lesson again, to refresh your memory? You'll need to know this concept very well in order to understand this lesson.</p>"
+              },
+              "dest": "Recap 1",
+              "refresher_exploration_id": "G8ZgSj1O4rjE",
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "Equals",
+                "inputs": {
+                  "x": 0
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>That's OK, but go ahead and try the previous lesson again, to refresh your memory. You'll need to know this concept very well in order to understand this lesson, so it's a good idea to review it.</p>"
+          },
+          "dest": "Recap 1",
+          "refresher_exploration_id": "G8ZgSj1O4rjE",
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "choices": {
+            "value": [
+              "<p>The number of chosen parts.<br></p>",
+              "<p>The number of parts the cake is divided into.<br></p>",
+              "<p>I can’t remember!<br></p>"
+            ]
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "MultipleChoiceInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Before we join Matthew, let’s see if you remember what both of you learned the last time he came to the bakery!</p><p>In the fraction 3/10 of a cake, what does the 10 represent?<br></p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    }
+  },
+  "param_specs": {},
+  "title": "Fractions 2 - The Meaning of Equal Parts",
+  "objective": "write a fraction for a picture whose parts are not equal",
+  "language_code": "en",
+  "init_state_name": "Introduction",
+  "correctness_feedback_enabled": true
+}

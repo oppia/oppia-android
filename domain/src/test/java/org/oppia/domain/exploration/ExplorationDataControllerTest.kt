@@ -42,6 +42,7 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -161,13 +162,29 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    print(explorationResultCaptor.value.getErrorOrNull())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
     assertThat(exploration.title).isEqualTo("Fractions 1 - What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(24)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForFractions1Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    print(explorationResultCaptor.value.getErrorOrNull())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Fractions 2 - The Meaning of Equal Parts")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(22)
   }
 
   @Test

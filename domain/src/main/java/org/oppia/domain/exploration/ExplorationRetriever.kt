@@ -4,6 +4,7 @@ import org.json.JSONObject
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import java.io.IOException
@@ -26,6 +27,7 @@ class ExplorationRetriever @Inject constructor(
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
+      FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }
