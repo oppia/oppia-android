@@ -56,10 +56,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicId =
-      if (fragment.arguments != null && fragment.arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null) fragment.arguments!!.getString(
-        TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
-      ) else ""
+    topicId = fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     topicController.getTopic(topicId)
   }
 

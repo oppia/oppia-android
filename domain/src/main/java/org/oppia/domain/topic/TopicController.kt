@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
+import java.lang.IllegalArgumentException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.LessonThumbnail
@@ -23,8 +26,6 @@ import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import javax.inject.Inject
-import javax.inject.Singleton
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"

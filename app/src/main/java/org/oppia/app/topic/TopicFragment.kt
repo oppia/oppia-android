@@ -12,7 +12,7 @@ import javax.inject.Inject
 class TopicFragment : InjectableFragment() {
   @Inject
   lateinit var topicFragmentPresenter: TopicFragmentPresenter
-  private var topicId: String = ""
+  lateinit var topicId: String
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
@@ -20,9 +20,7 @@ class TopicFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    topicId = if (arguments != null && arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) != null)
-      arguments!!.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) else ""
+    topicId = arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
   }
 }

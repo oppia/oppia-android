@@ -76,7 +76,7 @@ class InputInteractionViewTestActivityTest {
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
-}
+  }
 
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)

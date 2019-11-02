@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
-const val TOPIC_FRAGMENT_TAG = "test"
+const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
