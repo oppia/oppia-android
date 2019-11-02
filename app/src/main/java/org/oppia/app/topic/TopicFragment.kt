@@ -12,7 +12,7 @@ import javax.inject.Inject
 class TopicFragment : InjectableFragment() {
   @Inject
   lateinit var topicFragmentPresenter: TopicFragmentPresenter
-  private var topicId: String = ""
+  lateinit var topicId: String
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)

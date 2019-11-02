@@ -12,7 +12,6 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import javax.inject.Inject
 
-
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
 /** The activity for displaying [TopicFragment]. */
@@ -25,8 +24,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = if (intent==null|| intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_1
-      else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    topicId = if (intent == null || intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_1
+    else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     topicActivityPresenter.handleOnCreate(topicId)
   }
 
