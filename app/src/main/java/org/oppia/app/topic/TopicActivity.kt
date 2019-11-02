@@ -24,8 +24,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = if (intent==null|| intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_0
-      else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    topicId = if (intent == null || intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_0
+    else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     topicActivityPresenter.handleOnCreate(topicId)
   }
 
@@ -38,7 +38,9 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    (supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment).topicFragmentPresenter.setCurrentTab(1)
+    (supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment).topicFragmentPresenter.setCurrentTab(
+      1
+    )
   }
 
   override fun routeToConceptCard(skillId: String) {
