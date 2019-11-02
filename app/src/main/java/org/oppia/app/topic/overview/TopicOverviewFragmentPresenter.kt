@@ -13,7 +13,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -61,7 +61,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
 
   // TODO(#135): Get this topic-id from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_1)
+    topicController.getTopic(TEST_TOPIC_ID_0)
   }
 
   private fun getTopicList(): LiveData<Topic> {

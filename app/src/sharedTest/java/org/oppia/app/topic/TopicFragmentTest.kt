@@ -35,7 +35,7 @@ import javax.inject.Singleton
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
 class TopicFragmentTest {
-  private val topicName = "Second Test Topic"
+  private val topicName = "First Test Topic"
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -64,7 +64,6 @@ class TopicFragmentTest {
   @UiThread
   fun testTopicFragment_overviewTopicIsDisplayedInTabLayout_worksAsExpected() {
     activityTestRule.launchActivity(null)
-
     onView(
       allOf(
         withText(R.string.overview),
