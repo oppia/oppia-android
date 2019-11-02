@@ -14,6 +14,7 @@ import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger

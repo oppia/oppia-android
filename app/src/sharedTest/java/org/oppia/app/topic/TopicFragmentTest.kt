@@ -65,7 +65,6 @@ class TopicFragmentTest {
   @UiThread
   fun testTopicFragment_overviewTopicIsDisplayedInTabLayout_worksAsExpected() {
     activityTestRule.launchActivity(null)
-
     onView(
       allOf(
         withText(R.string.overview),
