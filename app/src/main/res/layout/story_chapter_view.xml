@@ -11,6 +11,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
     android:padding="16dp"
+    android:onClick="@{viewModel.onChapterClicked}"
     app:roundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}">
 
     <ImageView
