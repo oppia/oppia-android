@@ -9,8 +9,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -21,6 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.domain.topic.TEST_STORY_ID_1
 
 /** Tests for [StoryActivity]. */
@@ -28,7 +32,7 @@ import org.oppia.domain.topic.TEST_STORY_ID_1
 class StoryActivityTest {
 
   lateinit var context: Context
-  lateinit var intent: Intent
+  private lateinit var intent: Intent
 
   @Before
   fun setUp() {
@@ -51,6 +55,25 @@ class StoryActivityTest {
   fun checkCorrectNumberOfStoriesLoadedInRecyclerView() {
     launch<StoryActivity>(intent).use {
       onView(withId(R.id.story_chapter_list)).check(CustomAssertions.hasItemCount(4))
+    }
+  }
+
+  @Test
+  fun checkCorrectExplorationLoadedOnClick() {
+    launch<StoryActivity>(intent).use {
+      onView(withId(R.id.story_chapter_list)).perform(
+        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(withId(R.id.story_chapter_list)).perform(
+        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          1,
+          click()
+        )
+      )
+
+      Intents.intended(IntentMatchers.hasComponent(ExplorationActivity::class.java.name))
     }
   }
 
