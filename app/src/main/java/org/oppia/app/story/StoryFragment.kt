@@ -14,11 +14,7 @@ private const val KEY_STORY_ID = "STORY_ID"
 class StoryFragment : InjectableFragment() {
 
   companion object {
-    /**
-     * Creates a new instance of story fragment.
-     * @param storyId Used in TopicController to get correct story information.
-     * @return [StoryFragment]
-     */
+    /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
     fun newInstace(storyId: String): StoryFragment {
       val storyFragment = StoryFragment()
       val args = Bundle()
@@ -28,16 +24,22 @@ class StoryFragment : InjectableFragment() {
     }
   }
 
-  @Inject lateinit var storyFragmentPresenter: StoryFragmentPresenter
+  @Inject
+  lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
   override fun onAttach(context: Context?) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to StoryFragment" }
-    val storyId = checkNotNull(args.getString(KEY_STORY_ID)) { "Expected storyId to be passed to StoryFragment" }
+    val storyId =
+      checkNotNull(args.getString(KEY_STORY_ID)) { "Expected storyId to be passed to StoryFragment" }
     return storyFragmentPresenter.handleCreateView(inflater, container, storyId)
   }
 }
