@@ -5,17 +5,12 @@
     <variable name="viewModel" type="org.oppia.app.story.StoryViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/story_chapter_list"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/story_chapter_list"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:data="@{viewModel.storyChapterLiveData}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="match_parent"
+    app:data="@{viewModel.storyChapterLiveData}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 </layout>

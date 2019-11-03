@@ -4,7 +4,9 @@ import android.view.View
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.story.StoryActivity
+import org.oppia.app.story.StoryFragment
 
+/** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
   chapterSummary: ChapterSummary
 ) : StoryItemViewModel() {

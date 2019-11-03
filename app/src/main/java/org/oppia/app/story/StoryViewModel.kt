@@ -21,22 +21,23 @@ class StoryViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger
 ) : ViewModel() {
+  /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
 
-  val storyLiveData: LiveData<StorySummary> by lazy {
+  private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
+    topicController.getStory(storyId)
+  }
+
+  private val storyLiveData: LiveData<StorySummary> by lazy {
     Transformations.map(storyResultLiveData, ::processStoryResult)
   }
 
   val storyNameLiveData: LiveData<String> by lazy {
-    Transformations.map(storyResultLiveData, ::processStoryName)
+    Transformations.map(storyLiveData, StorySummary::getStoryName)
   }
 
   val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
-    Transformations.map(storyResultLiveData, ::processStoryChapterList)
-  }
-
-  private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
-    topicController.getStory(storyId)
+    Transformations.map(storyLiveData, ::processStoryChapterList)
   }
 
   fun setStoryId(storyId: String) {
@@ -51,33 +52,21 @@ class StoryViewModel @Inject constructor(
     return storyResult.getOrDefault(StorySummary.getDefaultInstance())
   }
 
-  private fun processStoryName(storyResult: AsyncResult<StorySummary>): String {
-    if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
-    }
-
-    return storyResult.getOrDefault(StorySummary.getDefaultInstance()).storyName
-  }
-
-  private fun processStoryChapterList(storyResult: AsyncResult<StorySummary>): List<StoryItemViewModel> {
-    if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
-    }
-
-    val chapterList: List<ChapterSummary> =
-      storyResult.getOrDefault(StorySummary.getDefaultInstance()).chapterList
+  private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {
+    val chapterList: List<ChapterSummary> = storySummary.chapterList
     val completedCount =
       chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }.size
-    val finalList: MutableList<StoryItemViewModel> = ArrayList<StoryItemViewModel>()
 
-    // Add header
-    finalList.add(StoryHeaderViewModel(completedCount, chapterList.size))
+    // List with only the header
+    val itemViewModelList: MutableList<StoryItemViewModel> = mutableListOf(
+      StoryHeaderViewModel(completedCount, chapterList.size) as StoryItemViewModel
+    )
 
     // Add the rest of the list
-    chapterList.forEach { chapter ->
-      finalList.add(StoryChapterSummaryViewModel(chapter))
-    }
+    itemViewModelList.addAll(chapterList.map { chapter ->
+      StoryChapterSummaryViewModel(chapter) as StoryItemViewModel
+    })
 
-    return finalList
+    return itemViewModelList
   }
 }

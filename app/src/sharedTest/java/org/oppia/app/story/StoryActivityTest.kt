@@ -2,29 +2,27 @@ package org.oppia.app.story
 
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.domain.topic.TEST_STORY_ID_1
 
 /** Tests for [StoryActivity]. */
@@ -54,15 +52,15 @@ class StoryActivityTest {
   @Test
   fun checkCorrectNumberOfStoriesLoadedInRecyclerView() {
     launch<StoryActivity>(intent).use {
-      onView(withId(R.id.story_chapter_list)).check(CustomAssertions.hasItemCount(4))
+      onView(withId(R.id.story_chapter_list)).check(hasItemCount(4))
     }
   }
 
   @Test
-  fun checkCorrectExplorationLoadedOnClick() {
+  fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(intent).use {
       onView(withId(R.id.story_chapter_list)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+        scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
@@ -73,39 +71,12 @@ class StoryActivityTest {
         )
       )
 
-      Intents.intended(IntentMatchers.hasComponent(ExplorationActivity::class.java.name))
+      intended(hasComponent(ExplorationActivity::class.java.name))
     }
   }
 
   @After
   fun tearDown() {
     Intents.release()
-  }
-
-  class CustomAssertions {
-    companion object {
-      fun hasItemCount(count: Int): ViewAssertion {
-        return RecyclerViewItemCountAssertion(count)
-      }
-    }
-
-    private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
-
-      override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-        if (noViewFoundException != null) {
-          throw noViewFoundException
-        }
-
-        check(view is RecyclerView) { "The asserted view is not RecyclerView" }
-
-        checkNotNull(view.adapter) { "No adapter is assigned to RecyclerView" }
-
-        ViewMatchers.assertThat(
-          "RecyclerView item count",
-          view.adapter!!.itemCount,
-          CoreMatchers.equalTo(count)
-        )
-      }
-    }
   }
 }

@@ -20,15 +20,6 @@ fun <T : Any> bindToRecyclerViewAdapterWithLiveData(
   }
 }
 
-/** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
-@BindingAdapter("data")
-fun <T : Any> bindToRecyclerViewAdapterWithObservableList(
-  recyclerView: RecyclerView,
-  dataList: ObservableList<T>
-) {
-  bindToRecyclerViewAdapter(recyclerView, dataList)
-}
-
 private fun <T : Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, dataList: List<T>) {
   val adapter = recyclerView.adapter
   checkNotNull(adapter) { "Cannot bind data to a RecyclerView missing its adapter." }

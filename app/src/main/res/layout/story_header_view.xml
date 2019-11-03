@@ -6,21 +6,15 @@
     <variable name="viewModel" type="org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel" />
   </data>
 
-  <FrameLayout
+  <TextView
+    android:id="@+id/story_progress_chapter_completed_text"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-      android:id="@+id/story_progress_chapter_completed_text"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:fontFamily="sans-serif-medium"
-      android:textColor="@color/black"
-      android:textSize="14sp"
-      android:text="@{@plurals/story_total_chapters(viewModel.totalChapters, viewModel.completedChapters, viewModel.totalChapters)}"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-  </FrameLayout>
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:fontFamily="sans-serif-medium"
+    android:textColor="@color/black"
+    android:textSize="14sp"
+    android:text="@{@plurals/story_total_chapters(viewModel.totalChapters, viewModel.completedChapters, viewModel.totalChapters)}"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 </layout>
