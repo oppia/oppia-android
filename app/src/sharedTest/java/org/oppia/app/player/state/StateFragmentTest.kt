@@ -370,11 +370,12 @@ class StateFragmentTest {
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
     ActivityScenario.launch(ContentCardTestActivity::class.java).use {
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time." +
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
             "Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(containsString(htmlResult)))))
+      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(hasDescendant(withText(htmlResult))))
     }
   }
+
   @After
   fun tearDown() {
     Intents.release()
