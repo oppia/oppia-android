@@ -18,13 +18,13 @@ import javax.inject.Inject
 class PromotedStoryViewModel @Inject constructor(
   private val activity: AppCompatActivity
 ) : ObservableViewModel() {
+
   /**
    * The retrieved [LiveData] for retrieving topic summaries. This model should ensure only one
    * [LiveData] is used for all subsequent processed data to ensure the transformed [LiveData]s are
    * always in sync.
    */
-
-  var promotedStoryObservable = ObservableField<PromotedStory>()
+  val promotedStoryObservable = ObservableField<PromotedStory>()
 
   fun setPromotedStory(promotedStory: PromotedStory) {
     promotedStoryObservable.set(promotedStory)

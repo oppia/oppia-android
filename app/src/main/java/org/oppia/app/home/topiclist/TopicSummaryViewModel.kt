@@ -3,6 +3,7 @@ package org.oppia.app.home.topiclist
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.lifecycle.ViewModel
 import org.oppia.app.model.TopicSummary
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
@@ -14,12 +15,15 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** The view model corresponding to topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
-  val topicSummary: TopicSummary, private val topicSummaryClickListener: TopicSummaryClickListener
-) {
+  val topicSummary: TopicSummary,
+  private val topicSummaryClickListener: TopicSummaryClickListener
+) : ViewModel() {
   val name: String = topicSummary.name
   val canonicalStoryCount: Int = topicSummary.canonicalStoryCount
-  @ColorInt val backgroundColor: Int = retrieveBackgroundColor()
-  @ColorInt val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
+  @ColorInt
+  val backgroundColor: Int = retrieveBackgroundColor()
+  @ColorInt
+  val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile(@Suppress("UNUSED_PARAMETER") v: View) {

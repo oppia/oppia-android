@@ -141,7 +141,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
         matches(
           withText(R.string.view_all)
         )
@@ -152,7 +152,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all)).perform(click())
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
       intended(hasComponent(ContinuePlayingActivity::class.java.name))
     }
   }
@@ -160,7 +160,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.chapter_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.chapter_name_text_view)).check(
         matches(
           withText(containsString("The Meaning of Equal Parts"))
         )
@@ -171,7 +171,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
           withText(containsString("Second Story"))
         )
@@ -185,7 +185,7 @@ class HomeActivityTest {
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
           withText(containsString("Second Story"))
         )
@@ -206,7 +206,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("FIRST TOPIC"))
         )
@@ -217,7 +217,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex2_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.topic_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("First Topic"))
         )
@@ -239,7 +239,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name)).check(
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("Second Topic"))
         )

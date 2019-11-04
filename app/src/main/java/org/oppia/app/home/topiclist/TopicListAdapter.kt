@@ -26,37 +26,34 @@ class TopicListAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      // TODO(#249): Generalize this binding to make adding future items easier.
+      // TODO(#216): Generalize this binding to make adding future items easier.
       VIEW_TYPE_WELCOME_MESSAGE -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          DataBindingUtil.inflate<WelcomeBinding>(
+          WelcomeBinding.inflate(
             inflater,
-            R.layout.welcome,
             parent,
-            /* attachToParent= */false
+            /* attachToParent= */ false
           )
         WelcomeViewHolder(binding)
       }
       VIEW_TYPE_PROMOTED_STORY -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          DataBindingUtil.inflate<PromotedStoryCardBinding>(
+          PromotedStoryCardBinding.inflate(
             inflater,
-            R.layout.promoted_story_card,
             parent,
-            /* attachToParent= */false
+            /* attachToParent= */ false
           )
         PromotedStoryViewHolder(binding)
       }
       VIEW_TYPE_TOPIC_LIST -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          DataBindingUtil.inflate<TopicSummaryViewBinding>(
+          TopicSummaryViewBinding.inflate(
             inflater,
-            R.layout.topic_summary_view,
             parent,
-            /* attachToParent= */false
+            /* attachToParent= */ false
           )
         TopicListViewHolder(binding)
       }
@@ -98,18 +95,18 @@ class TopicListAdapter(
   }
 
   private class WelcomeViewHolder(
-    val binding: ViewDataBinding
+    val binding: WelcomeBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(userAppHistoryViewModel: UserAppHistoryViewModel) {
-      binding.setVariable(BR.viewModel, userAppHistoryViewModel)
+      binding.viewModel = userAppHistoryViewModel
     }
   }
 
   private class PromotedStoryViewHolder(
-    val binding: ViewDataBinding
+    val binding: PromotedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
-      binding.setVariable(BR.viewModel, promotedStoryViewModel)
+      binding.viewModel = promotedStoryViewModel
     }
   }
 

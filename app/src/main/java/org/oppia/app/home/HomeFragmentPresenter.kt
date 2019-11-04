@@ -89,11 +89,11 @@ class HomeFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
   }
 
-  private fun getPromotedStoryViewModel(): PromotedStoryViewModel? {
+  private fun getPromotedStoryViewModel(): PromotedStoryViewModel {
     return promotedStoryViewModel.getForFragment(fragment, PromotedStoryViewModel::class.java)
   }
 
-  fun playExplorationButton(v: View) {
+  fun playExplorationButton(@Suppress("UNUSED_PARAMETER") v: View) {
     explorationDataController.startPlayingExploration(
       EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -114,10 +114,9 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      if (getPromotedStoryViewModel() != null) {
-        getPromotedStoryViewModel()!!.setPromotedStory(result.promotedStory)
-        itemList.add(getPromotedStoryViewModel()!!)
-      }
+      getPromotedStoryViewModel().setPromotedStory(result.promotedStory)
+      itemList.add(getPromotedStoryViewModel())
+
       itemList.addAll(result.topicSummaryList)
       topicListAdapter.notifyDataSetChanged()
     })
@@ -129,14 +128,14 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToUserAppHistory() {
-    getUserAppHistory()!!.observe(fragment, Observer<UserAppHistory> { result ->
+    getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
       getUserAppHistoryViewModel().setAlreadyAppOpened(result.alreadyOpenedApp)
       itemList.add(0, getUserAppHistoryViewModel())
       topicListAdapter.notifyDataSetChanged()
     })
   }
 
-  private fun getUserAppHistory(): LiveData<UserAppHistory>? {
+  private fun getUserAppHistory(): LiveData<UserAppHistory> {
     // If there's an error loading the data, assume the default.
     return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
   }
