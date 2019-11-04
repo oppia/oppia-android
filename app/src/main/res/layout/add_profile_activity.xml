@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
   <data>
     <variable
       name="viewModel"
@@ -135,6 +136,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="65dp"
         android:layout_marginEnd="30dp"/>
+      <org.oppia.app.profile.ProfileInputView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        profile:label="James"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
