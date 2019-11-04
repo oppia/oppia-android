@@ -37,7 +37,7 @@ class HomeFragmentPresenter @Inject constructor(
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
 
-  private val itemList: MutableList<Any> = ArrayList()
+  private val itemList: MutableList<HomeItemViewModel> = ArrayList()
 
   private lateinit var topicListAdapter: TopicListAdapter
 

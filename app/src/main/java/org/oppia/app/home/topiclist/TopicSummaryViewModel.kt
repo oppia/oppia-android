@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
+import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.model.TopicSummary
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
@@ -17,7 +18,7 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 class TopicSummaryViewModel(
   val topicSummary: TopicSummary,
   private val topicSummaryClickListener: TopicSummaryClickListener
-) : ViewModel() {
+) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val canonicalStoryCount: Int = topicSummary.canonicalStoryCount
   @ColorInt

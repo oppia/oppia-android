@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.PromotedStoryCardBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
+import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.UserAppHistoryViewModel
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
@@ -14,7 +15,7 @@ private const val VIEW_TYPE_TOPIC_LIST = 3
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
-  private val itemList: MutableList<Any>
+  private val itemList: MutableList<HomeItemViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -80,7 +81,7 @@ class TopicListAdapter(
       is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
     }
   }
 
