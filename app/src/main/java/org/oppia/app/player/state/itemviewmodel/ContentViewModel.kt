@@ -7,7 +7,6 @@ import javax.inject.Inject
 /** [ViewModel] for content-card state. */
 @FragmentScope
 class ContentViewModel @Inject constructor() : ViewModel() {
-
   var contentId = ""
   var htmlContent = ""
 }
