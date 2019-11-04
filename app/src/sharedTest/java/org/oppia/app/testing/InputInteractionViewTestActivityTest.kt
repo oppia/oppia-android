@@ -14,10 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth.assertThat
-import org.oppia.app.customview.interaction.FractionInputInteractionView
-import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
-import org.oppia.app.customview.interaction.NumericInputInteractionView
-import org.oppia.app.customview.interaction.TextInputInteractionView
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -27,10 +23,9 @@ class InputInteractionViewTestActivityTest {
   fun testNumericInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().real).isWithin(1e-5).of(0.0)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.real).isWithin(1e-5).of(0.0)
     }
   }
 
@@ -39,11 +34,10 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
-      assertThat(textAnswerRetriever.getPendingAnswer().real).isEqualTo(9.0)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
+      assertThat(pendingAnswer.real).isEqualTo(9.0)
     }
   }
 
@@ -52,10 +46,9 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9.5"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_input_interaction_view) as NumericInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
-      assertThat(textAnswerRetriever.getPendingAnswer().real).isEqualTo(9.5)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
+      assertThat(pendingAnswer.real).isEqualTo(9.5)
     }
   }
 
@@ -72,10 +65,9 @@ class InputInteractionViewTestActivityTest {
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString).isEmpty()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.normalizedString).isEmpty()
     }
   }
 
@@ -84,11 +76,10 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_text_input_interaction_view) as TextInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
-      assertThat(textAnswerRetriever.getPendingAnswer().normalizedString).isEqualTo("abc")
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
+      assertThat(pendingAnswer.normalizedString).isEqualTo("abc")
     }
   }
 
@@ -106,12 +97,11 @@ class InputInteractionViewTestActivityTest {
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(0)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(0)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(0)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(0)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(0)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(0)
     }
   }
 
@@ -120,12 +110,11 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(true)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(9)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -134,12 +123,11 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(false)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(9)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -148,13 +136,12 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/10"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(false)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -163,13 +150,12 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9/10"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(true)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -178,14 +164,13 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5 9/10"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(false)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(5)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(5)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -194,14 +179,13 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-5 9/10"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_fraction_input_interaction_view) as FractionInputInteractionView
-      assertThat(textAnswerRetriever.getPendingAnswer()).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.isNegative).isEqualTo(true)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.wholeNumber).isEqualTo(5)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.numerator).isEqualTo(9)
-      assertThat(textAnswerRetriever.getPendingAnswer().fraction.denominator).isEqualTo(10)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
+      assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(5)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -220,16 +204,14 @@ class InputInteractionViewTestActivityTest {
   fun testNumberWithUnitsInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val interactionObject = textAnswerRetriever.getPendingAnswer()
-      assertThat(interactionObject).isInstanceOf(InteractionObject::class.java)
-      assertThat(textAnswerRetriever.getPendingAnswer().real).isWithin(1e-5).of(0.0)
-      assertThat(interactionObject.numberWithUnits.fraction.denominator).isEqualTo(0)
-      assertThat(interactionObject.numberWithUnits.fraction.numerator).isEqualTo(0)
-      assertThat(interactionObject.numberWithUnits.fraction.wholeNumber).isEqualTo(0)
-      assertThat(interactionObject.numberWithUnits.fraction.isNegative).isEqualTo(false)
-      assertThat(interactionObject.numberWithUnits.unitOrBuilderList).isEmpty()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.real).isWithin(1e-5).of(0.0)
+      assertThat(pendingAnswer.numberWithUnits.fraction.denominator).isEqualTo(0)
+      assertThat(pendingAnswer.numberWithUnits.fraction.numerator).isEqualTo(0)
+      assertThat(pendingAnswer.numberWithUnits.fraction.wholeNumber).isEqualTo(0)
+      assertThat(pendingAnswer.numberWithUnits.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.numberWithUnits.unitOrBuilderList).isEmpty()
     }
   }
 
@@ -238,13 +220,11 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("-9"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val interactionObject = textAnswerRetriever.getPendingAnswer()
-      assertThat(interactionObject).isInstanceOf(InteractionObject::class.java)
-      assertThat(interactionObject.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS)
-      assertThat(interactionObject.numberWithUnits.fraction.isNegative).isEqualTo(true)
-      assertThat(interactionObject.numberWithUnits.fraction.wholeNumber).isEqualTo(9)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS)
+      assertThat(pendingAnswer.numberWithUnits.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.numberWithUnits.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -253,13 +233,11 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val interactionObject = textAnswerRetriever.getPendingAnswer()
-      assertThat(interactionObject).isInstanceOf(InteractionObject::class.java)
-      assertThat(interactionObject.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS)
-      assertThat(interactionObject.numberWithUnits.fraction.isNegative).isEqualTo(false)
-      assertThat(interactionObject.numberWithUnits.fraction.wholeNumber).isEqualTo(9)
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS)
+      assertThat(pendingAnswer.numberWithUnits.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.numberWithUnits.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -268,9 +246,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("9/10"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(9)
       assertThat(numberWithUnits.fraction.denominator).isEqualTo(10)
     }
@@ -281,9 +257,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("-6 1/5 km/hr"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.fraction.isNegative).isEqualTo(true)
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(6)
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(1)
@@ -297,9 +271,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("Rs 10000"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Rs")
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(10000)
     }
@@ -310,9 +282,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("5 9/10 km"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.fraction.isNegative).isEqualTo(false)
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(5)
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(9)
@@ -326,9 +296,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100 Rs."))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(100)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Rs.")
     }
@@ -339,9 +307,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100.50 Km"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.real).isEqualTo(100.50f)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Km")
     }
@@ -352,9 +318,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100.50 Km/m^2"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.real).isEqualTo(100.50f)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("Km/m^2")
     }
@@ -365,9 +329,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100.50 m^(-2)"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.real).isEqualTo(100.50f)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("m^(-2)")
     }
@@ -378,9 +340,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("3 1/2 days"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.fraction.wholeNumber).isEqualTo(3)
       assertThat(numberWithUnits.fraction.numerator).isEqualTo(1)
       assertThat(numberWithUnits.fraction.denominator).isEqualTo(2)
@@ -393,9 +353,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("-10.00 m"))
     activityScenario.onActivity { activity ->
-      val textAnswerRetriever =
-        activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView
-      val numberWithUnits = textAnswerRetriever.getPendingAnswer().numberWithUnits
+      val numberWithUnits = activity.numericInputViewModel.getPendingAnswer().numberWithUnits
       assertThat(numberWithUnits.real).isEqualTo(-10.0f)
       assertThat(numberWithUnits.getUnit(0).unit).isEqualTo("m")
     }
