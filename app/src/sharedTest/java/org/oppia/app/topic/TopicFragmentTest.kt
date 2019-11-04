@@ -2,12 +2,14 @@ package org.oppia.app.topic
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.annotation.UiThread
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -21,12 +23,16 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -42,28 +48,26 @@ class TopicFragmentTest {
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  private fun getResourceString(id: Int): String {
-    val resources = InstrumentationRegistry.getInstrumentation().targetContext.resources
-    return resources.getString(id)
+  @Before
+  fun setUp() {
+    Intents.init()
+    val intent = Intent(Intent.ACTION_PICK)
+    activityTestRule.launchActivity(intent)
   }
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
-    activityTestRule.launchActivity(null)
     onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
   }
 
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
-    activityTestRule.launchActivity(null)
     onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
     onView(withId(R.id.topic_tabs_viewpager)).perform(ViewActions.swipeLeft())
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_overviewTopicIsDisplayedInTabLayout_worksAsExpected() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.overview),
@@ -73,16 +77,12 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_defaultTabIsOverview_isSuccessful() {
-    activityTestRule.launchActivity(null)
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_showsOverviewTabSelectedAndContentMatched() {
-    activityTestRule.launchActivity(null)
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
     onView(withId(R.id.topic_name_text_view)).check(
       matches(
@@ -94,9 +94,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.play),
@@ -107,9 +105,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnPlayTab_showsPlayTabWithContentMatched() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.play),
@@ -120,9 +116,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnTrainTab_showsTrainTabSelected() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.train),
@@ -133,9 +127,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnTrainTab_showsTrainTabWithContentMatched() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.train),
@@ -146,9 +138,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.review),
@@ -159,9 +149,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.review),
@@ -169,16 +157,12 @@ class TopicFragmentTest {
       )
     ).perform(click())
     onView(
-      allOf(
-        atPosition(R.id.review_skill_recycler_view, 0).also { withText("An important skill") },
-        isDescendantOfA(withId(R.id.review_skill_recycler_view))
-      ).also { withId(R.id.skill_name) })
+      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
+    ).check(matches(withText(containsString("An important skill"))))
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnOverviewTab_showsOverviewTabSelected() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.review),
@@ -195,9 +179,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnOverviewTab_showsOverviewTabWithContentMatched() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.review),
@@ -220,9 +202,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsData() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.play),
@@ -236,9 +216,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsData() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.train),
@@ -257,19 +235,16 @@ class TopicFragmentTest {
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsData() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.review),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(allOf(
-      atPosition(R.id.review_skill_recycler_view, 0).also { withText("An important skill") },
-      isDescendantOfA(withId(R.id.review_skill_recycler_view))
-    ).also { withId(R.id.skill_name) })
+    onView(
+      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
+    ).check(matches(withText(containsString("An important skill"))))
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     onView(
       allOf(
@@ -277,16 +252,13 @@ class TopicFragmentTest {
         isDisplayed()
       )
     )
-    onView(allOf(
-      atPosition(R.id.review_skill_recycler_view, 0).also { withText("An important skill") },
-      isDescendantOfA(withId(R.id.review_skill_recycler_view))
-    ).also { withId(R.id.skill_name) })
+    onView(
+      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
+    ).check(matches(withText(containsString("An important skill"))))
   }
 
   @Test
-  @UiThread
   fun testTopicFragment_clickOnOverviewTab_configurationChange_showsSameTabAndItsData() {
-    activityTestRule.launchActivity(null)
     onView(
       allOf(
         withText(R.string.overview),
@@ -314,6 +286,16 @@ class TopicFragmentTest {
         )
       )
     )
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+  private fun getResourceString(id: Int): String {
+    val resources = InstrumentationRegistry.getInstrumentation().targetContext.resources
+    return resources.getString(id)
   }
 
   @Module
