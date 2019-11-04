@@ -17,7 +17,7 @@ import javax.inject.Inject
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_6
 
-/** The controller for [ContentCardTestActivity]. */
+/** The presenter for [ContentCardTestActivity]. */
 @ActivityScope
 class ContentCardTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,

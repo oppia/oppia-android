@@ -23,6 +23,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -365,19 +366,19 @@ class StateFragmentTest {
     intended(hasComponent(HomeActivity::class.java.name))
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
-  }
-
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
     ActivityScenario.launch(ContentCardTestActivity::class.java).use {
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
-            "Incidentally, do you know where the name 'Oppia' comes from?\n\n"
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
+            "Incidentally, do you know where the name 'Oppia' comes from?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(hasDescendant(withText(htmlResult))))
     }
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   @Module
