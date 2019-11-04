@@ -35,6 +35,7 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -367,6 +368,16 @@ class StateFragmentTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Test
+  fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
+    ActivityScenario.launch(ContentCardTestActivity::class.java).use {
+      val htmlResult =
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
+            "Incidentally, do you know where the name 'Oppia' comes from?\n\n"
+      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
+    }
   }
 
   @Module
