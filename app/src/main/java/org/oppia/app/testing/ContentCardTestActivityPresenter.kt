@@ -14,8 +14,8 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
-private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_6
+private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID_2 = TEST_EXPLORATION_ID_6
 
 /** The presenter for [ContentCardTestActivity]. */
 @ActivityScope
@@ -26,40 +26,13 @@ class ContentCardTestActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.content_card_test_activity)
-    val playExplorationButton1 = activity.findViewById(R.id.play_exploration_button1) as Button
-    val playExplorationButton2 = activity.findViewById(R.id.play_exploration_button2) as Button
+    val playExplorationButton1 = activity.findViewById(R.id.play_exploration_button_1) as Button
+    val playExplorationButton2 = activity.findViewById(R.id.play_exploration_button_2) as Button
 
     playExplorationButton1.setOnClickListener(View.OnClickListener {
       explorationDataController.stopPlayingExploration()
       explorationDataController.startPlayingExploration(
-        EXPLORATION_ID
-      ).observe(activity, Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> logger.d("ContentCardTest", "Loading exploration")
-          result.isFailure() -> logger.e(
-            "ContentCardTest",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d("ContentCardTest", "Successfully loaded exploration")
-
-            if (getStateFragment() == null) {
-              val stateFragment = StateFragment.newInstance(EXPLORATION_ID)
-              activity.supportFragmentManager.beginTransaction().add(
-                R.id.state_fragment_placeholder,
-                stateFragment
-              ).commitNow()
-            }
-          }
-        }
-      })
-    })
-
-    playExplorationButton2.setOnClickListener(View.OnClickListener {
-      explorationDataController.stopPlayingExploration()
-      explorationDataController.startPlayingExploration(
-        EXPLORATION_ID
+        EXPLORATION_ID_1
       ).observe(activity, Observer<AsyncResult<Any?>> { result ->
         when {
           result.isPending() -> logger.d("ContentCardTest", "Loading exploration")
@@ -73,6 +46,33 @@ class ContentCardTestActivityPresenter @Inject constructor(
 
             if (getStateFragment() == null) {
               val stateFragment = StateFragment.newInstance(EXPLORATION_ID_1)
+              activity.supportFragmentManager.beginTransaction().add(
+                R.id.state_fragment_placeholder,
+                stateFragment
+              ).commitNow()
+            }
+          }
+        }
+      })
+    })
+
+    playExplorationButton2.setOnClickListener(View.OnClickListener {
+      explorationDataController.stopPlayingExploration()
+      explorationDataController.startPlayingExploration(
+        EXPLORATION_ID_2
+      ).observe(activity, Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d("ContentCardTest", "Loading exploration")
+          result.isFailure() -> logger.e(
+            "ContentCardTest",
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("ContentCardTest", "Successfully loaded exploration")
+
+            if (getStateFragment() == null) {
+              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_2)
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.state_fragment_placeholder,
                 stateFragment
