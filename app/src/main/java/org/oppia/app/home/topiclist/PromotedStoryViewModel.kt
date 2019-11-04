@@ -5,19 +5,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.home.ContinuePlayingActivity
+import org.oppia.app.home.RouteToContinuePlayingListener
+import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.PromotedStory
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 
 // TODO(#283): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-@FragmentScope
-class PromotedStoryViewModel @Inject constructor(
-  private val activity: AppCompatActivity
-) : ObservableViewModel() {
+class PromotedStoryViewModel(private val activity: AppCompatActivity) : ObservableViewModel(),
+  RouteToContinuePlayingListener, RouteToTopicPlayStoryListener {
 
   /**
    * The retrieved [LiveData] for retrieving topic summaries. This model should ensure only one
@@ -31,13 +30,24 @@ class PromotedStoryViewModel @Inject constructor(
   }
 
   fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    (activity as HomeActivity).routeToTopicPlayStory(
-      promotedStoryObservable.get()!!.topicId,
-      promotedStoryObservable.get()!!.storyId
-    )
+    routeToTopicPlayStory(promotedStoryObservable.get()!!.topicId, promotedStoryObservable.get()!!.storyId)
   }
 
   fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
-    (activity as HomeActivity).routeToContinuePlaying()
+    routeToContinuePlaying()
+  }
+
+  override fun routeToTopicPlayStory(topicId: String, storyId: String) {
+    activity.startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        activity.applicationContext,
+        topicId,
+        storyId
+      )
+    )
+  }
+
+  override fun routeToContinuePlaying() {
+    activity.startActivity(ContinuePlayingActivity.createContinuePlayingActivityIntent(activity.applicationContext))
   }
 }

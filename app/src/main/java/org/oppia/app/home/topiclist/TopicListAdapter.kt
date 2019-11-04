@@ -2,16 +2,11 @@ package org.oppia.app.home.topiclist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import androidx.databinding.library.baseAdapters.BR
-import org.oppia.app.R
 import org.oppia.app.databinding.PromotedStoryCardBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.UserAppHistoryViewModel
-import org.oppia.app.model.TopicSummary
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY = 2
@@ -19,8 +14,7 @@ private const val VIEW_TYPE_TOPIC_LIST = 3
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
-  private val itemList: MutableList<Any>,
-  private val topicSummaryClickListener: TopicSummaryClickListener
+  private val itemList: MutableList<Any>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -70,7 +64,7 @@ class TopicListAdapter(
         (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
       VIEW_TYPE_TOPIC_LIST -> {
-        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummary, topicSummaryClickListener)
+        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummaryViewModel)
       }
     }
   }
@@ -83,7 +77,7 @@ class TopicListAdapter(
       is PromotedStoryViewModel -> {
         VIEW_TYPE_PROMOTED_STORY
       }
-      is TopicSummary -> {
+      is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
       }
       else -> throw IllegalArgumentException("Invalid type of data $position")
@@ -111,13 +105,10 @@ class TopicListAdapter(
   }
 
   private class TopicListViewHolder(
-    val binding: ViewDataBinding
+    val binding: TopicSummaryViewBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(topicSummary: TopicSummary, topicSummaryClickListener: TopicSummaryClickListener) {
-
-      val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, topicSummaryClickListener)
-
-      binding.setVariable(BR.viewModel, topicSummaryViewModel)
+    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel) {
+      binding.viewModel = topicSummaryViewModel
     }
   }
 }

@@ -14,19 +14,16 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
-
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 
 /** The controller for [HomeFragment]. */
 @FragmentScope
@@ -34,13 +31,10 @@ class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
-  private val promotedStoryViewModel: ViewModelProvider<PromotedStoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController,
-  private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController,
   private val logger: Logger
 ) {
-  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
 
   private val itemList: MutableList<Any> = ArrayList()
@@ -54,7 +48,7 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    topicListAdapter = TopicListAdapter(itemList, fragment as TopicSummaryClickListener)
+    topicListAdapter = TopicListAdapter(itemList)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -89,35 +83,20 @@ class HomeFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
   }
 
-  private fun getPromotedStoryViewModel(): PromotedStoryViewModel {
-    return promotedStoryViewModel.getForFragment(fragment, PromotedStoryViewModel::class.java)
-  }
-
-  fun playExplorationButton(@Suppress("UNUSED_PARAMETER") v: View) {
-    explorationDataController.startPlayingExploration(
-      EXPLORATION_ID
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
-        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d("HomeFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
-        }
-      }
-    })
-  }
-
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
     topicListController.getTopicList()
   }
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      getPromotedStoryViewModel().setPromotedStory(result.promotedStory)
-      itemList.add(getPromotedStoryViewModel())
 
-      itemList.addAll(result.topicSummaryList)
+      val promotedStoryViewModel = PromotedStoryViewModel(activity)
+      promotedStoryViewModel.setPromotedStory(result.promotedStory)
+      itemList.add(promotedStoryViewModel)
+      for (topicSummary in result.topicSummaryList) {
+        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+        itemList.add(topicSummaryViewModel)
+      }
       topicListAdapter.notifyDataSetChanged()
     })
   }
