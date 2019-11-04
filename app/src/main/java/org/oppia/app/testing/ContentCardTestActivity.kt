@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class ContentCardTestActivity : InjectableAppCompatActivity() {
   @Inject
-  lateinit var contentCardTestPresenter: ContentCardTestPresenter
+  lateinit var contentCardTestPresenter: ContentCardTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

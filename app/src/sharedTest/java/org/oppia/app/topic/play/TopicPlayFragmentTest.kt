@@ -2,7 +2,6 @@ package org.oppia.app.topic.play
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -34,7 +33,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.story.StoryActivity

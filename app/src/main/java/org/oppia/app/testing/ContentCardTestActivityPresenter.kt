@@ -15,7 +15,7 @@ private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 
 /** The controller for [ContentCardTestActivity]. */
 @ActivityScope
-class ContentCardTestPresenter @Inject constructor(
+class ContentCardTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
