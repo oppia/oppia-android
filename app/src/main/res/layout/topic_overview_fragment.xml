@@ -23,7 +23,7 @@
       <ImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
-        android:layout_height="210dp"
+        android:layout_height="202dp"
         android:paddingTop="22dp"
         android:foreground="@drawable/thumbnail_gradient"
         android:background="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
