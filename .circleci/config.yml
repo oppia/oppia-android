@@ -17,12 +17,12 @@ jobs:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}
-      - run: gradle androidDependencies
+      - run: ./.circleci/gradle/gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
-      - run: gradle test
+      - run: ./.circleci/gradle/gradlew test
       - store_artifacts:
           path: app/build/reports
           destination: reports
