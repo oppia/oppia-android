@@ -193,13 +193,13 @@ class HomeActivityTest {
     }
   }
 
-  // TODO(#135): Update this test case to check that topic-play tab is opened.
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch(HomeActivity::class.java).use {
-      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
+      onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_1"))
     }
   }
 
