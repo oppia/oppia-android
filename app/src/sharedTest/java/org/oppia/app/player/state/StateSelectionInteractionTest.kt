@@ -4,29 +4,15 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-import android.content.res.Configuration
-import android.os.Handler
-import androidx.test.InstrumentationRegistry
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollTo
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -41,8 +27,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -70,16 +54,18 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
-    onView(withId(R.id.selection_interaction_recyclerview)).perform(
-      actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
-    )
-    onView(withId(R.id.selection_interaction_recyclerview)).perform(
-      actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
-    )
+      onView(withId(R.id.play_exploration_button_1)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
+      )
   }
 
   @Test
   fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
+    onView(withId(R.id.play_exploration_button_2)).perform(click())
     onView(withId(R.id.selection_interaction_recyclerview)).perform(
       actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
     )
@@ -90,10 +76,9 @@ class StateSelectionInteractionTest {
 
   @Test
   fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
-    activityTestRule.launchActivity(null)
-     onView(withId(R.id.selection_interaction_recyclerview)).perform(
-      actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
-    )
+    onView(withId(R.id.play_exploration_button_2)).perform(click())
+    onView(withId(R.id.selection_interaction_recyclerview)).perform(
+      actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click()))
     counter++
     onView(withId(R.id.selection_interaction_recyclerview)).perform(
       actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())

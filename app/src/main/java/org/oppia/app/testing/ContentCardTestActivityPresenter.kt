@@ -1,5 +1,6 @@
 package org.oppia.app.testing
 
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.app.R
@@ -22,14 +23,37 @@ class ContentCardTestActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.content_card_test_activity)
-    loadDummyExplorationAtStart()
   }
 
   private fun getStateFragment(): StateFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
 
-  private fun loadDummyExplorationAtStart() {
+  fun playExplorationButton_1(v: View) {
+    explorationDataController.stopPlayingExploration()
+    explorationDataController.startPlayingExploration(
+      EXPLORATION_ID
+    ).observe(activity, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("ContentCardTest", "Loading exploration")
+        result.isFailure() -> logger.e("ContentCardTest", "Failed to load exploration", result.getErrorOrNull()!!)
+        else -> {
+          logger.d("ContentCardTest", "Successfully loaded exploration")
+
+          if (getStateFragment() == null) {
+            val stateFragment = StateFragment.newInstance(EXPLORATION_ID)
+            activity.supportFragmentManager.beginTransaction().add(
+              R.id.state_fragment_placeholder,
+              stateFragment
+            ).commitNow()
+          }
+        }
+      }
+    })
+  }
+
+  fun play_exploration_button2(v: View) {
+    explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       EXPLORATION_ID
     ).observe(activity, Observer<AsyncResult<Any?>> { result ->
