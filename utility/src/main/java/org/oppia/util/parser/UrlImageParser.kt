@@ -9,15 +9,12 @@ import android.graphics.drawable.Drawable
 import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import dagger.Binds
-import org.oppia.util.R
 import javax.inject.Inject
 
-
-
 // TODO(#169): Replace this with exploration asset downloader.
+// TODO(#277): Add test cases for loading image.
+
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
   private val context: Context,
@@ -27,10 +24,8 @@ class UrlImageParser private constructor(
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
-  @ImageLoaderAnnotation private val imageLoader:ImageLoader
+  @ImageLoaderAnnotation private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
-
-
   /**
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
@@ -49,15 +44,16 @@ class UrlImageParser private constructor(
 
   private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
     override fun onLoadCleared(placeholder: Drawable?) {
-      TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+      // No resources to clear.
     }
+
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
       val  drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
-        val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
-        val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
+        val drawableHeight = drawable.intrinsicHeight
+        val drawableWidth = drawable.intrinsicWidth
         val rect = Rect(0, 0, drawableWidth, drawableHeight)
-        (drawable as BitmapDrawable).bounds = rect
+        drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
         htmlContentTextView.text = htmlContentTextView.text

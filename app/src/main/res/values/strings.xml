@@ -25,6 +25,7 @@
   <string name="state_learn_again_button">LEARN AGAIN</string>
   <string name="topic_overview_see_more">See More</string>
   <string name="topic_download_text"> (%s MB)</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="fractions_hint_text">Write fraction here.</string>
   <string name="number_input_hint_text">Write numbers here.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>

@@ -83,7 +83,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
-      'org.mockito:mockito-core:2.7.22'
+      'org.mockito:mockito-core:2.7.22',
   )
   androidTestImplementation(
       'androidx.test:core:1.2.0',
@@ -92,7 +92,8 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'androidx.test:runner:1.2.0',
       'com.google.truth:truth:0.43',
-      'org.mockito:mockito-android:2.7.22'
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.mockito:mockito-android:2.7.22',
   )
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',
