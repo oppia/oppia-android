@@ -372,7 +372,7 @@ class StateFragmentTest {
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time." +
             "Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(htmlResult))))
+      onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withText(containsString(htmlResult)))))
     }
   }
   @After
