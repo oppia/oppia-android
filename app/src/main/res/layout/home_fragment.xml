@@ -33,16 +33,5 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/welcome_text_view"/>
-    <Button
-      android:id="@+id/play_exploration_button1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:onClick="@{presenter::playExplorationButton_1}"
-      android:text="Play exploration 2"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/play_exploration_button"/>
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
