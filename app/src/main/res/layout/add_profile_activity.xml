@@ -17,7 +17,7 @@
       android:paddingTop="30dp"
       android:paddingBottom="75dp">
       <ImageView
-        android:id="@+id/add_image_button"
+        android:id="@+id/upload_image_button"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/review_placeholder"
@@ -31,7 +31,7 @@
         android:text="@string/name_input"
         android:textColor="@color/black"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/add_image_button"
+        app:layout_constraintTop_toBottomOf="@id/upload_image_button"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"/>

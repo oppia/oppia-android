@@ -1,12 +1,17 @@
 package org.oppia.app.profile
 
 import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -14,7 +19,10 @@ import org.oppia.app.databinding.AddProfileActivityBinding
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
+
+const val GALLERY_INTENT_RESULT_CODE = 1
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -24,6 +32,8 @@ class AddProfileActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<AddProfileViewModel>
   ) {
   var allowDownloadAccess = false
+  var selectedImage: Uri? = null
+  lateinit var uploadImageView: ImageView
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -43,7 +53,6 @@ class AddProfileActivityPresenter @Inject constructor(
     }
 
     binding.confirmPinInput.addTextChangedListener(object: TextWatcher {
-
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
           if (it.length == 3 && it.toString() == binding.pinInput.text.toString()) {
@@ -58,6 +67,12 @@ class AddProfileActivityPresenter @Inject constructor(
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
+    binding.uploadImageButton.setOnClickListener {
+      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+      activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+    }
+    uploadImageView = binding.uploadImageButton
+
     binding.createButton.setOnClickListener {
       val name = binding.inputName.text.toString()
       val pin = binding.pinInput.text.toString()
@@ -70,7 +85,7 @@ class AddProfileActivityPresenter @Inject constructor(
         Toast.makeText(activity, activity.resources.getString(R.string.confirm_pin_wrong), Toast.LENGTH_SHORT).show()
         return@setOnClickListener
       }
-      profileManagementController.addProfile(name, pin, null, allowDownloadAccess, isAdmin = false).observe(activity, Observer {
+      profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false).observe(activity, Observer {
         if (it.isSuccess()) {
           val intent = Intent(activity, ProfileActivity::class.java)
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -100,6 +115,18 @@ class AddProfileActivityPresenter @Inject constructor(
       })
     }
   }
+
+  fun handleOnActivityResult(data: Intent?) {
+    data?.let {
+      selectedImage = data.data
+      Glide.with(activity)
+        .load(selectedImage)
+        .centerCrop()
+        .apply(RequestOptions.circleCropTransform())
+        .into(uploadImageView)
+    }
+  }
+
 
   private fun getAddProfileViewModel(): AddProfileViewModel {
     return viewModelProvider.getForActivity(activity, AddProfileViewModel::class.java)
