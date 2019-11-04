@@ -2,10 +2,10 @@ package org.oppia.app.home
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.core.app.ActivityScenario.launch
@@ -19,6 +19,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -57,6 +58,7 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -114,9 +116,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -130,6 +130,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.recently_played_stories_text_view)).check(
         matches(
           withText(R.string.recently_played_stories)
@@ -141,6 +142,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
         matches(
           withText(R.string.view_all)
@@ -152,6 +154,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
       intended(hasComponent(ContinuePlayingActivity::class.java.name))
     }
@@ -171,6 +174,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
           withText(containsString("Second Story"))
@@ -182,9 +186,8 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
           withText(containsString("Second Story"))
@@ -196,6 +199,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
@@ -206,6 +210,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("FIRST TOPIC"))
@@ -217,6 +222,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex2_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("First Topic"))
@@ -228,7 +234,8 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex2_topicSummary_lessonCountIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.lesson_count)).check(
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.lesson_count_text_view)).check(
         matches(
           withText(containsString("2 Lessons"))
         )
@@ -239,6 +246,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("Second Topic"))
@@ -250,7 +258,8 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count)).check(
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -261,10 +270,9 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch(HomeActivity::class.java).use {
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count)).check(
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -275,6 +283,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickTopicSummary_opensTopicActivity() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
