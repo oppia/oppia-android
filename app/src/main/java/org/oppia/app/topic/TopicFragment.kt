@@ -21,7 +21,7 @@ class TopicFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    topicId = checkNotNull(arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)?: TEST_TOPIC_ID_0) {
+    topicId = checkNotNull(arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0) {
       "Expected topic ID to be included in arguments for TopicFragment."
     }
     return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
