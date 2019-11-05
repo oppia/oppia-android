@@ -23,7 +23,7 @@
       android:checked="@{isChecked}"
       android:fontFamily="sans-serif"
       android:gravity="center_vertical"
-      android:paddingEnd="@dimen/padding_checkbox"
+      android:paddingEnd="@dimen/train_checkbox_padding"
       android:text="@{skill.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
