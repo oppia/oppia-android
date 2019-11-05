@@ -2,6 +2,9 @@ package org.oppia.domain.profile
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.media.ExifInterface
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
@@ -386,7 +389,8 @@ class ProfileManagementController @Inject constructor(
     var fos: FileOutputStream? = null
     try {
       fos = FileOutputStream(imageFile)
-      bitmap.compress(Bitmap.CompressFormat.PNG, /** quality= */ 100, fos)
+      rotateAndCompressBitmap(avatarImagePath, bitmap, 200)
+        .compress(Bitmap.CompressFormat.PNG, /** quality= */ 100, fos)
     } catch (e: Exception) {
       logger.e("ProfileManagementController", "Failed to store user submitted avatar image", e)
       return ""
@@ -418,5 +422,20 @@ class ProfileManagementController @Inject constructor(
       logger.e("ProfileManagementController", "No such algorithm when creating md5 hash for gravatar", e)
     }
     return ""
+  }
+
+  private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
+    val croppedBitmap = ThumbnailUtils.extractThumbnail(bitmap, cropSize, cropSize)
+    val inputStream = context.contentResolver.openInputStream(uri)
+    val orientation = ExifInterface(inputStream).getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
+    var rotate = 0
+    when (orientation) {
+      ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
+      ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
+      ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
+    }
+    val matrix = Matrix()
+    matrix.postRotate(rotate.toFloat())
+    return Bitmap.createBitmap(croppedBitmap, 0, 0, cropSize,  cropSize, matrix, true)
   }
 }
