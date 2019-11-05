@@ -10,10 +10,7 @@ import org.oppia.app.model.PromotedStory
 class OngoingStoryViewModel(
   val ongoingStory: PromotedStory,
   private val ongoingStoryClickListener: OngoingStoryClickListener
-) : ContinuePlayingViewModel() {
-
-  val whiteBackground = 0xffffff
-
+) : ContinuePlayingItemViewModel() {
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
   }

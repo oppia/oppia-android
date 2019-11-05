@@ -32,7 +32,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
 
   private lateinit var ongoingListAdapter: OngoingListAdapter
 
-  private val itemList: MutableList<ContinuePlayingViewModel> = ArrayList()
+  private val itemList: MutableList<ContinuePlayingItemViewModel> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -70,7 +70,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       if (it.olderStoryCount > 0) {
         val olderSectionTitleViewModel = SectionTitleViewModel()
         olderSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_month)
-        if(itemList.size>0){
+        if (itemList.isNotEmpty()) {
           olderSectionTitleViewModel.isDividerVisible = true
         }
         itemList.add(olderSectionTitleViewModel)

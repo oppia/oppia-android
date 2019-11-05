@@ -7,7 +7,5 @@ import androidx.lifecycle.ViewModel
 class UserAppHistoryViewModel : HomeItemViewModel() {
   var isAppAlreadyOpened = ObservableField<Boolean>(false)
 
-  fun setAlreadyAppOpened(alreadyOpenedApp: Boolean) {
-    isAppAlreadyOpened.set(alreadyOpenedApp)
-  }
+  fun setAlreadyAppOpened(alreadyOpenedApp: Boolean) = isAppAlreadyOpened.set(alreadyOpenedApp)
 }

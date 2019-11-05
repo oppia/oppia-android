@@ -9,9 +9,9 @@ import org.oppia.app.databinding.SectionTitleBinding
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
-/** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
+/** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
 class OngoingListAdapter(
-  private val itemList: MutableList<ContinuePlayingViewModel>
+  private val itemList: MutableList<ContinuePlayingItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -49,6 +49,7 @@ class OngoingListAdapter(
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
       }
+      else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
   }
 
