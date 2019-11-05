@@ -18,7 +18,6 @@ import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
