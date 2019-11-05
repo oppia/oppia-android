@@ -91,17 +91,17 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
         FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */0
+            "fractions_skills.json", /* index= */ 0
           )
         )
         FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */1
+            "fractions_skills.json", /* index= */ 1
           )
         )
         FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */2
+            "fractions_skills.json", /* index= */ 2
           )
         )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
