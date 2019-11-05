@@ -87,7 +87,7 @@ class StateAdapter(
           )
         SelectionInteractionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type")
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
   }
 
@@ -113,7 +113,7 @@ class StateAdapter(
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      else -> throw IllegalArgumentException("Invalid type of data $position: ${itemList[position]}")
     }
   }
 
