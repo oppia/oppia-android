@@ -12,6 +12,8 @@ class OngoingStoryViewModel(
   private val ongoingStoryClickListener: OngoingStoryClickListener
 ) : ContinuePlayingViewModel() {
 
+  val whiteBackground = 0xffffff
+
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
   }
