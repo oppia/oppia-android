@@ -31,6 +31,8 @@
   <string name="review">Review</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="view_all">View All</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -45,6 +47,14 @@
     </item>
     <item quantity="other">
       %d Stories
+    </item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
     </item>
   </plurals>
 </resources>

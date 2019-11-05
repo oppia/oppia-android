@@ -23,6 +23,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -35,6 +36,7 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -362,6 +364,16 @@ class StateFragmentTest {
     // State 4: END - EndExploration
     onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
     intended(hasComponent(HomeActivity::class.java.name))
+  }
+
+  @Test
+  fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
+    ActivityScenario.launch(ContentCardTestActivity::class.java).use {
+      val htmlResult =
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
+            "Incidentally, do you know where the name 'Oppia' comes from?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(hasDescendant(withText(htmlResult))))
+    }
   }
 
   @After
