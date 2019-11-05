@@ -70,6 +70,9 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       if (it.olderStoryCount > 0) {
         val olderSectionTitleViewModel = SectionTitleViewModel()
         olderSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_month)
+        if(itemList.size>0){
+          olderSectionTitleViewModel.isDividerVisible = true
+        }
         itemList.add(olderSectionTitleViewModel)
         for (promotedStory in it.olderStoryList) {
           val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
