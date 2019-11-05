@@ -1,7 +1,6 @@
 package org.oppia.app.player.state
 
 import android.text.Spannable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -20,6 +19,7 @@ import org.oppia.app.model.StringList
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.listener.ItemClickListener
+import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 
 private const val VIEW_TYPE_RADIO_BUTTONS = 1
@@ -29,8 +29,9 @@ private const val INTERACTION_ADAPTER_TAG = "Interaction Adapter"
 /**
  * Adapter to bind the interactions to the [RecyclerView]. It handles MultipleChoiceInput
  * and ItemSelectionInput interaction views.
- * */
+ */
 class InteractionAdapter(
+  private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
   private val explorationId: String,
@@ -69,7 +70,7 @@ class InteractionAdapter(
           )
         ItemSelectionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type")
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
   }
 
@@ -125,8 +126,7 @@ class InteractionAdapter(
         if (binding.root.item_selection_checkbox.isChecked) {
           if (!selectedInputItemIndexes.contains(position)) {
             selectedInputItemIndexes.add(position)
-          }
-          else{
+          } else {
             selectedInputItemIndexes.remove(position)
           }
           selectInputItemsListener.onInputItemSelection(selectedInputItemIndexes)
@@ -138,12 +138,11 @@ class InteractionAdapter(
             selectedHtmlStringList.add(binding.root.item_selection_contents_text_view.text.toString())
             if (selectedInputItemIndexes.contains(position)) {
               selectedInputItemIndexes.remove(position)
-            }
-            else{
+            } else {
               selectedInputItemIndexes.add(position)
             }
           } else {
-            Log.d(
+            logger.d(
               INTERACTION_ADAPTER_TAG,
               "You cannot select more than ${selectionInteractionCustomizationArgsViewModel.maxAllowableSelectionCount} options"
             )
@@ -157,7 +156,6 @@ class InteractionAdapter(
           if (selectedAnswerIndex >= 0) {
             interactionObjectBuilder.nonNegativeInt = selectedAnswerIndex
           }
-
         }
         selectInputItemsListener.onInputItemSelection(selectedInputItemIndexes)
         itemClickListener.onItemClick(interactionObjectBuilder.build())
