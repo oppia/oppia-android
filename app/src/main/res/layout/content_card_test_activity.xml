@@ -31,7 +31,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.52"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/play_exploration_button1"
+      app:layout_constraintTop_toBottomOf="@+id/play_exploration_button_1"
       app:layout_constraintVertical_bias="0.0" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
