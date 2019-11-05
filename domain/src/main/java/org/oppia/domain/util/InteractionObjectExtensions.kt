@@ -46,7 +46,7 @@ private fun NumberWithUnits.toAnswerString(): String {
   return "$prefixString$valueString $suffixedString".trim()
 }
 
-// TODO(BenHenning): Standardize these with a currency library.
+// TODO(#152): Standardize these with a currency library.
 private fun isPrefixUnit(numberUnit: NumberUnit): Boolean {
   return numberUnit.unit in listOf("$", "Rs", "₹", "€", "£", "¥")
 }
