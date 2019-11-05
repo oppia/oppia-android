@@ -20,12 +20,16 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The controller for [HomeFragment]. */
+private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
+
+/** The presenter for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -33,8 +37,11 @@ class HomeFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
+  private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
+
+  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
 
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -77,6 +84,21 @@ class HomeFragmentPresenter @Inject constructor(
     subscribeToTopicList()
 
     return binding.root
+  }
+
+  fun playExplorationButton(v: View) {
+    explorationDataController.startPlayingExploration(
+      EXPLORATION_ID
+    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
+        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        else -> {
+          logger.d("HomeFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
+        }
+      }
+    })
   }
 
   private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {

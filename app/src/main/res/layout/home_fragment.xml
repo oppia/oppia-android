@@ -26,5 +26,17 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="parent" />
+
+    <Button
+      android:id="@+id/play_exploration_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:onClick="@{presenter::playExplorationButton}"
+      android:text="Play exploration"
+      android:visibility="gone"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
   </LinearLayout>
 </layout>
