@@ -23,7 +23,7 @@ class ExplorationRetriever @Inject constructor(
   internal suspend fun loadExploration(explorationId: String): Exploration {
     return when (explorationId) {
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
-      TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("oppia_exploration.json")
+      TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }
