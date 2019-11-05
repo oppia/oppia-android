@@ -2,14 +2,11 @@ package org.oppia.app.topic
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -17,7 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -25,9 +21,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -42,18 +35,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicFragmentTest {
   private val topicName = "First Test Topic"
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Before
-  fun setUp() {
-    Intents.init()
-    val intent = Intent(Intent.ACTION_PICK)
-    activityTestRule.launchActivity(intent)
-  }
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
@@ -302,63 +283,60 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_configurationChange_showsDefaultTabAndItsData() {
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.topic_tabs_container)).check(
-      matches(
-        matchCurrentTabTitle(
-          getResourceString(R.string.overview)
+    launch(TopicActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.topic_tabs_container)).check(
+        matches(
+          matchCurrentTabTitle(
+            getResourceString(R.string.overview)
+          )
         )
       )
-    )
-    onView(withId(R.id.topic_name_text_view)).check(
-      matches(
-        withText(
-          containsString(topicName)
+      onView(withId(R.id.topic_name_text_view)).check(
+        matches(
+          withText(
+            containsString(topicName)
+          )
         )
       )
-    )
+    }
   }
 
-@After
-fun tearDown() {
-  Intents.release()
-}
+  private fun getResourceString(id: Int): String {
+    val resources =
+      InstrumentationRegistry.getInstrumentation().targetContext.resources
+    return resources.getString(id)
+  }
 
-private fun getResourceString(id: Int): String {
-  val resources =
-    InstrumentationRegistry.getInstrumentation().targetContext.resources
-  return resources.getString(id)
-}
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
 
-@Module
-class TestModule {
-  @Provides
+    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
+    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
+    //  test coroutine dispatcher.
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return blockingDispatcher
+    }
+  }
+
   @Singleton
-  fun provideContext(application: Application): Context {
-    return application
+  @Component(modules = [TestModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
   }
-
-  // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-  //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-  //  test coroutine dispatcher.
-
-  @Singleton
-  @Provides
-  @BackgroundDispatcher
-  fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-    return blockingDispatcher
-  }
-}
-
-@Singleton
-@Component(modules = [TestModule::class])
-interface TestApplicationComponent {
-  @Component.Builder
-  interface Builder {
-    @BindsInstance
-    fun setApplication(application: Application): Builder
-
-    fun build(): TestApplicationComponent
-  }
-}
 }
