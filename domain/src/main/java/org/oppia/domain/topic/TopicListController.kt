@@ -17,6 +17,7 @@ import org.oppia.util.data.AsyncResult
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
+const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
@@ -47,6 +48,7 @@ class TopicListController @Inject constructor(
       .addTopicSummary(createTopicSummary0())
       .addTopicSummary(createTopicSummary1())
       .addTopicSummary(createFractionsTopicSummary())
+      .addTopicSummary(createRatiosTopicSummary())
       .setOngoingStoryCount(2)
       .build()
   }
@@ -64,6 +66,22 @@ class TopicListController @Inject constructor(
       .setTotalSkillCount(3)
       .setTotalChapterCount(2)
       .setTopicThumbnail(createFractionsThumbnail())
+      .build()
+  }
+
+  private fun createRatiosTopicSummary(): TopicSummary {
+    val fractionsJson = jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")?.getJSONObject("topic")!!
+    return TopicSummary.newBuilder()
+      .setTopicId(RATIOS_TOPIC_ID)
+      .setName(fractionsJson.getString("name"))
+      .setVersion(fractionsJson.getInt("version"))
+      .setSubtopicCount(fractionsJson.getJSONArray("subtopics").length())
+      .setCanonicalStoryCount(fractionsJson.getJSONArray("canonical_story_references").length())
+      .setUncategorizedSkillCount(fractionsJson.getJSONArray("uncategorized_skill_ids").length())
+      .setAdditionalStoryCount(fractionsJson.getJSONArray("additional_story_references").length())
+      .setTotalSkillCount(1)
+      .setTotalChapterCount(4)
+      .setTopicThumbnail(createRatiosThumbnail())
       .build()
   }
 
@@ -133,6 +151,13 @@ class TopicListController @Inject constructor(
   private fun createFractionsThumbnail(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
       .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .setBackgroundColorRgb(0xf7bf73)
+      .build()
+  }
+
+  private fun createRatiosThumbnail(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xf7bf73)
       .build()
   }

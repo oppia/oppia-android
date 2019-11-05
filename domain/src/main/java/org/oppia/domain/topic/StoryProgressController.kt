@@ -16,6 +16,8 @@ const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_1 = "test_story_id_1"
 const val TEST_STORY_ID_2 = "test_story_id_2"
 const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
+const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
+const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
@@ -23,6 +25,10 @@ const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
 const val FRACTIONS_EXPLORATION_ID_0 = "0"
 const val FRACTIONS_EXPLORATION_ID_1 = "16"
+const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
+const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
+const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
+const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
@@ -78,7 +84,9 @@ class StoryProgressController @Inject constructor(
       TEST_STORY_ID_0 to createStoryProgress0(),
       TEST_STORY_ID_1 to createStoryProgress1(),
       TEST_STORY_ID_2 to createStoryProgress2(),
-      FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0)
+      FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0),
+      RATIOS_STORY_ID_0 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 0),
+      RATIOS_STORY_ID_1 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 1)
     )
   }
 
