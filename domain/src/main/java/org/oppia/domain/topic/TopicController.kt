@@ -30,6 +30,9 @@ import org.oppia.util.data.DataProviders
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
+const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
+const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
+const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
 const val TEST_QUESTION_ID_0 = "question_id_0"
@@ -69,6 +72,11 @@ class TopicController @Inject constructor(
         TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
         TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
         TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
+        FRACTIONS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "fractions_stories.json", /* index= */ 0
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
@@ -81,6 +89,21 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_0 -> AsyncResult.success(createTestConceptCardForSkill0())
         TEST_SKILL_ID_1 -> AsyncResult.success(createTestConceptCardForSkill1())
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
+        FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 0
+          )
+        )
+        FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 1
+          )
+        )
+        FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 2
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
@@ -283,11 +306,24 @@ class TopicController @Inject constructor(
     return storyList
   }
 
+  /** Utility to create a story of a topic given its json representation and the index of the story in json. */
+  private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    if (storyData.length() < index) {
+      return StorySummary.getDefaultInstance()
+    }
+    return createStoryFromJson(storyData.getJSONObject(index).getJSONObject("story"))
+  }
+
   private fun createStoryFromJson(storyData: JSONObject): StorySummary {
     return StorySummary.newBuilder()
       .setStoryId(storyData.getString("id"))
       .setStoryName(storyData.getString("title"))
-      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
+      .addAllChapter(
+        createChaptersFromJson(
+          storyData.getJSONObject("story_contents").getJSONArray("nodes")
+        )
+      )
       .build()
   }
 
@@ -437,6 +473,38 @@ class TopicController @Inject constructor(
       .setSkillId(TEST_SKILL_ID_2)
       .setDescription("A different skill in a different topic")
       .build()
+  }
+
+  private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
+    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    if (skillList.length() < index) {
+      return ConceptCard.getDefaultInstance()
+    }
+    val skillData = skillList.getJSONObject(index).getJSONObject("skill")
+    val skillContents = skillData.getJSONObject("skill_contents")
+    return ConceptCard.newBuilder()
+      .setSkillId(skillData.getString("id"))
+      .setSkillDescription(skillData.getString("description"))
+      .setExplanation(
+        SubtitledHtml.newBuilder()
+          .setHtml(skillContents.getJSONObject("explanation").getString("html"))
+          .setContentId(skillContents.getJSONObject("explanation").getString("content_id")).build()
+      )
+      .addAllWorkedExample(createWorkedExamplesFromJson(skillContents.getJSONArray("worked_examples")))
+      .build()
+  }
+
+  private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
+    val workedExampleList = mutableListOf<SubtitledHtml>()
+    for (i in 0 until workedExampleData.length()) {
+      workedExampleList.add(
+        SubtitledHtml.newBuilder()
+          .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
+          .setHtml(workedExampleData.getJSONObject(i).getString("html"))
+          .build()
+      )
+    }
+    return workedExampleList
   }
 
   private fun createTestConceptCardForSkill0(): ConceptCard {

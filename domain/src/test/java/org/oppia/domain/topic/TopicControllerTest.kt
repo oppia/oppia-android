@@ -236,6 +236,22 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyName).isEqualTo("Matthew")
+  }
+
+  @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapter() {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
 
@@ -479,6 +495,28 @@ class TopicControllerTest {
     assertThat(conceptCard.workedExampleCount).isEqualTo(2)
     assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("Worked example without rich text.")
     assertThat(conceptCard.getWorkedExample(1).html).isEqualTo("Second worked example.")
+  }
+
+  @Test
+  fun testGetConceptCard_fractionsSkill0_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
+    assertThat(conceptCard.skillDescription).isEqualTo(
+      "Given a picture divided into unequal parts, write the fraction."
+    )
+    assertThat(conceptCard.explanation.html).contains(
+      "<p>First, divide the picture into equal parts")
   }
 
   @Test
