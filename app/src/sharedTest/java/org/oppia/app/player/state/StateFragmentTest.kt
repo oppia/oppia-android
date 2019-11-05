@@ -378,7 +378,8 @@ class StateFragmentTest {
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
             "Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(withText(htmlResult)))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(matches(withText(htmlResult)))
+    }
   }
 
   @Test
