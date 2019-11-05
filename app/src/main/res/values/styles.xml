@@ -53,6 +53,20 @@
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">true</item>
   </style>
+
+  <style name="TabLayout" parent="Widget.Design.TabLayout">
+    <item name="tabTextAppearance">@style/TabLayoutTextAppearance</item>
+  </style>
+
+  <style name="TabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
+    <item name="textAllCaps">true</item>
+    <item name="android:textAllCaps">true</item>
+  </style>
+
+  <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
+    <item name="tabSelectedTextColor">@android:color/white</item>
+    <item name="tabTextColor">@android:color/white</item>
+  </style>
   <!-- STATE BUTTON INACTIVE STYLE -->
   <style name="StateButtonInactive" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:layout_width">wrap_content</item>
@@ -64,4 +78,6 @@
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">false</item>
   </style>
+
+
 </resources>
