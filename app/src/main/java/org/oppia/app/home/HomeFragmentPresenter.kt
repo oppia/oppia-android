@@ -34,7 +34,6 @@ private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
   private val explorationDataController: ExplorationDataController,
@@ -101,10 +100,6 @@ class HomeFragmentPresenter @Inject constructor(
     })
   }
 
-  private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
-    return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
-  }
-
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
     topicListController.getTopicList()
   }
@@ -130,8 +125,9 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToUserAppHistory() {
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
-      getUserAppHistoryViewModel().setAlreadyAppOpened(result.alreadyOpenedApp)
-      itemList.add(0, getUserAppHistoryViewModel())
+      val userAppHistoryViewModel = UserAppHistoryViewModel()
+      userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
+      itemList.add(0, userAppHistoryViewModel)
       topicListAdapter.notifyDataSetChanged()
     })
   }

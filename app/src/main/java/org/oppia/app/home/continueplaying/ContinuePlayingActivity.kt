@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.RouteToStoryListener
 import javax.inject.Inject
 
@@ -25,6 +26,6 @@ class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToStoryListe
   }
 
   override fun routeToStory(storyId: String) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
   }
 }
