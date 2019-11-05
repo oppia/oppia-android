@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.app.home.continueplaying
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +11,6 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.ContinuePlayingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.continueplaying.ContinuePlayingViewModel
-import org.oppia.app.home.continueplaying.OngoingListAdapter
-import org.oppia.app.home.continueplaying.OngoingStoryClickListener
-import org.oppia.app.home.continueplaying.OngoingStoryViewModel
-import org.oppia.app.home.continueplaying.SectionTitleViewModel
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.topic.RouteToStoryListener

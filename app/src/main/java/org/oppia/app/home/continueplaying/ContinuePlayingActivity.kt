@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.app.home.continueplaying
 
 import android.content.Context
 import android.content.Intent

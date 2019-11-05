@@ -10,6 +10,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 
 /** Tests for [ContinuePlayingActivity]. */
 @RunWith(AndroidJUnit4::class)
