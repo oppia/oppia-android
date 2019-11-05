@@ -257,6 +257,8 @@ class StateRetriever @Inject constructor(
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
+      is Boolean -> return interactionObjectBuilder
+        .setBoolValue(customizationArgValue).build()
       else -> {
         val customizationArgValueTemp: ArrayList<*> =
           Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
