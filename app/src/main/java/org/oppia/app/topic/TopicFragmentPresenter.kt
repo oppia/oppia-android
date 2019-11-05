@@ -54,7 +54,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
-    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, tabIcons.size, topicId!!)
+    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
@@ -62,13 +62,13 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
   }
+
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
-      var topicName = result.name
-      toolbar.title=topicName
-//      (fragment.activity as TopicActivity).supportActionBar?.title=topicName
+      val topicName = result.name
+      toolbar.title = topicName
     })
   }
 
