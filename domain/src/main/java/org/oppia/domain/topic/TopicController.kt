@@ -92,6 +92,16 @@ class TopicController @Inject constructor(
             "fractions_stories.json", /* index= */ 0
           )
         )
+        RATIOS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 0
+          )
+        )
+        RATIOS_STORY_ID_1 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 1
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
