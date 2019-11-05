@@ -12,8 +12,7 @@ private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class OngoingListAdapter(
   private val itemList: MutableList<ContinuePlayingViewModel>
-) :
-  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
