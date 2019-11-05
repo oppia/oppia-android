@@ -1,5 +1,6 @@
 package org.oppia.domain.util
 
+import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -179,6 +180,9 @@ class StateRetriever @Inject constructor() {
       "MultipleChoiceInput" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
+      "ItemSelectionInput" -> InteractionObject.newBuilder()
+        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
+        .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
@@ -187,6 +191,14 @@ class StateRetriever @Inject constructor() {
         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
+    val stringListBuilder = StringList.newBuilder()
+    for (i in 0 until itemSelectionAnswer.length()) {
+      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+    }
+    return stringListBuilder.build()
   }
 
   // Creates a customization arg mapping from JSON
@@ -218,10 +230,14 @@ class StateRetriever @Inject constructor() {
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
-      is List<*> -> if (customizationArgValue.size > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)
-        ).build()
+      else -> {
+        val customizationArgValueTemp: ArrayList<*> =
+          Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
+        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            createStringList(customizationArgValueTemp)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
