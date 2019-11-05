@@ -19,7 +19,5 @@ enum class TopicTab(val position: Int) {
       }
       return values()[ordinal]
     }
-
   }
-
 }
