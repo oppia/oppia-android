@@ -420,7 +420,6 @@ class StateFragmentTest {
       it.onActivity { activity ->
 
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-        activity.requestedOrientation = Configuration.ORIENTATION_PORTRAIT
       }
       counter++
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
