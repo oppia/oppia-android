@@ -547,6 +547,66 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_0)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(5)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
+        FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_1)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(4)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
+        FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_2)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
+        FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
