@@ -14,7 +14,9 @@
     <activity android:name=".home.ContinuePlayingActivity" />
     <activity android:name=".home.HomeActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name=".player.exploration.ExplorationActivity" />
+    <activity
+      android:name=".player.exploration.ExplorationActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
     <activity
