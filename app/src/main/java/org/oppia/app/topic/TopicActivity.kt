@@ -24,8 +24,9 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = if (intent == null || intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) == null) TEST_TOPIC_ID_0
-    else intent.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    topicId  = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)?: TEST_TOPIC_ID_0) {
+      "Expected topic ID to be included in arguments for TopicFragment."
+    }
     topicActivityPresenter.handleOnCreate(topicId)
   }
 
@@ -58,7 +59,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
 
   companion object {
     internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
-
+    internal const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
     internal const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */

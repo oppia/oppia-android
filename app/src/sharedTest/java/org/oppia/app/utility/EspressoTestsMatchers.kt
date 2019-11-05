@@ -11,6 +11,7 @@ object EspressoTestsMatchers {
   fun matchCurrentTabTitle(tabTitle: String): Matcher<View> {
     return matchCurrentTabTitleCheck(tabTitle)
   }
+
   fun withDrawable(resourceId: Int): Matcher<View> {
     return DrawableMatcher(resourceId)
   }
