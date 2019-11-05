@@ -46,23 +46,6 @@ class ContinuePlayingActivityTest {
   }
 
   @Test
-  fun testContinuePlayingActivity_hasSomeOngoingPromotedStories() {
-    ActivityScenario.launch(ContinuePlayingActivity::class.java).use {
-      onView(
-        atPositionOnView(
-          R.id.ongoing_story_recycler_view,
-          0,
-          R.id.section_title_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("Played within the"))
-        )
-      )
-    }
-  }
-
-  @Test
   fun testContinuePlayingActivity_recyclerViewItem0_doesNotShowSectionDivider() {
     ActivityScenario.launch(ContinuePlayingActivity::class.java).use {
       onView(

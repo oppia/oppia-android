@@ -58,8 +58,8 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> { it ->
       if (it.recentStoryCount > 0) {
-        val recentSectionTitleViewModel = SectionTitleViewModel()
-        recentSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_week)
+        val recentSectionTitleViewModel =
+          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
         itemList.add(recentSectionTitleViewModel)
         for (promotedStory in it.recentStoryList) {
           val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
@@ -68,11 +68,9 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       }
 
       if (it.olderStoryCount > 0) {
-        val olderSectionTitleViewModel = SectionTitleViewModel()
-        olderSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_month)
-        if (itemList.isNotEmpty()) {
-          olderSectionTitleViewModel.isDividerVisible = true
-        }
+        val showDivider = itemList.isNotEmpty()
+        val olderSectionTitleViewModel =
+          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_month), showDivider)
         itemList.add(olderSectionTitleViewModel)
         for (promotedStory in it.olderStoryList) {
           val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
