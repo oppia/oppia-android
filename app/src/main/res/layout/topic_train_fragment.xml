@@ -13,7 +13,8 @@
   </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/oppiaBackground">
     <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -26,35 +27,48 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="32dp">
+        android:orientation="vertical">
+
         <TextView
           android:id="@+id/master_skills_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginStart="28dp"
+          android:layout_marginTop="48dp"
+          android:layout_marginEnd="28dp"
+          android:fontFamily="sans-serif-medium"
           android:text="@string/topic_train_master_these_skills"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="20sp"/>
+          android:textSize="20sp" />
+
         <TextView
           android:id="@+id/skills_description_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
+          android:layout_marginStart="28dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="28dp"
+          android:fontFamily="sans-serif"
           android:text="@string/topic_train_skills_description"
           android:textColor="@color/oppiaSecondaryText"
-          android:textSize="16sp"/>
+          android:textSize="16sp" />
         <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/skill_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="20dp"
+          android:layout_marginStart="28dp"
+          android:layout_marginEnd="28dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         <Button
+          android:layout_width="160dp"
+          android:layout_height="36dp"
           android:id="@+id/topic_train_start_button"
           style="@style/StateButtonInactive"
           android:layout_gravity="center_horizontal"
-          android:layout_marginTop="24dp"
-          android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/state_button_transparent_background}"
+          android:layout_marginTop="40dp"
+          android:layout_marginBottom="48dp"
+          android:background="@{viewModel.isSubmitButtonActive() ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.isSubmitButtonActive()}"
           android:onClick="@{viewModel::startButtonClicked}"
           android:text="@string/topic_train_start"
