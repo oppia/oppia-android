@@ -115,6 +115,8 @@ class StateRetriever @Inject constructor() {
       .build()
   }
 
+  // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
+  //  updated.
   /**
    * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry keyed on 'feedback'.
    */
