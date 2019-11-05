@@ -3,6 +3,7 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.home.ContinuePlayingFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
@@ -42,6 +43,7 @@ interface FragmentComponent {
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(continuePlayingFragment: ContinuePlayingFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)

@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
-
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -29,7 +28,10 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     }
   }
 
-  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
+  private var selectedInputItemIndexes = ArrayList<Int>()
+
+  @Inject
+  lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
