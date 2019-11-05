@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.ContinuePlayingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.continueplaying.ContinuePlayingViewModel
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
@@ -26,6 +27,8 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
 ) {
 
   private lateinit var binding: ContinuePlayingFragmentBinding
+
+  private val itemList: MutableList<ContinuePlayingViewModel> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

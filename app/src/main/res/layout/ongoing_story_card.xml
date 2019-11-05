@@ -8,41 +8,12 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.topiclist.PromotedStoryViewModel" />
+      type="org.oppia.app.home.continueplaying.OngoingStoryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <TextView
-      android:id="@+id/recently_played_stories_text_view"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="24dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp"
-      android:text="@string/recently_played_stories"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textStyle="bold"
-      app:layout_constraintEnd_toStartOf="@+id/view_all_text_view"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-      android:id="@+id/view_all_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="24dp"
-      android:onClick="@{viewModel::clickOnViewAll}"
-      android:padding="8dp"
-      android:text="@string/view_all"
-      android:textAllCaps="true"
-      android:textColor="@color/colorPrimary"
-      android:textStyle="bold"
-      app:layout_constraintBottom_toBottomOf="@+id/recently_played_stories_text_view"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/recently_played_stories_text_view" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -52,12 +23,12 @@
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="8dp"
       android:elevation="4dp"
-      android:onClick="@{viewModel::clickOnStoryTile}"
+      android:onClick="@{viewModel::clickOnOngoingStoryTile}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
-      app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.get().lessonThumbnail.backgroundColorRgb}">
+      app:layout_constraintTop_toBottomOf="parent"
+      app:roundedRectDrawableWithColor="@{viewModel.ongoingStory.lessonThumbnail.backgroundColorRgb}">
 
       <ImageView
         android:id="@+id/lesson_thumbnail"
@@ -67,7 +38,7 @@
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
         android:scaleType="centerCrop"
-        android:src="@{viewModel.promotedStoryObservable.get().lessonThumbnail.thumbnailGraphic}"
+        android:src="@{viewModel.ongoingStory.lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,7 +61,7 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
-          android:text="@{viewModel.promotedStoryObservable.get().nextChapterName}" />
+          android:text="@{viewModel.ongoingStory.nextChapterName}" />
 
         <TextView
           android:id="@+id/story_name_text_view"
@@ -99,7 +70,7 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
-          android:text="@{viewModel.promotedStoryObservable.get().storyName}"
+          android:text="@{viewModel.ongoingStory.storyName}"
           android:textColor="@color/oppiaPrimaryText" />
 
         <TextView
@@ -111,7 +82,7 @@
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
           android:layout_marginBottom="8dp"
-          android:text="@{viewModel.promotedStoryObservable.get().topicName}"
+          android:text="@{viewModel.ongoingStory.topicName}"
           android:textAllCaps="true" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

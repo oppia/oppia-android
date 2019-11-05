@@ -3,54 +3,40 @@ package org.oppia.app.home.continueplaying
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.PromotedStoryCardBinding
-import org.oppia.app.databinding.TopicSummaryViewBinding
-import org.oppia.app.databinding.WelcomeBinding
-import org.oppia.app.home.HomeItemViewModel
-import org.oppia.app.home.UserAppHistoryViewModel
+import org.oppia.app.databinding.OngoingStoryCardBinding
+import org.oppia.app.databinding.SectionTitleBinding
 
-private const val VIEW_TYPE_WELCOME_MESSAGE = 1
-private const val VIEW_TYPE_PROMOTED_STORY = 2
-private const val VIEW_TYPE_TOPIC_LIST = 3
+private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
+private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
-class TopicListAdapter(
-  private val itemList: MutableList<HomeItemViewModel>
+class OngoingListAdapter(
+  private val itemList: MutableList<ContinuePlayingViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       // TODO(#216): Generalize this binding to make adding future items easier.
-      VIEW_TYPE_WELCOME_MESSAGE -> {
+      VIEW_TYPE_SECTION_TITLE_TEXT -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          WelcomeBinding.inflate(
+          SectionTitleBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
           )
-        WelcomeViewHolder(binding)
+        SectionTitleViewHolder(binding)
       }
-      VIEW_TYPE_PROMOTED_STORY -> {
+      VIEW_TYPE_SECTION_STORY_ITEM -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          PromotedStoryCardBinding.inflate(
+          OngoingStoryCardBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
           )
-        PromotedStoryViewHolder(binding)
-      }
-      VIEW_TYPE_TOPIC_LIST -> {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding =
-          TopicSummaryViewBinding.inflate(
-            inflater,
-            parent,
-            /* attachToParent= */ false
-          )
-        TopicListViewHolder(binding)
+        OngoingStoryViewHolder(binding)
       }
       else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
@@ -58,28 +44,22 @@ class TopicListAdapter(
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
-      VIEW_TYPE_WELCOME_MESSAGE -> {
-        (holder as WelcomeViewHolder).bind(itemList[position] as UserAppHistoryViewModel)
+      VIEW_TYPE_SECTION_TITLE_TEXT -> {
+        (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
-      VIEW_TYPE_PROMOTED_STORY -> {
-        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
-      }
-      VIEW_TYPE_TOPIC_LIST -> {
-        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummaryViewModel)
+      VIEW_TYPE_SECTION_STORY_ITEM -> {
+        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
       }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is UserAppHistoryViewModel -> {
-        VIEW_TYPE_WELCOME_MESSAGE
+      is SectionTitleViewModel -> {
+        VIEW_TYPE_SECTION_TITLE_TEXT
       }
-      is PromotedStoryViewModel -> {
-        VIEW_TYPE_PROMOTED_STORY
-      }
-      is TopicSummaryViewModel -> {
-        VIEW_TYPE_TOPIC_LIST
+      is OngoingStoryViewModel -> {
+        VIEW_TYPE_SECTION_STORY_ITEM
       }
       else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
     }
@@ -89,27 +69,19 @@ class TopicListAdapter(
     return itemList.size
   }
 
-  private class WelcomeViewHolder(
-    val binding: WelcomeBinding
+  private class SectionTitleViewHolder(
+    val binding: SectionTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(userAppHistoryViewModel: UserAppHistoryViewModel) {
-      binding.viewModel = userAppHistoryViewModel
+    internal fun bind(sectionTitleViewModel: SectionTitleViewModel) {
+      binding.viewModel = sectionTitleViewModel
     }
   }
 
-  private class PromotedStoryViewHolder(
-    val binding: PromotedStoryCardBinding
+  private class OngoingStoryViewHolder(
+    val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
-      binding.viewModel = promotedStoryViewModel
-    }
-  }
-
-  private class TopicListViewHolder(
-    val binding: TopicSummaryViewBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel) {
-      binding.viewModel = topicSummaryViewModel
+    internal fun bind(ongoingStoryViewModel: OngoingStoryViewModel) {
+      binding.viewModel = ongoingStoryViewModel
     }
   }
 }
