@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** Activity to test the functionality of content-card used in [StateFragment]. */
 class ContentCardTestActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var contentCardTestPresenter: ContentCardTestActivityPresenter
