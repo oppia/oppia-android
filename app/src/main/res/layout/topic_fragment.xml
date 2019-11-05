@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Topic" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="@string/topic" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         app:tabBackground="@color/colorPrimary"
         app:tabGravity="fill"
+        app:tabTextAppearance="@android:style/TextAppearance.DeviceDefault.Widget.TabWidget"
         app:tabIndicatorColor="@android:color/white"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"

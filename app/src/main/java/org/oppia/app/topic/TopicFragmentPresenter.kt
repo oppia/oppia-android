@@ -3,20 +3,32 @@ package org.oppia.app.topic
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.Topic
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
 class TopicFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val logger: Logger,
+  private val topicController: TopicController
 ) {
   private lateinit var tabLayout: TabLayout
+  private lateinit var toolbar: Toolbar
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(
@@ -35,7 +47,9 @@ class TopicFragmentPresenter @Inject constructor(
     binding.lifecycleOwner = fragment
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
+    toolbar = binding.root.findViewById(R.id.toolbar) as Toolbar
     setUpViewPager(viewPager, topicId)
+    subscribeToTopicLiveData()
     return binding.root
   }
 
@@ -47,5 +61,30 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
+  }
+  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+
+  private fun subscribeToTopicLiveData() {
+    topicLiveData.observe(fragment, Observer<Topic> { result ->
+      var topicName = result.name
+      toolbar.title=topicName
+//      (fragment.activity as TopicActivity).supportActionBar?.title=topicName
+    })
+  }
+
+  // TODO(#135): Get this topic-id from [TopicFragment].
+  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+    topicController.getTopic(TEST_TOPIC_ID_0)
+  }
+
+  private fun getTopicList(): LiveData<Topic> {
+    return Transformations.map(topicResultLiveData, ::processTopicResult)
+  }
+
+  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
+    if (topic.isFailure()) {
+      logger.e("TopicOverviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+    }
+    return topic.getOrDefault(Topic.getDefaultInstance())
   }
 }
