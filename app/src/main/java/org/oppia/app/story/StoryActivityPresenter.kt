@@ -14,7 +14,7 @@ class StoryActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getStoryFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.story_fragment_placeholder,
-        StoryFragment.newInstace(storyId)
+        StoryFragment.newInstance(storyId)
       ).commitNow()
     }
   }
