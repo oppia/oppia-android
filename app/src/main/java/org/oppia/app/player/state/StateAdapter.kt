@@ -21,6 +21,7 @@ import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.listener.ItemClickListener
+import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
@@ -36,6 +37,7 @@ const val VIEW_TYPE_SELECTION_INTERACTION = 6
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
+  private val logger: Logger,
   private val itemList: MutableList<Any>,
   private val buttonInteractionListener: ButtonInteractionListener,
   private val htmlParserFactory: HtmlParser.Factory,
@@ -85,7 +87,7 @@ class StateAdapter(
           )
         SelectionInteractionViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type")
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
   }
 
@@ -111,7 +113,7 @@ class StateAdapter(
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      else -> throw IllegalArgumentException("Invalid type of data $position: ${itemList[position]}")
     }
   }
 
@@ -171,6 +173,7 @@ class StateAdapter(
       }
       val interactionAdapter =
         InteractionAdapter(
+          logger,
           htmlParserFactory,
           entityType,
           explorationId,

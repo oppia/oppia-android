@@ -2,7 +2,6 @@ package org.oppia.app.player.state
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -11,7 +10,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -376,11 +374,11 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
-    ActivityScenario.launch(ContentCardTestActivity::class.java).use {
+    launch(ContentCardTestActivity::class.java).use {
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
             "Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(hasDescendant(withText(htmlResult))))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(matches(withText(htmlResult)))
     }
   }
 
@@ -411,7 +409,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions() {
+  fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions_correctError() {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_2)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
@@ -426,11 +424,11 @@ class StateFragmentTest {
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(7, click())
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(1, click())
       )
       counter++
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(4, click())
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(3, click())
       )
       counter++
       TestCase.assertTrue(
