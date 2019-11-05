@@ -13,6 +13,7 @@
     android:theme="@style/OppiaTheme">
     <activity android:name=".home.ContinuePlayingActivity" />
     <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".player.exploration.ExplorationActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />

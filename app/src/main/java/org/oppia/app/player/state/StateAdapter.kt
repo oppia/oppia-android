@@ -1,16 +1,21 @@
 package org.oppia.app.player.state
 
+import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
+import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
+import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
 private const val VIEW_TYPE_CONTENT = 1
@@ -25,7 +30,10 @@ private const val VIEW_TYPE_STATE_BUTTON = 5
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
   private val itemList: MutableList<Any>,
-  private val buttonInteractionListener: ButtonInteractionListener
+  private val buttonInteractionListener: ButtonInteractionListener,
+  private val htmlParserFactory: HtmlParser.Factory,
+  private val entityType: String,
+  private val explorationId: String
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -45,7 +53,18 @@ class StateAdapter(
           )
         StateButtonViewHolder(binding, buttonInteractionListener)
       }
-      else -> throw IllegalArgumentException("Invalid view type") as Throwable
+      VIEW_TYPE_CONTENT -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<ContentItemBinding>(
+            inflater,
+            R.layout.content_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        ContentViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type")
     }
   }
 
@@ -54,11 +73,15 @@ class StateAdapter(
       VIEW_TYPE_STATE_BUTTON -> {
         (holder as StateButtonViewHolder).bind(itemList[position] as StateButtonViewModel)
       }
+      VIEW_TYPE_CONTENT -> {
+        (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
+      }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
+      is ContentViewModel -> VIEW_TYPE_CONTENT
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
@@ -69,6 +92,18 @@ class StateAdapter(
 
   override fun getItemCount(): Int {
     return itemList.size
+  }
+
+  inner class ContentViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(rawString: String) {
+      binding.setVariable(BR.htmlContent, rawString)
+      binding.executePendingBindings()
+      val htmlResult: Spannable = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+        rawString,
+        binding.root.content_text_view
+      )
+      binding.root.content_text_view.text = htmlResult
+    }
   }
 
   private class StateButtonViewHolder(
