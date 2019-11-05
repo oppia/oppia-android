@@ -7,7 +7,6 @@ import org.oppia.app.R
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.customview.interaction.FractionInputInteractionView
-import org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
 import org.oppia.app.databinding.ActivityNumericInputInteractionViewTestBinding
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel

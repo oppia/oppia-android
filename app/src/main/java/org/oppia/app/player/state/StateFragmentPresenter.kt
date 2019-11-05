@@ -17,7 +17,6 @@ import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
-import org.oppia.app.databinding.NumberWithUnitsInputInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
@@ -39,7 +38,6 @@ import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
-import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
@@ -127,7 +125,6 @@ class StateFragmentPresenter @Inject constructor(
           is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal
           is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal
           is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal
-          is NumberWithUnitsViewModel -> ViewType.VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION.ordinal
           is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
@@ -185,12 +182,6 @@ class StateFragmentPresenter @Inject constructor(
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,
         setViewModel = NumericInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as NumericInputViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION.ordinal,
-        inflateDataBinding = NumberWithUnitsInputInteractionItemBinding::inflate,
-        setViewModel = NumberWithUnitsInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as NumberWithUnitsViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal,
@@ -470,7 +461,6 @@ class StateFragmentPresenter @Inject constructor(
     VIEW_TYPE_SELECTION_INTERACTION,
     VIEW_TYPE_FRACTION_INPUT_INTERACTION,
     VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
-    VIEW_TYPE_NUMBER_WITH_UNITS_INPUT_INTERACTION,
     VIEW_TYPE_TEXT_INPUT_INTERACTION
   }
 }

@@ -49,13 +49,6 @@ class InteractionViewModelModule {
 
   @Provides
   @IntoMap
-  @StringKey("NumberWithUnits")
-  fun provideNumberWithUnitsViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> NumberWithUnitsViewModel(existingAnswer, isReadOnly) }
-  }
-
-  @Provides
-  @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
     return { _, _, _, existingAnswer, isReadOnly -> TextInputViewModel(existingAnswer, isReadOnly) }
