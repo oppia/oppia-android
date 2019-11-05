@@ -16,6 +16,6 @@ utility/build
 /build
 /captures
 .externalNativeBuild
-gradle
-gradlew
-gradlew.bat
+./gradle
+./gradlew
+./gradlew.bat
