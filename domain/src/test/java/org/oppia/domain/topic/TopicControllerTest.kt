@@ -585,10 +585,10 @@ class TopicControllerTest {
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(RATIOS_SKILL_ID_0)
     assertThat(conceptCard.skillDescription).isEqualTo(
-      "Given a picture divided into unequal parts, write the fraction."
+      "Derive a ratio from a description or a picture"
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>First, divide the picture into equal parts")
+      "<p>There are originally 9 apples and 6 pears,")
   }
 
   @Test

@@ -4,19 +4,19 @@
       "skill": {
         "misconceptions_schema_version": 1,
         "next_misconception_id": 1,
-        "description": "Given a picture divided into unequal parts, write the fraction.",
+        "description": "Derive a ratio from a description or a picture",
         "rubrics": [
           {
             "difficulty": "Easy",
-            "explanation": "<p>Reject a fraction derived from looking at a whole that is not divided into equal parts.</p>"
+            "explanation": "<p>N/A</p>"
           },
           {
             "difficulty": "Medium",
-            "explanation": "<p>Given a picture divided into unequal parts, divide (or undivide) it into equal parts and write the resulting fraction.</p>"
+            "explanation": "<p>Derive a ratio from a description or a picture.</p>"
           },
           {
             "difficulty": "Hard",
-            "explanation": "<p>As in the medium rubric, but the division/undivision requires the addition/removal of more than two lines.</p>"
+            "explanation": "<p>Given a description of a change in a situation, derive a new ratio (e.g. there are originally 9 apples and 6 pears, and Bobby ate 3 pears, what is the new ratio of apples to pears).</p>"
           }
         ],
         "superseding_skill_id": null,
@@ -26,24 +26,13 @@
         "skill_contents_schema_version": 1,
         "all_questions_merged": false,
         "version": 2,
-        "misconceptions": [
-          {
-            "notes": "<p>NA</p>",
-            "feedback": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>",
-            "id": 0,
-            "name": "Picture divided into unequal parts initially"
-          }
-        ],
+        "misconceptions": [],
         "skill_contents": {
           "worked_examples": [
-            {
-              "content_id": "worked_example_1",
-              "html": "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
-            }
           ],
           "explanation": {
             "content_id": "explanation",
-            "html": "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
+            "html": "<p>There are originally 9 apples and 6 pears, and Bobby ate 3 pears, what is the new ratio of apples to pears</p>"
           },
           "written_translations": {
             "translations_mapping": {
