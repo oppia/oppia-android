@@ -479,7 +479,6 @@ class ExplorationProgressController @Inject constructor(
       check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
       // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new
       // state doesn't become fully realized until navigated to.
-      // TODO(BenHenning): Add a test for this case since it's a bit complicated and regressions will break the UI.
       previousStates += EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())
