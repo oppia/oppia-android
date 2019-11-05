@@ -15,7 +15,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val storyId = intent.getStringExtra(STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    val storyId: String? = intent.getStringExtra(STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     storyActivityPresenter.handleOnCreate(storyId)
   }
 
