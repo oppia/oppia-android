@@ -181,7 +181,7 @@ class StateRetriever @Inject constructor() {
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
       "ItemSelectionInput" -> InteractionObject.newBuilder()
-        .setSetOfHtmlString(createStringList(inputJson.getInt(keyName)))
+        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
         .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
@@ -193,10 +193,12 @@ class StateRetriever @Inject constructor() {
     }
   }
 
-  private fun createStringList(inputJson: Int): StringList {
-    val stringList = mutableListOf<String>()
-    stringList.add(inputJson.toString())
-    return StringList.newBuilder().addAllHtml(stringList).build()
+  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
+    val stringListBuilder = StringList.newBuilder()
+    for (i in 0 until itemSelectionAnswer.length()) {
+      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+    }
+    return stringListBuilder.build()
   }
 
   // Creates a customization arg mapping from JSON

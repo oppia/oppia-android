@@ -9,13 +9,13 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.player.state.StateFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_6
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_7
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_5
-private const val EXPLORATION_ID_2 = TEST_EXPLORATION_ID_6
+private const val EXPLORATION_ID_2 = TEST_EXPLORATION_ID_7
 
 /** The presenter for [ContentCardTestActivity]. */
 @ActivityScope

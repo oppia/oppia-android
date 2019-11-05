@@ -48,9 +48,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
 
-  private val maxSelectionAllowedCount = 2
-  private var counter = 0
-
   @get:Rule
   var homeActivityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
     HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -416,24 +413,16 @@ class StateFragmentTest {
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
       )
       it.onActivity { activity ->
-
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
-      counter++
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(1, click())
       )
-      counter++
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
         actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(3, click())
-      )
-      counter++
-      TestCase.assertTrue(
-        "Error, You cannot select more than $maxSelectionAllowedCount",
-        counter >= maxSelectionAllowedCount
       )
     }
   }
