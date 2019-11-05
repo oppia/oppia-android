@@ -46,15 +46,15 @@ class SelectionInteractionView @JvmOverloads constructor(
   }
 
   fun setItemInputType(selectionItemInputType: SelectionItemInputType) {
-    // TODO(BenHenning): Find a cleaner way to initialize the item input type. Using data-binding results in a race
-    //  condition with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a
-    //  way to do this more efficiently and cleanly than always relying on notifying of potential changes in the
-    //  adapter when the type is set (plus the type ought to be permanent).
+    // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
+    //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
+    //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
+    //  type is set (plus the type ought to be permanent).
     this.selectionItemInputType = selectionItemInputType
     adapter!!.notifyDataSetChanged()
   }
 
-  // TODO(BenHenning): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
+  // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
   fun setExplorationId(explorationId: String) {
     this.explorationId = explorationId
