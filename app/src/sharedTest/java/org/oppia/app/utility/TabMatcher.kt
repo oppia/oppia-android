@@ -8,7 +8,7 @@ import com.google.android.material.tabs.TabLayout
 import org.hamcrest.Matcher
 
 /**
- * @see <a href="https://stackoverflow.com/questions/49626315/how-to-select-a-specific-tab-position-in-tab-layout-using-espresso-testing">TabMatcher</a>
+ * @see <a href="https://stackoverflow.com/questions/49626315">TabMatcher</a>
  * This class mainly provides a custom matcher to test whether the current tab title is correctly selected in TabLayout. */
 class TabMatcher {
   companion object {

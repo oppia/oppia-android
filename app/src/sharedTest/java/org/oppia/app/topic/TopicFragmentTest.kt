@@ -216,7 +216,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsData() {
+  fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
@@ -237,7 +237,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsData() {
+  fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
@@ -259,7 +259,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsData() {
+  fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
@@ -282,7 +282,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_configurationChange_showsDefaultTabAndItsData() {
+  fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
     launch(TopicActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_container)).check(
