@@ -181,7 +181,7 @@ class StateRetriever @Inject constructor() {
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
       "ItemSelectionInput" -> InteractionObject.newBuilder()
-        .setNonNegativeInt(inputJson.getInt(keyName))
+        .setSetOfHtmlString(createStringList(inputJson.getInt(keyName)))
         .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
@@ -191,6 +191,12 @@ class StateRetriever @Inject constructor() {
         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun createStringList(inputJson: Int): StringList {
+    val stringList = mutableListOf<String>()
+    stringList.add(inputJson.toString())
+    return StringList.newBuilder().addAllHtml(stringList).build()
   }
 
   // Creates a customization arg mapping from JSON
