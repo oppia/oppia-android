@@ -67,7 +67,7 @@ class HomeFragmentPresenter @Inject constructor(
     })
   }
 
-  fun topicButtonClick(v: View) {
+  fun handleTopicButtonClicked(v: View) {
     logger.d(TAG_HOME_FRAGMENT, "Successfully loaded topic")
     routeToTopicListener.routeToTopic(TEST_TOPIC_ID_0)
   }

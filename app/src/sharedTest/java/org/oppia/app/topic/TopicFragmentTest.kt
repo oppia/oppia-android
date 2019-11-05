@@ -31,7 +31,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.util.threading.BackgroundDispatcher
@@ -68,12 +67,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_overviewTopicIsDisplayedInTabLayout_worksAsExpected() {
-    onView(
-      allOf(
-        withText(R.string.overview),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    )
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
   }
 
   @Test
@@ -95,103 +89,69 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected() {
-    onView(
-      allOf(
-        withText(R.string.play),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
+      .perform(click())
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
   }
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabWithContentMatched() {
-    onView(
-      allOf(
-        withText(R.string.play),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
+      .perform(click())
     onView(withText("First Story")).check(matches(isDisplayed()))
   }
 
   @Test
   fun testTopicFragment_clickOnTrainTab_showsTrainTabSelected() {
-    onView(
-      allOf(
-        withText(R.string.train),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
+      .perform(click())
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
   }
 
   @Test
   fun testTopicFragment_clickOnTrainTab_showsTrainTabWithContentMatched() {
-    onView(
-      allOf(
-        withText(R.string.train),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
+      .perform(click())
     onView(withText("Master These Skills")).check(matches(isDisplayed()))
   }
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
-    onView(
-      allOf(
-        withText(R.string.review),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      .perform(click())
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
   }
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
-    onView(
-      allOf(
-        withText(R.string.review),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      .perform(click())
+    onView(atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)).check(
+      matches(
+        withText(
+          containsString(
+            "An important skill"
+          )
+        )
       )
-    ).perform(click())
-    onView(
-      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
-    ).check(matches(withText(containsString("An important skill"))))
+    )
   }
 
   @Test
   fun testTopicFragment_clickOnOverviewTab_showsOverviewTabSelected() {
-    onView(
-      allOf(
-        withText(R.string.review),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
-    onView(
-      allOf(
-        withText(R.string.overview),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      .perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
+      .perform(click())
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
   }
 
   @Test
   fun testTopicFragment_clickOnOverviewTab_showsOverviewTabWithContentMatched() {
-    onView(
-      allOf(
-        withText(R.string.review),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
-    onView(
-      allOf(
-        withText(R.string.overview),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      .perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
+      .perform(click())
     onView(withId(R.id.topic_name_text_view)).check(
       matches(
         withText(
@@ -203,12 +163,8 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsData() {
-    onView(
-      allOf(
-        withText(R.string.play),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
+      .perform(click())
     onView(withText("First Story")).check(matches(isDisplayed()))
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
@@ -217,54 +173,32 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsData() {
-    onView(
-      allOf(
-        withText(R.string.train),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
+      .perform(click())
     onView(withText("Master These Skills")).check(matches(isDisplayed()))
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    onView(
-      allOf(
-        withText(R.string.train),
-        isDisplayed()
-      )
-    )
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
     onView(withText("Master These Skills")).check(matches(isDisplayed()))
   }
 
   @Test
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsData() {
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      .perform(click())
     onView(
-      allOf(
-        withText(R.string.review),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
-    onView(
-      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
+      atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)
     ).check(matches(withText(containsString("An important skill"))))
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
     onView(
-      allOf(
-        withText(R.string.review),
-        isDisplayed()
-      )
-    )
-    onView(
-      atPositionOnView(R.id.review_skill_recycler_view,0,R.id.skill_name)
+      atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)
     ).check(matches(withText(containsString("An important skill"))))
   }
 
   @Test
   fun testTopicFragment_clickOnOverviewTab_configurationChange_showsSameTabAndItsData() {
-    onView(
-      allOf(
-        withText(R.string.overview),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
+      .perform(click())
     onView(withId(R.id.topic_name_text_view)).check(
       matches(
         withText(
@@ -273,12 +207,7 @@ class TopicFragmentTest {
       )
     )
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    onView(
-      allOf(
-        withText(R.string.overview),
-        isDisplayed()
-      )
-    )
+    onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
     onView(withId(R.id.topic_name_text_view)).check(
       matches(
         withText(
