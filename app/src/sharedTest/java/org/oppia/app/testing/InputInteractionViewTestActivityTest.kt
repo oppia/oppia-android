@@ -20,7 +20,6 @@ import org.junit.Before
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
-import org.oppia.app.testing.InputInteractionViewTestActivity
 
 /** Tests for [InputInteractionViewTestActivity]. */
 @RunWith(AndroidJUnit4::class)

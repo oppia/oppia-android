@@ -9,39 +9,39 @@ import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
-class ViewPagerAdapter(fm: FragmentManager, private val numOfTabs: Int, private val topicId: String) :
-  FragmentStatePagerAdapter(fm) {
+/** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
+class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: String) :
+  FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment? {
     val args = Bundle()
     args.putString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-    when (position) {
-      0 -> {
+    when (TopicTab.getTabForPosition(position)) {
+      TopicTab.OVERVIEW -> {
         val topicOverviewTab = TopicOverviewFragment()
         topicOverviewTab.arguments = args
         return topicOverviewTab
       }
-      1 -> {
+      TopicTab.PLAY -> {
         val topicPlayTab = TopicPlayFragment()
         topicPlayTab.arguments = args
         return topicPlayTab
       }
-      2 -> {
+      TopicTab.TRAIN -> {
         val topicTrainTab = TopicTrainFragment()
         topicTrainTab.arguments = args
         return topicTrainTab
       }
-      3 -> {
+      TopicTab.REVIEW -> {
         val topicReviewTab = TopicReviewFragment()
         topicReviewTab.arguments = args
         return topicReviewTab
       }
-      else -> return null
     }
   }
 
   override fun getCount(): Int {
-    return numOfTabs
+    return TopicTab.values().size
   }
 }
 

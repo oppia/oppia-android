@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */
@@ -20,7 +21,9 @@ class TopicFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    topicId = arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
+    topicId = checkNotNull(arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)?: TEST_TOPIC_ID_0) {
+      "Expected topic ID to be included in arguments for TopicFragment."
+    }
     return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
   }
 }

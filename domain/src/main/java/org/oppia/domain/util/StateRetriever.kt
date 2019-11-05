@@ -1,5 +1,6 @@
 package org.oppia.domain.util
 
+import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -10,6 +11,8 @@ import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
 import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
@@ -17,15 +20,22 @@ class StateRetriever @Inject constructor() {
 
   /** Creates a single state object from JSON */
   fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
-    return State.newBuilder()
+    val state = State.newBuilder()
       .setName(stateName)
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
           stateJson?.getJSONObject("content")?.getString("html")
+        ).setContentId(
+          stateJson?.getJSONObject("content")?.optString("content_id")
         )
       )
       .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
-      .build()
+
+    if (stateJson != null && stateJson.has("recorded_voiceovers")) {
+      createVoiceOverMappingsFromJson(stateJson.getJSONObject("recorded_voiceovers"), state)
+    }
+
+    return state.build()
   }
 
   // Creates an interaction from JSON
@@ -114,6 +124,29 @@ class StateRetriever @Inject constructor() {
       .build()
   }
 
+  // Creates VoiceoverMappings from JSON and adds onto State
+  private fun createVoiceOverMappingsFromJson(recordedVoiceovers: JSONObject, stateBuilder: State.Builder) {
+    val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
+    voiceoverMappingJson?.let {
+      for (key in it.keys()) {
+        val voiceoverMapping = VoiceoverMapping.newBuilder()
+        val voiceoverJson = it.getJSONObject(key)
+        for (lang in voiceoverJson.keys()) {
+          voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
+        }
+        stateBuilder.putRecordedVoiceovers(key, voiceoverMapping.build())
+      }
+    }
+  }
+
+  // Creates a Voiceover from Json
+  private fun createVoiceOverFromJson(voiceoverJson: JSONObject): Voiceover {
+    return Voiceover.newBuilder()
+      .setNeedsUpdate(voiceoverJson.getBoolean("needs_update"))
+      .setFileName(voiceoverJson.getString("filename"))
+      .build()
+  }
+
   // Creates the list of rule spec objects from JSON
   private fun createRuleSpecsFromJson(
     ruleSpecJson: JSONArray?, interactionId: String
@@ -147,6 +180,9 @@ class StateRetriever @Inject constructor() {
       "MultipleChoiceInput" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
+      "ItemSelectionInput" -> InteractionObject.newBuilder()
+        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
+        .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
@@ -155,6 +191,14 @@ class StateRetriever @Inject constructor() {
         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
+    val stringListBuilder = StringList.newBuilder()
+    for (i in 0 until itemSelectionAnswer.length()) {
+      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+    }
+    return stringListBuilder.build()
   }
 
   // Creates a customization arg mapping from JSON
@@ -186,10 +230,14 @@ class StateRetriever @Inject constructor() {
         .setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder
         .setReal(customizationArgValue).build()
-      is List<*> -> if (customizationArgValue.size > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)
-        ).build()
+      else -> {
+        val customizationArgValueTemp: ArrayList<*> =
+          Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
+        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            createStringList(customizationArgValueTemp)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
