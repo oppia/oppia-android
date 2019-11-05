@@ -28,8 +28,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     }
   }
 
-  private var selectedInputItemIndexes = ArrayList<Int>()
-
   @Inject
   lateinit var stateFragmentPresenter: StateFragmentPresenter
 

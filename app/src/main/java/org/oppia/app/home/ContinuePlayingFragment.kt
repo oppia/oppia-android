@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ContinuePlayingFragment : InjectableFragment() {
   @Inject lateinit var continuePlayingFragmentPresenter: ContinuePlayingFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
