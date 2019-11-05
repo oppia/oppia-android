@@ -309,6 +309,7 @@ class TopicFragmentTest {
       InstrumentationRegistry.getInstrumentation().targetContext.resources
     return resources.getString(id)
   }
+
   @Test
   fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
     launch(TopicActivity::class.java).use {
@@ -319,6 +320,7 @@ class TopicFragmentTest {
       onView(withText("First Story")).check(matches(isDisplayed()))
     }
   }
+
   @Module
   class TestModule {
     @Provides

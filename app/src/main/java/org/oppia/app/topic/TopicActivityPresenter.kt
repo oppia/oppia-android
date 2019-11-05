@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
+
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
+
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
@@ -18,7 +20,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        topicFragment,TOPIC_FRAGMENT_TAG
+        topicFragment, TOPIC_FRAGMENT_TAG
       ).commitNow()
     }
   }
