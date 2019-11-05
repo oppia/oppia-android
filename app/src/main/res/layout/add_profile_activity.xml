@@ -15,13 +15,15 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
-      android:paddingTop="30dp"
+      android:paddingTop="40dp"
       android:paddingBottom="75dp">
-      <ImageView
+      <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/upload_image_button"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/review_placeholder"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_upload_photo"
+        app:civ_border_width="0.75dp"
+        app:civ_border_color="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -141,8 +143,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        profile:label="James"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:label="James Xu"
+        app:isPasswordInput="true"
+        app:inputLength="5"
+        app:layout_constraintTop_toBottomOf="@id/create_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

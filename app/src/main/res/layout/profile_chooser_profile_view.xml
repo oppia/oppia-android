@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
   <data>
     <import type="android.view.View" />
     <variable
@@ -18,7 +19,7 @@
       android:id="@+id/profile_avatar_img"
       android:layout_width="80dp"
       android:layout_height="80dp"
-      android:profileUrl="@{viewModel.profile.avatarImageUri}"
+      profile:src="@{viewModel.profile.avatarImageUri}"
       android:layout_marginBottom="5dp"
       app:civ_border_width="0.75dp"
       app:civ_border_color="@color/white"/>

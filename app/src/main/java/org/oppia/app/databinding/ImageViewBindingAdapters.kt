@@ -49,7 +49,7 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: LessonThumbnailGrap
   )
 }
 
-@BindingAdapter("android:profileUrl")
+@BindingAdapter("profile:src")
 fun setProfileImage(imageView: ImageView, imageUrl: String) {
   Glide.with(imageView.context)
     .load(imageUrl)
