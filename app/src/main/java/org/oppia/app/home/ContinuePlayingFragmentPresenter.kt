@@ -8,13 +8,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.ContinuePlayingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.continueplaying.ContinuePlayingViewModel
+import org.oppia.app.home.continueplaying.OngoingListAdapter
+import org.oppia.app.home.continueplaying.OngoingStoryClickListener
+import org.oppia.app.home.continueplaying.OngoingStoryViewModel
+import org.oppia.app.home.continueplaying.SectionTitleViewModel
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.PromotedStory
+import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [ContinuePlayingFragment]. */
@@ -22,35 +28,69 @@ import javax.inject.Inject
 class ContinuePlayingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val topicListController: TopicListController,
-  private val logger: Logger
+  private val topicListController: TopicListController
 ) {
 
+  private val routeToStoryListener = activity as RouteToStoryListener
+
   private lateinit var binding: ContinuePlayingFragmentBinding
+
+  private lateinit var ongoingListAdapter: OngoingListAdapter
 
   private val itemList: MutableList<ContinuePlayingViewModel> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    subscribeToTopicList()
+    ongoingListAdapter = OngoingListAdapter(itemList)
+
+    binding.ongoingStoryRecyclerView.apply {
+      adapter = ongoingListAdapter
+    }
+    binding.let {
+      it.lifecycleOwner = fragment
+    }
+
+    subscribeToOngoingStoryList()
 
     return binding.root
   }
 
-  private val topicListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
+  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
     topicListController.getOngoingStoryList()
   }
 
-  private fun subscribeToTopicList() {
-    getAssumedSuccessfulTopicList().observe(fragment, Observer<OngoingStoryList> { result ->
-      logger.d("TAG", "Recent stories: " + result.recentStoryOrBuilderList.size)
-      logger.d("TAG", "Older stories: " + result.olderStoryOrBuilderList.size)
+  private fun subscribeToOngoingStoryList() {
+    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> { it ->
+      if (it.recentStoryCount > 0) {
+        val recentSectionTitleViewModel = SectionTitleViewModel()
+        recentSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_week)
+        itemList.add(recentSectionTitleViewModel)
+        for (promotedStory in it.recentStoryList) {
+          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+          itemList.add(ongoingStoryViewModel)
+        }
+      }
+
+      if (it.olderStoryCount > 0) {
+        val olderSectionTitleViewModel = SectionTitleViewModel()
+        olderSectionTitleViewModel.sectionTitleText = activity.getString(R.string.ongoing_story_last_month)
+        itemList.add(olderSectionTitleViewModel)
+        for (promotedStory in it.olderStoryList) {
+          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+          itemList.add(ongoingStoryViewModel)
+        }
+      }
+      ongoingListAdapter.notifyDataSetChanged()
     })
   }
 
-  private fun getAssumedSuccessfulTopicList(): LiveData<OngoingStoryList> {
+  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+  }
+
+  fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+    routeToStoryListener.routeToStory(promotedStory.storyId)
   }
 }

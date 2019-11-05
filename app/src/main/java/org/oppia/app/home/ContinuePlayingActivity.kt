@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.topic.RouteToStoryListener
 import javax.inject.Inject
 
 /** Activity for recent stories. */
-class ContinuePlayingActivity : InjectableAppCompatActivity() {
+class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToStoryListener {
   @Inject lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,5 +22,9 @@ class ContinuePlayingActivity : InjectableAppCompatActivity() {
     fun createContinuePlayingActivityIntent(context: Context): Intent {
       return Intent(context, ContinuePlayingActivity::class.java)
     }
+  }
+
+  override fun routeToStory(storyId: String) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }
