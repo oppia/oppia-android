@@ -19,6 +19,6 @@
     android:id="@+id/error_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/name_input"
-    android:textColor="@color/black"/>
+    android:text="Error"
+    android:textColor="@color/red"/>
 </LinearLayout>

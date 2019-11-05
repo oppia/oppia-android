@@ -77,10 +77,10 @@ class AddProfileActivityPresenter @Inject constructor(
       val name = binding.inputName.text.toString()
       val pin = binding.pinInput.text.toString()
       val confirmPin = binding.confirmPinInput.text.toString()
-      if (pin.length < 3) {
-        Toast.makeText(activity, activity.resources.getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show()
-        return@setOnClickListener
-      }
+//      if (pin.length < 3) {
+//        Toast.makeText(activity, activity.resources.getString(R.string.pin_too_short), Toast.LENGTH_SHORT).show()
+//        return@setOnClickListener
+//      }
       if (pin != confirmPin) {
         Toast.makeText(activity, activity.resources.getString(R.string.confirm_pin_wrong), Toast.LENGTH_SHORT).show()
         return@setOnClickListener
