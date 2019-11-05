@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
+import org.oppia.app.home.ContinuePlayingActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
@@ -34,9 +35,10 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
+  fun inject(continuePlayingActivity: ContinuePlayingActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
-  fun inject(htmlParserTestActivty: HtmlParserTestActivity)
+  fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)

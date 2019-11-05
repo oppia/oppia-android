@@ -109,6 +109,7 @@ class TopicListController @Inject constructor(
       .setStoryName("Second Story")
       .setTopicId(TEST_TOPIC_ID_0)
       .setTopicName("First Topic")
+      .setNextChapterName("The Meaning of Equal Parts")
       .setCompletedChapterCount(1)
       .setTotalChapterCount(3)
       .setLessonThumbnail(createStoryThumbnail())
