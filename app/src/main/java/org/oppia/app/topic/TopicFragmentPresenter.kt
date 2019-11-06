@@ -83,7 +83,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicFragmentPresenter", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
