@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.topiclist.AllTopicsViewModel
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
@@ -58,7 +59,7 @@ class HomeFragmentPresenter @Inject constructor(
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
-        return if (position == 0 || position == 1) {
+        return if (position == 0 || position == 1 || position == 2) {
           /* number of spaces this item should occupy = */ 2
         } else {
           /* number of spaces this item should occupy = */ 1
@@ -109,6 +110,10 @@ class HomeFragmentPresenter @Inject constructor(
       val promotedStoryViewModel = PromotedStoryViewModel(activity)
       promotedStoryViewModel.setPromotedStory(result.promotedStory)
       itemList.add(promotedStoryViewModel)
+      if(result.topicSummaryList.isNotEmpty()){
+        val allTopicsViewModel = AllTopicsViewModel()
+        itemList.add(allTopicsViewModel)
+      }
       for (topicSummary in result.topicSummaryList) {
         val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemList.add(topicSummaryViewModel)
