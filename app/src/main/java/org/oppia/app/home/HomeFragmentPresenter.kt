@@ -41,15 +41,13 @@ class HomeFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
-
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
 
   private lateinit var topicListAdapter: TopicListAdapter
-
   private lateinit var binding: HomeFragmentBinding
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -79,10 +77,8 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     userAppHistoryController.markUserOpenedApp()
-
     subscribeToUserAppHistory()
     subscribeToTopicList()
-
     return binding.root
   }
 
@@ -98,7 +94,6 @@ class HomeFragmentPresenter @Inject constructor(
           routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
-
     })
   }
 
