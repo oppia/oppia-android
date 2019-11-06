@@ -38,6 +38,10 @@ class PinPasswordActivityPresenter @Inject constructor(
       viewModel = pinViewModel
     }
 
+    binding.showPin.setOnClickListener {
+      pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
+    }
+
     binding.inputPin.addTextChangedListener(object: TextWatcher {
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let { inputtedPin ->
