@@ -22,6 +22,7 @@
     <activity android:name=".story.StoryActivity"/>
     <activity android:name=".profile.AdminAuthActivity" />
     <activity android:name=".profile.AddProfileActivity" />
+    <activity android:name=".profile.PinPasswordActivity" />
     <activity
       android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar">
