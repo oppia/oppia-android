@@ -23,6 +23,7 @@ class StoryViewModel @Inject constructor(
 ) : ViewModel() {
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
+  private lateinit var fragment: StoryFragment
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
     topicController.getStory(storyId)
@@ -42,6 +43,10 @@ class StoryViewModel @Inject constructor(
 
   fun setStoryId(storyId: String) {
     this.storyId = storyId
+  }
+
+  fun setStoryFragment(storyFragment: StoryFragment) {
+    this.fragment = storyFragment
   }
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
@@ -64,7 +69,7 @@ class StoryViewModel @Inject constructor(
 
     // Add the rest of the list
     itemViewModelList.addAll(chapterList.map { chapter ->
-      StoryChapterSummaryViewModel(chapter) as StoryItemViewModel
+      StoryChapterSummaryViewModel(fragment as ExplorationSelector, chapter) as StoryItemViewModel
     })
 
     return itemViewModelList

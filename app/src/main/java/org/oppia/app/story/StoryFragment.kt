@@ -11,11 +11,10 @@ import javax.inject.Inject
 private const val KEY_STORY_ID = "STORY_ID"
 
 /** Fragment for displaying a story. */
-class StoryFragment : InjectableFragment() {
-
+class StoryFragment : InjectableFragment(), ExplorationSelector {
   companion object {
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
-    fun newInstace(storyId: String): StoryFragment {
+    fun newInstance(storyId: String): StoryFragment {
       val storyFragment = StoryFragment()
       val args = Bundle()
       args.putString(KEY_STORY_ID, storyId)
@@ -23,7 +22,6 @@ class StoryFragment : InjectableFragment() {
       return storyFragment
     }
   }
-
   @Inject
   lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
@@ -41,5 +39,9 @@ class StoryFragment : InjectableFragment() {
     val storyId =
       checkNotNull(args.getString(KEY_STORY_ID)) { "Expected storyId to be passed to StoryFragment" }
     return storyFragmentPresenter.handleCreateView(inflater, container, storyId)
+  }
+
+  override fun selectExploration(explorationId: String) {
+    storyFragmentPresenter.handleSelectExploration(explorationId)
   }
 }

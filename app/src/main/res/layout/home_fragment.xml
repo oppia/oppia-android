@@ -29,6 +29,6 @@
       android:layout_marginTop="16dp"
       android:onClick="@{presenter::playExplorationButton}"
       android:text="Play exploration"
-      android:visibility="gone" />
+      android:visibility="gone"/>
   </LinearLayout>
 </layout>

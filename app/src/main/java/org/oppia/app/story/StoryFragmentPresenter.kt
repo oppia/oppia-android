@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
+import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -18,13 +19,17 @@ import javax.inject.Inject
 
 /** The presented for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
+  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
 ) {
+  private val routeToExplorationListener = activity as RouteToExplorationListener
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
     val viewModel = getStoryViewModel()
-    viewModel.setStoryId(storyId)
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    viewModel.setStoryId(storyId)
+    viewModel.setStoryFragment(fragment as StoryFragment)
 
     viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
       (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
@@ -41,6 +46,10 @@ class StoryFragmentPresenter @Inject constructor(
       it.viewModel = viewModel
     }
     return binding.root
+  }
+
+  fun handleSelectExploration(explorationId: String) {
+    routeToExplorationListener.routeToExploration(explorationId)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
