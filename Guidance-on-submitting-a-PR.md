@@ -4,7 +4,7 @@ The following instructions will help you submit a PR effectively and in a clean 
 
 1. **UI related issue/bug fix**: If your PR introduces changes to the UI/UX part of the app, do the following:
     - Include "before" and "after" screenshots (and possibly a video if needed).
-    - Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiples of of 4dp.)_
+    - Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiples of 4dp.)_
 2. **Bug fixes**: While fixing an issue labelled **Bug**, make sure to write test cases which actually catch that bug.
 3. **Self Review**: Always self review your PR first before assigning it to anyone else, so that you can fix nit changes at very early stage. This makes the review process faster.
 
