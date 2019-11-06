@@ -20,13 +20,13 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.story.StoryActivity
 
-/** Tests for [ContinuePlayingTestActivity]. */
+/** Tests for [ContinuePlayingFragmentTestActivity]. */
 @RunWith(AndroidJUnit4::class)
-class ContinuePlayingTestActivityTest {
+class ContinuePlayingFragmentTestActivityTest {
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<ContinuePlayingTestActivity> = ActivityTestRule(
-    ContinuePlayingTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  var activityFragmentTestRule: ActivityTestRule<ContinuePlayingFragmentTestActivity> = ActivityTestRule(
+    ContinuePlayingFragmentTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Before
@@ -36,7 +36,7 @@ class ContinuePlayingTestActivityTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem4_clickStoryItem_opensStoryActivityWithCorrectIntent() {
-    activityTestRule.launchActivity(null)
+    activityFragmentTestRule.launchActivity(null)
     onView(withId(R.id.ongoing_story_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
         4

@@ -9,19 +9,19 @@ import org.oppia.app.topic.RouteToStoryListener
 import javax.inject.Inject
 
 /** Test activity for recent stories. */
-class ContinuePlayingTestActivity : InjectableAppCompatActivity(), RouteToStoryListener {
-  @Inject lateinit var continuePlayingTestActivityPresenter: ContinuePlayingTestActivityPresenter
+class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(), RouteToStoryListener {
+  @Inject lateinit var continuePlayingFragmentTestActivityPresenter: ContinuePlayingFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    continuePlayingTestActivityPresenter.handleOnCreate()
+    continuePlayingFragmentTestActivityPresenter.handleOnCreate()
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ContinuePlayingTestActivity]. */
+    /** Returns a new [Intent] to route to [ContinuePlayingFragmentTestActivity]. */
     fun createContinuePlayingActivityIntent(context: Context): Intent {
-      return Intent(context, ContinuePlayingTestActivity::class.java)
+      return Intent(context, ContinuePlayingFragmentTestActivity::class.java)
     }
   }
 

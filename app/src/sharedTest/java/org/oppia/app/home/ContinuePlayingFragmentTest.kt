@@ -16,17 +16,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.testing.ContinuePlayingTestActivity
+import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
-/** Tests for [ContinuePlayingTestActivity]. */
+/** Tests for [ContinuePlayingFragmentTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem0_doesNotShowSectionDivider() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
@@ -43,7 +43,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem0_showsLastWeekSectionTitle() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(
         atPositionOnView(
           R.id.ongoing_story_recycler_view,
@@ -60,7 +60,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem1_chapterNameIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -82,7 +82,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem1_storyNameIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -104,7 +104,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem1_topicNameIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -126,7 +126,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem1_lessonThumbnailIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -148,7 +148,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem3_showsLastMonthSectionTitle() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(
         atPositionOnView(
@@ -162,7 +162,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem3_showsSectionDivider() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.ongoing_story_recycler_view, 3, R.id.divider_view)).check(matches(isDisplayed()))
     }
@@ -170,7 +170,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_recyclerViewItem4_chapterNameIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           4
@@ -192,7 +192,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
@@ -210,7 +210,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem3_showsLastMonthSectionTitle() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(
@@ -225,7 +225,7 @@ class ContinuePlayingFragmentTest {
 
   @Test
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem4_chapterNameIsCorrect() {
-    ActivityScenario.launch(ContinuePlayingTestActivity::class.java).use {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(

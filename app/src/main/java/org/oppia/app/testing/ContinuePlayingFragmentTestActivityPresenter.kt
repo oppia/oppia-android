@@ -6,9 +6,9 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import javax.inject.Inject
 
-/** The presenter for [ContinuePlayingTestActivity]. */
+/** The presenter for [ContinuePlayingFragmentTestActivity]. */
 @ActivityScope
-class ContinuePlayingTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class ContinuePlayingFragmentTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.continue_playing_activity)
     if (getContinuePlayingFragment() == null) {
