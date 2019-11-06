@@ -1,5 +1,5 @@
 The following instructions will help you submit a PR effectively and in a much more cleaner way.
-Please going through this document you need knowledge from [Home-Page](https://github.com/oppia/oppia-android/wiki).
+Before going through this document make sure you look at [Home-Page](https://github.com/oppia/oppia-android/wiki).
 
 ## Important Points
 
