@@ -47,9 +47,11 @@ class TopicPlayFragmentPresenter @Inject constructor(
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicPlayFragment."
+    }
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
@@ -61,7 +63,6 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicId = fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     topicController.getTopic(topicId)
   }
 

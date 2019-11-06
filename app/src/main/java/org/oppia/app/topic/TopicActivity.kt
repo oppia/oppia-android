@@ -30,8 +30,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     ) {
       "Expected topic ID to be included in arguments for TopicFragment."
     }
-    storyId = checkNotNull (intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-      ?: TEST_TOPIC_ID_0) {
+    storyId = checkNotNull(
+      intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+        ?: TEST_TOPIC_ID_0
+    ) {
       "Expected topic ID to be included in arguments for TopicFragment."
     }
     topicActivityPresenter.handleOnCreate(topicId)
@@ -46,9 +48,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    (supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment).topicFragmentPresenter.setCurrentTab(
-      1
-    )
+    val topicFragment = supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment
+    topicFragment.topicFragmentPresenter.setCurrentTab(TopicTab.PLAY)
   }
 
   override fun routeToConceptCard(skillId: String) {

@@ -53,8 +53,8 @@ class TopicFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun setCurrentTab(tabNumber: Int) {
-    viewPager.setCurrentItem(tabNumber, true)
+  fun setCurrentTab(tab: TopicTab) {
+    viewPager.setCurrentItem(tab.ordinal, true)
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {

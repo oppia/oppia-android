@@ -34,8 +34,10 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private lateinit var reviewSkillSelectionAdapter: ReviewSkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicTrainFragment."
+    }
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-
     reviewSkillSelectionAdapter = ReviewSkillSelectionAdapter(this)
     binding.reviewSkillRecyclerView.apply {
       adapter = reviewSkillSelectionAdapter
@@ -56,7 +58,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicId = fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     topicController.getTopic(topicId)
   }
 

@@ -105,10 +105,6 @@ class HomeFragmentPresenter @Inject constructor(
     routeToTopicListener.routeToTopic(TEST_TOPIC_ID_0)
   }
 
-  private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
-    return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
-  }
-
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
     topicListController.getTopicList()
   }

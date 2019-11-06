@@ -14,6 +14,7 @@ import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -29,11 +30,13 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val topicController: TopicController
 ) {
   private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
-
   private val topicOverviewViewModel = getTopicOverviewViewModel()
   private lateinit var topicId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicOverviewFragment."
+    }
     val binding = TopicOverviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
@@ -61,7 +64,6 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicId = fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     topicController.getTopic(topicId)
   }
 

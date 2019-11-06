@@ -31,10 +31,12 @@ class TopicTrainFragmentPresenter @Inject constructor(
   lateinit var selectedSkillIdList: ArrayList<String>
   private lateinit var topicId: String
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
-
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicTrainFragment."
+    }
     selectedSkillIdList = skillList
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -53,7 +55,6 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicId = fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: ""
     topicController.getTopic(topicId)
   }
 
