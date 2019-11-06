@@ -1,6 +1,5 @@
 package org.oppia.app.home
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
