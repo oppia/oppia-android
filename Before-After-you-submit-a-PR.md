@@ -19,6 +19,7 @@ Note: This checklist should be embedded in your every PR explanation with approp
 - [ ] The PR follows the [style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide).
 - [ ] The PR does not contain any unnecessary auto-generated code or unnecessary files from Android Studio.
 - [ ] The PR is made from a branch that's **not** called "develop".
+- [ ] The PR is made from a branch that is up-to-date with "develop".
 - [ ] The PR's branch is based on "develop" and **not** on any other branch.
 - [ ] The PR is **assigned** to an appropriate reviewer in **Assignees** as well as **Reviewers** section.
 
