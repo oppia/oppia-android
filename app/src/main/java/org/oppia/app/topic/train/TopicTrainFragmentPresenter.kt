@@ -13,6 +13,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -34,7 +35,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicTrainFragment."
     }
     selectedSkillIdList = skillList

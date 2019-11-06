@@ -15,7 +15,7 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: St
 
   override fun getItem(position: Int): Fragment? {
     val args = Bundle()
-    args.putString(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+    args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
     when (TopicTab.getTabForPosition(position)) {
       TopicTab.OVERVIEW -> {
         val topicOverviewTab = TopicOverviewFragment()
@@ -44,4 +44,3 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: St
     return TopicTab.values().size
   }
 }
-

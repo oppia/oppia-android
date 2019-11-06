@@ -40,14 +40,11 @@ class HomeFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
-
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
 
   private lateinit var topicListAdapter: TopicListAdapter
-
   private lateinit var binding: HomeFragmentBinding
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -78,10 +75,8 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     userAppHistoryController.markUserOpenedApp()
-
     subscribeToUserAppHistory()
     subscribeToTopicList()
-
     return binding.root
   }
 

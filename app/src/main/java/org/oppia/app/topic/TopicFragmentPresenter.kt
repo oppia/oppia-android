@@ -29,10 +29,11 @@ class TopicFragmentPresenter @Inject constructor(
 ) {
   private lateinit var tabLayout: TabLayout
   private lateinit var toolbar: Toolbar
+  private lateinit var topicId: String
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(
-      R.drawable.ic_overview_white_24dp,
+      R.drawable.ic_overview_icon_24dp,
       R.drawable.ic_play_icon_24,
       R.drawable.ic_train_icon_24,
       R.drawable.ic_review_icon_24
@@ -41,13 +42,14 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    topicId: String?
+    topicId: String
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     toolbar = binding.root.findViewById(R.id.toolbar) as Toolbar
+    this.topicId = topicId
     setUpViewPager(viewPager, topicId)
     subscribeToTopicLiveData()
     return binding.root
@@ -76,9 +78,8 @@ class TopicFragmentPresenter @Inject constructor(
     })
   }
 
-  // TODO(#135): Get this topic-id from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId = topicId)
   }
 
   private fun getTopic(): LiveData<Topic> {
