@@ -69,11 +69,21 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun bindProfileView(binding: ProfileChooserProfileViewBinding, data: ProfileChooserModel) {
     binding.viewModel = data
     binding.root.setOnClickListener {
-      profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
-        if (it.isSuccess()) {
-          fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
-        }
-      })
+      if (data.profile.pin.isEmpty()) {
+        profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
+          if (it.isSuccess()) {
+            fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
+          }
+        })
+      } else {
+        val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
+          fragment.requireContext(),
+          data.profile.name,
+          data.profile.pin,
+          data.profile.id.internalId
+        )
+        fragment.requireActivity().startActivity(pinPasswordIntent)
+      }
     }
   }
 
