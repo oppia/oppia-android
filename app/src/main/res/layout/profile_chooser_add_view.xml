@@ -12,10 +12,10 @@
       android:id="@+id/profile_add_button"
       android:layout_width="80dp"
       android:layout_height="80dp"
-      android:src="@drawable/review_placeholder"
+      android:src="@drawable/ic_add_profile"
       android:layout_marginBottom="10dp"
-      app:civ_border_width="0.75dp"
-      app:civ_border_color="@color/white"/>
+      app:civ_border_width="1dp"
+      app:civ_border_color="@color/avatarBorder"/>
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

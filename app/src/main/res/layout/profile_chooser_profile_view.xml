@@ -21,8 +21,8 @@
       android:layout_height="80dp"
       profile:src="@{viewModel.profile.avatarImageUri}"
       android:layout_marginBottom="5dp"
-      app:civ_border_width="0.75dp"
-      app:civ_border_color="@color/white"/>
+      app:civ_border_width="1dp"
+      app:civ_border_color="@color/avatarBorder"/>
     <TextView
       android:id="@+id/profile_name_text"
       android:layout_width="wrap_content"
