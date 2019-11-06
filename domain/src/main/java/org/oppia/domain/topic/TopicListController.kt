@@ -100,6 +100,8 @@ class TopicListController @Inject constructor(
   private fun createOngoingStoryList(): OngoingStoryList {
     return OngoingStoryList.newBuilder()
       .addRecentStory(createPromotedStory1())
+      .addRecentStory(createPromotedStory2())
+      .addOlderStory(createPromotedStory3())
       .build()
   }
 
@@ -113,6 +115,32 @@ class TopicListController @Inject constructor(
       .setCompletedChapterCount(1)
       .setTotalChapterCount(3)
       .setLessonThumbnail(createStoryThumbnail())
+      .build()
+  }
+
+  private fun createPromotedStory2(): PromotedStory {
+    return PromotedStory.newBuilder()
+      .setStoryId(TEST_STORY_ID_0)
+      .setStoryName("Equal Ratios")
+      .setTopicId(TEST_TOPIC_ID_1)
+      .setTopicName("Ratios and Proportions")
+      .setNextChapterName("Matthew Goes to the Bakery")
+      .setCompletedChapterCount(1)
+      .setTotalChapterCount(3)
+      .setLessonThumbnail(createStoryThumbnail1())
+      .build()
+  }
+
+  private fun createPromotedStory3(): PromotedStory {
+    return PromotedStory.newBuilder()
+      .setStoryId(TEST_STORY_ID_0)
+      .setStoryName("Types of Angles")
+      .setTopicId(TEST_TOPIC_ID_1)
+      .setTopicName("Geometrical Figures")
+      .setNextChapterName("Miguel Reads a Book")
+      .setCompletedChapterCount(1)
+      .setTotalChapterCount(3)
+      .setLessonThumbnail(createStoryThumbnail2())
       .build()
   }
 
@@ -141,6 +169,20 @@ class TopicListController @Inject constructor(
     return LessonThumbnail.newBuilder()
       .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xa5d3ec)
+      .build()
+  }
+
+  private fun createStoryThumbnail1(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .setBackgroundColorRgb(0xd3a5ec)
+      .build()
+  }
+
+  private fun createStoryThumbnail2(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+      .setBackgroundColorRgb(0xa5ecd3)
       .build()
   }
 }

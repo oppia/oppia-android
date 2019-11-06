@@ -29,7 +29,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -40,7 +39,6 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.domain.UserAppHistoryController
@@ -55,6 +53,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
 import org.oppia.app.R
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
@@ -63,11 +62,6 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
-    HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   @Before
   fun setUp() {
