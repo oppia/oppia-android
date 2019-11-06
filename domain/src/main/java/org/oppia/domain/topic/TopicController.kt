@@ -53,6 +53,7 @@ const val FRACTIONS_QUESTION_ID_7 = "leeSNRVbbBwp"
 const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
+const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
@@ -158,6 +159,9 @@ class TopicController @Inject constructor(
     val fractionQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
       "fractions_questions.json"
     )?.getJSONArray("questions")!!
+    val ratiosQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
+      "ratios_questions.json"
+    )?.getJSONArray("questions")!!
     for (skillId in skillIdsList) {
       when (skillId) {
         TEST_SKILL_ID_0 -> questionsList.addAll(
@@ -203,6 +207,9 @@ class TopicController @Inject constructor(
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
           )
+        )
+        RATIOS_SKILL_ID_0 -> questionsList.add(
+          createQuestionFromJsonObject(ratiosQuestionsJSON.getJSONObject(0))
         )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")

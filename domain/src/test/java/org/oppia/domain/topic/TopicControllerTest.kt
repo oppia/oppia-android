@@ -679,6 +679,25 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(RATIOS_SKILL_ID_0)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(1)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        RATIOS_QUESTION_ID_0
+      )
+    )
+  }
+
+  @Test
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
