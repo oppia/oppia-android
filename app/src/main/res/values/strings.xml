@@ -50,16 +50,17 @@
   <string name="admin_auth_sub_text">Administrator\'s PIN required to create a new account.</string>
   <string name="admin_auth_pin_text">Administrator\'s PIN</string>
   <string name="incorrect_admin_pin">Inputted PIN is incorrect. Please try Again.</string>
-  <string name="name_input">Name (required)</string>
-  <string name="pin_input">3-Digit PIN</string>
+  <string name="input_name">Name (required)</string>
+  <string name="input_pin">3-Digit PIN</string>
   <string name="pin_input_confirm">Confirm 3-Digit PIN</string>
   <string name="allow_download_heading">Allow Download Access</string>
   <string name="allow_download_sub_no_pin">User is able to download and delete content without Administrator password. Only available with PIN.</string>
   <string name="allow_download_sub_pin">User is able to download and delete content without Administrator password.</string>
   <string name="profile_create">CREATE</string>
   <string name="pin_too_short">PIN needs to be 3 digits.</string>
-  <string name="confirm_pin_wrong">PIN and confirm PIN do not match.</string>
-  <string name="name_not_unique">Name is not unique. Please enter a different name and try again.</string>
+  <string name="confirm_pin_wrong">Confirm PIN does not match PIN.</string>
+  <string name="name_not_unique">Somebody already has that name. Try another?</string>
   <string name="failed_image_store">We failed to store your avatar image. Please try again.</string>
-  <string name="name_only_letters">Name must not be empty and only contain letters. Please enter a different name and try again.</string>
+  <string name="name_empty">Name must not be empty. Please enter a name and try again.</string>
+  <string name="name_only_letters">Name must only contain letters. Please enter a different name and try again.</string>
 </resources>

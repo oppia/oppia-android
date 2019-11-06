@@ -7,5 +7,8 @@ import javax.inject.Inject
 
 @ActivityScope
 class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
-  val validPin = ObservableField<Boolean>(false)
+  val validPin = ObservableField(false)
+  val pinErrorMsg = ObservableField("")
+  val confirmPinErrorMsg = ObservableField("")
+  val nameErrorMsg = ObservableField("")
 }

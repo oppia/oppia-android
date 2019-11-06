@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.AdminAuthViewModel" />
+  </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
@@ -28,27 +34,18 @@
       app:layout_constraintStart_toStartOf="parent"
       android:layout_marginTop="15dp"
       android:layout_marginStart="30dp"/>
-    <TextView
-      android:id="@+id/pin_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/admin_auth_pin_text"
-      android:textColor="@color/black"
-      android:textStyle="bold"
-      android:layout_marginTop="70dp"
-      android:layout_marginStart="30dp"
-      app:layout_constraintTop_toBottomOf="@id/sub_text"
-      app:layout_constraintStart_toStartOf="parent"/>
-    <EditText
+    <org.oppia.app.profile.ProfileInputView
       android:id="@+id/input_pin"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:inputType="numberPassword"
-      app:layout_constraintTop_toBottomOf="@id/pin_text"
+      android:layout_marginTop="40dp"
+      app:layout_constraintTop_toBottomOf="@id/sub_text"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginStart="30dp"
-      android:layout_marginEnd="30dp"/>
+      app:label="@string/admin_auth_pin_text"
+      app:isPasswordInput="true"
+      app:inputLength="5"
+      profile:error="@{viewModel.errorMessage}"/>
     <Button
       android:id="@+id/submit_button"
       android:layout_width="wrap_content"
