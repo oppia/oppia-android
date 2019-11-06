@@ -26,6 +26,10 @@
   <string name="topic_overview_see_more">See More</string>
   <string name="topic_download_text">(%s MB)</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="view_all">View All</string>
+  <string name="ongoing_story_last_week">Played within the Last Week</string>
+  <string name="ongoing_story_last_month">Played within the Last Month</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -45,5 +49,13 @@
   <plurals name="story_total_chapters">
     <item quantity="one">%d of %d Chapter Completed</item>
     <item quantity="other">%d of %d Chapters Completed</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
+    </item>
   </plurals>
 </resources>
