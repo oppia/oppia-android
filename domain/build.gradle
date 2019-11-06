@@ -44,7 +44,7 @@ dependencies {
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'com.android.support:exifinterface:25.0.1'
+      'androidx.exifinterface:exifinterface:1.0.0-rc01'
   )
   testImplementation(
       'android.arch.core:core-testing:1.1.1',
