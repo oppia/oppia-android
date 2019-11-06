@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.player.state.StateFragment
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import javax.inject.Inject
 
 /** The presenter for [StateFragmentTestActivity] */
@@ -14,7 +15,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.state_fragment_test_activity)
     if (getStateFragment() == null) {
-      val stateFragment = StateFragment.newInstance("test")
+      val stateFragment = StateFragment.newInstance(TEST_EXPLORATION_ID_5)
       activity.supportFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
         stateFragment

@@ -4,11 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -22,6 +24,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import junit.framework.TestCase
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
@@ -368,11 +371,59 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
-    ActivityScenario.launch(ContentCardTestActivity::class.java).use {
+    launch(ContentCardTestActivity::class.java).use {
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be continually improved over time.\n\n" +
             "Incidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0,R.id.content_text_view)).check(matches(hasDescendant(withText(htmlResult))))
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(matches(withText(htmlResult)))
+    }
+  }
+
+  @Test
+  fun testMultipleChoiceInput_showsRadioButtons_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOption() {
+    launch(ContentCardTestActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button_1)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
+      )
+    }
+  }
+
+  @Test
+  fun testItemSelectionInput_showsCheckBox_forDemoExploration_withCustomOppiaTags_userSelectsDesiredOptions() {
+    launch(ContentCardTestActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button_2)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+      )
+    }
+  }
+
+  @Test
+  fun testItemSelectionInput_showsCheckBox_withMaxSelectionAllowed_userSelectsDesiredOptions_correctError() {
+    launch(ContentCardTestActivity::class.java).use {
+      onView(withId(R.id.play_exploration_button_2)).perform(click())
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+      )
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(1, click())
+      )
+      onView(withId(R.id.selection_interaction_recyclerview)).perform(
+        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(3, click())
+      )
     }
   }
 

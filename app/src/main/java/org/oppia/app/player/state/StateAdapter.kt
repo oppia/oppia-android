@@ -7,14 +7,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.databinding.library.baseAdapters.BR
-import kotlinx.android.synthetic.main.content_item.view.*
+import kotlinx.android.synthetic.main.content_item.view.content_text_view
+import kotlinx.android.synthetic.main.selection_interaction_item.view.selection_interaction_frameLayout
 import kotlinx.android.synthetic.main.state_button_item.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
+import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.databinding.StateButtonItemBinding
+import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.player.state.listener.ItemClickListener
+import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 
 @Suppress("unused")
@@ -26,18 +33,23 @@ private const val VIEW_TYPE_NUMERIC_INPUT_INTERACTION = 3
 @Suppress("unused")
 private const val VIEW_TYPE_TEXT_INPUT_INTERACTION = 4
 private const val VIEW_TYPE_STATE_BUTTON = 5
+const val VIEW_TYPE_SELECTION_INTERACTION = 6
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class StateAdapter(
+  private val logger: Logger,
   private val itemList: MutableList<Any>,
   private val buttonInteractionListener: ButtonInteractionListener,
   private val htmlParserFactory: HtmlParser.Factory,
   private val entityType: String,
-  private val explorationId: String
+  private val explorationId: String,
+  private val selectedInputItemIndexes: ArrayList<Int>,
+  private val selectInputItemsListener: SelectInputItemsListener
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   lateinit var stateButtonViewModel: StateButtonViewModel
+  private var interactionObjectBuilder: InteractionObject = InteractionObject.newBuilder().build()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -64,7 +76,18 @@ class StateAdapter(
           )
         ContentViewHolder(binding)
       }
-      else -> throw IllegalArgumentException("Invalid view type")
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          DataBindingUtil.inflate<SelectionInteractionItemBinding>(
+            inflater,
+            R.layout.selection_interaction_item,
+            parent,
+            /* attachToParent= */ false
+          )
+        SelectionInteractionViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
   }
 
@@ -76,17 +99,21 @@ class StateAdapter(
       VIEW_TYPE_CONTENT -> {
         (holder as ContentViewHolder).bind((itemList[position] as ContentViewModel).htmlContent)
       }
+      VIEW_TYPE_SELECTION_INTERACTION -> {
+        (holder as SelectionInteractionViewHolder).bind(itemList[position] as SelectionInteractionCustomizationArgsViewModel)
+      }
     }
   }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
       is ContentViewModel -> VIEW_TYPE_CONTENT
+      is SelectionInteractionCustomizationArgsViewModel -> VIEW_TYPE_SELECTION_INTERACTION
       is StateButtonViewModel -> {
         stateButtonViewModel = itemList[position] as StateButtonViewModel
         VIEW_TYPE_STATE_BUTTON
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position")
+      else -> throw IllegalArgumentException("Invalid type of data $position: ${itemList[position]}")
     }
   }
 
@@ -122,6 +149,41 @@ class StateAdapter(
         buttonInteractionListener.onPreviousButtonClicked()
       }
       binding.executePendingBindings()
+    }
+  }
+
+  inner class SelectionInteractionViewHolder(
+    private val binding: ViewDataBinding
+  ) : RecyclerView.ViewHolder(binding.root), ItemClickListener {
+
+    override fun onItemClick(interactionObject: InteractionObject) {
+      interactionObjectBuilder = interactionObject
+    }
+
+    internal fun bind(customizationArgs: SelectionInteractionCustomizationArgsViewModel) {
+      val items: Array<String>?
+      val choiceInteractionContentList: MutableList<SelectionInteractionContentViewModel> = ArrayList()
+      val gaeCustomArgsInString = customizationArgs.choiceItems.toString().replace("[", "").replace("]", "")
+      items = gaeCustomArgsInString.split(",").toTypedArray()
+      for (values in items) {
+        val selectionContentViewModel = SelectionInteractionContentViewModel()
+        selectionContentViewModel.htmlContent = values
+        selectionContentViewModel.isAnswerSelected = false
+        choiceInteractionContentList.add(selectionContentViewModel)
+      }
+      val interactionAdapter =
+        InteractionAdapter(
+          logger,
+          htmlParserFactory,
+          entityType,
+          explorationId,
+          choiceInteractionContentList,
+          customizationArgs,
+          this as ItemClickListener,
+          selectedInputItemIndexes,
+          selectInputItemsListener
+        )
+      binding.root.selection_interaction_frameLayout.setAdapter(interactionAdapter)
     }
   }
 }

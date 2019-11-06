@@ -22,6 +22,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionInteractionCustomizationArgsViewModel
 import org.oppia.app.player.state.itemviewmodel.StateButtonViewModel
 import org.oppia.app.player.state.listener.ButtonInteractionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -37,6 +38,7 @@ import javax.inject.Inject
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_STATE_FRAGMENT = "STATE_FRAGMENT"
 
 private const val CONTINUE = "Continue"
 private const val END_EXPLORATION = "EndExploration"
@@ -87,7 +89,15 @@ class StateFragmentPresenter @Inject constructor(
 
   private lateinit var binding: StateFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  private var selectedInputItemIndexes = ArrayList<Int>()
+
+  private lateinit var selectInputItemsListener: SelectInputItemsListener
+
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, selectedInputItemIndexes: ArrayList<Int>, selectInputItemsListener: SelectInputItemsListener): View? {
+
+    this.selectedInputItemIndexes = selectedInputItemIndexes
+    this.selectInputItemsListener = selectInputItemsListener
+
     cellularDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
@@ -97,8 +107,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    stateAdapter =
-      StateAdapter(itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId)
+    stateAdapter = StateAdapter(logger, itemList, this as ButtonInteractionListener, htmlParserFactory, entityType, explorationId, selectedInputItemIndexes, selectInputItemsListener)
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.stateRecyclerView.apply {
       adapter = stateAdapter
@@ -177,6 +186,7 @@ class StateFragmentPresenter @Inject constructor(
       itemList.clear()
       currentEphemeralState = result
       checkAndAddContentItem()
+      addInteractionForPendingState()
       updateDummyStateName()
 
       val interactionId = result.state.interaction.id
@@ -333,7 +343,7 @@ class StateFragmentPresenter @Inject constructor(
       oldStateNameList.add(currentEphemeralState.state.name)
     }
   }
-  
+
   private fun checkAndAddContentItem() {
     if (currentEphemeralState.state.hasContent()) {
       addContentItem()
@@ -348,6 +358,40 @@ class StateFragmentPresenter @Inject constructor(
     contentViewModel.contentId = contentSubtitledHtml.contentId
     contentViewModel.htmlContent = contentSubtitledHtml.html
     itemList.add(contentViewModel)
+    stateAdapter.notifyDataSetChanged()
+  }
+
+  private fun addInteractionForPendingState() {
+    if (currentEphemeralState.stateTypeCase.number == EphemeralState.PENDING_STATE_FIELD_NUMBER) {
+      when (currentEphemeralState.state.interaction.id) {
+        MULTIPLE_CHOICE_INPUT, ITEM_SELECT_INPUT -> {
+          addSelectionInteraction()
+        }
+      }
+    }
+  }
+
+  private fun addSelectionInteraction() {
+    val customizationArgsMap: Map<String, InteractionObject> =
+      currentEphemeralState.state.interaction.customizationArgsMap
+    val multipleChoiceInputInteractionViewModel = SelectionInteractionCustomizationArgsViewModel()
+    val allKeys: Set<String> = customizationArgsMap.keys
+
+    for (key in allKeys) {
+      logger.d(TAG_STATE_FRAGMENT, key)
+    }
+    if (customizationArgsMap.contains("choices")) {
+      if (customizationArgsMap.contains("maxAllowableSelectionCount")) {
+        multipleChoiceInputInteractionViewModel.maxAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["maxAllowableSelectionCount"]!!.signedInt
+        multipleChoiceInputInteractionViewModel.minAllowableSelectionCount =
+          currentEphemeralState.state.interaction.customizationArgsMap["minAllowableSelectionCount"]!!.signedInt
+      }
+      multipleChoiceInputInteractionViewModel.interactionId = currentEphemeralState.state.interaction.id
+      multipleChoiceInputInteractionViewModel.choiceItems =
+        currentEphemeralState.state.interaction.customizationArgsMap["choices"]!!.setOfHtmlString.htmlList
+    }
+    itemList.add(multipleChoiceInputInteractionViewModel)
     stateAdapter.notifyDataSetChanged()
   }
 
