@@ -1,10 +1,12 @@
 package org.oppia.app.profile
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -63,6 +65,8 @@ class AddProfileActivityPresenter @Inject constructor(
     uploadImageView = binding.uploadImageButton
 
     binding.createButton.setOnClickListener {
+      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+      imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
       val name = binding.inputName.getInput()
       val pin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
