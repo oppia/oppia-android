@@ -34,9 +34,8 @@ class AddProfileActivityPresenter @Inject constructor(
   private val addViewModel by lazy {
     getAddProfileViewModel()
   }
-
+  private var selectedImage: Uri? = null
   var allowDownloadAccess = false
-  var selectedImage: Uri? = null
   var inputtedPin = false
   var inputtedConfirmPin = false
 
