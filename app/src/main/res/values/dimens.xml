@@ -8,6 +8,4 @@
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
   <dimen name="state_previous_next_button_radius">4dp</dimen>
 
-  <dimen name="train_checkbox_padding">18dp</dimen>
-
 </resources>
