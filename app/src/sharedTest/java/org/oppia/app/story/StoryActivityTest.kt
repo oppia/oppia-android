@@ -11,14 +11,17 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_1
 
 /** Tests for [StoryActivity]. */
@@ -49,7 +52,11 @@ class StoryActivityTest {
         )
       )
 
-      intended(hasComponent(ExplorationActivity::class.java.name))
+      intended(allOf(
+          hasExtra("ExplorationActivity.exploration_id", TEST_EXPLORATION_ID_1),
+          hasComponent(ExplorationActivity::class.java.name)
+        )
+      )
     }
   }
 
