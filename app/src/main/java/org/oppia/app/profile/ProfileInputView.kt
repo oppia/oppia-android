@@ -21,6 +21,18 @@ class ProfileInputView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
+  companion object {
+    @JvmStatic
+    @BindingAdapter("profile:error")
+    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String) {
+      if (errorMessage.isEmpty()) {
+        profileInputView.clearErrorText()
+      } else {
+        profileInputView.setErrorText(errorMessage)
+      }
+    }
+  }
+
   private var errorText: TextView
   private var input: EditText
 
@@ -54,14 +66,5 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
-  }
-}
-
-@BindingAdapter("profile:error")
-fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String) {
-  if (errorMessage.isEmpty()) {
-    profileInputView.clearErrorText()
-  } else {
-    profileInputView.setErrorText(errorMessage)
   }
 }
