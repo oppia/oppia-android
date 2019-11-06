@@ -1,6 +1,6 @@
 package org.oppia.app.topic
 
-/** Enum to store the tabs of topic and get tab by position. */
+/** Enum to store the tabs of [TopicFragment] and get tab by position. */
 enum class TopicTab(private var position: Int) {
   OVERVIEW(position = 0),
   PLAY(position = 1),

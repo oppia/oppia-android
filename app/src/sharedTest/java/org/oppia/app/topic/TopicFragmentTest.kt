@@ -30,7 +30,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-private val topicName = "First Test Topic"
+private const val TOPIC_NAME = "First Test Topic"
 
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -72,7 +72,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
-            containsString(topicName)
+            containsString(TOPIC_NAME)
           )
         )
       )
@@ -208,7 +208,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
-            containsString(topicName)
+            containsString(TOPIC_NAME)
           )
         )
       )
@@ -295,7 +295,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
-            containsString(topicName)
+            containsString(TOPIC_NAME)
           )
         )
       )

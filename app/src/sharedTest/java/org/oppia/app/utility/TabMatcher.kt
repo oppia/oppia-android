@@ -24,7 +24,7 @@ class TabMatcher {
           val tabLayout = item as TabLayout
           val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)
             ?: throw PerformException.Builder()
-              .withCause(throw IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
+              .withCause(IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
               .build()
           return tabAtIndex.text.toString().contains(tabTitle, true)
         }

@@ -44,4 +44,3 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: St
     return TopicTab.values().size
   }
 }
-
