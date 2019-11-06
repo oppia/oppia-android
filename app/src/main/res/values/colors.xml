@@ -23,6 +23,9 @@
   <color name="black">#000000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatarBorder">#4E4E50</color>
+  <color name="chooserBackground">#212121</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="submitButtonInactive">#56000000</color>
   <color name="grey">#CCCCCC</color>
