@@ -3,10 +3,10 @@ package org.oppia.domain.profile
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.media.ExifInterface
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -426,7 +426,7 @@ class ProfileManagementController @Inject constructor(
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
     val croppedBitmap = ThumbnailUtils.extractThumbnail(bitmap, cropSize, cropSize)
-    val inputStream = context.contentResolver.openInputStream(uri)
+    val inputStream = context.contentResolver.openInputStream(uri)!!
     val orientation = ExifInterface(inputStream).getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
     var rotate = 0
     when (orientation) {
