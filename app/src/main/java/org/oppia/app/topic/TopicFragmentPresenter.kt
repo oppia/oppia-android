@@ -33,9 +33,9 @@ class TopicFragmentPresenter @Inject constructor(
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_overview_white_24dp,
-      R.drawable.ic_play_icon,
-      R.drawable.ic_train_icon,
-      R.drawable.ic_review_icon
+      R.drawable.ic_play_icon_24,
+      R.drawable.ic_train_icon_24,
+      R.drawable.ic_review_icon_24
     )
 
   fun handleCreateView(
@@ -67,7 +67,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
@@ -81,13 +81,13 @@ class TopicFragmentPresenter @Inject constructor(
     topicController.getTopic(TEST_TOPIC_ID_0)
   }
 
-  private fun getTopicList(): LiveData<Topic> {
+  private fun getTopic(): LiveData<Topic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicOverviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }

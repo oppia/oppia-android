@@ -6,15 +6,11 @@ enum class TopicTab(val position: Int) {
   TRAIN(position = 2),
   REVIEW(position = 3);
 
-  var tabPosition: Int
-
-  init {
-    this.tabPosition = position
-  }
+  var tabPosition: Int = position
 
   companion object {
     fun getTabForPosition(position: Int): TopicTab {
-      val ordinal = checkNotNull(TopicTab.values().map(TopicTab::tabPosition).get(position)) {
+      val ordinal = checkNotNull(values().map(TopicTab::tabPosition)[position]) {
         "No tab corresponding to position: $position"
       }
       return values()[ordinal]

@@ -78,6 +78,4 @@
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">false</item>
   </style>
-
-
 </resources>
