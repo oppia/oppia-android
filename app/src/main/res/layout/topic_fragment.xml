@@ -7,10 +7,10 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/appBarLayout"
+      android:id="@+id/topic_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
       app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+        app:titleTextColor="@color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
@@ -43,6 +44,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+      app:layout_constraintTop_toBottomOf="@+id/topic_app_bar_layout" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

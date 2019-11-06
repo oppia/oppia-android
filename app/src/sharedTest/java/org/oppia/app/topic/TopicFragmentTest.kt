@@ -31,10 +31,11 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [TopicActivity]. */
+private val topicName = "First Test Topic"
+
+/** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicFragmentTest {
-  private val topicName = "First Test Topic"
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
@@ -48,21 +49,21 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
+      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(1).name)))
     }
   }
 
   @Test
   fun testTopicFragment_overviewTopicTab_isDisplayedInTabLayout() {
     launch(TopicActivity::class.java).use {
-      onView(withText(R.string.overview)).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
+      onView(withText(TopicTab.getTabForPosition(0).name)).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsOverview_isSuccessful() {
     launch(TopicActivity::class.java).use {
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.overview))))
+      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(0).name)))
     }
   }
 
@@ -84,11 +85,11 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.play),
+          withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.play))))
+      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(1).name)))
     }
   }
 
@@ -97,7 +98,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.play),
+          withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -110,11 +111,11 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.train),
+          withText(TopicTab.getTabForPosition(2).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.train))))
+      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(2).name)))
     }
   }
 
@@ -123,7 +124,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.train),
+          withText(TopicTab.getTabForPosition(2).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -136,11 +137,11 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.review),
+          withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(getResourceString(R.string.review))))
+      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(3).name)))
     }
   }
 
@@ -149,7 +150,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.review),
+          withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -170,20 +171,20 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.review),
+          withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       onView(
         allOf(
-          withText(R.string.overview),
+          withText(TopicTab.getTabForPosition(0).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            getResourceString(R.string.overview)
+            TopicTab.getTabForPosition(0).name
           )
         )
       )
@@ -195,13 +196,13 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.review),
+          withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       onView(
         allOf(
-          withText(R.string.overview),
+          withText(TopicTab.getTabForPosition(0).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -220,7 +221,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.play),
+          withText(TopicTab.getTabForPosition(1).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -228,7 +229,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            getResourceString(R.string.play)
+            TopicTab.getTabForPosition(1).name
           )
         )
       )
@@ -241,7 +242,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.train),
+          withText(TopicTab.getTabForPosition(2).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -250,7 +251,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            getResourceString(R.string.train)
+            TopicTab.getTabForPosition(2).name
           )
         )
       )
@@ -263,7 +264,7 @@ class TopicFragmentTest {
     launch(TopicActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.review),
+          withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
@@ -271,7 +272,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            getResourceString(R.string.review)
+            TopicTab.getTabForPosition(3).name
           )
         )
       )
@@ -288,7 +289,7 @@ class TopicFragmentTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            getResourceString(R.string.overview)
+            TopicTab.getTabForPosition(0).name
           )
         )
       )
@@ -300,12 +301,6 @@ class TopicFragmentTest {
         )
       )
     }
-  }
-
-  private fun getResourceString(id: Int): String {
-    val resources =
-      InstrumentationRegistry.getInstrumentation().targetContext.resources
-    return resources.getString(id)
   }
 
   @Module

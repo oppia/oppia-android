@@ -18,6 +18,7 @@ import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
@@ -97,16 +98,13 @@ class HomeFragmentPresenter @Inject constructor(
           routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
+
     })
   }
 
   fun handleTopicButtonClicked(v: View) {
     logger.d(TAG_HOME_FRAGMENT, "Successfully loaded topic")
     routeToTopicListener.routeToTopic(TEST_TOPIC_ID_0)
-  }
-
-  private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
-    return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {

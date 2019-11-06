@@ -1,16 +1,15 @@
 package org.oppia.app.topic
 
-enum class TopicTab(val position: Int) {
+/** Enum to store the tabs of topic and get tab by position. */
+enum class TopicTab(private var position: Int) {
   OVERVIEW(position = 0),
   PLAY(position = 1),
   TRAIN(position = 2),
   REVIEW(position = 3);
 
-  var tabPosition: Int = position
-
   companion object {
     fun getTabForPosition(position: Int): TopicTab {
-      val ordinal = checkNotNull(values().map(TopicTab::tabPosition)[position]) {
+      val ordinal = checkNotNull(values().map(TopicTab::position)[position]) {
         "No tab corresponding to position: $position"
       }
       return values()[ordinal]

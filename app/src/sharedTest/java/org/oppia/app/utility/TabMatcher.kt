@@ -6,10 +6,12 @@ import org.hamcrest.TypeSafeMatcher
 import androidx.test.espresso.PerformException
 import com.google.android.material.tabs.TabLayout
 import org.hamcrest.Matcher
+import java.lang.IllegalStateException
 
 /**
- * @see <a href="https://stackoverflow.com/q/49626315">TabMatcher</a>
- * This class mainly provides a custom matcher to test whether the current tab title is correctly selected in TabLayout. */
+ * A custom matcher to test whether the current tab title is correctly selected in a [TabLayout].
+ *
+ * Reference: https://stackoverflow.com/q/49626315 */
 class TabMatcher {
   companion object {
     fun matchCurrentTabTitleCheck(tabTitle: String): Matcher<View> {
@@ -22,7 +24,7 @@ class TabMatcher {
           val tabLayout = item as TabLayout
           val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)
             ?: throw PerformException.Builder()
-              .withCause(Throwable("No tab at index ${tabLayout.selectedTabPosition}"))
+              .withCause(throw IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
               .build()
           return tabAtIndex.text.toString().contains(tabTitle, true)
         }

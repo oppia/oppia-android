@@ -24,9 +24,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId  = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)?: TEST_TOPIC_ID_0) {
-      "Expected topic ID to be included in arguments for TopicFragment."
-    }
+    topicId  = intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)?: TEST_TOPIC_ID_0
     topicActivityPresenter.handleOnCreate(topicId)
   }
 

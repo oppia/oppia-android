@@ -41,7 +41,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    topicId: String?
+    topicId: String
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
@@ -57,10 +57,10 @@ class TopicFragmentPresenter @Inject constructor(
     val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
-    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
-    tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
-    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
-    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
+    tabLayout.getTabAt(0)!!.setText(TopicTab.getTabForPosition(0).name).setIcon(tabIcons[0])
+    tabLayout.getTabAt(1)!!.setText(TopicTab.getTabForPosition(1).name).setIcon(tabIcons[1])
+    tabLayout.getTabAt(2)!!.setText(TopicTab.getTabForPosition(2).name).setIcon(tabIcons[2])
+    tabLayout.getTabAt(3)!!.setText(TopicTab.getTabForPosition(3).name).setIcon(tabIcons[3])
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
