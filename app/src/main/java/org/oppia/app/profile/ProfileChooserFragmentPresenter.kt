@@ -26,7 +26,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
-  val chooserViewModel: ProfileChooserViewModel by lazy {
+  private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
 
@@ -79,13 +79,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
     binding.root.setOnClickListener {
-      if (getAdminAuthFragment() == null) {
-        fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
-      }
+      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
     }
-  }
-
-  private fun getAdminAuthFragment(): AdminAuthActivity? {
-    return fragment.requireActivity().supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as? AdminAuthActivity?
   }
 }
