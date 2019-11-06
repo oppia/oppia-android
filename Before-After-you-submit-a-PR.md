@@ -3,13 +3,13 @@ Before going through this document make sure you look at [Home-Page](https://git
 
 ## Important Points
 
-1. **UI related issue/bug fix**: If your PR introduces changes to the UI/UX part of the android app then make sure you include before and after screenshot. Maybe be include a video if needed. Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiple of of 4dp.)_
+1. **UI related issue/bug fix**: If your PR introduces changes to the UI/UX part of the android app then make sure you include before and after screenshot. Maybe include a video if needed. Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiple of of 4dp.)_
 2. **Bug fixes**: While fixing an issue which is labelled as **Bug**, make sure to write test cases which actually catches that bug.
 3. **Self Review**: Always self review your PR first before assigning it to anyone else, so that you can fix nit changes at very early stage.
 
 ##Clarification regarding **Assignees** and **Reviewers** section.
 1. **Reviewers**: Add reviewers in this section who should review this PR, there can be multiple reviewers too. Once this section is filled out it would mostly not change throughout the timeline of that PR.
-2. **Assignees**: Assignees indicate who all needs to currently check that PR. For the first time while submitting the PR, the **Assignees** and **Reviewers** section will be same. Now, once a reviewer has reviewed the PR, they will de-assign themselves and assign it back to you. And similarly the code-owner will make the request-changes and assign it back to the appropriate reviewer and de-assign themselves. That way this section will keep on changing, always point to people who need to check that PR currently.
+2. **Assignees**: Assignees indicate who all needs to currently check that PR. For the first time while submitting the PR, the **Assignees** and **Reviewers** section will be same. Now, once a reviewer has reviewed the PR, they will de-assign themselves and assign it back to the code-owner. And similarly the code-owner will make the requested-changes and assign it back to the appropriate reviewer and de-assign themselves. That way this section will keep on changing and will always point to people who need to check that PR currently.
 
 ## Checklist before submitting a PR
 
