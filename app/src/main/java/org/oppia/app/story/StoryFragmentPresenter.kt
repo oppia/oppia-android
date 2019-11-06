@@ -17,7 +17,7 @@ import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presented for [StoryFragment]. */
+/** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
@@ -29,7 +29,6 @@ class StoryFragmentPresenter @Inject constructor(
     val viewModel = getStoryViewModel()
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
-    viewModel.setStoryFragment(fragment as StoryFragment)
 
     viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
       (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName

@@ -15,12 +15,10 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val storyId: String? = intent.getStringExtra(STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA)) {
+      "Expected extra story ID to be included for StoryActivity."
+    }
     storyActivityPresenter.handleOnCreate(storyId)
-  }
-
-  override fun onSupportNavigateUp(): Boolean {
-    return storyActivityPresenter.handleOnSupportNavigationUp()
   }
 
   override fun routeToExploration(explorationId: String) {
@@ -28,12 +26,12 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   }
 
   companion object {
-    const val STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY = "StoryActivity.story_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA = "StoryActivity.story_id"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story ID. */
     fun createStoryActivityIntent(context: Context, storyId: String): Intent {
       val intent = Intent(context, StoryActivity::class.java)
-      intent.putExtra(STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA, storyId)
       return intent
     }
   }

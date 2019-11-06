@@ -3,12 +3,12 @@ package org.oppia.app.story.storyitemviewmodel
 import android.view.View
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnail
-import org.oppia.app.story.ExplorationSelector
+import org.oppia.app.story.ExplorationSelectionListener
 import org.oppia.app.story.StoryFragment
 
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
-  private val explorationSelector: ExplorationSelector,
+  private val explorationSelectionListener: ExplorationSelectionListener,
   chapterSummary: ChapterSummary
 ) : StoryItemViewModel() {
   val id: String = chapterSummary.explorationId
@@ -17,6 +17,6 @@ class StoryChapterSummaryViewModel(
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
 
   fun onExplorationClicked(v: View) {
-    explorationSelector.selectExploration(id)
+    explorationSelectionListener.selectExploration(id)
   }
 }

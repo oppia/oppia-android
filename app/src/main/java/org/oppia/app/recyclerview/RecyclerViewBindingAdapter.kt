@@ -1,7 +1,6 @@
 package org.oppia.app.recyclerview
 
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 
@@ -11,18 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
  * https://android.jlelse.eu/1bd08b4796b4.
  */
 @BindingAdapter("data")
-fun <T : Any> bindToRecyclerViewAdapterWithLiveData(
-  recyclerView: RecyclerView,
-  liveData: LiveData<List<T>>
-) {
+fun <T : Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, liveData: LiveData<List<T>>) {
   liveData.value?.let { data ->
-    bindToRecyclerViewAdapter(recyclerView, data)
+    val adapter = recyclerView.adapter
+    checkNotNull(adapter) { "Cannot bind data to a RecyclerView missing its adapter." }
+    check(adapter is BindableAdapter<*>) { "Can only bind data to a BindableAdapter." }
+    adapter.setDataUnchecked(data)
   }
-}
-
-private fun <T : Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, dataList: List<T>) {
-  val adapter = recyclerView.adapter
-  checkNotNull(adapter) { "Cannot bind data to a RecyclerView missing its adapter." }
-  check(adapter is BindableAdapter<*>) { "Can only bind data to a BindableAdapter." }
-  adapter.setDataUnchecked(dataList)
 }

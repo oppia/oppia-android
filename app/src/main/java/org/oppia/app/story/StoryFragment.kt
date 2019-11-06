@@ -8,20 +8,21 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_STORY_ID = "STORY_ID"
+private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
 
 /** Fragment for displaying a story. */
-class StoryFragment : InjectableFragment(), ExplorationSelector {
+class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
   companion object {
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
     fun newInstance(storyId: String): StoryFragment {
       val storyFragment = StoryFragment()
       val args = Bundle()
-      args.putString(KEY_STORY_ID, storyId)
+      args.putString(KEY_STORY_ID_ARGUMENT, storyId)
       storyFragment.arguments = args
       return storyFragment
     }
   }
+
   @Inject
   lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
@@ -37,7 +38,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelector {
   ): View? {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to StoryFragment" }
     val storyId =
-      checkNotNull(args.getString(KEY_STORY_ID)) { "Expected storyId to be passed to StoryFragment" }
+      checkNotNull(args.getString(KEY_STORY_ID_ARGUMENT)) { "Expected storyId to be passed to StoryFragment" }
     return storyFragmentPresenter.handleCreateView(inflater, container, storyId)
   }
 

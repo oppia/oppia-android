@@ -1,5 +1,6 @@
 package org.oppia.app.story
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -18,12 +19,14 @@ import javax.inject.Inject
 /** The ViewModel for [StoryFragment]. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
+  fragment: Fragment,
   private val topicController: TopicController,
   private val logger: Logger
 ) : ViewModel() {
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
   private lateinit var fragment: StoryFragment
+  private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
     topicController.getStory(storyId)
@@ -43,10 +46,6 @@ class StoryViewModel @Inject constructor(
 
   fun setStoryId(storyId: String) {
     this.storyId = storyId
-  }
-
-  fun setStoryFragment(storyFragment: StoryFragment) {
-    this.fragment = storyFragment
   }
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
@@ -69,7 +68,7 @@ class StoryViewModel @Inject constructor(
 
     // Add the rest of the list
     itemViewModelList.addAll(chapterList.map { chapter ->
-      StoryChapterSummaryViewModel(fragment as ExplorationSelector, chapter) as StoryItemViewModel
+      StoryChapterSummaryViewModel(explorationSelectionListener, chapter) as StoryItemViewModel
     })
 
     return itemViewModelList
