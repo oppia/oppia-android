@@ -18,7 +18,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_1",
-                "html": ""
+                "html": "<b>Correct!</b>"
               },
               "missing_prerequisite_skill_id": null,
               "refresher_exploration_id": null
