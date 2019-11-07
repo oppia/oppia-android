@@ -26,14 +26,10 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   fun handleOnCreate() {
-    val name = activity.intent.getStringExtra(KEY_PROFILE_NAME)
-    val correctPin = activity.intent.getStringExtra(KEY_CORRECT_PIN)
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
     val profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
-
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
-    binding.helloText.text = "Hi, $name!\nPlease enter your PIN."
-    binding.inputPin.itemCount = correctPin.length
+    pinViewModel.setProfileId(profileId)
     binding.apply {
       lifecycleOwner = activity
       viewModel = pinViewModel
@@ -47,8 +43,8 @@ class PinPasswordActivityPresenter @Inject constructor(
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let { inputtedPin ->
           pinViewModel.showError.set(false)
-          if (inputtedPin.length == correctPin.length) {
-            if (inputtedPin.toString() == correctPin) {
+          if (inputtedPin.length == pinViewModel.correctPin.length) {
+            if (inputtedPin.toString() == pinViewModel.correctPin) {
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
                 if (it.isSuccess()) {
@@ -68,8 +64,8 @@ class PinPasswordActivityPresenter @Inject constructor(
     })
 
     binding.forgotPin.setOnClickListener {
-      if (correctPin.length == 5) {
-
+      if (pinViewModel.isAdmin) {
+        //TODO
       } else {
         val previousFrag = activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
