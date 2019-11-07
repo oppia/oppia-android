@@ -65,5 +65,4 @@ class TopicTestActivityForStoryTest {
       ).check(matches(isDisplayed()))
     }
   }
-
 }

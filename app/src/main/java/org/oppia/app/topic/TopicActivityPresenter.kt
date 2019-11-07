@@ -13,6 +13,7 @@ const val STORY_ID_ARGUMENT_KEY = "story_id"
 /** The presenter for [TopicActivity]. */
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+
   fun handleOnCreate(topicId: String, storyId: String) {
     activity.setContentView(R.layout.topic_activity)
     if (getTopicFragment() == null) {
