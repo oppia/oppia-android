@@ -28,7 +28,7 @@
       <FrameLayout
         android:id="@+id/topic_thumbnail_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -42,7 +42,7 @@
 
         <FrameLayout
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:background="@drawable/thumbnail_gradient" />
       </FrameLayout>
 
