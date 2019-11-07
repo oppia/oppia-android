@@ -6,15 +6,20 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -36,9 +41,39 @@ class ExplorationActivityTest {
     }
   }
 
+  @Test
+  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog() {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+      pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title))
+    }
+  }
+
+  @Test
+  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+      pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title))
+      onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog()).check(matches(isDisplayed()))
+        .perform(click())
+      it.onActivity { activity ->  not(activity.isFinishing)}
+    }
+  }
+
+  @Test
+  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+      pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title))
+      onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog()).check(matches(isDisplayed()))
+        .perform(click())
+      it.onActivity { activity ->  activity.isFinishing}
+    }
+  }
+
   private fun createExplorationActivityIntent(explorationId: String): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
-      ApplicationProvider.getApplicationContext(), TEST_EXPLORATION_ID_30
+      ApplicationProvider.getApplicationContext(), explorationId
     )
   }
 

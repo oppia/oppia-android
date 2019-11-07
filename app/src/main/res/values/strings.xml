@@ -13,6 +13,10 @@
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
+  <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
+  <string name="stop_exploration_dialog_description">Your progress will be saved.</string>
+  <string name="stop_exploration_dialog_cancel_button">CANCEL</string>
+  <string name="stop_exploration_dialog_leave_button">LEAVE</string>
   <string name="topic_train_master_these_skills">Master These Skills</string>
   <string name="topic_train_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_train_start">Start</string>
