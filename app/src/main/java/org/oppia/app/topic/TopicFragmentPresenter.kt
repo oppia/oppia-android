@@ -33,9 +33,9 @@ class TopicFragmentPresenter @Inject constructor(
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_overview_icon_24dp,
-      R.drawable.ic_play_icon_24,
-      R.drawable.ic_train_icon_24,
-      R.drawable.ic_review_icon_24
+      R.drawable.ic_play_icon_24dp,
+      R.drawable.ic_train_icon_24dp,
+      R.drawable.ic_review_icon_24dp
     )
 
   fun handleCreateView(
