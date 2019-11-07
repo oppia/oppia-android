@@ -16,11 +16,10 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers
 
-/** Tests for [TopicFragment]. */
+/** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
 class TopicTestActivityForStoryTest {
 

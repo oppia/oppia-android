@@ -19,7 +19,7 @@ import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
-/** The activity for displaying [TopicFragment]. */
+/** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   @Inject

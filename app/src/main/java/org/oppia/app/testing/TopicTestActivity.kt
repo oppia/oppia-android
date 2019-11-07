@@ -1,7 +1,5 @@
 package org.oppia.app.testing
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
@@ -17,11 +15,10 @@ import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
-/** The activity for displaying [TopicFragment]. */
+/** The activity for testing [TopicFragment]. */
 class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   @Inject
