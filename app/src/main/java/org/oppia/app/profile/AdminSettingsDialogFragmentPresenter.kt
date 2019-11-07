@@ -27,7 +27,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
   }
 
   fun handleOnCreateDialog(): Dialog {
-    val adminPin = fragment.arguments?.getString(KEY_ADMIN_PIN_SETTINGS)
+    val adminPin = fragment.arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
     val binding: AdminSettingsDialogBinding = DataBindingUtil.inflate(fragment.requireActivity().layoutInflater, R.layout.admin_settings_dialog, null, false)
     binding.apply {
@@ -56,7 +56,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         if (binding.inputPin.getInput() == adminPin) {
           (fragment as DialogFragment).dismiss()
         } else {
-          adminViewModel.errorMessage.set(fragment.resources.getString(R.string.incorrect_admin_pin))
+          adminViewModel.errorMessage.set(fragment.resources.getString(R.string.admin_settings_incorrect))
         }
       }
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, whichButton ->

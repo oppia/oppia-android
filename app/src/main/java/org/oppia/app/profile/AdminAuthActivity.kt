@@ -16,7 +16,7 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
     fun createAdminAuthActivityIntent(context: Context, adminPin: String): Intent {
       val intent = Intent(context, AdminAuthActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-      intent.putExtra(KEY_ADMIN_AUTH_ADMIN_PIN, adminPin)
+      intent.putExtra(KEY_PIN_PASSWORD_ADMIN_PIN, adminPin)
       return intent
     }
   }

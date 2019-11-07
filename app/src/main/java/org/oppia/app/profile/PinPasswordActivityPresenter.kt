@@ -12,7 +12,6 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
@@ -29,8 +28,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     val name = activity.intent.getStringExtra(KEY_PROFILE_NAME)
     val correctPin = activity.intent.getStringExtra(KEY_CORRECT_PIN)
-    val adminPin = activity.intent.getStringExtra(KEY_ADMIN_PIN)
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_ID, -1)
+    val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
+    val profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
     binding.helloText.text = "Hi, $name!\nPlease enter your PIN."

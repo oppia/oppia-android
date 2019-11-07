@@ -73,4 +73,5 @@
   <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_cancel">CANCEL</string>
   <string name="admin_settings_submit">SUBMIT</string>
+  <string name="admin_settings_incorrect">Inputted PIN is incorrect. Please try Again.</string>
 </resources>
