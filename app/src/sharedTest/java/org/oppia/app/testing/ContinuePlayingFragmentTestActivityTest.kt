@@ -44,7 +44,7 @@ class ContinuePlayingFragmentTestActivityTest {
     )
     onView(atPosition(R.id.ongoing_story_recycler_view, 4)).perform(click())
     intended(hasComponent(StoryActivity::class.java.name))
-    intended(hasExtra(StoryActivity.STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_0"))
+    intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA, "test_story_id_0"))
   }
 
   @After

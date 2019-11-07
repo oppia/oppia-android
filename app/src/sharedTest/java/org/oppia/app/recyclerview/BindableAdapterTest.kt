@@ -221,7 +221,7 @@ class BindableAdapterTest {
   private fun createSingleViewTypeWithDataBindingBindableAdapter(): BindableAdapter<TestModel> {
     return BindableAdapter.Builder
       .newBuilder<TestModel>()
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
       )
@@ -253,12 +253,12 @@ class BindableAdapterTest {
       .registerViewTypeComputer { value ->
         value.modelTypeCase.number
       }
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = TestModel.STR_VALUE_FIELD_NUMBER,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
       )
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = TestModel.INT_VALUE_FIELD_NUMBER,
         inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel

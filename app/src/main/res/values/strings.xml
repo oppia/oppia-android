@@ -51,6 +51,10 @@
       %d Stories
     </item>
   </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%d of %d Chapter Completed</item>
+    <item quantity="other">%d of %d Chapters Completed</item>
+  </plurals>
   <plurals name="lesson_count">
     <item quantity="one">
       1 Lesson

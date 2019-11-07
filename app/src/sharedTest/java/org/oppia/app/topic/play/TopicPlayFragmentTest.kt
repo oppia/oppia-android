@@ -137,7 +137,7 @@ class TopicPlayFragmentTest {
     activityTestRule.launchActivity(null)
     onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.story_name_text_view)).perform(click())
     intended(hasComponent(StoryActivity::class.java.name))
-    intended(hasExtra(StoryActivity.STORY_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId))
+    intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA, storyId))
   }
 
   @Test
