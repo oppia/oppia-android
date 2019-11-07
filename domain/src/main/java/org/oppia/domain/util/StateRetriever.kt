@@ -7,6 +7,8 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.NumberUnit
+import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
@@ -119,12 +121,26 @@ class StateRetriever @Inject constructor(
     }
     return Outcome.newBuilder()
       .setDestStateName(outcomeJson.getString("dest"))
-      .setFeedback(
-        SubtitledHtml.newBuilder()
-          .setHtml(outcomeJson.getString("feedback"))
-      )
+      .setFeedback(createFeedbackSubtitledHtml(outcomeJson))
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
+  }
+
+  // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
+  //  updated.
+  /**
+   * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry keyed on 'feedback'.
+   */
+  private fun createFeedbackSubtitledHtml(containerObject: JSONObject): SubtitledHtml {
+    val feedbackObject = containerObject.optJSONObject("feedback")
+    return if (feedbackObject != null) {
+      SubtitledHtml.newBuilder()
+        .setContentId(feedbackObject.getString("content_id"))
+        .setHtml(feedbackObject.getString("html"))
+        .build()
+    } else {
+      SubtitledHtml.newBuilder().setHtml(containerObject.getString("feedback")).build()
+    }
   }
 
   // Creates VoiceoverMappings from JSON and adds onto State
@@ -198,23 +214,14 @@ class StateRetriever @Inject constructor(
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
+      "NumberWithUnits" -> InteractionObject.newBuilder()
+        .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
+        .build()
       "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
       "FractionInput" -> InteractionObject.newBuilder()
-        .setFraction(
-          Fraction.newBuilder()
-            .setDenominator(inputJson.getJSONObject(keyName).getInt("denominator"))
-            .setNumerator(inputJson.getJSONObject(keyName).getInt("numerator"))
-            .setIsNegative(inputJson.getJSONObject(keyName).getBoolean("isNegative"))
-            .setWholeNumber(inputJson.getJSONObject(keyName).getInt("wholeNumber"))
-        ).build()
-      "ItemSelectionInput" -> InteractionObject.newBuilder()
-        .setSetOfHtmlString(
-          StringList.newBuilder().addAllHtml(
-            jsonAssetRetriever.getStringsFromJSONArray(inputJson.getJSONArray(keyName))
-          )
-        )
+        .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
@@ -226,6 +233,31 @@ class StateRetriever @Inject constructor(
       stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
     }
     return stringListBuilder.build()
+  }
+
+  private fun parseNumberWithUnitsObject(numberWithUnitsAnswer: JSONObject): NumberWithUnits {
+    val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
+    when (numberWithUnitsAnswer.getString("type")) {
+      "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
+      "fraction" -> numberWithUnitsBuilder.fraction = parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
+    }
+    val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
+    for (i in 0 until unitsArray.length()) {
+      val unit = unitsArray.getJSONObject(i)
+      numberWithUnitsBuilder.addUnit(NumberUnit.newBuilder()
+        .setUnit(unit.getString("unit"))
+        .setExponent(unit.getInt("exponent")))
+    }
+    return numberWithUnitsBuilder.build()
+  }
+
+  private fun parseFraction(fractionAnswer: JSONObject): Fraction {
+    return Fraction.newBuilder()
+      .setWholeNumber(fractionAnswer.getInt("wholeNumber"))
+      .setDenominator(fractionAnswer.getInt("denominator"))
+      .setNumerator(fractionAnswer.getInt("numerator"))
+      .setIsNegative(fractionAnswer.getBoolean("isNegative"))
+      .build()
   }
 
   // Creates a customization arg mapping from JSON
@@ -251,14 +283,10 @@ class StateRetriever @Inject constructor(
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when (customizationArgValue) {
-      is String -> return interactionObjectBuilder
-        .setNormalizedString(customizationArgValue).build()
-      is Int -> return interactionObjectBuilder
-        .setSignedInt(customizationArgValue).build()
-      is Double -> return interactionObjectBuilder
-        .setReal(customizationArgValue).build()
-      is Boolean -> return interactionObjectBuilder
-        .setBoolValue(customizationArgValue).build()
+      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue).build()
+      is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
+      is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
+      is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
       else -> {
         val customizationArgValueTemp: ArrayList<*> =
           Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)

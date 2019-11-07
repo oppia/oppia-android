@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import org.oppia.app.home.ContinuePlayingActivity
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.RouteToContinuePlayingListener
 import org.oppia.app.home.RouteToTopicPlayStoryListener
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.topic.TopicActivity
 

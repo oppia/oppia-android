@@ -1,6 +1,5 @@
 package org.oppia.domain.audio
 
-import org.oppia.domain.UserAppHistoryController
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Observer
@@ -28,6 +27,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.CellularDataPreference
+import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog

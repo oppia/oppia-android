@@ -1,15 +1,15 @@
 package org.oppia.app.utility
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.view.View
+import android.view.ViewGroup
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import org.hamcrest.Matcher
-import android.content.pm.ActivityInfo
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.view.ViewGroup
 
 // https://gist.github.com/nbarraille/03e8910dc1d415ed9740
 /** This class helps in managing orientation changes in test-cases which are visible on device too. */
