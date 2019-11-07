@@ -21,9 +21,11 @@ import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
+import org.oppia.app.view.ViewComponent
+import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [InteractionViewModelModule::class])
+@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder
@@ -33,6 +35,8 @@ interface FragmentComponent {
 
     fun build(): FragmentComponent
   }
+
+  fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
   fun inject(addProfileFragment: AddProfileFragment)
   fun inject(adminAuthFragment: AdminAuthFragment)
