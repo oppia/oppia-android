@@ -14,7 +14,7 @@ class SelectionInteractionViewModel(
   val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
 ): StateItemViewModel(), InteractionAnswerHandler {
-  val interactionId: String = interaction.id
+  private val interactionId: String = interaction.id
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
   }
@@ -26,10 +26,10 @@ class SelectionInteractionViewModel(
     // when either of the counts are not specified.
     interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
   }
-  val selectedItems = computeSelectedItems(
+  private val selectedItems = computeSelectedItems(
     existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
   )
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
+  private val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
     choiceStrings, selectedItems, isReadOnly, this
   )
 

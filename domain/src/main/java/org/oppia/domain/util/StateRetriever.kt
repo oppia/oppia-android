@@ -1,6 +1,5 @@
 package org.oppia.domain.util
 
-import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup

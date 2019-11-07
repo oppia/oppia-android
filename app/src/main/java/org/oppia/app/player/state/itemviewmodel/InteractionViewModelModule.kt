@@ -5,7 +5,10 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-/** Module to provide interaction view model-specific dependencies. */
+/**
+ * Module to provide interaction view model-specific dependencies for intreactions that should be explicitly displayed
+ * to the user.
+ */
 @Module
 class InteractionViewModelModule {
   // TODO(#300): Use a common source for these interaction IDs to de-duplicate them from other places in the codebase

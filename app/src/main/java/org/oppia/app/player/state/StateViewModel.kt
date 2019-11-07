@@ -1,9 +1,7 @@
 package org.oppia.app.player.state
 
 import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import androidx.databinding.ObservableMap
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.InteractionObject

@@ -3,8 +3,8 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
-import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.home.HomeFragment
+import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment

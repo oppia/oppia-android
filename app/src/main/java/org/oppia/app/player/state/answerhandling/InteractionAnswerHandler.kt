@@ -19,8 +19,8 @@ interface InteractionAnswerHandler {
 }
 
 /**
- * A callback that will be called by [InteractionAnswerPusher]s when a user submits an answer. To be implemented by
- * the parent fragment of the pusher.
+ * A callback that will be called by [InteractionAnswerHandler]s when a user submits an answer. To be implemented by
+ * the parent fragment of the handler.
  */
 interface InteractionAnswerReceiver {
   fun onAnswerReadyForSubmission(answer: InteractionObject)

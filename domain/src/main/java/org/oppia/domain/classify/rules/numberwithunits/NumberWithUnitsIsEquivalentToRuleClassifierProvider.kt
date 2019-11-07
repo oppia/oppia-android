@@ -3,8 +3,8 @@ package org.oppia.domain.classify.rules.numberwithunits
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.classify.rules.GenericRuleClassifier
+import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.util.approximatelyEquals
 import org.oppia.domain.util.toFloat
 import javax.inject.Inject

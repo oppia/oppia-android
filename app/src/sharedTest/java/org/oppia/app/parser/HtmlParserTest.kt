@@ -2,7 +2,6 @@ package org.oppia.app.parser
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView

@@ -2,7 +2,6 @@ package org.oppia.app.parser
 
 import org.oppia.app.model.Fraction
 import org.oppia.domain.util.normalizeWhitespace
-import java.lang.IllegalArgumentException
 
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {

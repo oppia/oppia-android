@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.recyclerview.BindableAdapter.Builder.Companion.newBuilder
 import kotlin.reflect.KClass
 
 /** A function that returns the type of view that can bind the specified data object. */

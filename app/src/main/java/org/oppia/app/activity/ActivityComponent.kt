@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
