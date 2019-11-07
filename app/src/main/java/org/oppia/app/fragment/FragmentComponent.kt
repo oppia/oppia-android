@@ -7,6 +7,7 @@ import org.oppia.app.home.HomeFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.audio.AudioFragment
+import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
@@ -44,4 +45,5 @@ interface FragmentComponent {
   fun inject(topicPlayFragment: TopicPlayFragment)
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
+  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
 }

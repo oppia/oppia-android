@@ -15,6 +15,8 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
+
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
@@ -27,8 +29,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     val name = activity.intent.getStringExtra(KEY_PROFILE_NAME)
     val correctPin = activity.intent.getStringExtra(KEY_CORRECT_PIN)
+    val adminPin = activity.intent.getStringExtra(KEY_ADMIN_PIN)
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_ID, -1)
-    val isAdmin = correctPin.length == 5
 
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
     binding.helloText.text = "Hi, $name!\nPlease enter your PIN."
@@ -65,6 +67,19 @@ class PinPasswordActivityPresenter @Inject constructor(
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
+
+    binding.forgotPin.setOnClickListener {
+      if (correctPin.length == 5) {
+
+      } else {
+        val previousFrag = activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
+        if (previousFrag != null) {
+          activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
+        }
+        val dialogFragment = AdminSettingsDialogFragment.newInstance(adminPin)
+        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+      }
+    }
   }
 
   private fun getPinPasswordViewModel(): PinPasswordViewModel {

@@ -65,5 +65,9 @@
   <string name="name_only_letters">Name must only contain letters. Please enter a different name and try again.</string>
   <string name="forgot_pin">I FORGOT MY PIN</string>
   <string name="incorrect_pin">Incorrect PIN.</string>
-  <string name="show">SHOW</string>
+  <string name="pin_password_show">SHOW</string>
+  <string name="admin_settings_heading">Access to Administrator Settings</string>
+  <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
+  <string name="admin_settings_cancel">CANCEL</string>
+  <string name="admin_settings_submit">SUBMIT</string>
 </resources>

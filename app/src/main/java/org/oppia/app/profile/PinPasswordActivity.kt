@@ -14,12 +14,13 @@ class PinPasswordActivity : InjectableAppCompatActivity() {
   @Inject lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
-    fun createPinPasswordActivityIntent(context: Context, name: String, correctPin: String, profileId: Int): Intent {
+    fun createPinPasswordActivityIntent(context: Context, name: String, correctPin: String, adminPin: String, profileId: Int): Intent {
       val intent = Intent(context, PinPasswordActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_CORRECT_PIN, correctPin)
       intent.putExtra(KEY_PROFILE_ID, profileId)
       intent.putExtra(KEY_PROFILE_NAME, name)
+      intent.putExtra(KEY_ADMIN_PIN, adminPin)
       return intent
     }
   }

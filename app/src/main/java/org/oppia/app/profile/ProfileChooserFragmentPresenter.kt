@@ -80,6 +80,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           fragment.requireContext(),
           data.profile.name,
           data.profile.pin,
+          chooserViewModel.adminPin,
           data.profile.id.internalId
         )
         fragment.requireActivity().startActivity(pinPasswordIntent)
