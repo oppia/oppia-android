@@ -5,9 +5,9 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.home.HomeFragment
+import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.profile.AddProfileFragment
 import org.oppia.app.profile.AdminAuthFragment
 import org.oppia.app.profile.ProfileChooserFragment
