@@ -38,7 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:onClick="@{presenter::handleTopicButtonClicked}"
-        android:text="Go to topic" />
+        android:text="Go to topic"
+        android:visibility="gone" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

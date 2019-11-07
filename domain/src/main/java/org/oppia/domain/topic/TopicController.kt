@@ -18,6 +18,7 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
@@ -420,9 +421,9 @@ class TopicController @Inject constructor(
 
   private fun createTestTopic0Story0Chapter0(): ChapterSummary {
     return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_0)
-      .setName("First Exploration")
-      .setSummary("This is the first Exploration summary.")
+      .setExplorationId(TEST_EXPLORATION_ID_30)
+      .setName("Prototype Exploration")
+      .setSummary("This is the prototype exploration to verify interaction functionality.")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createTestTopic0Story0Chapter0Thumbnail())
       .build()
