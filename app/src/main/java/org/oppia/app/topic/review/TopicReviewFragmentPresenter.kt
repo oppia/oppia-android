@@ -35,7 +35,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicTrainFragment."
+      "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     reviewSkillSelectionAdapter = ReviewSkillSelectionAdapter(this)
