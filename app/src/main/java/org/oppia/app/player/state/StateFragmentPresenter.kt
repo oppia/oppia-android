@@ -14,9 +14,14 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
+import org.oppia.app.databinding.ContinueInteractionItemBinding
+import org.oppia.app.databinding.FeedbackItemBinding
+import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome

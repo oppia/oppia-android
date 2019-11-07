@@ -3,6 +3,7 @@ package org.oppia.app.player.state
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
@@ -382,10 +383,10 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_1)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
       )
     }
   }
@@ -395,10 +396,10 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_2)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click())
       )
     }
   }
@@ -408,19 +409,19 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_2)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(1, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(3, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(3, click())
       )
     }
   }

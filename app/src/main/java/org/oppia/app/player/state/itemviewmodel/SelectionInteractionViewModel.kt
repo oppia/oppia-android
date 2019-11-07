@@ -29,7 +29,7 @@ class SelectionInteractionViewModel(
   private val selectedItems = computeSelectedItems(
     existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
   )
-  private val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
     choiceStrings, selectedItems, isReadOnly, this
   )
 
