@@ -42,7 +42,8 @@
       %d Stories
     </item>
   </plurals>
-  <string name="profile_admin">Administrator</string>
-  <string name="profile_select_text">Select your profile</string>
-  <string name="add_profile_text">Add Profile</string>
+  <!-- ProfileChooserFragment. -->
+  <string name="profile_chooser_admin">Administrator</string>
+  <string name="profile_chooser_select">Select your profile</string>
+  <string name="profile_chooser_add">Add Profile</string>
 </resources>

@@ -12,7 +12,7 @@ import javax.inject.Inject
 @ActivityScope
 class
 ProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity, private val profileManagementController: ProfileManagementController
+  private val activity: AppCompatActivity
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_activity)

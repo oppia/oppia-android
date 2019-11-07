@@ -20,7 +20,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/white"
-      android:text="@string/add_profile_text"
+      android:text="@string/profile_chooser_add"
       android:textSize="16sp"/>
   </LinearLayout>
 </layout>

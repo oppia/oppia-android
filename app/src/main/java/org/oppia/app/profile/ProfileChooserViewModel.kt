@@ -9,6 +9,7 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import java.util.*
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileChooserFragment]. */
@@ -30,8 +31,8 @@ class ProfileChooserViewModel @Inject constructor(
       ProfileChooserModel.newBuilder().setProfile(it).build()
     }.toMutableList()
 
-    val sortedProfileList = profileList.sortedByDescending {
-      it.profile.lastLoggedInTimestampMs
+    val sortedProfileList = profileList.sortedBy {
+      it.profile.name.toLowerCase(Locale.getDefault())
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.profile.isAdmin }
