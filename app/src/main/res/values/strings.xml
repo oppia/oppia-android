@@ -46,12 +46,12 @@
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
-  <!-- AdminAuthFragment. -->
+  <!-- AdminAuthActivity. -->
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Administrator\'s PIN required to create a new account.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Inputted PIN is incorrect. Please try Again.</string>
-  <!-- AddProfileFragment. -->
+  <!-- AddProfileActivity. -->
   <string name="add_profile_input_name">Name (required)</string>
   <string name="add_profile_input_pin">3-Digit PIN</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
