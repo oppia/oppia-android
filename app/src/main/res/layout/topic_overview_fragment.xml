@@ -36,7 +36,7 @@
         <ImageView
           android:id="@+id/topic_thumbnail_image_view"
           android:layout_width="match_parent"
-          android:layout_height="201dp"
+          android:layout_height="200dp"
           android:background="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
           android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />
 
