@@ -19,15 +19,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.app.model.TestModel
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.testing.BINDABLE_TEST_FRAGMENT_TAG
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
-import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
-import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)

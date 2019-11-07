@@ -17,7 +17,7 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
 
   private var currentExpandedChapterListIndex: Int? = null
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

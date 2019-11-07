@@ -57,7 +57,6 @@ class TopicPlayFragmentPresenter @Inject constructor(
       "Expected topic ID to be included in arguments for TopicPlayFragment."
     }
     if (!storyId.isEmpty())
-
       this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -76,6 +75,12 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
+      it.storyList!!.forEach { storySummary ->
+        if (storySummary.storyId.equals(storyId)) {
+          val index = it.storyList.indexOf(storySummary)
+          currentExpandedChapterListIndex=index
+        }
+      }
       val storySummaryAdapter =
         StorySummaryAdapter(
           it.storyList,
@@ -87,6 +92,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
+      if (!storyId.isEmpty())
+      binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
 
     })
   }

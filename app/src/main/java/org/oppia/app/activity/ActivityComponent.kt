@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -16,6 +16,7 @@ import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
@@ -49,5 +50,6 @@ interface ActivityComponent {
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
+  fun inject(topicTestActivity: TopicTestActivity)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
 }

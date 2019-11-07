@@ -1,12 +1,11 @@
 package org.oppia.app.utility
 
 import android.view.View
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
 import androidx.test.espresso.PerformException
 import com.google.android.material.tabs.TabLayout
+import org.hamcrest.Description
 import org.hamcrest.Matcher
-import java.lang.IllegalStateException
+import org.hamcrest.TypeSafeMatcher
 
 /**
  * A custom matcher to test whether the current tab title is correctly selected in a [TabLayout].

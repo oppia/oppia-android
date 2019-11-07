@@ -14,7 +14,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToConceptCardListener
-import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -36,7 +35,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicTrainFragment."
+      "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     reviewSkillSelectionAdapter = ReviewSkillSelectionAdapter(this)

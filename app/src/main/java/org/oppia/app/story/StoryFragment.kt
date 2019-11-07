@@ -26,7 +26,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
   @Inject
   lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
