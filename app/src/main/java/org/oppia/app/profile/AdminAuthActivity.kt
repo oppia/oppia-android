@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-const val KEY_ADMIN_AUTH_ADMIN_PIN = "ADMIN_PIN"
+const val KEY_ADMIN_AUTH_ADMIN_PIN = "ADMIN_AUTH_ADMIN_PIN"
 
 /** Fragment that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAppCompatActivity() {
