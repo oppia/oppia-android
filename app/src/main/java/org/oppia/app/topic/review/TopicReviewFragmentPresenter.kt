@@ -14,7 +14,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToConceptCardListener
-import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult

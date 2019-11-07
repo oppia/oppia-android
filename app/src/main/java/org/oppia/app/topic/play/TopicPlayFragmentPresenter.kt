@@ -15,7 +15,6 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
