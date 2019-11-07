@@ -8,6 +8,5 @@ import dagger.Module
 abstract class GlideImageLoaderModule {
 
   @Binds
-  @ImageLoaderAnnotation
   abstract fun provideGlideImageLoader(impl: GlideImageLoader): ImageLoader
 }
