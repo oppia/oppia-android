@@ -3,6 +3,8 @@ package org.oppia.domain.exploration
 import org.json.JSONObject
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import java.io.IOException
@@ -19,7 +21,8 @@ const val TEST_EXPLORATION_ID_7 = "test_exp_id_7"
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever) {
+  private val stateRetriever: StateRetriever
+) {
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
   internal suspend fun loadExploration(explorationId: String): Exploration {
@@ -28,6 +31,8 @@ class ExplorationRetriever @Inject constructor(
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
+      FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
+      FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }

@@ -30,6 +30,9 @@ import org.oppia.util.data.DataProviders
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
 const val TEST_SKILL_ID_2 = "test_skill_id_2"
+const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
+const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
+const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
 const val TEST_QUESTION_ID_0 = "question_id_0"
@@ -38,6 +41,17 @@ const val TEST_QUESTION_ID_2 = "question_id_2"
 const val TEST_QUESTION_ID_3 = "question_id_3"
 const val TEST_QUESTION_ID_4 = "question_id_4"
 const val TEST_QUESTION_ID_5 = "question_id_5"
+const val FRACTIONS_QUESTION_ID_0 = "dobbibJorU9T"
+const val FRACTIONS_QUESTION_ID_1 = "EwbUb5oITtUX"
+const val FRACTIONS_QUESTION_ID_2 = "ryIPWUmts8rN"
+const val FRACTIONS_QUESTION_ID_3 = "7LcsKDzzfImQ"
+const val FRACTIONS_QUESTION_ID_4 = "gDQxuodXI3Uo"
+const val FRACTIONS_QUESTION_ID_5 = "Ep2t5mulNUsi"
+const val FRACTIONS_QUESTION_ID_6 = "wTfCaDBKMixD"
+const val FRACTIONS_QUESTION_ID_7 = "leeSNRVbbBwp"
+const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
+const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
+const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
@@ -69,6 +83,11 @@ class TopicController @Inject constructor(
         TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
         TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
         TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
+        FRACTIONS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "fractions_stories.json", /* index= */ 0
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
@@ -81,6 +100,21 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_0 -> AsyncResult.success(createTestConceptCardForSkill0())
         TEST_SKILL_ID_1 -> AsyncResult.success(createTestConceptCardForSkill1())
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
+        FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 0
+          )
+        )
+        FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 1
+          )
+        )
+        FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "fractions_skills.json", /* index= */ 2
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
@@ -102,6 +136,9 @@ class TopicController @Inject constructor(
     val questionsJSON = jsonAssetRetriever.loadJsonFromAsset(
       "sample_questions.json"
     )?.getJSONArray("questions")
+    val fractionQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
+      "fractions_questions.json"
+    )?.getJSONArray("questions")!!
     for (skillId in skillIdsList) {
       when (skillId) {
         TEST_SKILL_ID_0 -> questionsList.addAll(
@@ -124,12 +161,48 @@ class TopicController @Inject constructor(
             createTestQuestion5(questionsJSON)
           )
         )
+        FRACTIONS_SKILL_ID_0 -> questionsList.addAll(
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(1)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(2)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(3)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(4))
+          )
+        )
+        FRACTIONS_SKILL_ID_1 -> questionsList.addAll(
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+          )
+        )
+        FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
+          mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+          )
+        )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
         }
       }
     }
     return questionsList
+  }
+
+  private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {
+    return Question.newBuilder()
+      .setQuestionId(questionJson.getString("id"))
+      .setQuestionState(
+        stateRetriever.createStateFromJson(
+          "question", questionJson.getJSONObject("question_state_data")
+        )
+      )
+      .addAllLinkedSkillIds(jsonAssetRetriever.getStringsFromJSONArray(questionJson.getJSONArray("linked_skill_ids")))
+      .build()
   }
 
   private fun createTestQuestion0(questionsJson: JSONArray?): Question {
@@ -283,11 +356,24 @@ class TopicController @Inject constructor(
     return storyList
   }
 
+  /** Utility to create a story of a topic given its json representation and the index of the story in json. */
+  private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    if (storyData.length() < index) {
+      return StorySummary.getDefaultInstance()
+    }
+    return createStoryFromJson(storyData.getJSONObject(index).getJSONObject("story"))
+  }
+
   private fun createStoryFromJson(storyData: JSONObject): StorySummary {
     return StorySummary.newBuilder()
       .setStoryId(storyData.getString("id"))
       .setStoryName(storyData.getString("title"))
-      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
+      .addAllChapter(
+        createChaptersFromJson(
+          storyData.getJSONObject("story_contents").getJSONArray("nodes")
+        )
+      )
       .build()
   }
 
@@ -337,6 +423,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_0)
       .setName("First Exploration")
+      .setSummary("This is the first Exploration summary.")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createTestTopic0Story0Chapter0Thumbnail())
       .build()
@@ -363,6 +450,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
+      .setSummary("This is the second exploration summary")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()
@@ -372,6 +460,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_2)
       .setName("Third Exploration")
+      .setSummary("This is the third exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()
@@ -381,6 +470,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_3)
       .setName("Fourth Exploration")
+      .setSummary("This is the fourth exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()
@@ -437,6 +527,38 @@ class TopicController @Inject constructor(
       .setSkillId(TEST_SKILL_ID_2)
       .setDescription("A different skill in a different topic")
       .build()
+  }
+
+  private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
+    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    if (skillList.length() < index) {
+      return ConceptCard.getDefaultInstance()
+    }
+    val skillData = skillList.getJSONObject(index).getJSONObject("skill")
+    val skillContents = skillData.getJSONObject("skill_contents")
+    return ConceptCard.newBuilder()
+      .setSkillId(skillData.getString("id"))
+      .setSkillDescription(skillData.getString("description"))
+      .setExplanation(
+        SubtitledHtml.newBuilder()
+          .setHtml(skillContents.getJSONObject("explanation").getString("html"))
+          .setContentId(skillContents.getJSONObject("explanation").getString("content_id")).build()
+      )
+      .addAllWorkedExample(createWorkedExamplesFromJson(skillContents.getJSONArray("worked_examples")))
+      .build()
+  }
+
+  private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
+    val workedExampleList = mutableListOf<SubtitledHtml>()
+    for (i in 0 until workedExampleData.length()) {
+      workedExampleList.add(
+        SubtitledHtml.newBuilder()
+          .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
+          .setHtml(workedExampleData.getJSONObject(i).getString("html"))
+          .build()
+      )
+    }
+    return workedExampleList
   }
 
   private fun createTestConceptCardForSkill0(): ConceptCard {

@@ -1,4 +1,4 @@
-package org.oppia.app.home
+package org.oppia.app.home.continueplaying
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R

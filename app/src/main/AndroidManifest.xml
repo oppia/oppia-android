@@ -11,7 +11,8 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity android:name=".home.ContinuePlayingActivity" />
+    <activity android:name=".home.continueplaying.ContinuePlayingActivity" />
+    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
     <activity android:name=".home.HomeActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
@@ -32,11 +33,14 @@
       </intent-filter>
     </activity>
     <activity android:name=".story.StoryActivity" />
+    <activity android:name=".story.testing.StoryFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
-    <activity android:name=".topic.TopicActivity" />
+    <activity
+      android:name=".topic.TopicActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
   </application>

@@ -74,6 +74,9 @@ message ChapterSummary {
   // The chapter's name (which is the same as the exploration's title).
   string name = 2;
 
+  // Summary of this chapter.
+  string summary = 3;
+
   enum Playability {
     // The completion status is unknown.
     COMPLETION_STATUS_UNSPECIFIED = 0;
@@ -89,10 +92,10 @@ message ChapterSummary {
   }
 
   // Indicates the playable state of the current chapter, including whether it's already been completed.
-  ChapterPlayState chapter_play_state = 3;
+  ChapterPlayState chapter_play_state = 4;
 
   // The thumbnail corresponding to this chapter.
-  LessonThumbnail chapter_thumbnail = 4;
+  LessonThumbnail chapter_thumbnail = 5;
 }
 
 // A summary of a skill that can be trained or reviewed by the player.

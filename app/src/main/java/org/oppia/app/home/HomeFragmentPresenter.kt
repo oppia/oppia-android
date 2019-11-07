@@ -18,36 +18,33 @@ import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_30
+private const val TAG_HOME_FRAGMENT = "HomeFragment"
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<UserAppHistoryViewModel>,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
-
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
 
   private lateinit var topicListAdapter: TopicListAdapter
-
   private lateinit var binding: HomeFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -79,10 +76,8 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     userAppHistoryController.markUserOpenedApp()
-
     subscribeToUserAppHistory()
     subscribeToTopicList()
-
     return binding.root
   }
 
@@ -92,18 +87,19 @@ class HomeFragmentPresenter @Inject constructor(
       EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("HomeFragment", "Loading exploration")
-        result.isFailure() -> logger.e("HomeFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d(TAG_HOME_FRAGMENT, "Loading exploration")
+        result.isFailure() -> logger.e(TAG_HOME_FRAGMENT, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d("HomeFragment", "Successfully loaded exploration")
+          logger.d(TAG_HOME_FRAGMENT, "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(EXPLORATION_ID)
         }
       }
     })
   }
 
-  private fun getUserAppHistoryViewModel(): UserAppHistoryViewModel {
-    return viewModelProvider.getForFragment(fragment, UserAppHistoryViewModel::class.java)
+  fun handleTopicButtonClicked(v: View) {
+    logger.d(TAG_HOME_FRAGMENT, "Successfully loaded topic")
+    routeToTopicListener.routeToTopic(TEST_TOPIC_ID_0)
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -131,8 +127,9 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToUserAppHistory() {
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
-      getUserAppHistoryViewModel().setAlreadyAppOpened(result.alreadyOpenedApp)
-      itemList.add(0, getUserAppHistoryViewModel())
+      val userAppHistoryViewModel = UserAppHistoryViewModel()
+      userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
+      itemList.add(0, userAppHistoryViewModel)
       topicListAdapter.notifyDataSetChanged()
     })
   }
