@@ -6,8 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
@@ -26,6 +24,8 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -41,6 +41,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -52,12 +58,6 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
-import org.oppia.app.R
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.topic.TopicActivity
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -214,36 +214,12 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex2_topicSummary_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("First Topic"))
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex2_topicSummary_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.home_recycler_view, 2, R.id.lesson_count_text_view)).check(
-        matches(
-          withText(containsString("2 Lessons"))
-        )
-      )
-    }
-  }
-
-  @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Second Topic"))
+          withText(containsString("First Topic"))
         )
       )
     }
@@ -255,18 +231,29 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
-          withText(containsString("1 Lesson"))
+          withText(containsString("2 Lessons"))
         )
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_topicSummary_configurationChange_lessonCountIsCorrect() {
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("Second Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -275,10 +262,23 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_clickTopicSummary_opensTopicActivity() {
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPosition(R.id.home_recycler_view, 2)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
+        matches(
+          withText(containsString("1 Lesson"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
     }

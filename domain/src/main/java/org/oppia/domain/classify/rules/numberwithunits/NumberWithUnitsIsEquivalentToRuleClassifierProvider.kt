@@ -3,8 +3,8 @@ package org.oppia.domain.classify.rules.numberwithunits
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.classify.rules.GenericRuleClassifier
+import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.util.approximatelyEquals
 import org.oppia.domain.util.toFloat
 import javax.inject.Inject
@@ -35,10 +35,10 @@ internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject const
     return extractRealValue(input).approximatelyEquals(extractRealValue(answer))
   }
 
-  private fun extractRealValue(number: NumberWithUnits): Float {
+  private fun extractRealValue(number: NumberWithUnits): Double {
     return when (number.numberTypeCase) {
       NumberWithUnits.NumberTypeCase.REAL -> number.real
-      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat()
+      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat().toDouble()
       else -> throw IllegalArgumentException("Invalid number type: ${number.numberTypeCase.name}")
     }
   }

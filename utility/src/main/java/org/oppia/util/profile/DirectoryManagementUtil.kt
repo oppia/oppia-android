@@ -1,9 +1,9 @@
 package org.oppia.util.profile
 
 import android.content.Context
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import java.io.File
 
 /** Utility to manage creation and deletion of directories. */
 @Singleton
