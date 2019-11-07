@@ -376,7 +376,7 @@ class ProfileManagementController @Inject constructor(
   private fun isUniqueName(newName: String, profileDatabase: ProfileDatabase): Boolean {
     val lowerCaseNewName = newName.toLowerCase()
     profileDatabase.profilesMap.values.forEach {
-      if (it.name.toLowerCase() == lowerCaseNewName) {
+      if (it.name.toLowerCase(Locale.getDefault()) == lowerCaseNewName) {
         return false
       }
     }
@@ -389,7 +389,7 @@ class ProfileManagementController @Inject constructor(
     var fos: FileOutputStream? = null
     try {
       fos = FileOutputStream(imageFile)
-      rotateAndCompressBitmap(avatarImagePath, bitmap, 200)
+      rotateAndCompressBitmap(avatarImagePath, bitmap, 300)
         .compress(Bitmap.CompressFormat.PNG, /** quality= */ 100, fos)
     } catch (e: Exception) {
       logger.e("ProfileManagementController", "Failed to store user submitted avatar image", e)
