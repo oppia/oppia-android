@@ -27,7 +27,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
     val binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
-    val adminPin = activity.intent.getStringExtra(KEY_ADMIN_PIN)
+    val adminPin = activity.intent.getStringExtra(KEY_ADMIN_AUTH_ADMIN_PIN)
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel
@@ -51,7 +51,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         activity.startActivity(Intent(activity, AddProfileActivity::class.java))
       } else {
-        authViewModel.errorMessage.set(activity.resources.getString(R.string.incorrect_admin_pin))
+        authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
     }
   }

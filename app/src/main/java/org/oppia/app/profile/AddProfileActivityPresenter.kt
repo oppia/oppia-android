@@ -71,15 +71,15 @@ class AddProfileActivityPresenter @Inject constructor(
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
       if (name.isEmpty()) {
-        addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.name_empty))
+        addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
         failed = true
       }
       if (pin.isNotEmpty() && pin.length < 3) {
-        addViewModel.pinErrorMsg.set(activity.resources.getString(R.string.pin_too_short))
+        addViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
         failed = true
       }
       if (pin != confirmPin) {
-        addViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.confirm_pin_wrong))
+        addViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
         failed = true
       }
       if (failed)  {
@@ -93,8 +93,8 @@ class AddProfileActivityPresenter @Inject constructor(
           activity.startActivity(intent)
         } else if (it.isFailure()) {
           when (it.getErrorOrNull()) {
-            is ProfileManagementController.ProfileNameNotUniqueException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.name_not_unique))
-            is ProfileManagementController.ProfileNameOnlyLettersException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.name_only_letters))
+            is ProfileManagementController.ProfileNameNotUniqueException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_not_unique))
+            is ProfileManagementController.ProfileNameOnlyLettersException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_only_letters))
             else -> {
               //TODO FailedToStoreImageException
             }

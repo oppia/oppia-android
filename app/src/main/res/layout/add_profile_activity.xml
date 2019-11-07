@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/upload_image_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:label="@string/input_name"
+        app:label="@string/add_profile_input_name"
         profile:error="@{viewModel.nameErrorMsg}"/>
       <org.oppia.app.profile.ProfileInputView
         android:id="@+id/input_pin"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/input_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:label="@string/input_pin"
+        app:label="@string/add_profile_input_pin"
         app:isPasswordInput="true"
         app:inputLength="3"
         profile:error="@{viewModel.pinErrorMsg}"/>
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/input_pin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:label="@string/pin_input_confirm"
+        app:label="@string/add_profile_input_confirm_pin"
         app:isPasswordInput="true"
         app:inputLength="3"
         profile:error="@{viewModel.confirmPinErrorMsg}"/>
@@ -77,14 +77,14 @@
             android:id="@+id/allow_download_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/allow_download_heading"
+            android:text="@string/add_profile_allow_download_heading"
             android:textColor="@{viewModel.validPin ? @color/black : @color/grey}"
             android:textStyle="bold"/>
           <TextView
             android:id="@+id/allow_download_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/allow_download_sub_no_pin"/>
+            android:text="@string/add_profile_allow_download_sub"/>
         </LinearLayout>
         <Switch
           android:id="@+id/allow_download_switch"
@@ -98,7 +98,7 @@
         android:id="@+id/create_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profile_create"
+        android:text="@string/add_profile_create_btn"
         style="@style/StateButtonActive"
         app:layout_constraintTop_toBottomOf="@id/allow_download_container"
         app:layout_constraintEnd_toEndOf="parent"

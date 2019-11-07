@@ -12,7 +12,8 @@ import javax.inject.Inject
 @ActivityScope
 class
 ProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity, private val profileManagementController: ProfileManagementController
+  private val activity: AppCompatActivity,
+  private val profileManagementController: ProfileManagementController
 ) {
   fun handleOnCreate() {
     profileManagementController.addProfile("James", "12345", null, true, true)
