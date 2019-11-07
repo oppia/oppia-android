@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
     <layer-list>
-      <item >
+      <item>
         <shape>
           <corners android:radius="4dp" />
           <solid android:color="@color/grey_shade_20" />
@@ -10,7 +10,7 @@
       </item>
       <item android:bottom="2dp">
         <shape>
-          <solid android:color="@color/grey_shade_20" />
+          <solid android:color="@color/grey_shade_40" />
           <corners android:radius="4dp" />
         </shape>
       </item>
