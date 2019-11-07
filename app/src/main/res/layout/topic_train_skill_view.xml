@@ -16,7 +16,7 @@
     app:barrierDirection="right"
     app:constraint_referenced_ids="button_example,text_view_status">
     <androidx.constraintlayout.widget.Barrier
-      android:id="@+id/barrier7"
+      android:id="@+id/barrier"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:barrierDirection="bottom"
@@ -35,7 +35,7 @@
       android:textSize="16sp"
       android:paddingStart="20dp"
       android:paddingEnd="20dp"
-      android:paddingBottom="16dp"
+      android:paddingBottom="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
