@@ -3,6 +3,7 @@ package org.oppia.app.home.topiclist
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.databinding.AllTopicsBinding
 import org.oppia.app.databinding.PromotedStoryCardBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
@@ -11,7 +12,8 @@ import org.oppia.app.home.UserAppHistoryViewModel
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY = 2
-private const val VIEW_TYPE_TOPIC_LIST = 3
+private const val VIEW_TYPE_ALL_TOPICS = 3
+private const val VIEW_TYPE_TOPIC_LIST = 4
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
@@ -42,6 +44,16 @@ class TopicListAdapter(
           )
         PromotedStoryViewHolder(binding)
       }
+      VIEW_TYPE_ALL_TOPICS -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          AllTopicsBinding.inflate(
+            inflater,
+            parent,
+            /* attachToParent= */ false
+          )
+        AllTopicsViewHolder(binding)
+      }
       VIEW_TYPE_TOPIC_LIST -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
@@ -64,6 +76,9 @@ class TopicListAdapter(
       VIEW_TYPE_PROMOTED_STORY -> {
         (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
+      VIEW_TYPE_ALL_TOPICS -> {
+        (holder as AllTopicsViewHolder).bind()
+      }
       VIEW_TYPE_TOPIC_LIST -> {
         (holder as TopicListViewHolder).bind(itemList[position] as TopicSummaryViewModel)
       }
@@ -77,6 +92,9 @@ class TopicListAdapter(
       }
       is PromotedStoryViewModel -> {
         VIEW_TYPE_PROMOTED_STORY
+      }
+      is AllTopicsViewModel -> {
+        VIEW_TYPE_ALL_TOPICS
       }
       is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
@@ -102,6 +120,13 @@ class TopicListAdapter(
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
+    }
+  }
+
+  private class AllTopicsViewHolder(
+    val binding: AllTopicsBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind() {
     }
   }
 

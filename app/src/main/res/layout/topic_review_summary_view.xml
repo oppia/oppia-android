@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
+
     <variable
       name="skill"
-      type="org.oppia.app.model.SkillSummary"/>
+      type="org.oppia.app.model.SkillSummary" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="180dp"
@@ -14,6 +16,7 @@
     android:background="@drawable/topic_review_item_border"
     android:clickable="true"
     android:focusable="true">
+
     <ImageView
       android:id="@+id/skill_image_view"
       android:src="@{skill.thumbnailUrl}"
@@ -23,7 +26,8 @@
       android:scaleType="centerCrop"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
+
     <View
       android:id="@+id/separator_view"
       android:layout_width="match_parent"
@@ -31,7 +35,8 @@
       android:background="@color/oppiaBrown"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/skill_image_view"/>
+      app:layout_constraintTop_toBottomOf="@id/skill_image_view" />
+
     <TextView
       android:id="@+id/skill_name"
       android:layout_width="match_parent"
@@ -43,6 +48,6 @@
       android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/separator_view"/>
+      app:layout_constraintTop_toBottomOf="@id/separator_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

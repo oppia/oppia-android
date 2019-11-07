@@ -24,9 +24,8 @@ class UrlImageParser private constructor(
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
-  private val imageLoader:ImageLoader
+  private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
-
   /**
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
@@ -45,15 +44,16 @@ class UrlImageParser private constructor(
 
   private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
     override fun onLoadCleared(placeholder: Drawable?) {
-      TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+      // No resources to clear.
     }
+
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
       val  drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
-        val drawableHeight = (drawable as BitmapDrawable).intrinsicHeight
-        val drawableWidth = (drawable as BitmapDrawable).intrinsicWidth
+        val drawableHeight = drawable.intrinsicHeight
+        val drawableWidth = drawable.intrinsicWidth
         val rect = Rect(0, 0, drawableWidth, drawableHeight)
-        (drawable as BitmapDrawable).bounds = rect
+        drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
         htmlContentTextView.text = htmlContentTextView.text

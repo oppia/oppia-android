@@ -27,8 +27,8 @@ import javax.inject.Singleton
 @Component(modules = [
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
-  GcsResourceModule::class, ImageParsingModule::class, GlideImageLoaderModule::class,
+  NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+  InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
   HtmlParserEntityTypeModule::class
 ])
 interface ApplicationComponent {
