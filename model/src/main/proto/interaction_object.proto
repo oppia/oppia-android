@@ -29,7 +29,7 @@ message StringList {
 // Structure for a number with units object.
 message NumberWithUnits {
   oneof number_type {
-    float real = 1;
+    double real = 1;
     Fraction fraction = 2;
   }
   repeated NumberUnit unit = 3;

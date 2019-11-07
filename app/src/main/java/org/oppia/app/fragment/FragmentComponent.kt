@@ -3,11 +3,12 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
-import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.home.HomeFragment
+import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AddProfileFragment
 import org.oppia.app.profile.AdminAuthFragment
 import org.oppia.app.profile.ProfileChooserFragment
@@ -20,9 +21,11 @@ import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
+import org.oppia.app.view.ViewComponent
+import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent
+@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder
@@ -32,6 +35,8 @@ interface FragmentComponent {
 
     fun build(): FragmentComponent
   }
+
+  fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
   fun inject(addProfileFragment: AddProfileFragment)
   fun inject(adminAuthFragment: AdminAuthFragment)

@@ -4,7 +4,6 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
-      type="org.oppia.app.home.topiclist.TopicSummaryViewModel"/>
+      type="org.oppia.app.home.topiclist.TopicSummaryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,6 +17,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{viewModel::clickOnSummaryTile}">
+
     <ImageView
       android:layout_width="0dp"
       android:layout_height="0dp"
@@ -30,6 +31,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintBottom_toTopOf="@+id/bottom_topic_bar" />
+
     <FrameLayout
       android:id="@+id/bottom_topic_bar"
       android:layout_width="match_parent"
@@ -37,6 +39,7 @@
       android:background="@{viewModel.darkerBackgroundOverlayColor}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent" />
+
     <TextView
       android:id="@+id/topic_name_text_view"
       android:layout_width="wrap_content"
@@ -47,7 +50,8 @@
       android:textSize="14sp"
       android:layout_margin="8dp"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar"/>
+      app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar" />
+
     <TextView
       android:id="@+id/lesson_count_text_view"
       android:layout_width="wrap_content"
@@ -59,6 +63,6 @@
       android:textSize="14sp"
       android:layout_margin="8dp"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar"/>
+      app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

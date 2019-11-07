@@ -13,7 +13,7 @@ import org.oppia.app.topic.train.TopicTrainFragment
 class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: String) :
   FragmentStatePagerAdapter(fragmentManager) {
 
-  override fun getItem(position: Int): Fragment? {
+  override fun getItem(position: Int): Fragment {
     val args = Bundle()
     args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
     when (TopicTab.getTabForPosition(position)) {

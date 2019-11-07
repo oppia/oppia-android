@@ -20,14 +20,14 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID = TEST_EXPLORATION_ID_30
 private const val TAG_HOME_FRAGMENT = "HomeFragment"
 
 /** The presenter for [HomeFragment]. */
@@ -82,6 +82,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun playExplorationButton(v: View) {
+    explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       EXPLORATION_ID
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->

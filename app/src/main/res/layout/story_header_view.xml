@@ -3,7 +3,10 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-    <variable name="viewModel" type="org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel" />
   </data>
 
   <TextView

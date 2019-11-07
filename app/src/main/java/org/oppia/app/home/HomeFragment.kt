@@ -14,7 +14,7 @@ import javax.inject.Inject
 class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
   @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

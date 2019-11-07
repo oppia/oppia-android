@@ -15,7 +15,7 @@ class TopicFragment : InjectableFragment() {
   lateinit var topicFragmentPresenter: TopicFragmentPresenter
   lateinit var topicId: String
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

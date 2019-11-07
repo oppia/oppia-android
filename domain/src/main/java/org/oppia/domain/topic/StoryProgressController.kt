@@ -3,14 +3,13 @@ package org.oppia.domain.topic
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.StorySummary
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_1 = "test_story_id_1"
