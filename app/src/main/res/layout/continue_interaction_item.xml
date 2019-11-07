@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
-    <import type="android.view.View"/>
+
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,19 +16,22 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
     android:padding="16dp">
+
     <FrameLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/continue_button_answer_background"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent">
+
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="@{viewModel.answerText}"
-        android:visibility="@{viewModel.isReadOnly ? View.VISIBLE : View.GONE}"/>
+        android:visibility="@{viewModel.isReadOnly ? View.VISIBLE : View.GONE}" />
     </FrameLayout>
+
     <Button
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
@@ -38,6 +44,6 @@
       android:textColor="@color/white"
       android:enabled="@{!viewModel.readOnly}"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
-      android:visibility="@{viewModel.isReadOnly ? View.GONE : View.VISIBLE}"/>
+      android:visibility="@{viewModel.isReadOnly ? View.GONE : View.VISIBLE}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

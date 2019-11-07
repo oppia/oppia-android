@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
+
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -19,6 +22,7 @@
       android:padding="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toTopOf="parent">
+
       <org.oppia.app.customview.interaction.FractionInputInteractionView
         android:id="@+id/fraction_input_interaction_view"
         android:layout_width="match_parent"
@@ -33,7 +37,7 @@
         android:padding="8dp"
         android:singleLine="true"
         android:enabled="@{!viewModel.isReadOnly}"
-        android:text="@={viewModel.answerText}"/>
+        android:text="@={viewModel.answerText}" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

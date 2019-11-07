@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
   <data>
-    <import type="android.view.View"/>
+
+    <import type="android.view.View" />
+
     <variable
       name="buttonViewModel"
-      type="org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel" />
   </data>
+
   <RelativeLayout
     android:id="@+id/button_container_relative_layout"
     android:layout_width="match_parent"
@@ -14,6 +17,7 @@
     android:layout_marginTop="16dp"
     android:gravity="center_vertical"
     android:padding="16dp">
+
     <ImageView
       android:id="@+id/previous_state_image_view"
       android:layout_width="wrap_content"
@@ -24,7 +28,8 @@
       android:padding="8dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       android:visibility="@{buttonViewModel.isPreviousButtonVisible()? View.VISIBLE: View.GONE, default=gone}"
-      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onPreviousButtonClicked()}"/>
+      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onPreviousButtonClicked()}" />
+
     <ImageView
       android:id="@+id/next_state_image_view"
       android:layout_width="wrap_content"
@@ -35,7 +40,8 @@
       android:padding="8dp"
       android:src="@drawable/ic_arrow_forward_oppia_dark_blue_24dp"
       android:visibility="@{buttonViewModel.isNextButtonVisible()? View.VISIBLE: View.GONE, default=gone}"
-      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onNextButtonClicked()}"/>
+      android:onClick="@{(v) -> buttonViewModel.stateNavigationButtonListener.onNextButtonClicked()}" />
+
     <Button
       android:id="@+id/interaction_button"
       style="@style/StateButtonActive"
@@ -46,6 +52,6 @@
       android:text="@{buttonViewModel.interactionButtonName}"
       android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
       android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE, default=gone}"
-      android:onClick="@{(v) -> buttonViewModel.triggerContinuationNavigationButtonCallback()}"/>
+      android:onClick="@{(v) -> buttonViewModel.triggerContinuationNavigationButtonCallback()}" />
   </RelativeLayout>
 </layout>

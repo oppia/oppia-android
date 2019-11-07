@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
   <data>
+
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel"/>
+      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
   </data>
+
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,6 +15,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:padding="8dp">
+
     <org.oppia.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
       android:layout_width="match_parent"
@@ -26,6 +30,6 @@
       android:padding="8dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
-      android:enabled="@{!viewModel.isReadOnly}"/>
+      android:enabled="@{!viewModel.isReadOnly}" />
   </FrameLayout>
 </layout>
