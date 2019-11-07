@@ -29,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
+        android:digits="0123456789/- "
+        android:enabled="@{!viewModel.isReadOnly}"
         android:focusable="true"
         android:hint="@string/fractions_hint_text"
         android:inputType="text"
@@ -36,7 +38,6 @@
         android:maxLength="200"
         android:padding="8dp"
         android:singleLine="true"
-        android:enabled="@{!viewModel.isReadOnly}"
         android:text="@={viewModel.answerText}" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
