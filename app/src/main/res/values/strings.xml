@@ -42,30 +42,33 @@
       %d Stories
     </item>
   </plurals>
-
-  <string name="profile_admin">Administrator</string>
-  <string name="profile_select_text">Select your profile</string>
-  <string name="add_profile_text">Add Profile</string>
-  <string name="admin_auth_heading_text">Administrator Authorization Required</string>
-  <string name="admin_auth_sub_text">Administrator\'s PIN required to create a new account.</string>
-  <string name="admin_auth_pin_text">Administrator\'s PIN</string>
-  <string name="incorrect_admin_pin">Inputted PIN is incorrect. Please try Again.</string>
-  <string name="input_name">Name (required)</string>
-  <string name="input_pin">3-Digit PIN</string>
-  <string name="pin_input_confirm">Confirm 3-Digit PIN</string>
-  <string name="allow_download_heading">Allow Download Access</string>
-  <string name="allow_download_sub_no_pin">User is able to download and delete content without Administrator password. Only available with PIN.</string>
-  <string name="allow_download_sub_pin">User is able to download and delete content without Administrator password.</string>
-  <string name="profile_create">CREATE</string>
-  <string name="pin_too_short">PIN needs to be 3 digits.</string>
-  <string name="confirm_pin_wrong">Confirm PIN does not match PIN.</string>
-  <string name="name_not_unique">Somebody already has that name. Try another?</string>
-  <string name="failed_image_store">We failed to store your avatar image. Please try again.</string>
-  <string name="name_empty">Name must not be empty. Please enter a name and try again.</string>
-  <string name="name_only_letters">Name must only contain letters. Please enter a different name and try again.</string>
-  <string name="forgot_pin">I FORGOT MY PIN</string>
-  <string name="incorrect_pin">Incorrect PIN.</string>
+  <!-- ProfileChooserFragment. -->
+  <string name="profile_chooser_admin">Administrator</string>
+  <string name="profile_chooser_select">Select your profile</string>
+  <string name="profile_chooser_add">Add Profile</string>
+  <!-- AdminAuthActivity. -->
+  <string name="admin_auth_heading">Administrator Authorization Required</string>
+  <string name="admin_auth_sub">Administrator\'s PIN required to create a new account.</string>
+  <string name="admin_auth_pin">Administrator\'s PIN</string>
+  <string name="admin_auth_incorrect">Inputted PIN is incorrect. Please try Again.</string>
+  <!-- AddProfileActivity. -->
+  <string name="add_profile_input_name">Name (required)</string>
+  <string name="add_profile_input_pin">3-Digit PIN</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
+  <string name="add_profile_allow_download_heading">Allow Download Access</string>
+  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
+  <string name="add_profile_create_btn">CREATE</string>
+  <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
+  <string name="add_profile_error_name_not_unique">Somebody already has that name. Try another?</string>
+  <string name="add_profile_error_name_empty">Name must not be empty. Please enter a name and try again.</string>
+  <string name="add_profile_error_name_only_letters">Name must only contain letters. Please enter a different name and try again.</string>
+  <string name="add_profile_error_pin_length">PIN needs to be 3 digits.</string>
+  <string name="add_profile_error_pin_confirm_wrong">Confirm PIN does not match PIN.</string>
+  <!-- PinPasswordActivity. -->
+  <string name="pin_password_forgot_pin">I FORGOT MY PIN</string>
+  <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
   <string name="pin_password_show">SHOW</string>
+  <!-- AdminSettingsDialogFragment. -->
   <string name="admin_settings_heading">Access to Administrator Settings</string>
   <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_cancel">CANCEL</string>

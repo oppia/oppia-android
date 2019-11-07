@@ -20,7 +20,7 @@
       android:layout_width="80dp"
       android:layout_height="80dp"
       profile:src="@{viewModel.profile.avatarImageUri}"
-      android:layout_marginBottom="5dp"
+      android:layout_marginBottom="10dp"
       app:civ_border_width="1dp"
       app:civ_border_color="@color/avatarBorder"/>
     <TextView
@@ -31,20 +31,13 @@
       android:text="@{viewModel.profile.name}"
       android:textSize="16sp"/>
     <TextView
-      android:id="@+id/profile_last_logged_in_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/white"
-      android:textSize="10sp"
-      android:profileDate="@{viewModel.profile.lastLoggedInTimestampMs}"
-      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs == 0 ? View.GONE : View.VISIBLE}"/>
-    <TextView
       android:id="@+id/profile_is_admin_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/white"
-      android:text="@string/profile_admin"
+      android:text="@string/profile_chooser_admin"
       android:textSize="10sp"
+      android:textStyle="italic"
       android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}"/>
   </LinearLayout>
   </layout>
