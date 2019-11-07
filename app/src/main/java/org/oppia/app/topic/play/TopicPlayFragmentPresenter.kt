@@ -15,6 +15,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
@@ -39,6 +40,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private lateinit var binding: TopicPlayFragmentBinding
   private lateinit var topicId: String
+  private lateinit var storyId: String
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -51,7 +53,12 @@ class TopicPlayFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPlayFragment."
     }
-    this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
+    storyId = checkNotNull(fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: "") {
+      "Expected topic ID to be included in arguments for TopicPlayFragment."
+    }
+    if (!storyId.isEmpty())
+
+      this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
@@ -80,6 +87,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
+
     })
   }
 

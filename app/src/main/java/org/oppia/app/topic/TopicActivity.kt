@@ -17,6 +17,7 @@ const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
+  private lateinit var topicFragment: TopicFragment
   private lateinit var topicId: String
   private lateinit var storyId: String
   @Inject
@@ -27,10 +28,11 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     activityComponent.inject(this)
     topicId = intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
     storyId = checkNotNull(
-      intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)?:"") {
+      intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY) ?: ""
+    ) {
       "Expected topic ID to be included in arguments for TopicFragment."
     }
-    topicActivityPresenter.handleOnCreate(topicId)
+    topicActivityPresenter.handleOnCreate(topicId,storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -42,7 +44,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    val topicFragment = supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment
+    topicFragment = supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment
     topicFragment.topicFragmentPresenter.setCurrentTab(TopicTab.PLAY)
   }
 
