@@ -44,7 +44,7 @@ interface ActivityComponent {
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
-  fun inject(htmlParserTestActivty: HtmlParserTestActivity)
+  fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(urlImageParserTestActivity: UrlImageParserTestActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)

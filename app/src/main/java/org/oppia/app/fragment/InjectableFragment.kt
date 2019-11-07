@@ -1,10 +1,7 @@
 package org.oppia.app.fragment
 
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.view.ViewComponent
@@ -24,10 +21,6 @@ abstract class InjectableFragment: Fragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent = (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
-  }
-
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return super.onCreateView(inflater, container, savedInstanceState)
   }
 
   fun createViewComponent(view: View): ViewComponent {
