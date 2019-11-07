@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
-    <import type="android.view.View"/>
+
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.train.TopicTrainViewModel"/>
+      type="org.oppia.app.topic.train.TopicTrainViewModel" />
+
     <variable
       name="presenter"
-      type="org.oppia.app.topic.train.TopicTrainFragmentPresenter"/>
+      type="org.oppia.app.topic.train.TopicTrainFragmentPresenter" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/oppiaBackground">
+
     <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -24,6 +29,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
+
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,6 +58,7 @@
           android:text="@string/topic_train_skills_description"
           android:textColor="@color/oppiaSecondaryText"
           android:textSize="16sp" />
+
         <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/skill_recycler_view"
           android:layout_width="match_parent"
@@ -59,7 +66,8 @@
           android:layout_marginTop="20dp"
           android:layout_marginStart="28dp"
           android:layout_marginEnd="28dp"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
         <Button
           android:layout_width="160dp"
           android:layout_height="36dp"
@@ -72,7 +80,7 @@
           android:clickable="@{viewModel.isSubmitButtonActive()}"
           android:onClick="@{viewModel::startButtonClicked}"
           android:text="@string/topic_train_start"
-          android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"/>
+          android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}" />
       </LinearLayout>
     </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>

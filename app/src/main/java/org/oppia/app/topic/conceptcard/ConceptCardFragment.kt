@@ -31,7 +31,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   @Inject lateinit var conceptCardPresenter: ConceptCardPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

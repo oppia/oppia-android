@@ -1,10 +1,10 @@
 package org.oppia.app.topic.play
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import androidx.databinding.DataBindingUtil
-import android.view.LayoutInflater
 import org.oppia.app.databinding.PlayChapterViewBinding
 import org.oppia.app.model.ChapterSummary
 

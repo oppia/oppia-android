@@ -1,8 +1,10 @@
 package org.oppia.app.fragment
 
 import android.content.Context
+import android.view.View
 import androidx.fragment.app.Fragment
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.view.ViewComponent
 
 /**
  * A fragment that facilitates field injection to children. This fragment can only be used with
@@ -16,8 +18,12 @@ abstract class InjectableFragment: Fragment() {
    */
   lateinit var fragmentComponent: FragmentComponent
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent = (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
+  }
+
+  fun createViewComponent(view: View): ViewComponent {
+    return fragmentComponent.getViewComponentBuilderProvider().get().setView(view).build()
   }
 }

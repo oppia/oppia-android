@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicReviewSummaryViewBinding
 import org.oppia.app.model.SkillSummary
-import org.oppia.app.R
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicReviewFragment]. */
