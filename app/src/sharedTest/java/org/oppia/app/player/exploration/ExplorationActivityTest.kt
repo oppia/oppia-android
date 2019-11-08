@@ -50,7 +50,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -59,7 +59,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(createExplorationActivityIntent(TEST_EXPLORATION_ID_30))
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog()).perform(click())
@@ -68,7 +68,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun textExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
     explorationActivityTestRule.launchActivity(createExplorationActivityIntent(TEST_EXPLORATION_ID_30))
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog()).perform(click())
