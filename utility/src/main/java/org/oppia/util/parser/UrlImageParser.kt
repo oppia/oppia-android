@@ -62,7 +62,7 @@ class UrlImageParser private constructor(
     }
   }
 
-   class UrlDrawable : BitmapDrawable() {
+  class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
