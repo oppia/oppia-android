@@ -66,8 +66,8 @@ class StoryViewModel @Inject constructor(
     )
 
     // Add the rest of the list
-    itemViewModelList.addAll(chapterList.map { chapter ->
-      StoryChapterSummaryViewModel(explorationSelectionListener, chapter) as StoryItemViewModel
+    itemViewModelList.addAll(chapterList.mapIndexed { index, chapter ->
+      StoryChapterSummaryViewModel(index, explorationSelectionListener, chapter) as StoryItemViewModel
     })
 
     return itemViewModelList

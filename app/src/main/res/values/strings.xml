@@ -35,6 +35,7 @@
   <string name="review">Review</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="chapter_name">Chapter %s: %s</string>
   <string name="fractions_hint_text">Write fraction here.</string>
   <string name="number_input_hint_text">Write numbers here.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
