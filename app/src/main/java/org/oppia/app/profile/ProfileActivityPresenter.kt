@@ -1,11 +1,8 @@
 package org.oppia.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.ProfileId
-import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [ProfileActivity]. */

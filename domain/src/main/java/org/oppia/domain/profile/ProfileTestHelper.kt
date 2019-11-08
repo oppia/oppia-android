@@ -7,7 +7,7 @@ import javax.inject.Inject
 class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) {
-  /** Create one admin profile and one user profile. */
+  /** Creates one admin profile and one user profile. Logs in to admin profile. */
   @ExperimentalCoroutinesApi
   fun initializeProfiles() {
     profileManagementController.addProfile("Sean", "12345", null, allowDownloadAccess = true, isAdmin = true)
