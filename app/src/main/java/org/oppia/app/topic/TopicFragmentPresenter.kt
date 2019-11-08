@@ -29,7 +29,6 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var tabLayout: TabLayout
   private lateinit var toolbar: Toolbar
   private lateinit var topicId: String
-  lateinit var storyId: String
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(
@@ -46,7 +45,6 @@ class TopicFragmentPresenter @Inject constructor(
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
-    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     toolbar = binding.root.findViewById(R.id.toolbar) as Toolbar
@@ -61,15 +59,13 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
-    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!, storyId)
+    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
-    if (topicId.isNotEmpty() && storyId.isNotEmpty())
-      setCurrentTab(TopicTab.PLAY)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
