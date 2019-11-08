@@ -13,7 +13,7 @@ class TopicOverviewFragment : InjectableFragment() {
   @Inject
   lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

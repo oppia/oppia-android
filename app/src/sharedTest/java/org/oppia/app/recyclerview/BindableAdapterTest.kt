@@ -19,15 +19,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.app.model.TestModel
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.testing.BINDABLE_TEST_FRAGMENT_TAG
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
-import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
-import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
@@ -221,7 +221,7 @@ class BindableAdapterTest {
   private fun createSingleViewTypeWithDataBindingBindableAdapter(): BindableAdapter<TestModel> {
     return BindableAdapter.Builder
       .newBuilder<TestModel>()
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
       )
@@ -253,12 +253,12 @@ class BindableAdapterTest {
       .registerViewTypeComputer { value ->
         value.modelTypeCase.number
       }
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = TestModel.STR_VALUE_FIELD_NUMBER,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
       )
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = TestModel.INT_VALUE_FIELD_NUMBER,
         inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel

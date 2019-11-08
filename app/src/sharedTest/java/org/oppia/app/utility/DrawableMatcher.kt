@@ -1,12 +1,12 @@
 package org.oppia.app.utility
 
-import android.view.View
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.ImageView
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 
 // https://github.com/dbottillo/Blog/blob/espresso_match_imageview/app/src/androidTest/java/com/danielebottillo/blog/config/DrawableMatcher.java
 /** This class mainly provides a custom matcher to test whether the drawable-image is correctly shown in ImageView. */
