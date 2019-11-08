@@ -9,7 +9,7 @@ import javax.inject.Inject
 const val KEY_PIN_PASSWORD_PROFILE_ID = "PIN_PASSWORD_PROFILE_ID"
 const val KEY_PIN_PASSWORD_ADMIN_PIN = "PIN_PASSWORD_ADMIN_PIN"
 
-class PinPasswordActivity : InjectableAppCompatActivity() {
+class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {
   @Inject lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
@@ -26,5 +26,13 @@ class PinPasswordActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     pinPasswordActivityPresenter.handleOnCreate()
+  }
+
+  override fun routeToResetPinDialog() {
+    pinPasswordActivityPresenter.handleRouteToResetPinDialog()
+  }
+
+  override fun routeToSuccessDialog() {
+    pinPasswordActivityPresenter.handleRouteToSuccessDialog()
   }
 }

@@ -26,6 +26,6 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return adminSettingsDialogFragmentPresenter.handleOnCreateDialog()
+    return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(activity as ProfileRouteDialogInterface)
   }
 }

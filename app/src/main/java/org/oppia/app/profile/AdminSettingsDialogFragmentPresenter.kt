@@ -19,14 +19,13 @@ import javax.inject.Inject
 @FragmentScope
 class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>,
-  private val logger: Logger
+  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>
 ) {
   private val adminViewModel by lazy {
     getAdminSettingsViewModel()
   }
 
-  fun handleOnCreateDialog(): Dialog {
+  fun handleOnCreateDialog(routeDialogInterface: ProfileRouteDialogInterface): Dialog {
     val adminPin = fragment.arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
     val binding: AdminSettingsDialogBinding = DataBindingUtil.inflate(fragment.requireActivity().layoutInflater, R.layout.admin_settings_dialog, null, false)
@@ -44,27 +43,30 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
-//    val cellularDataInterface: CellularDataInterface = parentFragment as StateFragment
 
-    return AlertDialog.Builder(fragment.requireActivity() as Context)
+    val dialog =  AlertDialog.Builder(fragment.requireActivity() as Context, R.style.AlertDialogTheme)
       .setTitle(R.string.admin_settings_heading)
       .setView(binding.root)
       .setMessage(R.string.admin_settings_sub)
-      .setPositiveButton(R.string.admin_settings_submit) { dialog, whichButton ->
-        //        cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
-        logger.e("James", "Positive")
+      .setPositiveButton(R.string.admin_settings_submit, null)
+      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .create()
+
+    dialog.setOnShowListener {
+      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+        if (binding.inputPin.getInput().isEmpty()) {
+          return@setOnClickListener
+        }
         if (binding.inputPin.getInput() == adminPin) {
-          (fragment as DialogFragment).dismiss()
+          routeDialogInterface.routeToResetPinDialog()
         } else {
           adminViewModel.errorMessage.set(fragment.resources.getString(R.string.admin_settings_incorrect))
         }
       }
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, whichButton ->
-        //        cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
-        logger.e("James", "Positive")
-        (fragment as DialogFragment).dismiss()
-      }
-      .create()
+    }
+    return dialog
   }
 
   private fun getAdminSettingsViewModel(): AdminSettingsViewModel {

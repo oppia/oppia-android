@@ -1,10 +1,13 @@
 package org.oppia.app.profile
 
+import android.content.Context
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.databinding.PinPasswordActivityBinding
@@ -15,6 +18,8 @@ import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
+private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
+
 
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -24,10 +29,11 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
   }
+  private var profileId = -1
 
   fun handleOnCreate() {
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
-    val profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
+    profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
     pinViewModel.setProfileId(profileId)
     binding.apply {
@@ -49,11 +55,10 @@ class PinPasswordActivityPresenter @Inject constructor(
                 .observe(activity, Observer {
                 if (it.isSuccess()) {
                   activity.startActivity(Intent(activity, HomeActivity::class.java))
-                } else {
-                  //TODO Handle other error cases
                 }
               })
             } else {
+              binding.inputPin.setText("")
               pinViewModel.showError.set(true)
             }
           }
@@ -65,7 +70,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     binding.forgotPin.setOnClickListener {
       if (pinViewModel.isAdmin) {
-        //TODO
+        showAdminForgotPin()
       } else {
         val previousFrag = activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
@@ -77,7 +82,40 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
   }
 
+  fun handleRouteToResetPinDialog() {
+    (activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG) as DialogFragment).dismiss()
+    val dialogFragment = ResetPinDialogFragment.newInstance(profileId, pinViewModel.name)
+    dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
+  }
+
+  fun handleRouteToSuccessDialog() {
+    (activity.supportFragmentManager.findFragmentByTag(TAG_RESET_PIN_DIALOG) as DialogFragment).dismiss()
+    showSuccessDialog()
+  }
+
   private fun getPinPasswordViewModel(): PinPasswordViewModel {
     return viewModelProvider.getForActivity(activity, PinPasswordViewModel::class.java)
   }
+
+  private fun showAdminForgotPin() {
+    AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+      .setTitle(R.string.pin_password_forgot_title)
+      .setMessage(R.string.pin_password_forgot_message)
+      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+        dialog.dismiss()
+      }
+      .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
+  }
+
+  private fun showSuccessDialog() {
+    AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+      .setMessage(R.string.pin_password_success)
+      .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
+  }
+
+
 }

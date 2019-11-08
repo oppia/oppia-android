@@ -22,6 +22,7 @@ class PinPasswordViewModel @Inject constructor(
   val showPassword = ObservableField(false)
   var correctPin = "PIN"
   var isAdmin = false
+  var name = ""
   val profile: LiveData<Profile> by lazy {
     Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
@@ -35,6 +36,7 @@ class PinPasswordViewModel @Inject constructor(
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
     correctPin = profile.pin
     isAdmin = profile.isAdmin
+    name = profile.name
     return profile
   }
 }

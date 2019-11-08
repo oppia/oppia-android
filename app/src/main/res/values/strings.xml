@@ -68,10 +68,18 @@
   <string name="pin_password_forgot_pin">I FORGOT MY PIN</string>
   <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
   <string name="pin_password_show">SHOW</string>
+  <string name="pin_password_hide">HIDE</string>
+  <string name="pin_password_close">CLOSE</string>
+  <string name="pin_password_success">PIN change is successful</string>
+  <string name="pin_password_forgot_title">Forgot PIN?</string>
+  <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
+  <string name="pin_password_play_store">GO TO PLAY STORE</string>
   <!-- AdminSettingsDialogFragment. -->
   <string name="admin_settings_heading">Access to Administrator Settings</string>
   <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_cancel">CANCEL</string>
   <string name="admin_settings_submit">SUBMIT</string>
-  <string name="admin_settings_incorrect">Inputted PIN is incorrect. Please try Again.</string>
+  <string name="admin_settings_incorrect">Inputted PIN is incorrect. Please try again.</string>
+  <!-- ResetPinDialogFragment. -->
+  <string name="reset_pin_enter">Enter a New Pin</string>
 </resources>

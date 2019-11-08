@@ -6,6 +6,6 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 @FragmentScope
-class AdminSettingsViewModel @Inject constructor() : ObservableViewModel() {
+class ResetPinViewModel @Inject constructor() : ObservableViewModel() {
   val errorMessage = ObservableField("")
 }
