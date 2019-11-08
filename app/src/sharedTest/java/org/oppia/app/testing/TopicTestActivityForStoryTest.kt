@@ -17,7 +17,7 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicTab
-import org.oppia.app.utility.EspressoTestsMatchers
+import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 
 /** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
@@ -28,7 +28,7 @@ class TopicTestActivityForStoryTest {
     launch(TopicTestActivityForStory::class.java).use {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
-          EspressoTestsMatchers.matchCurrentTabTitle(
+          matchCurrentTabTitle(
             TopicTab.getTabForPosition(1).name
           )
         )
