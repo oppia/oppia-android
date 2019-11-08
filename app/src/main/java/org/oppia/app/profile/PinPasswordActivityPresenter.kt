@@ -1,7 +1,9 @@
 package org.oppia.app.profile
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
@@ -16,6 +18,9 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
+import android.os.Handler
+import android.view.animation.AnimationUtils
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -31,6 +36,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
   private var profileId = -1
 
+  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
     profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
@@ -46,9 +52,13 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     binding.inputPin.addTextChangedListener(object: TextWatcher {
+      var wrong = false
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let { inputtedPin ->
-          pinViewModel.showError.set(false)
+          if (!wrong) {
+            pinViewModel.showError.set(false)
+          }
+          wrong = false
           if (inputtedPin.length == pinViewModel.correctPin.length) {
             if (inputtedPin.toString() == pinViewModel.correctPin) {
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
@@ -58,7 +68,11 @@ class PinPasswordActivityPresenter @Inject constructor(
                 }
               })
             } else {
-              binding.inputPin.setText("")
+              binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
+              Handler().postDelayed({
+                wrong = true
+                binding.inputPin.setText("")
+                }, 1500)
               pinViewModel.showError.set(true)
             }
           }
@@ -105,6 +119,11 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
+        try {
+          activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.packageName)))
+        } catch (e: ActivityNotFoundException) {
+          activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + activity.packageName)))
+        }
         dialog.dismiss()
       }.create().show()
   }
