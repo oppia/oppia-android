@@ -9,13 +9,13 @@ import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
 
 const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
-private const val TAG_STOP_EXPLORATION_DIALOG =  "STOP_EXPLORATION_DIALOG"
+private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
-  private lateinit var explorationId : String
+  private lateinit var explorationId: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -48,9 +48,5 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
 
   override fun stopExploration() {
     explorationActivityPresenter.stopExploration()
-  }
-
-  fun routeBackToTopicActivity(){
-    finish()
   }
 }

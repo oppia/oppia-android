@@ -52,7 +52,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          (activity as ExplorationActivity).routeBackToTopicActivity()
+          (activity as ExplorationActivity).finish()
         }
       }
     })
