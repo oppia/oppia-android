@@ -36,12 +36,11 @@
         <ImageView
           android:id="@+id/topic_thumbnail_image_view"
           android:layout_width="match_parent"
-          android:layout_height="200dp"
-          android:scaleType="fitXY"
+          android:layout_height="204dp"
           android:adjustViewBounds="true"
+          android:scaleType="fitXY"
           android:background="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
-          android:src="@drawable/lesson_thumbnail_graphic_child_with_cupcakes" />
- <!--android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />-->
+          android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />
 
         <FrameLayout
           android:layout_width="match_parent"
