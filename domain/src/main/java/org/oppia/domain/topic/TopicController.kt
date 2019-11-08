@@ -452,7 +452,7 @@ class TopicController @Inject constructor(
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
+      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail1())
       .build()
   }
 
@@ -462,7 +462,7 @@ class TopicController @Inject constructor(
       .setName("Third Exploration")
       .setSummary("This is the third exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_STARTED)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
+      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail2())
       .build()
   }
 
@@ -472,15 +472,31 @@ class TopicController @Inject constructor(
       .setName("Fourth Exploration")
       .setSummary("This is the fourth exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
+      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail3())
       .build()
   }
 
   /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
-  private fun createTestTopic0Story1ChapterThumbnail(): LessonThumbnail {
+  private fun createTestTopic0Story1ChapterThumbnail1(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
       .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xa5d3ec)
+      .build()
+  }
+
+  /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
+  private fun createTestTopic0Story1ChapterThumbnail2(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .setBackgroundColorRgb(0xffeebe)
+      .build()
+  }
+
+  /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
+  private fun createTestTopic0Story1ChapterThumbnail3(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
+      .setBackgroundColorRgb(0x76d1ca)
       .build()
   }
 

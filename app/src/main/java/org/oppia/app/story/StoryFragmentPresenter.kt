@@ -1,5 +1,7 @@
 package org.oppia.app.story
 
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,10 @@ import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
+import android.util.TypedValue
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
@@ -24,16 +30,24 @@ class StoryFragmentPresenter @Inject constructor(
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
+  private lateinit var binding: StoryFragmentBinding
+  private lateinit var linearLayoutManager: LinearLayoutManager
+  private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
     val viewModel = getStoryViewModel()
-    val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
 
-    binding.toolbar.setNavigationOnClickListener{
+    binding.toolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
 
+    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+    linearSmoothScroller = createSmoothScroller()
+
     binding.storyChapterList.apply {
+      layoutManager = linearLayoutManager
       adapter = createRecyclerViewAdapter()
     }
 
@@ -51,6 +65,8 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
+    smoothScrollToPosition(2)
+
     return BindableAdapter.Builder
       .newBuilder<StoryItemViewModel>()
       .registerViewTypeComputer { viewModel ->
@@ -82,5 +98,37 @@ class StoryFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_CHAPTER
+  }
+
+  private fun smoothScrollToPosition(position: Int) {
+    linearSmoothScroller.targetPosition = position
+    linearLayoutManager.startSmoothScroll(linearSmoothScroller)
+    binding.storyChapterList.layoutManager = linearLayoutManager
+  }
+
+  private fun createSmoothScroller(): RecyclerView.SmoothScroller {
+    val milliSecondsPerInch = 100f
+
+    return object : LinearSmoothScroller(activity) {
+      override fun getVerticalSnapPreference(): Int {
+        return SNAP_TO_START
+      }
+
+      override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+        return milliSecondsPerInch / displayMetrics!!.densityDpi
+      }
+
+      override fun calculateDyToMakeVisible(view: View, snapPreference: Int): Int {
+        return super.calculateDyToMakeVisible(view, snapPreference) + dipToPixels(48)
+      }
+    }
+  }
+
+  private fun dipToPixels(dipValue: Int): Int {
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_DIP,
+      dipValue.toFloat(),
+      Resources.getSystem().displayMetrics
+    ).toInt()
   }
 }
