@@ -9,7 +9,6 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"

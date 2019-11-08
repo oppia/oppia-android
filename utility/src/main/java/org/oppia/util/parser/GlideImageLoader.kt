@@ -2,6 +2,8 @@ package org.oppia.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */

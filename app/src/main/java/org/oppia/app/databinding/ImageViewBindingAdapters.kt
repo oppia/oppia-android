@@ -3,8 +3,6 @@ package org.oppia.app.databinding
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
 
