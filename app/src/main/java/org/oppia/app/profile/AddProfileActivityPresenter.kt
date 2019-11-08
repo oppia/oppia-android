@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -55,6 +56,10 @@ class AddProfileActivityPresenter @Inject constructor(
       allowDownloadAccess = isChecked
     }
 
+    binding.infoIcon.setOnClickListener {
+      showInfoDialog()
+    }
+
     addTextChangeListeners(binding)
 
     binding.uploadImageButton.setOnClickListener {
@@ -64,6 +69,7 @@ class AddProfileActivityPresenter @Inject constructor(
     uploadImageView = binding.uploadImageButton
 
     binding.createButton.setOnClickListener {
+      addViewModel.clearAllErrorMessages()
       val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
       val name = binding.inputName.getInput()
@@ -95,9 +101,6 @@ class AddProfileActivityPresenter @Inject constructor(
           when (it.getErrorOrNull()) {
             is ProfileManagementController.ProfileNameNotUniqueException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_not_unique))
             is ProfileManagementController.ProfileNameOnlyLettersException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_only_letters))
-            else -> {
-              //TODO FailedToStoreImageException
-            }
           }
           binding.scroll.smoothScrollTo(0,0)
         }
@@ -159,6 +162,14 @@ class AddProfileActivityPresenter @Inject constructor(
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
+  }
+
+  private fun showInfoDialog() {
+    AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+      .setMessage(R.string.add_profile_pin_info)
+      .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
   }
 
   private fun getAddProfileViewModel(): AddProfileViewModel {
