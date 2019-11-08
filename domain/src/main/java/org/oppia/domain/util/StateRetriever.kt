@@ -289,9 +289,11 @@ class StateRetriever @Inject constructor(
       is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
       is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
-      is JSONArray -> return interactionObjectBuilder.setSetOfHtmlString(
-        createStringList(JsonParser().parseJsonArrayToMutableListOfString(customizationArgValue))
-      ).build()
+      is JSONArray -> if (customizationArgValue.length() > 0) {
+        return interactionObjectBuilder.setSetOfHtmlString(
+          createStringList(JsonParser().parseJsonArrayToMutableListOfString(customizationArgValue))
+        ).build()
+      }
     }
     return InteractionObject.getDefaultInstance()
   }
