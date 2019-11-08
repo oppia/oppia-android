@@ -31,6 +31,7 @@ class StopExplorationDialogFragment : DialogFragment() {
       .setMessage(R.string.stop_exploration_dialog_description)
       .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { dialog, whichButton ->
         stopExplorationInterface.stopExploration()
+        dismiss()
       }
       .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { dialog, whichButton ->
         dismiss()
