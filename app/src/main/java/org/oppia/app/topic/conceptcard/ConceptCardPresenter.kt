@@ -48,7 +48,7 @@ class ConceptCardPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(): BindableAdapter<SubtitledHtml> {
     return BindableAdapter.Builder
       .newBuilder<SubtitledHtml>()
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ConceptCardExampleViewBinding::inflate,
         setViewModel = ConceptCardExampleViewBinding::setSubtitledHtml)
       .build()

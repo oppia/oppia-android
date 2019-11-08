@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.profile.ProfileActivity
 
-/** An activity that shows a temporary loading page until the app is fully loaded then navigates to [HomeActivity]. */
+/** An activity that shows a temporary loading page until the app is fully loaded then navigates to [ProfileActivity]. */
 class SplashActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
     setContentView(R.layout.splash_activity)
 
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+    val intent = Intent(this@SplashActivity, ProfileActivity::class.java)
     startActivity(intent)
     finish()
   }

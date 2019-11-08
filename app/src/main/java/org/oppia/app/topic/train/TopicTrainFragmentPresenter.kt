@@ -12,8 +12,8 @@ import org.oppia.app.databinding.TopicTrainFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToQuestionPlayerListener
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -29,12 +29,14 @@ class TopicTrainFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
 ) : SkillSelector {
   lateinit var selectedSkillIdList: ArrayList<String>
-
+  private lateinit var topicId: String
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
-
   private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicTrainFragment."
+    }
     selectedSkillIdList = skillList
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -52,9 +54,8 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get skillList from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId)
   }
 
   private fun subscribeToTopicLiveData() {
