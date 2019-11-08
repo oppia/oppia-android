@@ -21,9 +21,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="16dp"
+      android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{viewModel.onExplorationClicked}"
       app:cardCornerRadius="4dp"
-      android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/elevation_4dp : @dimen/elevation_0dp}"
       app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/chapterCardGreenBorder : @color/chapterCardGreyBorder}"
       app:strokeWidth="2dp">
@@ -75,7 +75,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name )}"
+            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.name )}"
+            android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.name)}"
             android:src="@drawable/ic_check_24dp"
             android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -119,6 +119,6 @@
       android:layout_margin="16dp"
       android:background="@color/chapterCardShadow"
       android:padding="8dp"
-      android:visibility="@{viewModel.chapterSummary.chapterPlayState ==ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
   </FrameLayout>
 </layout>
