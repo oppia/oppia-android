@@ -2,10 +2,10 @@ package org.oppia.domain.profile
 
 import android.app.Application
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -27,6 +27,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Profile
@@ -134,17 +136,6 @@ class ProfileManagementControllerTest {
     assertThat(profile?.allowDownloadAccess).isEqualTo(true)
     assertThat(profile?.id?.internalId).isEqualTo(0)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testAddProfile_addProfileWithUri_checkImageIsSaved() = runBlockingTest(coroutineContext) {
-    profileManagementController.addProfile("James", "123", Uri.parse("test"), true).observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(File(getAbsoluteDirPath("0/profile.png")).isFile).isTrue()
   }
 
   @Test
