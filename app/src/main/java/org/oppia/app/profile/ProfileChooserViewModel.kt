@@ -23,6 +23,7 @@ class ProfileChooserViewModel @Inject constructor(
 
   lateinit var adminPin: String
 
+  /** Sorts profiles alphabetically by name and put Admin in front. */
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserModel> {
     if (profilesResult.isFailure()) {
       logger.e("ProfileChooserViewModel", "Failed to retrieve the list of profiles: ", profilesResult.getErrorOrNull()!!)
