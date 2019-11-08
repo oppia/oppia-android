@@ -42,13 +42,13 @@
       android:layout_height="0dp"
       android:overScrollMode="never"
       android:scrollbars="none"
+      android:paddingBottom="128dp"
+      android:clipToPadding="false"
       app:data="@{viewModel.storyChapterLiveData}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout"
-      app:layout_constraintVertical_bias="0.0" />
+      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
