@@ -29,7 +29,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY) ?: ""
-    topicActivityPresenter.handleOnCreate(topicId,storyId)
+    topicActivityPresenter.handleOnCreate(topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {

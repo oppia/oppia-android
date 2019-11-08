@@ -303,6 +303,7 @@ class TopicFragmentTest {
       )
     }
   }
+
   @Test
   fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
     launch(TopicTestActivity::class.java).use {

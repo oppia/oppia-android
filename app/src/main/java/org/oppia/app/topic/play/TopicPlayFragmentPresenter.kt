@@ -16,7 +16,6 @@ import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
-import org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
@@ -53,11 +52,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPlayFragment."
     }
-    storyId = checkNotNull(fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: "") {
-      "Expected topic ID to be included in arguments for TopicPlayFragment."
-    }
-    if (!storyId.isEmpty())
-      this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
+    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
@@ -78,7 +74,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
       it.storyList!!.forEach { storySummary ->
         if (storySummary.storyId.equals(storyId)) {
           val index = it.storyList.indexOf(storySummary)
-          currentExpandedChapterListIndex=index
+          currentExpandedChapterListIndex = index
         }
       }
       val storySummaryAdapter =
@@ -92,9 +88,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
-      if (!storyId.isEmpty())
-      binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
-
+      if (storyId.isNotEmpty())
+        binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
     })
   }
 

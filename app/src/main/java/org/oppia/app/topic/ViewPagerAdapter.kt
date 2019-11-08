@@ -28,7 +28,7 @@ class ViewPagerAdapter(
       }
       TopicTab.PLAY -> {
         val topicPlayTab = TopicPlayFragment()
-        if(!storyId.isEmpty())
+        if(storyId.isNotEmpty())
           args.putString(STORY_ID_ARGUMENT_KEY, storyId)
         topicPlayTab.arguments = args
         return topicPlayTab

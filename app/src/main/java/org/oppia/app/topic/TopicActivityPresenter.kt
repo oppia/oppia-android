@@ -20,7 +20,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       val topicFragment = TopicFragment()
       val args = Bundle()
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      if (!topicId.isEmpty() && !storyId.isEmpty())
+      if (topicId.isNotEmpty() && storyId.isNotEmpty())
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(

@@ -68,7 +68,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
-    if (!topicId.isEmpty() && !storyId.isEmpty())
+    if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.PLAY)
   }
 

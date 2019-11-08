@@ -22,7 +22,7 @@
     <activity android:name=".profile.ProfileActivity" />
     <activity
       android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme" >
+      android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -43,7 +43,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.TopicTestActivityForStory"
-      android:theme="@style/OppiaThemeWithoutActionBar"/>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

@@ -20,7 +20,8 @@ import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
-class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
+class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
+  RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -28,7 +29,7 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicActivityPresenter.handleOnCreate(topicId=TEST_TOPIC_ID_0,storyId= TEST_STORY_ID_1)
+    topicActivityPresenter.handleOnCreate(topicId = TEST_TOPIC_ID_0, storyId = TEST_STORY_ID_1)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
