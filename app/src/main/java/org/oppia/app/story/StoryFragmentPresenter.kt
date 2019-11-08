@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
@@ -19,7 +18,7 @@ import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
 ) {
@@ -30,9 +29,9 @@ class StoryFragmentPresenter @Inject constructor(
     val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
 
-    viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
-      (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
-    })
+    binding.toolbar.setNavigationOnClickListener{
+      (activity as StoryActivity).finish()
+    }
 
     binding.storyChapterList.apply {
       adapter = createRecyclerViewAdapter()

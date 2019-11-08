@@ -25,7 +25,6 @@ class StoryViewModel @Inject constructor(
 ) : ViewModel() {
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
-  private lateinit var fragment: StoryFragment
   private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
