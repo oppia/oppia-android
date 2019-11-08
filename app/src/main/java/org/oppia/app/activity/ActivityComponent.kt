@@ -52,6 +52,6 @@ interface ActivityComponent {
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
-  fun inject(topicTestActivity: TopicTestActivityForStory)
+  fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
 }

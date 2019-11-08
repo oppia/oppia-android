@@ -37,7 +37,7 @@ class TopicTestActivityForStoryTest {
   }
 
   @Test
-  fun testTopicTestActivityForStory_showsTopicPlayFragment() {
+  fun testTopicTestActivityForStory_showsTopicPlay() {
     launch(TopicTestActivityForStory::class.java).use {
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
