@@ -11,4 +11,10 @@ class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
   val pinErrorMsg = ObservableField("")
   val confirmPinErrorMsg = ObservableField("")
   val nameErrorMsg = ObservableField("")
+
+  fun clearAllErrorMessages() {
+    pinErrorMsg.set("")
+    confirmPinErrorMsg.set("")
+    nameErrorMsg.set("")
+  }
 }
