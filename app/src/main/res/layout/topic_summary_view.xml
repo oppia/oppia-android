@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:project="http://schemas.android.com/tools">
 
   <data>
 
@@ -10,22 +11,19 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="140dp"
-    android:layout_height="160dp"
-    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="168dp"
+    android:layout_margin="8dp"
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}"
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{viewModel::clickOnSummaryTile}">
 
     <ImageView
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="match_parent"
+      android:layout_height="96dp"
       android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
-      android:scaleType="centerCrop"
-      android:paddingStart="20dp"
-      android:paddingEnd="20dp"
-      android:paddingTop="20dp"
+      android:scaleType="centerInside"
       android:importantForAccessibility="no"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +33,8 @@
     <FrameLayout
       android:id="@+id/bottom_topic_bar"
       android:layout_width="match_parent"
-      android:layout_height="70dp"
-      android:background="@{viewModel.darkerBackgroundOverlayColor}"
+      android:layout_height="72dp"
+      app:bottomRoundedRectDrawableWithColor="@{viewModel.darkerBackgroundOverlayColor}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -56,13 +54,13 @@
       android:id="@+id/lesson_count_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"
-      android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
-      android:fontFamily="sans-serif-light"
-      android:textStyle="italic"
-      android:textSize="14sp"
       android:layout_margin="8dp"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar" />
+      android:fontFamily="sans-serif-light"
+      android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
+      android:textColor="@color/white"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar"
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
