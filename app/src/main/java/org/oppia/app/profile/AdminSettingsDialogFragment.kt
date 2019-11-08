@@ -20,7 +20,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
   @Inject lateinit var adminSettingsDialogFragmentPresenter: AdminSettingsDialogFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

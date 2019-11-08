@@ -4,8 +4,8 @@ import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.classify.rules.GenericRuleClassifier
+import org.oppia.domain.classify.rules.RuleClassifierProvider
 import org.oppia.domain.util.approximatelyEquals
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ internal class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructo
     }
   }
 
-  private fun realMatches(answer: Float, input: Float): Boolean {
+  private fun realMatches(answer: Double, input: Double): Boolean {
     return input.approximatelyEquals(answer)
   }
 

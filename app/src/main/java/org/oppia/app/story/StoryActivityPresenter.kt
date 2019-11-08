@@ -8,12 +8,12 @@ import javax.inject.Inject
 /** The presenter for [StoryActivity]. */
 @ActivityScope
 class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(storyId: String) {
     activity.setContentView(R.layout.story_activity)
     if (getStoryFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.story_fragment_placeholder,
-        StoryFragment()
+        StoryFragment.newInstance(storyId)
       ).commitNow()
     }
   }

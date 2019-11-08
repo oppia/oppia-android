@@ -54,11 +54,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       .registerViewTypeComputer { value ->
         value.modelTypeCase.number
       }
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserModel.PROFILE_FIELD_NUMBER,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
         setViewModel = this::bindProfileView)
-      .registerViewDataBinder(
+      .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserModel.ADDPROFILE_FIELD_NUMBER,
         inflateDataBinding = ProfileChooserAddViewBinding::inflate,
         setViewModel = this::bindAddView)
@@ -78,8 +78,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       } else {
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
           fragment.requireContext(),
-          data.profile.name,
-          data.profile.pin,
           chooserViewModel.adminPin,
           data.profile.id.internalId
         )
