@@ -114,17 +114,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
-  /**
-   * Calls the specified value with the current on-disk contents and saves the result of the function to disk.
-   * This function returns a custom type that can be later used to understand the result of the update function.
-   * Note that the function used here should be non-blocking, thread-safe, and should have no side effects.
-   *
-   * @param updateInMemoryCache indicates whether this change to the on-disk store should also update the in-memory
-   *     store, and propagate that change to all subscribers to this data provider. This may be ideal if callers want to
-   *     control "snapshots" of the store that subscribers have access to, however it's recommended to keep all store
-   *     calls consistent in whether they update the in-memory cache to avoid complex potential in-memory/on-disk sync
-   *     issues.
-   */
+  /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
   fun<V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T,V>): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
@@ -205,10 +195,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     return CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
   }
 
-  /**
-   * Stores the file store to disk, and returns a pair of persisted payload and custom result. This should only be called from the cache's
-   * update thread.
-   */
+  /** See [storeFileCache]. Returns payload and custom result. */
   private fun<V> storeFileCacheWithCustomChannel(currentPayload: CachePayload<T>, update: (T) -> Pair<T,V>): Pair<CachePayload<T>,V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }

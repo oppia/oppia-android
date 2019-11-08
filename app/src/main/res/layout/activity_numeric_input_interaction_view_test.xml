@@ -1,51 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:gravity="center"
-  tools:context=".testing.InputInteractionViewTestActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
-  <org.oppia.app.customview.interaction.NumericInputInteractionView
-    android:id="@+id/test_number_input_interaction_view"
+  <data>
+
+    <variable
+      name="numericInputViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+  </data>
+
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@drawable/edit_text_background"
-    android:digits="0123456789."
-    android:focusable="true"
-    android:hint="Write the digit here."
-    android:inputType="numberDecimal"
-    android:longClickable="false"
-    android:maxLength="200"
-    android:padding="8dp"
-    android:singleLine="true" />
-  <org.oppia.app.customview.interaction.TextInputInteractionView
-    android:id="@+id/test_text_input_interaction_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@drawable/edit_text_background"
-    android:focusable="true"
-    android:hint="Write here."
-    android:inputType="text"
-    android:longClickable="false"
-    android:maxLength="200"
-    android:padding="8dp"
-    android:singleLine="true" />
-  <org.oppia.app.customview.interaction.FractionInputInteractionView
-    android:id="@+id/test_fraction_input_interaction_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@drawable/edit_text_background"
-    android:focusable="true"
-    android:digits="0123456789/- "
-    android:hint="Write fraction here."
-    android:inputType="number"
-    android:longClickable="false"
-    android:maxLength="200"
-    android:padding="8dp"
-    android:singleLine="true" />
-</LinearLayout>
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".testing.InputInteractionViewTestActivity">
+
+    <org.oppia.app.customview.interaction.NumericInputInteractionView
+      android:id="@+id/test_number_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:digits="0123456789."
+      android:enabled="@{!numericInputViewModel.isReadOnly}"
+      android:focusable="true"
+      android:hint="Write the digit here."
+      android:inputType="numberDecimal"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:padding="8dp"
+      android:singleLine="true"
+      android:text="@={numericInputViewModel.answerText}" />
+
+    <org.oppia.app.customview.interaction.TextInputInteractionView
+      android:id="@+id/test_text_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:focusable="true"
+      android:hint="Write here."
+      android:inputType="text"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:padding="8dp"
+      android:singleLine="true" />
+
+    <org.oppia.app.customview.interaction.FractionInputInteractionView
+      android:id="@+id/test_fraction_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:digits="0123456789/- "
+      android:focusable="true"
+      android:hint="Write fraction here."
+      android:inputType="number"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:padding="8dp"
+      android:singleLine="true" />
+  </LinearLayout>
+</layout>
