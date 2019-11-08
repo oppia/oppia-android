@@ -47,6 +47,7 @@
   <string name="ongoing_story_last_week">Played within the Last Week</string>
   <string name="ongoing_story_last_month">Played within the Last Month</string>
   <string name="all_topics">All Topics</string>
+  <string name="go_to_previous_page">Go to previous page.</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter

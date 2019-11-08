@@ -21,7 +21,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="16dp"
+      android:onClick="@{viewModel.onExplorationClicked}"
       app:cardCornerRadius="4dp"
+      android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/elevation_4dp : @dimen/elevation_0dp}"
       app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/chapterCardGreenBorder : @color/chapterCardGreyBorder}"
       app:strokeWidth="2dp">
@@ -30,18 +32,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="true"
-        android:contentDescription="@{viewModel.name}"
-        android:onClick="@{viewModel.onExplorationClicked}">
+        android:contentDescription="@{viewModel.name}">
 
         <ImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="140dp"
+          android:contentDescription="@{viewModel.name}"
           android:paddingStart="40dp"
           android:paddingTop="40dp"
           android:paddingEnd="40dp"
           android:scaleType="centerCrop"
-          android:contentDescription="@{viewModel.name}"
           android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
