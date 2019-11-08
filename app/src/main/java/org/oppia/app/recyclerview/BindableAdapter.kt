@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.recyclerview.BindableAdapter.Builder.Companion.newBuilder
 import kotlin.reflect.KClass
 
 /** A function that returns the type of view that can bind the specified data object. */
@@ -56,7 +57,7 @@ class BindableAdapter<T : Any> internal constructor(
     // when T1 is not assignable to T2). This likely won't have bad side effects since any time a
     // non-empty list is attempted to be bound, this crash will be correctly triggered.
     newDataList.firstOrNull()?.let {
-      check(it.javaClass.isAssignableFrom(dataClassType.java)) {
+      check(dataClassType.java.isAssignableFrom(it.javaClass)) {
         "Trying to bind incompatible data to adapter. Data class type: ${it.javaClass}, " +
             "expected adapter class type: $dataClassType."
       }
@@ -148,6 +149,18 @@ class BindableAdapter<T : Any> internal constructor(
       return this
     }
 
+    /** See [registerViewDataBinder]. */
+    fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
+      viewType: Int = DEFAULT_VIEW_TYPE,
+      inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
+      setViewModel: (DB, T) -> Unit
+    ): Builder<T> {
+      return registerViewDataBinder(
+        viewType = viewType, inflateDataBinding = inflateDataBinding, setViewModel = setViewModel,
+        transformViewModel = { it }
+      )
+    }
+
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods correspond to a [View]
      * data-binding typed [DB].
@@ -158,12 +171,15 @@ class BindableAdapter<T : Any> internal constructor(
      * @param setViewModel a function that initializes the view model in the data-bound view (e.g.
      *     MyDataBinding::setSpecialViewModel). This may also be a function that initializes the view model & other
      *     view-accessible properties as necessary.
+     * @param transformViewModel a function that converts the input model to a model of another type (such as for cases
+     *     when subclassing is used to represent more complex lists of data).
      * @return this
      */
-    fun <DB : ViewDataBinding> registerViewDataBinder(
+    fun <DB : ViewDataBinding, T2 : T> registerViewDataBinder(
       viewType: Int = DEFAULT_VIEW_TYPE,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
+      setViewModel: (DB, T2) -> Unit,
+      transformViewModel: (T) -> T2
     ): Builder<T> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
@@ -176,7 +192,7 @@ class BindableAdapter<T : Any> internal constructor(
         )
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
-            setViewModel(binding, data)
+            setViewModel(binding, transformViewModel(data))
           }
         }
       }

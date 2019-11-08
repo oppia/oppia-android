@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
-import java.lang.IllegalArgumentException
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.LessonThumbnail
@@ -21,11 +18,14 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -421,8 +421,9 @@ class TopicController @Inject constructor(
 
   private fun createTestTopic0Story0Chapter0(): ChapterSummary {
     return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_0)
-      .setName("First Exploration")
+      .setExplorationId(TEST_EXPLORATION_ID_30)
+      .setName("Prototype Exploration")
+      .setSummary("This is the prototype exploration to verify interaction functionality.")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createTestTopic0Story0Chapter0Thumbnail())
       .build()
@@ -449,6 +450,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
+      .setSummary("This is the second exploration summary")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()
@@ -458,6 +460,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_2)
       .setName("Third Exploration")
+      .setSummary("This is the third exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()
@@ -467,6 +470,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_3)
       .setName("Fourth Exploration")
+      .setSummary("This is the fourth exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail())
       .build()

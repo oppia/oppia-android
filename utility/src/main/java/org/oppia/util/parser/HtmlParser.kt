@@ -1,6 +1,5 @@
 package org.oppia.util.parser
 
-import android.content.Context
 import android.text.Html
 import android.text.Spannable
 import android.widget.TextView

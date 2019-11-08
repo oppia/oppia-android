@@ -17,14 +17,17 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
 
   private var currentExpandedChapterListIndex: Int? = null
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     if (savedInstanceState != null) {
-      currentExpandedChapterListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX)
+      currentExpandedChapterListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      if (currentExpandedChapterListIndex == -1) {
+        currentExpandedChapterListIndex = null
+      }
     }
     return topicPlayFragmentPresenter.handleCreateView(
       inflater,
@@ -36,7 +39,7 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if(currentExpandedChapterListIndex!=null) {
+    if (currentExpandedChapterListIndex != null) {
       outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedChapterListIndex!!)
     }
   }

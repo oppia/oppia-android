@@ -3,7 +3,6 @@ package org.oppia.domain.util
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.IOException
 import javax.inject.Inject
 
 /** Utility that retrieves JSON assets and converts them to JSON objects. */

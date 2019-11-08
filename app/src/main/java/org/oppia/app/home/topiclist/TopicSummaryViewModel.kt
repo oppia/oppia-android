@@ -3,7 +3,6 @@ package org.oppia.app.home.topiclist
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.model.TopicSummary
 

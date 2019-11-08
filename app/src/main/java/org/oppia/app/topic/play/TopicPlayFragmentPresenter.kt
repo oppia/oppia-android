@@ -15,8 +15,8 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -37,6 +37,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicPlayFragmentBinding
+  private lateinit var topicId: String
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -46,9 +47,11 @@ class TopicPlayFragmentPresenter @Inject constructor(
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicPlayFragment."
+    }
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
@@ -59,9 +62,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get storyList from [StoryFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId)
   }
 
   private fun subscribeToTopicLiveData() {

@@ -3,10 +3,10 @@ package org.oppia.app.player.state
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -19,14 +19,13 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.TestCase
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -61,14 +60,14 @@ class StateFragmentTest {
   @Test
   fun testStateFragmentTestActivity_loadStateFragment_hasDummyButton() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).check(matches(withText("Dummy Audio Button")))
+      onView(withId(R.id.enable_audio_playback_button)).check(matches(withText("Dummy Audio Button")))
     }
   }
 
   @Test
   fun testStateFragment_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
@@ -76,7 +75,7 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickDummyButton_clickPositive_showsAudioFragment() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches((isDisplayed())))
     }
@@ -85,7 +84,7 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickDummyButton_clickNegative_doesNotShowAudioFragment() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
     }
@@ -94,9 +93,9 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickPositive_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
@@ -104,9 +103,9 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickNegative_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
     }
   }
@@ -114,10 +113,10 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickCheckBoxAndPositive_clickDummyButton_doesNotShowCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
     }
   }
@@ -125,10 +124,10 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickCheckBoxAndNegative_clickDummyButton_doesNotShowCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
     }
   }
@@ -136,11 +135,11 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickPositive_restartActivity_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
     }
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(isDisplayed()))
     }
   }
@@ -148,11 +147,11 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickNegative_restartActivity_clickDummyButton_showsCellularDialog() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
     }
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(isDisplayed()))
     }
   }
@@ -160,12 +159,12 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickCheckBoxAndPositive_restartActivity_clickDummyButton_doesNotShowCellularDialogAndShowsAudioFragment() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
     }
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
     }
@@ -174,12 +173,12 @@ class StateFragmentTest {
   @Test
   fun testStateFragment_clickCheckBoxAndNegative_restartActivity_clickDummyButton_doesNotShowCellularDialogAndAudioFragment() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
     }
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.dummy_audio_button)).perform(click())
+      onView(withId(R.id.enable_audio_playback_button)).perform(click())
       onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
       onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
     }
@@ -384,10 +383,10 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_1)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.MultipleChoiceViewHolder>(1, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
       )
     }
   }
@@ -397,10 +396,10 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_2)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click())
       )
     }
   }
@@ -410,19 +409,19 @@ class StateFragmentTest {
     launch(ContentCardTestActivity::class.java).use {
       onView(withId(R.id.play_exploration_button_2)).perform(click())
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(0, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
       )
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(2, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(1, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
       )
       onView(withId(R.id.selection_interaction_recyclerview)).perform(
-        actionOnItemAtPosition<InteractionAdapter.ItemSelectionViewHolder>(3, click())
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(3, click())
       )
     }
   }
