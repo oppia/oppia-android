@@ -47,7 +47,6 @@ class HomeFragmentPresenter @Inject constructor(
 
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to

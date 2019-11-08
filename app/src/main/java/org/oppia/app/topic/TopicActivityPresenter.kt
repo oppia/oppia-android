@@ -6,6 +6,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
+const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 
 /** The presenter for [TopicActivity]. */
@@ -20,7 +21,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
-        topicFragment
+        topicFragment, TOPIC_FRAGMENT_TAG
       ).commitNow()
     }
   }
