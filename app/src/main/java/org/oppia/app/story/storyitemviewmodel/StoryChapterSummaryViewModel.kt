@@ -10,7 +10,7 @@ import org.oppia.app.story.StoryFragment
 class StoryChapterSummaryViewModel(
   val index: Int,
   private val explorationSelectionListener: ExplorationSelectionListener,
-  chapterSummary: ChapterSummary
+  val chapterSummary: ChapterSummary
 ) : StoryItemViewModel() {
   val id: String = chapterSummary.explorationId
   val name: String = chapterSummary.name
