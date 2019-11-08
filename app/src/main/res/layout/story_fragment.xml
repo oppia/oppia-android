@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.story.StoryViewModel" />
+  </data>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/story_chapter_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:data="@{viewModel.storyChapterLiveData}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+</layout>

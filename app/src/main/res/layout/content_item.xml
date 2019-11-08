@@ -1,0 +1,31 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <TextView
+      android:id="@+id/content_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="4dp"
+      android:background="@drawable/content_blue_background"
+      android:padding="12dp"
+      android:text="@{htmlContent}"
+      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp" />
+  </FrameLayout>
+</layout>

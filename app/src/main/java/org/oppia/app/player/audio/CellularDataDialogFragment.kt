@@ -3,9 +3,9 @@ package org.oppia.app.player.audio
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import android.widget.CheckBox
 import org.oppia.app.R
 import org.oppia.app.player.state.StateFragment
 

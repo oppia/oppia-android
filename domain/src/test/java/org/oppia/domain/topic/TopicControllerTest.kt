@@ -2,6 +2,8 @@ package org.oppia.domain.topic
 
 import android.app.Application
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -9,18 +11,42 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
+import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [TopicController]. */
 @RunWith(AndroidJUnit4::class)
@@ -29,9 +55,47 @@ class TopicControllerTest {
   @Inject
   lateinit var topicController: TopicController
 
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Rule
+  @JvmField
+  val executorRule = InstantTaskExecutorRule()
+
+  @Mock
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+
+  @Captor
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+
+  @Inject
+  lateinit var dataProviders: DataProviders
+
+  @Inject
+  @field:TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
+  private val coroutineContext by lazy {
+    EmptyCoroutineContext + testDispatcher
+  }
+
+  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
+
   @Before
   fun setUp() {
+    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
+  fun tearDown() {
+    Dispatchers.resetMain()
+    testThread.close()
   }
 
   @Test
@@ -130,6 +194,16 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyCount).isEqualTo(1)
+    assertThat(topic.skillCount).isEqualTo(3)
+  }
+
+  @Test
   fun testRetrieveTopic_invalidTopic_returnsFailure() {
     val topicLiveData = topicController.getTopic("invalid_topic_id")
 
@@ -159,6 +233,22 @@ class TopicControllerTest {
 
     val story = storyLiveData.value!!.getOrThrow()
     assertThat(story.storyName).isEqualTo("Other Interesting Story")
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyName).isEqualTo("Matthew")
   }
 
   @Test
@@ -408,10 +498,123 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testGetConceptCard_fractionsSkill0_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
+    assertThat(conceptCard.skillDescription).isEqualTo(
+      "Given a picture divided into unequal parts, write the fraction."
+    )
+    assertThat(conceptCard.explanation.html).contains(
+      "<p>First, divide the picture into equal parts")
+  }
+
+  @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
     val conceptCardLiveData = topicController.getConceptCard("invalid_skill_id")
 
     assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(5)
+    val questionIds = questionsList.map { it -> it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_0)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(5)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
+        FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_1)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(4)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
+        FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_2)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
+        FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -433,6 +636,9 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
+  @Qualifier
+  annotation class TestDispatcher
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -440,6 +646,28 @@ class TopicControllerTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
     }
   }
 

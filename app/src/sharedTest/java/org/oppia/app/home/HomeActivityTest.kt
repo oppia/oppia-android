@@ -5,8 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
@@ -22,23 +21,31 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
+import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -50,8 +57,6 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Singleton
-import org.oppia.app.R
-import org.oppia.app.player.exploration.ExplorationActivity
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -67,17 +72,18 @@ class HomeActivityTest {
   @After
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    Intents.release()
   }
 
   @Test
-  fun testMainActivity_firstOpen_hasWelcomeString() {
+  fun testHomeActivity_firstOpen_hasWelcomeString() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.welcome_text_view)).check(matches(withText("Welcome to Oppia!")))
     }
   }
 
   @Test
-  fun testMainActivity_secondOpen_hasWelcomeBackString() {
+  fun testHomeActivity_secondOpen_hasWelcomeBackString() {
     simulateAppAlreadyOpened()
 
     launch(HomeActivity::class.java).use {
@@ -88,10 +94,192 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_playExplorationButtonClicked_opensExplorationActivity() {
+  fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
-      onView(withId(R.id.play_exploration_button)).perform(click())
-      intended(hasComponent(ExplorationActivity::class.java.name))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText(containsString("Welcome"))))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
+    launch(HomeActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText(containsString("Welcome"))))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.recently_played_stories_text_view)).check(
+        matches(
+          withText(R.string.recently_played_stories)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
+        matches(
+          withText(R.string.view_all)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
+      intended(hasComponent(ContinuePlayingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.chapter_name_text_view)).check(
+        matches(
+          withText(containsString("The Meaning of Equal Parts"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
+        matches(
+          withText(containsString("Second Story"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
+        matches(
+          withText(containsString("Second Story"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_1"))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("FIRST TOPIC"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("First Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
+        matches(
+          withText(containsString("2 Lessons"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("Second Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
+        matches(
+          withText(containsString("1 Lesson"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
+    launch(HomeActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
+        matches(
+          withText(containsString("1 Lesson"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
+    launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
     }
   }
 

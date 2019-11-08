@@ -6,8 +6,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.lang.IllegalStateException
-import java.lang.UnsupportedOperationException
 import kotlin.test.assertFailsWith
 
 /** Tests for [AsyncResult]. */

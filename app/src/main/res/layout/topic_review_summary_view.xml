@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="skill"
+      type="org.oppia.app.model.SkillSummary" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_margin="16dp"
+    android:background="@drawable/topic_review_item_border"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+      android:id="@+id/skill_image_view"
+      android:src="@{skill.thumbnailUrl}"
+      android:layout_width="0dp"
+      android:layout_height="105dp"
+      android:importantForAccessibility="no"
+      android:scaleType="centerCrop"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+      android:id="@+id/separator_view"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/oppiaBrown"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/skill_image_view" />
+
+    <TextView
+      android:id="@+id/skill_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:padding="24dp"
+      android:text="@{skill.description}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/separator_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -19,7 +19,6 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"

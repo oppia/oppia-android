@@ -76,10 +76,10 @@ class AnswerClassificationControllerTest {
     private val TEST_MULTIPLE_CHOICE_OPTION_1 = InteractionObject.newBuilder().setNonNegativeInt(1).build()
 
     private val TEST_NUMBER_WITH_UNITS_0 = InteractionObject.newBuilder()
-      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0f).addUnit(NumberUnit.newBuilder().setUnit("cm")))
+      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("cm")))
       .build()
     private val TEST_NUMBER_WITH_UNITS_1 = InteractionObject.newBuilder()
-      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0f).addUnit(NumberUnit.newBuilder().setUnit("m")))
+      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("m")))
       .build()
 
     private val TEST_NUMBER_0 = InteractionObject.newBuilder().setReal(1.0).build()
