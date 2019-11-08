@@ -100,7 +100,7 @@ class StoryFragmentPresenter @Inject constructor(
     VIEW_TYPE_CHAPTER
   }
 
-  private fun smoothScrollToPosition(position: Int) {
+  fun smoothScrollToPosition(position: Int) {
     linearSmoothScroller.targetPosition = position
     linearLayoutManager.startSmoothScroll(linearSmoothScroller)
     binding.storyChapterList.layoutManager = linearLayoutManager

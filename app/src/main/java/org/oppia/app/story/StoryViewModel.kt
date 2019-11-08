@@ -19,7 +19,7 @@ import javax.inject.Inject
 /** The ViewModel for [StoryFragment]. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
-  fragment: Fragment,
+  private val fragment: Fragment,
   private val topicController: TopicController,
   private val logger: Logger
 ) : ViewModel() {
@@ -57,6 +57,14 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {
     val chapterList: List<ChapterSummary> = storySummary.chapterList
+
+    for (position in 0..storySummary.chapterList.size) {
+      if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
+        (fragment as StoryFragment).smoothScrollToPosition(position + 1)
+        break
+      }
+    }
+
     val completedCount =
       chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }.size
 
