@@ -9,51 +9,84 @@
       type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:clipToPadding="true"
-    android:onClick="@{viewModel.onExplorationClicked}"
-    android:contentDescription="@{viewModel.name}"
-    app:roundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}">
+    app:cardCornerRadius="4dp"
+    app:strokeColor="#019489"
+    app:strokeWidth="2dp">
 
-    <ImageView
-      android:id="@+id/chapter_thumbnail"
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="180dp"
-      android:paddingStart="40dp"
-      android:paddingTop="40dp"
-      android:paddingEnd="40dp"
-      android:scaleType="centerCrop"
-      android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
-      app:layout_constraintBottom_toTopOf="@id/chapter_title"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-      android:id="@+id/chapter_title"
-      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:fontFamily="sans-serif-medium"
-      android:text="@{viewModel.name}"
-      android:textColor="@color/black"
-      android:textSize="14sp"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chapter_thumbnail" />
+      android:clipToPadding="true"
+      android:contentDescription="@{viewModel.name}"
+      android:onClick="@{viewModel.onExplorationClicked}">
 
-    <TextView
-      android:id="@+id/chapter_summary"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:fontFamily="sans-serif-medium"
-      android:text="@{viewModel.summary}"
-      android:textColor="@color/black"
-      android:textSize="12sp"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/chapter_title" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <FrameLayout
+        android:id="@+id/image_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}">
+
+        <ImageView
+          android:id="@+id/chapter_thumbnail"
+          android:layout_width="match_parent"
+          android:layout_height="140dp"
+          android:paddingStart="40dp"
+          android:paddingTop="40dp"
+          android:paddingEnd="40dp"
+          android:scaleType="centerCrop"
+          android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}" />
+      </FrameLayout>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#019489"
+        app:layout_constraintBottom_toBottomOf="@id/image_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="140dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_container">
+
+        <TextView
+          android:id="@+id/chapter_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="8dp"
+          android:fontFamily="sans-serif-medium"
+          android:text="@{viewModel.name}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/image_container" />
+
+        <TextView
+          android:id="@+id/chapter_summary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="8dp"
+          android:fontFamily="sans-serif"
+          android:text="@{viewModel.summary}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/chapter_title" />
+      </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
 </layout>
