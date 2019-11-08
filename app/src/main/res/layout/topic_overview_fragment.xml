@@ -17,6 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:overScrollMode="never"
+    android:background="@color/white"
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,7 +119,7 @@
         android:layout_marginTop="12dp"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
-        android:text="@string/download_topic"
+        android:text="@string/topic_downloaded"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/download_status_image_view"
