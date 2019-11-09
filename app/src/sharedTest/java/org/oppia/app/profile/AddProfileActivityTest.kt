@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -46,7 +47,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-class AdminAuthActivityTest {
+class AddProfileActivityTest {
 
   @Inject lateinit var context: Context
 
@@ -63,32 +64,32 @@ class AdminAuthActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAdminAuthActivityTest_TestApplicationComponent.builder()
+    DaggerAddProfileActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
-      onView(withId(R.id.submit_button)).perform(click())
-      intended(hasComponent(AddProfileActivity::class.java.name))
+  fun testAddProfileActivity_inputName_clickCreate_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("test"))
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_checkError_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
-      onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+  fun testAddProfileActivity_clickCreate_checkNameEmptyError_typeName_checkErrorIsGone() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.resources.getString(R.string.add_profile_error_name_empty))))
 
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("4"))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("test"))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
     }
   }
+
 
   @Qualifier
   annotation class TestDispatcher
@@ -149,6 +150,6 @@ class AdminAuthActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(adminAuthActivityTest: AdminAuthActivityTest)
+    fun inject(addProfileActivityTest: AddProfileActivityTest)
   }
 }
