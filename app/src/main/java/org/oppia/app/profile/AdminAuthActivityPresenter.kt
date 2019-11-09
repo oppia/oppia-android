@@ -21,6 +21,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     getAdminAuthViewModel()
   }
 
+  /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
     activity.title = "Add Profile"
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)

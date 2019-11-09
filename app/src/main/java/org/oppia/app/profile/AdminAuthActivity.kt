@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 const val KEY_ADMIN_AUTH_ADMIN_PIN = "ADMIN_AUTH_ADMIN_PIN"
 
-/** Fragment that authenticates by checking for admin's PIN. */
+/** Activity that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAppCompatActivity() {
   @Inject lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
