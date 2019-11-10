@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
@@ -30,6 +29,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     getProfileChooserViewModel()
   }
 
+  /** Binds ViewModel and sets up RecyclerView Adapter. */
   @ExperimentalCoroutinesApi
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -37,7 +37,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
-    binding.recyclerView.apply {
+    binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
     return binding.root
