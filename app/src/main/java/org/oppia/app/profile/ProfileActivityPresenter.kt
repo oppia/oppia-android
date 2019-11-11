@@ -1,6 +1,7 @@
 package org.oppia.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.profile.ProfileManagementController
@@ -8,14 +9,15 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileActivity]. */
 @ActivityScope
-class
-ProfileActivityPresenter @Inject constructor(
+class ProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController
 ) {
+  /** Adds [ProfileChooserFragment] to view. */
+  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    profileManagementController.addProfile("James", "12345", null, true, true)
-    //profileManagementController.deleteProfile(ProfileId.newBuilder().setInternalId(2).build())
+    // Ensures that an admin profile is present
+    profileManagementController.addProfile("Sean", "12345", null, true, true)
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
