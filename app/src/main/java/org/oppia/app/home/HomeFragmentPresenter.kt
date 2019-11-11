@@ -105,7 +105,7 @@ class HomeFragmentPresenter @Inject constructor(
       val promotedStoryViewModel = PromotedStoryViewModel(activity)
       promotedStoryViewModel.setPromotedStory(result.promotedStory)
       itemList.add(promotedStoryViewModel)
-      if(result.topicSummaryList.isNotEmpty()){
+      if (result.topicSummaryList.isNotEmpty()) {
         val allTopicsViewModel = AllTopicsViewModel()
         itemList.add(allTopicsViewModel)
       }
