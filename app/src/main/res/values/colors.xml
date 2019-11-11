@@ -18,6 +18,9 @@
   <color name="oppiaBackground">#F2F2F2</color>
   <color name="oppiaStrokeBlue">#4D395FD0</color>
   <color name="oppiaStrokeBlack">#CC333333</color>
+
+  <color name="oppiaProgressChapterFinished">#E76F51</color>
+  <color name="oppiaProgressChapterNotFinished">#999999</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="black">#000000</color>

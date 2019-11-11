@@ -31,16 +31,9 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <ProgressBar
-        android:id="@+id/story_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="@{storyPercentage}"
-        android:progressDrawable="@drawable/circular_progress"
-        android:secondaryProgress="100" />
+      <org.oppia.app.customview.CustomProgressView
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
       <TextView
         android:id="@+id/story_progress_percentage"
