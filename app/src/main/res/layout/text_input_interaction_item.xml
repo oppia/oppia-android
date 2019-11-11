@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@color/white"
+    android:background="@color/oppiaLightGreen"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -26,6 +26,7 @@
       android:hint="@string/text_input_hint_text"
       android:inputType="text"
       android:longClickable="false"
+      android:minHeight="48dp"
       android:maxLength="200"
       android:padding="8dp"
       android:singleLine="true"

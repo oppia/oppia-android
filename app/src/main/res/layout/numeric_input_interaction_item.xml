@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@color/white"
+    android:background="@color/oppiaLightGreen"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -29,6 +29,7 @@
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
+      android:minHeight="48dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:enabled="@{!viewModel.isReadOnly}" />
