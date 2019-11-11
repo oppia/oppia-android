@@ -8,13 +8,14 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
 import org.oppia.app.R
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 
 /**
  * CustomView to represent story progress in Topic-Play-Tab.
+ * Without chaptersFinished and totalChapters values this custom-view cannot be created.
+ *
  * Reference: // https://stackoverflow.com/a/39210676
  */
 class CustomProgressView : View {
@@ -22,11 +23,11 @@ class CustomProgressView : View {
   private var strokeWidth = 0f
 
   private var baseRect: RectF? = null
-  private var chapterFinishedArcPaint: Paint? = null
-  private var chapterNotFinishedArcPaint: Paint? = null
+  private lateinit var chapterFinishedArcPaint: Paint
+  private lateinit var chapterNotFinishedArcPaint: Paint
 
+  private var chaptersNotFinished: Int = 0
   var chaptersFinished: Int = 0
-  var chaptersNotFinished: Int = 0
   var totalChapters: Int = 0
 
   constructor(context: Context) : super(context) {
@@ -47,63 +48,60 @@ class CustomProgressView : View {
     calculateSweepAngle()
 
     chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    chapterFinishedArcPaint!!.style = Paint.Style.STROKE
-    chapterFinishedArcPaint!!.strokeCap = Paint.Cap.ROUND
-    chapterFinishedArcPaint!!.strokeWidth = strokeWidth
-    chapterFinishedArcPaint!!.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterFinished)
+    chapterFinishedArcPaint.style = Paint.Style.STROKE
+    chapterFinishedArcPaint.strokeCap = Paint.Cap.ROUND
+    chapterFinishedArcPaint.strokeWidth = strokeWidth
+    chapterFinishedArcPaint.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterFinished)
 
     chapterNotFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    chapterNotFinishedArcPaint!!.style = Paint.Style.STROKE
-    chapterNotFinishedArcPaint!!.strokeCap = Paint.Cap.ROUND
-    chapterNotFinishedArcPaint!!.strokeWidth = strokeWidth
-    chapterNotFinishedArcPaint!!.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterNotFinished)
+    chapterNotFinishedArcPaint.style = Paint.Style.STROKE
+    chapterNotFinishedArcPaint.strokeCap = Paint.Cap.ROUND
+    chapterNotFinishedArcPaint.strokeWidth = strokeWidth
+    if (chaptersFinished != 0) {
+      chapterNotFinishedArcPaint.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterNotFinished)
+    } else {
+      chapterNotFinishedArcPaint.color = ContextCompat.getColor(context, R.color.grey_shade_20)
+    }
   }
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
 
-    // getHeight() is not reliable, use getMeasuredHeight() on first run:
-    // Note: baseRect will also be null after a configuration change,
-    // so in this case the new measured height and width values will be used:
     if (baseRect == null) {
-      // take the minimum of width and height here to be on he safe side:
       val centerX = measuredWidth / 2
       val centerY = measuredHeight / 2
       val radius = Math.min(centerX, centerY)
 
-      // baseRect will define the drawing space for drawArc()
-      // We have to take into account the strokeWidth with drawArc() as well as drawCircle():
-      // circles as well as arcs are drawn 50% outside of the bounds defined by the radius (radius for arcs is calculated from the rectangle baseRect).
-      // So if baseRect is too large, the lines will not fit into the View
       val startTop = (strokeWidth / 2).toInt()
       val startLeft = (strokeWidth / 2).toInt()
 
       val endBottom = 2 * radius - startTop
       val endRight = 2 * radius - startTop
 
+      // baseRect will define the drawing space for drawArc().
       baseRect = RectF(startLeft.toFloat(), startTop.toFloat(), endRight.toFloat(), endBottom.toFloat())
     }
 
     var angleStartPoint = -90f
-    for (i in 0 until chaptersFinished) {
-      canvas.drawArc(
-        baseRect!!,
-        angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE),
-        sweepAngle,
-        false,
-        chapterFinishedArcPaint!!
-      )
-    }
-
-    angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
-    for (i in 0 until chaptersNotFinished) {
-      canvas.drawArc(
-        baseRect!!,
-        angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE),
-        sweepAngle,
-        false,
-        chapterNotFinishedArcPaint!!
-      )
+    if (totalChapters > 1) {
+      // Draws arc for every finished chapter.
+      for (i in 0 until chaptersFinished) {
+        val startAngle = angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+        canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterFinishedArcPaint)
+      }
+      angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
+      // Draws arc for every unfinished chapter.
+      for (i in 0 until chaptersNotFinished) {
+        val startAngle = angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+        canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterNotFinishedArcPaint)
+      }
+    } else if (totalChapters == 1) {
+      // Draws entire circle for finished an unfinished chapter.
+      if (chaptersFinished == 1) {
+        canvas.drawArc(baseRect!!, angleStartPoint, 360f, false, chapterFinishedArcPaint)
+      } else {
+        canvas.drawArc(baseRect!!, angleStartPoint, 360f, false, chapterNotFinishedArcPaint)
+      }
     }
   }
 
