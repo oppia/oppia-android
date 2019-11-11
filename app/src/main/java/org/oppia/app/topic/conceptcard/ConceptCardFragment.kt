@@ -52,4 +52,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
     super.onStart()
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
+
+  fun getSkillId() = conceptCardPresenter.skillId
+  fun getExplanationTextView() = conceptCardPresenter.explanationTextView
 }

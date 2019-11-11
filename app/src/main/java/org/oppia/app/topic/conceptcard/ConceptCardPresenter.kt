@@ -3,6 +3,7 @@ package org.oppia.app.topic.conceptcard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import org.oppia.app.R
@@ -22,15 +23,17 @@ class ConceptCardPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
   private val htmlParserFactory: HtmlParser.Factory
 ){
-  private lateinit var skillId: String
+  lateinit var skillId: String
+  lateinit var explanationTextView: TextView
 
   /** Sets up data binding and adapter for RecyclerView */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
-    skillId = id
     val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getConceptCardViewModel()
-    viewModel.setSkillId(skillId)
-    viewModel.setExplanationTextView(binding.explanation)
+
+    skillId = id
+    explanationTextView = binding.explanation
+
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setTitle(R.string.concept_card_toolbar_title)
     binding.conceptCardToolbar.setNavigationOnClickListener {

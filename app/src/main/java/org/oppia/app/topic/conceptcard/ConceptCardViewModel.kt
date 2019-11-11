@@ -1,7 +1,7 @@
 package org.oppia.app.topic.conceptcard
 
 import android.text.Spannable
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -17,13 +17,13 @@ import javax.inject.Inject
 /** [ViewModel] for concept card, providing rich text and worked examples */
 @FragmentScope
 class ConceptCardViewModel @Inject constructor(
+  fragment: Fragment,
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory
 ) : ViewModel() {
 
-  private lateinit var skillId: String
-  private lateinit var explanationTextView: TextView
+ private val conceptCardFragment = fragment as ConceptCardFragment
 
   /** Live Data for concept card explanation */
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
@@ -40,18 +40,8 @@ class ConceptCardViewModel @Inject constructor(
     processWorkedExamplesLiveData()
   }
 
-  /** Sets the value of skillId. Must be called before setting ViewModel to binding. */
-  fun setSkillId(id: String) {
-    skillId = id
-  }
-
-  /** Sets the explanation TextView for parseOppiaHtml */
-  fun setExplanationTextView (view: TextView) {
-    explanationTextView = view
-  }
-
   private val conceptCardResultLiveData: LiveData<AsyncResult<ConceptCard>> by lazy {
-    topicController.getConceptCard(skillId)
+    topicController.getConceptCard(conceptCardFragment.getSkillId())
   }
 
   private fun processConceptCardLiveData(): LiveData<ConceptCard> {
@@ -77,9 +67,9 @@ class ConceptCardViewModel @Inject constructor(
     if (conceptCardResult.isFailure()) {
       logger.e("ConceptCardFragment", "Failed to retrieve Concept Card: " + conceptCardResult.getErrorOrNull())
     }
-    val htmlParser = htmlParserFactory.create("skill", skillId)
+    val htmlParser = htmlParserFactory.create("skill", conceptCardFragment.getSkillId())
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParser.parseOppiaHtml(conceptCard.explanation.html, explanationTextView)
+    return htmlParser.parseOppiaHtml(conceptCard.explanation.html, conceptCardFragment.getExplanationTextView())
   }
 
   private fun processConceptCardWorkExamples(conceptCardResult: AsyncResult<ConceptCard>): List<SubtitledHtml> {
