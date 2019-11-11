@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
+import org.oppia.app.customview.CustomProgressView
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
@@ -56,11 +57,9 @@ class StorySummaryAdapter(
             it == ChapterPlayState.COMPLETED
           }
           .size
-
       val storyPercentage: Int = (completedChapterCount * 100) / storySummary.chapterCount
-
       binding.storyPercentage = storyPercentage
-      binding.chaptersFinished = completedChapterCount
+      binding.storyProgressView.setStoryChapterDetails(storySummary.chapterCount, completedChapterCount)
 
       val chapterList = storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
@@ -78,6 +77,7 @@ class StorySummaryAdapter(
             position
           }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+
         if (previousIndex != null) {
           notifyItemChanged(previousIndex)
         }
