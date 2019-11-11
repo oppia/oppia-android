@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.customview.CustomProgressView
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
@@ -78,11 +77,15 @@ class StorySummaryAdapter(
           }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
 
-        if (previousIndex != null) {
-          notifyItemChanged(previousIndex)
-        }
-        if (currentExpandedChapterListIndex != null) {
+        if (previousIndex != null && currentExpandedChapterListIndex != null && previousIndex == currentExpandedChapterListIndex) {
           notifyItemChanged(currentExpandedChapterListIndex!!)
+        } else {
+          if (previousIndex != null) {
+            notifyItemChanged(previousIndex)
+          }
+          if (currentExpandedChapterListIndex != null) {
+            notifyItemChanged(currentExpandedChapterListIndex!!)
+          }
         }
       }
     }
