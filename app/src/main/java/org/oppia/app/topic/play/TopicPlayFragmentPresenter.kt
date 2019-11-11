@@ -10,10 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.TopicPlayFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -25,16 +29,33 @@ class TopicPlayFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
+  private val explorationDataController: ExplorationDataController,
   private val topicController: TopicController
-) : StorySummarySelector {
-
+) : StorySummarySelector, ChapterSummarySelector {
+  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 
+  private var currentExpandedChapterListIndex: Int? = null
+
   private lateinit var binding: TopicPlayFragmentBinding
+  private lateinit var topicId: String
+  private lateinit var storyId: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
+
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    currentExpandedChapterListIndex: Int?,
+    expandedChapterListIndexListener: ExpandedChapterListIndexListener
+  ): View? {
+    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicPlayFragment."
+    }
+    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
+    this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-
     binding.let {
       it.lifecycleOwner = fragment
     }
@@ -44,17 +65,31 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  // TODO(#135): Get this topic-id or get storyList from [StoryFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId)
   }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      val storySummaryAdapter = StorySummaryAdapter(it.storyList, this as StorySummarySelector)
+      it.storyList!!.forEach { storySummary ->
+        if (storySummary.storyId.equals(storyId)) {
+          val index = it.storyList.indexOf(storySummary)
+          currentExpandedChapterListIndex = index
+        }
+      }
+      val storySummaryAdapter =
+        StorySummaryAdapter(
+          it.storyList,
+          this as ChapterSummarySelector,
+          this as StorySummarySelector,
+          expandedChapterListIndexListener,
+          currentExpandedChapterListIndex
+        )
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
+      if (storyId.isNotEmpty())
+        binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
     })
   }
 
@@ -69,7 +104,26 @@ class TopicPlayFragmentPresenter @Inject constructor(
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
-  override fun selectedStorySummary(storySummary: StorySummary) {
+  override fun selectStorySummary(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(storySummary.storyId)
+  }
+
+  override fun selectChapterSummary(chapterSummary: ChapterSummary) {
+    playExploration(chapterSummary.explorationId)
+  }
+
+  private fun playExploration(explorationId: String) {
+    explorationDataController.startPlayingExploration(
+      explorationId
+    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("TopicPlayFragment", "Loading exploration")
+        result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        else -> {
+          logger.d("TopicPlayFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(explorationId)
+        }
+      }
+    })
   }
 }
