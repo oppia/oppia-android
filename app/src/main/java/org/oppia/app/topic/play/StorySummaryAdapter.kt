@@ -43,13 +43,12 @@ class StorySummaryAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummary: StorySummary, position: Int) {
       var isChapterListVisible = false
-      if(currentExpandedChapterListIndex!=null){
+      if (currentExpandedChapterListIndex != null) {
         isChapterListVisible = currentExpandedChapterListIndex!! == position
       }
       binding.isListExpanded = isChapterListVisible
       binding.storySummary = storySummary
 
-      val totalChapterCount = storySummary.chapterCount
       val chapterSummaries = storySummary.chapterList
       val completedChapterCount =
         chapterSummaries.map(ChapterSummary::getChapterPlayState)
@@ -58,12 +57,13 @@ class StorySummaryAdapter(
           }
           .size
 
+      val storyPercentage: Int = (completedChapterCount * 100) / storySummary.chapterCount
+
+      binding.storyPercentage = storyPercentage
+      binding.chaptersFinished = completedChapterCount
+
       val chapterList = storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
-
-      val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
-
-      binding.storyPercentage = storyProgressPercentage
 
       binding.storyNameTextView.setOnClickListener {
         storySummarySelector.selectStorySummary(storySummary)
@@ -71,16 +71,17 @@ class StorySummaryAdapter(
 
       binding.chapterListViewControl.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
-        currentExpandedChapterListIndex = if (currentExpandedChapterListIndex!=null && currentExpandedChapterListIndex == position) {
-          null
-        } else {
-          position
-        }
+        currentExpandedChapterListIndex =
+          if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
+            null
+          } else {
+            position
+          }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if(previousIndex!=null) {
+        if (previousIndex != null) {
           notifyItemChanged(previousIndex)
         }
-        if(currentExpandedChapterListIndex!=null) {
+        if (currentExpandedChapterListIndex != null) {
           notifyItemChanged(currentExpandedChapterListIndex!!)
         }
       }

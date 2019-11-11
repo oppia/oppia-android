@@ -8,24 +8,26 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
 import org.oppia.app.R
 
-// https://stackoverflow.com/a/39210676
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 
-private const val TOTAL_CHAPTERS = 3
-
-private const val CHAPTERS_FINISHED = 1
-
-private const val CHAPTERS_NOT_STARTED = 2
+/**
+ * CustomView to represent story progress in Topic-Play-Tab.
+ * Reference: // https://stackoverflow.com/a/39210676
+ */
 class CustomProgressView : View {
-
   private var sweepAngle = 0f
-
   private var strokeWidth = 0f
+
+  private var baseRect: RectF? = null
   private var chapterFinishedArcPaint: Paint? = null
   private var chapterNotFinishedArcPaint: Paint? = null
-  private var baseRect: RectF? = null
+
+  var chaptersFinished: Int = 0
+  var chaptersNotFinished: Int = 0
+  var totalChapters: Int = 0
 
   constructor(context: Context) : super(context) {
     init()
@@ -39,7 +41,8 @@ class CustomProgressView : View {
     init()
   }
 
-  private fun init() {
+  fun init() {
+    chaptersNotFinished = totalChapters - chaptersFinished
     strokeWidth = dpToPx(4)
     calculateSweepAngle()
 
@@ -82,7 +85,7 @@ class CustomProgressView : View {
     }
 
     var angleStartPoint = -90f
-    for (i in 0 until CHAPTERS_FINISHED) {
+    for (i in 0 until chaptersFinished) {
       canvas.drawArc(
         baseRect!!,
         angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE),
@@ -92,8 +95,8 @@ class CustomProgressView : View {
       )
     }
 
-    angleStartPoint += CHAPTERS_FINISHED * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
-    for (i in 0 until CHAPTERS_NOT_STARTED) {
+    angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
+    for (i in 0 until chaptersNotFinished) {
       canvas.drawArc(
         baseRect!!,
         angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE),
@@ -105,8 +108,8 @@ class CustomProgressView : View {
   }
 
   private fun calculateSweepAngle() {
-    val totalRemainingDegrees = (360 - STROKE_DASH_GAP_IN_DEGREE * TOTAL_CHAPTERS).toFloat()
-    sweepAngle = totalRemainingDegrees / TOTAL_CHAPTERS
+    val totalRemainingDegrees = (360 - STROKE_DASH_GAP_IN_DEGREE * totalChapters).toFloat()
+    sweepAngle = totalRemainingDegrees / totalChapters
   }
 
   private fun dpToPx(dp: Int): Float {

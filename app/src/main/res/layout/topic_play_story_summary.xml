@@ -15,6 +15,10 @@
       type="Integer" />
 
     <variable
+      name="chaptersFinished"
+      type="Integer" />
+
+    <variable
       name="storySummary"
       type="org.oppia.app.model.StorySummary" />
   </data>
@@ -32,8 +36,11 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <org.oppia.app.customview.CustomProgressView
+        android:id="@+id/story_progress_view"
         android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        app:chaptersFinished="@{chaptersFinished}"
+        app:totalChapters="@{storySummary.chapterCount}" />
 
       <TextView
         android:id="@+id/story_progress_percentage"
