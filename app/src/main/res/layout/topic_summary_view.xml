@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:project="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -40,24 +39,28 @@
 
     <TextView
       android:id="@+id/topic_name_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@{viewModel.name}"
       android:textColor="@color/white"
       android:fontFamily="sans-serif-medium"
       android:textSize="14sp"
       android:layout_margin="8dp"
+      android:maxLines="2"
+      android:minLines="2"
+      android:ellipsize="end"
+      android:gravity="top"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@+id/bottom_topic_bar" />
 
     <TextView
       android:id="@+id/lesson_count_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:fontFamily="sans-serif-light"
       android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
-      android:textColor="@color/white"
+      android:textColor="@color/white_80"
       android:textSize="14sp"
       android:textStyle="italic"
       app:layout_constraintBottom_toBottomOf="@+id/bottom_topic_bar"
