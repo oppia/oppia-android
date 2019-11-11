@@ -27,8 +27,15 @@ class CustomProgressView : View {
   private lateinit var chapterNotFinishedArcPaint: Paint
 
   private var chaptersNotFinished: Int = 0
-  var chaptersFinished: Int = 0
-  var totalChapters: Int = 0
+  private var chaptersFinished: Int = 0
+  private var totalChapters: Int = 0
+
+  fun setStoryChapterDetails(totalChaptersCount: Int, chaptersFinishedCount: Int) {
+    this.totalChapters = totalChaptersCount
+    this.chaptersFinished = chaptersFinishedCount
+    this.chaptersNotFinished = totalChaptersCount - chaptersFinishedCount
+    init()
+  }
 
   constructor(context: Context) : super(context) {
     init()
@@ -42,7 +49,7 @@ class CustomProgressView : View {
     init()
   }
 
-  fun init() {
+  private fun init() {
     chaptersNotFinished = totalChapters - chaptersFinished
     strokeWidth = dpToPx(4)
     calculateSweepAngle()
