@@ -12,28 +12,32 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
 class ConceptCardPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
+  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
+  private val htmlParserFactory: HtmlParser.Factory
 ){
+  private lateinit var skillId: String
 
   /** Sets up data binding and adapter for RecyclerView */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
+    skillId = id
+    val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getConceptCardViewModel()
     viewModel.setSkillId(skillId)
-    val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    viewModel.setExplanationTextView(binding.explanation)
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setNavigationOnClickListener {
-      (fragment as? DialogFragment)?.dismiss()
+      (fragment as DialogFragment).dismiss()
     }
     binding.workedExamples.apply {
       adapter = createRecyclerViewAdapter()
     }
-
     binding.let {
       it.viewModel = viewModel
       it.lifecycleOwner = fragment
@@ -50,7 +54,12 @@ class ConceptCardPresenter @Inject constructor(
       .newBuilder<SubtitledHtml>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ConceptCardExampleViewBinding::inflate,
-        setViewModel = ConceptCardExampleViewBinding::setSubtitledHtml)
+        setViewModel = ::bindExampleViewModel)
       .build()
+  }
+
+  private fun bindExampleViewModel(binding: ConceptCardExampleViewBinding, html: SubtitledHtml) {
+    val htmlParser = htmlParserFactory.create("skill", skillId)
+    binding.html = htmlParser.parseOppiaHtml(html.html, binding.example)
   }
 }

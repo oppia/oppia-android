@@ -38,7 +38,7 @@
           android:textColor="@android:color/black"
           android:gravity="center"
           android:visibility="@{viewModel.conceptCardLiveData.hasExplanation() ? View.VISIBLE : View.GONE}"
-          android:text="@{viewModel.conceptCardLiveData.explanation.getHtml()}" />
+          android:text="@{viewModel.explanationLiveData}" />
         <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/worked_examples"
           android:layout_width="match_parent"

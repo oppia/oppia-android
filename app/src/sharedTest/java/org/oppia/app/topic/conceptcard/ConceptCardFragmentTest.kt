@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -39,13 +40,13 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_explanationIsDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
+    onView(withId(R.id.explanation)).check(matches(withText("Explanation with rich text.")))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(withText("Worked example with <i>rich text</i>.")).check(matches(isDisplayed()))
+    onView(atPositionOnView(R.id.worked_examples, 0, R.id.example)).check(matches(withText("Worked example with rich text.")))
   }
 
   @Test
@@ -57,8 +58,8 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_2)).perform(click())
-    onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
-    onView(withText("Second worked example.")).check(matches(isDisplayed()))
+    onView(atPositionOnView(R.id.worked_examples, 0, R.id.example)).check(matches(withText("Worked example without rich text.")))
+    onView(atPositionOnView(R.id.worked_examples, 1, R.id.example)).check(matches(withText("Second worked example.")))
   }
 
   @Test
