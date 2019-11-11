@@ -7,7 +7,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -20,10 +24,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.util.logging.EnableConsoleLog
@@ -45,10 +51,16 @@ class ProfileChooserFragmentTest {
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
     GlobalScope.launch(Dispatchers.Main) {
       profileTestHelper.initializeProfiles()
     }
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -86,6 +98,22 @@ class ProfileChooserFragmentTest {
       onView(atPositionOnView(R.id.profile_recycler_view, 7, R.id.profile_name_text)).check(matches(withText("F")))
       onView(atPositionOnView(R.id.profile_recycler_view, 8, R.id.profile_name_text)).check(matches(withText("G")))
       onView(atPositionOnView(R.id.profile_recycler_view, 9, R.id.profile_name_text)).check(matches(withText("H")))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity() {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(atPosition(R.id.profile_recycler_view, 2)).perform(click())
+      intended(hasComponent(AdminAuthActivity::class.java.name))
     }
   }
 

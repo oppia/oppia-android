@@ -18,7 +18,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
-import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,6 @@ import kotlinx.coroutines.launch
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
-
 
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -140,6 +138,4 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialog.dismiss()
       }.create().show()
   }
-
-
 }
