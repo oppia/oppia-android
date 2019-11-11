@@ -15,7 +15,6 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
-import org.oppia.util.parser.JsonParser
 import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
@@ -289,21 +288,24 @@ class StateRetriever @Inject constructor(
       is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
       is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
-      is JSONArray -> if (customizationArgValue.length() > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(JsonParser().parseJsonArrayToMutableListOfString(customizationArgValue))
-        ).build()
+      is JSONArray -> {
+        if (customizationArgValue.length() > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            parseJsonStringList(customizationArgValue)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
   }
 
-  @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
-  private fun createStringList(stringList: MutableList<String>): StringList {
-    if (stringList[0] is String) {
-      return StringList.newBuilder().addAllHtml(stringList).build()
+
+  private fun parseJsonStringList(jsonArray: JSONArray): StringList {
+    val list: MutableList<String> = ArrayList()
+    for (i in 0 until jsonArray.length()) {
+      list.add(jsonArray.get(i).toString())
     }
-    return StringList.getDefaultInstance()
+    return StringList.newBuilder().addAllHtml(list).build()
   }
 
 }
