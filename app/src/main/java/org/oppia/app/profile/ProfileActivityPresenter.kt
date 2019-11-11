@@ -7,10 +7,7 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileActivity]. */
 @ActivityScope
-class
-ProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
+class ProfileActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
