@@ -22,7 +22,6 @@ import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -44,7 +43,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
-
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -95,11 +93,6 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
     })
-  }
-
-  fun handleTopicButtonClicked(v: View) {
-    logger.d(TAG_HOME_FRAGMENT, "Successfully loaded topic")
-    routeToTopicListener.routeToTopic(TEST_TOPIC_ID_0)
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {

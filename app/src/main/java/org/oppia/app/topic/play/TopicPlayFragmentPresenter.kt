@@ -15,6 +15,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
@@ -38,6 +39,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private lateinit var binding: TopicPlayFragmentBinding
   private lateinit var topicId: String
+  private lateinit var storyId: String
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -50,6 +52,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPlayFragment."
     }
+    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -68,6 +71,12 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
+      it.storyList!!.forEach { storySummary ->
+        if (storySummary.storyId.equals(storyId)) {
+          val index = it.storyList.indexOf(storySummary)
+          currentExpandedChapterListIndex = index
+        }
+      }
       val storySummaryAdapter =
         StorySummaryAdapter(
           it.storyList,
@@ -79,6 +88,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
       binding.storySummaryRecyclerView.apply {
         adapter = storySummaryAdapter
       }
+      if (storyId.isNotEmpty())
+        binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
     })
   }
 
