@@ -24,7 +24,7 @@
       android:layout_marginTop="16dp"
       android:onClick="@{presenter::playExplorationButton}"
       android:text="Play exploration"
-      android:visibility="visible" />
+      android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"
