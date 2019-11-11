@@ -62,10 +62,10 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_is_admin_text)).check(matches(withText(context.resources.getString(R.string.profile_chooser_admin))))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_is_admin_text)).check(matches(withText(context.getString(R.string.profile_chooser_admin))))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(matches(withText("Ben")))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_is_admin_text)).check(matches(not(isDisplayed())))
-      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(matches(withText(context.resources.getString(R.string.profile_chooser_add))))
+      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(matches(withText(context.getString(R.string.profile_chooser_add))))
     }
   }
 

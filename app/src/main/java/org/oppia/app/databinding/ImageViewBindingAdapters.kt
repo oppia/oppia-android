@@ -53,6 +53,6 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: LessonThumbnailGrap
 fun setProfileImage(imageView: ImageView, imageUrl: String) {
   Glide.with(imageView.context)
     .load(imageUrl)
-    .placeholder(R.drawable.review_placeholder)
+    .placeholder(R.drawable.default_avatar)
     .into(imageView)
 }
