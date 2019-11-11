@@ -299,7 +299,6 @@ class StateRetriever @Inject constructor(
     return InteractionObject.getDefaultInstance()
   }
 
-
   private fun parseJsonStringList(jsonArray: JSONArray): StringList {
     val list: MutableList<String> = ArrayList()
     for (i in 0 until jsonArray.length()) {
@@ -307,5 +306,4 @@ class StateRetriever @Inject constructor(
     }
     return StringList.newBuilder().addAllHtml(list).build()
   }
-
 }
