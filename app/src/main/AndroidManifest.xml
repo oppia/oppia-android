@@ -15,8 +15,6 @@
     <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
     <activity android:name=".home.HomeActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name=".testing.InputInteractionViewTestActivity" />
-    <activity android:name=".story.StoryActivity"/>
     <activity android:name=".profile.AdminAuthActivity" />
     <activity android:name=".profile.AddProfileActivity" />
     <activity android:name=".profile.PinPasswordActivity"
@@ -32,7 +30,7 @@
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
+        <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
       <intent-filter>
@@ -40,10 +38,12 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
+    <activity android:name=".story.StoryActivity" />
     <activity android:name=".story.testing.StoryFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".topic.TopicActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
