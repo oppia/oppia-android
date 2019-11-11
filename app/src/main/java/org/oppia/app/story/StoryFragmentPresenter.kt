@@ -65,8 +65,6 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    smoothScrollToPosition(2)
-
     return BindableAdapter.Builder
       .newBuilder<StoryItemViewModel>()
       .registerViewTypeComputer { viewModel ->
