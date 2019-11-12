@@ -64,6 +64,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   private fun bindExampleViewModel(binding: ConceptCardExampleViewBinding, html: SubtitledHtml) {
     val htmlParser = htmlParserFactory.create("skill", skillId)
-    binding.html = htmlParser.parseOppiaHtml(html.html, binding.example)
+    binding.html = htmlParser.parseOppiaHtml(html.html, binding.conceptCardExampleTextView)
   }
 }
