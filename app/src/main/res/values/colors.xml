@@ -16,6 +16,7 @@
   <color name="oppiaLightBlue">#4DA5D3EC</color>
   <color name="oppiaLightYellow">#FFFFF0</color>
   <color name="oppiaBrown">#C55F45</color>
+  <color name="oppiaLightBrown">#E76F51</color>
   <color name="oppiaBackground">#F2F2F2</color>
   <color name="oppiaStrokeBlue">#4D395FD0</color>
   <color name="oppiaStrokeBlack">#CC333333</color>
@@ -24,6 +25,7 @@
   <color name="oppiaDisabledButtonBackground">#61999999</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
+  <color name="white_80">#CCFFFFFF</color>
   <color name="black">#000000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
