@@ -286,6 +286,8 @@ class TopicController @Inject constructor(
       .addSkill(createTestTopic0Skill0())
       .addStory(createTestTopic0Story1())
       .addSkill(createTestTopic0Skill1())
+      .addSkill(createTestTopic0Skill2())
+      .addSkill(createTestTopic0Skill3())
       .setTopicThumbnail(createTestTopic0Thumbnail())
       .build()
   }
@@ -516,6 +518,22 @@ class TopicController @Inject constructor(
   }
 
   private fun createTestTopic0Skill1(): SkillSummary {
+    return SkillSummary.newBuilder()
+      .setSkillId(TEST_SKILL_ID_1)
+      .setDescription("Another important skill")
+      .build()
+  }
+
+
+  private fun createTestTopic0Skill2(): SkillSummary {
+    return SkillSummary.newBuilder()
+      .setSkillId(TEST_SKILL_ID_1)
+      .setDescription("A different skill in a different topic Another important skill")
+      .build()
+  }
+
+
+  private fun createTestTopic0Skill3(): SkillSummary {
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
