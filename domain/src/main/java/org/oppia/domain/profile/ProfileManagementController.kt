@@ -27,7 +27,8 @@ import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,12 +56,12 @@ class ProfileManagementController @Inject constructor(
   class ProfileNotFoundException(msg: String): Exception(msg)
   class FailedToReadProfilesException(msg: String): Exception(msg)
 
-  enum class ProfileActionStatus {
-    Success,
-    ProfileNameNotUnique,
-    FailedToStoreImage,
-    FailedToDeleteDir,
-    ProfileNotFound
+  private enum class ProfileActionStatus {
+    SUCCESS,
+    PROFILE_NAME_NOT_UNIQUE,
+    FAILED_TO_STORE_IMAGE,
+    FAILED_TO_DELETE_DIR,
+    PROFILE_NOT_FOUND
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -107,7 +108,7 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!isUniqueName(name, it)) {
-        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNameNotUnique)
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
@@ -116,7 +117,7 @@ class ProfileManagementController @Inject constructor(
       if (avatarImagePath != null) {
         imageUri = saveImageToInternalStorage(avatarImagePath, profileDir)
         if (imageUri.isEmpty()) {
-          return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FailedToStoreImage)
+          return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
         }
       } else {
         // gravatar url is a md5 hash of an email address
@@ -130,7 +131,7 @@ class ProfileManagementController @Inject constructor(
         .build()
 
       val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -138,8 +139,8 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.ProfileNameNotUnique -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$name is not unique to other profiles")))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$name is not unique to other profiles")))
           else -> pendingLiveData.postValue(AsyncResult.failed(FailedToStoreImageException("Failed to store user's selected avatar image")))
         }
       }
@@ -162,12 +163,12 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!isUniqueName(newName, it)) {
-        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNameNotUnique)
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNotFound)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setName(newName).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -175,8 +176,8 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.ProfileNameNotUnique -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$newName is not unique to other profiles")))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$newName is not unique to other profiles")))
           else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
         }
       }
@@ -195,10 +196,10 @@ class ProfileManagementController @Inject constructor(
   fun updatePin(profileId: ProfileId, newPin: String): LiveData<AsyncResult<Any?>> {
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNotFound)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setPin(newPin).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -206,7 +207,7 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
           else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
         }
       }
@@ -227,10 +228,10 @@ class ProfileManagementController @Inject constructor(
   ): LiveData<AsyncResult<Any?>> {
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNotFound)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setAllowDownloadAccess(allowDownloadAccess).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -238,7 +239,7 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
           else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
         }
       }
@@ -312,10 +313,10 @@ class ProfileManagementController @Inject constructor(
   internal fun updateLastLoggedIn(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNotFound)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(Date().time).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -323,7 +324,7 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
           else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
         }
       }
@@ -342,13 +343,13 @@ class ProfileManagementController @Inject constructor(
     val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
-        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.ProfileNotFound)
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       }
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
-        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FailedToDeleteDir)
+        return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_DELETE_DIR)
       }
       val profileDatabaseBuilder = it.toBuilder().removeProfiles(profileId.internalId)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.Success)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     deferred.invokeOnCompletion {
       if (it != null) {
@@ -356,8 +357,8 @@ class ProfileManagementController @Inject constructor(
         pendingLiveData.postValue(AsyncResult.failed(it))
       } else {
         when (deferred.getCompleted()) {
-          ProfileActionStatus.Success -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.ProfileNotFound -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("ProfileId ${profileId.internalId} does not match an existing Profile")))
+          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
+          ProfileActionStatus.PROFILE_NOT_FOUND -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("ProfileId ${profileId.internalId} does not match an existing Profile")))
           else -> pendingLiveData.postValue(AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId.internalId}")))
         }
       }
