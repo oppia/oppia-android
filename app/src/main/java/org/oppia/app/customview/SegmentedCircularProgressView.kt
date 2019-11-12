@@ -18,7 +18,7 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  *
  * Reference: // https://stackoverflow.com/a/39210676
  */
-class CustomProgressView : View {
+class SegmentedCircularProgressView : View {
   private var sweepAngle = 0f
   private var strokeWidth = 0f
 

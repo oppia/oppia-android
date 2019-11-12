@@ -31,7 +31,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <org.oppia.app.customview.CustomProgressView
+      <org.oppia.app.customview.SegmentedCircularProgressView
         android:id="@+id/story_progress_view"
         android:layout_width="50dp"
         android:layout_height="50dp" />
