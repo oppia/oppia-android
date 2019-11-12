@@ -29,9 +29,11 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -47,11 +49,13 @@ import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.audio.CellularDialogController
+import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -66,18 +70,20 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val cellularDialogController: CellularDialogController,
+  private val cellularAudioDialogController: CellularAudioDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private val networkConnectionUtil: NetworkConnectionUtil
 ) : StateNavigationButtonListener {
 
   private var showCellularDataDialog = true
   private var useCellularData = false
+  private var audioShowing = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -87,7 +93,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    cellularDialogController.getCellularDataPreference()
+    cellularAudioDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
           val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
@@ -193,28 +199,51 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (showCellularDataDialog) {
+    if (audioShowing) {
+      audioShowing = false
       showHideAudioFragment(false)
-      showCellularDataDialogFragment()
     } else {
-      if (useCellularData) {
-        showHideAudioFragment(getAudioFragment() == null)
-      } else {
-        showHideAudioFragment(false)
+      when (networkConnectionUtil.getCurrentConnectionStatus()) {
+        ConnectionStatus.WIFI -> {
+          audioShowing = true
+          showHideAudioFragment(true)
+        }
+        ConnectionStatus.CELLULAR -> {
+          if (showCellularDataDialog) {
+            audioShowing = false
+            showHideAudioFragment(false)
+            showCellularDataDialogFragment()
+          } else {
+            if (useCellularData) {
+              audioShowing = true
+              showHideAudioFragment(true)
+            } else {
+              audioShowing = false
+              showHideAudioFragment(false)
+            }
+          }
+        }
+        else -> {
+          audioShowing = false
+          showHideAudioFragment(false)
+        }
       }
     }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
+    audioShowing = true
     showHideAudioFragment(true)
     if (saveUserChoice) {
-      cellularDialogController.setAlwaysUseCellularDataPreference()
+      cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
+    audioShowing = false
+    showHideAudioFragment(false)
     if (saveUserChoice) {
-      cellularDialogController.setNeverUseCellularDataPreference()
+      cellularAudioDialogController.setNeverUseCellularDataPreference()
     }
   }
 
@@ -242,6 +271,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun showHideAudioFragment(isVisible: Boolean) {
     if (isVisible) {
+      (fragment.requireActivity() as ExplorationActivity).showVolumeOn()
       if (getAudioFragment() == null) {
         val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction().add(
@@ -250,6 +280,7 @@ class StateFragmentPresenter @Inject constructor(
         ).commitNow()
       }
     } else {
+      (fragment.requireActivity() as ExplorationActivity).showVolumeOff()
       if (getAudioFragment() != null) {
         fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
       }
@@ -273,6 +304,12 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     currentStateName = ephemeralState.state.name
+
+    showOrHideAudioByState(ephemeralState.state)
+    getAudioFragment()?.let {
+      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
+    }
+
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
     val interaction = ephemeralState.state.interaction
@@ -451,6 +488,17 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+  }
+
+  private fun showOrHideAudioByState(state: State) {
+    if (state.recordedVoiceoversCount == 0 ||
+      networkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE) {
+      (fragment.requireActivity() as ExplorationActivity).hideAudioButton()
+      showHideAudioFragment(false)
+    } else {
+      (fragment.requireActivity() as ExplorationActivity).showAudioButton()
+      showHideAudioFragment(audioShowing)
+    }
   }
 
   private enum class ViewType {

@@ -39,6 +39,8 @@ class AudioFragmentPresenter @Inject constructor(
   private var selectedLanguageCode: String = ""
   private var languages = listOf<String>()
 
+  private lateinit var exploration: Exploration
+
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -96,7 +98,7 @@ class AudioFragmentPresenter @Inject constructor(
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      languages as ArrayList<String>,
+      ArrayList(languages),
       selectedLanguageCode
     )
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
@@ -129,15 +131,21 @@ class AudioFragmentPresenter @Inject constructor(
   private fun retrieveVoiceoverMappings(explorationId: String, stateId: String) {
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
     processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
-      val state = it.statesMap[stateId] ?: State.getDefaultInstance()
-      val contentId = state.content.contentId
-      val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
-      languages = voiceoverMapping.keys.toList()
-      selectedLanguageCode = languages.firstOrNull() ?: ""
-      val viewModel = getAudioViewModel()
-      viewModel.setVoiceoverMappings(voiceoverMapping)
-      viewModel.setAudioLanguageCode(selectedLanguageCode)
+      exploration = it
+      setVoiceoverMappingsByState(stateId)
     })
+  }
+
+  /** Sets the ViewModel's current VoiceoverMappings by stateId. */
+  fun setVoiceoverMappingsByState(stateId: String) {
+    val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
+    val contentId = state.content.contentId
+    val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    languages = voiceoverMapping.keys.toList()
+    selectedLanguageCode = languages.firstOrNull() ?: ""
+    val viewModel = getAudioViewModel()
+    viewModel.setVoiceoverMappings(voiceoverMapping)
+    viewModel.setAudioLanguageCode(selectedLanguageCode)
   }
 
   private fun getAudioViewModel(): AudioViewModel {

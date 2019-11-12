@@ -2,6 +2,7 @@ package org.oppia.app.player.exploration
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.app.R
@@ -18,6 +19,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
+  private lateinit var audioButton: ImageView
+
   fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
 
@@ -34,10 +37,23 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-    activity.findViewById<View>(R.id.enable_audio_playback_button).setOnClickListener {
+    audioButton = activity.findViewById(R.id.enable_audio_playback_button)
+    audioButton.setOnClickListener {
       getExplorationFragment()?.handlePlayAudio()
     }
   }
+
+  fun showAudioButton() {
+    audioButton.visibility = View.VISIBLE
+  }
+
+  fun hideAudioButton() {
+    audioButton.visibility = View.GONE
+  }
+
+  fun showVolumeOff() = audioButton.setImageResource(R.drawable.ic_volume_off_48dp)
+  fun showVolumeOn() = audioButton.setImageResource(R.drawable.ic_play_icon_24dp)
+
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(

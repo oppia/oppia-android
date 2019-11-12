@@ -49,4 +49,9 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun stopExploration() {
     explorationActivityPresenter.stopExploration()
   }
+
+  fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
+  fun showAudioButton() = explorationActivityPresenter.showAudioButton()
+  fun showVolumeOff() = explorationActivityPresenter.showVolumeOff()
+  fun showVolumeOn() = explorationActivityPresenter.showVolumeOn()
 }
