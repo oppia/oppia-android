@@ -78,7 +78,7 @@ class StorySummaryAdapter(
   }
 
   private class TopicPlayTitleViewHolder(
-    val binding: TopicPlayTitleBinding
+    binding: TopicPlayTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind() {}
   }
@@ -93,7 +93,6 @@ class StorySummaryAdapter(
       binding.isListExpanded = isChapterListVisible
       binding.viewModel = storySummaryViewModel
 
-      val totalChapterCount = storySummaryViewModel.storySummary.chapterCount
       val chapterSummaries = storySummaryViewModel.storySummary.chapterList
       val completedChapterCount =
         chapterSummaries.map(ChapterSummary::getChapterPlayState)
@@ -101,13 +100,15 @@ class StorySummaryAdapter(
             it == ChapterPlayState.COMPLETED
           }
           .size
+      val storyPercentage: Int = (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
+      binding.storyPercentage = storyPercentage
+      binding.storyProgressView.setStoryChapterDetails(
+        storySummaryViewModel.storySummary.chapterCount,
+        completedChapterCount
+      )
 
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
-
-      val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
-
-      binding.storyPercentage = storyProgressPercentage
 
       binding.chapterListViewControl.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
@@ -118,11 +119,15 @@ class StorySummaryAdapter(
             position
           }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if (previousIndex != null) {
-          notifyItemChanged(previousIndex)
-        }
-        if (currentExpandedChapterListIndex != null) {
+        if (previousIndex != null && currentExpandedChapterListIndex != null && previousIndex == currentExpandedChapterListIndex) {
           notifyItemChanged(currentExpandedChapterListIndex!!)
+        } else {
+          if (previousIndex != null) {
+            notifyItemChanged(previousIndex)
+          }
+          if (currentExpandedChapterListIndex != null) {
+            notifyItemChanged(currentExpandedChapterListIndex!!)
+          }
         }
       }
     }
