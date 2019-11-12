@@ -16,4 +16,5 @@ class TextInputViewModel(
     }
     return interactionObjectBuilder.build()
   }
+
 }

@@ -13,8 +13,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@color/oppiaLightGreen"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <org.oppia.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
@@ -23,15 +22,19 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789."
+      android:enabled="@{!viewModel.isReadOnly}"
       android:focusable="true"
       android:hint="@string/number_input_hint_text"
       android:inputType="numberDecimal"
       android:longClickable="false"
       android:maxLength="200"
-      android:padding="8dp"
       android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingLeft="16dp"
+      android:paddingBottom="8dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
-      android:enabled="@{!viewModel.isReadOnly}" />
+      android:textColorHint="@color/edit_text_hint"
+      android:textStyle="italic" />
   </FrameLayout>
 </layout>
