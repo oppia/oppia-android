@@ -18,13 +18,12 @@ import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
-class ConceptCardPresenter @Inject constructor(
+class ConceptCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
   private val htmlParserFactory: HtmlParser.Factory
 ){
-  lateinit var skillId: String
-  lateinit var explanationTextView: TextView
+  private lateinit var skillId: String
 
   /** Sets up data binding and adapter for RecyclerView */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
@@ -32,7 +31,8 @@ class ConceptCardPresenter @Inject constructor(
     val viewModel = getConceptCardViewModel()
 
     skillId = id
-    explanationTextView = binding.explanation
+    viewModel.setSkillId(skillId)
+    viewModel.setExplanationTextView(binding.explanation)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setTitle(R.string.concept_card_toolbar_title)

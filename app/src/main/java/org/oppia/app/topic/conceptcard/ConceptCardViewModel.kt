@@ -1,6 +1,7 @@
 package org.oppia.app.topic.conceptcard
 
 import android.text.Spannable
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -22,8 +23,9 @@ class ConceptCardViewModel @Inject constructor(
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory
 ) : ViewModel() {
-
- private val conceptCardFragment = fragment as ConceptCardFragment
+  private lateinit var skillId: String
+  private lateinit var explanationTextView: TextView
+  private val conceptCardFragment = fragment as ConceptCardFragment
 
   /** Live Data for concept card explanation */
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
@@ -40,8 +42,18 @@ class ConceptCardViewModel @Inject constructor(
     processWorkedExamplesLiveData()
   }
 
+  /** Sets skillId used to get ConceptCard data. */
+  fun setSkillId(id: String) {
+    skillId = id
+  }
+
+  /** Sets the explanation TextView used in parseOppiaHtml. */
+  fun setExplanationTextView(view: TextView) {
+    explanationTextView = view
+  }
+
   private val conceptCardResultLiveData: LiveData<AsyncResult<ConceptCard>> by lazy {
-    topicController.getConceptCard(conceptCardFragment.getSkillId())
+    topicController.getConceptCard(skillId)
   }
 
   private fun processConceptCardLiveData(): LiveData<ConceptCard> {
@@ -58,23 +70,23 @@ class ConceptCardViewModel @Inject constructor(
 
   private fun processConceptCardResult(conceptCardResult: AsyncResult<ConceptCard>): ConceptCard {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card: " + conceptCardResult.getErrorOrNull())
+      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
     return conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
   }
 
   private fun processConceptCardExplanation(conceptCardResult: AsyncResult<ConceptCard>): Spannable {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card: " + conceptCardResult.getErrorOrNull())
+      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
-    val htmlParser = htmlParserFactory.create("skill", conceptCardFragment.getSkillId())
+    val htmlParser = htmlParserFactory.create("skill", skillId)
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParser.parseOppiaHtml(conceptCard.explanation.html, conceptCardFragment.getExplanationTextView())
+    return htmlParser.parseOppiaHtml(conceptCard.explanation.html, explanationTextView)
   }
 
   private fun processConceptCardWorkExamples(conceptCardResult: AsyncResult<ConceptCard>): List<SubtitledHtml> {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card: " + conceptCardResult.getErrorOrNull())
+      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
     return conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance()).workedExampleList
   }

@@ -46,7 +46,7 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill1_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(atPositionOnView(R.id.worked_examples, 0, R.id.example)).check(matches(withText("Worked example with rich text.")))
+    onView(atPositionOnView(R.id.worked_examples, 0, R.id.concept_card_example_text_view)).check(matches(withText("Worked example with rich text.")))
   }
 
   @Test
@@ -58,8 +58,8 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_2)).perform(click())
-    onView(atPositionOnView(R.id.worked_examples, 0, R.id.example)).check(matches(withText("Worked example without rich text.")))
-    onView(atPositionOnView(R.id.worked_examples, 1, R.id.example)).check(matches(withText("Second worked example.")))
+    onView(atPositionOnView(R.id.worked_examples, 0, R.id.concept_card_example_text_view)).check(matches(withText("Worked example without rich text.")))
+    onView(atPositionOnView(R.id.worked_examples, 1, R.id.concept_card_example_text_view)).check(matches(withText("Second worked example.")))
   }
 
   @Test
