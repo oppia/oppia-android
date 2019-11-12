@@ -18,7 +18,7 @@ class TextInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  val hintText: String
+  private val hintText: String
 
   init {
     onFocusChangeListener = this

@@ -19,7 +19,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  val hintText: String
+  private val hintText: String
 
   init {
     onFocusChangeListener = this
@@ -28,7 +28,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
 
   override fun onFocusChange(v: View?, hasFocus: Boolean) = if (hasFocus) {
     hint = ""
-    typeface= Typeface.DEFAULT
+    typeface = Typeface.DEFAULT
   } else {
     hint = hintText
     setTypeface(typeface, Typeface.ITALIC)

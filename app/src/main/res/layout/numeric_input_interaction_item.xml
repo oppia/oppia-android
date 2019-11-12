@@ -29,12 +29,14 @@
       android:longClickable="false"
       android:maxLength="200"
       android:minHeight="48dp"
-      android:paddingStart="16dp"
+      android:fontFamily="sans-serif"
       android:paddingLeft="16dp"
+      android:paddingRight="16dp"
       android:paddingBottom="8dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:textColorHint="@color/edit_text_hint"
+      android:textSize="16sp"
       android:textStyle="italic" />
   </FrameLayout>
 </layout>
