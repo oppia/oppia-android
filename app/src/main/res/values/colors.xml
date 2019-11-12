@@ -37,4 +37,5 @@
   <color name="grey_shade_40">#0000003D</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
+  <color name="divider">#AFAFAF</color>
 </resources>
