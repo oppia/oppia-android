@@ -15,6 +15,12 @@ jobs:
       TERM: dumb
     steps:
       - checkout
+      - emulator -avd circleci-android22 -no-audio -no-window:
+          background: true
+          parallel: true
+      - circle-android wait-for-boot
+      - sleep 30 
+      - adb shell input keyevent 82
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}
       - run: ./.circleci/gradle/gradlew androidDependencies
@@ -22,9 +28,26 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
-      - run: ./.circleci/gradle/gradlew test
+      - run: ./.circleci/gradle/gradlew connectedAndroidTest -PdisablePreDex
       - store_artifacts:
           path: app/build/reports
           destination: reports
       - store_test_results:
           path: app/build/test-results
+    # test:
+    #   override:
+    #   # start the emulator
+    #   - emulator -avd circleci-android22 -no-audio -no-window:
+    #       background: true
+    #       parallel: true
+      # # wait for it to have booted
+      # 
+      # # unlock the emulator screen
+      # 
+      # 
+      # # run tests  against the emulator.
+      # - ./gradlew connectedAndroidTest -PdisablePreDex
+      # # copy the build outputs to artifacts
+      # - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+      # # copy the test results to the test results directory.
+      # - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
