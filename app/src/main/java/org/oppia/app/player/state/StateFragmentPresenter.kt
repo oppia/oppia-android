@@ -274,15 +274,16 @@ class StateFragmentPresenter @Inject constructor(
       (fragment.requireActivity() as ExplorationActivity).showVolumeOn()
       if (getAudioFragment() == null) {
         val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
-        fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, audioFragment,
-          TAG_AUDIO_FRAGMENT
+        fragment.childFragmentManager.beginTransaction()
+          .setCustomAnimations(R.anim.slide_down_audio, R.anim.slide_up_audio)
+          .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT
         ).commitNow()
       }
     } else {
       (fragment.requireActivity() as ExplorationActivity).showVolumeOff()
       if (getAudioFragment() != null) {
-        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
+        fragment.childFragmentManager.beginTransaction()
+          .remove(getAudioFragment()!!).commitNow()
       }
     }
   }

@@ -72,7 +72,6 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
 
-  /** Sets the ViewModel's current VoiceoverMappings by stateId. */
   fun setVoiceoverMappingsByState(stateId: String) = audioFragmentPresenter.setVoiceoverMappingsByState(stateId)
 
   override fun onLanguageSelected(currentLanguageCode: String) {

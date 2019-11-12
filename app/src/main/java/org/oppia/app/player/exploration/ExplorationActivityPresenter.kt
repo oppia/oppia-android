@@ -46,7 +46,6 @@ class ExplorationActivityPresenter @Inject constructor(
   fun showAudioButton() {
     audioButton.visibility = View.VISIBLE
   }
-
   fun hideAudioButton() {
     audioButton.visibility = View.GONE
   }
