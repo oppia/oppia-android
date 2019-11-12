@@ -2,13 +2,11 @@ package org.oppia.app.topic.play
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
+import org.oppia.app.databinding.TopicPlayTitleBinding
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.StorySummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
@@ -17,43 +15,86 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
-  private var storyList: MutableList<StorySummary>,
+  private val itemList: MutableList<TopicPlayItemViewModel>,
   private val chapterSummarySelector: ChapterSummarySelector,
-  private val storySummarySelector: StorySummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
 ) :
-  RecyclerView.Adapter<StorySummaryAdapter.StorySummaryViewHolder>() {
+  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorySummaryViewHolder {
-    val storySummaryListItemBinding = DataBindingUtil.inflate<TopicPlayStorySummaryBinding>(
-      LayoutInflater.from(parent.context),
-      R.layout.topic_play_story_summary, parent,
-      /* attachToRoot= */ false
-    )
-    return StorySummaryViewHolder(storySummaryListItemBinding)
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    return when (viewType) {
+      // TODO(#216): Generalize this binding to make adding future items easier.
+      VIEW_TYPE_TITLE_TEXT -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          TopicPlayTitleBinding.inflate(
+            inflater,
+            parent,
+            /* attachToParent= */ false
+          )
+        TopicPlayTitleViewHolder(binding)
+      }
+      VIEW_TYPE_STORY_ITEM -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          TopicPlayStorySummaryBinding.inflate(
+            inflater,
+            parent,
+            /* attachToParent= */ false
+          )
+        StorySummaryViewHolder(binding)
+      }
+      else -> throw IllegalArgumentException("Invalid view type: $viewType")
+    }
   }
 
-  override fun onBindViewHolder(storySummaryViewHolder: StorySummaryViewHolder, i: Int) {
-    storySummaryViewHolder.bind(storyList[i], i)
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
+    when (holder.itemViewType) {
+      VIEW_TYPE_TITLE_TEXT -> {
+        (holder as TopicPlayTitleViewHolder).bind()
+      }
+      VIEW_TYPE_STORY_ITEM -> {
+        (holder as StorySummaryViewHolder).bind(itemList[i] as StorySummaryViewModel, i)
+      }
+      else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
+    }
+  }
+
+  override fun getItemViewType(position: Int): Int {
+    return when (itemList[position]) {
+      is TopicPlayTitleViewModel -> {
+        VIEW_TYPE_TITLE_TEXT
+      }
+      is StorySummaryViewModel -> {
+        VIEW_TYPE_STORY_ITEM
+      }
+      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+    }
   }
 
   override fun getItemCount(): Int {
-    return storyList.size
+    return itemList.size
+  }
+
+  private class TopicPlayTitleViewHolder(
+    val binding: TopicPlayTitleBinding
+  ) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind() {}
   }
 
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(storySummary: StorySummary, position: Int) {
+    internal fun bind(storySummaryViewModel: StorySummaryViewModel, position: Int) {
       var isChapterListVisible = false
-      if(currentExpandedChapterListIndex!=null){
+      if (currentExpandedChapterListIndex != null) {
         isChapterListVisible = currentExpandedChapterListIndex!! == position
       }
       binding.isListExpanded = isChapterListVisible
-      binding.storySummary = storySummary
+      binding.viewModel = storySummaryViewModel
 
-      val totalChapterCount = storySummary.chapterCount
-      val chapterSummaries = storySummary.chapterList
+      val totalChapterCount = storySummaryViewModel.storySummary.chapterCount
+      val chapterSummaries = storySummaryViewModel.storySummary.chapterList
       val completedChapterCount =
         chapterSummaries.map(ChapterSummary::getChapterPlayState)
           .filter {
@@ -61,29 +102,26 @@ class StorySummaryAdapter(
           }
           .size
 
-      val chapterList = storySummary.chapterList
+      val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
       val storyProgressPercentage: Int = (completedChapterCount * 100) / totalChapterCount
 
       binding.storyPercentage = storyProgressPercentage
 
-      binding.storyNameTextView.setOnClickListener {
-        storySummarySelector.selectStorySummary(storySummary)
-      }
-
       binding.chapterListViewControl.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
-        currentExpandedChapterListIndex = if (currentExpandedChapterListIndex!=null && currentExpandedChapterListIndex == position) {
-          null
-        } else {
-          position
-        }
+        currentExpandedChapterListIndex =
+          if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
+            null
+          } else {
+            position
+          }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if(previousIndex!=null) {
+        if (previousIndex != null) {
           notifyItemChanged(previousIndex)
         }
-        if(currentExpandedChapterListIndex!=null) {
+        if (currentExpandedChapterListIndex != null) {
           notifyItemChanged(currentExpandedChapterListIndex!!)
         }
       }
