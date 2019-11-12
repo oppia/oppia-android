@@ -14,7 +14,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -29,13 +28,15 @@ class TopicFragmentPresenter @Inject constructor(
 ) {
   private lateinit var tabLayout: TabLayout
   private lateinit var toolbar: Toolbar
+  private lateinit var topicId: String
+  lateinit var storyId: String
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(
       R.drawable.ic_overview_icon_24dp,
-      R.drawable.ic_play_icon_24,
-      R.drawable.ic_train_icon_24,
-      R.drawable.ic_review_icon_24
+      R.drawable.ic_play_icon_24dp,
+      R.drawable.ic_train_icon_24dp,
+      R.drawable.ic_review_icon_24dp
     )
 
   fun handleCreateView(
@@ -45,22 +46,30 @@ class TopicFragmentPresenter @Inject constructor(
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
+    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     toolbar = binding.root.findViewById(R.id.toolbar) as Toolbar
+    this.topicId = topicId
     setUpViewPager(viewPager, topicId)
     subscribeToTopicLiveData()
     return binding.root
   }
 
+  fun setCurrentTab(tab: TopicTab) {
+    viewPager.setCurrentItem(tab.ordinal, true)
+  }
+
   private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
-    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!)
+    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
-    tabLayout.getTabAt(0)!!.setText(TopicTab.getTabForPosition(0).name).setIcon(tabIcons[0])
-    tabLayout.getTabAt(1)!!.setText(TopicTab.getTabForPosition(1).name).setIcon(tabIcons[1])
-    tabLayout.getTabAt(2)!!.setText(TopicTab.getTabForPosition(2).name).setIcon(tabIcons[2])
-    tabLayout.getTabAt(3)!!.setText(TopicTab.getTabForPosition(3).name).setIcon(tabIcons[3])
+    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
+    tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
+    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
+    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
+    if (topicId.isNotEmpty() && storyId.isNotEmpty())
+      setCurrentTab(TopicTab.PLAY)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
@@ -72,9 +81,8 @@ class TopicFragmentPresenter @Inject constructor(
     })
   }
 
-  // TODO(#135): Get this topic-id from [TopicFragment].
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(TEST_TOPIC_ID_0)
+    topicController.getTopic(topicId = topicId)
   }
 
   private fun getTopic(): LiveData<Topic> {
