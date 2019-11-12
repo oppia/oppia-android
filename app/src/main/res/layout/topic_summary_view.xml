@@ -12,7 +12,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="20dp"
@@ -25,7 +25,7 @@
     <ImageView
       android:id="@+id/imageView"
       android:layout_width="match_parent"
-      android:layout_height="90dp"
+      android:layout_height="92dp"
       android:importantForAccessibility="no"
       android:scaleType="centerInside"
       android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
@@ -61,7 +61,7 @@
     <FrameLayout
       android:id="@+id/bottom_topic_bar"
       android:layout_width="match_parent"
-      android:layout_height="70dp"
+      android:layout_height="72dp"
       app:bottomRoundedRectDrawableWithColor="@{viewModel.darkerBackgroundOverlayColor}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent" />
@@ -74,7 +74,10 @@
       android:textColor="@color/white"
       android:fontFamily="sans-serif-medium"
       android:textSize="14sp"
-      android:layout_margin="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="6dp"
+      android:layout_marginStart="8dp"
       android:maxLines="2"
       android:minLines="2"
       android:ellipsize="end"
@@ -86,7 +89,9 @@
       android:id="@+id/lesson_count_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif-light"
       android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
       android:textColor="@color/white_80"
