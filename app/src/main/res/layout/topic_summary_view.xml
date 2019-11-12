@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -22,15 +23,40 @@
     android:onClick="@{viewModel::clickOnSummaryTile}">
 
     <ImageView
+      android:id="@+id/imageView"
       android:layout_width="match_parent"
       android:layout_height="90dp"
-      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
-      android:scaleType="centerInside"
       android:importantForAccessibility="no"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      android:scaleType="centerInside"
+      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+      app:layout_constraintBottom_toTopOf="@+id/bottom_topic_bar"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintBottom_toTopOf="@+id/bottom_topic_bar" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/topic_downloaded_indication_text_view"
+      android:layout_width="120dp"
+      android:layout_height="24dp"
+      android:ellipsize="end"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:paddingTop="4dp"
+      android:paddingBottom="4dp"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:maxLines="1"
+      android:visibility="gone"
+      android:background="@drawable/bottom_left_rounded_rect_primary_background"
+      android:drawableRight="@drawable/ic_available_offline_icon_white_12dp"
+      android:text="@string/downloaded"
+      android:textAllCaps="true"
+      android:textColor="@color/white"
+      android:textSize="12sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/imageView" />
 
     <FrameLayout
       android:id="@+id/bottom_topic_bar"
