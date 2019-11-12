@@ -24,12 +24,13 @@
       android:layout_marginTop="16dp"
       android:onClick="@{presenter::playExplorationButton}"
       android:text="Play exploration"
-      android:visibility="visible" />
+      android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_marginTop="36dp"
       android:layout_marginEnd="24dp"
       android:layout_marginStart="24dp"
       android:layout_marginBottom="24dp"
