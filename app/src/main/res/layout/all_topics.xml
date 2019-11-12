@@ -19,12 +19,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="64dp"
       android:layout_marginEnd="4dp"
       android:layout_marginBottom="16dp"
+      android:fontFamily="sans-serif-medium"
       android:text="@string/all_topics"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="18sp"
-      android:textStyle="bold" />
+      android:textSize="18sp" />
   </FrameLayout>
 </layout>

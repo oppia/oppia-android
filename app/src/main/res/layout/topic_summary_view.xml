@@ -11,10 +11,11 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="168dp"
+    android:layout_height="160dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="20dp"
+    android:elevation="4dp"
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}"
     android:clickable="true"
     android:focusable="true"
@@ -22,7 +23,7 @@
 
     <ImageView
       android:layout_width="match_parent"
-      android:layout_height="96dp"
+      android:layout_height="90dp"
       android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
       android:scaleType="centerInside"
       android:importantForAccessibility="no"
@@ -34,7 +35,7 @@
     <FrameLayout
       android:id="@+id/bottom_topic_bar"
       android:layout_width="match_parent"
-      android:layout_height="72dp"
+      android:layout_height="70dp"
       app:bottomRoundedRectDrawableWithColor="@{viewModel.darkerBackgroundOverlayColor}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent" />
