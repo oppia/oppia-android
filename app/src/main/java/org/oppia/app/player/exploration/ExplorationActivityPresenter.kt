@@ -55,7 +55,7 @@ class ExplorationActivityPresenter @Inject constructor(
   /** Sets audio button drawable to volume off. */
   fun showVolumeOff() = audioButton.setImageResource(R.drawable.ic_volume_off_48dp)
   /** Sets audio button drawable to volume on. */
-  fun showVolumeOn() = audioButton.setImageResource(R.drawable.ic_play_icon_24dp)
+  fun showVolumeOn() = audioButton.setImageResource(R.drawable.ic_volume_on_48dp)
   
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(

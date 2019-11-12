@@ -47,11 +47,6 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     return audioFragmentPresenter.handleCreateView(inflater, container, savedInstanceState, explorationId, stateId)
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    audioFragmentPresenter.handleSaveInstanceState(outState)
-  }
-
   fun languageSelectionClicked() {
     audioFragmentPresenter.showLanguageDialogFragment()
   }

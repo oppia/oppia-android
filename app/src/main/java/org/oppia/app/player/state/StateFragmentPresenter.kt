@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -226,6 +227,7 @@ class StateFragmentPresenter @Inject constructor(
           }
         }
         ConnectionStatus.NONE-> {
+          showOfflineDialog()
           audioShowing = false
           showHideAudioFragment(false)
         }
@@ -317,10 +319,12 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     currentStateName = ephemeralState.state.name
 
-    showOrHideAudioByState(ephemeralState.state)
-    getAudioFragment()?.let {
-      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
-    }
+
+      showOrHideAudioByState(ephemeralState.state)
+      getAudioFragment()?.let {
+        (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
+      }
+
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
@@ -503,14 +507,22 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showOrHideAudioByState(state: State) {
-    if (state.recordedVoiceoversCount == 0 ||
-      networkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE) {
+    if (state.recordedVoiceoversCount == 0) {
       (fragment.requireActivity() as ExplorationActivity).hideAudioButton()
       showHideAudioFragment(false)
     } else {
       (fragment.requireActivity() as ExplorationActivity).showAudioButton()
       showHideAudioFragment(audioShowing)
     }
+  }
+
+  private fun showOfflineDialog() {
+    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+      .setTitle(context.getString(R.string.audio_dialog_offline_title))
+      .setMessage(context.getString(R.string.audio_dialog_offline_message))
+      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
   }
 
   private enum class ViewType {
