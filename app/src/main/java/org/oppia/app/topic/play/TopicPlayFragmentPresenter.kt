@@ -43,6 +43,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
+  private val itemList: MutableList<TopicPlayItemViewModel> = ArrayList()
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -71,25 +73,30 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      it.storyList!!.forEach { storySummary ->
-        if (storySummary.storyId.equals(storyId)) {
-          val index = it.storyList.indexOf(storySummary)
-          currentExpandedChapterListIndex = index
+      if (it.storyList.isNotEmpty()) {
+        it.storyList!!.forEach { storySummary ->
+          if (storySummary.storyId == storyId) {
+            val index = it.storyList.indexOf(storySummary)
+            currentExpandedChapterListIndex = index + 1
+          }
         }
+        itemList.add(TopicPlayTitleViewModel())
+        for (storySummary in it.storyList) {
+          itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
+        }
+        val storySummaryAdapter =
+          StorySummaryAdapter(
+            itemList,
+            this as ChapterSummarySelector,
+            expandedChapterListIndexListener,
+            currentExpandedChapterListIndex
+          )
+        binding.storySummaryRecyclerView.apply {
+          adapter = storySummaryAdapter
+        }
+        if (storyId.isNotEmpty())
+          binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
       }
-      val storySummaryAdapter =
-        StorySummaryAdapter(
-          it.storyList,
-          this as ChapterSummarySelector,
-          this as StorySummarySelector,
-          expandedChapterListIndexListener,
-          currentExpandedChapterListIndex
-        )
-      binding.storySummaryRecyclerView.apply {
-        adapter = storySummaryAdapter
-      }
-      if (storyId.isNotEmpty())
-        binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
     })
   }
 
@@ -125,5 +132,9 @@ class TopicPlayFragmentPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun storySummaryClicked(storySummary: StorySummary) {
+    routeToStoryListener.routeToStory(storySummary.storyId)
   }
 }

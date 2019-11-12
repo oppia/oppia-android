@@ -15,8 +15,8 @@
       type="Integer" />
 
     <variable
-      name="storySummary"
-      type="org.oppia.app.model.StorySummary" />
+      name="viewModel"
+      type="org.oppia.app.topic.play.StorySummaryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +59,8 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="48dp"
-      android:text="@{storySummary.storyName}"
+      android:onClick="@{viewModel::clickOnStorySummaryTitle}"
+      android:text="@{viewModel.storySummary.storyName}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
       android:textStyle="bold"
@@ -72,7 +73,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
-      android:text="@{@plurals/chapter_count(storySummary.chapterCount, storySummary.chapterCount)}"
+      android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintEnd_toEndOf="@+id/story_name_text_view"
