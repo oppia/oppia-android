@@ -35,6 +35,7 @@
         android:hint="@string/fractions_hint_text"
         android:inputType="text"
         android:longClickable="false"
+        android:imeOptions="actionDone"
         android:maxLength="200"
         android:padding="8dp"
         android:singleLine="true"
