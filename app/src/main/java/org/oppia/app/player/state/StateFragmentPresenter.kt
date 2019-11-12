@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -223,7 +225,7 @@ class StateFragmentPresenter @Inject constructor(
             }
           }
         }
-        else -> {
+        ConnectionStatus.NONE-> {
           audioShowing = false
           showHideAudioFragment(false)
         }
@@ -270,20 +272,29 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHideAudioFragment(isVisible: Boolean) {
+    val audioFragment = getAudioFragment()
     if (isVisible) {
       (fragment.requireActivity() as ExplorationActivity).showVolumeOn()
-      if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
+      if (audioFragment == null) {
+        val newAudioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction()
           .setCustomAnimations(R.anim.slide_down_audio, R.anim.slide_up_audio)
-          .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT
+          .add(R.id.audio_fragment_placeholder, newAudioFragment, TAG_AUDIO_FRAGMENT
         ).commitNow()
       }
     } else {
       (fragment.requireActivity() as ExplorationActivity).showVolumeOff()
-      if (getAudioFragment() != null) {
-        fragment.childFragmentManager.beginTransaction()
-          .remove(getAudioFragment()!!).commitNow()
+      if (audioFragment != null) {
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
+        animation.setAnimationListener(object: Animation.AnimationListener {
+          override fun onAnimationEnd(p0: Animation?) {
+            fragment.childFragmentManager.beginTransaction()
+              .remove(audioFragment).commitNow()
+          }
+          override fun onAnimationStart(p0: Animation?) {}
+          override fun onAnimationRepeat(p0: Animation?) {}
+        })
+        audioFragment.view?.startAnimation(animation)
       }
     }
   }

@@ -43,17 +43,20 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
+  /** Makes audio button visible. */
   fun showAudioButton() {
     audioButton.visibility = View.VISIBLE
   }
+  /** Makes audio button gone. */
   fun hideAudioButton() {
     audioButton.visibility = View.GONE
   }
 
+  /** Sets audio button drawable to volume off. */
   fun showVolumeOff() = audioButton.setImageResource(R.drawable.ic_volume_off_48dp)
+  /** Sets audio button drawable to volume on. */
   fun showVolumeOn() = audioButton.setImageResource(R.drawable.ic_play_icon_24dp)
-
-
+  
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder
