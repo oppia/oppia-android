@@ -24,9 +24,9 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
-      - run:
-          name: Run unit tests 
-          command: ./.circleci/gradle/gradlew test
+      # - run:
+      #     name: Run unit tests 
+      #     command: ./.circleci/gradle/gradlew test
       - run:
           name: Setup emulator
           command: sdkmanager "system-images;android-16;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-16;default;armeabi-v7a"
