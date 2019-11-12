@@ -12,6 +12,9 @@ import org.oppia.app.model.StorySummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
+private const val VIEW_TYPE_TITLE_TEXT = 1
+private const val VIEW_TYPE_STORY_ITEM = 2
+
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
   private var storyList: MutableList<StorySummary>,
