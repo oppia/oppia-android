@@ -21,22 +21,22 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white"
         android:textSize="20dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
+        style="@style/AppTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="14sp"
         app:tabBackground="@color/colorPrimary"
         app:tabGravity="fill"
+        app:tabIconTint="@color/tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"
         app:tabIndicatorHeight="2dp"
-        android:textSize="14sp"
-        app:tabIconTint="@color/tab_icon_color_selector"
         app:tabMode="fixed"
-        style="@style/AppTabLayout"
         app:tabTextAppearance="@style/AppTabTextAppearance"
         app:tabTextColor="@color/tab_icon_color_selector" />
     </com.google.android.material.appbar.AppBarLayout>

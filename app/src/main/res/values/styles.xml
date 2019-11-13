@@ -94,6 +94,7 @@
   <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
     <item name="android:textSize">14sp</item>
     <item name="android:textColor">@color/tab_icon_color_selector</item>
+    <item name="android:fontFamily">sans-serif</item>
     <item name="textAllCaps">true</item>
   </style>
 </resources>
