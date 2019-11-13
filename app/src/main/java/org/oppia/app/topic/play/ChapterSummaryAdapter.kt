@@ -38,7 +38,7 @@ class ChapterSummaryAdapter(
     internal fun bind(chapterSummary: ChapterSummary, position: Int) {
       binding.chapterSummary = chapterSummary
       binding.index = position
-      binding.chapterName.setOnClickListener {
+      binding.chapterContainer.setOnClickListener {
         chapterSummarySelector.selectChapterSummary(chapterSummary)
       }
     }
