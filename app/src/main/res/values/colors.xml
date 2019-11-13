@@ -23,6 +23,7 @@
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
   <color name="oppiaDisabledButtonBackground">#61999999</color>
+  <color name="oppiaGreyBorder">#DDDDDD</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
