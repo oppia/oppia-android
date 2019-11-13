@@ -29,7 +29,7 @@ jobs:
       #     command: ./.circleci/gradle/gradlew test
       - run:
           name: Setup emulator
-          command: sdkmanager "system-images;android-22;google_apis;x86_64" && echo "no" | avdmanager create avd -n test --abi google_apis/x86_64 --package "system-images;android-22;google_apis;x86_64"
+          command: sdkmanager "system-images;android-22;google_apis;x86_64" && echo "no" | avdmanager create avd -n circleci-android22 --abi google_apis/x86_64 --package "system-images;android-22;google_apis;x86_64"
       - run: 
           name: AVD List
           command: emulator -list-avds
