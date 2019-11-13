@@ -33,7 +33,7 @@
         android:focusable="true"
         android:fontFamily="sans-serif"
         android:hint="@string/fractions_hint_text"
-        android:inputType="text"
+        android:inputType="number"
         android:longClickable="false"
         android:maxLength="200"
         android:minHeight="48dp"

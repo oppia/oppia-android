@@ -9,7 +9,7 @@ import android.widget.EditText
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
 //  hint="Write fraction here."
-//  inputType="text"
+//  inputType="number"
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
