@@ -27,7 +27,7 @@
   <color name="submitButtonInactive">#56000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="edit_text_hint">#50333333</color>
+  <color name="edit_text_hint">#80333333</color>
   <color name="blue_shade_30">#30395FD0</color>
   <color name="blue_shade_20">#20395FD0</color>
   <color name="blue_shade_10">#10395FD0</color>
