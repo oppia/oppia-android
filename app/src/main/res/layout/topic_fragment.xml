@@ -20,7 +20,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/oppiaPrimaryDark"
         android:textSize="20dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white" />
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        app:tabBackground="@color/colorPrimary"
+        app:tabBackground="@color/oppiaPrimaryDark"
         app:tabGravity="fill"
         app:tabIconTint="@color/tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"
