@@ -22,6 +22,7 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:enabled="@{!viewModel.isReadOnly}"
+      android:textColor="@color/oppiaPrimaryText"
       android:focusable="true"
       android:fontFamily="sans-serif"
       android:hint="@string/text_input_hint_text"

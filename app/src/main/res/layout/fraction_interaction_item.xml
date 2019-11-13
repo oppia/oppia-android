@@ -32,6 +32,7 @@
         android:enabled="@{!viewModel.isReadOnly}"
         android:focusable="true"
         android:fontFamily="sans-serif"
+        android:textColor="@color/oppiaPrimaryText"
         android:hint="@string/fractions_hint_text"
         android:inputType="datetime"
         android:longClickable="false"
