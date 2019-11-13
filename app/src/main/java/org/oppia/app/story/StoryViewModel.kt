@@ -19,13 +19,12 @@ import javax.inject.Inject
 /** The ViewModel for [StoryFragment]. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
-  fragment: Fragment,
+  private val fragment: Fragment,
   private val topicController: TopicController,
   private val logger: Logger
 ) : ViewModel() {
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
-  private lateinit var fragment: StoryFragment
   private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
@@ -58,6 +57,14 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {
     val chapterList: List<ChapterSummary> = storySummary.chapterList
+
+    for (position in 0..storySummary.chapterList.size) {
+      if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
+        (fragment as StoryFragment).smoothScrollToPosition(position + 1)
+        break
+      }
+    }
+
     val completedCount =
       chapterList.filter { chapter -> chapter.chapterPlayState == ChapterPlayState.COMPLETED }.size
 
@@ -67,8 +74,8 @@ class StoryViewModel @Inject constructor(
     )
 
     // Add the rest of the list
-    itemViewModelList.addAll(chapterList.map { chapter ->
-      StoryChapterSummaryViewModel(explorationSelectionListener, chapter) as StoryItemViewModel
+    itemViewModelList.addAll(chapterList.mapIndexed { index, chapter ->
+      StoryChapterSummaryViewModel(index, explorationSelectionListener, chapter) as StoryItemViewModel
     })
 
     return itemViewModelList
