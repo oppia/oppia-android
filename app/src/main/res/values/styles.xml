@@ -79,6 +79,7 @@
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">false</item>
   </style>
+
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">
     <item name="tabIndicatorColor">@color/white</item>
     <item name="tabIndicatorHeight">4dp</item>
@@ -89,10 +90,9 @@
     <item name="tabIconTint">@color/tab_icon_color_selector</item>
     <item name="tabSelectedTextColor">@color/white</item>
   </style>
-
   <!-- for text -->
   <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">14sp</item>
     <item name="android:textColor">@color/tab_icon_color_selector</item>
     <item name="textAllCaps">true</item>
   </style>
