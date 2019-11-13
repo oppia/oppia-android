@@ -35,8 +35,10 @@
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="edit_text_hint">#80333333</color>
-  <color name="blue_shade_30">#30395FD0</color>
-  <color name="blue_shade_20">#20395FD0</color>
+  <color name="blue_shade">#395FD0</color>
+  <color name="blue_shade_80">#80395FD0</color>
+  <color name="blue_shade_60">#60395FD0</color>
+  <color name="blue_shade_40">#40395FD0</color>
   <color name="blue_shade_10">#10395FD0</color>
   <color name="grey_shade_05">#05395FD0</color>
   <color name="grey_shade_10">#10395FD0</color>

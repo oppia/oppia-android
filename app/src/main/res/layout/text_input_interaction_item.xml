@@ -30,7 +30,7 @@
       android:maxLength="200"
       android:minHeight="48dp"
       android:paddingStart="16dp"
-      android:paddingEnd="" t="16dp"
+      android:paddingEnd="16dp"
       android:paddingBottom="8dp"
       android:imeOptions="actionDone"
       android:singleLine="true"
