@@ -2,7 +2,7 @@
 <resources>
   <color name="colorPrimary">#008577</color>
   <color name="colorPrimaryDark">#00574B</color>
-  <color name="colorAccent">#D81B60</color>
+  <color name="colorAccent">#2D4A9D</color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#C55F45</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
