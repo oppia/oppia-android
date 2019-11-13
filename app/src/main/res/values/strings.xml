@@ -53,6 +53,8 @@
   <string name="continue_playing_activity">Continue playing</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
+  <string name="status_in_progress">In Progress</string>
+  <string name="status_completed">Completed</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
