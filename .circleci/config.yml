@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Setup emulator
           command: sdkmanager "system-images;android-22;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test --abi google_apis/x86_64 --package "system-images;android-22;google_apis;x86_64"
-       - run: 
+      - run: 
           name: AVD List
           command: emulator -list-avds
       - run:
