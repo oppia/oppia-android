@@ -15,6 +15,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
@@ -38,8 +39,11 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private lateinit var binding: TopicPlayFragmentBinding
   private lateinit var topicId: String
+  private lateinit var storyId: String
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
+
+  private val itemList: MutableList<TopicPlayItemViewModel> = ArrayList()
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -50,6 +54,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPlayFragment."
     }
+    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -68,16 +73,29 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> {
-      val storySummaryAdapter =
-        StorySummaryAdapter(
-          it.storyList,
-          this as ChapterSummarySelector,
-          this as StorySummarySelector,
-          expandedChapterListIndexListener,
-          currentExpandedChapterListIndex
-        )
-      binding.storySummaryRecyclerView.apply {
-        adapter = storySummaryAdapter
+      if (it.storyList.isNotEmpty()) {
+        it.storyList!!.forEach { storySummary ->
+          if (storySummary.storyId == storyId) {
+            val index = it.storyList.indexOf(storySummary)
+            currentExpandedChapterListIndex = index + 1
+          }
+        }
+        itemList.add(TopicPlayTitleViewModel())
+        for (storySummary in it.storyList) {
+          itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
+        }
+        val storySummaryAdapter =
+          StorySummaryAdapter(
+            itemList,
+            this as ChapterSummarySelector,
+            expandedChapterListIndexListener,
+            currentExpandedChapterListIndex
+          )
+        binding.storySummaryRecyclerView.apply {
+          adapter = storySummaryAdapter
+        }
+        if (storyId.isNotEmpty())
+          binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
       }
     })
   }
@@ -114,5 +132,9 @@ class TopicPlayFragmentPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun storySummaryClicked(storySummary: StorySummary) {
+    routeToStoryListener.routeToStory(storySummary.storyId)
   }
 }
