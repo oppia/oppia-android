@@ -60,6 +60,8 @@ class AudioViewModel @Inject constructor(
     processPlayStatusLiveData()
   }
 
+  val showSeekBar = ObservableField(true)
+
   fun getExplorationById(exploreId: String, stateId: String) {
     explorationId = exploreId
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
@@ -80,13 +82,18 @@ class AudioViewModel @Inject constructor(
     } else if (languages.any { it == selectedLanguageCode }) {
       setAudioLanguageCode(selectedLanguageCode)
     } else {
-      setAudioLanguageCode(languages.first())
-      (fragment as AudioFragment).languageSelectionClicked()
+      if (selectedLanguageCode.isEmpty()) {
+        setAudioLanguageCode(languages.first())
+        (fragment as AudioFragment).languageSelectionClicked()
+      } else {
+        showSeekBar.set(false)
+      }
     }
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
+    showSeekBar.set(true)
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))

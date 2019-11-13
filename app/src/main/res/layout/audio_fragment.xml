@@ -3,13 +3,11 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <import type="org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
-
+    <import type="android.view.View" />
     <variable
       name="audioFragment"
       type="org.oppia.app.player.audio.AudioFragment" />
-
     <variable
       name="viewModel"
       type="org.oppia.app.player.audio.AudioViewModel" />
@@ -34,7 +32,7 @@
       android:padding="8dp"
       android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
-      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
+      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING &amp;&amp; viewModel.showSeekBar}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -47,6 +45,20 @@
       android:max="@{viewModel.durationLiveData}"
       android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
       android:thumb="@drawable/seekbar_thumb"
+      android:visibility="@{viewModel.showSeekBar ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
+      app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/noAudioText"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@string/audio_no_audio_available"
+      android:textColor="@color/white"
+      android:visibility="@{viewModel.showSeekBar ? View.GONE : View.VISIBLE}"
+      android:gravity="center"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
@@ -57,7 +69,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
-      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       android:padding="8dp"
       android:text="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"
