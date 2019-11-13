@@ -27,12 +27,12 @@ jobs:
       # - run:
       #     name: Run unit tests 
       #     command: ./.circleci/gradle/gradlew test
-      - run:
-          name: Setup emulator
-          command: sdkmanager "system-images;android-16;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-16;default;armeabi-v7a"
+      # - run:
+      #     name: Setup emulator
+      #     command: sdkmanager "system-images;android-16;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-16;default;armeabi-v7a"
       - run:
           name: Launch emulator
-          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator -avd test -noaudio -no-boot-anim -no-window -accel auto -verbose
+          command: export LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib && emulator -avd circleci-android2 -noaudio -no-boot-anim -no-window -accel auto -verbose
           background: true
       - run:
           name: Wait emulator
