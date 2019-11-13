@@ -27,6 +27,7 @@
       android:hint="@string/number_input_hint_text"
       android:inputType="numberDecimal"
       android:longClickable="false"
+      android:imeOptions="actionDone"
       android:maxLength="200"
       android:padding="8dp"
       android:singleLine="true"

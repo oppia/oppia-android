@@ -27,6 +27,7 @@
       android:inputType="text"
       android:longClickable="false"
       android:maxLength="200"
+      android:imeOptions="actionDone"
       android:padding="8dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
