@@ -13,6 +13,15 @@ jobs:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
+    dependencies:
+      pre:
+        - if [ ! -e /usr/local/android-sdk-linux/build-tools/25.0.2 ]; then echo y | android update sdk --all --no-ui --filter "build-tools-25.0.2"; fi;
+        - if [ ! -e /usr/local/android-sdk-linux/platforms/android-25 ]; then echo y | android update sdk --all --no-ui --filter "android-25"; fi;
+        - if ! $(grep -q "Revision=44.0.0" /usr/local/android-sdk-linux/extras/android/m2repository/source.properties); then echo y | android update sdk --all --no-ui --filter "extra-android-m2repository"; fi;
+      cache_directories:
+        - /usr/local/android-sdk-linux/build-tools/25.0.2
+        - /usr/local/android-sdk-linux/platforms/android-25
+        - /usr/local/android-sdk-linux/extras/android/m2repository
     steps:
       - checkout
       - restore_cache:
@@ -27,12 +36,12 @@ jobs:
       # - run:
       #     name: Run unit tests 
       #     command: ./.circleci/gradle/gradlew test
-      - run:
-          name: Setup emulator
-          command: sdkmanager "system-images;android-16;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-16;default;armeabi-v7a"
+      # - run:
+      #     name: Setup emulator
+      #     command: sdkmanager "system-images;android-16;default;armeabi-v7a" && echo "no" | avdmanager create avd -n test -k "system-images;android-16;default;armeabi-v7a"
       - run:
           name: Launch emulator
-          command: emulator -avd test -noaudio -no-boot-anim -no-window -accel auto -verbose
+          command: emulator -avd circleci-android22 -noaudio -no-boot-anim -no-window -accel auto -verbose
           background: true
       - run:
           name: Wait emulator
