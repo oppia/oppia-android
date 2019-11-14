@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 
@@ -46,7 +47,7 @@ class LanguageDialogFragment : DialogFragment() {
 
     val languageInterface: LanguageInterface = parentFragment as AudioFragment
 
-    return AlertDialog.Builder(activity as Context)
+    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.audio_language_select_dialog_title)
       .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
         selectedIndex = which
