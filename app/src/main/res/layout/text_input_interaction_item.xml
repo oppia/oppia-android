@@ -11,7 +11,10 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="24dp"
+    android:layout_marginStart="28dp"
+    android:layout_marginEnd="28dp"
     android:background="@color/oppiaLightGreen"
     android:orientation="vertical">
 
@@ -19,7 +22,6 @@
       android:id="@+id/text_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:enabled="@{!viewModel.isReadOnly}"
       android:textColor="@color/oppiaPrimaryText"
