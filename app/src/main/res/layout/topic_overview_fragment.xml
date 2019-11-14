@@ -37,9 +37,8 @@
           android:id="@+id/topic_thumbnail_image_view"
           android:layout_width="match_parent"
           android:layout_height="200dp"
-          app:rectangleDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
-          android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />
-
+          android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+          app:rectangleDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}" />
 
         <FrameLayout
           android:layout_width="match_parent"
@@ -58,7 +57,6 @@
           android:text="@{viewModel.topic.name}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="24sp" />
-
       </FrameLayout>
 
       <TextView
@@ -92,27 +90,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+
       <TextView
         android:id="@+id/see_more_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:gravity="start|center"
+        android:minHeight="48dp"
         android:onClick="@{presenter::seeMoreClicked}"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:text="@string/topic_overview_see_more"
         android:textColor="@color/oppiaPrimaryDark"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
+
       <ImageView
         android:id="@+id/download_status_image_view"
         android:layout_width="24dp"
@@ -124,6 +124,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+
       <TextView
         android:id="@+id/download_story_count_text_view"
         android:layout_width="wrap_content"
@@ -137,6 +138,7 @@
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+
       <TextView
         android:id="@+id/download_size_text_view"
         android:layout_width="wrap_content"
