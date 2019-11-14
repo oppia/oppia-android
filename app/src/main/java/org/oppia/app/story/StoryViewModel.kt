@@ -60,7 +60,7 @@ class StoryViewModel @Inject constructor(
     val chapterList: List<ChapterSummary> = storySummary.chapterList
 
     Log.d("TAG", "chapterList: " + chapterList.size)
-    for (position in 0 until chapterList.size -1) {
+    for (position in 0 until chapterList.size) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
         (fragment as StoryFragment).smoothScrollToPosition(position + 1)
         break
