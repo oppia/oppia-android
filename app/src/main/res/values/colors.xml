@@ -54,5 +54,5 @@
   <color name="chapterCardShadow">#AAFFFFFF</color>
   <color name="chapterCardGreyBorder">#666666</color>
   <color name="chapterCardGreenBorder">#019489</color>
-  <color name="divider">#AFAFAF</color>
+  <color name="divider">#61000000</color>
 </resources>
