@@ -33,6 +33,16 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Exploration
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -45,9 +55,6 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
-
-const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
-const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
@@ -108,9 +115,9 @@ class ExplorationDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataForTheWelcomeExploration() = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_5)
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf(
       "END", "Estimate 100", "Numeric input",
       "Things you can do", "Welcome!", "What language"
@@ -129,9 +136,9 @@ class ExplorationDataControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() = runBlockingTest(coroutineContext) {
-    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
+    val explorationLiveData = explorationDataController.getExplorationById(TEST_EXPLORATION_ID_6)
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf(
       "About this website", "Contact", "Contribute", "Credits", "END",
       "End Card", "Example1", "Example3", "First State", "Site License", "So what can I tell you"
@@ -149,10 +156,43 @@ class ExplorationDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForFractions0Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Fractions 1 - What is a Fraction?")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(24)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForFractions1Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    print(explorationResultCaptor.value.getErrorOrNull())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Fractions 2 - The Meaning of Equal Parts")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(22)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testController_returnsNullForNonExistentExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
-    explorationLiveData!!.observeForever(mockExplorationObserver)
+    explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
   }
@@ -208,7 +248,13 @@ class ExplorationDataControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+      TextInputRuleModule::class, InteractionsModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

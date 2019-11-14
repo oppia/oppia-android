@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
+
+    <import type="org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
+
     <variable
       name="audioFragment"
-      type="org.oppia.app.player.audio.AudioFragment"/>
+      type="org.oppia.app.player.audio.AudioFragment" />
+
     <variable
       name="viewModel"
-      type="org.oppia.app.player.audio.AudioViewModel"/>
+      type="org.oppia.app.player.audio.AudioViewModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,31 +25,39 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="4dp">
+
     <ImageView
       android:id="@+id/ivPlayPauseAudio"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:contentDescription="@string/audio_pause_play_description"
+      android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:padding="8dp"
+      android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_black_24dp : @drawable/ic_play_circle_filled_black_24dp}"
+      android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
+      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
+
     <SeekBar
       android:id="@+id/sbAudioProgress"
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:max="100"
+      android:max="@{viewModel.durationLiveData}"
+      android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
       android:thumb="@drawable/seekbar_thumb"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
       android:id="@+id/tvAudioLanguage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
+      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       android:padding="8dp"
       android:text="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"
@@ -52,6 +66,6 @@
       android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

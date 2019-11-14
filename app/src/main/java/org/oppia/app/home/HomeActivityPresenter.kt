@@ -32,9 +32,15 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
     init(activity.getString(R.string.menu_home))
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.home_fragment_placeholder,
-      HomeFragment()
-    ).commitNow()
+    if (getHomeFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.home_fragment_placeholder,
+        HomeFragment()
+      ).commitNow()
+    }
+  }
+
+  private fun getHomeFragment(): HomeFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.home_fragment_placeholder) as HomeFragment?
   }
 }
