@@ -40,55 +40,58 @@
           app:rectangleDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
           android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />
 
+
         <FrameLayout
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="200dp"
           android:background="@drawable/thumbnail_gradient" />
-      </FrameLayout>
 
-      <TextView
-        android:id="@+id/topic_name_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:gravity="start"
-        android:text="@{viewModel.topic.name}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_thumbnail_frame_layout" />
+        <TextView
+          android:id="@+id/topic_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_marginStart="32dp"
+          android:layout_marginEnd="32dp"
+          android:fontFamily="sans-serif"
+          android:gravity="start"
+          android:text="@{viewModel.topic.name}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="24sp" />
+
+      </FrameLayout>
 
       <TextView
         android:id="@+id/story_count_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="sans-serif"
         android:gravity="start"
         android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view"/>
+        app:layout_constraintTop_toBottomOf="@+id/topic_thumbnail_frame_layout" />
+
       <TextView
         android:id="@+id/topic_description_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="sans-serif"
         android:gravity="start"
         android:text="@{viewModel.topic.description}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view"/>
+        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
       <TextView
         android:id="@+id/see_more_text_view"
         android:layout_width="wrap_content"
