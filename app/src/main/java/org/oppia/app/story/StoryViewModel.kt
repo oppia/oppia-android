@@ -1,5 +1,6 @@
 package org.oppia.app.story
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -58,7 +59,8 @@ class StoryViewModel @Inject constructor(
   private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {
     val chapterList: List<ChapterSummary> = storySummary.chapterList
 
-    for (position in 0..storySummary.chapterList.size) {
+    Log.d("TAG", "chapterList: " + chapterList.size)
+    for (position in 0 until chapterList.size) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
         (fragment as StoryFragment).smoothScrollToPosition(position + 1)
         break
