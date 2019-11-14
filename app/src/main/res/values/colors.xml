@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#019489</color>
+  <color name="colorPrimary">#00645C</color>
   <color name="colorPrimaryDark">#00574B</color>
   <color name="colorAccent">#2D4A9D</color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
@@ -54,5 +54,6 @@
   <color name="chapterCardShadow">#AAFFFFFF</color>
   <color name="chapterCardGreyBorder">#666666</color>
   <color name="chapterCardGreenBorder">#019489</color>
-  <color name="divider">#AFAFAF</color>
+  <color name="divider">#61000000</color>
+  <color name="toolbarDropShadow">#3D000000</color>
 </resources>
