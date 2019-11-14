@@ -52,6 +52,7 @@
           android:layout_gravity="bottom"
           android:layout_marginStart="32dp"
           android:layout_marginEnd="32dp"
+          android:layout_marginBottom="4dp"
           android:fontFamily="sans-serif"
           android:gravity="start"
           android:text="@{viewModel.topic.name}"
