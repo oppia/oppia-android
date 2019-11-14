@@ -9,12 +9,46 @@
       type="org.oppia.app.story.StoryViewModel" />
   </data>
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/story_chapter_list"
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:data="@{viewModel.storyChapterLiveData}"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/topic_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@{viewModel.storyNameLiveData}"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/story_chapter_list"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      android:paddingBottom="128dp"
+      android:clipToPadding="false"
+      app:data="@{viewModel.storyChapterLiveData}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
