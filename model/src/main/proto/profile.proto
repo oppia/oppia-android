@@ -8,7 +8,7 @@ option java_multiple_files = true;
 // Top level proto used to store last used id and all profiles.
 message ProfileDatabase {
   // Represents the last used unique ID for adding a profile.
-  int32 last_used_id = 1;
+  int32 next_profile_id = 1;
 
   // Mapping from unique ID to profile.
   map<int32, Profile> profiles = 2;
@@ -51,4 +51,11 @@ message ProfileId {
    * Should not be used directory outside of the profile system.
    */
   int32 internal_id = 1;
+}
+
+message ProfileChooserModel {
+  oneof model_type {
+    Profile profile = 1;
+    bool addProfile = 2;
+  }
 }

@@ -8,6 +8,7 @@ import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.InMemoryBlockingCache
+import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -30,13 +31,14 @@ import kotlin.concurrent.withLock
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
   context: Context, cacheFactory: InMemoryBlockingCache.Factory,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String, private val initialValue: T
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String,
+  private val initialValue: T, directory: File = context.filesDir
 ) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
 
-  private val cacheFile = File(context.filesDir, cacheFileName)
+  private val cacheFile = File(directory, cacheFileName)
   @GuardedBy("failureLock") private var deferredLoadCacheFailure: Throwable? = null
   private val cache = cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
@@ -112,6 +114,17 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
+  /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
+  fun<V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T,V>): Deferred<V> {
+    return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
+      // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
+      // nothing can read from it until this update completes.
+      asyncDataSubscriptionManager.notifyChange(providerId)
+      val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
+      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(cachedPayload, customResult)
+    }
+  }
+
   /**
    * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This does not notify
    * subscribers.
@@ -182,6 +195,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     return CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
   }
 
+  /** See [storeFileCache]. Returns payload and custom result. */
+  private fun<V> storeFileCacheWithCustomChannel(currentPayload: CachePayload<T>, update: (T) -> Pair<T,V>): Pair<CachePayload<T>,V> {
+    val (updatedCacheValue, customResult) = update(currentPayload.value)
+    FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
+    return Pair(CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue), customResult)
+  }
+
   private data class PersistentCacheStoreId(private val id: String)
 
   /** Represents different states the cache store can be in. */
@@ -212,11 +232,17 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   @Singleton
   class Factory @Inject constructor(
     private val context: Context, private val cacheFactory: InMemoryBlockingCache.Factory,
-    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private val directoryManagementUtil: DirectoryManagementUtil
   ) {
     /** Returns a new [PersistentCacheStore] with the specified cache name and initial value. */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
       return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue)
+    }
+
+    fun <T : MessageLite> create(cacheName: String, initialValue: T, profileId: Int): PersistentCacheStore<T> {
+      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.toString())
+      return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue, profileDirectory)
     }
   }
 }

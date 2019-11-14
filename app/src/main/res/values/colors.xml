@@ -33,8 +33,14 @@
   <color name="black">#000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
+  <color name="red">#FF0000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatarBorder">#4E4E50</color>
+  <color name="chooserBackground">#212121</color>
+  <color name="addProfileBackground">#FFFFF0</color>
+  <color name="pinPasswordBackground">#E4F2F1</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="submitButtonInactive">#61000000</color>
   <color name="grey">#CCCCCC</color>
