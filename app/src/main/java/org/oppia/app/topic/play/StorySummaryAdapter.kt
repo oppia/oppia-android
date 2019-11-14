@@ -110,7 +110,7 @@ class StorySummaryAdapter(
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
-      binding.chapterListViewControl.setOnClickListener {
+      binding.expandListIcon.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
         currentExpandedChapterListIndex =
           if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
