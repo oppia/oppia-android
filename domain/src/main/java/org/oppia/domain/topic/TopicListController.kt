@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
-const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 
@@ -45,8 +43,6 @@ class TopicListController @Inject constructor(
   private fun createTopicList(): TopicList {
     return TopicList.newBuilder()
       .setPromotedStory(createPromotedStory1())
-      .addTopicSummary(createTopicSummary0())
-      .addTopicSummary(createTopicSummary1())
       .addTopicSummary(createFractionsTopicSummary())
       .addTopicSummary(createRatiosTopicSummary())
       .setOngoingStoryCount(2)
@@ -85,94 +81,22 @@ class TopicListController @Inject constructor(
       .build()
   }
 
-  private fun createTopicSummary0(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_0)
-      .setName("First Topic")
-      .setVersion(1)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(2)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(2)
-      .setTotalChapterCount(4)
-      .setTopicThumbnail(createTopicThumbnail0())
-      .build()
-  }
-
-  private fun createTopicSummary1(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setName("Second Topic")
-      .setVersion(3)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(1)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(1)
-      .setTotalChapterCount(1)
-      .setTopicThumbnail(createTopicThumbnail1())
-      .build()
-  }
-
   private fun createOngoingStoryList(): OngoingStoryList {
     return OngoingStoryList.newBuilder()
       .addRecentStory(createPromotedStory1())
-      .addRecentStory(createPromotedStory2())
-      .addOlderStory(createPromotedStory3())
       .build()
   }
 
   private fun createPromotedStory1(): PromotedStory {
     return PromotedStory.newBuilder()
-      .setStoryId(TEST_STORY_ID_1)
+      .setStoryId(FRACTIONS_STORY_ID_0)
       .setStoryName("Second Story")
-      .setTopicId(TEST_TOPIC_ID_0)
+      .setTopicId(FRACTIONS_TOPIC_ID)
       .setTopicName("First Topic")
       .setNextChapterName("The Meaning of Equal Parts")
       .setCompletedChapterCount(1)
       .setTotalChapterCount(3)
       .setLessonThumbnail(createStoryThumbnail())
-      .build()
-  }
-
-  private fun createPromotedStory2(): PromotedStory {
-    return PromotedStory.newBuilder()
-      .setStoryId(TEST_STORY_ID_0)
-      .setStoryName("Equal Ratios")
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setTopicName("Ratios and Proportions")
-      .setNextChapterName("Matthew Goes to the Bakery")
-      .setCompletedChapterCount(1)
-      .setTotalChapterCount(3)
-      .setLessonThumbnail(createStoryThumbnail1())
-      .build()
-  }
-
-  private fun createPromotedStory3(): PromotedStory {
-    return PromotedStory.newBuilder()
-      .setStoryId(TEST_STORY_ID_0)
-      .setStoryName("Types of Angles")
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setTopicName("Geometrical Figures")
-      .setNextChapterName("Miguel Reads a Book")
-      .setCompletedChapterCount(1)
-      .setTotalChapterCount(3)
-      .setLessonThumbnail(createStoryThumbnail2())
-      .build()
-  }
-
-  private fun createTopicThumbnail0(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_BOOK)
-      .setBackgroundColorRgb(0xd5836f)
-      .build()
-  }
-
-  private fun createTopicThumbnail1(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-      .setBackgroundColorRgb(0xf7bf73)
       .build()
   }
 
@@ -194,20 +118,6 @@ class TopicListController @Inject constructor(
     return LessonThumbnail.newBuilder()
       .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xa5d3ec)
-      .build()
-  }
-
-  private fun createStoryThumbnail1(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-      .setBackgroundColorRgb(0xd3a5ec)
-      .build()
-  }
-
-  private fun createStoryThumbnail2(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-      .setBackgroundColorRgb(0xa5ecd3)
       .build()
   }
 }
