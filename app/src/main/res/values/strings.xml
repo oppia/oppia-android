@@ -35,7 +35,7 @@
   <string name="review">Review</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
-  <string name="topic_play_chapter_name">%s. %s</string>
+  <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
   <string name="fractions_hint_text">Write fraction here.</string>

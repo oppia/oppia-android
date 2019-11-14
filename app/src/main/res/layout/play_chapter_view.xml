@@ -39,13 +39,23 @@
       android:visibility="@{(chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
 
     <TextView
-      android:id="@+id/chapter_name"
+      android:id="@+id/chapter_index"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:layout_marginEnd="4dp"
       android:fontFamily="sans-serif"
-      android:text="@{String.format(@string/topic_play_chapter_name, (index + 1), chapterSummary.name)}"
+      android:text="@{String.format(@string/topic_play_chapter_index, (index + 1))}"
+      android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText: @color/oppiaPrimaryText30}"
+      android:textSize="12sp" />
+
+    <TextView
+      android:id="@+id/chapter_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="4dp"
+      android:layout_marginStart="4dp"
+      android:fontFamily="sans-serif"
+      android:text="@{chapterSummary.name}"
       android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText: @color/oppiaPrimaryText30}"
       android:textSize="12sp" />
   </LinearLayout>
