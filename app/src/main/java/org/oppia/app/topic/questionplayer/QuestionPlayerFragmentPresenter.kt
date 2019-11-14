@@ -19,7 +19,6 @@ import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.QuestionButtonItemBinding
 import org.oppia.app.databinding.QuestionPlayerFragmentBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
-import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
@@ -64,7 +63,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionViewModel by lazy {
     getQuestionPlayerViewModel()
   }
-  private val ephermeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
+  private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion()
   }
   private var firstTry = true
@@ -84,7 +83,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentQuestion() {
-    ephermeralQuestionLiveData.observe(fragment, Observer {
+    ephemeralQuestionLiveData.observe(fragment, Observer {
       processEphemeralQuestionResult(it)
     })
   }
@@ -173,6 +172,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       pendingItemList += FeedbackViewModel(feedback.html)
     }
   }
+
   private fun updateNavigationButtonVisibility(
     pendingItemList: MutableList<StateItemViewModel>,
     hasGeneralContinueButton: Boolean,
@@ -209,6 +209,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     pendingItemList += questionNavigationButtonViewModel
   }
 
+  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+    // An interaction has indicated that an answer is ready for submission.
+    handleSubmitAnswer(answer)
+  }
+
   private fun handleSubmitAnswer(answer: InteractionObject) {
     subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer))
   }
@@ -236,9 +241,30 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     return answeredQuestionOutcomeResult.getOrDefault(AnsweredQuestionOutcome.getDefaultInstance())
   }
 
-  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
-    // An interaction has indicated that an answer is ready for submission.
-    handleSubmitAnswer(answer)
+  override fun onSubmitButtonClicked() {
+    hideKeyboard()
+    handleSubmitAnswer(questionViewModel.getPendingAnswer())
+  }
+
+  override fun onContinueButtonClicked() {
+    firstTry = true
+    hideKeyboard()
+    moveToNextState()
+  }
+
+  override fun onReturnToTopicButtonClicked() {
+    hideKeyboard()
+    questionTrainingController.stopQuestionTrainingSession()
+    activity.finish()
+  }
+
+  private fun moveToNextState() {
+    questionAssessmentProgressController.moveToNextQuestion()
+  }
+
+  private fun hideKeyboard() {
+    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StateItemViewModel> {
@@ -325,31 +351,5 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun getQuestionPlayerViewModel(): QuestionPlayerViewModel {
     return viewModelProvider.getForFragment(fragment, QuestionPlayerViewModel::class.java)
-  }
-
-  override fun onSubmitButtonClicked() {
-    hideKeyboard()
-    handleSubmitAnswer(questionViewModel.getPendingAnswer())
-  }
-
-  override fun onContinueButtonClicked() {
-    firstTry = true
-    hideKeyboard()
-    moveToNextState()
-  }
-
-  override fun onReturnToTopicButtonClicked() {
-    hideKeyboard()
-    questionTrainingController.stopQuestionTrainingSession()
-    activity.finish()
-  }
-
-  private fun moveToNextState() {
-    questionAssessmentProgressController.moveToNextQuestion()
-  }
-
-  private fun hideKeyboard() {
-    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
 }
