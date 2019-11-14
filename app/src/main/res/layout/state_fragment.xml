@@ -19,7 +19,6 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:divider="@android:color/transparent"
-      android:dividerHeight="8dp"
       android:overScrollMode="never"
       android:scrollbars="none"
       app:data="@{viewModel.itemList}"
