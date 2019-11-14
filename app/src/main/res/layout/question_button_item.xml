@@ -18,6 +18,17 @@
     android:gravity="center_vertical"
     android:padding="16dp">
     <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/StateButtonActive"
+      android:button="@drawable/state_button_orange_background"
+      android:layout_alignParentEnd="true"
+      android:textColor="@color/white"
+      android:drawableStart="@drawable/ic_refresh_white_24dp"
+      android:text="@string/question_player_replay"
+      android:onClick="@{buttonViewModel.triggerReplayNavigationButtonCallback()}"
+      android:visibility="@{buttonViewModel.isReplayButtonVisible() ? View.VISIBLE : View.GONE}" />
+    <Button
       android:id="@+id/interaction_button"
       style="@style/StateButtonActive"
       android:button="@{buttonViewModel.drawableResourceValue.get(), default=@drawable/state_button_primary_background}"

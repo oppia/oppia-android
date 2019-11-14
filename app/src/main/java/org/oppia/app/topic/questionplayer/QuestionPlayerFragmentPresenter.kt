@@ -258,6 +258,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     activity.finish()
   }
 
+  override fun onReplayButtonClicked() {
+
+  }
+
   private fun moveToNextState() {
     questionAssessmentProgressController.moveToNextQuestion()
   }
