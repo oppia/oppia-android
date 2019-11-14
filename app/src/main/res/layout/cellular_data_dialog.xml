@@ -8,6 +8,11 @@
     android:id="@+id/cellular_data_dialog_checkbox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fontFamily="sans-serif"
     android:orientation="vertical"
-    android:text="@string/cellular_data_alert_dialog_checkbox"></CheckBox>
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:text="@string/cellular_data_alert_dialog_checkbox"
+    android:textColor="@color/black_54"
+    android:textSize="16sp" />
 </RelativeLayout>
