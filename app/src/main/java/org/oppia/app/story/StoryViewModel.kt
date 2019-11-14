@@ -12,6 +12,7 @@ import org.oppia.app.model.StorySummary
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
+  private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) : ViewModel() {
   /** [storyId] needs to be set before any of the live data members can be accessed. */
@@ -77,7 +79,9 @@ class StoryViewModel @Inject constructor(
 
     // Add the rest of the list
     itemViewModelList.addAll(chapterList.mapIndexed { index, chapter ->
-      StoryChapterSummaryViewModel(index, explorationSelectionListener, chapter) as StoryItemViewModel
+      StoryChapterSummaryViewModel(
+        index, fragment, explorationSelectionListener, explorationDataController, logger, chapter
+      )
     })
 
     return itemViewModelList
