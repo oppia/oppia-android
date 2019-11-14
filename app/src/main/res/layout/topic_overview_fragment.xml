@@ -16,8 +16,8 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:overScrollMode="never"
     android:background="@color/white"
+    android:overScrollMode="never"
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,14 +25,26 @@
       android:layout_height="wrap_content"
       android:paddingBottom="24dp">
 
-      <ImageView
-        android:id="@+id/topic_thumbnail_image_view"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+      <FrameLayout
+        android:id="@+id/topic_thumbnail_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+          android:id="@+id/topic_thumbnail_image_view"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          app:rectangleDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}"
+          android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}" />
+
+        <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@drawable/thumbnail_gradient" />
+      </FrameLayout>
 
       <TextView
         android:id="@+id/topic_name_text_view"
@@ -47,7 +59,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_thumbnail_image_view" />
+        app:layout_constraintTop_toBottomOf="@+id/topic_thumbnail_frame_layout" />
 
       <TextView
         android:id="@+id/story_count_text_view"
@@ -62,8 +74,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
-
+        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view"/>
       <TextView
         android:id="@+id/topic_description_text_view"
         android:layout_width="0dp"
@@ -77,8 +88,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
-
+        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view"/>
       <TextView
         android:id="@+id/see_more_text_view"
         android:layout_width="wrap_content"

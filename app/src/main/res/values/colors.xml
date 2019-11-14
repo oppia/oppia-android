@@ -27,6 +27,7 @@
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
+  <color name="white_70">#B3FFFFFF</color>
   <color name="black">#000000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
@@ -47,5 +48,8 @@
   <color name="grey_shade_40">#0000003D</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
+  <color name="chapterCardShadow">#AAFFFFFF</color>
+  <color name="chapterCardGreyBorder">#666666</color>
+  <color name="chapterCardGreenBorder">#019489</color>
   <color name="divider">#AFAFAF</color>
 </resources>
