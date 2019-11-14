@@ -165,7 +165,6 @@ class ExplorationDataControllerTest {
     advanceUntilIdle()
     explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    print(explorationResultCaptor.value.getErrorOrNull())
 
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
@@ -183,7 +182,6 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    print(explorationResultCaptor.value.getErrorOrNull())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
