@@ -46,6 +46,7 @@
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:background="@drawable/audio_seekbar_background"
       android:max="@{viewModel.durationLiveData}"
       android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
       android:thumb="@drawable/seekbar_thumb"
