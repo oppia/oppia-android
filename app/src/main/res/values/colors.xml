@@ -44,4 +44,6 @@
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
   <color name="divider">#AFAFAF</color>
+  <!-- QUESTION COMPONENT -->
+  <color name="question_player_background">#F0FFFF</color>
 </resources>

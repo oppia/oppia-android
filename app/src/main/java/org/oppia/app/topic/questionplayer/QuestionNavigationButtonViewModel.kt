@@ -7,11 +7,10 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.app.R
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.player.state.listener.StateNavigationButtonListener
 
 /** [ViewModel] for State navigation buttons. */
 class QuestionNavigationButtonViewModel(
-  val context: Context, val stateNavigationButtonListener: StateNavigationButtonListener
+  val context: Context, val questionNavigationButtonListener: QuestionNavigationButtonListener
 ) : StateItemViewModel() {
   companion object {
     @JvmStatic
@@ -25,28 +24,16 @@ class QuestionNavigationButtonViewModel(
     ContinuationNavigationButtonType.NO_CONTINUATION_BUTTON
 
   var isNextButtonVisible = ObservableField<Boolean>(false)
-  var isPreviousButtonVisible = ObservableField<Boolean>(false)
-
   var isInteractionButtonActive = ObservableField<Boolean>(false)
   var isInteractionButtonVisible = ObservableField<Boolean>(false)
   var drawableResourceValue = ObservableField<Int>(R.drawable.state_button_primary_background)
-
   var interactionButtonName = ObservableField<String>()
-
-  fun updatePreviousButton(isEnabled: Boolean) {
-    isPreviousButtonVisible.set(isEnabled)
-  }
 
   fun updateContinuationButton(
     continuationNavigationButtonType: ContinuationNavigationButtonType, isEnabled: Boolean
   ) {
     currentContinuationNavigationButtonType = continuationNavigationButtonType
     when (continuationNavigationButtonType) {
-      ContinuationNavigationButtonType.NEXT_BUTTON -> {
-        isInteractionButtonActive.set(false)
-        isInteractionButtonVisible.set(false)
-        isNextButtonVisible.set(isEnabled)
-      }
       ContinuationNavigationButtonType.SUBMIT_BUTTON -> {
         isNextButtonVisible.set(false)
         isInteractionButtonActive.set(isEnabled)
@@ -78,11 +65,10 @@ class QuestionNavigationButtonViewModel(
 
   fun triggerContinuationNavigationButtonCallback() {
     when (currentContinuationNavigationButtonType) {
-      ContinuationNavigationButtonType.NEXT_BUTTON -> stateNavigationButtonListener.onNextButtonClicked()
-      ContinuationNavigationButtonType.SUBMIT_BUTTON -> stateNavigationButtonListener.onSubmitButtonClicked()
-      ContinuationNavigationButtonType.CONTINUE_BUTTON -> stateNavigationButtonListener.onContinueButtonClicked()
+      ContinuationNavigationButtonType.SUBMIT_BUTTON -> questionNavigationButtonListener.onSubmitButtonClicked()
+      ContinuationNavigationButtonType.CONTINUE_BUTTON -> questionNavigationButtonListener.onContinueButtonClicked()
       ContinuationNavigationButtonType.RETURN_TO_TOPIC_BUTTON -> {
-        stateNavigationButtonListener.onReturnToTopicButtonClicked()
+        questionNavigationButtonListener.onReturnToTopicButtonClicked()
       }
       else -> throw IllegalStateException(
         "Cannot trigger continuation for current button state: $currentContinuationNavigationButtonType"
@@ -93,7 +79,6 @@ class QuestionNavigationButtonViewModel(
   /** The type of the state continue navigation button being shown. */
   enum class ContinuationNavigationButtonType {
     NO_CONTINUATION_BUTTON,
-    NEXT_BUTTON,
     SUBMIT_BUTTON,
     CONTINUE_BUTTON,
     RETURN_TO_TOPIC_BUTTON
