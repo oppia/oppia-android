@@ -17,9 +17,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
-      android:background="@color/white"
+      android:layout_marginTop="24dp"
+      android:layout_marginBottom="24dp"
+      android:layout_marginStart="28dp"
+      android:layout_marginEnd="28dp"
+      android:background="@color/oppiaLightGreen"
       android:orientation="vertical"
-      android:padding="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
@@ -27,19 +30,26 @@
         android:id="@+id/fraction_input_interaction_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:background="@drawable/edit_text_background"
         android:digits="0123456789/- "
         android:enabled="@{!viewModel.isReadOnly}"
         android:focusable="true"
+        android:fontFamily="sans-serif"
         android:hint="@string/fractions_hint_text"
-        android:inputType="text"
-        android:longClickable="false"
         android:imeOptions="actionDone"
+        android:inputType="date"
+        android:longClickable="false"
         android:maxLength="200"
-        android:padding="8dp"
+        android:minHeight="48dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
         android:singleLine="true"
-        android:text="@={viewModel.answerText}" />
+        android:text="@={viewModel.answerText}"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textColorHint="@color/edit_text_hint"
+        android:textSize="16sp"
+        android:textStyle="italic" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
