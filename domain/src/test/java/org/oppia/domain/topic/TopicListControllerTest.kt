@@ -136,6 +136,35 @@ class TopicListControllerTest {
   }
 
   @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectThumbnail() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.topicThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
+  }
+
+  @Test
   fun testRetrieveTopicList_promotedLesson_hasCorrectLessonInfo() {
     val topicListLiveData = topicListController.getTopicList()
 
