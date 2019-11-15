@@ -15,6 +15,10 @@
     <item name="windowNoTitle">true</item>
   </style>
 
+  <style name="OppiaDialogFragmentTheme" parent="OppiaTheme" >
+    <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
     <item name="android:windowBackground">@drawable/splash_page</item>
     <item name="android:windowAnimationStyle">@style/FadeTransitionAnimation.Activity</item>
