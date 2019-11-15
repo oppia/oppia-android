@@ -3,14 +3,21 @@ package org.oppia.util.networking
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import androidx.annotation.VisibleForTesting
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NetworkConnectionUtil @Inject constructor(private val context: Context) {
   enum class ConnectionStatus {
     WIFI, CELLULAR, NONE
   }
+  var connectionStatus: ConnectionStatus? = null
 
   fun getCurrentConnectionStatus(): ConnectionStatus {
+    connectionStatus?.let {
+      return it
+    }
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
     val isConnected: Boolean = activeNetwork?.isConnected == true
@@ -24,5 +31,10 @@ class NetworkConnectionUtil @Inject constructor(private val context: Context) {
       }
     }
     return ConnectionStatus.NONE
+  }
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun setCurrentConnectionStatus(status: ConnectionStatus) {
+    connectionStatus = status
   }
 }
