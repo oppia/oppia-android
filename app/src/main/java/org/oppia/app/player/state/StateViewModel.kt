@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -14,6 +15,12 @@ import javax.inject.Inject
 @FragmentScope
 class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
+
+  val isAudioBarVisible = ObservableField<Boolean>(false)
+
+  fun setAudioBarVisibility(audioBarVisible: Boolean) {
+    isAudioBarVisible.set(audioBarVisible)
+  }
 
   /**
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the

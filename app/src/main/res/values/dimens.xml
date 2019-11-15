@@ -9,4 +9,6 @@
   <dimen name="train_checkbox_padding">18dp</dimen>
   <dimen name="elevation_4dp">4dp</dimen>
   <dimen name="elevation_0dp">0dp</dimen>
+  <dimen name="padding_72dp">72dp</dimen>
+  <dimen name="padding_24dp">24dp</dimen>
 </resources>
