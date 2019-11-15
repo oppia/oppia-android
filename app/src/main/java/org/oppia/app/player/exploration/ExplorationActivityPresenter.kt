@@ -1,8 +1,8 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -21,7 +21,8 @@ class ExplorationActivityPresenter @Inject constructor(
   fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
 
-    activity.setSupportActionBar(activity.findViewById(R.id.exploration_toolbar))
+    val toolbar: Toolbar = activity.findViewById(R.id.exploration_toolbar)
+    activity.setSupportActionBar(toolbar)
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -32,10 +33,6 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         explorationFragment
       ).commitNow()
-    }
-
-    activity.findViewById<View>(R.id.enable_audio_playback_button).setOnClickListener {
-      getExplorationFragment()?.handlePlayAudio()
     }
   }
 
@@ -56,5 +53,9 @@ class ExplorationActivityPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun audioPlayerIconClicked() {
+    getExplorationFragment()?.handlePlayAudio()
   }
 }
