@@ -1,11 +1,14 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.Exploration
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -18,10 +21,16 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
+
+  private lateinit var toolbar: Toolbar
+
   fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
 
-    activity.setSupportActionBar(activity.findViewById(R.id.exploration_toolbar))
+    toolbar = activity.findViewById(R.id.exploration_toolbar)
+    activity.setSupportActionBar(toolbar)
+
+    updateToolbarTitle(explorationId)
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -32,10 +41,6 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         explorationFragment
       ).commitNow()
-    }
-
-    activity.findViewById<View>(R.id.enable_audio_playback_button).setOnClickListener {
-      getExplorationFragment()?.handlePlayAudio()
     }
   }
 
@@ -56,5 +61,33 @@ class ExplorationActivityPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun audioPlayerIconClicked() {
+    getExplorationFragment()?.handlePlayAudio()
+  }
+
+  private fun updateToolbarTitle(explorationId: String) {
+    subscribeToExploration(explorationDataController.getExplorationById(explorationId))
+  }
+
+  private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
+    val explorationLiveData = getExploration(explorationResultLiveData)
+    explorationLiveData.observe(activity, Observer<Exploration> {
+      toolbar.title = it.title
+    })
+  }
+
+  /** Helper for subscribeToExploration. */
+  private fun getExploration(exploration: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
+    return Transformations.map(exploration, ::processExploration)
+  }
+
+  /** Helper for subscribeToExploration. */
+  private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
+    if (ephemeralStateResult.isFailure()) {
+      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+    }
+    return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 }
