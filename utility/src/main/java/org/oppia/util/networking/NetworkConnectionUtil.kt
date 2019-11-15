@@ -12,7 +12,7 @@ class NetworkConnectionUtil @Inject constructor(private val context: Context) {
   enum class ConnectionStatus {
     WIFI, CELLULAR, NONE
   }
-  var connectionStatus: ConnectionStatus? = null
+  private var connectionStatus: ConnectionStatus? = null
 
   fun getCurrentConnectionStatus(): ConnectionStatus {
     connectionStatus?.let {

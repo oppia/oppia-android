@@ -15,6 +15,7 @@ import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
+import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
@@ -50,4 +51,5 @@ interface ActivityComponent {
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
+  fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
 }

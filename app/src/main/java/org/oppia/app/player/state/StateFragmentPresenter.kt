@@ -35,7 +35,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
@@ -261,7 +261,7 @@ class StateFragmentPresenter @Inject constructor(
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    val dialogFragment = CellularDataDialogFragment.newInstance()
+    val dialogFragment = CellularAudioDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 

@@ -44,5 +44,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
+    <activity android:name=".testing.ExplorationInjectionActivity" />
   </application>
 </manifest>

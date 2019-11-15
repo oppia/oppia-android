@@ -12,15 +12,15 @@ import org.oppia.app.player.state.StateFragment
 /**
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
  */
-class CellularDataDialogFragment : DialogFragment() {
+class CellularAudioDialogFragment : DialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
-     * @return [CellularDataDialogFragment]: DialogFragment
+     * @return [CellularAudioDialogFragment]: DialogFragment
      */
-    fun newInstance(): CellularDataDialogFragment {
-      return CellularDataDialogFragment()
+    fun newInstance(): CellularAudioDialogFragment {
+      return CellularAudioDialogFragment()
     }
   }
 
