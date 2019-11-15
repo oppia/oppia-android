@@ -5,7 +5,7 @@
         "story_contents": {
           "nodes": [
             {
-              "exploration_id": "0",
+              "exploration_id": "umPkwp0L1M0-",
               "destination_node_ids": [
                 "node_2"
               ],
@@ -17,7 +17,7 @@
               "acquired_skill_ids": []
             },
             {
-              "exploration_id": "16",
+              "exploration_id": "MjZzEVOG47_1",
               "destination_node_ids": [],
               "prerequisite_skill_ids": [],
               "title": "The Meaning of Equal Parts",
