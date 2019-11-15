@@ -6,6 +6,10 @@
     <import type="android.view.View" />
 
     <variable
+      name="parsedExplanation"
+      type="CharSequence" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.topic.conceptcard.ConceptCardViewModel" />
   </data>
@@ -68,7 +72,7 @@
           android:layout_marginTop="28dp"
           android:layout_marginEnd="40dp"
           android:fontFamily="sans-serif"
-          android:text="@{viewModel.parsedExplanation.get()}"
+          android:text="@{parsedExplanation}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp"
           android:visibility="@{viewModel.conceptCard.get().hasExplanation() ? View.VISIBLE : View.GONE}" />

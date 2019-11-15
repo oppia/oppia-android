@@ -23,9 +23,11 @@ class ConceptCardPresenter @Inject constructor(
 
   /** Sets up data binding and adapter for RecyclerView */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillId: String): View? {
-    val viewModel = getConceptCardViewModel()
-    viewModel.setSkillId(skillId)
     val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    val viewModel = getConceptCardViewModel()
+    viewModel.setSkillIdAndBinding(skillId, binding)
+
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment as? DialogFragment)?.dismiss()
