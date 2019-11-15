@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ConceptCardPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
-){
+) {
 
   /** Sets up data binding and adapter for RecyclerView */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillId: String): View? {
@@ -30,9 +30,11 @@ class ConceptCardPresenter @Inject constructor(
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment as? DialogFragment)?.dismiss()
     }
-    binding.workedExamples.apply {
-      adapter = createRecyclerViewAdapter()
-    }
+
+    // TODO(#352): Show worked examples in Concept Card.
+    // binding.workedExamples.apply {
+    //   adapter = createRecyclerViewAdapter()
+    // }
 
     binding.let {
       it.viewModel = viewModel
@@ -45,12 +47,14 @@ class ConceptCardPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ConceptCardViewModel::class.java)
   }
 
+  // TODO(#352): Show worked examples in Concept Card.
   private fun createRecyclerViewAdapter(): BindableAdapter<SubtitledHtml> {
     return BindableAdapter.Builder
       .newBuilder<SubtitledHtml>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ConceptCardExampleViewBinding::inflate,
-        setViewModel = ConceptCardExampleViewBinding::setSubtitledHtml)
+        setViewModel = ConceptCardExampleViewBinding::setSubtitledHtml
+      )
       .build()
   }
 }

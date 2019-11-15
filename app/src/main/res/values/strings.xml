@@ -56,6 +56,7 @@
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="concept_card_title">Concept Card</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter

@@ -630,7 +630,12 @@ class TopicController @Inject constructor(
       .setSkillId(TEST_SKILL_ID_0)
       .setSkillDescription(createTestTopic0Skill0().description)
       .setExplanation(
-        SubtitledHtml.newBuilder().setHtml("Hello. Welcome to Oppia.").setContentId(TEST_SKILL_CONTENT_ID_0).build()
+        SubtitledHtml.newBuilder().setHtml("<p>When writing a fraction, we need to count two things:</p>\n" +
+            "<ul>\n" +
+            "<li>The numerator: this is the first number in the fraction. It tells us how many parts are selected.</li>\n" +
+            "<li>The denominator: this is the second number in the fraction. It tells us the total number of equal parts, so that we know how large each part is. This includes all the parts &mdash; both the ones that are selected, and the ones that aren&rsquo;t selected.</li>\n" +
+            "</ul>\n" +
+            "<p>&nbsp;</p>").setContentId(TEST_SKILL_CONTENT_ID_0).build()
       )
       .addWorkedExample(
         SubtitledHtml.newBuilder().setHtml("This is the first example.").setContentId(TEST_SKILL_CONTENT_ID_1).build()

@@ -22,9 +22,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="180dp"
-      android:clickable="true"
-      android:focusable="true">
+      android:layout_height="180dp">
 
       <ImageView
         android:id="@+id/skill_image_view"
