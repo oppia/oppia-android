@@ -38,6 +38,7 @@ import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
@@ -136,7 +137,8 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1).inOrder()
+    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1,
+      TEST_SKILL_ID_1, TEST_SKILL_ID_1).inOrder()
   }
 
   @Test
@@ -156,7 +158,7 @@ class TopicControllerTest {
 
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
-    assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_0)
+    assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
     assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
   }
 
