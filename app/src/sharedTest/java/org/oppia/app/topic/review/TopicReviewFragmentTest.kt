@@ -3,6 +3,10 @@ package org.oppia.app.topic.review
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import android.text.style.CharacterStyle
+import android.view.View
+import android.widget.TextView
+import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,11 +22,15 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.util.threading.BackgroundDispatcher
@@ -59,7 +67,8 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
+      onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+      onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(containsRichText()))
     }
   }
 
@@ -67,12 +76,8 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectWorkedExamples() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(
-        atPosition(
-          R.id.worked_examples,
-          0
-        )
-      ).check(matches(hasDescendant(withText("Worked example with <i>rich text</i>."))))
+      onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(withText("Worked example with rich text.")))
+      onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(containsRichText()))
     }
   }
 
@@ -85,6 +90,16 @@ class TopicReviewFragmentTest {
       it.recreate()
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
+    }
+  }
+
+  private fun containsRichText() = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("Checks if view contains rich text")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view is TextView && view.text.toSpannable().getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
     }
   }
 

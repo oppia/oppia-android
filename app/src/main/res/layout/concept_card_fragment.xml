@@ -19,33 +19,15 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent" />
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/concept_card_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="0dp"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:data="@{viewModel.conceptCardLiveData}"
       app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent">
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
-        <TextView
-          android:id="@+id/explanation"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textColor="@android:color/black"
-          android:gravity="center"
-          android:visibility="@{viewModel.conceptCardLiveData.hasExplanation() ? View.VISIBLE : View.GONE}"
-          android:text="@{viewModel.explanationLiveData}" />
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/worked_examples"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          app:data="@{viewModel.workedExamplesLiveData}" />
-      </LinearLayout>
-    </ScrollView>
+      app:layout_constraintBottom_toBottomOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

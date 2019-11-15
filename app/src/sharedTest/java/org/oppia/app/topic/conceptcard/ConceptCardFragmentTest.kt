@@ -3,11 +3,14 @@ package org.oppia.app.topic.conceptcard
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import android.text.style.CharacterStyle
+import android.view.View
+import android.widget.TextView
+import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,6 +19,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,39 +43,45 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill1_explanationIsDisplayed() {
+  fun testConceptCardFragment_openDialogFragmentWithNoRichText_checkRecyclerViewIsCorrect() {
+    onView(withId(R.id.open_dialog_0)).perform(click())
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 0, R.id.concept_card_heading_text)).check(matches(withText("An important skill")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(withText("This is the first example.")))
+  }
+
+  @Test
+  fun testConceptCardFragment_openDialogFragmentWithWithRichText_checkRecyclerViewIsCorrect() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(withId(R.id.explanation)).check(matches(withText("Explanation with rich text.")))
-  }
-
-  @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill1_workedExamplesAreDisplayed() {
-    onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(atPositionOnView(R.id.worked_examples, 0, R.id.concept_card_example_text_view)).check(matches(withText("Worked example with rich text.")))
-  }
-
-  @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_explanationIsDisplayed() {
-    onView(withId(R.id.open_dialog_2)).perform(click())
-    onView(withId(R.id.explanation)).check(matches(withText("Explanation without rich text.")))
-  }
-
-  @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_workedExamplesAreDisplayed() {
-    onView(withId(R.id.open_dialog_2)).perform(click())
-    onView(atPositionOnView(R.id.worked_examples, 0, R.id.concept_card_example_text_view)).check(matches(withText("Worked example without rich text.")))
-    onView(atPositionOnView(R.id.worked_examples, 1, R.id.concept_card_example_text_view)).check(matches(withText("Second worked example.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 0, R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(containsRichText()))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(withText("Worked example with rich text.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(containsRichText()))
   }
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
-    onView(withId(R.id.open_dialog_2)).perform(click())
+    onView(withId(R.id.open_dialog_1)).perform(click())
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
-    onView(withText("Worked example without rich text.")).check(matches(isDisplayed()))
-    onView(withText("Second worked example.")).check(matches(isDisplayed()))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 0, R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(containsRichText()))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(withText("Worked example with rich text.")))
+    onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(containsRichText()))
+  }
+
+  private fun containsRichText() = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("Checks if view contains rich text")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view is TextView && view.text.toSpannable().getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
+    }
   }
 
   @Module
