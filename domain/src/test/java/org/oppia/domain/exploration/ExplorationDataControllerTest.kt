@@ -124,7 +124,7 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
     val expectedExplorationStateSet = listOf(
       "END", "Estimate 100", "Numeric input",
-      "Things you can do", "Welcome!", "What language"
+      "Things you can do", "Welcome!", "What languages"
     )
 
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
