@@ -20,21 +20,25 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:background="@color/oppiaPrimaryDark"
+        android:textSize="20dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
+        style="@style/AppTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@color/colorPrimary"
+        android:textSize="14sp"
+        app:tabBackground="@color/oppiaPrimaryDark"
         app:tabGravity="fill"
+        app:tabIconTint="@color/tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
-        app:tabTextAppearance="@android:style/TextAppearance.DeviceDefault.Widget.TabWidget"
-        app:tabTextColor="@android:color/white" />
+        app:tabTextAppearance="@style/AppTabTextAppearance"
+        app:tabTextColor="@color/tab_icon_color_selector" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

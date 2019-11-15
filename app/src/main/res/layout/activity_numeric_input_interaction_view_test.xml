@@ -56,7 +56,7 @@
       android:digits="0123456789/- "
       android:focusable="true"
       android:hint="Write fraction here."
-      android:inputType="number"
+      android:inputType="date"
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"

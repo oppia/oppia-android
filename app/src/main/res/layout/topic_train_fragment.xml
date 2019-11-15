@@ -64,13 +64,12 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="20dp"
-          android:layout_marginStart="28dp"
-          android:layout_marginEnd="28dp"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
+          android:layout_marginStart="40dp"
+          android:layout_marginEnd="40dp"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         <Button
           android:layout_width="160dp"
-          android:layout_height="36dp"
+          android:layout_height="48dp"
           android:id="@+id/topic_train_start_button"
           style="@style/StateButtonInactive"
           android:layout_gravity="center_horizontal"
@@ -80,7 +79,7 @@
           android:clickable="@{viewModel.isSubmitButtonActive()}"
           android:onClick="@{viewModel::startButtonClicked}"
           android:text="@string/topic_train_start"
-          android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}" />
+          android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}"/>
       </LinearLayout>
     </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>
