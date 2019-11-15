@@ -42,7 +42,6 @@ dependencies {
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
-      'com.google.code.gson:gson:2.8.6',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   )
@@ -50,7 +49,6 @@ dependencies {
       'android.arch.core:core-testing:1.1.1',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.ext:junit:1.1.1',
-      'com.google.code.gson:gson:2.8.6',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',

@@ -9,7 +9,6 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
@@ -18,14 +17,19 @@ const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   private lateinit var topicId: String
+  private lateinit var storyId: String
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
-    topicActivityPresenter.handleOnCreate(topicId)
+    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: "")
+    {
+      "Expected topic ID to be included in intent for TopicActivity."
+    }
+    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY) ?: ""
+    topicActivityPresenter.handleOnCreate(topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -37,7 +41,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToTopicPlayFragment() {
-    // TODO(#135): Change to play tab in this function.
+    val topicFragment = supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment
+    topicFragment.topicFragmentPresenter.setCurrentTab(TopicTab.PLAY)
   }
 
   override fun routeToConceptCard(skillId: String) {
