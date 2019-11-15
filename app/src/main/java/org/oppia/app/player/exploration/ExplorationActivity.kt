@@ -59,7 +59,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
     when (item!!.itemId) {
       R.id.action_audio_player -> explorationActivityPresenter.audioPlayerIconClicked()
     }
