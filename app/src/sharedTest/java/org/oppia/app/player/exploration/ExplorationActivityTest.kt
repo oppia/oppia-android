@@ -71,7 +71,7 @@ class ExplorationActivityTest {
   fun testAudioWithNoConnection_clickAudioIcon_checkOpensNoConnectionDialog() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_dialog_offline_message))).check(matches(isDisplayed()))
     }
   }
@@ -80,7 +80,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_clickAudioIcon_checkOpensCellularAudioDialog() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
     }
   }
@@ -89,7 +89,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_clickAudioIcon_clickNegative_checkNoAudioFragment() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withText("CANCEL")).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
@@ -100,7 +100,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_clickAudioIcon_clickPositive_checkAudioFragment() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withText("OK")).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
@@ -111,11 +111,11 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_clickCheckboxAndNegative_clickAudioIcon_checkNoAudioFragmentAndNoDialog() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("CANCEL")).perform(click())
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
     }
@@ -125,44 +125,12 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentAndNoDialog() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText("OK")).perform(click())
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testAudioWithCellular_clickCheckboxAndNegative_restartActivity_clickAudioIcon_checkNoAudioFragmentAndNoDialog() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("CANCEL")).perform(click())
-    }
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
-      onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testAudioWithCellular_clickCheckboxAndPositive_restartActivity_clickAudioIcon_checkAudioFragmentAndNoDialog() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("OK")).perform(click())
-    }
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
     }
@@ -172,7 +140,7 @@ class ExplorationActivityTest {
   fun testAudioWithWifi_clickAudioIcon_checkAudioFragmentWithDefaultLanguage() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
       onView(withText("en")).check(matches(isDisplayed()))
     }
@@ -182,7 +150,7 @@ class ExplorationActivityTest {
   fun testAudioWithWifi_clickAudioIcon_clickNext_checkNoAudioAvailable() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
       onView(withText(context.getString(R.string.audio_no_audio_available))).check(matches(isDisplayed()))
     }
@@ -193,7 +161,7 @@ class ExplorationActivityTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_title))).check(matches(isDisplayed()))
     }
   }

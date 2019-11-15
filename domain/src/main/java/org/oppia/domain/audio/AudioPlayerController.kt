@@ -134,7 +134,7 @@ class AudioPlayerController @Inject constructor(
 
   private fun prepareDataSource(url: String) {
     try {
-      mediaPlayer.setDataSource("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3")
+      mediaPlayer.setDataSource(url)
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)

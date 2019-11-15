@@ -80,7 +80,7 @@ class CellularAudioDialogControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCellularDialogControllerTest_TestApplicationComponent.builder()
+    DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

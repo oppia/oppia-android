@@ -8,7 +8,6 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
@@ -49,7 +48,6 @@ interface ActivityComponent {
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)

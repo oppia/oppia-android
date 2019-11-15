@@ -287,7 +287,6 @@ class StateFragmentPresenter @Inject constructor(
           .add(R.id.audio_fragment_placeholder, newAudioFragment, TAG_AUDIO_FRAGMENT
         ).commitNow()
       }
-
       val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
       if (currentYOffset == 0) {
         binding.stateRecyclerView.smoothScrollToPosition(0)

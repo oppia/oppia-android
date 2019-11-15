@@ -20,7 +20,6 @@
     <activity
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
     <activity
       android:name=".splash.SplashActivity"
