@@ -40,15 +40,15 @@ class MockSubtopicTest {
       .build()
   }
 
-  @Test
-  fun testSubtopicService_usingFakeJson_deserializationSuccessful() {
-    val delegate = mockRetrofit.create(SubtopicService::class.java)
-    val mockSubtopicService = MockSubtopicService(delegate)
-
-    val subtopic = mockSubtopicService.getSubtopic("Subtopic 1", "randomId")
-    val subtopicResponse = subtopic.execute()
-
-    assertThat(subtopicResponse.isSuccessful).isTrue()
-    assertThat(subtopicResponse.body()!!.subtopicTitle).isEqualTo("Subtopic 1")
-  }
+//  @Test
+//  fun testSubtopicService_usingFakeJson_deserializationSuccessful() {
+//    val delegate = mockRetrofit.create(SubtopicService::class.java)
+//    val mockSubtopicService = MockSubtopicService(delegate)
+//
+//    val subtopic = mockSubtopicService.getSubtopic("Subtopic 1", "randomId")
+//    val subtopicResponse = subtopic.execute()
+//
+//    assertThat(subtopicResponse.isSuccessful).isTrue()
+//    assertThat(subtopicResponse.body()!!.subtopicTitle).isEqualTo("Subtopic 1")
+//  }
 }
