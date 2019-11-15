@@ -20,7 +20,7 @@ class UrlImageParser private constructor(
   private val context: Context,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
+  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
