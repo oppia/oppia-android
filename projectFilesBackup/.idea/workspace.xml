@@ -1,0 +1,1163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="132d032a-6d7c-4e1a-9d1a-6d27e5cfda2c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/build/classes/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="oppia-android" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragment.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragment.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="48">
+              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+              <folding>
+                <element signature="e#36#257#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragmentPresenter.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="471">
+              <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+              <folding>
+                <element signature="e#36#758#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/LanguageDialogFragment.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="523">
+              <caret line="54" column="35" selection-start-line="54" selection-start-column="35" selection-end-line="54" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-6">
+              <caret line="123" column="3" selection-start-line="123" selection-start-column="3" selection-end-line="123" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioViewModel.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-264">
+              <caret line="52" column="3" selection-start-line="52" selection-start-column="3" selection-end-line="52" selection-end-column="3" />
+              <folding>
+                <element signature="e#36#569#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/exploration/ExplorationRetriever.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="31" column="79" selection-start-line="31" selection-start-column="58" selection-end-line="31" selection-end-column="79" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/domain/src/main/assets/fractions_exploration0.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="42" column="29" selection-start-line="42" selection-start-column="29" selection-end-line="42" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="11" column="49" selection-start-line="11" selection-start-column="49" selection-end-line="11" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="layoutResourceFile" />
+        <option value="Kotlin File" />
+        <option value="valueResourceFile" />
+        <option value="resourceFile" />
+        <option value="layoutResourceFile_vertical" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>build</find>
+      <find>setApplication</find>
+      <find>inject</find>
+      <find>set</find>
+      <find>setmainth</find>
+      <find>optional</find>
+      <find>intents.ini</find>
+      <find>showaudiobutt</find>
+      <find>3</find>
+      <find>30</find>
+      <find>TEST30</find>
+      <find>statefrag</find>
+      <find>parseOp</find>
+      <find>statefragmenttest</find>
+      <find>s</find>
+      <find>getAudioView</find>
+      <find>getExplorationById</find>
+      <find>fractions_exploration0</find>
+      <find>voice</find>
+      <find>viewModel.set</find>
+      <find>what'</find>
+      <find>matthew had a proble</find>
+      <find>audioclick</find>
+      <find>audiocl</find>
+      <find>voiceover</find>
+      <find>questioncou</find>
+      <find>questioncountpertrainin</find>
+      <find>QuestionModule</find>
+      <find>meet</find>
+      <find>viewmode</find>
+    </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/app/src/main/res/layout</dir>
+      <dir>$PROJECT_DIR$/app/src/main/java/org/oppia/app</dir>
+      <dir>$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio</dir>
+      <dir>$PROJECT_DIR$/model/build/generated/source/proto/main/javalite</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.kt" />
+        <option value="$PROJECT_DIR$/utility/src/main/java/org/oppia/util/profile/DirectoryManagementUtil.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/domain/profile/ProfileTestHelper.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/testing/ProfileTestHelper.kt" />
+        <option value="$PROJECT_DIR$/domain/src/test/java/org/oppia/domain/profile/ProfileTestHelperTest.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/profile_chooser_fragment.xml" />
+        <option value="$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/home/HomeActivityTest.kt" />
+        <option value="$PROJECT_DIR$/domain/src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/profile_chooser_add_view.xml" />
+        <option value="$PROJECT_DIR$/domain/build/tmp/kapt3/stubs/debugUnitTest/org/oppia/domain/profile/ProfileTestHelperTest.java" />
+        <option value="$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/profile/ProfileTestHelper.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/ProfileChooserViewModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/ProfileChooserFragmentPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/ProfileActivityPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/AdminAuthActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/AdminAuthActivityPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/AdminAuthViewModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/profile/ProfileChooserFragmentTest.kt" />
+        <option value="$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/profile/AdminAuthActivityTest.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/AddProfileActivityPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/profile/AddProfileActivityTest.kt" />
+        <option value="$PROJECT_DIR$/utility/src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt" />
+        <option value="$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/ConceptCardFragment.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/ConceptCardPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/concept_card_example_view.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/ConceptCardViewModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentPresenter.kt" />
+        <option value="$PROJECT_DIR$/data/build.gradle" />
+        <option value="$PROJECT_DIR$/utility/src/main/java/org/oppia/util/data/InMemoryBlockingCache.kt" />
+        <option value="$PROJECT_DIR$/model/src/main/proto/profile.proto" />
+        <option value="$PROJECT_DIR$/data/src/main/java/org/oppia/data/persistence/PersistentCacheStore.kt" />
+        <option value="$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/profile/ProfileManagementController.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/exploration/ExplorationActivityPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_volume_on_48dp.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragment.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragmentPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragment.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioViewModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityPresenter.kt" />
+        <option value="$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/exploration/ExplorationRetriever.kt" />
+        <option value="$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt" />
+        <option value="$PROJECT_DIR$/domain/src/main/assets/fractions_exploration0.json" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerViewModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/question_player_fragment.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/application/ApplicationComponent.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1280" />
+    <option name="width" value="1281" />
+    <option name="height" value="1415" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="e9137016:NonAndroidModuleNode" />
+              <item name="resources" type="f7eae187:NonAndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="e9137016:NonAndroidModuleNode" />
+              <item name="resources" type="f7eae187:NonAndroidSourceTypeNode" />
+              <item name="drawable" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="data" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="domain" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="utility" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="oppia-android" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="oppia-android" type="b2602c69:ProjectViewProjectNode" />
+              <item name="oppia-android" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DEBUGGABLE_DEVICE" value="emulator-5554" />
+    <property name="DEBUGGABLE_PROCESS" value="org.oppia.app" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="98NAY15YSL" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-11-08T18:11:37.714Z" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
+    <property name="device.picker.selection" value="98NAY15YSL" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/utility/src/test/java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../oppia-android-read" />
+    <property name="not.eligible.for.single.variant.sync" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="org.oppia.domain.profile" />
+      <recent name="org.oppia.app.settings.profile" />
+      <recent name="org.oppia.domain.audio" />
+      <recent name="org.oppia.app.topic.conceptcard" />
+      <recent name="org.oppia.domain.AudioPlayer" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/main/res/layout" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile" />
+      <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
+      <recent name="$PROJECT_DIR$/model/build/generated/source/proto/main/javalite" />
+      <recent name="$PROJECT_DIR$/utility/src/main/java/org/oppia/util" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="org.oppia.app.profile" />
+      <recent name="org.oppia.app.player.audio" />
+      <recent name="org.oppia.app.player.audio.testing" />
+      <recent name="org.oppia.app.player.state" />
+      <recent name="org.oppia.domain" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/main/java/org/oppia/app/settings/profile" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/testing" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Android App.app">
+    <configuration name="AudioFragmentTest" type="AndroidJUnit" factoryName="Android JUnit">
+      <module name="app" />
+      <option name="PACKAGE_NAME" value="org.oppia.app.player.audio" />
+      <option name="MAIN_CLASS_NAME" value="org.oppia.app.player.audio.AudioFragmentTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NetworkConnectionUtilTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="utility" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.oppia.util.networking.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.oppia.util.networking" />
+      <option name="MAIN_CLASS_NAME" value="org.oppia.util.networking.NetworkConnectionUtilTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="utility" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.oppia.util.networking.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.oppia.util.networking" />
+      <option name="MAIN_CLASS_NAME" value="org.oppia.util.networking.NetworkConnectionUtilTest" />
+      <option name="METHOD_NAME" value="testGetOrCreateDir_forCreatedDir_dirIsCreated" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StateFragmentTest.testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.oppia.app.player.state.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.oppia.app.player.state" />
+      <option name="MAIN_CLASS_NAME" value="org.oppia.app.player.state.StateFragmentTest" />
+      <option name="METHOD_NAME" value="testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConceptCardFragmentT..." type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <option name="TESTING_TYPE" value="2" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="org.oppia.app.topic.conceptcard.ConceptCardFragmentTest" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="EXTRA_OPTIONS" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PersistentCacheStoreTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="data" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.oppia.data.persistence.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.oppia.data.persistence" />
+      <option name="MAIN_CLASS_NAME" value="org.oppia.data.persistence.PersistentCacheStoreTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Android App.app" />
+      <item itemvalue="Android Instrumented Tests.ConceptCardFragmentT..." />
+      <item itemvalue="Android JUnit.AudioFragmentTest" />
+      <item itemvalue="Android JUnit.NetworkConnectionUtilTest" />
+      <item itemvalue="Android JUnit.NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" />
+      <item itemvalue="Android JUnit.StateFragmentTest.testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Android Instrumented Tests.ConceptCardFragmentT..." />
+        <item itemvalue="Android JUnit.StateFragmentTest.testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity" />
+        <item itemvalue="Android JUnit.NetworkConnectionUtilTest" />
+        <item itemvalue="Android JUnit.NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="132d032a-6d7c-4e1a-9d1a-6d27e5cfda2c" name="Default Changelist" comment="" />
+      <created>1568654620637</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1568654620637</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="AddProfileActivityTest - 2019.11.08 at 16h 55m 18s.xml">
+      <configuration name="AddProfileActivityTest" configurationId="AndroidTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="NetworkConnectionUtilTest - 2019.11.12 at 10h 17m 05s.xml">
+      <configuration name="NetworkConnectionUtilTest" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="NetworkConnectionUtilTest_testGetOrCreateDir_forCreatedDir_dirIsCreated - 2019.11.12 at 10h 20m 55s.xml">
+      <configuration name="NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="NetworkConnectionUtilTest_testGetOrCreateDir_forCreatedDir_dirIsCreated - 2019.11.12 at 10h 21m 07s.xml">
+      <configuration name="NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="NetworkConnectionUtilTest_testGetOrCreateDir_forCreatedDir_dirIsCreated - 2019.11.12 at 10h 21m 20s.xml">
+      <configuration name="NetworkConnectionUtilTest.testGetOrCreateDir_forCreatedDir_dirIsCreated" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="NetworkConnectionUtilTest - 2019.11.12 at 10h 24m 26s.xml">
+      <configuration name="NetworkConnectionUtilTest" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="StateFragmentTest_testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity - 2019.11.12 at 11h 08m 10s.xml">
+      <configuration name="StateFragmentTest.testStateFragment_loadExplorationTest5_continueToEndExploration_clickEndExplorationButton_destroysExplorationActivity" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="ConceptCardFragmentT___ - 2019.11.12 at 11h 34m 14s.xml">
+      <configuration name="ConceptCardFragmentT..." configurationId="AndroidTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="PersistentCacheStoreTest - 2019.11.12 at 11h 40m 22s.xml">
+      <configuration name="PersistentCacheStoreTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="PersistentCacheStoreTest - 2019.11.12 at 11h 42m 08s.xml">
+      <configuration name="PersistentCacheStoreTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1286" y="0" width="1274" height="1414" extended-state="0" />
+    <layout>
+      <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49661705" visible="true" weight="0.38286164" />
+      <window_info id="Structure" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" sideWeight="0.5033829" side_tool="true" weight="0.1578125" />
+      <window_info id="Build Variants" order="4" side_tool="true" />
+      <window_info id="Image Layers" order="5" />
+      <window_info id="Designer" order="6" />
+      <window_info id="Resources Explorer" order="7" weight="0.3296875" />
+      <window_info id="Capture Tool" order="8" />
+      <window_info anchor="bottom" id="Run" order="0" sideWeight="0.8936669" weight="0.37779492" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.8570312" weight="0.37203974" />
+      <window_info anchor="bottom" id="TODO" order="2" weight="0.3299373" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4841954" weight="0.34759358" />
+      <window_info anchor="bottom" id="Terminal" order="4" weight="0.3299373" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.45973417" side_tool="true" weight="0.309175" />
+      <window_info anchor="bottom" id="Version Control" order="6" weight="0.3299373" />
+      <window_info active="true" anchor="bottom" id="Build" order="7" sideWeight="0.54026586" visible="true" weight="0.24363917" />
+      <window_info anchor="bottom" id="Find" order="8" sideWeight="0.49804688" weight="0.32849503" />
+      <window_info anchor="bottom" id="Android Profiler" order="9" weight="0.3299373" />
+      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Gradle" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info anchor="right" id="Preview" order="4" weight="0.050820954" />
+      <window_info anchor="right" id="Palette&#9;" order="5" />
+      <window_info anchor="right" id="Coverage" order="6" side_tool="true" weight="0.32994527" />
+      <window_info anchor="right" x="0" y="0" width="270" height="1215" id="Documentation" order="7" side_tool="true" weight="0.32994527" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49661705" weight="0.29085222" />
+      <window_info id="Structure" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" sideWeight="0.5033829" side_tool="true" weight="0.1578125" />
+      <window_info id="Build Variants" order="4" side_tool="true" />
+      <window_info id="Image Layers" order="5" />
+      <window_info id="Designer" order="6" />
+      <window_info id="Resources Explorer" order="7" weight="0.3296875" />
+      <window_info id="Capture Tool" order="8" />
+      <window_info anchor="bottom" id="Run" order="0" sideWeight="0.8936669" visible="true" weight="0.37779492" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.8570312" weight="0.3685428" />
+      <window_info anchor="bottom" id="TODO" order="2" weight="0.3299373" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4841954" weight="0.3477255" />
+      <window_info anchor="bottom" id="Terminal" order="4" weight="0.3299373" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.45973417" side_tool="true" weight="0.309175" />
+      <window_info anchor="bottom" id="Version Control" order="6" weight="0.3299373" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.54026586" weight="0.3161141" />
+      <window_info anchor="bottom" id="Find" order="8" sideWeight="0.49804688" weight="0.32922128" />
+      <window_info anchor="bottom" id="Android Profiler" order="9" weight="0.3299373" />
+      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Gradle" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info anchor="right" id="Preview" order="4" weight="0.22929688" />
+      <window_info anchor="right" id="Palette&#9;" order="5" />
+      <window_info anchor="right" id="Coverage" order="6" side_tool="true" weight="0.32994527" />
+      <window_info anchor="right" x="0" y="0" width="270" height="1215" id="Documentation" order="7" side_tool="true" weight="0.32994527" />
+    </layout-to-restore>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/testing/ConceptCardFragmentTestActivityPresenter.kt</url>
+          <line>17</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest.kt</url>
+          <properties />
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/conceptcard/ConceptCardFragment.kt</url>
+          <line>48</line>
+          <properties />
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest.kt</url>
+          <line>72</line>
+          <properties />
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt</url>
+          <line>151</line>
+          <properties />
+          <option name="timeStamp" value="107" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt</url>
+          <line>124</line>
+          <properties />
+          <option name="timeStamp" value="159" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest.kt</url>
+          <line>51</line>
+          <properties />
+          <option name="timeStamp" value="164" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt</url>
+          <line>318</line>
+          <properties />
+          <option name="timeStamp" value="169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/profile/ProfileManagementController.kt</url>
+          <line>44</line>
+          <properties />
+          <option name="timeStamp" value="172" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt</url>
+          <line>132</line>
+          <properties />
+          <option name="timeStamp" value="191" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/oppia_android$DirectoryManagementUtilTest.ic" NAME="DirectoryManagementUtilTest Coverage Results" MODIFIED="1571945700078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.oppia.util.profile.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/oppia_android$AudioPlayerControllerTest.ic" NAME="AudioPlayerControllerTest Coverage Results" MODIFIED="1569361942630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.oppia.domain.audio.*</FILTER>
+    </SUITE>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="42" column="3" selection-start-line="42" selection-start-column="3" selection-end-line="42" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="601">
+          <caret line="373" column="18" selection-start-line="373" selection-start-column="18" selection-end-line="373" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utility/build/generated/source/kapt/debug/org/oppia/util/data/InMemoryBlockingCache_Factory_Factory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utility/src/main/java/org/oppia/util/data/InMemoryBlockingCache.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="413">
+          <caret line="92" column="26" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/src/main/proto/profile.proto">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="21" column="22" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/src/main/java/org/oppia/data/persistence/PersistentCacheStore.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="835">
+          <caret line="219" column="5" selection-start-line="219" selection-start-column="5" selection-end-line="219" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/profile/ProfileManagementController.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1536">
+          <caret line="73" column="65" selection-start-line="73" selection-start-column="65" selection-end-line="73" selection-end-column="65" />
+          <folding>
+            <element signature="e#34#393#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/exploration/ExplorationActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="691">
+          <caret line="55" column="57" selection-start-line="55" selection-start-column="57" selection-end-line="55" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_volume_off_48dp.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="2" column="38" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_volume_on_48dp.xml" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/ProfileActivityPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+          <folding>
+            <element signature="e#31#172#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="641">
+          <caret line="78" column="38" selection-start-line="78" selection-start-column="37" selection-end-line="78" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/build/generated/source/proto/main/javalite/org/oppia/app/model/Exploration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="13" column="20" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/LanguageInterface.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/LanguageDialogFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="523">
+          <caret line="54" column="35" selection-start-line="54" selection-start-column="35" selection-end-line="54" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="e#36#257#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioFragmentPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="37" column="30" selection-start-line="37" selection-start-column="30" selection-end-line="37" selection-end-column="30" />
+          <folding>
+            <element signature="e#36#758#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="11" column="49" selection-start-line="11" selection-start-column="49" selection-end-line="11" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/audio/AudioViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-264">
+          <caret line="52" column="3" selection-start-line="52" selection-start-column="3" selection-end-line="52" selection-end-column="3" />
+          <folding>
+            <element signature="e#36#569#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/profile/ProfileChooserFragmentPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="27" column="3" selection-start-line="27" selection-start-column="3" selection-end-line="27" selection-end-column="3" />
+          <folding>
+            <element signature="e#31#805#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="28" column="40" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="34" column="3" lean-forward="true" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="156" column="20" selection-start-line="156" selection-start-column="20" selection-end-line="156" selection-end-column="20" />
+          <folding>
+            <element signature="e#34#1519#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utility/src/main/java/org/oppia/util/profile/DirectoryManagementUtil.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="7" column="22" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/fragment/FragmentComponent.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="659">
+          <caret line="42" column="42" selection-start-line="42" selection-start-column="42" selection-end-line="42" selection-end-column="42" />
+          <folding>
+            <element signature="e#32#1153#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/activity/ActivityComponent.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-685">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="e#32#1173#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="79" column="48" selection-start-line="79" selection-start-column="48" selection-end-line="79" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/home/HomeFragmentPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="83" column="30" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/exploration/ExplorationDataController.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="42" column="20" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/exploration/ExplorationActivityPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="985">
+          <caret line="57" column="6" selection-start-line="57" selection-start-column="6" selection-end-line="57" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+          <folding>
+            <element signature="e#44#185#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/exploration/ExplorationRetriever.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="31" column="79" selection-start-line="31" selection-start-column="58" selection-end-line="31" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/itemviewmodel/StateItemViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="5" column="15" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/itemviewmodel/StateNavigationButtonViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="80" column="71" selection-start-line="80" selection-start-column="71" selection-end-line="80" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/audio/AudioPlayerController.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6">
+          <caret line="123" column="3" selection-start-line="123" selection-start-column="3" selection-end-line="123" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/state_fragment.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/question/QuestionTrainingController.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/question/QuestionConstantsProvider.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="14" column="20" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/application/ApplicationComponent.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="31" column="28" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build/tmp/kapt3/stubs/debug/org/oppia/app/application/ApplicationComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/question_player_fragment.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/java/org/oppia/domain/question/QuestionAssessmentProgressController.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="22" column="39" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
+          <folding>
+            <element signature="e#35#167#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/domain/src/main/assets/fractions_exploration0.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="42" column="29" selection-start-line="42" selection-start-column="29" selection-end-line="42" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="21" column="63" selection-start-line="21" selection-start-column="63" selection-end-line="21" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/oppia/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="89" column="44" selection-start-line="89" selection-start-column="44" selection-end-line="89" selection-end-column="44" />
+          <folding>
+            <element signature="e#44#354#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

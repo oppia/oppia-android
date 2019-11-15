@@ -17,7 +17,7 @@ import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
+import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 

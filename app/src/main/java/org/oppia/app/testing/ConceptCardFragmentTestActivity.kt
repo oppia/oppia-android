@@ -1,4 +1,4 @@
-package org.oppia.app.topic.conceptcard.testing
+package org.oppia.app.testing
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
