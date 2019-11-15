@@ -39,8 +39,8 @@ android {
 
   sourceSets {
     test {
-      java.srcDirs += "src/sharedTest/java"
-      kotlin.srcDirs += "src/sharedTest/java"
+      java.srcDirs += "src/test/java"
+      kotlin.srcDirs += "src/test/java"
     }
   }
 }

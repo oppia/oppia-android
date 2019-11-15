@@ -31,9 +31,4 @@ dependencies {
 sourceSets {
   main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
   main.java.srcDirs += "$projectDir/src/main/proto"
-//
-//    test {
-//      java.srcDirs += "src/sharedTest/java"
-//      kotlin.srcDirs += "src/sharedTest/java"
-//    }
 }
