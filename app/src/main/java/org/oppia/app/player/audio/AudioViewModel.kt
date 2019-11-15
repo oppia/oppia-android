@@ -70,8 +70,7 @@ class AudioViewModel @Inject constructor(
       setVoiceoverMappingsByState(stateId)
     }
   }
-
-  // TODO: update to take in contentId as well.
+  
   fun setVoiceoverMappingsByState(stateId: String) {
     val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
     val contentId = state.content.contentId

@@ -23,8 +23,8 @@
       android:overScrollMode="never"
       android:paddingTop="@{viewModel.isAudioBarVisible().get()? @dimen/padding_72dp : @dimen/padding_24dp}"
       android:scrollbars="none"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:data="@{viewModel.itemList}" />
+      app:data="@{viewModel.itemList}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     <FrameLayout
       android:id="@+id/audio_fragment_placeholder"
       android:layout_width="match_parent"
