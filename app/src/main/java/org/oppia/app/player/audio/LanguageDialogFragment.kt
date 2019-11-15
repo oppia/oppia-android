@@ -7,6 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
 private const val KEY_SELECTED_INDEX = "SELECTED_INDEX"
@@ -42,8 +44,20 @@ class LanguageDialogFragment : DialogFragment() {
     val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
     var selectedIndex = args.getInt(KEY_SELECTED_INDEX, 0)
-    val languageArrayList: ArrayList<String> = args.getStringArrayList(KEY_LANGUAGE_LIST)
-    val options = languageArrayList.toTypedArray<CharSequence>()
+    val languageCodeArrayList: ArrayList<String> = args.getStringArrayList(KEY_LANGUAGE_LIST)
+    val languageNameArrayList = ArrayList<String>()
+
+    for (languageCode in languageCodeArrayList) {
+      if (languageCode == "hi-en") {
+        languageNameArrayList.add("Hinglish")
+      } else {
+        val locale = Locale(languageCode)
+        val name = locale.getDisplayLanguage(locale)
+        languageNameArrayList.add(name)
+      }
+    }
+
+    val options = languageNameArrayList.toTypedArray<CharSequence>()
 
     val languageInterface: LanguageInterface = parentFragment as AudioFragment
 
@@ -53,7 +67,7 @@ class LanguageDialogFragment : DialogFragment() {
         selectedIndex = which
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        languageInterface.onLanguageSelected(languageArrayList[selectedIndex])
+        languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
         dismiss()
       }
       .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
