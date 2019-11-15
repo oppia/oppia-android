@@ -3,6 +3,10 @@ package org.oppia.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.core.view.MenuItemCompat
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
@@ -48,6 +52,19 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
 
   override fun stopExploration() {
     explorationActivityPresenter.stopExploration()
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.menu_exploration_activity, menu)
+    explorationActivityPresenter.setAudioButton(menu!!.getItem(0))
+    return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    when (item!!.itemId) {
+      R.id.action_audio_player -> explorationActivityPresenter.audioPlayerIconClicked()
+    }
+    return super.onOptionsItemSelected(item)
   }
 
   fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()

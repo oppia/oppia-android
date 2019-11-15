@@ -10,7 +10,11 @@ import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
-class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: String) :
+class ViewPagerAdapter(
+  fragmentManager: FragmentManager,
+  private val topicId: String,
+  private val storyId: String
+) :
   FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment {
@@ -24,6 +28,8 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, private val topicId: St
       }
       TopicTab.PLAY -> {
         val topicPlayTab = TopicPlayFragment()
+        if (storyId.isNotEmpty())
+          args.putString(STORY_ID_ARGUMENT_KEY, storyId)
         topicPlayTab.arguments = args
         return topicPlayTab
       }

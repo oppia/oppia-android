@@ -89,6 +89,7 @@ class StateFragmentPresenter @Inject constructor(
   private var audioShowing = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
+  private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
@@ -105,7 +106,8 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val stateRecyclerViewAdapter = createRecyclerViewAdapter()
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
@@ -275,6 +277,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun showHideAudioFragment(isVisible: Boolean) {
     val audioFragment = getAudioFragment()
+    getStateViewModel().setAudioBarVisibility(isVisible)
     if (isVisible) {
       (fragment.requireActivity() as ExplorationActivity).showVolumeOn()
       if (audioFragment == null) {
@@ -283,6 +286,11 @@ class StateFragmentPresenter @Inject constructor(
           .setCustomAnimations(R.anim.slide_down_audio, R.anim.slide_up_audio)
           .add(R.id.audio_fragment_placeholder, newAudioFragment, TAG_AUDIO_FRAGMENT
         ).commitNow()
+      }
+
+      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
+      if (currentYOffset == 0) {
+        binding.stateRecyclerView.smoothScrollToPosition(0)
       }
     } else {
       (fragment.requireActivity() as ExplorationActivity).showVolumeOff()
@@ -320,10 +328,10 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
 
-      showOrHideAudioByState(ephemeralState.state)
-      getAudioFragment()?.let {
-        (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
-      }
+    showOrHideAudioByState(ephemeralState.state)
+    getAudioFragment()?.let {
+      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
+    }
 
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -342,7 +350,8 @@ class StateFragmentPresenter @Inject constructor(
 
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
       if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState) {
+        && !ephemeralState.hasNextState
+      ) {
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
@@ -429,7 +438,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addInteraction(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false) {
+    InteractionObject? = null, isReadOnly: Boolean = false
+  ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
       explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly

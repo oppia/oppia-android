@@ -82,7 +82,7 @@ class AudioViewModel @Inject constructor(
     } else if (languages.any { it == selectedLanguageCode }) {
       setAudioLanguageCode(selectedLanguageCode)
     } else {
-      if (selectedLanguageCode.isEmpty()) {
+      if (selectedLanguageCode.isEmpty() && languages.isNotEmpty()) {
         setAudioLanguageCode(languages.first())
         (fragment as AudioFragment).languageSelectionClicked()
       } else {

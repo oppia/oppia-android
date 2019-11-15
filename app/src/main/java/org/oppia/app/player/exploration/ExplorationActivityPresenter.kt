@@ -1,12 +1,18 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.Exploration
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -19,12 +25,17 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
-  private lateinit var audioButton: ImageView
+  private lateinit var audioButton: MenuItem
+  private lateinit var toolbar: Toolbar
+
 
   fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
 
-    activity.setSupportActionBar(activity.findViewById(R.id.exploration_toolbar))
+    toolbar = activity.findViewById(R.id.exploration_toolbar)
+    activity.setSupportActionBar(toolbar)
+
+    updateToolbarTitle(explorationId)
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -36,26 +47,25 @@ class ExplorationActivityPresenter @Inject constructor(
         explorationFragment
       ).commitNow()
     }
+  }
 
-    audioButton = activity.findViewById(R.id.enable_audio_playback_button)
-    audioButton.setOnClickListener {
-      getExplorationFragment()?.handlePlayAudio()
-    }
+  fun setAudioButton(menuItem: MenuItem) {
+    audioButton = menuItem
   }
 
   /** Makes audio button visible. */
   fun showAudioButton() {
-    audioButton.visibility = View.VISIBLE
+    audioButton.isVisible = true
   }
   /** Makes audio button gone. */
   fun hideAudioButton() {
-    audioButton.visibility = View.GONE
+    audioButton.isVisible = false
   }
 
   /** Sets audio button drawable to volume off. */
-  fun showVolumeOff() = audioButton.setImageResource(R.drawable.ic_volume_off_48dp)
+  fun showVolumeOff() = audioButton.setIcon(R.drawable.ic_volume_off_48dp)
   /** Sets audio button drawable to volume on. */
-  fun showVolumeOn() = audioButton.setImageResource(R.drawable.ic_volume_on_48dp)
+  fun showVolumeOn() = audioButton.setIcon(R.drawable.ic_volume_on_48dp)
   
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -74,5 +84,33 @@ class ExplorationActivityPresenter @Inject constructor(
         }
       }
     })
+  }
+
+  fun audioPlayerIconClicked() {
+    getExplorationFragment()?.handlePlayAudio()
+  }
+
+  private fun updateToolbarTitle(explorationId: String) {
+    subscribeToExploration(explorationDataController.getExplorationById(explorationId))
+  }
+
+  private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
+    val explorationLiveData = getExploration(explorationResultLiveData)
+    explorationLiveData.observe(activity, Observer<Exploration> {
+      toolbar.title = it.title
+    })
+  }
+
+  /** Helper for subscribeToExploration. */
+  private fun getExploration(exploration: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
+    return Transformations.map(exploration, ::processExploration)
+  }
+
+  /** Helper for subscribeToExploration. */
+  private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
+    if (ephemeralStateResult.isFailure()) {
+      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+    }
+    return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 }

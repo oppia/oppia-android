@@ -1,6 +1,5 @@
 package org.oppia.domain.util
 
-import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -245,9 +244,11 @@ class StateRetriever @Inject constructor(
     val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
     for (i in 0 until unitsArray.length()) {
       val unit = unitsArray.getJSONObject(i)
-      numberWithUnitsBuilder.addUnit(NumberUnit.newBuilder()
-        .setUnit(unit.getString("unit"))
-        .setExponent(unit.getInt("exponent")))
+      numberWithUnitsBuilder.addUnit(
+        NumberUnit.newBuilder()
+          .setUnit(unit.getString("unit"))
+          .setExponent(unit.getInt("exponent"))
+      )
     }
     return numberWithUnitsBuilder.build()
   }
@@ -288,12 +289,10 @@ class StateRetriever @Inject constructor(
       is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
       is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
-      else -> {
-        val customizationArgValueTemp: ArrayList<*> =
-          Gson().fromJson(customizationArgValue.toString(), ArrayList::class.java)
-        if (customizationArgValueTemp is List<*> && customizationArgValueTemp.size > 0) {
+      is JSONArray -> {
+        if (customizationArgValue.length() > 0) {
           return interactionObjectBuilder.setSetOfHtmlString(
-            createStringList(customizationArgValueTemp)
+            parseJsonStringList(customizationArgValue)
           ).build()
         }
       }
@@ -301,13 +300,11 @@ class StateRetriever @Inject constructor(
     return InteractionObject.getDefaultInstance()
   }
 
-  @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
-  private fun createStringList(value: List<*>): StringList {
-    val stringList = mutableListOf<String>()
-    if (value[0] is String) {
-      stringList.addAll(value as List<String>)
-      return StringList.newBuilder().addAllHtml(stringList).build()
+  private fun parseJsonStringList(jsonArray: JSONArray): StringList {
+    val list: MutableList<String> = ArrayList()
+    for (i in 0 until jsonArray.length()) {
+      list.add(jsonArray.get(i).toString())
     }
-    return StringList.getDefaultInstance()
+    return StringList.newBuilder().addAllHtml(list).build()
   }
 }

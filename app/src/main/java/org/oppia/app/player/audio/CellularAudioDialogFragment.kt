@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 import org.oppia.app.player.state.StateFragment
@@ -30,7 +31,7 @@ class CellularAudioDialogFragment : DialogFragment() {
 
     val cellularDataInterface: CellularDataInterface = parentFragment as StateFragment
 
-    return AlertDialog.Builder(activity as Context)
+    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.cellular_data_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)

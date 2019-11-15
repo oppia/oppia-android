@@ -5,6 +5,10 @@ import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import java.io.IOException
@@ -29,10 +33,14 @@ class ExplorationRetriever @Inject constructor(
     return when (explorationId) {
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
-      TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
+      TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("fractions_exploration0.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
+      RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")
+      RATIOS_EXPLORATION_ID_1 -> loadExplorationFromAsset("ratios_exploration1.json")
+      RATIOS_EXPLORATION_ID_2 -> loadExplorationFromAsset("ratios_exploration2.json")
+      RATIOS_EXPLORATION_ID_3 -> loadExplorationFromAsset("ratios_exploration3.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }
