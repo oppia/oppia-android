@@ -216,7 +216,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
+    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
   }
 
   @Test
@@ -263,7 +263,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
+    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(1)
   }
 
   private fun setUpTestApplicationComponent() {
