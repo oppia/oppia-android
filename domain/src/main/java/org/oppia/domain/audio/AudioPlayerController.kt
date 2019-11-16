@@ -1,10 +1,7 @@
 package org.oppia.domain.audio
 
-import android.content.Context
 import android.media.MediaPlayer
-import android.net.Uri
 import androidx.annotation.VisibleForTesting
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher

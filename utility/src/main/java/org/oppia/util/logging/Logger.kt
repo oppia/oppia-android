@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BlockingDispatcher
 import java.io.File
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

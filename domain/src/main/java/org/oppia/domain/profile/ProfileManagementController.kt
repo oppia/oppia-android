@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
@@ -16,7 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class ProfileManagementController @Inject constructor(
   private val logger: Logger,
-  private val persistentCacheStore: PersistentCacheStore<ProfileDatabase>
+  private val persistentCacheStoreFactory: PersistentCacheStore.Factory
 ){
   private var currentProfileId: Int = -1
 

@@ -1,6 +1,5 @@
 package org.oppia.app.player.exploration
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,10 @@ class ExplorationFragmentPresenter @Inject constructor(
       ).commitNow()
     }
     return binding
+  }
+
+  fun handlePlayAudio() {
+    getStateFragment()?.handlePlayAudio()
   }
 
   private fun getStateFragment(): StateFragment? {

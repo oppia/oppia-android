@@ -1,9 +1,10 @@
 package org.oppia.app.customview.interaction
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.view.View
 import android.widget.EditText
-import org.oppia.app.model.InteractionObject
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789."
@@ -17,13 +18,19 @@ class NumericInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
+) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
+  private val hintText: String
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.real = text.toString().toDouble()
-    }
-    return interactionObjectBuilder.build()
+  init {
+    onFocusChangeListener = this
+    hintText = hint.toString()
+  }
+
+  override fun onFocusChange(v: View?, hasFocus: Boolean) = if (hasFocus) {
+    hint = ""
+    typeface = Typeface.DEFAULT
+  } else {
+    hint = hintText
+    setTypeface(typeface, Typeface.ITALIC)
   }
 }

@@ -1,15 +1,15 @@
 package org.oppia.app.customview.interaction
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.view.View
 import android.widget.EditText
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.parser.StringToFractionParser
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
 //  hint="Write fraction here."
-//  inputType="text"
+//  inputType="date"
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
@@ -18,13 +18,19 @@ class FractionInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
+) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
+  private val hintText: String
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.fraction = StringToFractionParser().getFractionFromString(text = text.toString())
-    }
-    return interactionObjectBuilder.build()
+  init {
+    onFocusChangeListener = this
+    hintText = hint.toString()
+  }
+
+  override fun onFocusChange(v: View?, hasFocus: Boolean) = if (hasFocus) {
+    hint = ""
+    typeface = Typeface.DEFAULT
+  } else {
+    hint = hintText
+    setTypeface(typeface, Typeface.ITALIC)
   }
 }

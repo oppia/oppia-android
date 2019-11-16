@@ -21,8 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton

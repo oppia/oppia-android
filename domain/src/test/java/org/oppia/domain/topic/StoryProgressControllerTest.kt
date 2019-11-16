@@ -66,6 +66,45 @@ class StoryProgressControllerTest {
   }
 
   @Test
+  fun testGetStoryProgress_validFractionsStory_providesCorrectChapterProgress() {
+    val storyProgressLiveData = storyProgressController.getStoryProgress(FRACTIONS_STORY_ID_0)
+
+    // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
+    val storyProgress = storyProgressLiveData.value!!.getOrThrow()
+    assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
+    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
+    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+  }
+
+  @Test
+  fun testGetStoryProgress_validFirstRatiosStory_providesCorrectChapterProgress() {
+    val storyProgressLiveData = storyProgressController.getStoryProgress(RATIOS_STORY_ID_0)
+
+    // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
+    val storyProgress = storyProgressLiveData.value!!.getOrThrow()
+    assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
+    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
+    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_1)
+    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+  }
+
+  @Test
+  fun testGetStoryProgress_validSecondRatiosStory_providesCorrectChapterProgress() {
+    val storyProgressLiveData = storyProgressController.getStoryProgress(RATIOS_STORY_ID_1)
+
+    // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
+    val storyProgress = storyProgressLiveData.value!!.getOrThrow()
+    assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
+    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
+    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_3)
+    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+  }
+
+  @Test
   fun testGetStoryProgress_validThirdStory_providesCorrectChapterProgress() {
     val storyProgressLiveData = storyProgressController.getStoryProgress(TEST_STORY_ID_2)
 

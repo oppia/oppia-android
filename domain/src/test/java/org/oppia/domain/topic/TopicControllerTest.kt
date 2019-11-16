@@ -38,6 +38,7 @@ import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
@@ -136,7 +137,8 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1).inOrder()
+    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1,
+      TEST_SKILL_ID_1, TEST_SKILL_ID_1).inOrder()
   }
 
   @Test
@@ -156,7 +158,7 @@ class TopicControllerTest {
 
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
-    assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_0)
+    assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
     assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
   }
 
@@ -194,6 +196,26 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.storyCount).isEqualTo(1)
+    assertThat(topic.skillCount).isEqualTo(3)
+  }
+
+  @Test
+  fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
+    val topicLiveData = topicController.getTopic(RATIOS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(topic.storyCount).isEqualTo(2)
+    assertThat(topic.skillCount).isEqualTo(1)
+  }
+
+  @Test
   fun testRetrieveTopic_invalidTopic_returnsFailure() {
     val topicLiveData = topicController.getTopic("invalid_topic_id")
 
@@ -223,6 +245,62 @@ class TopicControllerTest {
 
     val story = storyLiveData.value!!.getOrThrow()
     assertThat(story.storyName).isEqualTo("Other Interesting Story")
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+  }
+
+  @Test
+  fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
+    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyName).isEqualTo("Matthew")
+  }
+
+  @Test
+  fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(story.storyName).isEqualTo("Ratios: Part 1")
+  }
+
+  @Test
+  fun testRetrieveStory_ratiosFirstStory_returnsStoryWithMultipleChapters() {
+    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_0)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(getExplorationIds(story)).containsExactly(
+      RATIOS_EXPLORATION_ID_0,
+      RATIOS_EXPLORATION_ID_1
+    ).inOrder()
+  }
+
+  @Test
+  fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() {
+    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_1)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_1)
+    assertThat(story.storyName).isEqualTo("Ratios: Part 2")
+  }
+
+  @Test
+  fun testRetrieveStory_ratiosSecondStory_returnsStoryWithMultipleChapters() {
+    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_1)
+
+    val story = storyLiveData.value!!.getOrThrow()
+    assertThat(getExplorationIds(story)).containsExactly(
+      RATIOS_EXPLORATION_ID_2,
+      RATIOS_EXPLORATION_ID_3
+    ).inOrder()
   }
 
   @Test
@@ -472,6 +550,50 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testGetConceptCard_fractionsSkill0_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
+    assertThat(conceptCard.skillDescription).isEqualTo(
+      "Given a picture divided into unequal parts, write the fraction."
+    )
+    assertThat(conceptCard.explanation.html).contains(
+      "<p>First, divide the picture into equal parts")
+  }
+
+  @Test
+  fun testGetConceptCard_ratiosSkill0_isSuccessful() {
+    val conceptCardLiveData = topicController.getConceptCard(RATIOS_SKILL_ID_0)
+
+    val conceptCardResult = conceptCardLiveData.value
+    assertThat(conceptCardResult).isNotNull()
+    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testGetConceptCard_ratiosSkill0_returnsCorrectConceptCard() {
+    val conceptCardLiveData = topicController.getConceptCard(RATIOS_SKILL_ID_0)
+
+    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
+    assertThat(conceptCard.skillId).isEqualTo(RATIOS_SKILL_ID_0)
+    assertThat(conceptCard.skillDescription).isEqualTo(
+      "Derive a ratio from a description or a picture"
+    )
+    assertThat(conceptCard.explanation.html).contains(
+      "<p>There are originally 9 apples and 6 pears,")
+  }
+
+  @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
     val conceptCardLiveData = topicController.getConceptCard("invalid_skill_id")
 
@@ -481,7 +603,8 @@ class TopicControllerTest {
   @Test
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
@@ -489,14 +612,98 @@ class TopicControllerTest {
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(5)
     val questionIds = questionsList.map { it -> it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(mutableListOf(TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
-      TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3))
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
+        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_0)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(5)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
+        FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_1)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(4)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
+        FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(FRACTIONS_SKILL_ID_2)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(3)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
+        FRACTIONS_QUESTION_ID_10
+      )
+    )
+  }
+
+  @Test
+  fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
+    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+      listOf(RATIOS_SKILL_ID_0)
+    )
+    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(1)
+    val questionIds = questionsList.map { it.questionId }
+    assertThat(questionIds).containsExactlyElementsIn(
+      mutableListOf(
+        RATIOS_QUESTION_ID_0
+      )
+    )
   }
 
   @Test
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"))
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+    )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 

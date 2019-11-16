@@ -11,18 +11,26 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
-    <activity android:name=".player.state.testing.StateFragmentTestActivity" />
-    <activity android:name=".player.exploration.ExplorationActivity" />
-    <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
-    <activity android:name=".topic.TopicActivity" />
+    <activity
+      android:name=".home.continueplaying.ContinuePlayingActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".home.HomeActivity" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity
+      android:name=".player.exploration.ExplorationActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
+<<<<<<< HEAD
     <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity android:name=".story.StoryActivity"/>
     <activity android:name=".home.HomeActivity">
+=======
+    <activity
+      android:name=".splash.SplashActivity"
+      android:theme="@style/SplashScreenTheme">
+>>>>>>> develop
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -33,8 +41,24 @@
       </intent-filter>
     </activity>
     <activity
-      android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme" />
+      android:name=".story.StoryActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".story.testing.StoryFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
+    <activity android:name=".testing.ContentCardTestActivity" />
+    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity
+      android:name=".testing.TopicTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.TopicTestActivityForStory"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".topic.conceptcard.testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".topic.questionplayer.QuestionPlayerActivity" />
+    <activity
+      android:name=".topic.TopicActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>
