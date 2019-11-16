@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that allows user to select a profile to edit from settings. */
+/** Fragment that allows users to select a profile to edit from settings. */
 class ProfileListFragment : InjectableFragment() {
   @Inject lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

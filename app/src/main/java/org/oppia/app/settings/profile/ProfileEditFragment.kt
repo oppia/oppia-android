@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ProfileEditFragment : InjectableFragment() {
   @Inject lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

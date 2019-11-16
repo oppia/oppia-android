@@ -21,16 +21,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
-<<<<<<< HEAD
     <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity android:name=".settings.profile.ProfileResetPinActivity" />
-    <activity android:name=".story.StoryActivity"/>
-    <activity android:name=".home.HomeActivity">
-=======
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
->>>>>>> develop
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

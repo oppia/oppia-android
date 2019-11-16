@@ -16,7 +16,7 @@ class ProfileListFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ProfileListFragmentBinding.inflate(inflater, container, /** attachToRoot= */ false)
+    val binding = ProfileListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = getProfileListViewModel()
     }
