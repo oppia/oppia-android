@@ -33,6 +33,7 @@
       android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
+      android:visibility="@{viewModel.showSeekBar ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -56,15 +57,15 @@
 
     <TextView
       android:id="@+id/noAudioText"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/audio_no_audio_available"
       android:textColor="@color/white"
       android:visibility="@{viewModel.showSeekBar ? View.GONE : View.VISIBLE}"
       android:gravity="center"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
-      app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
+      app:layout_constraintEnd_toStartOf="parent"
+      app:layout_constraintStart_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -78,6 +79,7 @@
       android:textAllCaps="true"
       android:textColor="@color/white"
       android:textSize="14sp"
+      android:visibility="@{viewModel.isLanguagesEmpty ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

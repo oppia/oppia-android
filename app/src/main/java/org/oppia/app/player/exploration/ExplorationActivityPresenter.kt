@@ -28,7 +28,6 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var audioButton: MenuItem
   private lateinit var toolbar: Toolbar
 
-
   fun handleOnCreate(explorationId: String) {
     activity.setContentView(R.layout.exploration_activity)
 

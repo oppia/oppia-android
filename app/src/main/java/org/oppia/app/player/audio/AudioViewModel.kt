@@ -33,11 +33,11 @@ class AudioViewModel @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var exploration: Exploration
   private var voiceoverMap = mapOf<String, Voiceover>()
-  // TODO: Get from settings.
   private val defaultLanguage = "en"
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
+  var isLanguagesEmpty = ObservableField(false)
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -70,12 +70,13 @@ class AudioViewModel @Inject constructor(
       setVoiceoverMappingsByState(stateId)
     }
   }
-  
+
   fun setVoiceoverMappingsByState(stateId: String) {
     val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
     val contentId = state.content.contentId
     voiceoverMap = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
+    isLanguagesEmpty.set(languages.isEmpty())
     if (languages.any { it == defaultLanguage }) {
       setAudioLanguageCode(defaultLanguage)
     } else if (languages.any { it == selectedLanguageCode }) {

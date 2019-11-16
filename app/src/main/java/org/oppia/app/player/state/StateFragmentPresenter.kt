@@ -325,13 +325,10 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     currentStateName = ephemeralState.state.name
-
-
-    showOrHideAudioByState(ephemeralState.state)
+    
     getAudioFragment()?.let {
       (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
     }
-
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
@@ -513,16 +510,6 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
-  }
-
-  private fun showOrHideAudioByState(state: State) {
-    if (state.recordedVoiceoversCount == 0) {
-      (fragment.requireActivity() as ExplorationActivity).hideAudioButton()
-      showHideAudioFragment(false)
-    } else {
-      (fragment.requireActivity() as ExplorationActivity).showAudioButton()
-      showHideAudioFragment(audioShowing)
-    }
   }
 
   private fun showOfflineDialog() {
