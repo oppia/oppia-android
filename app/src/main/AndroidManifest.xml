@@ -21,6 +21,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity android:name=".profile.ProfileActivity" />
+    <activity android:name=".settings.profile.ProfileRenameActivity" />
+    <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme">
