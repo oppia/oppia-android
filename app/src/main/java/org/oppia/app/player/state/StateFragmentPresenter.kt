@@ -32,7 +32,6 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularAudioDialogFragment
@@ -325,7 +324,7 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     currentStateName = ephemeralState.state.name
-    
+
     getAudioFragment()?.let {
       (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
     }

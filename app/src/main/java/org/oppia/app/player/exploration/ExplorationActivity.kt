@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.view.MenuItemCompat
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
@@ -67,8 +66,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     return super.onOptionsItemSelected(item)
   }
 
-  fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
-  fun showAudioButton() = explorationActivityPresenter.showAudioButton()
   fun showVolumeOff() = explorationActivityPresenter.showVolumeOff()
   fun showVolumeOn() = explorationActivityPresenter.showVolumeOn()
 }

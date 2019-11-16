@@ -1,10 +1,7 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -50,15 +47,6 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun setAudioButton(menuItem: MenuItem) {
     audioButton = menuItem
-  }
-
-  /** Makes audio button visible. */
-  fun showAudioButton() {
-    audioButton.isVisible = true
-  }
-  /** Makes audio button gone. */
-  fun hideAudioButton() {
-    audioButton.isVisible = false
   }
 
   /** Sets audio button drawable to volume off. */
