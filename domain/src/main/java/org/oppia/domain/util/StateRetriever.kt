@@ -125,21 +125,15 @@ class StateRetriever @Inject constructor(
       .build()
   }
 
-  // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
-  //  updated.
   /**
    * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry keyed on 'feedback'.
    */
   private fun createFeedbackSubtitledHtml(containerObject: JSONObject): SubtitledHtml {
     val feedbackObject = containerObject.optJSONObject("feedback")
-    return if (feedbackObject != null) {
-      SubtitledHtml.newBuilder()
-        .setContentId(feedbackObject.getString("content_id"))
-        .setHtml(feedbackObject.getString("html"))
-        .build()
-    } else {
-      SubtitledHtml.newBuilder().setHtml(containerObject.getString("feedback")).build()
-    }
+    return SubtitledHtml.newBuilder()
+      .setContentId(feedbackObject.getString("content_id"))
+      .setHtml(feedbackObject.getString("html"))
+      .build()
   }
 
   // Creates VoiceoverMappings from JSON and adds onto State
