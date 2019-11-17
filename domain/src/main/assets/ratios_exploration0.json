@@ -1,5 +1,9 @@
 {
   "param_changes": [],
+  "version": 123,
+  "exploration_id": "2mzzFVDLuAj8",
+  "language_code": "en",
+  "category": "Arithmetic",
   "states": {
     "writing ratio of 2 quanitites": {
       "param_changes": [],
@@ -4703,10 +4707,10 @@
       "solicit_answer_details": false
     }
   },
-  "param_specs": {},
-  "title": "What is a Ratio?",
-  "objective": "Learn about how ratios can be used to show the relative relationship between quantities.",
-  "language_code": "en",
+  "state_classifier_mapping": {},
   "init_state_name": "Introduction",
+  "param_specs": {},
+  "objective": "Learn about how ratios can be used to show the relative relationship between quantities.",
+  "title": "What is a Ratio?",
   "correctness_feedback_enabled": true
 }

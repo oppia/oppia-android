@@ -1,5 +1,9 @@
 {
   "param_changes": [],
+  "version": 77,
+  "exploration_id": "5NWuolNcwH6e",
+  "language_code": "en",
+  "category": "Arithmetic",
   "states": {
     "Explanation for order change": {
       "param_changes": [],
@@ -2946,10 +2950,10 @@
       "solicit_answer_details": false
     }
   },
-  "param_specs": {},
-  "title": "Order is Important",
-  "objective": "Learn why the order of the numbers in a ratio is important.",
-  "language_code": "en",
+  "state_classifier_mapping": {},
   "init_state_name": "Introduction",
+  "param_specs": {},
+  "objective": "Learn why the order of the numbers in a ratio is important.",
+  "title": "Order is Important",
   "correctness_feedback_enabled": true
 }
