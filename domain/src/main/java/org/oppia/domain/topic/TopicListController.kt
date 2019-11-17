@@ -141,7 +141,6 @@ class TopicListController @Inject constructor(
   }
 
   private fun createOngoingStoryList(): OngoingStoryList {
-    //COMPLETED_EXPLORATIONS
     // TODO(#21): Thoroughly test the construction of this list based on lesson progress.
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
     for (topicId in TOPIC_IDS) {
