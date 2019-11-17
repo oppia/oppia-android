@@ -192,7 +192,7 @@ class TopicListController @Inject constructor(
 internal fun createTopicThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xf7bf73)
+    .setBackgroundColorRgb(0xd5836f)
     .build()
 }
 
