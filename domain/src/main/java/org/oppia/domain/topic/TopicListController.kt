@@ -1,19 +1,38 @@
 package org.oppia.domain.topic
 
+import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.Exploration
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.Outcome
 import org.oppia.app.model.PromotedStory
+import org.oppia.app.model.State
 import org.oppia.app.model.StorySummary
+import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
+import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.exploration.ExplorationRetriever
+import org.oppia.domain.util.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResource
+import org.oppia.util.logging.Logger
+import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,8 +71,50 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 class TopicListController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val explorationRetriever: ExplorationRetriever,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @DefaultResource private val gcsResource: String,
+  logger: Logger,
+  assetRepository: AssetRepository
 ) {
+  private val backgroundScope = CoroutineScope(backgroundDispatcher)
+  private val loadAssetJob: Job
+
+  init {
+    // TODO(#169): Download data reactively rather than during start-up to avoid blocking the main thread on the whole
+    //  load operation.
+
+    // Ensure all JSON files are available in memory for quick retrieval.
+    val allFiles = TOPIC_FILE_ASSOCIATIONS.values.flatten()
+    val primeAssetJobs = allFiles.map {
+      backgroundScope.async {
+        assetRepository.primeTextFileFromLocalAssets(it)
+      }
+    }
+
+    // The following job encapsulates all startup loading. NB: We don't currently wait on this job to complete because
+    // it's fine to try to load the assets at the same time as priming the cache, and it's unlikely the user can get
+    // into an exploration fast enough to try to load an asset that would trigger a strict mode crash.
+    loadAssetJob = backgroundScope.launch {
+      primeAssetJobs.forEach { it.await() }
+
+      // Only download the audio assets for one fractions lesson. The others can still be streamed.
+      val explorationIds = listOf(FRACTIONS_EXPLORATION_ID_1)
+      val voiceoverUrls = collectAllDesiredVoiceoverUrls(loadExplorations(explorationIds))
+      logger.d("AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers")
+      val startTime = SystemClock.elapsedRealtime()
+      val voiceoverDownloadJobs = voiceoverUrls.map { url ->
+        backgroundScope.async {
+          assetRepository.primeRemoteBinaryAsset(url)
+        }
+      }
+      voiceoverDownloadJobs.forEach { it.await() }
+      val endTime = SystemClock.elapsedRealtime()
+      logger.d("AssetRepo", "Finished downloading voiceovers in ${endTime - startTime}ms")
+    }
+  }
+
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
@@ -185,6 +246,52 @@ class TopicListController @Inject constructor(
       promotedStoryBuilder.nextChapterName = nextChapterName
     }
     return promotedStoryBuilder.build()
+  }
+
+  private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {
+    return explorationIds.map(explorationRetriever::loadExploration)
+  }
+
+  private fun collectionExplorationIdsForTopic(topic: Topic): Collection<String> {
+    return topic.storyList.flatMap(::collectExplorationIdsForStory)
+  }
+
+  private fun collectExplorationIdsForStory(story: StorySummary): Collection<String> {
+    return story.chapterList.map(ChapterSummary::getExplorationId)
+  }
+
+  private fun collectAllDesiredVoiceoverUrls(explorations: Collection<Exploration>): Collection<String> {
+    return explorations.flatMap(::collectDesiredVoiceoverUrls)
+  }
+
+  private fun collectDesiredVoiceoverUrls(exploration: Exploration): Collection<String> {
+    return extractDesiredVoiceovers(exploration).map { voiceover -> getUriForVoiceover(exploration.id, voiceover) }
+  }
+
+  private fun extractDesiredVoiceovers(exploration: Exploration): Collection<Voiceover> {
+    val states = exploration.statesMap.values
+    val mappings = states.flatMap(::getDesiredVoiceoverMapping)
+    return mappings.flatMap { it.voiceoverMappingMap.values }
+  }
+
+  private fun getDesiredVoiceoverMapping(state: State): Collection<VoiceoverMapping> {
+    val voiceoverMappings = state.recordedVoiceoversMap
+    val contentIds = extractDesiredContentIds(state).filter(String::isNotEmpty)
+    return voiceoverMappings.filterKeys(contentIds::contains).values
+  }
+
+  /** Returns all collection IDs from the specified [State] that can actually be played by a user. */
+  private fun extractDesiredContentIds(state: State): Collection<String> {
+    val stateContentSubtitledHtml = state.content
+    val defaultFeedbackSubtitledHtml = state.interaction.defaultOutcome.feedback
+    val answerGroupOutcomes = state.interaction.answerGroupsList.map(AnswerGroup::getOutcome)
+    val answerGroupsSubtitledHtml = answerGroupOutcomes.map(Outcome::getFeedback)
+    val targetedSubtitledHtmls = answerGroupsSubtitledHtml + stateContentSubtitledHtml + defaultFeedbackSubtitledHtml
+    return targetedSubtitledHtmls.map(SubtitledHtml::getContentId)
+  }
+
+  private fun getUriForVoiceover(explorationId: String, voiceover: Voiceover): String {
+    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover.fileName}"
   }
 }
 

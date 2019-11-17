@@ -53,7 +53,7 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
-private val TOPIC_FILE_ASSOCIATIONS = mapOf(
+val TOPIC_FILE_ASSOCIATIONS = mapOf(
   FRACTIONS_TOPIC_ID to listOf(
     "fractions_exploration0.json",
     "fractions_exploration1.json",
