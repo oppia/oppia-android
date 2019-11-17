@@ -17,18 +17,17 @@ const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
   private lateinit var topicId: String
-  private lateinit var storyId: String
+  private var storyId: String? = null
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: "")
-    {
+    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY) ?: ""
+    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     topicActivityPresenter.handleOnCreate(topicId, storyId)
   }
 
