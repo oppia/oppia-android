@@ -13,5 +13,7 @@ import javax.inject.Inject
 class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
 
+  val topicDescription = ObservableField<CharSequence>("")
+
   var downloadStatusIndicatorDrawableResourceId = ObservableField<Int>(R.drawable.ic_available_offline_primary_24dp)
 }
