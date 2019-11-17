@@ -142,7 +142,7 @@
         android:layout_marginTop="12dp"
         android:fontFamily="sans-serif"
         android:gravity="top"
-        android:text="@{String.format(@string/topic_download_text, viewModel.topic.getSerializedSize())}"
+        android:text="@{String.format(@string/topic_download_text, viewModel.getTopicSizeMb())}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         android:textStyle="italic"

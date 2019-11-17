@@ -22,6 +22,7 @@ import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,6 +53,26 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
+private val TOPIC_FILE_ASSOCIATIONS = mapOf(
+  FRACTIONS_TOPIC_ID to listOf(
+    "fractions_exploration0.json",
+    "fractions_exploration1.json",
+    "fractions_questions.json",
+    "fractions_skills.json",
+    "fractions_stories.json",
+    "fractions_topic.json"
+  ),
+  RATIOS_TOPIC_ID to listOf(
+    "ratios_exploration0.json",
+    "ratios_exploration1.json",
+    "ratios_exploration2.json",
+    "ratios_exploration3.json",
+    "ratios_questions.json",
+    "ratios_skills.json",
+    "ratios_stories.json",
+    "ratios_topic.json"
+  )
+)
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
@@ -356,7 +377,14 @@ class TopicController @Inject constructor(
       .addAllSkill(createSkillsFromJson(skillFileName))
       .addAllStory(createStoriesFromJson(storyFileName))
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
+      .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
       .build()
+  }
+
+  private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
+    // TODO(#169): Compute this based on protos & the combined topic package.
+    // TODO(#386): Incorporate audio & image files in this computation.
+    return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong).reduceRight(Long::plus)
   }
 
   /** Utility to create the skill list of a topic from its json representation. The json file is expected to have
