@@ -1,5 +1,9 @@
 {
   "param_changes": [],
+  "version": 41,
+  "exploration_id": "k2bQ7z5XHNbK",
+  "language_code": "en",
+  "category": "Arithmetic",
   "states": {
     "Shortcut for finding equivalent ratio": {
       "param_changes": [],
@@ -3230,10 +3234,10 @@
       "solicit_answer_details": false
     }
   },
-  "param_specs": {},
-  "title": "Equivalent Ratios",
-  "objective": "Learn how to find equivalent ratios, and how to simplify ratios.",
-  "language_code": "en",
+  "state_classifier_mapping": {},
   "init_state_name": "Introduction",
+  "param_specs": {},
+  "objective": "Learn how to find equivalent ratios, and how to simplify ratios.",
+  "title": "Equivalent Ratios",
   "correctness_feedback_enabled": true
 }
