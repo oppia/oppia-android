@@ -187,7 +187,7 @@ class ExplorationDataControllerTest {
     val exploration = explorationResultCaptor.value.getOrThrow();
     assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
-    assertThat(exploration.statesCount).isEqualTo(22)
+    assertThat(exploration.statesCount).isEqualTo(18)
   }
 
   @Test
