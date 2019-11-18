@@ -5,6 +5,7 @@ import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -38,16 +39,28 @@ class SelectionInteractionViewModel(
     return maxAllowableSelectionCount > 1
   }
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
+    val selectedItemsHtml = selectedItems.map(choiceItems::get).map { it.htmlContent }
     if (interactionId == "ItemSelectionInput") {
-      interactionObjectBuilder.setOfHtmlString = StringList.newBuilder()
-        .addAllHtml(selectedItems.map(choiceItems::get).map { it.htmlContent })
-        .build()
+      userAnswerBuilder.answer = InteractionObject.newBuilder().setSetOfHtmlString(
+        StringList.newBuilder().addAllHtml(selectedItemsHtml)
+      ).build()
+      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     } else if (selectedItems.size == 1) {
-      interactionObjectBuilder.nonNegativeInt = selectedItems.first()
+      userAnswerBuilder.answer = InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
+      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     }
-    return interactionObjectBuilder.build()
+    return userAnswerBuilder.build()
+  }
+
+  /** Returns an HTML list containing all of the HTML string elements as items in the list. */
+  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
+    return when (htmlItems.size) {
+      0 -> ""
+      1 -> htmlItems.first()
+      else -> "<ul><li>${htmlItems.joinToString(separator = "</li><li>")}</li></ul>"
+    }
   }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */

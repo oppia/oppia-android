@@ -1,6 +1,7 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.domain.util.toAnswerString
@@ -18,8 +19,11 @@ class ContinueInteractionViewModel(
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
-  override fun getPendingAnswer(): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER).build()
+  override fun getPendingAnswer(): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER))
+      .setPlainAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+      .build()
   }
 
   fun handleButtonClicked() {

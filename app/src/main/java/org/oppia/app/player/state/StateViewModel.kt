@@ -5,7 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 /** [ViewModel] for state-fragment. */
 @FragmentScope
 class StateViewModel @Inject constructor() : ObservableViewModel() {
-  val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
+  val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
   val isAudioBarVisible = ObservableField<Boolean>(false)
 
@@ -31,8 +31,8 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   }
 
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
-  fun getPendingAnswer(): InteractionObject {
-    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: InteractionObject.getDefaultInstance()
+  fun getPendingAnswer(): UserAnswer {
+    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
