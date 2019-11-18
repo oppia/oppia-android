@@ -1,6 +1,9 @@
 package org.oppia.domain.topic
 
 import android.os.SystemClock
+import android.text.Html
+import android.text.Spannable
+import android.text.style.ImageSpan
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,13 +14,15 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.ChapterPlayState
-import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.PromotedStory
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
@@ -27,11 +32,14 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
-import org.oppia.domain.util.AssetRepository
+import org.oppia.util.caching.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResource
 import org.oppia.util.logging.Logger
+import org.oppia.util.parser.DefaultGcsPrefix
+import org.oppia.util.parser.DefaultGcsResource
+import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -64,6 +72,11 @@ val TOPIC_SKILL_ASSOCIATIONS = mapOf(
   RATIOS_TOPIC_ID to listOf(RATIOS_SKILL_ID_0)
 )
 
+private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
+private const val REPLACE_IMG_TAG = "img"
+private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
+private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
+
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
 /** Controller for retrieving the list of topics available to the learner to play. */
@@ -74,7 +87,9 @@ class TopicListController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val explorationRetriever: ExplorationRetriever,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @DefaultResource private val gcsResource: String,
+  @DefaultGcsPrefix private val gcsPrefix: String,
+  @DefaultGcsResource private val gcsResource: String,
+  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
   logger: Logger,
   assetRepository: AssetRepository
 ) {
@@ -99,19 +114,25 @@ class TopicListController @Inject constructor(
     loadAssetJob = backgroundScope.launch {
       primeAssetJobs.forEach { it.await() }
 
-      // Only download the audio assets for one fractions lesson. The others can still be streamed.
-      val explorationIds = listOf(FRACTIONS_EXPLORATION_ID_1)
-      val voiceoverUrls = collectAllDesiredVoiceoverUrls(loadExplorations(explorationIds))
-      logger.d("AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers")
+      // Only download binary assets for one fractions lesson. The others can still be streamed.
+      val explorations = loadExplorations(listOf(FRACTIONS_EXPLORATION_ID_1))
+      val voiceoverUrls = collectAllDesiredVoiceoverUrls(explorations).toSet()
+      val imageUrls = collectAllImageUrls(explorations).toSet()
+      logger.d("AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
       val voiceoverDownloadJobs = voiceoverUrls.map { url ->
         backgroundScope.async {
           assetRepository.primeRemoteBinaryAsset(url)
         }
       }
-      voiceoverDownloadJobs.forEach { it.await() }
+      val imageDownloadJobs = imageUrls.map { url ->
+        backgroundScope.async {
+          assetRepository.primeRemoteBinaryAsset(url)
+        }
+      }
+      (voiceoverDownloadJobs + imageDownloadJobs).forEach { it.await() }
       val endTime = SystemClock.elapsedRealtime()
-      logger.d("AssetRepo", "Finished downloading voiceovers in ${endTime - startTime}ms")
+      logger.d("AssetRepo", "Finished downloading voiceovers and images in ${endTime - startTime}ms")
     }
   }
 
@@ -252,14 +273,6 @@ class TopicListController @Inject constructor(
     return explorationIds.map(explorationRetriever::loadExploration)
   }
 
-  private fun collectionExplorationIdsForTopic(topic: Topic): Collection<String> {
-    return topic.storyList.flatMap(::collectExplorationIdsForStory)
-  }
-
-  private fun collectExplorationIdsForStory(story: StorySummary): Collection<String> {
-    return story.chapterList.map(ChapterSummary::getExplorationId)
-  }
-
   private fun collectAllDesiredVoiceoverUrls(explorations: Collection<Exploration>): Collection<String> {
     return explorations.flatMap(::collectDesiredVoiceoverUrls)
   }
@@ -290,8 +303,59 @@ class TopicListController @Inject constructor(
     return targetedSubtitledHtmls.map(SubtitledHtml::getContentId)
   }
 
+  private fun collectAllImageUrls(explorations: Collection<Exploration>): Collection<String> {
+    return explorations.flatMap(::collectImageUrls)
+  }
+
+  private fun collectImageUrls(exploration: Exploration): Collection<String> {
+    val subtitledHtmls = collectSubtitledHtmls(exploration)
+    val imageSources = subtitledHtmls.flatMap(::getImageSourcesFromHtml)
+    return imageSources.toSet().map { imageSource ->
+      getUriForImage(exploration.id, imageSource)
+    }
+  }
+
+  private fun collectSubtitledHtmls(exploration: Exploration): Collection<SubtitledHtml> {
+    val states = exploration.statesMap.values
+    val stateContents = states.map(State::getContent)
+    val stateInteractions = states.map(State::getInteraction)
+    val stateSolutions = stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
+    val stateHints = stateInteractions.map(Interaction::getHint).map(Hint::getHintContent)
+    val answerGroupOutcomes = stateInteractions.flatMap(Interaction::getAnswerGroupsList).map(AnswerGroup::getOutcome)
+    val defaultOutcomes = stateInteractions.map(Interaction::getDefaultOutcome)
+    val outcomeFeedbacks = (answerGroupOutcomes + defaultOutcomes).map(Outcome::getFeedback)
+    val allSubtitledHtmls = stateContents + stateSolutions + stateHints + outcomeFeedbacks
+    return allSubtitledHtmls.filter { it != SubtitledHtml.getDefaultInstance() }
+  }
+
+  private fun getImageSourcesFromHtml(subtitledHtml: SubtitledHtml): Collection<String> {
+    val parsedHtml = parseHtml(replaceCustomOppiaImageTag(subtitledHtml.html))
+    val imageSpans = parsedHtml.getSpans(0, parsedHtml.length, ImageSpan::class.java)
+    return imageSpans.toList().map(ImageSpan::getSource)
+  }
+
+  private fun parseHtml(html: String): Spannable {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+      Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY) as Spannable
+    } else {
+      Html.fromHtml(html) as Spannable
+    }
+  }
+
+  private fun replaceCustomOppiaImageTag(html: String): String {
+    return html.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
+      .replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+      .replace("&amp;quot;", "")
+  }
+
   private fun getUriForVoiceover(explorationId: String, voiceover: Voiceover): String {
-    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover.fileName}"
+    return "https://storage.googleapis.com/${gcsResource}exploration/$explorationId/assets/audio/${voiceover.fileName}"
+  }
+
+  private fun getUriForImage(explorationId: String, imageFileName: String): String {
+    return gcsPrefix + gcsResource + String.format(
+      imageDownloadUrlTemplate, "exploration", explorationId, imageFileName
+    )
   }
 }
 

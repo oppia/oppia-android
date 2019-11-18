@@ -1,4 +1,4 @@
-package org.oppia.domain.util
+package org.oppia.util.caching
 
 import android.content.Context
 import org.oppia.util.logging.Logger
@@ -74,6 +74,10 @@ class AssetRepository @Inject constructor(private val context: Context, private 
     val urlInStream = openRemoteStream(url)
     val fileOutStream = openLocalCacheFileForWrite(url)
     return object: InputStream() {
+      override fun available(): Int {
+        return urlInStream.available()
+      }
+
       override fun read(): Int {
         val byte = urlInStream.read()
         if (byte != -1) {
@@ -82,9 +86,15 @@ class AssetRepository @Inject constructor(private val context: Context, private 
         return byte
       }
 
+      override fun read(b: ByteArray?): Int {
+        return read(b, 0, b!!.size)
+      }
+
       override fun read(b: ByteArray?, off: Int, len: Int): Int {
         val count = urlInStream.read(b, off, len)
-        fileOutStream.write(b, off, count)
+        if (count > -1) {
+          fileOutStream.write(b, off, count)
+        }
         return count
       }
 

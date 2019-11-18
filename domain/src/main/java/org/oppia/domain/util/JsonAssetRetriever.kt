@@ -2,6 +2,7 @@ package org.oppia.domain.util
 
 import org.json.JSONArray
 import org.json.JSONObject
+import org.oppia.util.caching.AssetRepository
 import javax.inject.Inject
 
 /** Utility that retrieves JSON assets and converts them to JSON objects. */
