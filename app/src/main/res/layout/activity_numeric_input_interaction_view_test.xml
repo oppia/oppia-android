@@ -13,6 +13,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context=".testing.InputInteractionViewTestActivity">
 
@@ -25,6 +27,7 @@
       android:digits="0123456789."
       android:enabled="@{!numericInputViewModel.isReadOnly}"
       android:focusable="true"
+      android:visibility="gone"
       android:hint="Write the digit here."
       android:inputType="numberDecimal"
       android:longClickable="false"
@@ -40,6 +43,7 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:focusable="true"
+      android:visibility="gone"
       android:hint="Write here."
       android:inputType="text"
       android:longClickable="false"

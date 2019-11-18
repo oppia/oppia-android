@@ -3,6 +3,9 @@ package org.oppia.app.customview.interaction
 import android.content.Context
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.widget.EditText
 import org.oppia.app.utility.KeyBoardHelpher.Companion.hideSoftKeyboard
@@ -31,10 +34,16 @@ class FractionInputInteractionView @JvmOverloads constructor(
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
     hint = ""
     typeface = Typeface.DEFAULT
-    showSoftKeyboard(v,context)
+    showSoftKeyboard(v, context)
   } else {
     hint = hintText
-    setTypeface(typeface, Typeface.ITALIC)
-    hideSoftKeyboard(v,context)
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    hideSoftKeyboard(v, context)
+  }
+
+  override fun onKeyPreIme(key_code: Int, event: KeyEvent): Boolean {
+    if (event.getKeyCode() == KEYCODE_BACK && event.getAction() == ACTION_UP)
+      this.clearFocus()
+    return super.onKeyPreIme(key_code, event)
   }
 }
