@@ -20,8 +20,9 @@
 
     <org.oppia.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
-      android:layout_width="match_parent"
+      android:layout_width="@{!viewModel.isReadOnly, default = wrap_content}"
       android:layout_height="wrap_content"
+      android:layout_gravity="end"
       android:background="@drawable/edit_text_background"
       android:enabled="@{!viewModel.isReadOnly}"
       android:textColor="@color/oppiaPrimaryText"

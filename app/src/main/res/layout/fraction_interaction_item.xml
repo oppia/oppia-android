@@ -28,8 +28,9 @@
 
       <org.oppia.app.customview.interaction.FractionInputInteractionView
         android:id="@+id/fraction_input_interaction_view"
-        android:layout_width="match_parent"
+        android:layout_width="@{!viewModel.isReadOnly, default = wrap_content}"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:background="@drawable/edit_text_background"
         android:digits="0123456789/- "
         android:enabled="@{!viewModel.isReadOnly}"
