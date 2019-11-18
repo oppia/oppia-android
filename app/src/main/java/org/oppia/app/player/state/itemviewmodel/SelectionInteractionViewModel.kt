@@ -13,7 +13,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 class SelectionInteractionViewModel(
   val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
