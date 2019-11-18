@@ -24,13 +24,12 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.util.threading.BackgroundDispatcher
@@ -73,6 +72,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       it.onActivity { activity ->

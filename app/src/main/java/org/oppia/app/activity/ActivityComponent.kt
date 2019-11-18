@@ -10,6 +10,8 @@ import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.settings.profile.ProfileRenameActivity
+import org.oppia.app.settings.profile.ProfileResetPinActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
@@ -49,6 +51,8 @@ interface ActivityComponent {
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
+  fun inject(profileRenameActivity: ProfileRenameActivity)
+  fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)

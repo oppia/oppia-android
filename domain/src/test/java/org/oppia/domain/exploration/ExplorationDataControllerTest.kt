@@ -169,9 +169,9 @@ class ExplorationDataControllerTest {
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
-    assertThat(exploration.title).isEqualTo("Fractions 1 - What is a Fraction?")
+    assertThat(exploration.title).isEqualTo("What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
-    assertThat(exploration.statesCount).isEqualTo(24)
+    assertThat(exploration.statesCount).isEqualTo(25)
   }
 
   @Test
@@ -185,9 +185,9 @@ class ExplorationDataControllerTest {
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
     val exploration = explorationResultCaptor.value.getOrThrow();
-    assertThat(exploration.title).isEqualTo("Fractions 2 - The Meaning of Equal Parts")
+    assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
-    assertThat(exploration.statesCount).isEqualTo(22)
+    assertThat(exploration.statesCount).isEqualTo(18)
   }
 
   @Test

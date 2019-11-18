@@ -23,6 +23,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -60,6 +61,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     activityScenario.onActivity { activity ->
