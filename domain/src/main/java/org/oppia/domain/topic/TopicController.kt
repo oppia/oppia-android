@@ -33,6 +33,7 @@ const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
+const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
 const val TEST_QUESTION_ID_0 = "question_id_0"
@@ -52,6 +53,7 @@ const val FRACTIONS_QUESTION_ID_7 = "leeSNRVbbBwp"
 const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
+const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
@@ -68,7 +70,10 @@ class TopicController @Inject constructor(
       when (topicId) {
         TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
         TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
-        FRACTIONS_TOPIC_ID -> AsyncResult.success(createTopicFromJson("fractions_topic.json"))
+        FRACTIONS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
+          "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"))
+        RATIOS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
+          "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"))
         else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
       }
     )
@@ -86,6 +91,16 @@ class TopicController @Inject constructor(
         FRACTIONS_STORY_ID_0 -> AsyncResult.success(
           createStoryFromJsonFile(
             "fractions_stories.json", /* index= */ 0
+          )
+        )
+        RATIOS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 0
+          )
+        )
+        RATIOS_STORY_ID_1 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 1
           )
         )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
@@ -115,6 +130,11 @@ class TopicController @Inject constructor(
             "fractions_skills.json", /* index= */ 2
           )
         )
+        RATIOS_SKILL_ID_0 -> AsyncResult.success(
+          createConceptCardFromJson(
+            "ratios_skills.json", /* index= */ 0
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
@@ -138,6 +158,9 @@ class TopicController @Inject constructor(
     )?.getJSONArray("questions")
     val fractionQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
       "fractions_questions.json"
+    )?.getJSONArray("questions")!!
+    val ratiosQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
+      "ratios_questions.json"
     )?.getJSONArray("questions")!!
     for (skillId in skillIdsList) {
       when (skillId) {
@@ -184,6 +207,9 @@ class TopicController @Inject constructor(
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
           )
+        )
+        RATIOS_SKILL_ID_0 -> questionsList.add(
+          createQuestionFromJsonObject(ratiosQuestionsJSON.getJSONObject(0))
         )
         else -> {
           throw IllegalStateException("Invalid skill ID: $skillId")
@@ -317,15 +343,15 @@ class TopicController @Inject constructor(
 
   /** Utility to create a topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data. */
-  private fun createTopicFromJson(fileName: String): Topic {
-    val topicData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONObject("topic")!!
+  private fun createTopicFromJson(topicFileName: String, skillFileName: String, storyFileName: String): Topic {
+    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
     return Topic.newBuilder()
       .setTopicId(topicData.getString("id"))
       .setName(topicData.getString("name"))
       .setDescription(topicData.getString("description"))
-      .addAllSkill(createSkillsFromJson("fractions_skills.json"))
-      .addAllStory(createStoriesFromJson("fractions_stories.json"))
-      .setTopicThumbnail(createTopicThumbnail(fileName))
+      .addAllSkill(createSkillsFromJson(skillFileName))
+      .addAllStory(createStoriesFromJson(storyFileName))
+      .setTopicThumbnail(createTopicThumbnail(topicFileName))
       .build()
   }
 
@@ -398,6 +424,10 @@ class TopicController @Inject constructor(
     return when (fileName) {
       "fractions_topic.json" -> LessonThumbnail.newBuilder()
         .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+      "ratios_topic.json" -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
         .setBackgroundColorRgb(0xf7bf73)
         .build()
       else -> LessonThumbnail.newBuilder().setThumbnailGraphic(LessonThumbnailGraphic.UNRECOGNIZED)

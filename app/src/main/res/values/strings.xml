@@ -35,6 +35,7 @@
   <string name="review">Review</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
   <string name="fractions_hint_text">Write fraction here.</string>
@@ -52,6 +53,12 @@
   <string name="continue_playing_activity">Continue playing</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
+  <string name="status_in_progress">In Progress</string>
+  <string name="status_completed">Completed</string>
+  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="play_pause_audio">Play/Pause Audio</string>
+  <string name="help">Help</string>
+  <string name="preferences">Preferences</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
