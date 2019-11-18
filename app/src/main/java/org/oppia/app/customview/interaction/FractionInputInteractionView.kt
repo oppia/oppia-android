@@ -8,8 +8,8 @@ import android.view.KeyEvent.ACTION_UP
 import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.widget.EditText
-import org.oppia.app.utility.KeyBoardHelpher.Companion.hideSoftKeyboard
-import org.oppia.app.utility.KeyBoardHelpher.Companion.showSoftKeyboard
+import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
+import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
@@ -42,7 +42,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
   }
 
   override fun onKeyPreIme(key_code: Int, event: KeyEvent): Boolean {
-    if (event.getKeyCode() == KEYCODE_BACK && event.getAction() == ACTION_UP)
+    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP)
       this.clearFocus()
     return super.onKeyPreIme(key_code, event)
   }

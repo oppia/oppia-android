@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
-import org.oppia.app.utility.KeyBoardHelpher.Companion.hideSoftKeyboard
-import org.oppia.app.utility.KeyBoardHelpher.Companion.showSoftKeyboard
+import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
+import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  hint="Write here."
@@ -39,7 +39,7 @@ class TextInputInteractionView @JvmOverloads constructor(
   }
 
   override fun onKeyPreIme(key_code: Int, event: KeyEvent): Boolean {
-    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP)
+    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP)
       this.clearFocus()
     return super.onKeyPreIme(key_code, event)
   }
