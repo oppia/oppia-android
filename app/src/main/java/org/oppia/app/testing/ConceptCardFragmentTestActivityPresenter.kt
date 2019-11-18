@@ -1,4 +1,4 @@
-package org.oppia.app.topic.conceptcard.testing
+package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.concept_card_fragment_test_activity.*

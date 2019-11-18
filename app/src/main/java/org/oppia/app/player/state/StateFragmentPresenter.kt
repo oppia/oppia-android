@@ -80,6 +80,7 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
+  private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
@@ -96,7 +97,8 @@ class StateFragmentPresenter @Inject constructor(
         }
       })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    val binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val stateRecyclerViewAdapter = createRecyclerViewAdapter()
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
@@ -241,6 +243,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHideAudioFragment(isVisible: Boolean) {
+    getStateViewModel().setAudioBarVisibility(isVisible)
     if (isVisible) {
       if (getAudioFragment() == null) {
         val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
@@ -248,6 +251,11 @@ class StateFragmentPresenter @Inject constructor(
           R.id.audio_fragment_placeholder, audioFragment,
           TAG_AUDIO_FRAGMENT
         ).commitNow()
+      }
+
+      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
+      if (currentYOffset == 0) {
+        binding.stateRecyclerView.smoothScrollToPosition(0)
       }
     } else {
       if (getAudioFragment() != null) {
@@ -289,7 +297,8 @@ class StateFragmentPresenter @Inject constructor(
 
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
       if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState) {
+        && !ephemeralState.hasNextState
+      ) {
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
@@ -376,7 +385,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addInteraction(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false) {
+    InteractionObject? = null, isReadOnly: Boolean = false
+  ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
       explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
