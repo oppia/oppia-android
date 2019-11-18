@@ -732,7 +732,7 @@ class ExplorationProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should now be completed with the correct answer.
     verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
@@ -741,6 +741,29 @@ class ExplorationProgressControllerTest {
     val answerAndFeedback = currentState.completedState.getAnswer(0)
     assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Finnish")
     assertThat(answerAndFeedback.feedback.html).contains("Yes! Oppia is the Finnish word")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() = runBlockingTest(coroutineContext) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. The submitted answer should have a textual version that is a verbatim
+    // version of the user-submitted answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase).isEqualTo(UserAnswer.TextualAnswerCase.PLAIN_ANSWER)
+    assertThat(answerAndFeedback.userAnswer.plainAnswer).isEqualTo("Finnish  ")
   }
 
   @Test
@@ -756,7 +779,7 @@ class ExplorationProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-    // Verify that the current state updates. It should now be completed with the correct answer.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
     verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
@@ -1209,7 +1232,8 @@ class ExplorationProgressControllerTest {
   }
 
   private fun createTextInputAnswer(textAnswer: String): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().setNormalizedString(textAnswer).build())
+    val answer = InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(textAnswer).build()
   }
 
   private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
