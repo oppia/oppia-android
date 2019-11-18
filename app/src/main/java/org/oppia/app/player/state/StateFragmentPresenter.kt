@@ -315,6 +315,7 @@ class StateFragmentPresenter @Inject constructor(
 
     viewModel.itemList.clear()
     viewModel.itemList += pendingItemList
+    binding.stateRecyclerView.smoothScrollToPosition(0)
   }
 
   /**
