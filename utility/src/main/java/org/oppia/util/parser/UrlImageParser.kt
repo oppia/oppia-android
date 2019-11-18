@@ -11,9 +11,6 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import javax.inject.Inject
-import android.opengl.ETC1.getWidth
-
-
 
 // TODO(#169): Replace this with exploration asset downloader.
 // TODO(#277): Add test cases for loading image.

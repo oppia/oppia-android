@@ -56,7 +56,7 @@ class HtmlParser private constructor(
 
     var text = spannable.toString()
 
-    while (text.length > 0 && text.startsWith("\n")) {
+    while (text.isNotEmpty() && text.startsWith("\n")) {
       text = text.substring(1)
       trimStart += 1
     }
