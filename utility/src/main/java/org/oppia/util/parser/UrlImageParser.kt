@@ -11,6 +11,9 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import javax.inject.Inject
+import android.opengl.ETC1.getWidth
+
+
 
 // TODO(#169): Replace this with exploration asset downloader.
 // TODO(#277): Add test cases for loading image.
@@ -52,7 +55,17 @@ class UrlImageParser private constructor(
       htmlContentTextView.post {
         val drawableHeight = drawable.intrinsicHeight
         val drawableWidth = drawable.intrinsicWidth
-        val rect = Rect(0, 0, drawableWidth, drawableHeight)
+        val width : Int
+        val height : Int
+        if (htmlContentTextView.getWidth() >= drawableWidth) {
+          width = drawableWidth
+          height = drawableHeight
+        } else {
+          width = htmlContentTextView.getWidth()
+          height = (drawableHeight / (1.0 * drawableWidth / width)).toInt()
+        }
+
+        val rect = Rect(0, 0, width, height)
         drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
