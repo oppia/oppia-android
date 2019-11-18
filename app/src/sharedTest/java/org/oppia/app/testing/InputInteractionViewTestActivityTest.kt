@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -53,6 +54,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
@@ -62,6 +64,7 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
   }
 
+  @Test
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
@@ -84,6 +87,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
@@ -190,6 +194,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))
