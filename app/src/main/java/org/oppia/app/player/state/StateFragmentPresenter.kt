@@ -79,7 +79,7 @@ class StateFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var explorationId: String
-  private lateinit var currentStateName: String
+  private var currentStateName: String = ""
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
@@ -280,6 +280,12 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+
+    var scrollToTop = false
+    if (currentStateName.isNotEmpty() && currentStateName != ephemeralState.state.name) {
+      scrollToTop = true
+    }
+
     currentStateName = ephemeralState.state.name
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
@@ -315,7 +321,10 @@ class StateFragmentPresenter @Inject constructor(
 
     viewModel.itemList.clear()
     viewModel.itemList += pendingItemList
-    binding.stateRecyclerView.smoothScrollToPosition(0)
+
+    if (scrollToTop) {
+      binding.stateRecyclerView.smoothScrollToPosition(0)
+    }
   }
 
   /**
