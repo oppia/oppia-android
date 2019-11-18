@@ -27,7 +27,7 @@
       android:textColor="@color/oppiaPrimaryText"
       android:focusable="true"
       android:fontFamily="sans-serif"
-      android:hint="@string/text_input_hint_text"
+      android:hint="@{viewModel.hintText}"
       android:inputType="text"
       android:longClickable="false"
       android:maxLength="200"

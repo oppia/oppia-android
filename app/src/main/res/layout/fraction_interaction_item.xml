@@ -35,7 +35,7 @@
         android:enabled="@{!viewModel.isReadOnly}"
         android:focusable="true"
         android:fontFamily="sans-serif"
-        android:hint="@string/fractions_hint_text"
+        android:hint="@{viewModel.hintText}"
         android:imeOptions="actionDone"
         android:inputType="date"
         android:longClickable="false"

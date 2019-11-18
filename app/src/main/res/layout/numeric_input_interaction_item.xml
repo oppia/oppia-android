@@ -27,7 +27,6 @@
       android:enabled="@{!viewModel.isReadOnly}"
       android:focusable="true"
       android:fontFamily="sans-serif"
-      android:hint="@string/number_input_hint_text"
       android:inputType="numberDecimal"
       android:longClickable="false"
       android:imeOptions="actionDone"

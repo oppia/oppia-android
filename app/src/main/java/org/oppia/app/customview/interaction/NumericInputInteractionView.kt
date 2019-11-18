@@ -18,19 +18,4 @@ class NumericInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: String
-
-  init {
-    onFocusChangeListener = this
-    hintText = hint.toString()
-  }
-
-  override fun onFocusChange(v: View?, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
-    typeface = Typeface.DEFAULT
-  } else {
-    hint = hintText
-    setTypeface(typeface, Typeface.ITALIC)
-  }
-}
+) : EditText(context, attrs, defStyle)

@@ -38,10 +38,9 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
-  <string name="fractions_hint_text">Write fraction here.</string>
-  <string name="number_input_hint_text">Write numbers here.</string>
+  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
-  <string name="text_input_hint_text">Write here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="view_all">View All</string>

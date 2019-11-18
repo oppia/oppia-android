@@ -22,7 +22,7 @@ class TextInputInteractionView @JvmOverloads constructor(
 
   init {
     onFocusChangeListener = this
-    hintText = hint.toString()
+    hintText = (hint ?: "").toString()
   }
 
   override fun onFocusChange(v: View?, hasFocus: Boolean) = if (hasFocus) {
