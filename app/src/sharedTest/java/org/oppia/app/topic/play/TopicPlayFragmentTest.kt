@@ -28,6 +28,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -121,6 +122,7 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -230,6 +232,7 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
