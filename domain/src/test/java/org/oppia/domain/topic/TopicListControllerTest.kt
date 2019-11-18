@@ -16,6 +16,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.DefaultGcsPrefix
+import org.oppia.util.parser.DefaultGcsResource
+import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -304,6 +312,43 @@ class TopicListControllerTest {
     fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
     }
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @DefaultGcsPrefix
+    @Singleton
+    fun provideDefaultGcsPrefix(): String {
+      return "https://storage.googleapis.com/"
+    }
+
+    @Provides
+    @DefaultGcsResource
+    @Singleton
+    fun provideDefaultGcsResource(): String {
+      return "oppiaserver-resources/"
+    }
+
+    @Provides
+    @ImageDownloadUrlTemplate
+    @Singleton
+    fun provideImageDownloadUrlTemplate(): String {
+      return "%s/%s/assets/image/%s"
+    }
+
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.

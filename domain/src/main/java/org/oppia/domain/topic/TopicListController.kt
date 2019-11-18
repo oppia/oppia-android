@@ -34,8 +34,8 @@ import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
 import org.oppia.util.caching.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResource
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
@@ -87,6 +87,7 @@ class TopicListController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val explorationRetriever: ExplorationRetriever,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
@@ -94,45 +95,47 @@ class TopicListController @Inject constructor(
   assetRepository: AssetRepository
 ) {
   private val backgroundScope = CoroutineScope(backgroundDispatcher)
-  private val loadAssetJob: Job
 
   init {
     // TODO(#169): Download data reactively rather than during start-up to avoid blocking the main thread on the whole
     //  load operation.
-
-    // Ensure all JSON files are available in memory for quick retrieval.
-    val allFiles = TOPIC_FILE_ASSOCIATIONS.values.flatten()
-    val primeAssetJobs = allFiles.map {
-      backgroundScope.async {
-        assetRepository.primeTextFileFromLocalAssets(it)
-      }
-    }
-
-    // The following job encapsulates all startup loading. NB: We don't currently wait on this job to complete because
-    // it's fine to try to load the assets at the same time as priming the cache, and it's unlikely the user can get
-    // into an exploration fast enough to try to load an asset that would trigger a strict mode crash.
-    loadAssetJob = backgroundScope.launch {
-      primeAssetJobs.forEach { it.await() }
-
-      // Only download binary assets for one fractions lesson. The others can still be streamed.
-      val explorations = loadExplorations(listOf(FRACTIONS_EXPLORATION_ID_1))
-      val voiceoverUrls = collectAllDesiredVoiceoverUrls(explorations).toSet()
-      val imageUrls = collectAllImageUrls(explorations).toSet()
-      logger.d("AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images")
-      val startTime = SystemClock.elapsedRealtime()
-      val voiceoverDownloadJobs = voiceoverUrls.map { url ->
+    if (cacheAssetsLocally) {
+      // Ensure all JSON files are available in memory for quick retrieval.
+      val allFiles = TOPIC_FILE_ASSOCIATIONS.values.flatten()
+      val primeAssetJobs = allFiles.map {
         backgroundScope.async {
-          assetRepository.primeRemoteBinaryAsset(url)
+          assetRepository.primeTextFileFromLocalAssets(it)
         }
       }
-      val imageDownloadJobs = imageUrls.map { url ->
-        backgroundScope.async {
-          assetRepository.primeRemoteBinaryAsset(url)
+
+      // The following job encapsulates all startup loading. NB: We don't currently wait on this job to complete because
+      // it's fine to try to load the assets at the same time as priming the cache, and it's unlikely the user can get
+      // into an exploration fast enough to try to load an asset that would trigger a strict mode crash.
+      backgroundScope.launch {
+        primeAssetJobs.forEach { it.await() }
+
+        // Only download binary assets for one fractions lesson. The others can still be streamed.
+        val explorations = loadExplorations(listOf(FRACTIONS_EXPLORATION_ID_1))
+        val voiceoverUrls = collectAllDesiredVoiceoverUrls(explorations).toSet()
+        val imageUrls = collectAllImageUrls(explorations).toSet()
+        logger.d(
+          "AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images"
+        )
+        val startTime = SystemClock.elapsedRealtime()
+        val voiceoverDownloadJobs = voiceoverUrls.map { url ->
+          backgroundScope.async {
+            assetRepository.primeRemoteBinaryAsset(url)
+          }
         }
+        val imageDownloadJobs = imageUrls.map { url ->
+          backgroundScope.async {
+            assetRepository.primeRemoteBinaryAsset(url)
+          }
+        }
+        (voiceoverDownloadJobs + imageDownloadJobs).forEach { it.await() }
+        val endTime = SystemClock.elapsedRealtime()
+        logger.d("AssetRepo", "Finished downloading voiceovers and images in ${endTime - startTime}ms")
       }
-      (voiceoverDownloadJobs + imageDownloadJobs).forEach { it.await() }
-      val endTime = SystemClock.elapsedRealtime()
-      logger.d("AssetRepo", "Finished downloading voiceovers and images in ${endTime - startTime}ms")
     }
   }
 

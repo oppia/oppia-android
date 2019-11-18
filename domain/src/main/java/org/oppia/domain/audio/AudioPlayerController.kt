@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.util.caching.AssetRepository
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
@@ -32,7 +33,8 @@ import kotlin.concurrent.withLock
 class AudioPlayerController @Inject constructor(
   private val logger: Logger,
   private val assetRepository: AssetRepository,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
   inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>() {
@@ -129,7 +131,7 @@ class AudioPlayerController @Inject constructor(
 
   private fun prepareDataSource(url: String) {
     try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if (cacheAssetsLocally && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val mediaDataSource: MediaDataSource = object : MediaDataSource() {
           private val audioFileBuffer: ByteArray by lazy {
             // Ensure that the download occurs off the main thread to avoid strict mode violations for
