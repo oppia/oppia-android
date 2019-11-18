@@ -12,8 +12,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  existingAnswer: InteractionObject?, val isReadOnly: Boolean
+  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver
 ): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
   private val choiceStrings: List<String> by lazy {
@@ -27,12 +26,8 @@ class SelectionInteractionViewModel(
     // when either of the counts are not specified.
     interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
   }
-  private val selectedItems = computeSelectedItems(
-    existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
-  )
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
-    choiceStrings, selectedItems, isReadOnly, this
-  )
+  private val selectedItems: MutableList<Int> = mutableListOf()
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(choiceStrings, this)
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean {
     // If more than one answer is allowed, then a submission button is needed.
@@ -106,28 +101,13 @@ class SelectionInteractionViewModel(
   }
 
   companion object {
-    private fun computeSelectedItems(
-      answer: InteractionObject, interactionId: String, choiceStrings: List<String>
-    ): MutableList<Int> {
-      return if (interactionId == "ItemSelectionInput") {
-        answer.setOfHtmlString.htmlList.map(choiceStrings::indexOf).toMutableList()
-      } else if (answer.objectTypeCase == InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT) {
-        mutableListOf(answer.nonNegativeInt)
-      } else {
-        mutableListOf()
-      }
-    }
-
     private fun computeChoiceItems(
-      choiceStrings: List<String>, selectedItems: List<Int>, isReadOnly: Boolean,
-      selectionInteractionViewModel: SelectionInteractionViewModel
+      choiceStrings: List<String>, selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
-        val isAnswerSelected = index in selectedItems
         SelectionInteractionContentViewModel(
-          htmlContent = choiceString, itemIndex = index, isAnswerInitiallySelected = isAnswerSelected,
-          isReadOnly = isReadOnly, selectionInteractionViewModel = selectionInteractionViewModel
+          htmlContent = choiceString, itemIndex = index, selectionInteractionViewModel = selectionInteractionViewModel
         )
       }
       return observableList

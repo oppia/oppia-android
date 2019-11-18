@@ -16,9 +16,7 @@ import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
  * It contains [NumericInputInteractionView], [TextInputInteractionView], [FractionInputInteractionView] and [NumberWithUnitsInputInteractionView].
  */
 class InputInteractionViewTestActivity : AppCompatActivity() {
-  val numericInputViewModel = NumericInputViewModel(
-    existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false
-  )
+  val numericInputViewModel = NumericInputViewModel()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

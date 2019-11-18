@@ -23,7 +23,6 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789."
-      android:enabled="@{!numericInputViewModel.isReadOnly}"
       android:focusable="true"
       android:hint="Write the digit here."
       android:inputType="numberDecimal"

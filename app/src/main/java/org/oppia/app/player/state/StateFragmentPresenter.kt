@@ -29,7 +29,6 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
@@ -293,10 +292,10 @@ class StateFragmentPresenter @Inject constructor(
     addContentItem(pendingItemList, ephemeralState)
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.pendingState.wrongAnswerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
     }
 
     val hasPreviousState = ephemeralState.hasPreviousState
@@ -385,19 +384,10 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
-  ) = addInteraction(pendingItemList, interaction)
-
-  private fun addInteractionForCompletedState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
-
-  private fun addInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+      explorationId, interaction, fragment as InteractionAnswerReceiver
     )
   }
 
@@ -407,11 +397,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction,
-    answersAndResponses: List<AnswerAndResponse>
+    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>
   ) {
     for (answerAndResponse in answersAndResponses) {
-//      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
       addSubmittedAnswer(pendingItemList, answerAndResponse.userAnswer)
       addFeedbackItem(pendingItemList, answerAndResponse.feedback)
     }

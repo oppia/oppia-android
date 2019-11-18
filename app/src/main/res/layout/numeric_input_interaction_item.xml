@@ -24,7 +24,6 @@
       android:background="@drawable/edit_text_background"
       android:digits="0123456789."
       android:textColor="@color/oppiaPrimaryText"
-      android:enabled="@{!viewModel.isReadOnly}"
       android:focusable="true"
       android:fontFamily="sans-serif"
       android:hint="@string/number_input_hint_text"

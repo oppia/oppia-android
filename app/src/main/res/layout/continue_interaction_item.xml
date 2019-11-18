@@ -4,8 +4,6 @@
 
   <data>
 
-    <import type="android.view.View" />
-
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
@@ -17,21 +15,6 @@
     android:layout_marginTop="16dp"
     android:padding="16dp">
 
-    <FrameLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="@drawable/submitted_answer_background"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintEnd_toEndOf="parent">
-
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@{viewModel.answerText}"
-        android:visibility="@{viewModel.isReadOnly ? View.VISIBLE : View.GONE}" />
-    </FrameLayout>
-
     <Button
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
@@ -42,8 +25,6 @@
       android:focusable="true"
       android:text="@string/state_continue_button"
       android:textColor="@color/white"
-      android:enabled="@{!viewModel.readOnly}"
-      android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
-      android:visibility="@{viewModel.isReadOnly ? View.GONE : View.VISIBLE}" />
+      android:onClick="@{(v) -> viewModel.handleButtonClicked()}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

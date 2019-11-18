@@ -23,7 +23,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
-      android:enabled="@{!viewModel.isReadOnly}"
       android:textColor="@color/oppiaPrimaryText"
       android:focusable="true"
       android:fontFamily="sans-serif"

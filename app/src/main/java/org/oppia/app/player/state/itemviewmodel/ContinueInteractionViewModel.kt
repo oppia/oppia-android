@@ -4,7 +4,6 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.domain.util.toAnswerString
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts
@@ -12,11 +11,8 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** [ViewModel] for the 'Continue' button. */
 class ContinueInteractionViewModel(
-  private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
-  val isReadOnly: Boolean
+  private val interactionAnswerReceiver: InteractionAnswerReceiver
 ): StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
-  val answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
-
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun getPendingAnswer(): UserAnswer {

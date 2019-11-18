@@ -14,7 +14,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:enabled="@{!viewModel.isReadOnly}"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}">
     <androidx.appcompat.widget.AppCompatCheckBox
       android:id="@+id/item_selection_checkbox"

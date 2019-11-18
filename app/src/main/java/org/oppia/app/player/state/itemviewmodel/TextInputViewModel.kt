@@ -3,13 +3,10 @@ package org.oppia.app.player.state.itemviewmodel
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.domain.util.toAnswerString
 
 /** [ViewModel] for the text input interaction. */
-class TextInputViewModel(
-  existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
+class TextInputViewModel: StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
+  var answerText: CharSequence = ""
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
