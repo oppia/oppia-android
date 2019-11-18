@@ -67,17 +67,8 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
-      onView(atPositionOnView(R.id.concept_card_recyclerview, 1, R.id.concept_card_explanation_text)).check(matches(containsRichText()))
-    }
-  }
-
-  @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectWorkedExamples() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(withText("Worked example with rich text.")))
-      onView(atPositionOnView(R.id.concept_card_recyclerview, 2, R.id.concept_card_worked_example_text)).check(matches(containsRichText()))
+      onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+      onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
     }
   }
 

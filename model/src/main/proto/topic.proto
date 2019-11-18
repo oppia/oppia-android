@@ -54,15 +54,6 @@ message ConceptCard {
   map<string, TranslationMapping> written_translation = 6;
 }
 
-// Used to create BindingAdapter in ConceptCardFragment
-message ConceptCardModel {
-  oneof model_type {
-    string skill_description = 1;
-    SubtitledHtml explanation = 2;
-    SubtitledHtml worked_example = 3;
-  }
-}
-
 // A summary of a story that can be played within a topic.
 message StorySummary {
   // The ID of the story.

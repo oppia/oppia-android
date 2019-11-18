@@ -19,15 +19,28 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent" />
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/concept_card_recyclerview"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:data="@{viewModel.conceptCardLiveData}"
-      app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+      android:id="@+id/concept_card_heading_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="30dp"
+      android:layout_marginTop="80dp"
+      android:text="@{viewModel.conceptCardLiveData.skillDescription}"
+      android:textColor="@color/black"
+      android:textStyle="bold"
+      android:textSize="28sp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+      android:id="@+id/concept_card_explanation_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:layout_marginStart="50dp"
+      android:text="@{viewModel.explanationLiveData}"
+      android:textColor="@color/black"
+      android:visibility="@{viewModel.conceptCardLiveData.hasExplanation() ? View.VISIBLE : View.GONE}"
+      app:layout_constraintTop_toBottomOf="@id/concept_card_heading_text"
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
