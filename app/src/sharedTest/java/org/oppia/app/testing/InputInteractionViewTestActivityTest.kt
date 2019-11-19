@@ -68,7 +68,7 @@ class InputInteractionViewTestActivityTest {
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.normalizedString).isEmpty()
     }
@@ -79,7 +79,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
       assertThat(pendingAnswer.normalizedString).isEqualTo("abc")
@@ -101,7 +101,7 @@ class InputInteractionViewTestActivityTest {
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.fraction.denominator).isEqualTo(0)
       assertThat(pendingAnswer.fraction.numerator).isEqualTo(0)
@@ -114,7 +114,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
@@ -127,7 +127,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -140,7 +140,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -154,7 +154,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
@@ -168,7 +168,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5 9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -183,7 +183,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-5 9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
