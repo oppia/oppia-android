@@ -53,4 +53,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   }
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
+
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 }

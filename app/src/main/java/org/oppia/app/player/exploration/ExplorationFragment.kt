@@ -22,4 +22,6 @@ class ExplorationFragment : InjectableFragment() {
   }
 
   fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()
+
+  fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
 }

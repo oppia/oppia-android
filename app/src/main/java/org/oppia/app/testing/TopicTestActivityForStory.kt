@@ -53,7 +53,7 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
     }
   }
 
-  override fun dismiss() {
+  override fun dismissConceptCard() {
     getConceptCardFragment()?.dismiss()
   }
 
