@@ -10,7 +10,7 @@ class KeyboardHelper {
     /**
      * This method hides softinputkeybord
      * @param view is the input view
-     * @param context context of the activity
+     * @param context context of the container
      */
     fun hideSoftKeyboard(view: View, context: Context) {
       val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -20,7 +20,7 @@ class KeyboardHelper {
     /**
      * This method shows softinputkeybord
      * @param view is the input view
-     * @param context context of the activity
+     * @param context context of the container
      */
     fun showSoftKeyboard(view: View, context: Context) {
       if (view.requestFocus()) {
