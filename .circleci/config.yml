@@ -6,7 +6,7 @@ workflows:
   version: 2
   circleci_tests:
     jobs:
-      - lint_tests
+      - flaky_tests
       - non_flaky_tests
 
 var_for_docker_image: &docker_image circleci/android:api-28
@@ -22,31 +22,7 @@ anchor_for_job_defaults: &job_defaults
 
 version: 2
 jobs:
-  # build:
-  #   working_directory: ~/repo
-  #   docker:
-  #     # https://circleci.com/docs/2.0/language-android/
-  #     - image: circleci/android:api-28
-  #   environment:
-  #     # Customize the JVM maximum heap limit
-  #     JVM_OPTS: -Xmx3200m
-  #     TERM: dumb
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         key: jars-{{ checksum "build.gradle" }}
-  #     - run: ./.circleci/gradle/gradlew androidDependencies
-  #     - save_cache:
-  #         paths:
-  #           - ~/.gradle
-  #         key: jars-{{ checksum "build.gradle" }}
-  #     - run: ./.circleci/gradle/gradlew test
-  #     - store_artifacts:
-  #         path: app/build/reports
-  #         destination: reports
-  #     - store_test_results:
-  #         path: app/build/test-results
-  lint_tests:
+  flaky_tests:
     <<: *job_defaults
     steps:
       - checkout
@@ -58,8 +34,11 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
       - run:
-          name: Run Tests
-          command: ./.circleci/gradle/gradlew lint test
+          name: App tests
+          command: ./.circleci/gradle/gradlew :app:test
+      - run:
+          name: Data tests
+          command: ./.circleci/gradle/gradlew :data:test
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -79,6 +58,9 @@ jobs:
       - run:
           name: Domain tests
           command: ./.circleci/gradle/gradlew :domain:test
+      - run:
+          name: Utility tests
+          command: ./.circleci/gradle/gradlew :utility:test
       - store_artifacts:
           path: app/build/reports
           destination: reports
