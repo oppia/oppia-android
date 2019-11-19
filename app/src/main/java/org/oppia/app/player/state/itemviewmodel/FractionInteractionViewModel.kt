@@ -10,7 +10,6 @@ class FractionInteractionViewModel(
 ) : StateItemViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
-
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (answerText.isNotEmpty()) {
