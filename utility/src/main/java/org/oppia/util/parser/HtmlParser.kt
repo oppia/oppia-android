@@ -50,7 +50,6 @@ class HtmlParser private constructor(
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
-    checkNotNull(spannable)
     var trimStart = 0
     var trimEnd = 0
 

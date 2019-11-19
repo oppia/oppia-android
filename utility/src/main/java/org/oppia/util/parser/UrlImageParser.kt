@@ -32,7 +32,7 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-    val imageUrl =  String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
     imageLoader.load(
@@ -48,19 +48,13 @@ class UrlImageParser private constructor(
     }
 
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      val  drawable = BitmapDrawable(context.resources, resource)
+      val drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
         val drawableHeight = drawable.intrinsicHeight
         val drawableWidth = drawable.intrinsicWidth
-        val width : Int
-        val height : Int
-        if (htmlContentTextView.getWidth() >= drawableWidth) {
-          width = drawableWidth
-          height = drawableHeight
-        } else {
-          width = htmlContentTextView.getWidth()
-          height = (drawableHeight / (1.0 * drawableWidth / width)).toInt()
-        }
+        val result = calculateDrawableSize(drawableWidth, drawableHeight, htmlContentTextView)
+        val width: Int = result.first
+        val height: Int = result.second
 
         val rect = Rect(0, 0, width, height)
         drawable.bounds = rect
@@ -72,7 +66,28 @@ class UrlImageParser private constructor(
     }
   }
 
-   class UrlDrawable : BitmapDrawable() {
+  /**
+   * Check whether textview's width is greater then drawable width,
+   * if true use drawable width and drawable height
+   * else adjust the height if the width of the  textview's  is smaller then drawable width
+   */
+  public fun calculateDrawableSize(
+    drawableWidth: Int,
+    drawableHeight: Int,
+    htmlContentTextView: TextView
+  ): Pair<Int, Int> {
+    return if (htmlContentTextView.getWidth() >= drawableWidth) {
+      val width = drawableWidth
+      val height = drawableHeight
+      Pair(width, height)
+    } else {
+      val width = htmlContentTextView.getWidth()
+      val height = (drawableHeight * width) / drawableWidth
+      Pair(width, height)
+    }
+  }
+
+  class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
