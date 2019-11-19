@@ -380,7 +380,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setDescription(skillData.getString("description"))
-      .setSkillThumbnail(createSkillThumbnail(skillData.getString("description")))
+      .setSkillThumbnail(createSkillThumbnail(skillData.getString("id")))
       .build()
   }
 
@@ -571,6 +571,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_0)
       .setDescription("An important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_0))
       .build()
   }
 
@@ -578,6 +579,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -585,6 +587,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("A different skill in a different topic Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -592,6 +595,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -599,6 +603,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_2)
       .setDescription("A different skill in a different topic")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_2))
       .build()
   }
 
@@ -686,15 +691,15 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  private fun createSkillThumbnail(skillDescription: String): SkillThumbnail {
-    return when (skillDescription) {
-      "Given a picture divided into unequal parts, write the fraction." -> SkillThumbnail.newBuilder()
+  private fun createSkillThumbnail(skillId: String): SkillThumbnail {
+    return when (skillId) {
+      FRACTIONS_SKILL_ID_0 -> SkillThumbnail.newBuilder()
         .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
         .build()
-      "Identify the numerator and denominator of a fraction." -> SkillThumbnail.newBuilder()
+      FRACTIONS_SKILL_ID_1 -> SkillThumbnail.newBuilder()
         .setThumbnailGraphic(SkillThumbnailGraphic.WRITING_FRACTIONS)
         .build()
-      "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"." -> SkillThumbnail.newBuilder()
+      FRACTIONS_SKILL_ID_2 -> SkillThumbnail.newBuilder()
         .setThumbnailGraphic(SkillThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
         .build()
       else -> SkillThumbnail.newBuilder()
