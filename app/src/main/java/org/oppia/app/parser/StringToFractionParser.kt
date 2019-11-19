@@ -6,8 +6,8 @@ import org.oppia.domain.util.normalizeWhitespace
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
-  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d)+$""".toRegex()
-  private val mixedNumberRegex = """^-? ?(\d)+ ?(\d+) ?/ ?(\d)+$""".toRegex()
+  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
+  private val mixedNumberRegex = """^-? ?(\d+) ?(\d+) ?/ ?(\d+)$""".toRegex()
 
   fun getFractionFromString(text: String): Fraction {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
