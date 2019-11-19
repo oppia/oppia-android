@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
@@ -9,6 +8,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.viewmodel.ObservableArrayList
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(

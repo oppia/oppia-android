@@ -41,6 +41,7 @@
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="edit_text_hint">#80333333</color>
+  <color name="mid_grey">#ff333333</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>
