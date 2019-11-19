@@ -2,6 +2,24 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
+workflows:
+  version: 2
+  circleci_tests:
+    jobs:
+      - lint_tests
+      - non_flaky_tests
+
+var_for_docker_image: &docker_image circleci/android:api-28
+
+anchor_for_job_defaults: &job_defaults
+  working_directory: ~/repo
+  environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+  docker:
+    - image: *docker_image
+
 version: 2
 jobs:
   # build:
@@ -29,14 +47,7 @@ jobs:
   #     - store_test_results:
   #         path: app/build/test-results
   lint_tests:
-    working_directory: ~/repo
-    docker:
-      # https://circleci.com/docs/2.0/language-android/
-      - image: circleci/android:api-28
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+    <<: *job_defaults
     steps:
       - checkout
       - restore_cache:
@@ -55,14 +66,7 @@ jobs:
       - store_test_results:
           path: app/build/test-results
   non_flaky_tests:
-    working_directory: ~/repo
-    docker:
-      # https://circleci.com/docs/2.0/language-android/
-      - image: circleci/android:api-28
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+    <<: *job_defaults
     steps:
       - checkout
       - restore_cache:
