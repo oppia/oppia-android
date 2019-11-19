@@ -6,8 +6,13 @@ workflows:
   version: 2
   circleci_tests:
     jobs:
-      - flaky_tests
-      - non_flaky_tests
+      - setup
+      - flaky_tests:
+          requires:
+              - setup
+      - non_flaky_tests:
+          requires:
+              - setup
 
 var_for_docker_image: &docker_image circleci/android:api-28
 
@@ -20,19 +25,32 @@ anchor_for_job_defaults: &job_defaults
   docker:
     - image: *docker_image
 
+anchor_for_android_dependencies: &install_android_dependencies
+  name: Install Android dependencies
+  command: ./.circleci/gradle/gradlew androidDependencies
+
+anchor_for_restore_cache: &restore_cache
+  key: jars-{{ checksum "build.gradle" }}
+
 version: 2
 jobs:
-  flaky_tests:
+  setup: 
     <<: *job_defaults
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}
-      - run: ./.circleci/gradle/gradlew androidDependencies
+          <<: *restore_cache
+      - run:
+          <<: *install_android_dependencies
       - save_cache:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
+
+  flaky_tests:
+    <<: *job_defaults
+    steps:
+      - checkout
       - run:
           name: App tests
           command: ./.circleci/gradle/gradlew :app:test
@@ -48,13 +66,6 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}
-      - run: ./.circleci/gradle/gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Domain tests
           command: ./.circleci/gradle/gradlew :domain:test
