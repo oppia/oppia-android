@@ -11,6 +11,8 @@ import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
+import org.oppia.app.model.SkillThumbnail
+import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
@@ -70,10 +72,18 @@ class TopicController @Inject constructor(
       when (topicId) {
         TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
         TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
-        FRACTIONS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
-          "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"))
-        RATIOS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
-          "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"))
+        FRACTIONS_TOPIC_ID -> AsyncResult.success(
+          createTopicFromJson(
+            "fractions_topic.json",
+            "fractions_skills.json",
+            "fractions_stories.json"
+          )
+        )
+        RATIOS_TOPIC_ID -> AsyncResult.success(
+          createTopicFromJson(
+            "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
       }
     )
@@ -370,6 +380,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setDescription(skillData.getString("description"))
+      .setSkillThumbnail(createSkillThumbnail(skillData.getString("id")))
       .build()
   }
 
@@ -560,6 +571,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_0)
       .setDescription("An important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_0))
       .build()
   }
 
@@ -567,22 +579,23 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
-
 
   private fun createTestTopic0Skill2(): SkillSummary {
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("A different skill in a different topic Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
-
 
   private fun createTestTopic0Skill3(): SkillSummary {
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -590,6 +603,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_2)
       .setDescription("A different skill in a different topic")
+      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_2))
       .build()
   }
 
@@ -675,5 +689,22 @@ class TopicController @Inject constructor(
       .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build())
       .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Second worked example.").build())
       .build()
+  }
+
+  private fun createSkillThumbnail(skillId: String): SkillThumbnail {
+    return when (skillId) {
+      FRACTIONS_SKILL_ID_0 -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+      FRACTIONS_SKILL_ID_1 -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.WRITING_FRACTIONS)
+        .build()
+      FRACTIONS_SKILL_ID_2 -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
+        .build()
+      else -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+    }
   }
 }
