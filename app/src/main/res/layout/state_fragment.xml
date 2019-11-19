@@ -20,7 +20,6 @@
       android:layout_height="match_parent"
       android:clipToPadding="false"
       android:divider="@android:color/transparent"
-      android:dividerHeight="8dp"
       android:overScrollMode="never"
       android:paddingTop="@{viewModel.isAudioBarVisible().get()? @dimen/padding_72dp : @dimen/padding_24dp}"
       android:scrollbars="none"

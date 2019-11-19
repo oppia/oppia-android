@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -113,6 +114,7 @@ class AudioFragmentTest {
 
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     invokePreparedListener(shadowMediaPlayer)
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
