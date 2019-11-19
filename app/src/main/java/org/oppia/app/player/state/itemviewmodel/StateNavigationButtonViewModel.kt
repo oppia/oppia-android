@@ -49,9 +49,9 @@ class StateNavigationButtonViewModel(
       ContinuationNavigationButtonType.SUBMIT_BUTTON -> {
         isNextButtonVisible.set(false)
         isInteractionButtonActive.set(isEnabled)
-        isInteractionButtonVisible.set(isEnabled)
+        isInteractionButtonVisible.set(true)
         interactionButtonName.set(context.getString(R.string.state_submit_button))
-        drawableResourceValue.set(R.drawable.state_button_primary_background)
+        drawableResourceValue.set(R.drawable.start_button_transparent_background)
       }
       ContinuationNavigationButtonType.CONTINUE_BUTTON -> {
         isNextButtonVisible.set(false)
@@ -86,6 +86,15 @@ class StateNavigationButtonViewModel(
       else -> throw IllegalStateException(
         "Cannot trigger continuation for current button state: $currentContinuationNavigationButtonType"
       )
+    }
+  }
+
+  fun controlSubmitButton(isTextAvailable: Boolean) {
+    isInteractionButtonActive.set(isTextAvailable)
+    if (isTextAvailable) {
+      drawableResourceValue.set(R.drawable.state_button_primary_background)
+    } else {
+      drawableResourceValue.set(R.drawable.start_button_transparent_background)
     }
   }
 

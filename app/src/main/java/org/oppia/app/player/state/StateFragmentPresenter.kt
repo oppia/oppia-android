@@ -83,6 +83,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
+  private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
@@ -396,7 +397,7 @@ class StateFragmentPresenter @Inject constructor(
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly, this
     )
   }
 
@@ -430,7 +431,7 @@ class StateFragmentPresenter @Inject constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean
   ) {
-    val stateNavigationButtonViewModel = StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
+    stateNavigationButtonViewModel = StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
     stateNavigationButtonViewModel.updatePreviousButton(isEnabled = hasPreviousState)
 
     // Set continuation button.
@@ -452,7 +453,7 @@ class StateFragmentPresenter @Inject constructor(
       }
       viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> {
         stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = true
+          ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = false
         )
       }
       else -> {
@@ -468,6 +469,10 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+  }
+
+  fun controlSubmitButton(isTextAvailable: Boolean) {
+    stateNavigationButtonViewModel.controlSubmitButton(isTextAvailable)
   }
 
   private enum class ViewType {

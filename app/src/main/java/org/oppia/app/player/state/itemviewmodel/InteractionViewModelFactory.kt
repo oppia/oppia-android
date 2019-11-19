@@ -2,6 +2,7 @@ package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.StateFragmentPresenter
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /**
@@ -11,5 +12,5 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  */
 typealias InteractionViewModelFactory = (
   explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver,
-  existingAnswer: InteractionObject?, isReadOnly: Boolean
+  existingAnswer: InteractionObject?, isReadOnly: Boolean, stateFragmentPresenter: StateFragmentPresenter
 ) -> StateItemViewModel

@@ -17,7 +17,7 @@ import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
  */
 class InputInteractionViewTestActivity : AppCompatActivity() {
   val numericInputViewModel = NumericInputViewModel(
-    existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false
+    existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false, stateFragmentPresenter = null
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {

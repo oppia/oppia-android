@@ -1,11 +1,12 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.StateFragmentPresenter
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.toAnswerString
 
 class TextInputViewModel(
-  existingAnswer: InteractionObject?, val isReadOnly: Boolean
+  existingAnswer: InteractionObject?, val isReadOnly: Boolean , private val stateFragmentPresenter: StateFragmentPresenter?
 ) : StateItemViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
@@ -18,5 +19,6 @@ class TextInputViewModel(
   }
 
   fun onTextChanged(text: CharSequence) {
+    stateFragmentPresenter?.controlSubmitButton(text.isNotEmpty())
   }
 }
