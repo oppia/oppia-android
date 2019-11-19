@@ -11,6 +11,8 @@ import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
+import org.oppia.app.model.SkillThumbnail
+import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
@@ -70,10 +72,18 @@ class TopicController @Inject constructor(
       when (topicId) {
         TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
         TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
-        FRACTIONS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
-          "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"))
-        RATIOS_TOPIC_ID -> AsyncResult.success(createTopicFromJson(
-          "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"))
+        FRACTIONS_TOPIC_ID -> AsyncResult.success(
+          createTopicFromJson(
+            "fractions_topic.json",
+            "fractions_skills.json",
+            "fractions_stories.json"
+          )
+        )
+        RATIOS_TOPIC_ID -> AsyncResult.success(
+          createTopicFromJson(
+            "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
+          )
+        )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
       }
     )
@@ -370,6 +380,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setDescription(skillData.getString("description"))
+      .setSkillThumbnail(createSkillThumbnail(skillData.getString("description")))
       .build()
   }
 
@@ -570,14 +581,12 @@ class TopicController @Inject constructor(
       .build()
   }
 
-
   private fun createTestTopic0Skill2(): SkillSummary {
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("A different skill in a different topic Another important skill")
       .build()
   }
-
 
   private fun createTestTopic0Skill3(): SkillSummary {
     return SkillSummary.newBuilder()
@@ -675,5 +684,22 @@ class TopicController @Inject constructor(
       .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build())
       .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Second worked example.").build())
       .build()
+  }
+
+  private fun createSkillThumbnail(skillDescription: String): SkillThumbnail {
+    return when (skillDescription) {
+      "Given a picture divided into unequal parts, write the fraction." -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+      "Identify the numerator and denominator of a fraction." -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.WRITING_FRACTIONS)
+        .build()
+      "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"." -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
+        .build()
+      else -> SkillThumbnail.newBuilder()
+        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+    }
   }
 }
