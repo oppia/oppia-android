@@ -6,7 +6,7 @@ import org.oppia.domain.util.toAnswerString
 
 class NumericInputViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+) : StateItemViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun getPendingAnswer(): InteractionObject {
@@ -15,5 +15,9 @@ class NumericInputViewModel(
       interactionObjectBuilder.real = answerText.toString().toDouble()
     }
     return interactionObjectBuilder.build()
+  }
+
+  fun onTextChanged(text: CharSequence) {
+
   }
 }

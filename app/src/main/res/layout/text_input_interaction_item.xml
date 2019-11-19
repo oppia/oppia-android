@@ -32,6 +32,7 @@
       android:longClickable="false"
       android:maxLength="200"
       android:minHeight="48dp"
+      android:onTextChanged="@{(text, start, before, count) -> viewModel.onTextChanged(text)}"
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
       android:paddingBottom="8dp"
