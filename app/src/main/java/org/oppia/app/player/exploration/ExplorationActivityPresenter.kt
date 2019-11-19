@@ -67,6 +67,10 @@ class ExplorationActivityPresenter @Inject constructor(
     getExplorationFragment()?.handlePlayAudio()
   }
 
+  fun dismissConceptCard() {
+    getExplorationFragment()?.dismissConceptCard()
+  }
+
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }

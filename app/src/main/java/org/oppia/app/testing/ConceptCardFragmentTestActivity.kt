@@ -17,7 +17,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
     conceptCardFragmentTestActivityController.handleOnCreate()
   }
 
-  override fun dismiss() {
+  override fun dismissConceptCard() {
     getConceptCardFragment()?.dismiss()
   }
 

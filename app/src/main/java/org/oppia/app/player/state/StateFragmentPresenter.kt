@@ -46,6 +46,7 @@ import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.C
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationDataController
@@ -57,13 +58,14 @@ import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
-private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val CELLULAR_DATA_DIALOG_FRAGMENT_TAG = "CELLULAR_DATA_DIALOG_FRAGMENT"
+private const val AUDIO_FRAGMENT_TAG = "AUDIO_FRAGMENT"
+private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  @ExplorationHtmlParserEntityType private val entityType: String,
+  @ExplorationHtmlParserEntityType private val htmlParserEntityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularDialogController: CellularDialogController,
@@ -74,11 +76,14 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener {
+) : StateNavigationButtonListener, HtmlParser.CustomOppiaTagActionListener {
 
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var explorationId: String
+  private val htmlParser: HtmlParser by lazy {
+    htmlParserFactory.create(htmlParserEntityType, explorationId, customOppiaTagActionListener = this)
+  }
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -144,8 +149,8 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
+          binding.htmlContent = htmlParser.parseOppiaHtml(
+            (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView, supportsLinks = true
           )
         }
       )
@@ -156,8 +161,8 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
+          binding.htmlContent = htmlParser.parseOppiaHtml(
+            (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView, supportsLinks = true
           )
         }
       )
@@ -226,12 +231,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = CellularDataDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
+    dialogFragment.showNow(fragment.childFragmentManager, CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -239,7 +244,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun getAudioFragment(): Fragment? {
-    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+    return fragment.childFragmentManager.findFragmentByTag(AUDIO_FRAGMENT_TAG)
   }
 
   private fun showHideAudioFragment(isVisible: Boolean) {
@@ -249,7 +254,7 @@ class StateFragmentPresenter @Inject constructor(
         val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction().add(
           R.id.audio_fragment_placeholder, audioFragment,
-          TAG_AUDIO_FRAGMENT
+          AUDIO_FRAGMENT_TAG
         ).commitNow()
       }
 
@@ -377,6 +382,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   override fun onNextButtonClicked() = moveToNextState()
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+  }
+
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
+  }
 
   private fun moveToNextState() {
     explorationProgressController.moveToNextState()
