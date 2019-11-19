@@ -62,7 +62,7 @@ class ConceptCardViewModel @Inject constructor(
     if (conceptCardResult.isFailure()) {
       logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
-    val conceptCard = conceptCardResult.getOrThrow()
+    val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
     return htmlParserFactory.create(entityType, skillId)
             .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText)
   }
