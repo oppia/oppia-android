@@ -181,7 +181,7 @@ class InputInteractionViewTestActivityTest {
   @Test
   fun testFractionInputInteractionView_withInputtedNegativeWholeNumberValue_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-5 9/10"))
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-5 9/9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
@@ -189,7 +189,7 @@ class InputInteractionViewTestActivityTest {
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
       assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(5)
       assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
-      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(9)
     }
   }
 
