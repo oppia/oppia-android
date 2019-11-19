@@ -1,15 +1,17 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -20,16 +22,27 @@ import javax.inject.Inject
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
-  private lateinit var audioButton: MenuItem
   private lateinit var toolbar: Toolbar
+  private val exploreViewModel by lazy {
+    getExplorationViewModel()
+  }
 
   fun handleOnCreate(explorationId: String) {
-    activity.setContentView(R.layout.exploration_activity)
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+    binding.apply {
+      viewModel = exploreViewModel
+      lifecycleOwner = activity
+    }
 
-    toolbar = activity.findViewById(R.id.exploration_toolbar)
+    toolbar = binding.explorationToolbar
     activity.setSupportActionBar(toolbar)
+
+    binding.actionAudioPlayer.setOnClickListener {
+      getExplorationFragment()?.handlePlayAudio()
+    }
 
     updateToolbarTitle(explorationId)
 
@@ -45,14 +58,10 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  fun setAudioButton(menuItem: MenuItem) {
-    audioButton = menuItem
-  }
-
-  /** Sets audio button drawable to volume off. */
-  fun showVolumeOff() = audioButton.setIcon(R.drawable.ic_volume_off_48dp)
-  /** Sets audio button drawable to volume on. */
-  fun showVolumeOn() = audioButton.setIcon(R.drawable.ic_volume_on_48dp)
+  fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+  fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+  fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+  fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
   
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -73,10 +82,6 @@ class ExplorationActivityPresenter @Inject constructor(
     })
   }
 
-  fun audioPlayerIconClicked() {
-    getExplorationFragment()?.handlePlayAudio()
-  }
-
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
@@ -86,6 +91,10 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(activity, Observer<Exploration> {
       toolbar.title = it.title
     })
+  }
+
+  private fun getExplorationViewModel(): ExplorationViewModel {
+    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */

@@ -7,34 +7,33 @@ import androidx.annotation.VisibleForTesting
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Utility to get the current connection status of the device. */
 @Singleton
 class NetworkConnectionUtil @Inject constructor(private val context: Context) {
   enum class ConnectionStatus {
-    WIFI, CELLULAR, NONE
+    LOCAL, CELLULAR, NONE
   }
-  private var connectionStatus: ConnectionStatus? = null
+  private var testConnectionStatus: ConnectionStatus? = null
 
   fun getCurrentConnectionStatus(): ConnectionStatus {
-    connectionStatus?.let {
+    testConnectionStatus?.let {
       return it
     }
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-    val isConnected: Boolean = activeNetwork?.isConnected == true
-    val isWiFi: Boolean = activeNetwork?.type == ConnectivityManager.TYPE_WIFI
-    val isMob: Boolean = activeNetwork?.type == ConnectivityManager.TYPE_MOBILE
-    if(isConnected) {
-      if (isWiFi) {
-        return ConnectionStatus.WIFI
-      } else if (isMob) {
-        return ConnectionStatus.CELLULAR
+    return connectivityManager.activeNetworkInfo?.let { activeNetwork ->
+      val isConnected = activeNetwork.isConnected
+      val isLocal = activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_ETHERNET
+      val isCellular = activeNetwork.type == ConnectivityManager.TYPE_MOBILE || activeNetwork.type == ConnectivityManager.TYPE_WIMAX
+      return@let when {
+        isConnected && isLocal -> ConnectionStatus.LOCAL
+        isConnected && isCellular -> ConnectionStatus.CELLULAR
+        else -> ConnectionStatus.NONE
       }
-    }
-    return ConnectionStatus.NONE
+    } ?: ConnectionStatus.NONE
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun setCurrentConnectionStatus(status: ConnectionStatus) {
-    connectionStatus = status
+    testConnectionStatus = status
   }
 }

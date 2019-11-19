@@ -47,8 +47,8 @@ class ExplorationActivityTest {
     setUpTestApplicationComponent()
     ActivityScenario.launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
-        networkConnectionUtil = activity.getNetworkConnectionUtil()
-        activity.getExplorationDataController().startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+        networkConnectionUtil = activity.networkConnectionUtil
+        activity.explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
       }
     }
   }
@@ -138,7 +138,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithWifi_clickAudioIcon_checkAudioFragmentWithDefaultLanguage() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
@@ -148,7 +148,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithWifi_clickAudioIcon_clickNext_checkNoAudioAvailable() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
@@ -158,7 +158,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithWifi_clickNext_clickAudioIcon_checkOpensLanguageDialog() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.WIFI)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())

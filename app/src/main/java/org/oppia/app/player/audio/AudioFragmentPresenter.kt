@@ -96,18 +96,19 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setVoiceoverMappingsByState(stateId: String) = viewModel.setVoiceoverMappingsByState(stateId)
+  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) = viewModel.setVoiceoverMappingsByState(stateId, contentId)
+
+  fun getCurrentPlayStatus() = viewModel.playStatusLiveData
 
   /**
    * Retrieves VoiceoverMapping from the ExplorationDataController
    * Sets languages in Presenter and ViewModel, selected language code is defaulted to first
    */
   private fun retrieveVoiceoverMappings(explorationId: String, stateId: String) {
-    viewModel.getExplorationById(explorationId, stateId)
+    viewModel.initializeVoiceOverMappings(explorationId, stateId)
   }
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
   }
 }
-

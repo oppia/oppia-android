@@ -47,7 +47,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     return audioFragmentPresenter.handleCreateView(inflater, container, savedInstanceState, explorationId, stateId)
   }
 
-  fun languageSelectionClicked() {
+  override fun languageSelectionClicked() {
     audioFragmentPresenter.showLanguageDialogFragment()
   }
 
@@ -67,7 +67,9 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
 
-  fun setVoiceoverMappingsByState(stateId: String) = audioFragmentPresenter.setVoiceoverMappingsByState(stateId)
+  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) = audioFragmentPresenter.setVoiceoverMappingsByState(stateId, contentId)
+
+  fun getCurrentPlayStatus() = audioFragmentPresenter.getCurrentPlayStatus()
 
   override fun onLanguageSelected(currentLanguageCode: String) {
     audioFragmentPresenter.languageSelected(currentLanguageCode)

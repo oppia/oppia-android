@@ -75,6 +75,7 @@ class AudioPlayerController @Inject constructor(
   private var mediaPlayerActive = false
   private var isReleased = false
   private var duration = 0
+  private var completed = false
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -113,6 +114,7 @@ class AudioPlayerController @Inject constructor(
 
   private fun setMediaPlayerListeners() {
     mediaPlayer.setOnCompletionListener {
+      completed = true
       stopUpdatingSeekBar()
       playProgress?.value =
         AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
@@ -123,12 +125,10 @@ class AudioPlayerController @Inject constructor(
       playProgress?.value =
         AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, duration))
     }
-    mediaPlayer.setOnErrorListener {_, what, _ ->
-      if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-        releaseMediaPlayer()
-        initializeMediaPlayer()
-      }
-      true
+    mediaPlayer.setOnErrorListener {_, _, _ ->
+      releaseMediaPlayer()
+      initializeMediaPlayer()
+      true // Indicates that error was handled and to not invoke completion listener.
     }
   }
 
@@ -189,9 +189,11 @@ class AudioPlayerController @Inject constructor(
   private fun updateSeekBar() {
     audioLock.withLock {
       if (mediaPlayer.isPlaying) {
+        val position = if (completed) 0 else mediaPlayer.currentPosition
+        completed = false
         playProgress?.postValue(
           AsyncResult.success(
-            PlayProgress(PlayStatus.PLAYING, mediaPlayer.currentPosition, mediaPlayer.duration)
+            PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
         )
       }

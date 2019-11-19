@@ -38,6 +38,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
+
     <SeekBar
       android:id="@+id/sbAudioProgress"
       style="@style/AudioSeekBar"
@@ -48,8 +49,8 @@
       android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
       android:thumb="@drawable/seekbar_thumb"
       android:visibility="@{viewModel.showSeekBar ? View.VISIBLE : View.GONE}"
-      android:layout_marginStart="15dp"
-      android:thumbOffset="15dp"
+      android:layout_marginStart="16dp"
+      android:thumbOffset="16dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
@@ -79,7 +80,6 @@
       android:textAllCaps="true"
       android:textColor="@color/white"
       android:textSize="14sp"
-      android:visibility="@{viewModel.isLanguagesEmpty ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

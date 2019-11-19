@@ -29,7 +29,7 @@
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {
-            "hi-en": {
+            "en": {
               "file_size_bytes": 419501,
               "needs_update": false,
               "filename": "content-en-mkhcr9cpun.mp3"
@@ -593,7 +593,7 @@
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {
-            "en": {
+            "hi-en": {
               "file_size_bytes": 818687,
               "needs_update": false,
               "filename": "content-hi-en-jtq6byjvvw.mp3"
@@ -724,7 +724,7 @@
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {
-            "hi-en": {
+            "en": {
               "file_size_bytes": 1309756,
               "needs_update": false,
               "filename": "content-en-638krygl5by.mp3"

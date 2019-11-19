@@ -32,10 +32,12 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
+import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -85,7 +87,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var showCellularDataDialog = true
   private var useCellularData = false
-  private var audioShowing = false
+  private var feedbackId: String? = null
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -203,50 +205,40 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (audioShowing) {
-      audioShowing = false
-      showHideAudioFragment(false)
+    if (getAudioFragment() != null) {
+      setAudioFragmentVisible(false)
     } else {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        ConnectionStatus.WIFI -> {
-          audioShowing = true
-          showHideAudioFragment(true)
-        }
+        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
         ConnectionStatus.CELLULAR -> {
           if (showCellularDataDialog) {
-            audioShowing = false
-            showHideAudioFragment(false)
+            setAudioFragmentVisible(false)
             showCellularDataDialogFragment()
           } else {
             if (useCellularData) {
-              audioShowing = true
-              showHideAudioFragment(true)
+              setAudioFragmentVisible(true)
             } else {
-              audioShowing = false
-              showHideAudioFragment(false)
+              setAudioFragmentVisible(false)
             }
           }
         }
         ConnectionStatus.NONE-> {
           showOfflineDialog()
-          audioShowing = false
-          showHideAudioFragment(false)
+          setAudioFragmentVisible(false)
         }
       }
     }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
-    audioShowing = true
-    showHideAudioFragment(true)
+    setAudioFragmentVisible(true)
     if (saveUserChoice) {
       cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
-    audioShowing = false
-    showHideAudioFragment(false)
+    setAudioFragmentVisible(false)
     if (saveUserChoice) {
       cellularAudioDialogController.setNeverUseCellularDataPreference()
     }
@@ -274,11 +266,11 @@ class StateFragmentPresenter @Inject constructor(
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
   }
 
-  private fun showHideAudioFragment(isVisible: Boolean) {
+  private fun setAudioFragmentVisible(isVisible: Boolean) {
     val audioFragment = getAudioFragment()
     getStateViewModel().setAudioBarVisibility(isVisible)
     if (isVisible) {
-      (fragment.requireActivity() as ExplorationActivity).showVolumeOn()
+      (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
       if (audioFragment == null) {
         val newAudioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction()
@@ -290,8 +282,18 @@ class StateFragmentPresenter @Inject constructor(
       if (currentYOffset == 0) {
         binding.stateRecyclerView.smoothScrollToPosition(0)
       }
+      (getAudioFragment() as AudioFragment).getCurrentPlayStatus().observe(fragment, Observer {
+        if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
+          getAudioFragment()?.let {
+            if (feedbackId != null) {
+              feedbackId = null
+              (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
+            }
+          }
+        }
+      })
     } else {
-      (fragment.requireActivity() as ExplorationActivity).showVolumeOff()
+      (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
       if (audioFragment != null) {
         val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
         animation.setAnimationListener(object: Animation.AnimationListener {
@@ -325,8 +327,9 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     currentStateName = ephemeralState.state.name
 
+    showOrHideAudioByState(ephemeralState.state)
     getAudioFragment()?.let {
-      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
+      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName, feedbackId)
     }
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -376,6 +379,10 @@ class StateFragmentPresenter @Inject constructor(
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
         moveToNextState()
+      } else {
+        getAudioFragment()?.let {
+          feedbackId = result.feedback.contentId
+        }
       }
     })
   }
@@ -391,6 +398,14 @@ class StateFragmentPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
+  }
+
+  private fun showOrHideAudioByState(state: State) {
+    if (state.recordedVoiceoversCount == 0) {
+      (fragment.requireActivity() as AudioButtonListener).hideAudioButton()
+    } else {
+      (fragment.requireActivity() as AudioButtonListener).showAudioButton()
+    }
   }
 
   override fun onReturnToTopicButtonClicked() {

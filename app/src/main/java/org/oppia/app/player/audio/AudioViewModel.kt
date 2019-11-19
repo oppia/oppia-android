@@ -37,7 +37,6 @@ class AudioViewModel @Inject constructor(
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
-  var isLanguagesEmpty = ObservableField(false)
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -62,7 +61,7 @@ class AudioViewModel @Inject constructor(
 
   val showSeekBar = ObservableField(true)
 
-  fun getExplorationById(exploreId: String, stateId: String) {
+  fun initializeVoiceOverMappings(exploreId: String, stateId: String) {
     explorationId = exploreId
     val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
     processExplorationLiveData(explorationResultLiveData).observeForever {
@@ -71,23 +70,18 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-  fun setVoiceoverMappingsByState(stateId: String) {
+  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) {
     val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
-    val contentId = state.content.contentId
-    voiceoverMap = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
-    isLanguagesEmpty.set(languages.isEmpty())
-    if (languages.any { it == defaultLanguage }) {
-      setAudioLanguageCode(defaultLanguage)
-    } else if (languages.any { it == selectedLanguageCode }) {
-      setAudioLanguageCode(selectedLanguageCode)
-    } else {
-      if (selectedLanguageCode.isEmpty() && languages.isNotEmpty()) {
+    when {
+      languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
+      selectedLanguageCode.isEmpty() && languages.isNotEmpty() -> {
         setAudioLanguageCode(languages.first())
-        (fragment as AudioFragment).languageSelectionClicked()
-      } else {
-        showSeekBar.set(false)
+        (fragment as LanguageInterface).languageSelectionClicked()
       }
+      else -> showSeekBar.set(false)
     }
   }
 

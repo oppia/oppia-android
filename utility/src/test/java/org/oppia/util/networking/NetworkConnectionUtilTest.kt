@@ -35,10 +35,12 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-/** Tests for [DirectoryManagementUtil]. */
+/** Tests for [NetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class NetworkConnectionUtilTest {
+
+  private val NO_CONNECTION = -1
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionUtil
@@ -75,24 +77,26 @@ class NetworkConnectionUtilTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_setConnectivityManagerToWifi_checkConnectionStatus() {
-    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, ConnectivityManager.TYPE_WIFI, 0, true, true))
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.WIFI)
+  fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.LOCAL)
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_setConnectivityManagerToMobile_checkConnectionStatus() {
-    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, ConnectivityManager.TYPE_MOBILE, 0, true, true))
+  fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE)
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_setConnectivityManagerToNone_checkConnectionStatus() {
-    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, ConnectivityManager.TYPE_MOBILE, 0, true, false))
+  fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
+    setNetworkConnectionStatus(NO_CONNECTION)
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  private fun setNetworkConnectionStatus(status: Int) {
+    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, status, 0, /* isAvailable= */ true, /**/status != NO_CONNECTION))
   }
 
   @Qualifier
