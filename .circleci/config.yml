@@ -29,7 +29,16 @@ jobs:
   #     - store_test_results:
   #         path: app/build/test-results
   lint_tests:
-    - checkout
+    working_directory: ~/repo
+    docker:
+      # https://circleci.com/docs/2.0/language-android/
+      - image: circleci/android:api-28
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}
       - run: ./.circleci/gradle/gradlew androidDependencies
