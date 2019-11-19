@@ -59,7 +59,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew lint test
+          command: ./.circleci/gradle/gradlew lint test
       - store_artifacts:
           path: app/build/reports
           destination: reports
