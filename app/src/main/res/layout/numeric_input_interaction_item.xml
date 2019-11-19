@@ -11,27 +11,35 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="24dp"
+    android:layout_marginStart="28dp"
+    android:layout_marginEnd="28dp"
+    android:orientation="vertical">
 
     <org.oppia.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789."
+      android:textColor="@color/oppiaPrimaryText"
+      android:enabled="@{!viewModel.isReadOnly}"
       android:focusable="true"
+      android:fontFamily="sans-serif"
       android:hint="@string/number_input_hint_text"
       android:inputType="numberDecimal"
       android:longClickable="false"
       android:imeOptions="actionDone"
       android:maxLength="200"
-      android:padding="8dp"
+      android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
-      android:enabled="@{!viewModel.isReadOnly}" />
+      android:textColorHint="@color/edit_text_hint"
+      android:textSize="16sp"
+      android:textStyle="italic" />
   </FrameLayout>
 </layout>

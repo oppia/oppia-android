@@ -18,6 +18,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -77,6 +78,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       it.onActivity { activity ->

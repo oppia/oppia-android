@@ -26,7 +26,7 @@
       android:textColor="@color/white"
       android:drawableStart="@drawable/ic_refresh_white_24dp"
       android:text="@string/question_player_replay"
-      android:onClick="@{buttonViewModel.triggerReplayNavigationButtonCallback()}"
+      android:onClick="@{(v) -> buttonViewModel.triggerReplayNavigationButtonCallback()}"
       android:visibility="@{buttonViewModel.isReplayButtonVisible() ? View.VISIBLE : View.GONE}" />
     <Button
       android:id="@+id/interaction_button"
