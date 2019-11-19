@@ -36,13 +36,6 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
-
-  sourceSets {
-    test {
-      java.srcDirs += "src/test/java"
-      kotlin.srcDirs += "src/test/java"
-    }
-  }
 }
 
 dependencies {
