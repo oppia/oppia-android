@@ -6,9 +6,12 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.toAnswerString
 
 class TextInputViewModel(
-  existingAnswer: InteractionObject?, val isReadOnly: Boolean , private val stateFragmentPresenter: StateFragmentPresenter?
+  existingAnswer: InteractionObject?,
+  val isReadOnly: Boolean,
+  private val stateFragmentPresenter: StateFragmentPresenter?
 ) : StateItemViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
+  var makeSubmitButtonActive = false
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
@@ -19,6 +22,10 @@ class TextInputViewModel(
   }
 
   fun onTextChanged(text: CharSequence) {
-    stateFragmentPresenter?.controlSubmitButton(text.isNotEmpty())
+    val isTextAvailable = text.isNotEmpty()
+    if (makeSubmitButtonActive != isTextAvailable) {
+      makeSubmitButtonActive = isTextAvailable
+      stateFragmentPresenter?.controlSubmitButton(makeSubmitButtonActive)
+    }
   }
 }
