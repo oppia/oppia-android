@@ -97,8 +97,8 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) = viewModel.setVoiceoverMappingsByState(stateId, contentId)
-
   fun getCurrentPlayStatus() = viewModel.playStatusLiveData
+  fun playAudio() = viewModel.playAudio()
 
   /**
    * Retrieves VoiceoverMapping from the ExplorationDataController

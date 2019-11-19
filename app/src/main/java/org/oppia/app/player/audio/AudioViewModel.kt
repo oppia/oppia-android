@@ -102,6 +102,7 @@ class AudioViewModel @Inject constructor(
     }
   }
 
+  fun playAudio() = audioPlayerController.play()
   fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()

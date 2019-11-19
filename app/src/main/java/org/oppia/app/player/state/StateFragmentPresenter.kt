@@ -36,6 +36,7 @@ import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
+import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -88,6 +89,7 @@ class StateFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var feedbackId: String? = null
+  private var autoPlayAudio = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -270,6 +272,7 @@ class StateFragmentPresenter @Inject constructor(
     val audioFragment = getAudioFragment()
     getStateViewModel().setAudioBarVisibility(isVisible)
     if (isVisible) {
+      autoPlayAudio = true
       (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
       if (audioFragment == null) {
         val newAudioFragment = AudioFragment.newInstance(explorationId, currentStateName)
@@ -282,16 +285,7 @@ class StateFragmentPresenter @Inject constructor(
       if (currentYOffset == 0) {
         binding.stateRecyclerView.smoothScrollToPosition(0)
       }
-      (getAudioFragment() as AudioFragment).getCurrentPlayStatus().observe(fragment, Observer {
-        if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
-          getAudioFragment()?.let {
-            if (feedbackId != null) {
-              feedbackId = null
-              (it as AudioFragment).setVoiceoverMappingsByState(currentStateName)
-            }
-          }
-        }
-      })
+      subscribeToAudioPlayStatus()
     } else {
       (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
       if (audioFragment != null) {
@@ -307,6 +301,25 @@ class StateFragmentPresenter @Inject constructor(
         audioFragment.view?.startAnimation(animation)
       }
     }
+  }
+
+  private fun subscribeToAudioPlayStatus() {
+    val audioFragmentInterface = getAudioFragment() as AudioFragmentInterface
+    audioFragmentInterface.getCurrentPlayStatus().observe(fragment, Observer {
+      if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
+        getAudioFragment()?.let {
+          if (feedbackId != null) {
+            feedbackId = null
+            audioFragmentInterface.setVoiceoverMappingsByState(currentStateName)
+          }
+        }
+      } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
+        if (autoPlayAudio) {
+          autoPlayAudio = false
+          audioFragmentInterface.playAudio()
+        }
+      }
+    })
   }
 
   private fun subscribeToCurrentState() {
@@ -329,7 +342,7 @@ class StateFragmentPresenter @Inject constructor(
 
     showOrHideAudioByState(ephemeralState.state)
     getAudioFragment()?.let {
-      (it as AudioFragment).setVoiceoverMappingsByState(currentStateName, feedbackId)
+      (it as AudioFragmentInterface).setVoiceoverMappingsByState(currentStateName, feedbackId)
     }
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -380,10 +393,9 @@ class StateFragmentPresenter @Inject constructor(
       if (result.state.interaction.id == "Continue") {
         moveToNextState()
       } else {
-        getAudioFragment()?.let {
-          feedbackId = result.feedback.contentId
-        }
+        feedbackId = result.feedback.contentId
       }
+      autoPlayAudio = true
     })
   }
 

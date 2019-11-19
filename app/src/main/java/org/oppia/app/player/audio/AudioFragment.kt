@@ -12,7 +12,7 @@ private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
 private const val KEY_STATE_ID = "STATE_ID"
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface {
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioFragmentInterface {
 
   companion object {
     /**
@@ -51,6 +51,10 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     audioFragmentPresenter.showLanguageDialogFragment()
   }
 
+  override fun onLanguageSelected(currentLanguageCode: String) {
+    audioFragmentPresenter.languageSelected(currentLanguageCode)
+  }
+
   override fun onStop() {
     super.onStop()
     audioFragmentPresenter.handleOnStop()
@@ -61,17 +65,18 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     audioFragmentPresenter.handleOnDestroy()
   }
 
+  override fun setVoiceoverMappingsByState(stateId: String, contentId: String?) {
+    audioFragmentPresenter.setVoiceoverMappingsByState(stateId, contentId)
+  }
+
+  override fun playAudio() {
+    audioFragmentPresenter.playAudio()
+  }
+
+  override fun getCurrentPlayStatus() = audioFragmentPresenter.getCurrentPlayStatus()
+
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
-
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
-
-  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) = audioFragmentPresenter.setVoiceoverMappingsByState(stateId, contentId)
-
-  fun getCurrentPlayStatus() = audioFragmentPresenter.getCurrentPlayStatus()
-
-  override fun onLanguageSelected(currentLanguageCode: String) {
-    audioFragmentPresenter.languageSelected(currentLanguageCode)
-  }
 }
