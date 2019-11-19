@@ -29,6 +29,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -81,16 +82,6 @@ class TopicReviewFragmentTest {
       it.recreate()
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
-    }
-  }
-
-  private fun containsRichText() = object : TypeSafeMatcher<View>() {
-    override fun describeTo(description: Description) {
-      description.appendText("Checks if view contains rich text")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view is TextView && view.text.toSpannable().getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
     }
   }
 

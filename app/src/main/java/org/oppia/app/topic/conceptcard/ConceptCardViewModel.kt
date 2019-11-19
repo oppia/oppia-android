@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import org.oppia.app.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
 import org.oppia.domain.topic.TopicController
@@ -22,7 +23,7 @@ class ConceptCardViewModel @Inject constructor(
   @ConceptCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var skillId: String
-  private lateinit var explanationTextView: TextView
+  private lateinit var binding: ConceptCardFragmentBinding
 
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
     processConceptCardLiveData()
@@ -32,12 +33,10 @@ class ConceptCardViewModel @Inject constructor(
     processExplanationLiveData()
   }
 
-  fun setSkillId(id: String) {
+  /** Sets the value of skillId and binding. Must be called before setting ViewModel to binding */
+  fun setSkillIdAndBinding(id: String, binding: ConceptCardFragmentBinding) {
     skillId = id
-  }
-
-  fun setExplanationTextView(textView: TextView) {
-    explanationTextView = textView
+    this.binding = binding
   }
 
   private val conceptCardResultLiveData: LiveData<AsyncResult<ConceptCard>> by lazy {
@@ -64,6 +63,7 @@ class ConceptCardViewModel @Inject constructor(
       logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
     val conceptCard = conceptCardResult.getOrThrow()
-    return htmlParserFactory.create(entityType, skillId).parseOppiaHtml(conceptCard.explanation.html, explanationTextView)
+    return htmlParserFactory.create(entityType, skillId)
+            .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText)
   }
 }

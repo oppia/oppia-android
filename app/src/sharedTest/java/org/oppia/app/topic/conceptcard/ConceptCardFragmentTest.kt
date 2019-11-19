@@ -3,10 +3,6 @@ package org.oppia.app.topic.conceptcard
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import android.text.style.CharacterStyle
-import android.view.View
-import android.widget.TextView
-import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -19,15 +15,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.Description
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -71,16 +65,6 @@ class ConceptCardFragmentTest {
     onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
-  }
-
-  private fun containsRichText() = object : TypeSafeMatcher<View>() {
-    override fun describeTo(description: Description) {
-      description.appendText("Checks if view contains rich text")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view is TextView && view.text.toSpannable().getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
-    }
   }
 
   @Module

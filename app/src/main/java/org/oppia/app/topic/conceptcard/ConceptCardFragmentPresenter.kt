@@ -27,14 +27,13 @@ class ConceptCardFragmentPresenter @Inject constructor(
     val viewModel = getConceptCardViewModel()
 
     skillId = id
-    viewModel.setSkillId(skillId)
-    viewModel.setExplanationTextView(binding.conceptCardExplanationText)
+    viewModel.setSkillIdAndBinding(skillId, binding)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-    binding.conceptCardToolbar.setTitle(R.string.concept_card_toolbar_title)
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismiss()
     }
+
     binding.let {
       it.viewModel = viewModel
       it.lifecycleOwner = fragment
