@@ -39,7 +39,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithNoRichText_checkRecyclerViewIsCorrect() {
+  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
     onView(withId(R.id.open_dialog_0)).perform(click())
     onView(withId(R.id.concept_card_heading_text)).check(matches(withText("An important skill")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
@@ -47,7 +47,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithWithRichText_checkRecyclerViewIsCorrect() {
+  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
