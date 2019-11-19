@@ -1,6 +1,8 @@
 package org.oppia.app.parser
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.text.Spannable
 import android.widget.TextView
@@ -16,6 +18,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -26,9 +35,18 @@ import org.mockito.MockitoAnnotations
 import org.oppia.app.R
 import org.oppia.app.application.OppiaApplication
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.domain.audio.AudioPlayerControllerTest
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.UrlImageParser
+import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.Config
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [HtmlParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -47,17 +65,11 @@ class HtmlParserTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
   }
-  private fun setUpTestApplicationComponent() {
-    DaggerHtmlParserTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
+
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
@@ -96,15 +108,17 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_calculateImageWidthHeight() {
     val htmlContentTextView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-//    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "")
-//    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-//        "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-//            "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-//            " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-//            "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-//            "red cherries in the pineapple slices?\u003c/p\u003e",
-//      htmlContentTextView
-//      )
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "")
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
+            "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+            " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+            "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+            "red cherries in the pineapple slices?\u003c/p\u003e",
+      htmlContentTextView
+      )
+
+    htmlContentTextView.text = htmlResult
     val imageGetter =  urlImageParserFactory.create(htmlContentTextView, "exploration", "DIWZiVgs0km-")
     val result1 = imageGetter.calculateDrawableSize(100,200,htmlContentTextView)
     assertWithMessage("Width = " + result1.first)
