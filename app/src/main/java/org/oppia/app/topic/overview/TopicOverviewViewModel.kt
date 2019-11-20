@@ -24,18 +24,18 @@ class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
   fun getTopicSizeWithUnit(): String {
     val size: Double = topic.get()?.diskSizeBytes!!.toDouble()
     if (size == 0.0) {
-      return "0 KB"
+      return "0 " + R.string.size_bytes
     }
     val sizeInKB = size / 1024.0
     val sizeInMB = size / 1024.0 / 1024.0
     val sizeInGB = size / 1024.0 / 1024.0 / 1024.0
     val sizeInTB = size / 1024.0 / 1024.0 / 1024.0 / 1024.0
     return when {
-      sizeInTB >= 1 -> decimalFormat.format(sizeInTB) + " TB"
-      sizeInGB >= 1 -> decimalFormat.format(sizeInGB) + " GB"
-      sizeInMB >= 1 -> decimalFormat.format(sizeInMB) + " MB"
-      sizeInKB >= 1 -> decimalFormat.format(sizeInKB) + " KB"
-      else -> decimalFormat.format(size) + " Bytes"
+      sizeInTB >= 1 -> decimalFormat.format(sizeInTB) + " " + R.string.size_tb
+      sizeInGB >= 1 -> decimalFormat.format(sizeInGB) + " " + R.string.size_gb
+      sizeInMB >= 1 -> decimalFormat.format(sizeInMB) + " " + R.string.size_mb
+      sizeInKB >= 1 -> decimalFormat.format(sizeInKB) + " " + R.string.size_kb
+      else -> decimalFormat.format(size) + " " + R.string.size_bytes
     }
   }
 }
