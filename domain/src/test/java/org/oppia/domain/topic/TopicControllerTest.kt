@@ -211,6 +211,15 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(topic.description).contains("You'll often need to talk about")
+  }
+
+  @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
     val topicLiveData = topicController.getTopic(RATIOS_TOPIC_ID)
 
@@ -218,6 +227,15 @@ class TopicControllerTest {
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(topic.storyCount).isEqualTo(2)
     assertThat(topic.skillCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() {
+    val topicLiveData = topicController.getTopic(RATIOS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(topic.description).contains("Many everyday problems involve thinking about proportions")
   }
 
   @Test

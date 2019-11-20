@@ -16,6 +16,8 @@ class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
 
+  val topicDescription = ObservableField<CharSequence>("")
+
   var downloadStatusIndicatorDrawableResourceId = ObservableField(R.drawable.ic_available_offline_primary_24dp)
 
   /** Returns the number of megabytes of disk space this topic requires, formatted for display. */
