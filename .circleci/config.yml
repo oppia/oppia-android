@@ -43,7 +43,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: App tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests SplashActivityTest
+          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest
       - run:
           name: Data tests
           command: ./.circleci/gradle/gradlew :data:test
