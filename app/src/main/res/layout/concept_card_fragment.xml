@@ -16,36 +16,54 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/colorConceptToolbarBackground"
+      app:title="@string/concept_card_toolbar_title"
+      app:titleTextColor="@color/white"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+    <View
+      android:id="@+id/toolbar_shadow_view"
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/concept_card_toolbar" />
     <ScrollView
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent">
+      app:layout_constraintTop_toTopOf="@+id/toolbar_shadow_view"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
+        android:orientation="vertical">
         <TextView
-          android:id="@+id/explanation"
+          android:id="@+id/concept_card_heading_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textColor="@android:color/black"
-          android:gravity="center"
-          android:visibility="@{viewModel.conceptCardLiveData.hasExplanation() ? View.VISIBLE : View.GONE}"
-          android:text="@{viewModel.conceptCardLiveData.explanation.getHtml()}" />
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/worked_examples"
+          android:text="@{viewModel.conceptCardLiveData.skillDescription}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="20sp"
+          android:fontFamily="sans-serif-medium"
+          android:layout_marginTop="40dp"
+          android:layout_marginStart="28dp"
+          android:layout_marginEnd="28dp" />
+        <TextView
+          android:id="@+id/concept_card_explanation_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          app:data="@{viewModel.workedExamplesLiveData}" />
+          android:layout_marginTop="28dp"
+          android:layout_marginStart="40dp"
+          android:layout_marginEnd="40dp"
+          android:text="@{viewModel.explanationLiveData}"
+          android:textSize="16sp"
+          android:textColor="@color/oppiaPrimaryText"
+          android:fontFamily="sans-serif" />
       </LinearLayout>
+      <!--TODO(#352): Show worked examples in Concept Card.-->
     </ScrollView>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
