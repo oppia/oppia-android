@@ -2643,7 +2643,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>Are you sure? Matthew asked Crumb for <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> a cake. What does the fraction <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> mean? Think back to the previous lesson.</p><p>Try again!</p>"
+            "html": "<p>Are you sure? Matthew asked Crumb for 1/2 a cake. What does the fraction <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> mean? Think back to the previous lesson.</p><p>Try again!</p>"
           },
           "dest": "Into the Bakery",
           "refresher_exploration_id": null,
