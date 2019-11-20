@@ -16,8 +16,12 @@ class ProfileActivityPresenter @Inject constructor(
   /** Adds [ProfileChooserFragment] to view. */
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
-    profileManagementController.addProfile("Sean", "12345", null, true, true)
+    // Ensures that an admin profile is present
+    profileManagementController.addProfile("Sandeep", "12345", null, allowDownloadAccess = true, isAdmin = true)
+    profileManagementController.addProfile("Aahlad", "123", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Prachi", "963", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Rucha", "123", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Sneha", "123", null, allowDownloadAccess = true, isAdmin = false)
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
