@@ -24,6 +24,7 @@ class UrlImageParser private constructor(
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
+  private val imageCenterAlign: Boolean,
   private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
   /**
@@ -56,7 +57,11 @@ class UrlImageParser private constructor(
         val width: Int = result.first
         val height: Int = result.second
 
-        val initialDrawableMargin = calculateInitialMargin(drawableWidth)
+        val initialDrawableMargin = if (imageCenterAlign) {
+          calculateInitialMargin(drawableWidth)
+        } else {
+          0
+        }
         val rect = Rect(initialDrawableMargin, 0, width + initialDrawableMargin, height)
         drawable.bounds = rect
         urlDrawable.bounds = rect
@@ -110,7 +115,12 @@ class UrlImageParser private constructor(
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     private val imageLoader: ImageLoader
   ) {
-    fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
+    fun create(
+      htmlContentTextView: TextView,
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean
+    ): UrlImageParser {
       return UrlImageParser(
         context,
         gcsPrefix,
@@ -119,6 +129,7 @@ class UrlImageParser private constructor(
         htmlContentTextView,
         entityType,
         entityId,
+        imageCenterAlign,
         imageLoader
       )
     }

@@ -19,7 +19,7 @@ private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-concept-card-link"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
-  private val urlImageParserFactory : UrlImageParser.Factory,
+  private val urlImageParserFactory: UrlImageParser.Factory,
   private val entityType: String,
   private val entityId: String,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
@@ -35,8 +35,14 @@ class HtmlParser private constructor(
    *     this for [TextView]s that are within other layouts that need to support clicking (default false)
    * @return a [Spannable] representing the styled text.
    */
-  fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView, supportsLinks: Boolean = false): Spannable {
+  fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView, imageCenterAlign: Boolean = true, supportsLinks: Boolean = false): Spannable {
     var htmlContent = rawString
+    if (htmlContent.contains("\n\t")) {
+      htmlContent = htmlContent.replace("\n\t", "")
+    }
+    if (htmlContent.contains("\n\n")) {
+      htmlContent = htmlContent.replace("\n\n", "")
+    }
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
       htmlContent = htmlContent.replace( CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
@@ -48,7 +54,7 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId)
+    val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
     return trimSpannable(CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)
     )as SpannableStringBuilder)
