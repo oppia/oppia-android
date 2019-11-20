@@ -65,8 +65,8 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
       - run:
-          name: App - Splash, Parser, RecyclerView tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.splash* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* 
+          name: App - Splash, Parser, RecyclerView, Utility tests
+          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.splash* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
       - run:
           name: Domain tests
           command: ./.circleci/gradle/gradlew :domain:test
