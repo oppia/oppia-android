@@ -94,7 +94,9 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private lateinit var viewModel: StateViewModel
+  private val viewModel: StateViewModel by lazy {
+    getStateViewModel()
+  }
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
@@ -116,11 +118,14 @@ class StateFragmentPresenter @Inject constructor(
       adapter = stateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
-    viewModel = getStateViewModel()
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = this.viewModel
     }
+
+    // Initialize Audio Player
+    fragment.childFragmentManager.beginTransaction()
+      .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
 
     subscribeToCurrentState()
 
@@ -207,7 +212,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (getAudioFragment() != null) {
+    if (viewModel.isAudioBarVisible.get()!!) {
       setAudioFragmentVisible(false)
     } else {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
@@ -269,36 +274,31 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun setAudioFragmentVisible(isVisible: Boolean) {
-    val audioFragment = getAudioFragment()
-    getStateViewModel().setAudioBarVisibility(isVisible)
     if (isVisible) {
+      getStateViewModel().setAudioBarVisibility(true)
       autoPlayAudio = true
       (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
-      if (audioFragment == null) {
-        val newAudioFragment = AudioFragment.newInstance(explorationId, currentStateName)
-        fragment.childFragmentManager.beginTransaction()
-          .setCustomAnimations(R.anim.slide_down_audio, R.anim.slide_up_audio)
-          .add(R.id.audio_fragment_placeholder, newAudioFragment, TAG_AUDIO_FRAGMENT
-        ).commitNow()
-      }
       val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
       if (currentYOffset == 0) {
         binding.stateRecyclerView.smoothScrollToPosition(0)
       }
+      getAudioFragment()?.let {
+        it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+      }
       subscribeToAudioPlayStatus()
     } else {
       (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
-      if (audioFragment != null) {
+      getAudioFragment()?.let {
+        (it as AudioFragmentInterface).pauseAudio()
         val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
         animation.setAnimationListener(object: Animation.AnimationListener {
           override fun onAnimationEnd(p0: Animation?) {
-            fragment.childFragmentManager.beginTransaction()
-              .remove(audioFragment).commitNow()
+            getStateViewModel().setAudioBarVisibility(false)
           }
           override fun onAnimationStart(p0: Animation?) {}
           override fun onAnimationRepeat(p0: Animation?) {}
         })
-        audioFragment.view?.startAnimation(animation)
+        it.view?.startAnimation(animation)
       }
     }
   }
@@ -310,7 +310,7 @@ class StateFragmentPresenter @Inject constructor(
         getAudioFragment()?.let {
           if (feedbackId != null) {
             feedbackId = null
-            audioFragmentInterface.setVoiceoverMappingsByState(currentStateName)
+            audioFragmentInterface.setVoiceoverMappings(explorationId, currentStateName)
           }
         }
       } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
@@ -342,7 +342,7 @@ class StateFragmentPresenter @Inject constructor(
 
     showOrHideAudioByState(ephemeralState.state)
     getAudioFragment()?.let {
-      (it as AudioFragmentInterface).setVoiceoverMappingsByState(currentStateName, feedbackId)
+      (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
     }
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -395,7 +395,9 @@ class StateFragmentPresenter @Inject constructor(
       } else {
         feedbackId = result.feedback.contentId
       }
-      autoPlayAudio = true
+      if (viewModel.isAudioBarVisible.get()!!) {
+        autoPlayAudio = true
+      }
     })
   }
 

@@ -2,7 +2,9 @@ package org.oppia.app.player.audio
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -30,8 +32,8 @@ class AudioViewModel @Inject constructor(
   @DefaultResource private val gcsResource: String
 ) : ViewModel() {
 
-  private lateinit var explorationId: String
   private lateinit var exploration: Exploration
+  private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "en"
 
@@ -61,16 +63,22 @@ class AudioViewModel @Inject constructor(
 
   val showSeekBar = ObservableField(true)
 
-  fun initializeVoiceOverMappings(exploreId: String, stateId: String) {
-    explorationId = exploreId
-    val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
-    processExplorationLiveData(explorationResultLiveData).observeForever {
-      exploration = it
-      setVoiceoverMappingsByState(stateId)
+  fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) {
+    this.explorationId = explorationId
+    if (!::exploration.isInitialized) {
+      explorationDataController.getExplorationById(explorationId).observeOnce(fragment, Observer {
+        if (it.isFailure()) {
+          logger.e("AudioFragment", "Failed to get Exploration", it.getErrorOrNull()!!)
+        }
+        exploration = it.getOrDefault(Exploration.getDefaultInstance())
+        setVoiceoverMappingsByStateAndContentId(stateId, contentId)
+      })
+    } else {
+      setVoiceoverMappingsByStateAndContentId(stateId, contentId)
     }
   }
 
-  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) {
+  private fun setVoiceoverMappingsByStateAndContentId(stateId: String, contentId: String?) {
     val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
     voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
@@ -151,14 +159,12 @@ class AudioViewModel @Inject constructor(
     return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
   }
 
-  private fun processExplorationLiveData(explorationResultLiveData: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
-    return Transformations.map(explorationResultLiveData, ::processExplorationResult)
-  }
-
-  private fun processExplorationResult(explorationResult: AsyncResult<Exploration>): Exploration {
-    if (explorationResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve Exploration", explorationResult.getErrorOrNull()!!)
-    }
-    return explorationResult.getOrDefault(Exploration.getDefaultInstance())
+  private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+      override fun onChanged(t: T?) {
+        observer.onChanged(t)
+        removeObserver(this)
+      }
+    })
   }
 }

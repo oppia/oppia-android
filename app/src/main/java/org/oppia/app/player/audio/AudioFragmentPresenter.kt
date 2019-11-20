@@ -1,6 +1,5 @@
 package org.oppia.app.player.audio
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -56,9 +55,6 @@ class AudioFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    if (savedInstanceState == null) {
-      retrieveVoiceoverMappings(explorationId, stateId)
-    }
     return binding.root
   }
 
@@ -96,17 +92,11 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setVoiceoverMappingsByState(stateId: String, contentId: String? = null) = viewModel.setVoiceoverMappingsByState(stateId, contentId)
+  fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) = viewModel.setVoiceoverMappings(explorationId, stateId, contentId)
   fun getCurrentPlayStatus() = viewModel.playStatusLiveData
   fun playAudio() = viewModel.playAudio()
+  fun pauseAudio() = viewModel.pauseAudio()
 
-  /**
-   * Retrieves VoiceoverMapping from the ExplorationDataController
-   * Sets languages in Presenter and ViewModel, selected language code is defaulted to first
-   */
-  private fun retrieveVoiceoverMappings(explorationId: String, stateId: String) {
-    viewModel.initializeVoiceOverMappings(explorationId, stateId)
-  }
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)

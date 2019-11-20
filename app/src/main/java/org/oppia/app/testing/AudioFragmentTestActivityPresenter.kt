@@ -15,11 +15,12 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.audio_fragment_test_activity)
     if (getAudioFragment() == null) {
-      val audioFragment = AudioFragment.newInstance(TEST_EXPLORATION_ID_5, "END")
+      val audioFragment = AudioFragment()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.audio_fragment_placeholder,
         audioFragment
       ).commitNow()
+      audioFragment.setVoiceoverMappings(TEST_EXPLORATION_ID_5, "END")
     }
   }
 

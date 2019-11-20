@@ -31,7 +31,7 @@ class AudioPlayerController @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
-  inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>() {
+  inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
     override fun onActive() {
       super.onActive()
       audioLock.withLock {
