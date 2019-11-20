@@ -131,9 +131,6 @@ message TopicList {
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
-
-  // The total number of ongoing stories by the player.
-  int32 ongoing_story_count = 3;
 }
 
 // Corresponds to the list of stories the player is currently playing.

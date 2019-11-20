@@ -73,9 +73,9 @@ class StoryProgressControllerTest {
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
     assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(COMPLETED)
     assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
-    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_STARTED)
   }
 
   @Test

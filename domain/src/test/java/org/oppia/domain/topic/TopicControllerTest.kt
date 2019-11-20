@@ -167,7 +167,7 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_BOOK)
+    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
   }
 
   @Test
@@ -192,7 +192,7 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_1)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
   }
 
   @Test
@@ -325,7 +325,7 @@ class TopicControllerTest {
 
     val story = storyLiveData.value!!.getOrThrow()
     val chapter = story.getChapter(0)
-    assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
+    assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BAKER)
   }
 
   @Test

@@ -7,8 +7,6 @@ import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
-import org.oppia.app.model.LessonThumbnail
-import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
@@ -64,29 +62,33 @@ private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 class TopicController @Inject constructor(
   private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever
+  private val stateRetriever: StateRetriever,
+  private val storyProgressController: StoryProgressController
 ) {
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
-      when (topicId) {
-        TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
-        TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
-        FRACTIONS_TOPIC_ID -> AsyncResult.success(
-          createTopicFromJson(
-            "fractions_topic.json",
-            "fractions_skills.json",
-            "fractions_stories.json"
-          )
-        )
-        RATIOS_TOPIC_ID -> AsyncResult.success(
-          createTopicFromJson(
-            "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
-          )
-        )
-        else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
+      try {
+        AsyncResult.success(retrieveTopic(topicId))
+      } catch (e: Exception) {
+        AsyncResult.failed<Topic>(e)
       }
     )
+  }
+
+  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
+  internal fun retrieveTopic(topicId: String): Topic {
+    return when (topicId) {
+      TEST_TOPIC_ID_0 -> createTestTopic0()
+      TEST_TOPIC_ID_1 -> createTestTopic1()
+      FRACTIONS_TOPIC_ID -> createTopicFromJson(
+        "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
+      )
+      RATIOS_TOPIC_ID -> createTopicFromJson(
+        "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
+      )
+      else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
+    }
   }
 
   // TODO(#173): Move this to its own controller once structural data & saved progress data are better distinguished.
@@ -324,14 +326,7 @@ class TopicController @Inject constructor(
       .addSkill(createTestTopic0Skill1())
       .addSkill(createTestTopic0Skill2())
       .addSkill(createTestTopic0Skill3())
-      .setTopicThumbnail(createTestTopic0Thumbnail())
-      .build()
-  }
-
-  private fun createTestTopic0Thumbnail(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_BOOK)
-      .setBackgroundColorRgb(0xd5836f)
+      .setTopicThumbnail(createTopicThumbnail0())
       .build()
   }
 
@@ -347,7 +342,7 @@ class TopicController @Inject constructor(
       )
       .addStory(createTestTopic1Story2())
       .addSkill(createTestTopic1Skill0())
-      .setTopicThumbnail(createTestTopic1Thumbnail())
+      .setTopicThumbnail(createTopicThumbnail1())
       .build()
   }
 
@@ -355,13 +350,14 @@ class TopicController @Inject constructor(
    * a key called 'topic' that holds the topic data. */
   private fun createTopicFromJson(topicFileName: String, skillFileName: String, storyFileName: String): Topic {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
+    val topicId = topicData.getString("id")
     return Topic.newBuilder()
-      .setTopicId(topicData.getString("id"))
+      .setTopicId(topicId)
       .setName(topicData.getString("name"))
       .setDescription(topicData.getString("description"))
       .addAllSkill(createSkillsFromJson(skillFileName))
       .addAllStory(createStoriesFromJson(storyFileName))
-      .setTopicThumbnail(createTopicThumbnail(topicFileName))
+      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .build()
   }
 
@@ -405,53 +401,37 @@ class TopicController @Inject constructor(
   }
 
   private fun createStoryFromJson(storyData: JSONObject): StorySummary {
+    val storyId = storyData.getString("id")
     return StorySummary.newBuilder()
-      .setStoryId(storyData.getString("id"))
+      .setStoryId(storyId)
       .setStoryName(storyData.getString("title"))
       .addAllChapter(
         createChaptersFromJson(
-          storyData.getJSONObject("story_contents").getJSONArray("nodes")
+          storyId, storyData.getJSONObject("story_contents").getJSONArray("nodes")
         )
       )
       .build()
   }
 
-  private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {
+  private fun createChaptersFromJson(storyId: String, chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
+    val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
+    val chapterProgressMap = storyProgress.chapterProgressList.map { progress ->
+      progress.explorationId to progress
+    }.toMap()
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
+      val explorationId = chapter.getString("exploration_id")
       chapterList.add(
         ChapterSummary.newBuilder()
-          .setExplorationId(chapter.getString("exploration_id"))
+          .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+          .setChapterPlayState(chapterProgressMap.getValue(explorationId).playState)
+          .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
     }
     return chapterList
-  }
-
-  private fun createTopicThumbnail(fileName: String): LessonThumbnail {
-    return when (fileName) {
-      "fractions_topic.json" -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-        .setBackgroundColorRgb(0xf7bf73)
-        .build()
-      "ratios_topic.json" -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-        .setBackgroundColorRgb(0xf7bf73)
-        .build()
-      else -> LessonThumbnail.newBuilder().setThumbnailGraphic(LessonThumbnailGraphic.UNRECOGNIZED)
-        .setBackgroundColorRgb(0xf7bf73)
-        .build()
-    }
-  }
-
-  private fun createTestTopic1Thumbnail(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
-      .setBackgroundColorRgb(0xf7bf73)
-      .build()
   }
 
   private fun createTestTopic0Story0(): StorySummary {
@@ -468,14 +448,7 @@ class TopicController @Inject constructor(
       .setName("Prototype Exploration")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
-      .setChapterThumbnail(createTestTopic0Story0Chapter0Thumbnail())
-      .build()
-  }
-
-  private fun createTestTopic0Story0Chapter0Thumbnail(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-      .setBackgroundColorRgb(0x494276)
+      .setChapterThumbnail(createChapterThumbnail0())
       .build()
   }
 
@@ -495,7 +468,7 @@ class TopicController @Inject constructor(
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail1())
+      .setChapterThumbnail(createChapterThumbnail1())
       .build()
   }
 
@@ -505,7 +478,7 @@ class TopicController @Inject constructor(
       .setName("Third Exploration")
       .setSummary("This is the third exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_STARTED)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail2())
+      .setChapterThumbnail(createChapterThumbnail2())
       .build()
   }
 
@@ -515,31 +488,7 @@ class TopicController @Inject constructor(
       .setName("Fourth Exploration")
       .setSummary("This is the fourth exploration summary")
       .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      .setChapterThumbnail(createTestTopic0Story1ChapterThumbnail3())
-      .build()
-  }
-
-  /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
-  private fun createTestTopic0Story1ChapterThumbnail1(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-      .setBackgroundColorRgb(0xa5d3ec)
-      .build()
-  }
-
-  /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
-  private fun createTestTopic0Story1ChapterThumbnail2(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-      .setBackgroundColorRgb(0xffeebe)
-      .build()
-  }
-
-  /** Returns the [LessonThumbnail] associated for each chapter in story 1. */
-  private fun createTestTopic0Story1ChapterThumbnail3(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-      .setBackgroundColorRgb(0x76d1ca)
+      .setChapterThumbnail(createChapterThumbnail3())
       .build()
   }
 
@@ -556,14 +505,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_4)
       .setName("Fifth Exploration")
       .setChapterPlayState(ChapterPlayState.NOT_STARTED)
-      .setChapterThumbnail(createTestTopic1Story2Chapter0Thumbnail())
-      .build()
-  }
-
-  private fun createTestTopic1Story2Chapter0Thumbnail(): LessonThumbnail {
-    return LessonThumbnail.newBuilder()
-      .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-      .setBackgroundColorRgb(0x7eb3ad)
+      .setChapterThumbnail(createChapterThumbnail4())
       .build()
   }
 
