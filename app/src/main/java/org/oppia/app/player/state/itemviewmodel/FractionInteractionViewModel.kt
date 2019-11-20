@@ -3,6 +3,7 @@ package org.oppia.app.player.state.itemviewmodel
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.domain.util.toAnswerString
 
 class FractionInteractionViewModel(
@@ -17,4 +18,5 @@ class FractionInteractionViewModel(
     }
     return interactionObjectBuilder.build()
   }
+
 }

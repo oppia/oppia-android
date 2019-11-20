@@ -10,6 +10,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.player.state.StateFragment
 import javax.inject.Inject
 
+ const val TAG_STATE_FRAGMENT = "TAG_STATE_FRAGMENT"
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
@@ -24,7 +25,8 @@ class ExplorationFragmentPresenter @Inject constructor(
       val stateFragment = StateFragment.newInstance(explorationId)
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
-        stateFragment
+        stateFragment,
+        TAG_STATE_FRAGMENT
       ).commitNow()
     }
     return binding

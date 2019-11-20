@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.StateFragmentPresenter
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
@@ -15,7 +19,15 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface , StateKeyboardButtonListener {
+
+  override fun onEditorAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val stateFragment = supportFragmentManager.findFragmentByTag(TAG_STATE_FRAGMENT) as StateFragment
+      stateFragment.stateFragmentPresenter.onKeyboardAction()
+    }
+  }
+
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
