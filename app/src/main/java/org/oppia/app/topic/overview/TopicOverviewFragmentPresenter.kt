@@ -35,7 +35,7 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val topicOverviewViewModel = getTopicOverviewViewModel()
   private lateinit var topicId: String
   private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory.create(/* entityType= */"topic", topicId, /* imageCenterAlign= */ true)
+    htmlParserFactory.create(/* entityType= */"topic", topicId)
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -68,7 +68,8 @@ class TopicOverviewFragmentPresenter @Inject constructor(
       topicOverviewViewModel.topicDescription.set(
         htmlParser.parseOppiaHtml(
           topic.description,
-          fragment.requireView().findViewById(R.id.topic_description_text_view)
+          fragment.requireView().findViewById(R.id.topic_description_text_view),
+          imageCenterAlign = true
         )
       )
     })

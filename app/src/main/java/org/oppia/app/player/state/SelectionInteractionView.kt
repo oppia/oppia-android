@@ -76,8 +76,8 @@ class SelectionInteractionView @JvmOverloads constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
             binding.htmlContent =
-              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
-                viewModel.htmlContent, binding.itemSelectionContentsTextView
+              htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+                viewModel.htmlContent, binding.itemSelectionContentsTextView, imageCenterAlign = false
               )
             binding.viewModel = viewModel
           }
@@ -94,8 +94,8 @@ class SelectionInteractionView @JvmOverloads constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
             binding.htmlContent =
-              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
-                viewModel.htmlContent, binding.multipleChoiceContentTextView
+              htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+                viewModel.htmlContent, binding.multipleChoiceContentTextView, imageCenterAlign = false
               )
             binding.viewModel = viewModel
           }
