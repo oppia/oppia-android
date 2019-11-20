@@ -34,6 +34,7 @@ class SplashActivityTest {
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
     activityTestRule.launchActivity(null)
     intended(hasComponent(HomeActivity::class.java.getName()))
+    assert(false)
   }
 
   @After
