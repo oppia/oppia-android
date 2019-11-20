@@ -7,7 +7,7 @@ import org.oppia.domain.util.toAnswerString
 
 class FractionInteractionViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+): StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun getPendingAnswer(): InteractionObject {

@@ -22,6 +22,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.app.model.TestModel
+import org.oppia.app.model.TestModel.ModelTypeCase
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.testing.BINDABLE_TEST_FRAGMENT_TAG
 import org.oppia.app.testing.BindableAdapterTestActivity
@@ -209,7 +210,7 @@ class BindableAdapterTest {
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
-    return BindableAdapter.Builder
+    return BindableAdapter.SingleTypeBuilder
       .newBuilder<TestModel>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
@@ -219,7 +220,7 @@ class BindableAdapterTest {
   }
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter(): BindableAdapter<TestModel> {
-    return BindableAdapter.Builder
+    return BindableAdapter.SingleTypeBuilder
       .newBuilder<TestModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
@@ -229,18 +230,15 @@ class BindableAdapterTest {
   }
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
-    return BindableAdapter.Builder
-      .newBuilder<TestModel>()
-      .registerViewTypeComputer { value ->
-        value.modelTypeCase.number
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<TestModel, ModelTypeCase>(TestModel::getModelTypeCase)
       .registerViewBinder(
-        viewType = TestModel.STR_VALUE_FIELD_NUMBER,
+        viewType = ModelTypeCase.STR_VALUE,
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding
       )
       .registerViewBinder(
-        viewType = TestModel.INT_VALUE_FIELD_NUMBER,
+        viewType = ModelTypeCase.INT_VALUE,
         inflateView = this::inflateTextViewForIntWithoutDataBinding,
         bindView = this::bindTextViewForIntWithoutDataBinding
       )
@@ -248,18 +246,15 @@ class BindableAdapterTest {
   }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(): BindableAdapter<TestModel> {
-    return BindableAdapter.Builder
-      .newBuilder<TestModel>()
-      .registerViewTypeComputer { value ->
-        value.modelTypeCase.number
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<TestModel, ModelTypeCase>(TestModel::getModelTypeCase)
       .registerViewDataBinderWithSameModelType(
-        viewType = TestModel.STR_VALUE_FIELD_NUMBER,
+        viewType = ModelTypeCase.STR_VALUE,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
       )
       .registerViewDataBinderWithSameModelType(
-        viewType = TestModel.INT_VALUE_FIELD_NUMBER,
+        viewType = ModelTypeCase.INT_VALUE,
         inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
       )
