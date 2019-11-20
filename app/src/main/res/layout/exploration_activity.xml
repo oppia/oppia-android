@@ -30,7 +30,7 @@
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:titleTextColor="@color/white">
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="match_parent">
         <ImageView
           android:id="@+id/action_audio_player"
