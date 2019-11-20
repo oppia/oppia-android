@@ -144,6 +144,7 @@ class AudioFragmentPresenter @Inject constructor(
         when {
           languages.contains("hi") -> "hi"
           languages.contains("hi-en") -> "hi-en"
+          languages.contains("en") -> "en"
           else -> languages.firstOrNull() ?: ""
         }
       } else {
