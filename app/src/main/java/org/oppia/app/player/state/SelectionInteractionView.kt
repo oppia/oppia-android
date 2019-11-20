@@ -32,8 +32,11 @@ class SelectionInteractionView @JvmOverloads constructor(
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var selectionItemInputType: SelectionItemInputType = SelectionItemInputType.CHECKBOXES
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject @field:ExplorationHtmlParserEntityType lateinit var entityType: String
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  @field:ExplorationHtmlParserEntityType
+  lateinit var entityType: String
   private lateinit var explorationId: String
 
   init {
@@ -72,9 +75,10 @@ class SelectionInteractionView @JvmOverloads constructor(
           },
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-              viewModel.htmlContent, binding.itemSelectionContentsTextView
-            )
+            binding.htmlContent =
+              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+                viewModel.htmlContent, binding.itemSelectionContentsTextView
+              )
             binding.viewModel = viewModel
           }
         )
@@ -89,9 +93,10 @@ class SelectionInteractionView @JvmOverloads constructor(
           },
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-              viewModel.htmlContent, binding.multipleChoiceContentTextView
-            )
+            binding.htmlContent =
+              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+                viewModel.htmlContent, binding.multipleChoiceContentTextView
+              )
             binding.viewModel = viewModel
           }
         )
@@ -105,7 +110,6 @@ class SelectionInteractionView @JvmOverloads constructor(
 fun setItemInputType(
   selectionInteractionView: SelectionInteractionView, selectionItemInputType: SelectionItemInputType
 ) = selectionInteractionView.setItemInputType(selectionItemInputType)
-
 
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("explorationId")
