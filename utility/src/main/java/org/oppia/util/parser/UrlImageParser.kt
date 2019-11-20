@@ -32,11 +32,11 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-    val imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl =  String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
     imageLoader.load(
-      gcsPrefix + gcsResource + imageDownloadUrlTemplate,
+      gcsPrefix + gcsResource + imageUrl,
       target
     )
     return urlDrawable

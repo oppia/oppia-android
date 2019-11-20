@@ -3,6 +3,10 @@ package org.oppia.app.topic.review
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import android.text.style.CharacterStyle
+import android.view.View
+import android.widget.TextView
+import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,10 +22,14 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -59,24 +67,13 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(withId(R.id.explanation)).check(matches(withText("Explanation with <b>rich text</b>.")))
+      onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+      onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectWorkedExamples() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(
-        atPosition(
-          R.id.worked_examples,
-          0
-        )
-      ).check(matches(hasDescendant(withText("Worked example with <i>rich text</i>."))))
-    }
-  }
-
-  @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       it.onActivity { activity ->
