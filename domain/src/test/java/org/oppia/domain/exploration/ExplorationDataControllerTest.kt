@@ -41,6 +41,12 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -154,6 +160,102 @@ class ExplorationDataControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForFractions0Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("What is a Fraction?")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(25)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForFractions1Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(18)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForRatios0Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("What is a Ratio?")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(26)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForRatios1Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Order is Important")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(22)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForRatios2Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Equivalent Ratios")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(24)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_providesInitialLiveDataForRatios3Exploration() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
+    val exploration = explorationResultCaptor.value.getOrThrow();
+    assertThat(exploration.title).isEqualTo("Writing Ratios in Simplest Form")
+    assertThat(exploration.languageCode).isEqualTo("en")
+    assertThat(exploration.statesCount).isEqualTo(21)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testController_returnsNullForNonExistentExploration() = runBlockingTest(coroutineContext) {
     val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
@@ -213,11 +315,13 @@ class ExplorationDataControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+      TextInputRuleModule::class, InteractionsModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

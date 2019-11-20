@@ -107,6 +107,64 @@ class TopicListControllerTest {
   }
 
   @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val fractionsTopic = topicList.getTopicSummary(2)
+    assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(fractionsTopic.name).isEqualTo("Fractions")
+  }
+
+  @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectThumbnail() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val fractionsTopic = topicList.getTopicSummary(2)
+    assertThat(fractionsTopic.topicThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+  }
+
+  @Test
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val fractionsTopic = topicList.getTopicSummary(2)
+    assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectThumbnail() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.topicThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+  }
+
+  @Test
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
+    val topicListLiveData = topicListController.getTopicList()
+
+    val topicList = topicListLiveData.value!!.getOrThrow()
+    val ratiosTopic = topicList.getTopicSummary(3)
+    assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
+  }
+
+  @Test
   fun testRetrieveTopicList_promotedLesson_hasCorrectLessonInfo() {
     val topicListLiveData = topicListController.getTopicList()
 
@@ -158,7 +216,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
+    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
   }
 
   @Test
@@ -205,7 +263,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
+    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(1)
   }
 
   private fun setUpTestApplicationComponent() {

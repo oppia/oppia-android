@@ -11,7 +11,24 @@
   "states": {
     "END": {
       "classifier_model_id": null,
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {
+            "hi-en": {
+              "file_size_bytes": 750,
+              "needs_update": false,
+              "filename": "content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
+            },
+            "es": {
+              "file_size_bytes": 500,
+              "needs_update": false,
+              "filename": "content-es-4lbxy0bwo4g.mp3"
+            }
+          }
+        }
+      },
       "content": {
+        "content_id": "content",
         "audio_translations": {},
         "html": "Congratulations, you have finished!"
       },

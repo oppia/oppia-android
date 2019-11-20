@@ -2,8 +2,10 @@ package org.oppia.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -13,10 +15,14 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.not
+import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
+import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -25,12 +31,40 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ConceptCardFragmentTest {
 
+  private lateinit var activityScenario: ActivityScenario<ConceptCardFragmentTestActivity>
+
+  @Before
+  fun setUp() {
+    activityScenario = ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java)
+  }
+
   @Test
-  fun testConceptCardFragment_loadFragment_textIsDisplayed() {
-    // I'm not sure how to launch just the fragment because it doesn't have its own activity
-    ActivityScenario.launch(HomeActivity::class.java).use {
-      onView(withId(R.id.rich_text_card)).check(matches(withText("Hello World")))
+  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
+    onView(withId(R.id.open_dialog_0)).perform(click())
+    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("An important skill")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
+  }
+
+  @Test
+  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
+    onView(withId(R.id.open_dialog_1)).perform(click())
+    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
+  }
+
+  @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
+    onView(withId(R.id.open_dialog_1)).perform(click())
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
+    activityScenario.recreate()
+    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
   }
 
   @Module

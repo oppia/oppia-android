@@ -14,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an practice training
+ * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training
  * session. Note that this controller only supports one active training session at a time.
  *
  * The current training session is started via the question training controller.

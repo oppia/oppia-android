@@ -390,6 +390,7 @@ class ExplorationProgressController @Inject constructor(
       val answerOutcomeBuilder = AnswerOutcome.newBuilder()
         .setFeedback(outcome.feedback)
         .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
+        .setState(currentState)
       when {
         outcome.refresherExplorationId.isNotEmpty() ->
           answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId
@@ -425,7 +426,13 @@ class ExplorationProgressController @Inject constructor(
     /** Navigates to the next State in the deck, or fails if this isn't possible. */
     internal fun navigateToNextState() {
       check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
+      val previousState = previousStates[stateIndex]
       stateIndex++
+      if (!previousState.hasNextState) {
+        // Update the previous state to indicate that it has a next state now that its next state has actually been
+        // 'created' by navigating to it.
+        previousStates[stateIndex - 1] = previousState.toBuilder().setHasNextState(true).build()
+      }
     }
 
     /**
@@ -459,6 +466,8 @@ class ExplorationProgressController @Inject constructor(
       check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
       check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
       check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+      // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new
+      // state doesn't become fully realized until navigated to.
       previousStates += EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())

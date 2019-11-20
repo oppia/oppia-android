@@ -74,6 +74,9 @@ message ChapterSummary {
   // The chapter's name (which is the same as the exploration's title).
   string name = 2;
 
+  // Summary of this chapter.
+  string summary = 3;
+
   enum Playability {
     // The completion status is unknown.
     COMPLETION_STATUS_UNSPECIFIED = 0;
@@ -89,10 +92,10 @@ message ChapterSummary {
   }
 
   // Indicates the playable state of the current chapter, including whether it's already been completed.
-  ChapterPlayState chapter_play_state = 3;
+  ChapterPlayState chapter_play_state = 4;
 
   // The thumbnail corresponding to this chapter.
-  LessonThumbnail chapter_thumbnail = 4;
+  LessonThumbnail chapter_thumbnail = 5;
 }
 
 // A summary of a skill that can be trained or reviewed by the player.
@@ -106,6 +109,9 @@ message SkillSummary {
   // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
   // alternative.
   string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  SkillThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.
@@ -154,15 +160,18 @@ message PromotedStory {
   // The name of the topic this story is part of.
   string topic_name = 4;
 
+  // The name of the next chapter (exploration title) to complete.
+  string next_chapter_name = 5;
+
   // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
   // reasons other than to complete it (e.g. it's recommended).
-  int32 completed_chapter_count = 5;
+  int32 completed_chapter_count = 6;
 
   // The total number of lessons this story contains.
-  int32 total_chapter_count = 6;
+  int32 total_chapter_count = 7;
 
   // The thumbnail that should be displayed for this promoted story.
-  LessonThumbnail lesson_thumbnail = 7;
+  LessonThumbnail lesson_thumbnail = 8;
 }
 
 // A homescreen summary of a topic.

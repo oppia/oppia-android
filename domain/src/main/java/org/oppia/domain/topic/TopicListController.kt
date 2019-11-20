@@ -2,25 +2,30 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
+import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
+const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
+const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
 /** Controller for retrieving the list of topics available to the learner to play. */
 @Singleton
-class TopicListController @Inject constructor() {
+class TopicListController @Inject constructor(
+  private val jsonAssetRetriever: JsonAssetRetriever
+) {
   /**
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
@@ -42,7 +47,41 @@ class TopicListController @Inject constructor() {
       .setPromotedStory(createPromotedStory1())
       .addTopicSummary(createTopicSummary0())
       .addTopicSummary(createTopicSummary1())
+      .addTopicSummary(createFractionsTopicSummary())
+      .addTopicSummary(createRatiosTopicSummary())
       .setOngoingStoryCount(2)
+      .build()
+  }
+
+  private fun createFractionsTopicSummary(): TopicSummary {
+    val fractionsJson = jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")?.getJSONObject("topic")!!
+    return TopicSummary.newBuilder()
+      .setTopicId(FRACTIONS_TOPIC_ID)
+      .setName(fractionsJson.getString("name"))
+      .setVersion(fractionsJson.getInt("version"))
+      .setSubtopicCount(fractionsJson.getJSONArray("subtopics").length())
+      .setCanonicalStoryCount(fractionsJson.getJSONArray("canonical_story_references").length())
+      .setUncategorizedSkillCount(fractionsJson.getJSONArray("uncategorized_skill_ids").length())
+      .setAdditionalStoryCount(fractionsJson.getJSONArray("additional_story_references").length())
+      .setTotalSkillCount(3)
+      .setTotalChapterCount(2)
+      .setTopicThumbnail(createFractionsThumbnail())
+      .build()
+  }
+
+  private fun createRatiosTopicSummary(): TopicSummary {
+    val fractionsJson = jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")?.getJSONObject("topic")!!
+    return TopicSummary.newBuilder()
+      .setTopicId(RATIOS_TOPIC_ID)
+      .setName(fractionsJson.getString("name"))
+      .setVersion(fractionsJson.getInt("version"))
+      .setSubtopicCount(fractionsJson.getJSONArray("subtopics").length())
+      .setCanonicalStoryCount(fractionsJson.getJSONArray("canonical_story_references").length())
+      .setUncategorizedSkillCount(fractionsJson.getJSONArray("uncategorized_skill_ids").length())
+      .setAdditionalStoryCount(fractionsJson.getJSONArray("additional_story_references").length())
+      .setTotalSkillCount(1)
+      .setTotalChapterCount(4)
+      .setTopicThumbnail(createRatiosThumbnail())
       .build()
   }
 
@@ -79,6 +118,8 @@ class TopicListController @Inject constructor() {
   private fun createOngoingStoryList(): OngoingStoryList {
     return OngoingStoryList.newBuilder()
       .addRecentStory(createPromotedStory1())
+      .addRecentStory(createPromotedStory2())
+      .addOlderStory(createPromotedStory3())
       .build()
   }
 
@@ -88,9 +129,36 @@ class TopicListController @Inject constructor() {
       .setStoryName("Second Story")
       .setTopicId(TEST_TOPIC_ID_0)
       .setTopicName("First Topic")
+      .setNextChapterName("The Meaning of Equal Parts")
       .setCompletedChapterCount(1)
       .setTotalChapterCount(3)
       .setLessonThumbnail(createStoryThumbnail())
+      .build()
+  }
+
+  private fun createPromotedStory2(): PromotedStory {
+    return PromotedStory.newBuilder()
+      .setStoryId(TEST_STORY_ID_0)
+      .setStoryName("Equal Ratios")
+      .setTopicId(TEST_TOPIC_ID_1)
+      .setTopicName("Ratios and Proportions")
+      .setNextChapterName("Matthew Goes to the Bakery")
+      .setCompletedChapterCount(1)
+      .setTotalChapterCount(3)
+      .setLessonThumbnail(createStoryThumbnail1())
+      .build()
+  }
+
+  private fun createPromotedStory3(): PromotedStory {
+    return PromotedStory.newBuilder()
+      .setStoryId(TEST_STORY_ID_0)
+      .setStoryName("Types of Angles")
+      .setTopicId(TEST_TOPIC_ID_1)
+      .setTopicName("Geometrical Figures")
+      .setNextChapterName("Miguel Reads a Book")
+      .setCompletedChapterCount(1)
+      .setTotalChapterCount(3)
+      .setLessonThumbnail(createStoryThumbnail2())
       .build()
   }
 
@@ -108,10 +176,38 @@ class TopicListController @Inject constructor() {
       .build()
   }
 
+  private fun createFractionsThumbnail(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .setBackgroundColorRgb(0xf7bf73)
+      .build()
+  }
+
+  private fun createRatiosThumbnail(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+      .setBackgroundColorRgb(0xf7bf73)
+      .build()
+  }
+
   private fun createStoryThumbnail(): LessonThumbnail {
     return LessonThumbnail.newBuilder()
       .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
       .setBackgroundColorRgb(0xa5d3ec)
+      .build()
+  }
+
+  private fun createStoryThumbnail1(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .setBackgroundColorRgb(0xd3a5ec)
+      .build()
+  }
+
+  private fun createStoryThumbnail2(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+      .setBackgroundColorRgb(0xa5ecd3)
       .build()
   }
 }
