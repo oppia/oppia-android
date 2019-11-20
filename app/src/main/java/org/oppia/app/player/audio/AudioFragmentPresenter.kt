@@ -139,8 +139,16 @@ class AudioFragmentPresenter @Inject constructor(
       val contentId = state.content.contentId
       val voiceoverMapping =
         (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
-      languages = ArrayList<String>(voiceoverMapping.keys.toList())
-      selectedLanguageCode = languages.firstOrNull() ?: ""
+      languages = ArrayList(voiceoverMapping.keys.toList())
+      selectedLanguageCode = if (languages.isNotEmpty()) {
+        when {
+          languages.contains("hi") -> "hi"
+          languages.contains("hi-en") -> "hi-en"
+          else -> languages.firstOrNull() ?: ""
+        }
+      } else {
+        languages.firstOrNull() ?: ""
+      }
       val viewModel = getAudioViewModel()
       viewModel.setVoiceoverMappings(voiceoverMapping)
       viewModel.setAudioLanguageCode(selectedLanguageCode)
