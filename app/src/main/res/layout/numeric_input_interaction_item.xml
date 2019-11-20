@@ -27,7 +27,6 @@
       android:digits="0123456789."
       android:enabled="@{!viewModel.isReadOnly}"
       android:fontFamily="sans-serif"
-      android:hint="@string/number_input_hint_text"
       android:imeOptions="actionDone"
       android:inputType="numberDecimal"
       android:longClickable="false"
