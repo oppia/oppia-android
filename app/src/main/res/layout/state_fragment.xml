@@ -13,7 +13,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/oppiaLightGreen">
-
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/state_recycler_view"
       android:layout_width="match_parent"
@@ -25,7 +24,6 @@
       android:scrollbars="none"
       app:data="@{viewModel.itemList}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
     <FrameLayout
       android:id="@+id/audio_fragment_placeholder"
       android:layout_width="match_parent"

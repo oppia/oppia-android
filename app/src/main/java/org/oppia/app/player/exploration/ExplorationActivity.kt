@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
 import org.oppia.app.topic.conceptcard.ConceptCardListener
@@ -16,7 +17,7 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, ConceptCardListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, AudioButtonListener, ConceptCardListener {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -67,4 +68,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+  override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
+  override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
+  override fun showAudioStreamingOn() = explorationActivityPresenter.showAudioStreamingOn()
+  override fun showAudioStreamingOff() = explorationActivityPresenter.showAudioStreamingOff()
 }

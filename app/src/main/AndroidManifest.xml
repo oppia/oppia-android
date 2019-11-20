@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.app">
-
   <!-- TODO(#56): Reenable landscape support. -->
-
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -20,11 +20,10 @@
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
-    <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.ProfileActivity"
@@ -35,10 +34,11 @@
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
+    <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity
       android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme"
-      android:screenOrientation="portrait">
+      android:screenOrientation="portrait"
+      android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -50,8 +50,8 @@
     </activity>
     <activity
       android:name=".story.StoryActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".story.testing.StoryFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
@@ -68,9 +68,10 @@
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"
       android:screenOrientation="portrait" />
+    <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity
       android:name=".topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>

@@ -33,7 +33,7 @@ class ExplorationRetriever @Inject constructor(
     return when (explorationId) {
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
-      TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
+      TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("fractions_exploration0.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")

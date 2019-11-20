@@ -12,7 +12,7 @@ private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
 private const val KEY_STATE_ID = "STATE_ID"
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface {
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioFragmentInterface {
 
   companion object {
     /**
@@ -47,13 +47,12 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     return audioFragmentPresenter.handleCreateView(inflater, container, savedInstanceState, explorationId, stateId)
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    audioFragmentPresenter.handleSaveInstanceState(outState)
+  override fun languageSelectionClicked() {
+    audioFragmentPresenter.showLanguageDialogFragment()
   }
 
-  fun languageSelectionClicked() {
-    audioFragmentPresenter.showLanguageDialogFragment()
+  override fun onLanguageSelected(currentLanguageCode: String) {
+    audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 
   override fun onStop() {
@@ -66,13 +65,18 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     audioFragmentPresenter.handleOnDestroy()
   }
 
+  override fun setVoiceoverMappingsByState(stateId: String, contentId: String?) {
+    audioFragmentPresenter.setVoiceoverMappingsByState(stateId, contentId)
+  }
+
+  override fun playAudio() {
+    audioFragmentPresenter.playAudio()
+  }
+
+  override fun getCurrentPlayStatus() = audioFragmentPresenter.getCurrentPlayStatus()
+
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
-
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
-
-  override fun onLanguageSelected(currentLanguageCode: String) {
-    audioFragmentPresenter.languageSelected(currentLanguageCode)
-  }
 }

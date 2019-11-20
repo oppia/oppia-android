@@ -37,7 +37,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
+import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
