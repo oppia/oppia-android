@@ -49,17 +49,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   @ExperimentalCoroutinesApi
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserModel> {
-    return BindableAdapter.Builder
-      .newBuilder<ProfileChooserModel>()
-      .registerViewTypeComputer { value ->
-        value.modelTypeCase.number
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<ProfileChooserModel, ProfileChooserModel.ModelTypeCase>(ProfileChooserModel::getModelTypeCase)
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.PROFILE_FIELD_NUMBER,
+        viewType = ProfileChooserModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
         setViewModel = this::bindProfileView)
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.ADDPROFILE_FIELD_NUMBER,
+        viewType = ProfileChooserModel.ModelTypeCase.ADDPROFILE,
         inflateDataBinding = ProfileChooserAddViewBinding::inflate,
         setViewModel = this::bindAddView)
       .build()
