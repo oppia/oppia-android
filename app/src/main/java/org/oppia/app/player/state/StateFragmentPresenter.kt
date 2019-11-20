@@ -117,29 +117,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StateItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StateItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
-        when (viewModel) {
-          is StateNavigationButtonViewModel -> ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal
-          is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT.ordinal
-          is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK.ordinal
-          is ContinueInteractionViewModel -> ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal
-          is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal
-          is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal
-          is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal
-          is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder(StateItemViewModel::viewType)
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal,
+        viewType = StateItemViewModel.ViewType.STATE_NAVIGATION_BUTTON,
         inflateDataBinding = StateButtonItemBinding::inflate,
         setViewModel = StateButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as StateNavigationButtonViewModel }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_CONTENT.ordinal,
+        viewType = StateItemViewModel.ViewType.CONTENT,
         inflateView = { parent ->
           ContentItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
@@ -151,7 +138,7 @@ class StateFragmentPresenter @Inject constructor(
         }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_FEEDBACK.ordinal,
+        viewType = StateItemViewModel.ViewType.FEEDBACK,
         inflateView = { parent ->
           FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
@@ -163,31 +150,31 @@ class StateFragmentPresenter @Inject constructor(
         }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.CONTINUE_INTERACTION,
         inflateDataBinding = ContinueInteractionItemBinding::inflate,
         setViewModel = ContinueInteractionItemBinding::setViewModel,
         transformViewModel = { it as ContinueInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
         inflateDataBinding = SelectionInteractionItemBinding::inflate,
         setViewModel = SelectionInteractionItemBinding::setViewModel,
         transformViewModel = { it as SelectionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
         inflateDataBinding = FractionInteractionItemBinding::inflate,
         setViewModel = FractionInteractionItemBinding::setViewModel,
         transformViewModel = { it as FractionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,
         setViewModel = NumericInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as NumericInputViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
         inflateDataBinding = TextInputInteractionItemBinding::inflate,
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
@@ -469,16 +456,5 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
-  }
-
-  private enum class ViewType {
-    VIEW_TYPE_CONTENT,
-    VIEW_TYPE_FEEDBACK,
-    VIEW_TYPE_STATE_NAVIGATION_BUTTON,
-    VIEW_TYPE_CONTINUE_INTERACTION,
-    VIEW_TYPE_SELECTION_INTERACTION,
-    VIEW_TYPE_FRACTION_INPUT_INTERACTION,
-    VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
-    VIEW_TYPE_TEXT_INPUT_INTERACTION
   }
 }

@@ -11,7 +11,7 @@ import org.oppia.app.player.state.listener.StateNavigationButtonListener
 /** [ViewModel] for State navigation buttons. */
 class StateNavigationButtonViewModel(
   val context: Context, val stateNavigationButtonListener: StateNavigationButtonListener
-) : StateItemViewModel() {
+) : StateItemViewModel(ViewType.STATE_NAVIGATION_BUTTON) {
   companion object {
     @JvmStatic
     @BindingAdapter("android:button")
