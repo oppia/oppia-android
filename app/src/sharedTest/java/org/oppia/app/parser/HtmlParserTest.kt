@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.text.Spannable
 import android.widget.TextView
-import androidx.test.InstrumentationRegistry
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -31,11 +30,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
 import org.oppia.app.R
-import org.oppia.app.application.OppiaApplication
 import org.oppia.app.testing.HtmlParserTestActivity
-import org.oppia.domain.audio.AudioPlayerControllerTest
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -44,8 +40,8 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.UrlImageParser
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import org.robolectric.annotation.Config
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [HtmlParser]. */
@@ -65,9 +61,17 @@ class HtmlParserTest {
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerHtmlParser_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Test
@@ -133,5 +137,66 @@ class HtmlParserTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Qualifier
+  annotation class TestDispatcher
+
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  }
+
+  @Singleton
+  @Component(modules = [TestModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+    fun inject(htmlParserTest: HtmlParserTest)
   }
 }
