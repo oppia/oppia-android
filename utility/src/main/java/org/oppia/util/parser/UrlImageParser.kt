@@ -56,7 +56,8 @@ class UrlImageParser private constructor(
         val width: Int = result.first
         val height: Int = result.second
 
-        val rect = Rect(0, 0, width, height)
+        val initialDrawableMargin = calculateInitialMargin(drawableWidth)
+        val rect = Rect(initialDrawableMargin, 0, width + initialDrawableMargin, height)
         drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
@@ -95,6 +96,11 @@ class UrlImageParser private constructor(
         currentDrawable.draw(canvas)
       }
     }
+  }
+
+  private fun calculateInitialMargin(drawableWidth: Int): Int {
+    val availableAreaWidth = htmlContentTextView.width
+    return (availableAreaWidth - drawableWidth) / 2
   }
 
   class Factory @Inject constructor(
