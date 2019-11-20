@@ -65,6 +65,18 @@ class QuestionAssessmentProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    companion object {
+      var questionSeed = 0L
+    }
+
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = questionSeed++
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {

@@ -10,8 +10,12 @@ import org.oppia.app.model.PendingState
 import org.oppia.app.model.Question
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val CURRENT_QUESTION_DATA_PROVIDER = "CurrentQuestionDataProvider"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training
@@ -23,14 +27,13 @@ import javax.inject.Singleton
  * that uses of this class do not specifically depend on ordering.
  */
 @Singleton
-class QuestionAssessmentProgressController @Inject constructor() {
-  private lateinit var inProgressQuestionList: List<Question>
+class QuestionAssessmentProgressController @Inject constructor(private val dataProviders: DataProviders) {
+  private lateinit var inProgressQuestionListDataProvider: DataProvider<List<Question>>
   private var playing: Boolean = false
 
-  internal fun beginQuestionTrainingSession(questionsList: List<Question>) {
+  internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
     check(!playing) { "Cannot start a new training session until the previous one is completed" }
-    check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
-    inProgressQuestionList = questionsList
+    inProgressQuestionListDataProvider = questionsListDataProvider
   }
 
   internal fun finishQuestionTrainingSession() {
@@ -125,15 +128,20 @@ class QuestionAssessmentProgressController @Inject constructor() {
    * return a pending state.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
-    val currentQuestion = inProgressQuestionList.first()
-    val ephemeralQuestion = EphemeralQuestion.newBuilder()
-      .setEphemeralState(EphemeralState.newBuilder()
-        .setState(currentQuestion.questionState)
-        .setPendingState(PendingState.getDefaultInstance()))
-      .setCurrentQuestionIndex(0)
-      .setTotalQuestionCount(inProgressQuestionList.size)
-      .setInitialTotalQuestionCount(inProgressQuestionList.size)
-      .build()
-    return MutableLiveData(AsyncResult.success(ephemeralQuestion))
+    val questionDataProvider = dataProviders.transform(
+      CURRENT_QUESTION_DATA_PROVIDER, inProgressQuestionListDataProvider) { questionsList ->
+      check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
+
+      val currentQuestion = questionsList.first()
+      EphemeralQuestion.newBuilder()
+        .setEphemeralState(EphemeralState.newBuilder()
+          .setState(currentQuestion.questionState)
+          .setPendingState(PendingState.getDefaultInstance()))
+        .setCurrentQuestionIndex(0)
+        .setTotalQuestionCount(questionsList.size)
+        .setInitialTotalQuestionCount(questionsList.size)
+        .build()
+    }
+    return dataProviders.convertToLiveData(questionDataProvider)
   }
 }
