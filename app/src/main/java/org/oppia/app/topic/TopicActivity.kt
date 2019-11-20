@@ -8,6 +8,7 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Inject
 
@@ -15,20 +16,19 @@ const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
-  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
+  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
   private lateinit var topicId: String
-  private lateinit var storyId: String
+  private var storyId: String? = null
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY) ?: "")
-    {
+    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY) ?: ""
+    storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     topicActivityPresenter.handleOnCreate(topicId, storyId)
   }
 
@@ -50,6 +50,10 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
       conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
+  }
+
+  override fun dismiss() {
+    getConceptCardFragment()?.dismiss()
   }
 
   override fun routeToExploration(explorationId: String) {

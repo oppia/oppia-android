@@ -14,13 +14,14 @@ import org.oppia.app.topic.TopicActivityPresenter
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
-  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener {
+  RouteToTopicPlayListener, RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -48,6 +49,10 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
       val conceptCardFragment: ConceptCardFragment = ConceptCardFragment.newInstance(skillId)
       conceptCardFragment.showNow(supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
+  }
+
+  override fun dismiss() {
+    getConceptCardFragment()?.dismiss()
   }
 
   override fun routeToExploration(explorationId: String) {
