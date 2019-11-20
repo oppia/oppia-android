@@ -41,9 +41,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _, existingAnswer, isReadOnly -> FractionInteractionViewModel(
-      interaction, existingAnswer, isReadOnly, context
-    ) }
+    return { _, interaction, _, existingAnswer, isReadOnly ->
+      FractionInteractionViewModel(interaction, existingAnswer, isReadOnly, context)
+    }
   }
 
   @Provides
@@ -57,8 +57,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _, existingAnswer, isReadOnly -> TextInputViewModel(
-      interaction, existingAnswer, isReadOnly
-    ) }
+    return { _, interaction, _, existingAnswer, isReadOnly ->
+      TextInputViewModel(interaction, existingAnswer, isReadOnly)
+    }
   }
 }

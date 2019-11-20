@@ -11,11 +11,12 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="24dp"
-    android:layout_marginBottom="24dp"
     android:layout_marginStart="28dp"
+    android:layout_marginTop="24dp"
     android:layout_marginEnd="28dp"
-    android:background="@color/oppiaLightGreen"
+    android:layout_marginBottom="24dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <org.oppia.app.customview.interaction.TextInputInteractionView
@@ -24,10 +25,9 @@
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
       android:enabled="@{!viewModel.isReadOnly}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:focusable="true"
       android:fontFamily="sans-serif"
       android:hint="@{viewModel.hintText}"
+      android:imeOptions="actionDone"
       android:inputType="text"
       android:longClickable="false"
       android:maxLength="200"
@@ -35,9 +35,9 @@
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
       android:paddingBottom="8dp"
-      android:imeOptions="actionDone"
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
+      android:textColor="@color/oppiaPrimaryText"
       android:textColorHint="@color/edit_text_hint"
       android:textSize="16sp"
       android:textStyle="italic" />

@@ -7,12 +7,20 @@
     <variable
       name="numericInputViewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+    <variable
+      name="textInputViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
+    <variable
+      name="fractionInteractionViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
   </data>
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context=".testing.InputInteractionViewTestActivity">
 
@@ -42,6 +50,7 @@
       android:focusable="true"
       android:hint="Write here."
       android:inputType="text"
+      android:text="@={textInputViewModel.answerText}"
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
@@ -54,6 +63,7 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789/- "
+      android:text="@={fractionInteractionViewModel.answerText}"
       android:focusable="true"
       android:hint="Write fraction here."
       android:inputType="date"
