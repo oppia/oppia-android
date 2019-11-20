@@ -17,7 +17,11 @@ class ProfileActivityPresenter @Inject constructor(
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
     // Ensures that an admin profile is present
-    profileManagementController.addProfile("Sean", "12345", null, true, true)
+    profileManagementController.addProfile("Sandeep", "12345", null, allowDownloadAccess = true, isAdmin = true)
+    profileManagementController.addProfile("Aahlad", "123", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Prachi", "963", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Rucha", "123", null, allowDownloadAccess = true, isAdmin = false)
+    profileManagementController.addProfile("Sneha", "123", null, allowDownloadAccess = true, isAdmin = false)
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
