@@ -14,7 +14,7 @@ class ApiUtils {
       val json: String = inputStream.bufferedReader().use { it.readText() }
       return try {
         JSONObject(json).toString()
-      } catch(e: JSONException) {
+      } catch (e: JSONException) {
         return json
       }
     }
