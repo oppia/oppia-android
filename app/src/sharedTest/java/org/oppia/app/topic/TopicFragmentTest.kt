@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -233,6 +234,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicTestActivity::class.java).use {
       onView(
@@ -264,6 +266,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicTestActivity::class.java).use {
       onView(
@@ -286,6 +289,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
     launch(TopicTestActivity::class.java).use {
       onView(
@@ -309,6 +313,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
     launch(TopicTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
