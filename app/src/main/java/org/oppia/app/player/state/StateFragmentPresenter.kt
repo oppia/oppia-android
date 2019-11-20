@@ -312,7 +312,7 @@ class StateFragmentPresenter @Inject constructor(
         val newAudioFragment = AudioFragment.newInstance(explorationId, currentStateName)
         fragment.childFragmentManager.beginTransaction()
           .setCustomAnimations(R.anim.slide_down_audio, R.anim.slide_up_audio)
-          .add(R.id.audio_fragment_placeholder, newAudioFragment, CELLULAR_DATA_DIALOG_FRAGMENT_TAG
+          .add(R.id.audio_fragment_placeholder, newAudioFragment, AUDIO_FRAGMENT_TAG
         ).commitNow()
       }
       val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
