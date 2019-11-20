@@ -43,7 +43,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: App tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.splash*
+          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest
       - run:
           name: Data tests
           command: ./.circleci/gradle/gradlew :data:test
@@ -64,6 +64,9 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
+      - run:
+          name: App (Splash, Home) tests
+          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.splash* --tests org.oppia.app.home*
       - run:
           name: Domain tests
           command: ./.circleci/gradle/gradlew :domain:test
