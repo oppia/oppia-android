@@ -21,7 +21,7 @@ import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.conceptcard.testing.ConceptCardFragmentTestActivity
+import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 

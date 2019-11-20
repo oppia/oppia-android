@@ -30,7 +30,7 @@
         android:layout_height="104dp"
         android:importantForAccessibility="no"
         android:scaleType="fitXY"
-        android:src="@{skill.thumbnailUrl}"
+        android:src="@{skill.skillThumbnail.thumbnailGraphic}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
