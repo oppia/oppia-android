@@ -1,6 +1,5 @@
 package org.oppia.app.topic.conceptcard
 
-import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -63,7 +62,7 @@ class ConceptCardViewModel @Inject constructor(
       logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
     }
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParserFactory.create(entityType, skillId)
-      .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText, imageCenterAlign = true)
+    return htmlParserFactory.create("exploration", "xHwiGtvK2N4L")
+      .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText, imageCenterAlign = false)
   }
 }
