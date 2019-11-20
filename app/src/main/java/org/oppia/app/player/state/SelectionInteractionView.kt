@@ -61,40 +61,42 @@ class SelectionInteractionView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<SelectionInteractionContentViewModel>()
-      .registerViewTypeComputer { selectionItemInputType.ordinal }
-      .registerViewBinder(
-        viewType = SelectionItemInputType.CHECKBOXES.ordinal,
-        inflateView = { parent ->
-          ItemSelectionInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            viewModel.htmlContent, binding.itemSelectionContentsTextView
-          )
-          binding.viewModel = viewModel
-        }
-      )
-      .registerViewBinder(
-        viewType = SelectionItemInputType.RADIO_BUTTONS.ordinal,
-        inflateView = { parent ->
-          MultipleChoiceInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            viewModel.htmlContent, binding.multipleChoiceContentTextView
-          )
-          binding.viewModel = viewModel
-        }
-      )
-      .build()
+    return when (selectionItemInputType) {
+      SelectionItemInputType.CHECKBOXES -> BindableAdapter.SingleTypeBuilder
+        .newBuilder<SelectionInteractionContentViewModel>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            ItemSelectionInteractionItemsBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
+            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+              viewModel.htmlContent, binding.itemSelectionContentsTextView
+            )
+            binding.viewModel = viewModel
+          }
+        )
+        .build()
+      SelectionItemInputType.RADIO_BUTTONS -> BindableAdapter.SingleTypeBuilder
+        .newBuilder<SelectionInteractionContentViewModel>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            MultipleChoiceInteractionItemsBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
+            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
+              viewModel.htmlContent, binding.multipleChoiceContentTextView
+            )
+            binding.viewModel = viewModel
+          }
+        )
+        .build()
+    }
   }
 }
 

@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -191,6 +192,7 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -209,6 +211,7 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem3_showsLastMonthSectionTitle() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -224,6 +227,7 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem4_chapterNameIsCorrect() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())

@@ -28,6 +28,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -121,6 +122,7 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
     activityTestRule.launchActivity(null)
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -155,7 +157,7 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_default_arrowDown() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).check(
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).check(
       matches(
         withDrawable(R.drawable.ic_keyboard_arrow_down_black_24dp)
       )
@@ -165,8 +167,8 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_iconChanges() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).check(
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).check(
       matches(
         withDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp)
       )
@@ -176,7 +178,7 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_chapterListIsVisible() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
     onView(
       atPositionOnView(
         R.id.story_summary_recycler_view,
@@ -189,7 +191,7 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickChapter_opensExplorationActivity() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_view_control)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
     onView(
       allOf(
         withId(R.id.chapter_recycler_view),
@@ -204,8 +206,8 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_clickExpandListIconIndex1_chapterListForIndex0IsNotDisplayed() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_view_control)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
     onView(
       atPositionOnView(
         R.id.story_summary_recycler_view,
@@ -218,8 +220,8 @@ class TopicPlayFragmentTest {
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
     activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_view_control)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
     onView(
       atPositionOnView(
         R.id.story_summary_recycler_view,
@@ -230,9 +232,10 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_list_view_control)).perform(click())
+      onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
