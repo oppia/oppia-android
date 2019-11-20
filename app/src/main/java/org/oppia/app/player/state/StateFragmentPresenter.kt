@@ -309,6 +309,9 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+
+    val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+
     currentStateName = ephemeralState.state.name
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -345,6 +348,10 @@ class StateFragmentPresenter @Inject constructor(
 
     viewModel.itemList.clear()
     viewModel.itemList += pendingItemList
+
+    if (scrollToTop) {
+      binding.stateRecyclerView.smoothScrollToPosition(0)
+    }
   }
 
   /**

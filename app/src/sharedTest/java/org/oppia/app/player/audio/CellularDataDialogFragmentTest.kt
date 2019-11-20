@@ -31,7 +31,7 @@ class CellularDataDialogFragmentTest {
   @Test
   fun testCellularDataDialogFragment_loadCellularDialogFragment_clickOkButton_audioFragmentIsDisplayed() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.cellular_data_alert_dialog_okay_button)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
@@ -42,7 +42,7 @@ class CellularDataDialogFragmentTest {
   @Test
   fun testCellularDataDialogFragment_loadCellularDialogFragment_clickCancelButton_audioFragmentIsNotDisplayed() {
     ActivityScenario.launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.enable_audio_playback_button)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(R.string.cellular_data_alert_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.cellular_data_alert_dialog_cancel_button)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
