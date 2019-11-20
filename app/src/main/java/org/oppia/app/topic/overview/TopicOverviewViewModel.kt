@@ -20,7 +20,7 @@ class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
 
   var downloadStatusIndicatorDrawableResourceId = ObservableField(R.drawable.ic_available_offline_primary_24dp)
 
-  /** Returns the number of megabytes of disk space this topic requires, formatted for display. */
+  /** Returns the space this topic requires on disk, formatted for display. */
   fun getTopicSizeWithUnit(): String {
     val size: Double = topic.get()?.diskSizeBytes!!.toDouble()
     if (size == 0.0) {
