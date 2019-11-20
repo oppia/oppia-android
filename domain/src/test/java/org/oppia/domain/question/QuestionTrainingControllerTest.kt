@@ -160,23 +160,10 @@ class QuestionTrainingControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    @Mock
-    lateinit var questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
-      MockitoAnnotations.initMocks(this)
-      Mockito.`when`(
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()
-      ).thenReturn(10)
-      return questionTrainingConstantsProvider
     }
 
     @ExperimentalCoroutinesApi
