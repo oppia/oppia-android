@@ -1,5 +1,6 @@
 package org.oppia.app.topic.overview
 
+import android.content.Context
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.app.R
@@ -11,7 +12,9 @@ import javax.inject.Inject
 
 /** [ViewModel] for showing topic overview details. */
 @FragmentScope
-class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
+class TopicOverviewViewModel @Inject constructor(
+  private val context: Context
+) : ObservableViewModel() {
   private val decimalFormat: DecimalFormat = DecimalFormat("#.###")
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
@@ -24,18 +27,18 @@ class TopicOverviewViewModel @Inject constructor() : ObservableViewModel() {
   fun getTopicSizeWithUnit(): String {
     val size: Double = topic.get()?.diskSizeBytes!!.toDouble()
     if (size == 0.0) {
-      return "0 " + R.string.size_bytes
+      return "0 " + context.getString(R.string.size_bytes)
     }
     val sizeInKB = size / 1024.0
     val sizeInMB = size / 1024.0 / 1024.0
     val sizeInGB = size / 1024.0 / 1024.0 / 1024.0
     val sizeInTB = size / 1024.0 / 1024.0 / 1024.0 / 1024.0
     return when {
-      sizeInTB >= 1 -> decimalFormat.format(sizeInTB) + " " + R.string.size_tb
-      sizeInGB >= 1 -> decimalFormat.format(sizeInGB) + " " + R.string.size_gb
-      sizeInMB >= 1 -> decimalFormat.format(sizeInMB) + " " + R.string.size_mb
-      sizeInKB >= 1 -> decimalFormat.format(sizeInKB) + " " + R.string.size_kb
-      else -> decimalFormat.format(size) + " " + R.string.size_bytes
+      sizeInTB >= 1 -> decimalFormat.format(sizeInTB) + " " + context.getString(R.string.size_tb)
+      sizeInGB >= 1 -> decimalFormat.format(sizeInGB) + " " + context.getString(R.string.size_gb)
+      sizeInMB >= 1 -> decimalFormat.format(sizeInMB) + " " + context.getString(R.string.size_mb)
+      sizeInKB >= 1 -> decimalFormat.format(sizeInKB) + " " + context.getString(R.string.size_kb)
+      else -> decimalFormat.format(size) + " " + context.getString(R.string.size_bytes)
     }
   }
 }
