@@ -16,7 +16,6 @@
     android:id="@+id/radio_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:enabled="@{!viewModel.isReadOnly}"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}">
 
     <androidx.appcompat.widget.AppCompatRadioButton

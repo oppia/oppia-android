@@ -25,7 +25,6 @@
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789."
-      android:enabled="@{!viewModel.isReadOnly}"
       android:fontFamily="sans-serif"
       android:imeOptions="actionDone"
       android:inputType="numberDecimal"
