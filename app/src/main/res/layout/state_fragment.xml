@@ -12,6 +12,8 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:background="@color/oppiaLightGreen">
 
     <androidx.recyclerview.widget.RecyclerView
