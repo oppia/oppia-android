@@ -48,7 +48,7 @@ class UrlImageParser private constructor(
     }
 
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      val  drawable = BitmapDrawable(context.resources, resource)
+      val drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
         val drawableHeight = drawable.intrinsicHeight
         val drawableWidth = drawable.intrinsicWidth
