@@ -8,6 +8,9 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.profile.AddProfileActivity
+import org.oppia.app.profile.AdminAuthActivity
+import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
@@ -39,6 +42,8 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(addProfileActivity: AddProfileActivity)
+  fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
@@ -47,6 +52,7 @@ interface ActivityComponent {
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(homeActivity: HomeActivity)
+  fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
