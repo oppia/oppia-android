@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.hamcrest.Matchers.containsString
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -75,6 +76,7 @@ class TopicOverviewFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use { scenario ->
       scenario.onActivity {  activity ->

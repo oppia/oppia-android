@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -111,6 +112,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->
@@ -121,6 +123,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
     onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
     activityScenario.onActivity { activity ->
@@ -131,6 +134,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->
