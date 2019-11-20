@@ -2,6 +2,7 @@ package org.oppia.util.parser
 
 import android.text.Html
 import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.widget.TextView
 import javax.inject.Inject
 
@@ -36,9 +37,9 @@ class HtmlParser private constructor(
 
     val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, /* tagHandler= */ null) as Spannable
+      trimSpannable(Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
     } else {
-      Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as Spannable
+      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null)as SpannableStringBuilder)
     }
   }
 
@@ -46,5 +47,24 @@ class HtmlParser private constructor(
     fun create(entityType: String, entityId: String): HtmlParser {
       return HtmlParser(urlImageParserFactory, entityType, entityId)
     }
+  }
+
+  private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
+    var trimStart = 0
+    var trimEnd = 0
+
+    var text = spannable.toString()
+
+    while (text.isNotEmpty() && text.startsWith("\n")) {
+      text = text.substring(1)
+      trimStart += 1
+    }
+
+    while (text.length > 0 && text.endsWith("\n")) {
+      text = text.substring(0, text.length - 1)
+      trimEnd += 1
+    }
+
+    return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 }
