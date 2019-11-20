@@ -33,7 +33,7 @@ class AudioViewModel @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var exploration: Exploration
   private var voiceoverMap = mapOf<String, Voiceover>()
-  private val defaultLanguage = "en"
+  private val defaultLanguage = "hi"
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
