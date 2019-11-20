@@ -184,7 +184,7 @@ class StateRetriever @Inject constructor(
           "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
             inputName,
             InteractionObject.newBuilder()
-              .setReal(inputsJson.getDouble(inputName))
+              .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
           else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
