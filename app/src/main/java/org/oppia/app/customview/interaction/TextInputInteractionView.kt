@@ -38,10 +38,10 @@ class TextInputInteractionView @JvmOverloads constructor(
     hideSoftKeyboard(v, context)
   }
 
-  override fun onKeyPreIme(key_code: Int, event: KeyEvent): Boolean {
+  override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
     if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP)
       this.clearFocus()
-    return super.onKeyPreIme(key_code, event)
+    return super.onKeyPreIme(keyCode, event)
   }
 }
 
