@@ -15,7 +15,8 @@ import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val CURRENT_QUESTION_DATA_PROVIDER = "CurrentQuestionDataProvider"
+private const val EPHEMERAL_QUESTION_DATA_PROVIDER_ID = "EphemeralQuestionDataProvider"
+private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training
@@ -28,16 +29,24 @@ private const val CURRENT_QUESTION_DATA_PROVIDER = "CurrentQuestionDataProvider"
  */
 @Singleton
 class QuestionAssessmentProgressController @Inject constructor(private val dataProviders: DataProviders) {
-  private lateinit var inProgressQuestionListDataProvider: DataProvider<List<Question>>
+  private var inProgressQuestionsListDataProvider: DataProvider<List<Question>> = createEmptyQuestionsListDataProvider()
   private var playing: Boolean = false
+  private val ephemeralQuestionDataSource: DataProvider<EphemeralQuestion> by lazy {
+    dataProviders.transformAsync(
+      EPHEMERAL_QUESTION_DATA_PROVIDER_ID, inProgressQuestionsListDataProvider, this::computeEphemeralQuestionStateAsync
+    )
+  }
 
   internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
     check(!playing) { "Cannot start a new training session until the previous one is completed" }
-    inProgressQuestionListDataProvider = questionsListDataProvider
+    inProgressQuestionsListDataProvider = questionsListDataProvider
+    playing = true
   }
 
   internal fun finishQuestionTrainingSession() {
     check(playing) { "Cannot stop a new training session which wasn't started" }
+    playing = false
+    inProgressQuestionsListDataProvider = createEmptyQuestionsListDataProvider()
   }
 
   /**
@@ -128,20 +137,38 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    * return a pending state.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
-    val questionDataProvider = dataProviders.transform(
-      CURRENT_QUESTION_DATA_PROVIDER, inProgressQuestionListDataProvider) { questionsList ->
-      check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
+    return dataProviders.convertToLiveData(ephemeralQuestionDataSource)
+  }
 
-      val currentQuestion = questionsList.first()
-      EphemeralQuestion.newBuilder()
-        .setEphemeralState(EphemeralState.newBuilder()
-          .setState(currentQuestion.questionState)
-          .setPendingState(PendingState.getDefaultInstance()))
-        .setCurrentQuestionIndex(0)
-        .setTotalQuestionCount(questionsList.size)
-        .setInitialTotalQuestionCount(questionsList.size)
-        .build()
+  @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
+  private suspend fun computeEphemeralQuestionStateAsync(
+    questionsList: List<Question>
+  ): AsyncResult<EphemeralQuestion> {
+    if (!playing) {
+      return AsyncResult.pending()
     }
-    return dataProviders.convertToLiveData(questionDataProvider)
+    return try {
+      AsyncResult.success(computeEphemeralQuestionState(questionsList))
+    } catch (e: Exception) {
+      AsyncResult.failed(e)
+    }
+  }
+
+  private fun computeEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
+    check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
+    val currentQuestion = questionsList.first()
+    return EphemeralQuestion.newBuilder()
+      .setEphemeralState(EphemeralState.newBuilder()
+        .setState(currentQuestion.questionState)
+        .setPendingState(PendingState.getDefaultInstance()))
+      .setCurrentQuestionIndex(0)
+      .setTotalQuestionCount(questionsList.size)
+      .setInitialTotalQuestionCount(questionsList.size)
+      .build()
+  }
+
+  /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
+  private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) { listOf<Question>() }
   }
 }

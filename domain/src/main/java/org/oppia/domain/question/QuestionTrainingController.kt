@@ -55,10 +55,14 @@ class QuestionTrainingController @Inject constructor(
   private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
-      getFilteredQuestionsForTraining(
-        skillIdsList, it.shuffled(random),
-        questionCountPerSession / skillIdsList.size
-      )
+      if (skillIdsList.isEmpty()) {
+        listOf()
+      } else {
+        getFilteredQuestionsForTraining(
+          skillIdsList, it.shuffled(random),
+          questionCountPerSession / skillIdsList.size
+        )
+      }
     }
   }
 
