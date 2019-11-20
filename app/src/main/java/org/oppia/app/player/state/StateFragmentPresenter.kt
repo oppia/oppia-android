@@ -90,6 +90,7 @@ class StateFragmentPresenter @Inject constructor(
   private var useCellularData = false
   private var feedbackId: String? = null
   private var autoPlayAudio = false
+  private var isFeedbackPlaying = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -212,7 +213,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (viewModel.isAudioBarVisible.get()!!) {
+    if (isAudioShowing()) {
       setAudioFragmentVisible(false)
     } else {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
@@ -283,22 +284,25 @@ class StateFragmentPresenter @Inject constructor(
         binding.stateRecyclerView.smoothScrollToPosition(0)
       }
       getAudioFragment()?.let {
+        (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
         it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
       }
       subscribeToAudioPlayStatus()
     } else {
       (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
-      getAudioFragment()?.let {
-        (it as AudioFragmentInterface).pauseAudio()
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
-        animation.setAnimationListener(object: Animation.AnimationListener {
-          override fun onAnimationEnd(p0: Animation?) {
-            getStateViewModel().setAudioBarVisibility(false)
-          }
-          override fun onAnimationStart(p0: Animation?) {}
-          override fun onAnimationRepeat(p0: Animation?) {}
-        })
-        it.view?.startAnimation(animation)
+      if (isAudioShowing()) {
+        getAudioFragment()?.let {
+          (it as AudioFragmentInterface).pauseAudio()
+          val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
+          animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationEnd(p0: Animation?) {
+              getStateViewModel().setAudioBarVisibility(false)
+            }
+            override fun onAnimationStart(p0: Animation?) {}
+            override fun onAnimationRepeat(p0: Animation?) {}
+          })
+          it.view?.startAnimation(animation)
+        }
       }
     }
   }
@@ -308,10 +312,11 @@ class StateFragmentPresenter @Inject constructor(
     audioFragmentInterface.getCurrentPlayStatus().observe(fragment, Observer {
       if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
         getAudioFragment()?.let {
-          if (feedbackId != null) {
-            feedbackId = null
+          if (isFeedbackPlaying) {
             audioFragmentInterface.setVoiceoverMappings(explorationId, currentStateName)
           }
+          isFeedbackPlaying = false
+          feedbackId = null
         }
       } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
         if (autoPlayAudio) {
@@ -341,9 +346,10 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
-    getAudioFragment()?.let {
-      (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
+    if (isAudioShowing()) {
+      (getAudioFragment() as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
     }
+    feedbackId = null
 
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
@@ -381,7 +387,7 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.itemList += pendingItemList
   }
 
-  /**
+  /**clickNegative_checkNo
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
@@ -393,9 +399,10 @@ class StateFragmentPresenter @Inject constructor(
       if (result.state.interaction.id == "Continue") {
         moveToNextState()
       } else {
+        isFeedbackPlaying = true
         feedbackId = result.feedback.contentId
       }
-      if (viewModel.isAudioBarVisible.get()!!) {
+      if (isAudioShowing()) {
         autoPlayAudio = true
       }
     })
@@ -436,6 +443,9 @@ class StateFragmentPresenter @Inject constructor(
   override fun onContinueButtonClicked() {
     hideKeyboard()
     moveToNextState()
+    if (isAudioShowing()) {
+      autoPlayAudio = true
+    }
   }
 
   private fun handleSubmitAnswer(answer: InteractionObject) {
@@ -548,6 +558,8 @@ class StateFragmentPresenter @Inject constructor(
         dialog.dismiss()
       }.create().show()
   }
+
+  private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   private enum class ViewType {
     VIEW_TYPE_CONTENT,

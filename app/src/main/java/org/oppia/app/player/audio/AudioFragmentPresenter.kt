@@ -94,9 +94,14 @@ class AudioFragmentPresenter @Inject constructor(
 
   fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) = viewModel.setVoiceoverMappings(explorationId, stateId, contentId)
   fun getCurrentPlayStatus() = viewModel.playStatusLiveData
-  fun playAudio() = viewModel.playAudio()
-  fun pauseAudio() = viewModel.pauseAudio()
-
+  fun playAudio() {
+    if (prepared)
+      viewModel.playAudio()
+  }
+  fun pauseAudio() {
+    if (prepared)
+      viewModel.pauseAudio()
+  }
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
