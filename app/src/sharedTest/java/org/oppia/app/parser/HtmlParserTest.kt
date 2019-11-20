@@ -78,6 +78,12 @@ class HtmlParserTest {
       .inject(this)
   }
 
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
@@ -111,11 +117,6 @@ class HtmlParserTest {
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   class FakeImageLoader : ImageLoader {
