@@ -59,12 +59,6 @@ class UrlImageParser private constructor(
           0
         }
         val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
-
-        val result = calculateDrawableSize(drawableWidth, drawableHeight, htmlContentTextView)
-        val width: Int = result.first
-        val height: Int = result.second
-
-        val rect = Rect(0, 0, width, height)
         drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
@@ -84,29 +78,9 @@ class UrlImageParser private constructor(
     }
   }
 
-  private fun calculateInitialMargin(drawableWidth: Int): Int {
+  public fun calculateInitialMargin(drawableWidth: Int): Int {
     val availableAreaWidth = htmlContentTextView.width
     return (availableAreaWidth - drawableWidth) / 2
-  }
-  /**
-   * Check whether textview's width is greater then drawable width,
-   * if true use drawable width and drawable height
-   * else adjust the height if the width of the  textview's  is smaller then drawable width
-   */
-  public fun calculateDrawableSize(
-    drawableWidth: Int,
-    drawableHeight: Int,
-    htmlContentTextView: TextView
-  ): Pair<Int, Int> {
-    return if (htmlContentTextView.getWidth() >= drawableWidth) {
-      val width = drawableWidth
-      val height = drawableHeight
-      Pair(width, height)
-    } else {
-      val width = htmlContentTextView.getWidth()
-      val height = (drawableHeight * width) / drawableWidth
-      Pair(width, height)
-    }
   }
 
   class Factory @Inject constructor(

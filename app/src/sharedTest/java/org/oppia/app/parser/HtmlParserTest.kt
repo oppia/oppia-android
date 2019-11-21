@@ -33,6 +33,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -58,7 +59,7 @@ class HtmlParserTest {
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
   @Inject
-  lateinit var urlImageParserFactory : UrlImageParser.Factory
+  lateinit var urlImageParserFactory: UrlImageParser.Factory
 
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
@@ -74,7 +75,7 @@ class HtmlParserTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestApplicationComponent.builder()
+    DaggerHtmlParserTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -116,27 +117,13 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_calculateImageWidthHeight() {
+  fun testHtmlContent_calculateImageWidth() {
     val htmlContentTextView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "")
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-            "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-            " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-            "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-            "red cherries in the pineapple slices?\u003c/p\u003e",
-      htmlContentTextView
-      )
-
-    htmlContentTextView.text = htmlResult
-    val imageGetter =  urlImageParserFactory.create(htmlContentTextView, "exploration", "DIWZiVgs0km-")
-    val result1 = imageGetter.calculateDrawableSize(100,200,htmlContentTextView)
-    assertWithMessage("Width = " + result1.first)
-    assertWithMessage("Height = " + result1.second)
-
-    val result2 = imageGetter.calculateDrawableSize(400,200,htmlContentTextView)
-    assertWithMessage("Width = " + result2.first)
-    assertWithMessage("Height = " + result2.second)
+    val imageGetter = urlImageParserFactory.create(htmlContentTextView, "exploration", "DIWZiVgs0km-", true)
+    val result1 = imageGetter.calculateInitialMargin(100)
+    assertWithMessage("Width = " + result1)
+    val result2 = imageGetter.calculateInitialMargin(400)
+    assertWithMessage("Width = " + result2)
 
   }
 
@@ -144,6 +131,9 @@ class HtmlParserTest {
   fun tearDown() {
     Intents.release()
   }
+
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -153,6 +143,32 @@ class HtmlParserTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
 
     @Provides
     @DefaultGcsPrefix
@@ -175,6 +191,19 @@ class HtmlParserTest {
       return "%s/%s/assets/image/%s"
     }
 
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   @Module
@@ -184,16 +213,19 @@ class HtmlParserTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class
-    ,ImageTestModule::class])
+  @Component(
+    modules = [TestModule::class
+      , ImageTestModule::class]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
+
     fun inject(htmlParserTest: HtmlParserTest)
   }
-
 }
