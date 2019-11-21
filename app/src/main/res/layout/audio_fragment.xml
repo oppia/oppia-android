@@ -46,8 +46,9 @@
     <SeekBar
       android:id="@+id/sbAudioProgress"
       style="@style/AudioSeekBar"
-      android:layout_width="180dp"
+      android:layout_width="0dp"
       android:layout_height="26dp"
+      android:minWidth="180dp"
       android:max="@{viewModel.durationLiveData}"
       android:maxHeight="4dp"
       android:minHeight="4dp"
