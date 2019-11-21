@@ -2,25 +2,41 @@ package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.StoryProgress
+import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_1 = "test_story_id_1"
 const val TEST_STORY_ID_2 = "test_story_id_2"
+const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
+const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
+const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
 const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
 const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
+const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
+const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
+const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
+const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
+const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
+private val FRACTIONS_COMPLETED_CHAPTERS = listOf(FRACTIONS_EXPLORATION_ID_0)
+private val RATIOS_COMPLETED_CHAPTERS = listOf<String>()
+val COMPLETED_EXPLORATIONS = FRACTIONS_COMPLETED_CHAPTERS + RATIOS_COMPLETED_CHAPTERS
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
-class StoryProgressController @Inject constructor() {
+class StoryProgressController @Inject constructor(
+  private val jsonAssetRetriever: JsonAssetRetriever
+) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
@@ -55,6 +71,11 @@ class StoryProgressController @Inject constructor() {
     }
   }
 
+  // TODO(#21): Hide this functionality behind a data provider rather than punching a hole in this controller.
+  internal fun retrieveStoryProgress(storyId: String): StoryProgress {
+    return createStoryProgressSnapshot(storyId)
+  }
+
   private fun trackCompletedChapter(storyId: String, explorationId: String) {
     check(storyId in trackedStoriesProgress) { "No story found with ID: $storyId" }
     trackedStoriesProgress.getValue(storyId).markChapterCompleted(explorationId)
@@ -69,8 +90,32 @@ class StoryProgressController @Inject constructor() {
     return mapOf(
       TEST_STORY_ID_0 to createStoryProgress0(),
       TEST_STORY_ID_1 to createStoryProgress1(),
-      TEST_STORY_ID_2 to createStoryProgress2()
+      TEST_STORY_ID_2 to createStoryProgress2(),
+      FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0),
+      RATIOS_STORY_ID_0 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 0),
+      RATIOS_STORY_ID_1 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 1)
     )
+  }
+
+  private fun createStoryProgressForJsonStory(fileName: String, index: Int): TrackedStoryProgress {
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    val explorationIdList = getExplorationIdsFromStory(
+      storyData.getJSONObject(index).getJSONObject("story")
+        .getJSONObject("story_contents").getJSONArray("nodes")
+    )
+    return TrackedStoryProgress(
+      chapterList = explorationIdList,
+      completedChapters = COMPLETED_EXPLORATIONS.filter(explorationIdList::contains).toSet()
+    )
+  }
+
+  private fun getExplorationIdsFromStory(chapterData: JSONArray): List<String> {
+    val explorationIdList = mutableListOf<String>()
+    for (i in 0 until chapterData.length()) {
+      val chapter = chapterData.getJSONObject(i)
+      explorationIdList.add(chapter.getString("exploration_id"))
+    }
+    return explorationIdList
   }
 
   private fun createStoryProgress0(): TrackedStoryProgress {

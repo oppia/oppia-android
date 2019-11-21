@@ -151,18 +151,22 @@ message EphemeralState {
   // of the exploration.
   bool has_previous_state = 2;
 
+  // Whether this specific state has an upcoming state that the learner can navigate to (indicating that this is not
+  // the state at the top of the current state deck).
+  bool has_next_state = 3;
+
   // Different types this state can take depending on whether the learner needs to finish an existing card, has
   // navigated to a previous card, or has reached the end of the exploration.
   oneof state_type {
     // A pending state that requires a correct answer to continue.
-    PendingState pending_state = 3;
+    PendingState pending_state = 4;
 
     // A previous state completed by the learner.
-    CompletedState completed_state = 4;
+    CompletedState completed_state = 5;
 
     // This value is always true in the case where the state type is terminal. This type may change in the future to a
     // message structure if additional data needs to be passed along to the terminal state card.
-    bool terminal_state = 5;
+    bool terminal_state = 6;
   }
 }
 
@@ -196,21 +200,25 @@ message AnswerOutcome {
   // correctness, and not all correct answers are guaranteed to be labelled as correct.
   bool labelled_as_correct_answer = 2;
 
+  // The State the answer was submitted in (to help downstream observers make decisions based on the State without
+  // needing to synchronize with other data providers).
+  State state = 3;
+
   // One of several destinations the learner should be routed to as a result of submitting this answer.
   oneof destination {
     // Indicates that the learner should not progress past the current state.
-    bool same_state = 3;
+    bool same_state = 4;
 
     // Indicates that the learner should move to the next state. This contains the name of that state, but this isn't
     // meant to be used by the UI directly beyond for logging purposes.
-    string state_name = 4;
+    string state_name = 5;
 
     // Indicates that the learner should be shown a concept card corresponding to the specified skill ID to refresh the
     // concept before proceeding.
-    string missing_prerequisite_skill_id = 5;
+    string missing_prerequisite_skill_id = 6;
 
     // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
     // to restart the current exploration.
-    string refresher_exploration_id = 6;
+    string refresher_exploration_id = 7;
   }
 }

@@ -150,20 +150,12 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Navigates to the previous state in the stack. If the learner is currently on the initial state, this method will
-   * throw an exception. Calling code is responsible to make sure that this method is not called when it's not possible
-   * to navigate to a previous card.
-   *
-   * This method cannot be called until an exploration has started and [getCurrentState] returns a non-pending result or
-   * an exception will be thrown.
-   */
-  /**
    * Navigates to the previous state in the graph. If the learner is currently on the initial state, this method will
    * throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
    * navigate backward.
    *
    * @return a one-time [LiveData] indicating whether the movement to the previous state was successful, or a failure if
-   *     state navigation was attempted at an invalid time in the state graph (e.g. if currently vieiwng the initial
+   *     state navigation was attempted at an invalid time in the state graph (e.g. if currently viewing the initial
    *     state of the exploration). It's recommended that calling code only listen to this result for failures, and
    *     instead rely on [getCurrentState] for observing a successful transition to another state.
    */
@@ -227,9 +219,6 @@ class ExplorationProgressController @Inject constructor(
    * Returns a [LiveData] monitoring the current [EphemeralState] the learner is currently viewing. If this state
    * corresponds to a a terminal state, then the learner has completed the exploration. Note that [moveToPreviousState]
    * and [moveToNextState] will automatically update observers of this live data when the next state is navigated to.
-   *
-   * Note that the returned [LiveData] is always the same object no matter when this method is called, except
-   * potentially when a new exploration is started.
    *
    * This [LiveData] may initially be pending while the exploration object is loaded. It may also switch from a
    * completed to a pending result during transient operations like submitting an answer via [submitAnswer]. Calling
@@ -401,6 +390,7 @@ class ExplorationProgressController @Inject constructor(
       val answerOutcomeBuilder = AnswerOutcome.newBuilder()
         .setFeedback(outcome.feedback)
         .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
+        .setState(currentState)
       when {
         outcome.refresherExplorationId.isNotEmpty() ->
           answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId
@@ -436,7 +426,13 @@ class ExplorationProgressController @Inject constructor(
     /** Navigates to the next State in the deck, or fails if this isn't possible. */
     internal fun navigateToNextState() {
       check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
+      val previousState = previousStates[stateIndex]
       stateIndex++
+      if (!previousState.hasNextState) {
+        // Update the previous state to indicate that it has a next state now that its next state has actually been
+        // 'created' by navigating to it.
+        previousStates[stateIndex - 1] = previousState.toBuilder().setHasNextState(true).build()
+      }
     }
 
     /**
@@ -470,6 +466,8 @@ class ExplorationProgressController @Inject constructor(
       check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
       check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
       check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+      // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new
+      // state doesn't become fully realized until navigated to.
       previousStates += EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())

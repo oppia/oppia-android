@@ -3,25 +3,28 @@ package org.oppia.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Question
-import org.oppia.domain.topic.TEST_SKILL_ID_0
-import org.oppia.domain.topic.TEST_SKILL_ID_1
-import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
-private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
-const val TEST_QUESTION_ID_0 = "question_id_0"
-const val TEST_QUESTION_ID_1 = "question_id_1"
-const val TEST_QUESTION_ID_2 = "question_id_2"
+private const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
+private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "RetrieveQuestionsResultsProvider"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
 class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
-  private val dataProviders: DataProviders
+  private val topicController: TopicController,
+  private val dataProviders: DataProviders,
+  @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
+  @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
+
+  private val random = Random(questionTrainingSeed)
   /**
    * Begins a question training session given a list of skill Ids and a total number of questions.
    *
@@ -33,14 +36,49 @@ class QuestionTrainingController @Inject constructor(
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    * The training session may still fail to load, but this provides early-failure detection.
    */
-   fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any?>> {
+  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any>> {
     return try {
-        val questionsList = retrieveQuestionsForSkillIds(skillIdsList)
-        questionAssessmentProgressController.beginQuestionTrainingSession(questionsList)
-        MutableLiveData(AsyncResult.success<Any?>(null))
+      val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
+      questionAssessmentProgressController.beginQuestionTrainingSession(
+        retrieveQuestionsDataProvider
+      )
+      // Convert the data provider type to 'Any' via a transformation.
+      val erasedDataProvider: DataProvider<Any> = dataProviders.transform(
+        RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER, retrieveQuestionsDataProvider
+      ) { it }
+      dataProviders.convertToLiveData(erasedDataProvider)
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
+  }
+
+  private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
+    val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
+    return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
+      if (skillIdsList.isEmpty()) {
+        listOf()
+      } else {
+        getFilteredQuestionsForTraining(
+          skillIdsList, it.shuffled(random),
+          questionCountPerSession / skillIdsList.size
+        )
+      }
+    }
+  }
+
+  // Attempts to fetch equal number of questions per skill. Removes any duplicates and limits the questions to be
+  // equal to TOTAL_QUESTIONS_PER_TOPIC questions.
+  private fun getFilteredQuestionsForTraining(
+    skillIdsList: List<String>, questionsList: List<Question>, numQuestionsPerSkill: Int
+  ): List<Question> {
+    val trainingQuestions = mutableListOf<Question>()
+    for (skillId in skillIdsList) {
+      trainingQuestions.addAll(questionsList.filter {
+        it.linkedSkillIdsList.contains(skillId) &&
+            !trainingQuestions.contains(it)
+      }.distinctBy { it.questionId }.take(numQuestionsPerSkill + 1))
+    }
+    return trainingQuestions.take(questionCountPerSession)
   }
 
   /**
@@ -55,47 +93,5 @@ class QuestionTrainingController @Inject constructor(
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
-  }
-
-  private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): LiveData<AsyncResult<List<Question>>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(QUESTION_DATA_PROVIDER_ID) {
-      loadQuestionsForSkillIds(skillIdsList)
-    }
-    return dataProviders.convertToLiveData(dataProvider)
-  }
-
-  // Loads and returns the questions given a list of skill ids.
-  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
-  private suspend fun loadQuestionsForSkillIds(skillIdsList: List<String>): AsyncResult<List<Question>> {
-    return try {
-      AsyncResult.success(loadQuestions(skillIdsList))
-    } catch (e: Exception) {
-      AsyncResult.failed(e)
-    }
-  }
-
-  @Suppress("RedundantSuspendModifier") // Force callers to call this on a background thread.
-  private suspend fun loadQuestions(skillIdsList: List<String>): List<Question> {
-    val questionsList = mutableListOf<Question>()
-    for (skillId in skillIdsList) {
-      when (skillId) {
-      TEST_SKILL_ID_0 -> questionsList.add(
-        Question.newBuilder()
-          .setQuestionId(TEST_QUESTION_ID_0)
-          .build())
-        TEST_SKILL_ID_1 -> questionsList.add(
-          Question.newBuilder()
-            .setQuestionId(TEST_QUESTION_ID_1)
-            .build())
-        TEST_SKILL_ID_2 -> questionsList.add(
-          Question.newBuilder()
-            .setQuestionId(TEST_QUESTION_ID_2)
-            .build())
-        else -> {
-          throw IllegalStateException("Invalid skill ID: $skillId")
-        }
-      }
-    }
-    return questionsList
   }
 }

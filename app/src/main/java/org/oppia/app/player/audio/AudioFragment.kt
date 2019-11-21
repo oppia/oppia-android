@@ -34,7 +34,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

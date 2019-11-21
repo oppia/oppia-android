@@ -7,13 +7,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.reflect.KClass
 
-/** A function that returns the type of view that can bind the specified data object. */
-typealias ComputeViewType<T> = (T) -> Int
+/** A function that returns the integer-based type of view that can bind the specified data object. */
+private typealias ComputeIntViewType<T> = (T) -> Int
 
-/**
- * The default type of all views used for adapters that do not need to specify different view types.
- */
-const val DEFAULT_VIEW_TYPE = 0
+/** A function that returns the enum-based type of view that can bind the specified data object. */
+typealias ComputeViewType<T, E> = (T) -> E
+
+/** The default type of all views used in single-type adapters. */
+private const val DEFAULT_VIEW_TYPE = 0
 
 private typealias ViewHolderFactory<T> = (ViewGroup) -> BindableAdapter.BindableViewHolder<T>
 
@@ -25,7 +26,7 @@ private typealias ViewHolderFactory<T> = (ViewGroup) -> BindableAdapter.Bindable
  * to include seamlessly binding to views using data-binding in a type-safe and lifecycle-safe way.
  */
 class BindableAdapter<T : Any> internal constructor(
-  private val computeViewType: ComputeViewType<T>,
+  private val computeIntViewType: ComputeIntViewType<T>,
   private val viewHolderFactoryMap: Map<Int, ViewHolderFactory<T>>,
   private val dataClassType: KClass<T>
 ) : RecyclerView.Adapter<BindableAdapter.BindableViewHolder<T>>() {
@@ -56,7 +57,7 @@ class BindableAdapter<T : Any> internal constructor(
     // when T1 is not assignable to T2). This likely won't have bad side effects since any time a
     // non-empty list is attempted to be bound, this crash will be correctly triggered.
     newDataList.firstOrNull()?.let {
-      check(it.javaClass.isAssignableFrom(dataClassType.java)) {
+      check(dataClassType.java.isAssignableFrom(it.javaClass)) {
         "Trying to bind incompatible data to adapter. Data class type: ${it.javaClass}, " +
             "expected adapter class type: $dataClassType."
       }
@@ -76,7 +77,7 @@ class BindableAdapter<T : Any> internal constructor(
   }
 
   override fun getItemViewType(position: Int): Int {
-    return computeViewType(dataList[position])
+    return computeIntViewType(dataList[position])
   }
 
   override fun onBindViewHolder(holder: BindableViewHolder<T>, position: Int) {
@@ -91,28 +92,113 @@ class BindableAdapter<T : Any> internal constructor(
   }
 
   /**
-   * Constructs a new [BindableAdapter]. Each type returned by the computer should have an
-   * associated view binder. If no computer is set, then [DEFAULT_VIEW_TYPE] is the default view
-   * type.
+   * Constructs a new [BindableAdapter] that for a single view type.
+   *
+   * Instances of [MultiTypeBuilder] should be instantiated using [newBuilder].
+   */
+  class SingleTypeBuilder<T: Any>(private val dataClassType: KClass<T>) {
+    private lateinit var viewHolderFactory: ViewHolderFactory<T>
+
+    /**
+     * Registers a [View] inflater and bind function for views in the recycler view.
+     *
+     * The inflateView and bindView functions passed in here must not hold any references to UI objects except those
+     * that own the RecyclerView.
+     *
+     * @param inflateView function that takes a parent [ViewGroup] and returns a newly inflated [View] of type [V]
+     * @param bindView function that takes a [RecyclerView]-owned [View] of type [V] and binds a data element typed [T]
+     *     to it
+     * @return this
+     */
+    fun <V : View> registerViewBinder(inflateView: (ViewGroup) -> V, bindView: (V, T) -> Unit): SingleTypeBuilder<T> {
+      check(!::viewHolderFactory.isInitialized) { "A view binder is already initialized" }
+      viewHolderFactory = { viewGroup ->
+        // This is lifecycle-safe since it will become dereferenced when the factory method returns.
+        // The version referenced in the anonymous BindableViewHolder object should be copied into a
+        // class field that binds that reference's lifetime to the view holder's lifetime. This
+        // approach avoids needing to perform an unsafe cast later when binding the view.
+        val inflatedView = inflateView(viewGroup)
+        object : BindableViewHolder<T>(inflatedView) {
+          override fun bind(data: T) {
+            bindView(inflatedView, data)
+          }
+        }
+      }
+      return this
+    }
+
+    /** See [registerViewDataBinder]. */
+    fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
+      inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
+      setViewModel: (DB, T) -> Unit
+    ): SingleTypeBuilder<T> {
+      return registerViewDataBinder(
+        inflateDataBinding = inflateDataBinding, setViewModel = setViewModel, transformViewModel = { it }
+      )
+    }
+
+    /**
+     * Behaves in the same way as [registerViewBinder] except the inflate and bind methods correspond to a [View]
+     * data-binding typed [DB].
+     *
+     * @param inflateDataBinding a function that inflates the root view of a data-bound layout (e.g.
+     *     MyDataBinding::inflate). This may also be a function that initializes the data-binding with additional
+     *     properties as necessary.
+     * @param setViewModel a function that initializes the view model in the data-bound view (e.g.
+     *     MyDataBinding::setSpecialViewModel). This may also be a function that initializes the view model & other
+     *     view-accessible properties as necessary.
+     * @param transformViewModel a function that converts the input model to a model of another type (such as for cases
+     *     when subclassing is used to represent more complex lists of data).
+     * @return this
+     */
+    fun <DB : ViewDataBinding, T2 : T> registerViewDataBinder(
+      inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
+      setViewModel: (DB, T2) -> Unit,
+      transformViewModel: (T) -> T2
+    ): SingleTypeBuilder<T> {
+      check(!::viewHolderFactory.isInitialized) { "A view binder is already initialized" }
+      viewHolderFactory = { viewGroup ->
+        // See registerViewBinder() comments for why this approach should be lifecycle safe and not
+        // introduce memory leaks.
+        val binding = inflateDataBinding(
+          LayoutInflater.from(viewGroup.context),
+          viewGroup,
+          /* attachToRoot= */ false
+        )
+        object : BindableViewHolder<T>(binding.root) {
+          override fun bind(data: T) {
+            setViewModel(binding, transformViewModel(data))
+          }
+        }
+      }
+      return this
+    }
+
+    /** Returns a new [BindableAdapter]. */
+    fun build(): BindableAdapter<T> {
+      check(::viewHolderFactory.isInitialized) { "A view binder must be initialized" }
+      return BindableAdapter({ DEFAULT_VIEW_TYPE }, mapOf(DEFAULT_VIEW_TYPE to viewHolderFactory), dataClassType)
+    }
+
+    companion object {
+      /** Returns a new [SingleTypeBuilder]. */
+      inline fun <reified T: Any> newBuilder(): SingleTypeBuilder<T> {
+        return SingleTypeBuilder(T::class)
+      }
+    }
+  }
+
+
+  /**
+   * Constructs a new [BindableAdapter] that supports multiple view types. Each type returned by the computer should
+   * have an associated view binder.
    *
    * Instances of [Builder] should be instantiated using [newBuilder].
    */
-  class Builder<T : Any>(private val dataClassType: KClass<T>) {
-    private var computeViewType: ComputeViewType<T> = { DEFAULT_VIEW_TYPE }
-    private var viewHolderFactoryMap: MutableMap<Int, ViewHolderFactory<T>> = HashMap()
-
-    /**
-     * Registers a function which returns the type of view a specific data item corresponds to. This defaults to always
-     * assuming all views are the same time: [DEFAULT_VIEW_TYPE].
-     *
-     * This function must be used if multiple views need to be supported by the [RecyclerView].
-     *
-     * @return this
-     */
-    fun registerViewTypeComputer(computeViewType: ComputeViewType<T>): Builder<T> {
-      this.computeViewType = computeViewType
-      return this
-    }
+  class MultiTypeBuilder<T: Any, E: Enum<E>>(
+    private val dataClassType: KClass<T>, private val computeViewType: ComputeViewType<T, E>
+  ) {
+    private var viewHolderFactoryMap: MutableMap<E, ViewHolderFactory<T>> = HashMap()
 
     /**
      * Registers a [View] inflater and bind function for views of the specified view type (with default value
@@ -129,8 +215,8 @@ class BindableAdapter<T : Any> internal constructor(
      * @return this
      */
     fun <V : View> registerViewBinder(
-      viewType: Int = DEFAULT_VIEW_TYPE, inflateView: (ViewGroup) -> V, bindView: (V, T) -> Unit
-    ): Builder<T> {
+      viewType: E, inflateView: (ViewGroup) -> V, bindView: (V, T) -> Unit
+    ): MultiTypeBuilder<T, E> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
         // This is lifecycle-safe since it will become dereferenced when the factory method returns.
@@ -148,6 +234,18 @@ class BindableAdapter<T : Any> internal constructor(
       return this
     }
 
+    /** See [registerViewDataBinder]. */
+    fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
+      viewType: E,
+      inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
+      setViewModel: (DB, T) -> Unit
+    ): MultiTypeBuilder<T, E> {
+      return registerViewDataBinder(
+        viewType = viewType, inflateDataBinding = inflateDataBinding, setViewModel = setViewModel,
+        transformViewModel = { it }
+      )
+    }
+
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods correspond to a [View]
      * data-binding typed [DB].
@@ -158,13 +256,16 @@ class BindableAdapter<T : Any> internal constructor(
      * @param setViewModel a function that initializes the view model in the data-bound view (e.g.
      *     MyDataBinding::setSpecialViewModel). This may also be a function that initializes the view model & other
      *     view-accessible properties as necessary.
+     * @param transformViewModel a function that converts the input model to a model of another type (such as for cases
+     *     when subclassing is used to represent more complex lists of data).
      * @return this
      */
-    fun <DB : ViewDataBinding> registerViewDataBinder(
-      viewType: Int = DEFAULT_VIEW_TYPE,
+    fun <DB : ViewDataBinding, T2 : T> registerViewDataBinder(
+      viewType: E,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
-    ): Builder<T> {
+      setViewModel: (DB, T2) -> Unit,
+      transformViewModel: (T) -> T2
+    ): MultiTypeBuilder<T, E> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
         // See registerViewBinder() comments for why this approach should be lifecycle safe and not
@@ -176,7 +277,7 @@ class BindableAdapter<T : Any> internal constructor(
         )
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
-            setViewModel(binding, data)
+            setViewModel(binding, transformViewModel(data))
           }
         }
       }
@@ -184,7 +285,7 @@ class BindableAdapter<T : Any> internal constructor(
       return this
     }
 
-    private fun checkViewTypeIsUnique(viewType: Int) {
+    private fun checkViewTypeIsUnique(viewType: E) {
       check(!viewHolderFactoryMap.containsKey(viewType)) {
         "Cannot register a second view binder for view type: $viewType (current binder: " +
             "${viewHolderFactoryMap[viewType]}."
@@ -193,15 +294,23 @@ class BindableAdapter<T : Any> internal constructor(
 
     /** Returns a new [BindableAdapter]. */
     fun build(): BindableAdapter<T> {
-      val computeViewType = this.computeViewType
       check(viewHolderFactoryMap.isNotEmpty()) { "At least one view binder must be registered" }
-      return BindableAdapter(computeViewType, viewHolderFactoryMap, dataClassType)
+      return BindableAdapter(
+        { value -> computeViewType(value).ordinal },
+        viewHolderFactoryMap.mapKeys { entry -> entry.key.ordinal },
+        dataClassType
+      )
     }
 
     companion object {
-      /** Returns a new [Builder]. */
-      inline fun <reified T : Any> newBuilder(): Builder<T> {
-        return Builder(T::class)
+      /**
+       * Returns a new [MultiTypeBuilder] with the specified function that returns the enum type of view a specific data
+       * item corresponds to.
+       */
+      inline fun <reified T: Any, reified E: Enum<E>> newBuilder(
+        noinline computeViewType: ComputeViewType<T, E>
+      ): MultiTypeBuilder<T, E> {
+        return MultiTypeBuilder(T::class, computeViewType)
       }
     }
   }
