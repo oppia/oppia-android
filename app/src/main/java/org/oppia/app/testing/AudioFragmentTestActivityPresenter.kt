@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import javax.inject.Inject
 
 /** The presenter for [AudioFragmentTestActivity] */
@@ -20,7 +20,7 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
         R.id.audio_fragment_placeholder,
         audioFragment
       ).commitNow()
-      audioFragment.setVoiceoverMappings(TEST_EXPLORATION_ID_5, "END")
+      audioFragment.setVoiceoverMappings(RATIOS_EXPLORATION_ID_0, "Introduction")
     }
   }
 

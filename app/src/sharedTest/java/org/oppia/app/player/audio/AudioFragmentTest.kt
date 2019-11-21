@@ -44,6 +44,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -65,8 +66,8 @@ class AudioFragmentTest {
   lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
-  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
-  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-es-4lbxy0bwo4g.mp3"
+  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
+  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
 
   @Before
   fun setUp() {
@@ -117,11 +118,9 @@ class AudioFragmentTest {
     invokePreparedListener(shadowMediaPlayer)
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
-
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
   }
 
@@ -132,7 +131,8 @@ class AudioFragmentTest {
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
     onView(withId(R.id.tvAudioLanguage)).perform(click())
-    onView(withText("es")).inRoot(isDialog()).perform(click())
+    val locale = Locale("es")
+    onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
     onView(withText("OK")).inRoot(isDialog()).perform(click())
 
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))

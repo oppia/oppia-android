@@ -11,7 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class NetworkConnectionUtil @Inject constructor(private val context: Context) {
   enum class ConnectionStatus {
-    LOCAL, CELLULAR, NONE
+    LOCAL, // Connected to WIFI or Ethernet
+    CELLULAR, // Connected to Mobile or WiMax
+    NONE // Not connected to a network
   }
   private var testConnectionStatus: ConnectionStatus? = null
 

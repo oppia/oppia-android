@@ -85,7 +85,6 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
-      check(!mediaPlayerActive) { "Media player has already been initialized" }
       mediaPlayerActive = true
       if (isReleased) {
         // Recreation is necessary since media player's resources have been released

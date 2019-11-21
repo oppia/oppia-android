@@ -78,25 +78,67 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI)
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.LOCAL)
   }
 
   @Test
+  fun testGetCurrentConnectionStatus_nonActiveWifiConnection_returnsNone() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  @Test
+  fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, true)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+  }
+
+  @Test
+  fun testGetCurrentConnectionStatus_nonActiveEthernetConnection_returnsNone() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, false)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  @Test
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE)
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
-    setNetworkConnectionStatus(NO_CONNECTION)
+  fun testGetCurrentConnectionStatus_nonActiveCellularConnection_returnsNone() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
   }
 
-  private fun setNetworkConnectionStatus(status: Int) {
+  @Test
+  fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, true)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+  }
+
+  @Test
+  fun testGetCurrentConnectionStatus_nonActiveWimaxConnection_returnsNone() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, false)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  @Test
+  fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
+    setNetworkConnectionStatus(NO_CONNECTION, false)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  @Test
+  fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
+    setNetworkConnectionStatus(ConnectivityManager.TYPE_BLUETOOTH, true)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+  }
+
+  private fun setNetworkConnectionStatus(status: Int, isConnected: Boolean) {
     shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, status, 0, /* isAvailable= */ true, /**/status != NO_CONNECTION))
+      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, status, 0, /* isAvailable= */ true, isConnected))
   }
 
   @Qualifier
