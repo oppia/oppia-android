@@ -26,54 +26,56 @@
       app:title="@string/concept_card_toolbar_title"
       app:titleTextColor="@color/white" />
 
-    <View
-      android:id="@+id/toolbar_shadow_view"
-      android:layout_width="match_parent"
-      android:layout_height="6dp"
-      android:background="@drawable/toolbar_drop_shadow"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/concept_card_toolbar" />
-
-    <ScrollView
-      android:layout_width="match_parent"
+    <FrameLayout
+      android:layout_width="0dp"
       android:layout_height="0dp"
-      android:paddingBottom="@dimen/bottom_white_space"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/toolbar_shadow_view">
+      app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar">
 
-      <LinearLayout
+      <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/bottom_white_space">
 
-        <TextView
-          android:id="@+id/concept_card_heading_text"
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="28dp"
-          android:layout_marginTop="40dp"
-          android:layout_marginEnd="28dp"
-          android:fontFamily="sans-serif-medium"
-          android:text="@{viewModel.conceptCardLiveData.skillDescription}"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="20sp" />
+          android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/concept_card_explanation_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="40dp"
-          android:layout_marginTop="28dp"
-          android:layout_marginEnd="40dp"
-          android:fontFamily="sans-serif"
-          android:text="@{viewModel.explanationLiveData}"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp" />
-      </LinearLayout>
-      <!--TODO(#352): Show worked examples in Concept Card.-->
-    </ScrollView>
+          <TextView
+            android:id="@+id/concept_card_heading_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="28dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@{viewModel.conceptCardLiveData.skillDescription}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="20sp" />
+
+          <TextView
+            android:id="@+id/concept_card_explanation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="40dp"
+            android:fontFamily="sans-serif"
+            android:text="@{viewModel.explanationLiveData}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="16sp" />
+        </LinearLayout>
+        <!--TODO(#352): Show worked examples in Concept Card.-->
+      </ScrollView>
+
+      <View
+        android:id="@+id/toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
