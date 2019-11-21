@@ -42,28 +42,28 @@ class AudioFragmentPresenter @Inject constructor(
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-//    binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-//      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//        if (fromUser) {
-//          userProgress = progress
-//        }
-//      }
-//
-//      override fun onStartTrackingTouch(seekBar: SeekBar?) {
-//        userIsSeeking = true
-//      }
-//
-//      override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//        getAudioViewModel().handleSeekTo(userProgress)
-//        userIsSeeking = false
-//      }
-//    })
+    binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        if (fromUser) {
+          userProgress = progress
+        }
+      }
+
+      override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        userIsSeeking = true
+      }
+
+      override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        getAudioViewModel().handleSeekTo(userProgress)
+        userIsSeeking = false
+      }
+    })
 
     val viewModel = getAudioViewModel()
     viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
       prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
-//      binding.sbAudioProgress.isEnabled = prepared
+      binding.sbAudioProgress.isEnabled = prepared
     })
 
     binding.let {
