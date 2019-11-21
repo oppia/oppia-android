@@ -1,8 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-  android:shape="oval">
-  <size
-    android:width="16dp"
-    android:height="16dp" />
-  <solid android:color="@color/colorPrimary" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item>
+    <shape android:shape="oval">
+      <padding
+        android:bottom="1dp"
+        android:left="1dp"
+         />
+      <solid android:color="#50000000" />
+    </shape>
+  </item>
+
+  <item
+    android:bottom="1px"
+    android:left="1px">
+    <shape android:shape="oval">
+      <solid android:color="@color/colorPrimary" />
+      <size
+        android:width="16dp"
+        android:height="16dp" />
+    </shape>
+  </item>
+</layer-list>
