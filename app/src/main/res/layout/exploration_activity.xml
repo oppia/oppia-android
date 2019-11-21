@@ -29,19 +29,14 @@
         android:layout_gravity="end"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:titleTextColor="@color/white">
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent">
         <ImageView
           android:id="@+id/action_audio_player"
           android:layout_width="48dp"
           android:layout_height="48dp"
+          android:layout_gravity="end"
           android:scaleType="center"
           android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
-          android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+          android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
