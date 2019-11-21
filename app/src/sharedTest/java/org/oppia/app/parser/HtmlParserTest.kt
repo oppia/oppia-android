@@ -121,9 +121,9 @@ class HtmlParserTest {
     val htmlContentTextView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, "exploration", "DIWZiVgs0km-", true)
     val result1 = imageGetter.calculateInitialMargin(100)
-    assertWithMessage("Width = " + result1)
+    assertWithMessage("Width = $result1")
     val result2 = imageGetter.calculateInitialMargin(400)
-    assertWithMessage("Width = " + result2)
+    assertWithMessage("Width = $result2")
 
   }
 
