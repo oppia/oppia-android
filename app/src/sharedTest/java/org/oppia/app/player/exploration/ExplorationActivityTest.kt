@@ -3,16 +3,13 @@ package org.oppia.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -27,19 +24,16 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
-import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.threading.BackgroundDispatcher
@@ -66,7 +60,7 @@ class ExplorationActivityTest {
       .inject(this)
   }
 
-  private fun getApplicationDepencencies(id: String) {
+  private fun getApplicationDependencies(id: String) {
     ActivityScenario.launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
         networkConnectionUtil = activity.networkConnectionUtil
@@ -84,7 +78,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
-    getApplicationDepencencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_30)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
@@ -93,7 +87,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -104,7 +98,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -115,7 +109,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -128,7 +122,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -141,7 +135,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -157,7 +151,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -174,7 +168,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() {
-    getApplicationDepencencies(RATIOS_EXPLORATION_ID_0)
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -187,7 +181,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithWifi_openFractionExploration_clickAudioButton_checkLanguageSelectDialogOpens() {
-    getApplicationDepencencies(FRACTIONS_EXPLORATION_ID_0)
+    getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -197,15 +191,14 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_openFractionExploration_clickAudioButton_clickContinue_clickPrevious_checkNoAudioAvailableIsDisplayed() {
-    getApplicationDepencencies(FRACTIONS_EXPLORATION_ID_0)
+  fun testAudioWithWifi_openFractionExploration_clickAudioButton_clickContinue_checkLanguageSelectDialogOpens() {
+    getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.previous_state_image_view)).perform(click())
-      onView(withText(R.string.audio_no_audio_available)).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.audio_language_select_dialog_title))).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
