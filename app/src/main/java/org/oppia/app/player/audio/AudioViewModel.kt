@@ -36,6 +36,7 @@ class AudioViewModel @Inject constructor(
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "en"
+  private var languageSelectionShown = false
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
@@ -61,8 +62,6 @@ class AudioViewModel @Inject constructor(
     processPlayStatusLiveData()
   }
 
-  val showSeekBar = ObservableField(true)
-
   fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) {
     this.explorationId = explorationId
     if (!::exploration.isInitialized) {
@@ -83,19 +82,23 @@ class AudioViewModel @Inject constructor(
     voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
-      languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
       languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
-      selectedLanguageCode.isEmpty() && languages.isNotEmpty() -> {
-        setAudioLanguageCode(languages.first())
+      languages.isNotEmpty() -> {
+        languageSelectionShown = true
+        val languageCode = if (languages.any { it == exploration.languageCode }) {
+          exploration.languageCode
+        } else {
+          languages.first()
+        }
+        setAudioLanguageCode(languageCode)
         (fragment as LanguageInterface).languageSelectionClicked()
       }
-      else -> showSeekBar.set(false)
     }
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
-    showSeekBar.set(true)
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))
@@ -110,7 +113,15 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-  fun playAudio() = audioPlayerController.play()
+  fun playAudio() {
+    // Do not auto play audio if the LanguageDialogFragment was shown
+    if (!languageSelectionShown) {
+      audioPlayerController.play()
+    } else {
+      languageSelectionShown = false
+    }
+  }
+
   fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()

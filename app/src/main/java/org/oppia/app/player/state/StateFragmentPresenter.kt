@@ -39,6 +39,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
+import org.oppia.app.player.audio.TAG_LANGUAGE_DIALOG
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -276,33 +277,41 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setAudioFragmentVisible(isVisible: Boolean) {
     if (isVisible) {
-      getStateViewModel().setAudioBarVisibility(true)
-      autoPlayAudio = true
-      (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
-      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-      if (currentYOffset == 0) {
-        binding.stateRecyclerView.smoothScrollToPosition(0)
-      }
-      getAudioFragment()?.let {
-        (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
-        it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
-      }
-      subscribeToAudioPlayStatus()
+      showAudioFragment()
     } else {
-      (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
-      if (isAudioShowing()) {
-        getAudioFragment()?.let {
-          (it as AudioFragmentInterface).pauseAudio()
-          val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
-          animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationEnd(p0: Animation?) {
-              getStateViewModel().setAudioBarVisibility(false)
-            }
-            override fun onAnimationStart(p0: Animation?) {}
-            override fun onAnimationRepeat(p0: Animation?) {}
-          })
-          it.view?.startAnimation(animation)
-        }
+      hideAudioFragment()
+    }
+  }
+
+  private fun showAudioFragment() {
+    getStateViewModel().setAudioBarVisibility(true)
+    autoPlayAudio = true
+    (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
+    val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
+    if (currentYOffset == 0) {
+      binding.stateRecyclerView.smoothScrollToPosition(0)
+    }
+    getAudioFragment()?.let {
+      (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
+      it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+    }
+    subscribeToAudioPlayStatus()
+  }
+
+  private fun hideAudioFragment() {
+    (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
+    if (isAudioShowing()) {
+      getAudioFragment()?.let {
+        (it as AudioFragmentInterface).pauseAudio()
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+          override fun onAnimationEnd(p0: Animation?) {
+            getStateViewModel().setAudioBarVisibility(false)
+          }
+          override fun onAnimationStart(p0: Animation?) {}
+          override fun onAnimationRepeat(p0: Animation?) {}
+        })
+        it.view?.startAnimation(animation)
       }
     }
   }

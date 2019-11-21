@@ -11,7 +11,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
+const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope

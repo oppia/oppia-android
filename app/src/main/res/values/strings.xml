@@ -8,7 +8,6 @@
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
-  <string name="audio_no_audio_available">No audio available.</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
   <string name="audio_dialog_offline_positive">OK</string>
