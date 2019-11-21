@@ -9,12 +9,26 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.DefaultGcsPrefix
+import org.oppia.util.parser.DefaultGcsResource
+import org.oppia.util.parser.ImageDownloadUrlTemplate
+import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [TopicListController]. */
@@ -66,7 +80,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_BOOK)
+    assertThat(firstTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
   }
 
   @Test
@@ -94,7 +108,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
-    assertThat(secondTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(secondTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
   }
 
   @Test
@@ -170,8 +184,8 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val promotedStory = topicList.promotedStory
-    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_1)
-    assertThat(promotedStory.storyName).isEqualTo("Second Story")
+    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(promotedStory.storyName).isEqualTo("Matthew")
   }
 
   @Test
@@ -180,8 +194,8 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val promotedStory = topicList.promotedStory
-    assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(promotedStory.topicName).isEqualTo("First Topic")
+    assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(promotedStory.topicName).isEqualTo("Fractions")
   }
 
   @Test
@@ -191,15 +205,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val promotedStory = topicList.promotedStory
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
-    assertThat(promotedStory.totalChapterCount).isEqualTo(3)
-  }
-
-  @Test
-  fun testRetrieveTopicList_hasMultipleOngoingLessons() {
-    val topicListLiveData = topicListController.getTopicList()
-
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    assertThat(topicList.ongoingStoryCount).isEqualTo(2)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
   @Test
@@ -216,7 +222,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
+    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
   }
 
   @Test
@@ -225,8 +231,8 @@ class TopicListControllerTest {
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.storyId).isEqualTo(TEST_STORY_ID_1)
-    assertThat(recentLesson.storyName).isEqualTo("Second Story")
+    assertThat(recentLesson.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(recentLesson.storyName).isEqualTo("Matthew")
   }
 
   @Test
@@ -235,8 +241,8 @@ class TopicListControllerTest {
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(recentLesson.topicName).isEqualTo("First Topic")
+    assertThat(recentLesson.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(recentLesson.topicName).isEqualTo("Fractions")
   }
 
   @Test
@@ -246,7 +252,7 @@ class TopicListControllerTest {
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
     assertThat(recentLesson.completedChapterCount).isEqualTo(1)
-    assertThat(recentLesson.totalChapterCount).isEqualTo(3)
+    assertThat(recentLesson.totalChapterCount).isEqualTo(2)
   }
 
   @Test
@@ -263,7 +269,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(1)
+    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -273,6 +279,9 @@ class TopicListControllerTest {
       .inject(this)
   }
 
+  @Qualifier
+  annotation class TestDispatcher
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -281,6 +290,65 @@ class TopicListControllerTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @DefaultGcsPrefix
+    @Singleton
+    fun provideDefaultGcsPrefix(): String {
+      return "https://storage.googleapis.com/"
+    }
+
+    @Provides
+    @DefaultGcsResource
+    @Singleton
+    fun provideDefaultGcsResource(): String {
+      return "oppiaserver-resources/"
+    }
+
+    @Provides
+    @ImageDownloadUrlTemplate
+    @Singleton
+    fun provideImageDownloadUrlTemplate(): String {
+      return "%s/%s/assets/image/%s"
+    }
+
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.

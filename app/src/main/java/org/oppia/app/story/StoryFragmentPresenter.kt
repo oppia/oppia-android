@@ -65,23 +65,22 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StoryItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER.ordinal
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER.ordinal
+          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_HEADER.ordinal,
+        viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CHAPTER.ordinal,
+        viewType = ViewType.VIEW_TYPE_CHAPTER,
         inflateDataBinding = StoryChapterViewBinding::inflate,
         setViewModel = StoryChapterViewBinding::setViewModel,
         transformViewModel = { it as StoryChapterSummaryViewModel }

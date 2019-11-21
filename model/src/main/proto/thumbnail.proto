@@ -38,3 +38,37 @@ enum LessonThumbnailGraphic {
   // Corresponds to an in-app image of a person next to a pie chart.
   PERSON_WITH_PIE_CHART = 6;
 }
+
+// Represents the thumbnail that should be rendered for a skill.
+message SkillThumbnail {
+  // The graphic corresponding to this thumbnail.
+  SkillThumbnailGraphic thumbnail_graphic = 1;
+}
+
+// Corresponds to different types of thumbnails that may be used by skills in a topic. These currently only
+// correspond to in-app thumbnails, but may later indicate that a skill has a downloadable thumbnail to use, instead.
+enum SkillThumbnailGraphic {
+  // Corresponds to Identifying the parts of a fraction skill. Also, acts as default thumbnail for skill.
+  IDENTIFYING_THE_PARTS_OF_A_FRACTION = 0;
+
+  // Corresponds to Writing Fractions skill.
+  WRITING_FRACTIONS = 1;
+
+  // Corresponds to Equivalent Fractions skill.
+  EQUIVALENT_FRACTIONS = 2;
+
+  // Corresponds to Mixed Numberes and Improper Fractions skill.
+  MIXED_NUMBERS_AND_IMPROPER_FRACTIONS = 3;
+
+  // Corresponds to Comparing Fractions skill.
+  COMPARING_FRACTIONS = 4;
+
+  // Corresponds to Adding and Subtracting Fractions skill.
+  ADDING_AND_SUBTRACTING_FRACTIONS = 5;
+
+  // Corresponds to Multiplying Fractions skill.
+  MULTIPLYING_FRACTIONS = 6;
+
+  // Corresponds to Dividing Fractions skill.
+  DIVIDING_FRACTIONS = 7;
+}

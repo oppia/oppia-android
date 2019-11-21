@@ -28,6 +28,9 @@ const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
 const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
 const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
 const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
+private val FRACTIONS_COMPLETED_CHAPTERS = listOf(FRACTIONS_EXPLORATION_ID_0)
+private val RATIOS_COMPLETED_CHAPTERS = listOf<String>()
+val COMPLETED_EXPLORATIONS = FRACTIONS_COMPLETED_CHAPTERS + RATIOS_COMPLETED_CHAPTERS
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
@@ -68,6 +71,11 @@ class StoryProgressController @Inject constructor(
     }
   }
 
+  // TODO(#21): Hide this functionality behind a data provider rather than punching a hole in this controller.
+  internal fun retrieveStoryProgress(storyId: String): StoryProgress {
+    return createStoryProgressSnapshot(storyId)
+  }
+
   private fun trackCompletedChapter(storyId: String, explorationId: String) {
     check(storyId in trackedStoriesProgress) { "No story found with ID: $storyId" }
     trackedStoriesProgress.getValue(storyId).markChapterCompleted(explorationId)
@@ -91,19 +99,13 @@ class StoryProgressController @Inject constructor(
 
   private fun createStoryProgressForJsonStory(fileName: String, index: Int): TrackedStoryProgress {
     val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
-    if (storyData.length() < index) {
-      return TrackedStoryProgress(
-        chapterList = listOf(),
-        completedChapters = setOf()
-      )
-    }
     val explorationIdList = getExplorationIdsFromStory(
       storyData.getJSONObject(index).getJSONObject("story")
         .getJSONObject("story_contents").getJSONArray("nodes")
     )
     return TrackedStoryProgress(
       chapterList = explorationIdList,
-      completedChapters = setOf()
+      completedChapters = COMPLETED_EXPLORATIONS.filter(explorationIdList::contains).toSet()
     )
   }
 
