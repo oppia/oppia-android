@@ -35,9 +35,9 @@
       android:layout_marginEnd="20dp"
       android:layout_marginBottom="@dimen/divider_margin_bottom"
       android:divider="@android:color/transparent"
+      app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
       app:data="@{viewModel.choiceItems}"
       app:explorationId="@{viewModel.explorationId}"
-      app:itemInputType="@{viewModel.getSelectionItemInputType()}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
   </LinearLayout>
 </layout>

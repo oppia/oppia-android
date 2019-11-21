@@ -60,11 +60,11 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
-  <string name="size_bytes">Bytes</string>
-  <string name="size_kb">KB</string>
-  <string name="size_mb">MB</string>
-  <string name="size_gb">GB</string>
-  <string name="size_tb">TB</string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%d Bytes</string>
+  <string name="size_kb">%d KB</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d GB</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
