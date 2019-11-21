@@ -124,7 +124,6 @@ class HtmlParserTest {
     assertWithMessage("Width = $result1")
     val result2 = imageGetter.calculateInitialMargin(400)
     assertWithMessage("Width = $result2")
-
   }
 
   @After
