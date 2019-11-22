@@ -34,11 +34,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     navView.setNavigationItemSelectedListener(this)
     fragment.setHasOptionsMenu(true)
     openActivityByMenuItemId(0)
+    navView.getMenu().getItem(0).setChecked(true)
     return view
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    navView.getMenu().getItem(0).setChecked(true)
     if (menuItemId != null && previousmMenuItemId != menuItemId && menuItemId != 0) {
       var intent = Intent(fragment.activity, HomeActivity::class.java)
       when (menuItemId) {
