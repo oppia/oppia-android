@@ -1,23 +1,24 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
   <item>
     <shape android:shape="oval">
-      <padding
-        android:bottom="1dp"
-        android:left="1dp"
-         />
-      <solid android:color="#50000000" />
+      <corners android:radius="10dp" />
+      <size
+        android:width="22dp"
+        android:height="22dp" />
+      <gradient
+        android:endColor="@android:color/transparent"
+        android:gradientRadius="20"
+        android:startColor="@color/black_54"
+        android:type="radial" />
     </shape>
   </item>
-
   <item
-    android:bottom="1px"
-    android:left="1px">
+    android:bottom="4dp"
+    android:left="8dp"
+    android:top="4dp">
     <shape android:shape="oval">
-      <solid android:color="@color/colorPrimary" />
-      <size
-        android:width="16dp"
-        android:height="16dp" />
+      <solid android:color="@color/white" />
+      <corners android:radius="10dp" />
     </shape>
   </item>
 </layer-list>
