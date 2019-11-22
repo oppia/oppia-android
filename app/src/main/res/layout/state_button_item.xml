@@ -19,7 +19,7 @@
     android:layout_marginTop="60dp"
     android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:paddingEnd="24dp"
-    android:paddingBottom="136dp">
+    android:paddingBottom="84dp">
 
     <ImageButton
       android:id="@+id/previous_state_image_view"
