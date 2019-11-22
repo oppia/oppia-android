@@ -20,7 +20,7 @@ class KeyboardHelper {
     /**
      * This method shows softinputkeybord
      * @param view is the input view
-     * @param context context of the container
+     * @param context context of the activity
      */
     fun showSoftKeyboard(view: View, context: Context) {
       if (view.requestFocus()) {
