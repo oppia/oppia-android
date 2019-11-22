@@ -6,9 +6,7 @@
 
     <import type="org.oppia.app.R" />
 
-    <variable
-      name="viewModel"
-      type="org.oppia.app.help.HelpViewModel" />
+
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
