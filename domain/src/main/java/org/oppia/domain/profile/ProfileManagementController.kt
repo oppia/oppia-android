@@ -9,8 +9,6 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.model.Profile
@@ -39,6 +37,8 @@ private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profil
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
 private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
 private const val GRAVATAR_QUERY_STRING = "?s=100&d=identicon&r=g"
+private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
+private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -57,7 +57,6 @@ class ProfileManagementController @Inject constructor(
   class FailedToStoreImageException(msg: String): Exception(msg)
   class FailedToDeleteDirException(msg: String): Exception(msg)
   class ProfileNotFoundException(msg: String): Exception(msg)
-  class FailedToReadProfilesException(msg: String): Exception(msg)
 
   private enum class ProfileActionStatus {
     SUCCESS,
@@ -258,37 +257,14 @@ class ProfileManagementController @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun loginToProfile (profileId: ProfileId): LiveData<AsyncResult<Any?>> {
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
-//    setCurrentProfileId(profileId).observeForever { setIdResult ->
-//      if (setIdResult.isSuccess()) {
-//        updateLastLoggedIn(profileId).observeForever { updateLoggedInResult ->
-//          if (updateLoggedInResult.isSuccess()) {
-//            pendingLiveData.postValue(AsyncResult.success(null))
-//          } else if (updateLoggedInResult.isFailure()) {
-//            pendingLiveData.postValue(AsyncResult.failed(updateLoggedInResult.getErrorOrNull()!!))
-//          }
-//        }
-//      } else if (setIdResult.isFailure()) {
-//        pendingLiveData.postValue(AsyncResult.failed(setIdResult.getErrorOrNull()!!))
-//      }
-//    }
-
-    dataProviders.transformAsync("test2", setCurrentProfileId(profileId)) {
-      val deferred = updateLastLoggedIn(profileId)
-      deferred.invokeOnCompletion {
-        if (it != null) {
-          logger.e("ProfileManagementController", "Failed to update last logged in", it)
-          pendingLiveData.postValue(AsyncResult.failed(it))
-        } else {
-          when (deferred.getCompleted()) {
-            ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-            else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-          }
-        }
+    return dataProviders.convertToLiveData(dataProviders.transformAsync<Any?, Any?>(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
+      val deferredResult = updateLastLoggedInAsync(profileId).await()
+      if (deferredResult == ProfileActionStatus.SUCCESS) {
+        AsyncResult.success(null)
+      } else {
+        AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile"))
       }
-      AsyncResult.success(null)
-    }
-    return pendingLiveData
+    })
   }
 
   /**
@@ -298,8 +274,8 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being set.
    * @return a [LiveData] that indicates the success/failure of this set operation.
    */
-  internal fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
-    return dataProviders.transformAsync("test", profileDataStore) {
+  private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
+    return dataProviders.transformAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID, profileDataStore) {
       if (it.profilesMap.containsKey(profileId.internalId)) {
         currentProfileId = profileId.internalId
         return@transformAsync AsyncResult.success<Any?>(null)
@@ -315,24 +291,13 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   @ExperimentalCoroutinesApi
-  internal fun updateLastLoggedIn(profileId: ProfileId): Deferred<Any?> {
+  private fun updateLastLoggedInAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
     return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(Date().time).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-//    deferred.invokeOnCompletion {
-//      if (it != null) {
-//        logger.e("ProfileManagementController", "Failed to update last logged in", it)
-//        pendingLiveData.postValue(AsyncResult.failed(it))
-//      } else {
-//        when (deferred.getCompleted()) {
-//          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-//          else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-//        }
-//      }
-//    }
   }
 
   /**
