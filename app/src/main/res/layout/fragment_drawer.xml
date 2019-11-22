@@ -1,0 +1,15 @@
+<com.google.android.material.navigation.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/nav_view"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_gravity="start"
+  android:fitsSystemWindows="true"
+  app:headerLayout="@layout/nav_header_navigation_drawer"
+  app:itemBackground="@android:color/transparent"
+  app:itemIconTint="@color/drawer_item"
+  app:itemTextColor="@color/drawer_item"
+  app:menu="@menu/navigation_drawer_menu">
+
+
+</com.google.android.material.navigation.NavigationView>
