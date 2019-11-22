@@ -15,20 +15,6 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private var toolbar: Toolbar? = null
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
-  fun setUpNavigationDrawer(title: String) {
-    toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar?
-
-    activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.setUpDrawer(
-      activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
-      toolbar!!
-    )
-    activity.setTitle(title)
-  }
-
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
     setUpNavigationDrawer(activity.getString(R.string.menu_help))
@@ -37,4 +23,19 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       HelpFragment()
     ).commitNow()
   }
+
+  fun setUpNavigationDrawer(title: String) {
+    toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar?
+
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+    navigationDrawerFragment =
+      activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment!!.navigationDrawerFragmentPresenter.setUpDrawer(
+      activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
+      toolbar!!
+    )
+    activity.setTitle(title)
+  }
+
 }

@@ -3,6 +3,7 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.continueplaying.ContinuePlayingFragment
@@ -59,7 +60,7 @@ interface FragmentComponent {
   fun inject(topicTrainFragment: TopicTrainFragment)
   fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileEditFragment: ProfileEditFragment)
-  fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(adminAuthFragment: AdminAuthFragment)
   fun inject(addProfileFragment: AddProfileFragment)
+  fun inject(navigationDrawerFragment: NavigationDrawerFragment)
 }
