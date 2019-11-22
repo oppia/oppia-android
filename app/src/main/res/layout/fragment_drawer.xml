@@ -11,5 +11,26 @@
   app:itemTextColor="@color/drawer_item"
   app:menu="@menu/navigation_drawer_menu">
 
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal"
+    android:padding="16dp">
 
+    <ImageView
+      android:layout_width="@dimen/image_dim_24"
+      android:layout_height="@dimen/image_dim_24"
+      android:layout_gravity="center_vertical"
+      android:layout_margin="@dimen/margin_10"
+      android:src="@drawable/ic_admin_settings_icon_grey_24dp" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginLeft="@dimen/margin_30"
+      android:text="@string/admin_settings"
+      android:textColor="@color/black" />
+  </LinearLayout>
 </com.google.android.material.navigation.NavigationView>
