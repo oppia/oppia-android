@@ -22,17 +22,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="180dp"
-      android:clickable="true"
-      android:focusable="true">
+      android:layout_height="wrap_content">
 
       <ImageView
         android:id="@+id/skill_image_view"
         android:layout_width="0dp"
         android:layout_height="104dp"
         android:importantForAccessibility="no"
-        android:scaleType="fitXY"
-        android:src="@{skill.thumbnailUrl}"
+        android:scaleType="centerInside"
+        android:src="@{skill.skillThumbnail.thumbnailGraphic}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +48,10 @@
         android:id="@+id/skill_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
+        android:maxLines="3"
+        android:minLines="3"
         android:padding="12dp"
         android:text="@{skill.description}"
         android:textColor="@color/oppiaPrimaryText"

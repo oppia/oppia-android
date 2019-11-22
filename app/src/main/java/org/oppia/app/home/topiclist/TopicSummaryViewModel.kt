@@ -19,7 +19,7 @@ class TopicSummaryViewModel(
   private val topicSummaryClickListener: TopicSummaryClickListener
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
-  val canonicalStoryCount: Int = topicSummary.canonicalStoryCount
+  val totalChapterCount: Int = topicSummary.totalChapterCount
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt

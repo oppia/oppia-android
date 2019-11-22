@@ -6,7 +6,7 @@ import org.oppia.domain.util.toAnswerString
 
 class TextInputViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+): StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun getPendingAnswer(): InteractionObject {

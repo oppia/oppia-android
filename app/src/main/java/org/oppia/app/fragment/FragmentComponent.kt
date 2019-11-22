@@ -9,6 +9,8 @@ import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.settings.profile.ProfileEditFragment
+import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AddProfileFragment
 import org.oppia.app.profile.AdminAuthFragment
@@ -39,8 +41,6 @@ interface FragmentComponent {
 
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
-  fun inject(addProfileFragment: AddProfileFragment)
-  fun inject(adminAuthFragment: AdminAuthFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
@@ -57,4 +57,9 @@ interface FragmentComponent {
   fun inject(topicPlayFragment: TopicPlayFragment)
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
+  fun inject(profileListFragment: ProfileListFragment)
+  fun inject(profileEditFragment: ProfileEditFragment)
+  fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(adminAuthFragment: AdminAuthFragment)
+  fun inject(addProfileFragment: AddProfileFragment)
 }

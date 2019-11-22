@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -53,6 +54,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("9"))
@@ -62,10 +64,11 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_number_input_interaction_view)).check(matches(isDisplayed())).check(matches(withText("9")))
   }
 
+  @Test
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.normalizedString).isEmpty()
     }
@@ -76,7 +79,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.NORMALIZED_STRING)
       assertThat(pendingAnswer.normalizedString).isEqualTo("abc")
@@ -84,6 +87,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_text_input_interaction_view)).perform(typeText("abc"))
@@ -97,7 +101,7 @@ class InputInteractionViewTestActivityTest {
   fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.fraction.denominator).isEqualTo(0)
       assertThat(pendingAnswer.fraction.numerator).isEqualTo(0)
@@ -110,7 +114,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
@@ -123,7 +127,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -136,7 +140,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -150,7 +154,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
@@ -164,7 +168,7 @@ class InputInteractionViewTestActivityTest {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5 9/10"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(false)
@@ -177,19 +181,20 @@ class InputInteractionViewTestActivityTest {
   @Test
   fun testFractionInputInteractionView_withInputtedNegativeWholeNumberValue_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-5 9/10"))
+    onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("-55 59/9"))
     activityScenario.onActivity { activity ->
-      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.FRACTION)
       assertThat(pendingAnswer.fraction.isNegative).isEqualTo(true)
-      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(5)
-      assertThat(pendingAnswer.fraction.numerator).isEqualTo(9)
-      assertThat(pendingAnswer.fraction.denominator).isEqualTo(10)
+      assertThat(pendingAnswer.fraction.wholeNumber).isEqualTo(55)
+      assertThat(pendingAnswer.fraction.numerator).isEqualTo(59)
+      assertThat(pendingAnswer.fraction.denominator).isEqualTo(9)
     }
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("9/5"))

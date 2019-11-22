@@ -39,6 +39,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -108,6 +109,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -178,6 +180,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -262,6 +265,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
