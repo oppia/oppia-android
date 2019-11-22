@@ -14,12 +14,6 @@ class StringToFractionParser {
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   private val fractionRegex = """^\s*-?\s*((\d*\s*\d+\s*\/\s*\d+)|\d+)\s*$""".toRegex()
 
-  object FRACTION_PARSING_ERRORS {
-    const val INVALID_CHARS = "Please only use numerical digits, spaces or forward slashes (/)"
-    const val INVALID_FORMAT = "Please enter a valid fraction (e.g., 5/3 or 1 2/3)"
-    const val DIVISION_BY_ZERO = "Please do not put 0 in the denominator"
-  }
-
   fun fromRawInputString(inputText: String): FractionParsingErrors {
     var denominator = 1
     var rawInput: String = inputText.normalizeWhitespace()
@@ -49,15 +43,14 @@ class StringToFractionParser {
 
   fun getFractionFromString(text: String): Fraction {
     //for testing the validation in a single method
-    fromRawInputString(text)
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
     if (inputText.matches(invalidCharsRegex))
       return parseMixedNumber(inputText)
         ?: parseFraction(inputText)
         ?: parseWholeNumber(inputText)
-        ?: throw IllegalArgumentException(FractionParsingErrors.INVALID_FORMAT.toString())
-    else return throw IllegalArgumentException(FractionParsingErrors.INVALID_CHARS.toString())
+        ?: throw IllegalArgumentException(FractionParsingErrors.INVALID_FORMAT.getError())
+    else return throw IllegalArgumentException(FractionParsingErrors.INVALID_CHARS.getError())
 
   }
 
@@ -65,7 +58,7 @@ class StringToFractionParser {
     val mixedNumberMatch = mixedNumberRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText, numeratorText, denominatorText) = mixedNumberMatch.groupValues
     if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.toString())
+      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.getError())
     else
       return Fraction.newBuilder()
         .setIsNegative(isInputNegative(inputText))
@@ -79,7 +72,7 @@ class StringToFractionParser {
     val fractionOnlyMatch = fractionOnlyRegex.matchEntire(inputText) ?: return null
     val (_, numeratorText, denominatorText) = fractionOnlyMatch.groupValues
     if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.toString())
+      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.getError())
     else
     // Fraction-only numbers imply no whole number.
       return Fraction.newBuilder()

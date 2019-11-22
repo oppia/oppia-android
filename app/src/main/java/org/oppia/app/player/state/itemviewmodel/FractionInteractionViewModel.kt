@@ -1,9 +1,13 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import android.util.Log
+import android.widget.Toast
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.topic.FractionParsingErrors
 import org.oppia.domain.util.toAnswerString
+import java.util.logging.Logger
 
 class FractionInteractionViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
@@ -12,9 +16,10 @@ class FractionInteractionViewModel(
 
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (answerText.isNotEmpty()) {
+    if (answerText.isNotEmpty() && StringToFractionParser().fromRawInputString(answerText.toString()) != FractionParsingErrors.VALID) {
       interactionObjectBuilder.fraction = StringToFractionParser().getFractionFromString(answerText.toString())
-    }
+    } else if (StringToFractionParser().fromRawInputString(answerText.toString()) != FractionParsingErrors.VALID)
+      Log.e("FractionInput:", StringToFractionParser().fromRawInputString(answerText.toString()).getError())
     return interactionObjectBuilder.build()
   }
 }
