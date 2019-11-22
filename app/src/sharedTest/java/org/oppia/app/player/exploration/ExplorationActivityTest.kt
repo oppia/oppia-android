@@ -7,7 +7,9 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -180,25 +182,35 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_openFractionExploration_clickAudioButton_checkLanguageSelectDialogOpens() {
+  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() {
     getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+      onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_title))).check(matches(isDisplayed()))
+      onView(withText("EN")).perform(click())
+      onView(withText("Hinglish")).perform(click())
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withText("HI-EN")).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
 
   @Test
-  fun testAudioWithWifi_openFractionExploration_clickAudioButton_clickContinue_checkLanguageSelectDialogOpens() {
-    getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
+  fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() {
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+      for (x in 0..4) {
+        onView(withId(R.id.continue_button)).perform(click())
+      }
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_title))).check(matches(isDisplayed()))
+      onView(withId(R.id.text_input_interaction_view)).perform(ViewActions.typeText("123"), closeSoftKeyboard())
+      onView(withId(R.id.interaction_button)).perform(click())
+      // Ensures that feedback audio starts playing
+      Thread.sleep(1000)
+      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
   }

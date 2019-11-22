@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
@@ -135,77 +136,66 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StateItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StateItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
-        when (viewModel) {
-          is StateNavigationButtonViewModel -> ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal
-          is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT.ordinal
-          is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK.ordinal
-          is ContinueInteractionViewModel -> ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal
-          is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal
-          is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal
-          is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal
-          is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder(StateItemViewModel::viewType)
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal,
+        viewType = StateItemViewModel.ViewType.STATE_NAVIGATION_BUTTON,
         inflateDataBinding = StateButtonItemBinding::inflate,
         setViewModel = StateButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as StateNavigationButtonViewModel }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_CONTENT.ordinal,
+        viewType = StateItemViewModel.ViewType.CONTENT,
         inflateView = { parent ->
           ContentItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
-          )
+          binding.htmlContent =
+            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+              (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
+            )
         }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_FEEDBACK.ordinal,
+        viewType = StateItemViewModel.ViewType.FEEDBACK,
         inflateView = { parent ->
           FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
-          )
+          binding.htmlContent =
+            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+              (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
+            )
         }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.CONTINUE_INTERACTION,
         inflateDataBinding = ContinueInteractionItemBinding::inflate,
         setViewModel = ContinueInteractionItemBinding::setViewModel,
         transformViewModel = { it as ContinueInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
         inflateDataBinding = SelectionInteractionItemBinding::inflate,
         setViewModel = SelectionInteractionItemBinding::setViewModel,
         transformViewModel = { it as SelectionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
         inflateDataBinding = FractionInteractionItemBinding::inflate,
         setViewModel = FractionInteractionItemBinding::setViewModel,
         transformViewModel = { it as FractionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,
         setViewModel = NumericInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as NumericInputViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal,
+        viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
         inflateDataBinding = TextInputInteractionItemBinding::inflate,
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
@@ -352,6 +342,9 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+
+    val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
@@ -394,6 +387,10 @@ class StateFragmentPresenter @Inject constructor(
 
     viewModel.itemList.clear()
     viewModel.itemList += pendingItemList
+
+    if (scrollToTop) {
+      (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 200)
+    }
   }
 
   /**clickNegative_checkNo
@@ -569,15 +566,4 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
-
-  private enum class ViewType {
-    VIEW_TYPE_CONTENT,
-    VIEW_TYPE_FEEDBACK,
-    VIEW_TYPE_STATE_NAVIGATION_BUTTON,
-    VIEW_TYPE_CONTINUE_INTERACTION,
-    VIEW_TYPE_SELECTION_INTERACTION,
-    VIEW_TYPE_FRACTION_INPUT_INTERACTION,
-    VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
-    VIEW_TYPE_TEXT_INPUT_INTERACTION
-  }
 }

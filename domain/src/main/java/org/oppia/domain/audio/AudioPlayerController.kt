@@ -1,6 +1,8 @@
 package org.oppia.domain.audio
 
+import android.media.MediaDataSource
 import android.media.MediaPlayer
+import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.oppia.util.caching.AssetRepository
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
@@ -28,7 +32,9 @@ import kotlin.concurrent.withLock
 @Singleton
 class AudioPlayerController @Inject constructor(
   private val logger: Logger,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  private val assetRepository: AssetRepository,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
   inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
@@ -133,7 +139,37 @@ class AudioPlayerController @Inject constructor(
 
   private fun prepareDataSource(url: String) {
     try {
-      mediaPlayer.setDataSource(url)
+      if (cacheAssetsLocally && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val mediaDataSource: MediaDataSource = object : MediaDataSource() {
+          private val audioFileBuffer: ByteArray by lazy {
+            // Ensure that the download occurs off the main thread to avoid strict mode violations for
+            // cases when we need to stream audio.
+            assetRepository.loadRemoteBinaryAsset(url)()
+          }
+
+          // https://medium.com/@jacks205/implementing-your-own-android-mediadatasource-e67adb070731.
+          override fun readAt(position: Long, buffer: ByteArray?, offset: Int, size: Int): Int {
+            checkNotNull(buffer)
+            val intPosition = position.toInt()
+            if (intPosition >= audioFileBuffer.size) {
+              return -1
+            }
+            val availableData = audioFileBuffer.size - intPosition
+            val adjustedSize = size.coerceIn(0 until availableData)
+            audioFileBuffer.copyInto(buffer, offset, intPosition, intPosition + adjustedSize)
+            return adjustedSize
+          }
+
+          override fun getSize(): Long {
+            return audioFileBuffer.size.toLong()
+          }
+
+          override fun close() {}
+        }
+        mediaPlayer.setDataSource(mediaDataSource)
+      } else {
+        mediaPlayer.setDataSource(url)
+      }
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)

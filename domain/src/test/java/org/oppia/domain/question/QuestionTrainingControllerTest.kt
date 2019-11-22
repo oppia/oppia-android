@@ -28,8 +28,10 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Question
@@ -68,10 +70,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Inject
   @field:TestDispatcher
@@ -119,7 +121,8 @@ class QuestionTrainingControllerTest {
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
     assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -140,7 +143,8 @@ class QuestionTrainingControllerTest {
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
 
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
+    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
     assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -211,7 +215,7 @@ class QuestionTrainingControllerTest {
 
     @Provides
     @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = questionSeed ++
+    fun provideQuestionTrainingSeed(): Long = questionSeed++
   }
 
   // TODO(#89): Move this to a common test application component.

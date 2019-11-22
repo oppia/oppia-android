@@ -58,6 +58,7 @@ dependencies {
       'org.robolectric:robolectric:4.3',
   )
   kapt(
+      'com.github.bumptech.glide:compiler:4.9.0',
       'com.google.dagger:dagger-compiler:2.24'
   )
   kaptTest(

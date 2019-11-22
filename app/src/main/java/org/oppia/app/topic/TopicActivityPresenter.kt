@@ -14,14 +14,15 @@ const val STORY_ID_ARGUMENT_KEY = "story_id"
 @ActivityScope
 class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
-  fun handleOnCreate(topicId: String, storyId: String) {
+  fun handleOnCreate(topicId: String, storyId: String?) {
     activity.setContentView(R.layout.topic_activity)
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val args = Bundle()
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-      if (topicId.isNotEmpty() && storyId.isNotEmpty())
+      if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+      }
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,

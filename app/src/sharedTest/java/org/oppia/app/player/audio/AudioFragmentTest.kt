@@ -20,6 +20,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,11 +34,13 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.domain.audio.AudioPlayerController
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -81,7 +84,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
   }
 
   @Test
@@ -90,7 +93,7 @@ class AudioFragmentTest {
 
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
   @Test
@@ -99,7 +102,7 @@ class AudioFragmentTest {
 
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
   }
 
   @Test
@@ -109,11 +112,12 @@ class AudioFragmentTest {
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     invokePreparedListener(shadowMediaPlayer)
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
@@ -121,7 +125,7 @@ class AudioFragmentTest {
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
   @Test
@@ -135,20 +139,8 @@ class AudioFragmentTest {
     onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
     onView(withText("OK")).inRoot(isDialog()).perform(click())
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
-  }
-
-  private fun withContentDescription(contentDescriptionId: Int) = object : TypeSafeMatcher<View>() {
-    private val contentDescription = context.getString(contentDescriptionId)
-
-    override fun describeTo(description: Description) {
-      description.appendText("ImageView with contentDescription same as $contentDescription")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view is ImageView && view.contentDescription.toString() == contentDescription
-    }
   }
 
   private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
@@ -288,6 +280,10 @@ class AudioFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   @Singleton
