@@ -22,12 +22,18 @@
   <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fontFamily="sans-serif-medium"
     android:paddingTop="@dimen/nav_header_vertical_spacing"
+    android:textColor="@color/white"
     android:text="@string/nav_header_title"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+    android:textSize="14sp" />
 
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/nav_header_subtitle" />
+    android:fontFamily="sans-serif"
+    android:textColor="@color/white"
+    android:text="@string/nav_header_subtitle"
+    android:textSize="14sp" />
 </LinearLayout>
