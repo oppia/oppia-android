@@ -5,7 +5,6 @@
   android:layout_height="match_parent"
   android:layout_gravity="start"
   android:fitsSystemWindows="true"
-  app:defaultNavHost="true"
   app:headerLayout="@layout/nav_header_navigation_drawer"
   app:itemBackground="@android:color/transparent"
   app:itemIconTint="@color/drawer_item"
@@ -24,13 +23,15 @@
       android:layout_height="@dimen/image_dim_24"
       android:layout_gravity="center_vertical"
       android:layout_margin="@dimen/margin_10"
-      android:src="@drawable/ic_settings_grey_48dp" />
+      android:src="@drawable/ic_admin_settings_icon_grey_24dp" />
 
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="@dimen/margin_30"
+      android:fontFamily="sans-serif-medium"
+      android:textSize="14sp"
       android:text="@string/admin_settings"
       android:textColor="@color/black" />
   </LinearLayout>
