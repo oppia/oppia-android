@@ -5,6 +5,7 @@
   android:layout_height="match_parent"
   android:layout_gravity="start"
   android:fitsSystemWindows="true"
+  app:defaultNavHost="true"
   app:headerLayout="@layout/nav_header_navigation_drawer"
   app:itemBackground="@android:color/transparent"
   app:itemIconTint="@color/drawer_item"

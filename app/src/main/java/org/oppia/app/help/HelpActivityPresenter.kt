@@ -33,7 +33,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
     navigationDrawerFragment!!.navigationDrawerFragmentPresenter.setUpDrawer(
       activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
-      toolbar!!
+      toolbar!!,R.id.nav_help
     )
     activity.setTitle(title)
   }

@@ -1,9 +1,6 @@
 package org.oppia.app.drawer
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -25,7 +22,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) : NavigationView.OnNavigationItemSelectedListener {
   lateinit var navView: NavigationView
-  lateinit var mDrawerToggle: ActionBarDrawerToggle
+  lateinit var drawerToggle: ActionBarDrawerToggle
+  lateinit var drawerLayout: DrawerLayout
   private var previousmMenuItemId: Int? = null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     var view: View? = null
@@ -33,8 +31,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     navView = view!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
     fragment.setHasOptionsMenu(true)
-    openActivityByMenuItemId(0)
-    navView.getMenu().getItem(0).setChecked(true)
     return view
   }
 
@@ -44,23 +40,31 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       when (menuItemId) {
         R.id.nav_home -> {
           intent = Intent(fragment.activity, HomeActivity::class.java)
-          navView.getMenu().getItem(0).setChecked(true)
         }
         R.id.nav_help -> {
           intent = Intent(fragment.activity, HelpActivity::class.java)
-          navView.getMenu().getItem(1).setChecked(true)
         }
       }
       fragment.activity!!.startActivity(intent)
       fragment.activity!!.finish()
-      previousmMenuItemId = menuItemId
+    } else {
+      drawerLayout.closeDrawers()
     }
-
   }
 
   /** This function contains the DrawerListener and also set the drawer toggle. */
-  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar) {
-    mDrawerToggle = object : ActionBarDrawerToggle(
+  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
+    when (menuItemId) {
+      R.id.nav_home -> {
+        navView.getMenu().getItem(0).setChecked(true)
+      }
+      R.id.nav_help -> {
+        navView.getMenu().getItem(1).setChecked(true)
+      }
+    }
+    this.drawerLayout = drawerLayout
+    previousmMenuItemId = menuItemId
+    drawerToggle = object : ActionBarDrawerToggle(
       fragment.activity,
       drawerLayout,
       toolbar,
@@ -83,17 +87,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         toolbar.alpha = 1 - slideOffset / 2
       }
     }
-    drawerLayout!!.setDrawerListener(mDrawerToggle)
+    drawerLayout!!.setDrawerListener(drawerToggle)
     /** Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout].*/
-    drawerLayout!!.post { mDrawerToggle!!.syncState() }
-
+    drawerLayout!!.post { drawerToggle!!.syncState() }
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-    if (mDrawerToggle.onOptionsItemSelected(menuItem)) {
-      return true;
-    }
-
     if (menuItem.itemId > 0) {
       openActivityByMenuItemId(menuItem.itemId)
       return true
