@@ -11,7 +11,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 
-const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
+private const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
+private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "RetrieveQuestionsResultsProvider"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -35,13 +36,17 @@ class QuestionTrainingController @Inject constructor(
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    * The training session may still fail to load, but this provides early-failure detection.
    */
-  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<List<Question>>> {
+  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any>> {
     return try {
       val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       questionAssessmentProgressController.beginQuestionTrainingSession(
         retrieveQuestionsDataProvider
       )
-      dataProviders.convertToLiveData(retrieveQuestionsDataProvider)
+      // Convert the data provider type to 'Any' via a transformation.
+      val erasedDataProvider: DataProvider<Any> = dataProviders.transform(
+        RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER, retrieveQuestionsDataProvider
+      ) { it }
+      dataProviders.convertToLiveData(erasedDataProvider)
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
@@ -50,10 +55,14 @@ class QuestionTrainingController @Inject constructor(
   private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
-      getFilteredQuestionsForTraining(
-        skillIdsList, it.shuffled(random),
-        questionCountPerSession / skillIdsList.size
-      )
+      if (skillIdsList.isEmpty()) {
+        listOf()
+      } else {
+        getFilteredQuestionsForTraining(
+          skillIdsList, it.shuffled(random),
+          questionCountPerSession / skillIdsList.size
+        )
+      }
     }
   }
 

@@ -30,15 +30,15 @@ class ChapterSummaryAdapter(
   }
 
   override fun onBindViewHolder(chapterSummaryViewHolder: ChapterSummaryViewHolder, position: Int) {
-    chapterSummaryViewHolder.bind(chapterList[position])
+    chapterSummaryViewHolder.bind(chapterList[position], position)
   }
 
   inner class ChapterSummaryViewHolder(private val binding: PlayChapterViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(chapterSummary: ChapterSummary) {
-      // TODO(#286): Fix the flickering behaviour of chapter-completion image.
+    internal fun bind(chapterSummary: ChapterSummary, position: Int) {
       binding.chapterSummary = chapterSummary
-      binding.chapterName.setOnClickListener {
+      binding.index = position
+      binding.chapterContainer.setOnClickListener {
         chapterSummarySelector.selectChapterSummary(chapterSummary)
       }
     }

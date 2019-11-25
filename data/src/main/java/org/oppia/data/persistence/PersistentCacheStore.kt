@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.Deferred
+import org.oppia.app.model.ProfileId
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -115,7 +116,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
-  fun<V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T,V>): Deferred<V> {
+  fun<V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T, V>): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
       // nothing can read from it until this update completes.
@@ -196,7 +197,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /** See [storeFileCache]. Returns payload and custom result. */
-  private fun<V> storeFileCacheWithCustomChannel(currentPayload: CachePayload<T>, update: (T) -> Pair<T,V>): Pair<CachePayload<T>,V> {
+  private fun<V> storeFileCacheWithCustomChannel(currentPayload: CachePayload<T>, update: (T) -> Pair<T, V>): Pair<CachePayload<T>,V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return Pair(CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue), customResult)
@@ -235,13 +236,20 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val directoryManagementUtil: DirectoryManagementUtil
   ) {
-    /** Returns a new [PersistentCacheStore] with the specified cache name and initial value. */
+    /**
+     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under the shared directory context.filesDir.
+     * Use this method when data is shared by all profiles.
+     */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
       return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue)
     }
 
-    fun <T : MessageLite> create(cacheName: String, initialValue: T, profileId: Int): PersistentCacheStore<T> {
-      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.toString())
+    /**
+     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under the directory specified by profileId.
+     * Use this method when data is unique to each profile.
+     */
+    fun <T : MessageLite> create(cacheName: String, initialValue: T, profileId: ProfileId): PersistentCacheStore<T> {
+      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
       return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue, profileDirectory)
     }
   }

@@ -29,6 +29,9 @@ message Topic {
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 6;
+
+  // The number of on-disk bytes this topic consumes.
+  int64 disk_size_bytes = 7;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -109,6 +112,9 @@ message SkillSummary {
   // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
   // alternative.
   string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  SkillThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.
@@ -128,9 +134,6 @@ message TopicList {
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
-
-  // The total number of ongoing stories by the player.
-  int32 ongoing_story_count = 3;
 }
 
 // Corresponds to the list of stories the player is currently playing.
