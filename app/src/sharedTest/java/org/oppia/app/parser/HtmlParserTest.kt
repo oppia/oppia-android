@@ -59,9 +59,7 @@ class HtmlParserTest {
   private lateinit var launchedActivity: Activity
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject
-  lateinit var urlImageParserFactory: UrlImageParser.Factory
-
+ 
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
     HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
