@@ -59,7 +59,7 @@ class HtmlParserTest {
   private lateinit var launchedActivity: Activity
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
- 
+
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
     HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -201,10 +201,7 @@ class HtmlParserTest {
   }
 
   @Singleton
-  @Component(
-    modules = [TestModule::class
-      , ImageTestModule::class]
-  )
+  @Component(modules = [TestModule::class, ImageTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
