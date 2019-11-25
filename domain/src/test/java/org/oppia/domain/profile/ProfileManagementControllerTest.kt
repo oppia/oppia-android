@@ -149,6 +149,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("JAMES is not unique to other profiles")
   }
 
   @Test
@@ -161,6 +162,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("James034 does not contain only letters")
   }
 
   @Test
@@ -244,6 +246,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("James is not unique to other profiles")
   }
 
   @Test
@@ -258,6 +261,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -290,6 +294,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -322,6 +327,7 @@ class ProfileManagementControllerTest {
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
   }
 
   @Test
@@ -414,6 +420,24 @@ class ProfileManagementControllerTest {
     assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs).isNotEqualTo(0)
   }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testLoginToProfile_addProfiles_loginToProfileWithBadProfileId_checkLoginFailed() = runBlockingTest(coroutineContext) {
+    addTestProfiles()
+    advanceUntilIdle()
+
+    val profileId = ProfileId.newBuilder().setInternalId(6).build()
+    profileManagementController.loginToProfile(profileId).observeForever(mockUpdateResultObserver)
+    advanceUntilIdle()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isFailure()).isTrue()
+    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
+      .contains("org.oppia.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
+          "ProfileId 6 is not associated with an existing profile")
+  }
+
+  @ExperimentalCoroutinesApi
   private fun addTestProfiles() {
     PROFILES_LIST.forEach {
       profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess)

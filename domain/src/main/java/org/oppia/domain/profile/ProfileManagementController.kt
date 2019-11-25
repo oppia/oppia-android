@@ -51,12 +51,21 @@ class ProfileManagementController @Inject constructor(
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 
+  // Thrown in addProfile and updateName. Indicates that the given name was is not unique.
   class ProfileNameNotUniqueException(msg: String): Exception(msg)
+  // Thrown in addProfile and updateName. Indicates that the given name does not contain only letters.
   class ProfileNameOnlyLettersException(msg: String): Exception(msg)
+  // Thrown in addProfile. Indicates that the selected image was not stored properly.
   class FailedToStoreImageException(msg: String): Exception(msg)
+  // Thrown in deleteProfile. Indicates that the profile's directory was not delete properly.
   class FailedToDeleteDirException(msg: String): Exception(msg)
+  /**
+   * Thrown in updateName, updatePin, updateDownloadAccess, and deleteProfile
+   * Indicates that the given profileId is not associated with an existing profile.
+   */
   class ProfileNotFoundException(msg: String): Exception(msg)
 
+  // This enum is associated with the exceptions above.
   private enum class ProfileActionStatus {
     SUCCESS,
     PROFILE_NAME_NOT_UNIQUE,
@@ -259,7 +268,7 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.convertToLiveData(dataProviders.transformAsync<Any?, Any?>(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
       val deferredResult = updateLastLoggedInAsync(profileId).await()
       if (deferredResult == ProfileActionStatus.SUCCESS) {
-        AsyncResult.success(null)
+        AsyncResult.success(0)
       } else {
         AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile"))
       }
@@ -277,7 +286,7 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.transformAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID, profileDataStore) {
       if (it.profilesMap.containsKey(profileId.internalId)) {
         currentProfileId = profileId.internalId
-        return@transformAsync AsyncResult.success<Any?>(null)
+        return@transformAsync AsyncResult.success<Any?>(0)
       }
       AsyncResult.failed<Any?>(ProfileNotFoundException("ProfileId ${profileId.internalId} is not associated with an existing profile"))
     }
@@ -325,7 +334,7 @@ class ProfileManagementController @Inject constructor(
       } else {
         when (deferred.getCompleted()) {
           ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.PROFILE_NOT_FOUND -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("ProfileId ${profileId.internalId} does not match an existing Profile")))
+          ProfileActionStatus.PROFILE_NOT_FOUND -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
           else -> pendingLiveData.postValue(AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId.internalId}")))
         }
       }
