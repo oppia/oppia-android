@@ -10,13 +10,13 @@
   </data>
 
   <com.google.android.material.card.MaterialCardView
-    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
     android:clipToPadding="true"
     app:cardCornerRadius="8dp"
     app:cardElevation="0dp"
+    app:cardMaxElevation="4dp"
     app:strokeColor="@color/oppiaBrown"
     app:strokeWidth="2dp">
 
@@ -27,10 +27,11 @@
       <ImageView
         android:id="@+id/skill_image_view"
         android:layout_width="0dp"
-        android:layout_height="104dp"
+        android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
         android:src="@{skill.skillThumbnail.thumbnailGraphic}"
+        app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

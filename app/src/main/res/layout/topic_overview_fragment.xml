@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -23,7 +22,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:paddingBottom="24dp">
 
       <ImageView
@@ -50,17 +49,16 @@
         android:id="@+id/topic_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
-        android:gravity="start"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
       <TextView
         android:id="@+id/story_count_text_view"
@@ -70,7 +68,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
-        android:gravity="start"
         android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
@@ -99,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:gravity="start|center"
@@ -121,7 +118,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="32dp"
         android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -133,29 +130,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:text="@string/topic_downloaded"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
         app:layout_constraintStart_toEndOf="@+id/download_status_image_view"
-        app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+        app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
 
       <TextView
         android:id="@+id/download_size_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
-        android:gravity="top"
         android:text="@{String.format(@string/topic_download_text, viewModel.getTopicSizeWithUnit())}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
         app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+        app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
