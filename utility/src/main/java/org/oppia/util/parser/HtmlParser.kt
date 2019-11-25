@@ -33,6 +33,7 @@ class HtmlParser private constructor(
     if (htmlContent.contains("\n\n")) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
+
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
       htmlContent = htmlContent.replace(
@@ -62,14 +63,14 @@ class HtmlParser private constructor(
 
     var text = spannable.toString()
 
-    while (text.isNotEmpty() && text.startsWith("\n")) {
+    if ( text.startsWith("\n")) {
       text = text.substring(1)
       trimStart += 1
     }
 
-    while (text.length > 0 && text.endsWith("\n")) {
+    if ( text.endsWith("\n")) {
       text = text.substring(0, text.length - 1)
-      trimEnd += 1
+      trimEnd += 2
     }
 
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
