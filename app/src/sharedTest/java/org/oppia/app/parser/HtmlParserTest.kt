@@ -51,6 +51,7 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+// TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
 @RunWith(AndroidJUnit4::class)
 class HtmlParserTest {
@@ -114,16 +115,6 @@ class HtmlParserTest {
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
-  }
-
-  @Test
-  fun testHtmlContent_calculateImageWidth() {
-    val htmlContentTextView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val imageGetter = urlImageParserFactory.create(htmlContentTextView, "exploration", "DIWZiVgs0km-", true)
-    val result1 = imageGetter.calculateInitialMargin(100)
-    assertWithMessage("Width = $result1")
-    val result2 = imageGetter.calculateInitialMargin(400)
-    assertWithMessage("Width = $result2")
   }
 
   @After
