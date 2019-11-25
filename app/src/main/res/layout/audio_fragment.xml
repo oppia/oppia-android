@@ -30,8 +30,8 @@
 
     <ImageView
       android:id="@+id/ivPlayPauseAudio"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:layout_marginStart="4dp"
       android:layout_marginEnd="4dp"
       android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
@@ -69,6 +69,9 @@
       android:fontFamily="sans-serif-medium"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
       android:padding="16dp"
+      android:gravity="center"
+      android:minHeight="48dp"
+      android:minWidth="68dp"
       android:text="@{viewModel.currentLanguageCode}"
       android:textAllCaps="true"
       android:textColor="@color/white"
