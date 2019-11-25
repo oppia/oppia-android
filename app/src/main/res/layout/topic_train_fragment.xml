@@ -15,7 +15,7 @@
       type="org.oppia.app.topic.train.TopicTrainFragmentPresenter" />
   </data>
 
-  <ScrollView
+  <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/oppiaBackground"
@@ -79,5 +79,5 @@
         android:text="@string/topic_train_start"
         android:textColor="@{viewModel.isSubmitButtonActive()? @color/white : @color/submitButtonInactive}" />
     </LinearLayout>
-  </ScrollView>
+  </androidx.core.widget.NestedScrollView>
 </layout>
