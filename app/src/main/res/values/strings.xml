@@ -7,10 +7,6 @@
   <string name="menu_home">Home</string>
   <string name="menu_help">Help</string>
   <string name="admin_settings">Admin Settings</string>
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="drawer_open">Open</string>
-  <string name="drawer_close">Close</string>
-  <!-- TODO: Remove or change this placeholder text -->
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>
