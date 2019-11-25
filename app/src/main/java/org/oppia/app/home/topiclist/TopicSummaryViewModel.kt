@@ -3,6 +3,7 @@ package org.oppia.app.home.topiclist
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.model.TopicSummary
 
@@ -17,7 +18,7 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 class TopicSummaryViewModel(
   val topicSummary: TopicSummary,
   private val topicSummaryClickListener: TopicSummaryClickListener
-) : HomeItemViewModel() {
+) : ViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
   @ColorInt

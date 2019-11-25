@@ -9,13 +9,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.home.topiclist.AllTopicsViewModel
+import org.oppia.app.home.topiclist.PromotedStoryListAdapter
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
@@ -42,7 +44,10 @@ class HomeFragmentPresenter @Inject constructor(
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
-  private val itemList: MutableList<HomeItemViewModel> = ArrayList()
+  private val routeToContinuePlayingListener = activity as RouteToContinuePlayingListener
+  private val itemList: MutableList<TopicSummaryViewModel> = ArrayList()
+  private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private lateinit var promotedStoryListAdapter: PromotedStoryListAdapter
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -50,24 +55,21 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    topicListAdapter = TopicListAdapter(itemList)
-
-    val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
-    homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        return if (position == 0 || position == 1 || position == 2) {
-          /* number of spaces this item should occupy = */ 2
-        } else {
-          /* number of spaces this item should occupy = */ 1
-        }
-      }
+    promotedStoryListAdapter = PromotedStoryListAdapter(promotedStoryList)
+    //binding.promotedStoryRecyclerView.isNestedScrollingEnabled = true
+    binding.promotedStoryRecyclerView.apply {
+      adapter = promotedStoryListAdapter
+      layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    topicListAdapter = TopicListAdapter(itemList)
+    binding.homeRecyclerView.isNestedScrollingEnabled = false
     binding.homeRecyclerView.apply {
       adapter = topicListAdapter
       // https://stackoverflow.com/a/32763434/32763621
-      layoutManager = homeLayoutManager
+      layoutManager = GridLayoutManager(activity.applicationContext, 2)
     }
+
     binding.let {
       it.presenter = this
       it.lifecycleOwner = fragment
@@ -75,6 +77,7 @@ class HomeFragmentPresenter @Inject constructor(
 
     userAppHistoryController.markUserOpenedApp()
     subscribeToUserAppHistory()
+    subscribeToPromotedStoryList()
     subscribeToTopicList()
     return binding.root
   }
@@ -102,12 +105,9 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
 
-      val promotedStoryViewModel = PromotedStoryViewModel(activity)
-      promotedStoryViewModel.setPromotedStory(result.promotedStory)
-      itemList.add(promotedStoryViewModel)
       if (result.topicSummaryList.isNotEmpty()) {
-        val allTopicsViewModel = AllTopicsViewModel()
-        itemList.add(allTopicsViewModel)
+        //val allTopicsViewModel = AllTopicsViewModel()
+        //itemList.add(allTopicsViewModel)
       }
       for (topicSummary in result.topicSummaryList) {
         val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
@@ -126,8 +126,9 @@ class HomeFragmentPresenter @Inject constructor(
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
       val userAppHistoryViewModel = UserAppHistoryViewModel()
       userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
-      itemList.add(0, userAppHistoryViewModel)
-      topicListAdapter.notifyDataSetChanged()
+      binding.let {
+        it.viewModel = userAppHistoryViewModel
+      }
     })
   }
 
@@ -145,5 +146,39 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicListener.routeToTopic(topicSummary.topicId)
+  }
+
+  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
+    topicListController.getOngoingStoryList()
+  }
+
+  private fun subscribeToPromotedStoryList() {
+    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
+      if (it.recentStoryCount > 0) {
+        for (promotedStory in it.recentStoryList) {
+          val recentStory = PromotedStoryViewModel(activity)
+          recentStory.setPromotedStory(promotedStory)
+          promotedStoryList.add(recentStory)
+        }
+      }
+
+      if (it.olderStoryCount > 0) {
+        for (promotedStory in it.olderStoryList) {
+          val oldStory = PromotedStoryViewModel(activity)
+          oldStory.setPromotedStory(promotedStory)
+          promotedStoryList.add(oldStory)
+        }
+      }
+      promotedStoryListAdapter.notifyDataSetChanged()
+    })
+  }
+
+  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+  }
+
+  fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
+    routeToContinuePlayingListener.routeToContinuePlaying()
   }
 }

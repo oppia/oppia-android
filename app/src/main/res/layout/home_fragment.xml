@@ -6,35 +6,109 @@
     <import type="org.oppia.app.R" />
 
     <variable
+      name="viewModel"
+      type="org.oppia.app.home.UserAppHistoryViewModel" />
+
+    <variable
       name="presenter"
       type="org.oppia.app.home.HomeFragmentPresenter" />
   </data>
 
-  <LinearLayout
+  <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <Button
-      android:id="@+id/play_exploration_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:onClick="@{presenter::playExplorationButton}"
-      android:text="Play exploration"
-      android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/home_recycler_view"
+    <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="36dp"
-      android:clipToPadding="false"
-      android:paddingEnd="24dp"
-      android:paddingStart="24dp"
-      android:paddingBottom="24dp"
-      android:overScrollMode="never" />
-  </LinearLayout>
+      android:background="@color/white"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/welcome_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif"
+        android:text="@{viewModel.isAppAlreadyOpened().get() ? @string/welcome_back_text : @string/welcome_text}"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="24sp" />
+
+      <View
+        android:layout_width="172dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/oppiaLightBrown" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/recently_played_stories_text_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:fontFamily="sans-serif-medium"
+          android:text="@string/recently_played_stories"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp" />
+
+        <TextView
+          android:id="@+id/view_all_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:layout_marginStart="32dp"
+          android:layout_marginEnd="4dp"
+          android:fontFamily="sans-serif-medium"
+          android:onClick="@{presenter::clickOnViewAll}"
+          android:text="@string/view_all"
+          android:textAllCaps="true"
+          android:textColor="@color/oppiaPrimaryDark"
+          android:textSize="14sp" />
+      </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/promoted_story_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:padding="12dp" />
+
+      <TextView
+        android:id="@+id/all_topics_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/all_topics"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="18sp" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingStart="24dp"
+        android:paddingTop="36dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp" />
+    </LinearLayout>
+  </androidx.core.widget.NestedScrollView>
 </layout>
