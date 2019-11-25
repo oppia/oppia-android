@@ -2,6 +2,7 @@ package org.oppia.app.parser
 
 import org.json.JSONObject
 import org.oppia.app.model.Fraction
+import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.normalizeWhitespace
 import java.lang.Integer.parseInt
 import java.util.regex.Pattern
@@ -20,9 +21,6 @@ class StringToFractionParser {
     const val DIVISION_BY_ZERO = "Please do not put 0 in the denominator"
   }
 
-  fun getJsonCurrencyUnits() {
-    jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")?.getJSONObject("topic")
-  }
   fun fromRawInputString(inputText: String): Fraction {
     var rawInput: String = inputText.normalizeWhitespace()
     if (!inputText.matches(invalidCharsRegex))
@@ -42,7 +40,6 @@ class StringToFractionParser {
       rawInput = rawInput.substring(1).trim()
     }
     // Filter result from split to remove empty strings.
-//    var numbers = rawInput.split(/\/|\s/g).filter((token)
     var numbers = Pattern.compile("[\\s|/]+").split(rawInput)
     if (numbers.size == 1) {
       wholeNumber = parseInt(numbers[0])

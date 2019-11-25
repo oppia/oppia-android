@@ -32,6 +32,7 @@ class ExplorationRetriever @Inject constructor(
   internal fun loadExploration(explorationId: String): Exploration {
     return when (explorationId) {
       TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
+      TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")

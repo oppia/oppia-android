@@ -3,12 +3,15 @@ package org.oppia.app.customview.interaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
+import org.json.JSONObject
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.domain.util.normalizeWhitespace
+import java.lang.Double.parseDouble
+import java.util.*
 import java.util.regex.Pattern
 
 /** The custom EditText class for number input with units interaction view. */
@@ -22,12 +25,14 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
   private lateinit var fractionObject: Fraction
   private lateinit var value: String
   private lateinit var units: String
+  private lateinit var CURRENCY_UNITS: JSONObject
   /** @return index of pattern in s or -1, if not found
    */
   fun indexOf(pattern: Pattern, s: String): Int {
     val matcher = pattern.matcher(s)
     return if (matcher.find()) matcher.start() else -1
   }
+
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder =
       InteractionObject.newBuilder().setNumberWithUnits(NumberWithUnits.getDefaultInstance())
@@ -35,34 +40,35 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
       return interactionObjectBuilder.build()
     }
 
-    if (value.contains("/")) {
-      interactionObjectBuilder.setNumberWithUnits(
-        NumberWithUnits.newBuilder().setFraction(fractionObject).addUnit(NumberUnit.newBuilder().setUnit(units))
-      )
-    } else {
-      interactionObjectBuilder.setNumberWithUnits(
-        NumberWithUnits.newBuilder().setReal(real.toDouble()).addUnit(NumberUnit.newBuilder().setUnit(units))
-      )
-    }
+
+    interactionObjectBuilder.setNumberWithUnits(
+      getNumberWithUnits(text.toString())
+    )
+
     return interactionObjectBuilder.build()
   }
- fun NumberWithUnits(inputText: String){
-   var rawInput: String = inputText.normalizeWhitespace()
 
-   rawInput = rawInput.trim();
+  fun getCurrencyUnits(): JSONObject {
+    return JSONObject("{\"dollar\":{\"name\":\"dollar\",\"aliases\":[\"$\",\"dollars\",\"Dollars\",\"Dollar\",\"USD\"],\"front_units\":[\"$\"],\"base_unit\":null},\"rupee\":{\"name\":\"rupee\",\"aliases\":[\"Rs\",\"rupees\",\"\u20b9\",\"Rupees\",\"Rupee\"],\"front_units\":[\"Rs \",\"\u20b9\"],\"base_unit\":null},\"cent\":{\"name\":\"cent\",\"aliases\":[\"cents\",\"Cents\",\"Cent\"],\"front_units\":[],\"base_unit\":\"0.01 dollar\"},\"paise\":{\"name\":\"paise\",\"aliases\":[\"paisa\",\"Paise\",\"Paisa\"],\"front_units\":[],\"base_unit\":\"0.01 rupee\"}}")
+  }
+
+  fun getNumberWithUnits(inputText: String): NumberWithUnits {
+    var rawInput: String = inputText.normalizeWhitespace()
+    CURRENCY_UNITS = getCurrencyUnits()
+    rawInput = rawInput.trim()
     var type = ""
     var real = 0.0
     // Default fraction value.
-    var fractionObj = Fraction.newBuilder().setDenominator(1)
+    var fractionObj = Fraction.newBuilder().setDenominator(1).build()
     var units = ""
     var value = ""
-    var unitObj = []
+//    var unitObj
 
     // Allow validation only when rawInput is not null or an empty string.
     if (rawInput.isNotEmpty() && rawInput != null) {
       // Start with digit when there is no currency unit.
-      if (rawInput.matches("^\d/".toRegex())) {
-        var ind = indexOf(Pattern.compile("[a-z(₹$]"),rawInput)
+      if (rawInput.matches("\\d".toRegex())) {
+        var ind = indexOf(Pattern.compile("[a-z(₹$]"), rawInput)
         if (ind === -1) {
           // There is value with no units.
           value = rawInput;
@@ -72,102 +78,92 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
           units = rawInput.substring(ind).trim()
         }
 
-        var keys = Object.keys(CURRENCY_UNITS)
-        for (var i = 0; i < keys.length; i++) {
-        for (var j = 0;
-        j < CURRENCY_UNITS[keys[i]].front_units.length; j++) {
-        if (units.indexOf(
-            CURRENCY_UNITS[keys[i]].front_units[j]) !== -1) {
-          throw new Error(
-              NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_CURRENCY_FORMAT);
+        var keys = (CURRENCY_UNITS).keys()
+        for (i in keys) {
+          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
+            if (Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf("Sedan") !== -1) {
+              throw  Error(
+                "INVALID_CURRENCY_FORMAT"
+              )
+            }
+          }
         }
-      }
-      }
       } else {
-        var startsWithCorrectCurrencyUnit = false;
-        var keys = Object.keys(CURRENCY_UNITS);
-        for (var i = 0; i < keys.length; i++) {
-        for (var j = 0;
-        j < CURRENCY_UNITS[keys[i]].front_units.length; j++) {
-        if (rawInput.startsWith(CURRENCY_UNITS[keys[i]].front_units[j])) {
-          startsWithCorrectCurrencyUnit = true;
-          break;
+        var startsWithCorrectCurrencyUnit = false
+        var keys = (CURRENCY_UNITS).keys()
+        for (i in keys) {
+          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
+            if (rawInput.startsWith(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String)) {
+              startsWithCorrectCurrencyUnit = true;
+              break
+            }
+          }
         }
-      }
-      }
         if (startsWithCorrectCurrencyUnit === false) {
-          throw new Error(NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_CURRENCY);
+          throw  Error("INVALID_CURRENCY")
         }
-        var ind = rawInput.indexOf(rawInput.match(/[0-9]/));
+
+        var ind = indexOf(Pattern.compile("[0 - 9]"), rawInput)
+
+
         if (ind === -1) {
-          throw new Error(NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_CURRENCY);
+          throw  Error("INVALID_CURRENCY")
         }
-        units = rawInput.substr(0, ind).trim();
+        units = rawInput.substring(0, ind).trim()
 
-        startsWithCorrectCurrencyUnit = false;
-        for (var i = 0; i < keys.length; i++) {
-        for (var j = 0;
-        j < CURRENCY_UNITS[keys[i]].front_units.length; j++) {
-        if (units === CURRENCY_UNITS[keys[i]].front_units[j].trim()) {
-          startsWithCorrectCurrencyUnit = true;
-          break;
+        startsWithCorrectCurrencyUnit = false
+        for (i in keys) {
+          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
+            if (units == (CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String).trim()) {
+              startsWithCorrectCurrencyUnit = true
+              break;
+            }
+          }
         }
-      }
-      }
         if (startsWithCorrectCurrencyUnit === false) {
-          throw new Error(NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_CURRENCY);
+          throw  Error("INVALID_CURRENCY")
         }
-        units = units + ' ';
+        units = units + ""
 
-        var ind2 = rawInput.indexOf(
-          rawInput.substr(ind).match(/[a-z(]/i));
+        var ind2 = indexOf(Pattern.compile("[a - z(]"), rawInput.substring(ind))
         if (ind2 !== -1) {
-          value = rawInput.substr(ind, ind2 - ind).trim();
-          units += rawInput.substr(ind2).trim();
+          value = rawInput.substring(ind, ind2 - ind).trim()
+          units += rawInput.substring(ind2).trim();
         } else {
-          value = rawInput.substr(ind).trim();
+          value = rawInput.substring(ind).trim();
           units = units.trim();
         }
       }
       // Checking invalid characters in value.
-      if (value.match(/[a-z]/i) || value.match(/[*^$₹()#@]/)) {
-        throw new Error(NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_VALUE);
+      if (value.matches("[a - z]".toRegex()) || value.matches("[ * ^$₹()#@]/".toRegex())) {
+        throw  Error("INVALID_VALUE")
       }
 
-      if (value.includes('/')) {
-        type = 'fraction';
-        fractionObj = FractionObjectFactory.fromRawInputString(value);
+      if (value.contains('/')) {
+        type = "fraction"
+        fractionObj = StringToFractionParser().getFractionFromString(value)
       } else {
-        type = 'real';
-        real = parseFloat(value);
+        type = "real"
+        real = parseDouble(value)
       }
-      if (units !== '') {
+      if (units != "") {
         // Checking invalid characters in units.
-        if (units.match(/[^0-9a-z/* ^()₹$-]/i)) {
-            throw new Error(
-              NUMBER_WITH_UNITS_PARSING_ERRORS.INVALID_UNIT_CHARS);
-          }
+        if (units.matches("[^0-9a-z/* ^()₹$-]".toRegex())) {
+          throw Error(
+            "INVALID_UNIT_CHARS"
+          )
         }
       }
+    }
+    if (type.equals("fraction"))
+      return NumberWithUnits.newBuilder().setFraction(fractionObj).addUnit(NumberUnit.newBuilder().setUnit(units))
+        .build()
+    else
+      return NumberWithUnits.newBuilder().setReal(real).addUnit(NumberUnit.newBuilder().setUnit(units)).build()
 
-      var unitsObj = UnitsObjectFactory.fromRawInputString(units);
-      return new NumberWithUnits(type, real, fractionObj, unitsObj);
-    };
 
-    // TODO(ankita240796): Remove the bracket notation once Angular2 gets in.
-    /* eslint-disable dot-notation */
-    NumberWithUnits['fromDict'] = function(numberWithUnitsDict) {
-    /* eslint-enable dot-notation */
-      return new NumberWithUnits(
-        numberWithUnitsDict.type,
-        numberWithUnitsDict.real,
-        FractionObjectFactory.fromDict(numberWithUnitsDict.fraction),
-        UnitsObjectFactory.fromList(numberWithUnitsDict.units));
-    };
-
-    return NumberWithUnits;
+    return NumberWithUnits.getDefaultInstance()
   }
-]);
 
   fun getStringOfNumberWithUnits(): String {
     var numberWithUnitsString = this.value.trim()
@@ -223,12 +219,12 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
       }
     }
     if (this.value.contains("/")) {
-      this.real =  0f
-      this.type="fraction"
+      this.real = 0f
+      this.type = "fraction"
       this.fractionObject = StringToFractionParser().getFractionFromString(this.value);
     } else {
-      this.real =  this.value.toFloat()
-      this.type="real"
+      this.real = this.value.toFloat()
+      this.type = "real"
     }
     return true
   }
