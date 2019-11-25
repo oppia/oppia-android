@@ -78,7 +78,7 @@ class UrlImageParser private constructor(
     }
   }
 
-  public fun calculateInitialMargin(drawableWidth: Int): Int {
+   fun calculateInitialMargin(drawableWidth: Int): Int {
     val availableAreaWidth = htmlContentTextView.width
     return (availableAreaWidth - drawableWidth) / 2
   }
