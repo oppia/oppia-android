@@ -41,6 +41,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
     val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     skillSelectionAdapter = SkillSelectionAdapter(this)
+    binding.skillRecyclerView.isNestedScrollingEnabled = false
     binding.skillRecyclerView.apply {
       adapter = skillSelectionAdapter
     }
