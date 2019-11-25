@@ -22,7 +22,6 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.lang.Exception
 import java.math.BigInteger
 import java.nio.charset.Charset
@@ -115,15 +114,15 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val imageUri: String
+      val imageUri: String?
       if (avatarImagePath != null) {
         imageUri = saveImageToInternalStorage(avatarImagePath, profileDir)
-        if (imageUri.isEmpty()) {
+        if (imageUri == null) {
           return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
         }
       } else {
         // gravatar url is a md5 hash of an email address
-        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase()}$nextProfileId@gmail.com") + GRAVATAR_QUERY_STRING
+        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com") + GRAVATAR_QUERY_STRING
       }
 
       val newProfile = Profile.newBuilder()
@@ -250,7 +249,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Login to the user's Profile by setting the current profile Id and updating profile's last logged in time.
+   * Log in to the user's Profile by setting the current profile Id and updating profile's last logged in time.
    *
    * @param profileId the ID corresponding to the profile being logged into.
    * @return a [LiveData] that indicates the success/failure of this login operation.
@@ -352,23 +351,17 @@ class ProfileManagementController @Inject constructor(
     return true
   }
 
-  private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String {
+  private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
     val imageFile = File(profileDir, "profile.png")
-    var fos: FileOutputStream? = null
     try {
-      fos = FileOutputStream(imageFile)
-      rotateAndCompressBitmap(avatarImagePath, bitmap, 300)
-        .compress(Bitmap.CompressFormat.PNG, /** quality= */ 100, fos)
+      FileOutputStream(imageFile).use { fos ->
+        rotateAndCompressBitmap(avatarImagePath, bitmap, 300)
+          .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
+      }
     } catch (e: Exception) {
       logger.e("ProfileManagementController", "Failed to store user submitted avatar image", e)
-      return ""
-    } finally {
-      try {
-        fos?.close()
-      } catch (e: IOException) {
-        logger.e("ProfileManagementController", "Failed to close FileOutputStream for avatar image", e)
-      }
+      return null
     }
     return imageFile.absolutePath
   }
@@ -379,9 +372,8 @@ class ProfileManagementController @Inject constructor(
 
   // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
   private fun md5(s: String): String {
-    var digest: MessageDigest? = null
     try {
-      digest = MessageDigest.getInstance("MD5")
+      val digest = MessageDigest.getInstance("MD5")
       digest.update(s.toByteArray(Charset.forName("US-ASCII")), 0, s.length)
       val magnitude = digest.digest()
       val bi = BigInteger(1, magnitude)
@@ -405,6 +397,6 @@ class ProfileManagementController @Inject constructor(
     }
     val matrix = Matrix()
     matrix.postRotate(rotate.toFloat())
-    return Bitmap.createBitmap(croppedBitmap, 0, 0, cropSize,  cropSize, matrix, true)
+    return Bitmap.createBitmap(croppedBitmap, /* x= */0, /* y= */ 0, cropSize,  cropSize, matrix, /* filter= */true)
   }
 }

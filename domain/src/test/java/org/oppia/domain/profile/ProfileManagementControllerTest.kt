@@ -78,7 +78,13 @@ class ProfileManagementControllerTest {
   @Captor
   lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  private val profilesList = mutableListOf<Profile>()
+  private val PROFILES_LIST = listOf<Profile>(
+    Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build(),
+    Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build(),
+    Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build(),
+    Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build(),
+    Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
+  )
 
   @Inject
   @field:TestDispatcher
@@ -98,11 +104,6 @@ class ProfileManagementControllerTest {
   fun setUp() {
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
-    profilesList.add(Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build())
-    profilesList.add(Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build())
-    profilesList.add(Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build())
-    profilesList.add(Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build())
-    profilesList.add(Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build())
   }
 
   @After
@@ -126,15 +127,15 @@ class ProfileManagementControllerTest {
     profileManagementController.addProfile("James", "123", null, true).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
-    val profileDatabase = ProfileDatabase.parseFrom(FileInputStream(File(context.filesDir, "profile_database.cache")))
+    val profileDatabase = readProfileDatabase()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    val profile = profileDatabase.profilesMap[0]
-    assertThat(profile?.name).isEqualTo("James")
-    assertThat(profile?.pin).isEqualTo("123")
-    assertThat(profile?.allowDownloadAccess).isEqualTo(true)
-    assertThat(profile?.id?.internalId).isEqualTo(0)
+    val profile = profileDatabase.profilesMap[0]!!
+    assertThat(profile.name).isEqualTo("James")
+    assertThat(profile.pin).isEqualTo("123")
+    assertThat(profile.allowDownloadAccess).isEqualTo(true)
+    assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -191,7 +192,7 @@ class ProfileManagementControllerTest {
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
     assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
-    assertThat(profiles.size).isEqualTo(profilesList.size)
+    assertThat(profiles.size).isEqualTo(PROFILES_LIST.size)
     checkTestProfilesArePresent(profiles)
   }
 
@@ -209,13 +210,13 @@ class ProfileManagementControllerTest {
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
     assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
-    assertThat(profiles.size).isEqualTo(profilesList.size + 1)
+    assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
     checkTestProfilesArePresent(profiles)
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateName_addProfiles_updateWithUniqueName_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithUniqueName_checkUpdateIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -233,7 +234,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateName_addProfiles_updateWithNotUniqueName_checkIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithNotUniqueName_checkUpdatedFailed() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -247,7 +248,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateName_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdateName_addProfiles_updateWithBadProfileId_checkUpdatedFailed() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -261,7 +262,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdatePin_addProfiles_updatePin_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testUpdatePin_addProfiles_updatePin_checkUpdateIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -279,7 +280,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdatePin_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdatePin_addProfiles_updateWithBadProfileId_checkUpdateFailed() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -293,7 +294,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateAllowDownloadAccess_addProfiles_updateDownloadAccess_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testUpdateAllowDownloadAccess_addProfiles_updateDownloadAccess_checkUpdateIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -311,7 +312,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
+  fun testUpdateAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkUpdatedFailed() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -325,39 +326,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateLastLoggedIn_addProfiles_updateLastLoggedIn_checkIsSuccessful() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateLastLoggedIn(profileId).observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs).isNotEqualTo(0)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testUpdateLastLoggedIn_addProfiles_updateWithBadProfileId_checkIsFailure() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    val profileId = ProfileId.newBuilder().setInternalId(6).build()
-    profileManagementController.updateLastLoggedIn(profileId).observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isFailure()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testDeleteProfile_addProfiles_deleteProfile_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testDeleteProfile_addProfiles_deleteProfile_checkDeletionIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -401,7 +370,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testDeleteProfile_addProfiles_deleteProfiles_restartApplication_checkIsSuccessful() = runBlockingTest(coroutineContext) {
+  fun testDeleteProfile_addProfiles_deleteProfiles_restartApplication_checkDeletionIsSuccessful() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
 
@@ -428,47 +397,6 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testSetCurrentProfileId_addProfiles_setValidProfile_checkIsSuccessful() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.setCurrentProfileId(profileId).observeForever(mockUpdateResultObserver)
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testSetCurrentProfileId_addProfiles_setInvalidProfile_checkIsFailure() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    val profileId = ProfileId.newBuilder().setInternalId(5).build()
-    profileManagementController.setCurrentProfileId(profileId).observeForever(mockUpdateResultObserver)
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isFailure()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGetProfileId_addProfiles_setProfile_checkGetProfileIdIsCorrect() = runBlockingTest(coroutineContext) {
-    addTestProfiles()
-    advanceUntilIdle()
-
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.setCurrentProfileId(profileId).observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
   fun testLoginToProfile_addProfiles_loginToProfile_checkGetProfileIdAndLoginTimestampIsCorrect() = runBlockingTest(coroutineContext) {
     addTestProfiles()
     advanceUntilIdle()
@@ -487,13 +415,13 @@ class ProfileManagementControllerTest {
   }
 
   private fun addTestProfiles() {
-    profilesList.forEach {
+    PROFILES_LIST.forEach {
       profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess)
     }
   }
 
   private fun checkTestProfilesArePresent(resultList: List<Profile>) {
-    profilesList.forEachIndexed { idx, profile ->
+    PROFILES_LIST.forEachIndexed { idx, profile ->
       assertThat(resultList[idx].name).isEqualTo(profile.name)
       assertThat(resultList[idx].pin).isEqualTo(profile.pin)
       assertThat(resultList[idx].allowDownloadAccess).isEqualTo(profile.allowDownloadAccess)
@@ -508,6 +436,10 @@ class ProfileManagementControllerTest {
      * dropLast(5) removes files from the path and then it appends the real path with "app_" as a prefix
      */
     return context.filesDir.toString().dropLast(5) + "app_" + path
+  }
+
+  private fun readProfileDatabase(): ProfileDatabase {
+    return FileInputStream(File(context.filesDir, "profile_database.cache")).use(ProfileDatabase::parseFrom)
   }
 
   @Qualifier
