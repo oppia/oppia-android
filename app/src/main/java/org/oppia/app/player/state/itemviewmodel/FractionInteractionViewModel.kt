@@ -16,7 +16,7 @@ class FractionInteractionViewModel(
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (answerText.isNotEmpty() && StringToFractionParser().fromRawInputString(answerText.toString()) == FractionParsingErrors.VALID) {
       interactionObjectBuilder.fraction = StringToFractionParser().getFractionFromString(answerText.toString())
-    } else if (StringToFractionParser().fromRawInputString(answerText.toString()) != FractionParsingErrors.VALID)
+    } else if (answerText.isNotEmpty() && StringToFractionParser().fromRawInputString(answerText.toString()) != FractionParsingErrors.VALID)
       Log.e("FractionInput:", StringToFractionParser().fromRawInputString(answerText.toString()).getError())
     return interactionObjectBuilder.build()
   }
