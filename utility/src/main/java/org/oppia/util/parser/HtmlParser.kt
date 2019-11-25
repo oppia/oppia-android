@@ -27,7 +27,12 @@ class HtmlParser private constructor(
    */
   fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView): Spannable {
     var htmlContent = rawString
-
+    if (htmlContent.contains("\n\t")) {
+      htmlContent = htmlContent.replace("\n\t", "")
+    }
+    if (htmlContent.contains("\n\n")) {
+      htmlContent = htmlContent.replace("\n\n", "")
+    }
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
       htmlContent = htmlContent.replace(
