@@ -58,12 +58,6 @@ class HtmlParser private constructor(
     }
   }
 
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
-    fun create(entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
-      return HtmlParser(urlImageParserFactory, entityType, entityId, imageCenterAlign)
-    }
-  }
-
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
     var trimStart = 0
     var trimEnd = 0
@@ -81,5 +75,11 @@ class HtmlParser private constructor(
     }
 
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
+  }
+
+  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+    fun create(entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
+      return HtmlParser(urlImageParserFactory, entityType, entityId, imageCenterAlign)
+    }
   }
 }
