@@ -45,9 +45,16 @@ class HtmlParser private constructor(
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      trimSpannable(Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
+      trimSpannable(
+        Html.fromHtml(
+          htmlContent,
+          Html.FROM_HTML_MODE_LEGACY,
+          imageGetter, /* tagHandler= */
+          null
+        ) as SpannableStringBuilder
+      )
     } else {
-      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null)as SpannableStringBuilder)
+      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
     }
   }
 
@@ -63,12 +70,12 @@ class HtmlParser private constructor(
 
     var text = spannable.toString()
 
-    if ( text.startsWith("\n")) {
+    if (text.startsWith("\n")) {
       text = text.substring(1)
       trimStart += 1
     }
 
-    if ( text.endsWith("\n")) {
+    if (text.endsWith("\n")) {
       text = text.substring(0, text.length - 1)
       trimEnd += 2
     }

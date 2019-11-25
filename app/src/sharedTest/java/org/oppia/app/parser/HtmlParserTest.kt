@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.Truth.assertWithMessage
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -44,7 +43,6 @@ import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.parser.ImageLoader
-import org.oppia.util.parser.UrlImageParser
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
