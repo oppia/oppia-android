@@ -20,12 +20,15 @@
     <com.google.android.material.card.MaterialCardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="16dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="28dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginBottom="28dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{viewModel.onExplorationClicked}"
       app:cardCornerRadius="4dp"
       app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/elevation_4dp : @dimen/elevation_0dp}"
-      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/chapterCardGreenBorder : @color/chapterCardGreyBorder}"
+      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
       app:strokeWidth="2dp">
 
       <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,13 +40,13 @@
         <ImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
-          android:layout_height="140dp"
+          android:layout_height="wrap_content"
           android:contentDescription="@{viewModel.name}"
           android:paddingStart="40dp"
-          android:paddingTop="40dp"
           android:paddingEnd="40dp"
           android:scaleType="centerCrop"
           android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
+          app:layout_constraintDimensionRatio="H,4:3"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +55,7 @@
         <View
           android:layout_width="match_parent"
           android:layout_height="2dp"
-          android:background="@{viewModel.chapterSummary.chapterPlayState !=ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/chapterCardGreenBorder : @color/chapterCardGreyBorder}"
+          android:background="@{viewModel.chapterSummary.chapterPlayState !=ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
           app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent" />
