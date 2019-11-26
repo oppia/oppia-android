@@ -35,6 +35,14 @@ import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Question
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.domain.topic.TEST_QUESTION_ID_1
 import org.oppia.domain.topic.TEST_QUESTION_ID_2
@@ -70,10 +78,10 @@ class QuestionTrainingControllerTest {
   lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Inject
   @field:TestDispatcher
@@ -233,7 +241,11 @@ class QuestionTrainingControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestQuestionModule::class])
+  @Component(modules = [
+    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+    TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
+  ])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
