@@ -10,7 +10,6 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.Exploration
-import org.oppia.app.player.state.StateFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
