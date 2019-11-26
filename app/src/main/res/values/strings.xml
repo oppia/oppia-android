@@ -30,7 +30,7 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_overview_see_more">See More</string>
-  <string name="topic_download_text">(%s MB)</string>
+  <string name="topic_download_text">(%s)</string>
   <string name="overview">Overview</string>
   <string name="play">Play</string>
   <string name="train">Train</string>
@@ -40,10 +40,11 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s: %s is completed.</string>
-  <string name="fractions_hint_text">Write fraction here.</string>
-  <string name="number_input_hint_text">Write numbers here.</string>
+  <string name="text_input_default_content_description">Enter text.</string>
+  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
+  <string name="numeric_input_content_description">Enter a number.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
-  <string name="text_input_hint_text">Write here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="view_all">View All</string>
@@ -61,6 +62,11 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%d Bytes</string>
+  <string name="size_kb">%d KB</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d GB</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
