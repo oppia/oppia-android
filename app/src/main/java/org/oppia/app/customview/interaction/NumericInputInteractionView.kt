@@ -46,6 +46,7 @@ class NumericInputInteractionView @JvmOverloads constructor(
       this.clearFocus()
     return super.onKeyPreIme(keyCode, event)
   }
+
   override fun onEditorAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
