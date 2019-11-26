@@ -19,7 +19,6 @@
     android:minHeight="48dp"
     android:layout_margin="4dp"
     android:gravity="center_vertical"
-    android:enabled="@{!viewModel.isReadOnly}"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}">
 
     <androidx.appcompat.widget.AppCompatRadioButton

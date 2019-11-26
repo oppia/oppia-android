@@ -22,6 +22,7 @@ import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
@@ -29,8 +30,8 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -44,6 +45,7 @@ import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
+import org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
@@ -181,6 +183,27 @@ class StateFragmentPresenter @Inject constructor(
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
       )
+      .registerViewBinder(
+        viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+        inflateView = { parent ->
+          SubmittedAnswerItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+          val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
+          when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                userAnswer.htmlAnswer, binding.submittedAnswerTextView
+              )
+            }
+            else -> binding.submittedAnswer = userAnswer.plainAnswer
+          }
+        }
+      )
       .build()
   }
 
@@ -210,7 +233,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+  fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
     handleSubmitAnswer(answer)
   }
@@ -278,10 +301,10 @@ class StateFragmentPresenter @Inject constructor(
     addContentItem(pendingItemList, ephemeralState)
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.pendingState.wrongAnswerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
     }
 
     val hasPreviousState = ephemeralState.hasPreviousState
@@ -358,7 +381,7 @@ class StateFragmentPresenter @Inject constructor(
     moveToNextState()
   }
 
-  private fun handleSubmitAnswer(answer: InteractionObject) {
+  private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
@@ -374,19 +397,10 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
-  ) = addInteraction(pendingItemList, interaction)
-
-  private fun addInteractionForCompletedState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
-
-  private fun addInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+      explorationId, interaction, fragment as InteractionAnswerReceiver
     )
   }
 
@@ -396,14 +410,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction,
-    answersAndResponses: List<AnswerAndResponse>
+    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>
   ) {
-    // TODO: add support for displaying the previous answer, too.
     for (answerAndResponse in answersAndResponses) {
-      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
+      addSubmittedAnswer(pendingItemList, answerAndResponse.userAnswer)
       addFeedbackItem(pendingItemList, answerAndResponse.feedback)
     }
+  }
+
+  private fun addSubmittedAnswer(pendingItemList: MutableList<StateItemViewModel>, userAnswer: UserAnswer) {
+    pendingItemList += SubmittedAnswerViewModel(userAnswer)
   }
 
   private fun addFeedbackItem(pendingItemList: MutableList<StateItemViewModel>, feedback: SubtitledHtml) {

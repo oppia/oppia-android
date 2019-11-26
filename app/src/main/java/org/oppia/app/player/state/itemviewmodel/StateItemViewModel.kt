@@ -14,6 +14,7 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
     SELECTION_INTERACTION,
     FRACTION_INPUT_INTERACTION,
     NUMERIC_INPUT_INTERACTION,
-    TEXT_INPUT_INTERACTION
+    TEXT_INPUT_INTERACTION,
+    SUBMITTED_ANSWER,
   }
 }
