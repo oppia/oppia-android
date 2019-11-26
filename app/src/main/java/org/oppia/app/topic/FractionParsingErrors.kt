@@ -6,7 +6,7 @@ import org.oppia.app.customview.interaction.FractionInputInteractionView
 enum class FractionParsingErrors(errorCode: Int, error: String) {
   VALID(errorCode = 200, error = "Valid"),
   INVALID_CHARS(errorCode = 100, error = "Please only use numerical digits, spaces or forward slashes (/)"),
-  INVALID_FORMAT(errorCode = 101, error = "Please enter a valid fraction (e.g., 5/3 or 1 2/3"),
+  INVALID_FORMAT(errorCode = 101, error = "Please enter a valid fraction (e.g., 5/3 or 1 2/3)"),
   DIVISION_BY_ZERO(errorCode = 102, error = "Please do not put 0 in the denominator");
 
   private var errorCode: Int

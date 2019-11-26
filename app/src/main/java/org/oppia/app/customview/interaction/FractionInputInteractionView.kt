@@ -37,7 +37,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
     showSoftKeyboard(v, context)
   } else {
     hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    if (text!!.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
     hideSoftKeyboard(v, context)
   }
 
