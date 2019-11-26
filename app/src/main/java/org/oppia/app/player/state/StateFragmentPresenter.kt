@@ -376,6 +376,11 @@ class StateFragmentPresenter @Inject constructor(
     handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
+  fun handleKeyboardAction() {
+      hideKeyboard()
+      handleSubmitAnswer(viewModel.getPendingAnswer())
+  }
+
   override fun onContinueButtonClicked() {
     hideKeyboard()
     moveToNextState()
