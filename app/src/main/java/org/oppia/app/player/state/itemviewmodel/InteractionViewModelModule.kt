@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -39,8 +40,10 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("FractionInput")
-  fun provideFractionInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> FractionInteractionViewModel(existingAnswer, isReadOnly) }
+  fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { _, interaction, _, existingAnswer, isReadOnly ->
+      FractionInteractionViewModel(interaction, existingAnswer, isReadOnly, context)
+    }
   }
 
   @Provides
@@ -54,6 +57,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> TextInputViewModel(existingAnswer, isReadOnly) }
+    return { _, interaction, _, existingAnswer, isReadOnly ->
+      TextInputViewModel(interaction, existingAnswer, isReadOnly)
+    }
   }
 }

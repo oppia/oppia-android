@@ -7,7 +7,7 @@ import org.oppia.app.viewmodel.ObservableViewModel
 class SelectionInteractionContentViewModel(
   val htmlContent: String, private val itemIndex: Int, isAnswerInitiallySelected: Boolean, val isReadOnly: Boolean,
   private val selectionInteractionViewModel: SelectionInteractionViewModel
-): ObservableViewModel() {
+) : ObservableViewModel() {
   var isAnswerSelected = ObservableBoolean(isAnswerInitiallySelected)
 
   fun handleItemClicked() {
