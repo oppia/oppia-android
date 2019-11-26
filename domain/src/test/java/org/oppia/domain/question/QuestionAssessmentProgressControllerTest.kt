@@ -31,6 +31,10 @@ import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -192,18 +196,6 @@ class QuestionAssessmentProgressControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      var questionSeed = 0L
-    }
-
-    @Provides
-    @QuestionCountPerTrainingSession
-    fun provideQuestionCountPerTrainingSession(): Int = 3
-
-    @Provides
-    @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = questionSeed ++
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -231,11 +223,40 @@ class QuestionAssessmentProgressControllerTest {
     fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
     }
+
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  }
+
+  @Module
+  class TestQuestionModule {
+    companion object {
+      var questionSeed = 0L
+    }
+
+    @Provides
+    @QuestionCountPerTrainingSession
+    fun provideQuestionCountPerTrainingSession(): Int = 3
+
+    @Provides
+    @QuestionTrainingSeed
+    fun provideQuestionTrainingSeed(): Long = questionSeed++
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestQuestionModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -42,6 +42,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.beginQuestionTrainingSession(
         retrieveQuestionsDataProvider
       )
+      // Convert the data provider type to 'Any' via a transformation.
       val erasedDataProvider: DataProvider<Any> = dataProviders.transform(
         RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER, retrieveQuestionsDataProvider
       ) { it }

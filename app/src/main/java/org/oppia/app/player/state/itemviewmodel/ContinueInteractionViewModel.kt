@@ -13,7 +13,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
   val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
   val answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
