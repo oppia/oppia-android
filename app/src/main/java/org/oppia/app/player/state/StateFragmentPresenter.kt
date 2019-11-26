@@ -194,9 +194,12 @@ class StateFragmentPresenter @Inject constructor(
           val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
-            UserAnswer.TextualAnswerCase.HTML_ANSWER -> binding.submittedAnswer = htmlParserFactory.create(
-              entityType, explorationId).parseOppiaHtml(userAnswer.htmlAnswer, binding.submittedAnswerTextView
-            )
+            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                userAnswer.htmlAnswer, binding.submittedAnswerTextView
+              )
+            }
             else -> binding.submittedAnswer = userAnswer.plainAnswer
           }
         }
