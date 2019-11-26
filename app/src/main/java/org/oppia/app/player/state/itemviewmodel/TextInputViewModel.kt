@@ -1,12 +1,16 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the text input interaction. */
-class TextInputViewModel: StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
+class TextInputViewModel(
+  interaction: Interaction
+) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
+  val hintText: CharSequence = deriveHintText(interaction)
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
@@ -16,5 +20,10 @@ class TextInputViewModel: StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), I
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()
+  }
+
+  private fun deriveHintText(interaction: Interaction): CharSequence {
+    // The default placeholder for text input is empty.
+    return interaction.customizationArgsMap["placeholder"]?.normalizedString ?: ""
   }
 }

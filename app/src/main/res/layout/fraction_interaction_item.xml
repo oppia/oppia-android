@@ -26,7 +26,7 @@
       android:background="@drawable/edit_text_background"
       android:digits="0123456789/- "
       android:fontFamily="sans-serif"
-      android:hint="@string/fractions_hint_text"
+      android:hint="@{viewModel.hintText}"
       android:imeOptions="actionDone"
       android:inputType="date"
       android:longClickable="false"

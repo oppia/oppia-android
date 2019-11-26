@@ -5,7 +5,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the numeric input interaction. */
-class NumericInputViewModel: StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
+class NumericInputViewModel : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
 
   override fun getPendingAnswer(): UserAnswer {
