@@ -21,7 +21,6 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface , StateKeyboardButtonListener {
 
-
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -74,5 +73,4 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onEditorAction(actionCode)
   }
-
 }
