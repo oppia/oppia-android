@@ -21,12 +21,6 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface , StateKeyboardButtonListener {
 
-  override fun onEditorAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val stateFragment = supportFragmentManager.findFragmentByTag(TAG_STATE_FRAGMENT) as StateFragment
-      stateFragment.stateFragmentPresenter.onKeyboardAction()
-    }
-  }
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
@@ -76,4 +70,9 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     }
     return super.onOptionsItemSelected(item)
   }
+
+  override fun onEditorAction(actionCode: Int) {
+    explorationActivityPresenter.onEditorAction(actionCode)
+  }
+
 }

@@ -10,9 +10,12 @@ import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.StateFragmentPresenter
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
+import javax.inject.Inject
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
@@ -28,12 +31,11 @@ class FractionInputInteractionView @JvmOverloads constructor(
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private val hintText: String
-  private  val stateKeyboardButtonListener:StateKeyboardButtonListener
+  private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
     hintText = hint.toString()
-
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 

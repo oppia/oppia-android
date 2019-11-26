@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
@@ -22,10 +23,12 @@ class TextInputInteractionView @JvmOverloads constructor(
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private val hintText: String
+  private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
     hintText = hint.toString()
+    stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
