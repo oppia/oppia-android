@@ -263,7 +263,6 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being logged into.
    * @return a [LiveData] that indicates the success/failure of this login operation.
    */
-  @ExperimentalCoroutinesApi
   fun loginToProfile (profileId: ProfileId): LiveData<AsyncResult<Any?>> {
     return dataProviders.convertToLiveData(dataProviders.transformAsync<Any?, Any?>(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
       val deferredResult = updateLastLoggedInAsync(profileId).await()
@@ -275,30 +274,17 @@ class ProfileManagementController @Inject constructor(
     })
   }
 
-  /**
-   * Sets the currentProfileId to the selected profile in ProfileChooserFragment.
-   * Checks to ensure that profileId corresponds to an existing profile.
-   *
-   * @param profileId the ID corresponding to the profile being set.
-   * @return a [LiveData] that indicates the success/failure of this set operation.
-   */
   private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
-    return dataProviders.transformAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID, profileDataStore) {
-      if (it.profilesMap.containsKey(profileId.internalId)) {
+    return dataProviders.createInMemoryDataProviderAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID) {
+      val profileDatabase = profileDataStore.readDataAsync().await()
+      if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
         currentProfileId = profileId.internalId
-        return@transformAsync AsyncResult.success<Any?>(0)
+        return@createInMemoryDataProviderAsync AsyncResult.success<Any?>(0)
       }
       AsyncResult.failed<Any?>(ProfileNotFoundException("ProfileId ${profileId.internalId} is not associated with an existing profile"))
     }
   }
 
-  /**
-   * Updates the last logged in timestamp of an existing profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  @ExperimentalCoroutinesApi
   private fun updateLastLoggedInAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
     return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)

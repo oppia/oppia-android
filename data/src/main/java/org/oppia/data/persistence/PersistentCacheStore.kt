@@ -95,6 +95,25 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
+  // Returns a deferred value that contains the cache payload value
+  fun readDataAsync(): Deferred<T> {
+    val deferred = cache.updateWithCustomChannelIfPresentAsync { cachePayload ->
+      if (cachePayload.state == CacheState.UNLOADED) {
+        val upToDatePayload = loadFileCache(cachePayload)
+        asyncDataSubscriptionManager.notifyChange(providerId)
+        Pair(upToDatePayload, upToDatePayload.value)
+      } else {
+        Pair(cachePayload, cachePayload.value)
+      }
+    }
+    deferred.invokeOnCompletion {
+      failureLock.withLock {
+        deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
+      }
+    }
+    return deferred
+  }
+
   /**
    * Calls the specified value with the current on-disk contents and saves the result of the function to disk. Note that
    * the function used here should be non-blocking, thread-safe, and should have no side effects.
