@@ -26,6 +26,7 @@ internal class StateGraph internal constructor(
     val answerOutcomeBuilder = AnswerOutcome.newBuilder()
       .setFeedback(outcome.feedback)
       .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
+      .setState(currentState)
     when {
       outcome.refresherExplorationId.isNotEmpty() ->
         answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId

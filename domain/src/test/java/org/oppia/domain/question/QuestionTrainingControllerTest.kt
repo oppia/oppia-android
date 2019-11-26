@@ -236,7 +236,7 @@ class QuestionTrainingControllerTest {
 
     @Provides
     @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = questionSeed ++
+    fun provideQuestionTrainingSeed(): Long = questionSeed++
   }
 
   // TODO(#89): Move this to a common test application component.

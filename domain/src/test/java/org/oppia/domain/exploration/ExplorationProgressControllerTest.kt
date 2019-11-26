@@ -42,6 +42,10 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -828,6 +832,88 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testGetCurrentState_forFirstState_doesNotHaveNextState() = runBlockingTest(coroutineContext) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+
+    playExploration(TEST_EXPLORATION_ID_5)
+
+    // The initial state should not have a next state.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentState_forFirstState_afterAnswerSubmission_doesNotHaveNextState() = runBlockingTest(
+    coroutineContext
+  ) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+    playExploration(TEST_EXPLORATION_ID_5)
+
+    submitMultipleChoiceAnswer(0)
+
+    // Simply completing the current state should not result in there being a next state since the user hasn't proceeded
+    // to the following state, yet.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentState_forSecondState_doesNotHaveNextState() = runBlockingTest(coroutineContext) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+    playExploration(TEST_EXPLORATION_ID_5)
+
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // The current state should have a previous state.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentState_forSecondState_navigateBackward_hasNextState() = runBlockingTest(coroutineContext) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    moveToPreviousState()
+
+    // The previous state should have a next state.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentState_forSecondState_navigateBackwardThenForward_doesNotHaveNextState() = runBlockingTest(
+    coroutineContext
+  ) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    moveToPreviousState()
+    moveToNextState()
+
+    // Iterating back to the current state should result in no longer having a next state.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(
     coroutineContext
   ) {
@@ -1166,6 +1252,18 @@ class ExplorationProgressControllerTest {
     fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
     }
+
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.

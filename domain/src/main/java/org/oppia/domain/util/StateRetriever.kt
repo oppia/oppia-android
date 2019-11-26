@@ -3,29 +3,43 @@ package org.oppia.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.Fraction
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.NumberUnit
+import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
 import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
-class StateRetriever @Inject constructor() {
+class StateRetriever @Inject constructor(
+  private val jsonAssetRetriever: JsonAssetRetriever
+) {
 
   /** Creates a single state object from JSON */
   fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
-    return State.newBuilder()
+    val state = State.newBuilder()
       .setName(stateName)
       .setContent(
         SubtitledHtml.newBuilder().setHtml(
           stateJson?.getJSONObject("content")?.getString("html")
+        ).setContentId(
+          stateJson?.getJSONObject("content")?.optString("content_id")
         )
       )
       .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
-      .build()
+
+    if (stateJson != null && stateJson.has("recorded_voiceovers")) {
+      createVoiceOverMappingsFromJson(stateJson.getJSONObject("recorded_voiceovers"), state)
+    }
+
+    return state.build()
   }
 
   // Creates an interaction from JSON
@@ -106,11 +120,48 @@ class StateRetriever @Inject constructor() {
     }
     return Outcome.newBuilder()
       .setDestStateName(outcomeJson.getString("dest"))
-      .setFeedback(
-        SubtitledHtml.newBuilder()
-          .setHtml(outcomeJson.getString("feedback"))
-      )
+      .setFeedback(createFeedbackSubtitledHtml(outcomeJson))
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
+      .build()
+  }
+
+  // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
+  //  updated.
+  /**
+   * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry keyed on 'feedback'.
+   */
+  private fun createFeedbackSubtitledHtml(containerObject: JSONObject): SubtitledHtml {
+    val feedbackObject = containerObject.optJSONObject("feedback")
+    return if (feedbackObject != null) {
+      SubtitledHtml.newBuilder()
+        .setContentId(feedbackObject.getString("content_id"))
+        .setHtml(feedbackObject.getString("html"))
+        .build()
+    } else {
+      SubtitledHtml.newBuilder().setHtml(containerObject.getString("feedback")).build()
+    }
+  }
+
+  // Creates VoiceoverMappings from JSON and adds onto State
+  private fun createVoiceOverMappingsFromJson(recordedVoiceovers: JSONObject, stateBuilder: State.Builder) {
+    val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
+    voiceoverMappingJson?.let {
+      for (key in it.keys()) {
+        val voiceoverMapping = VoiceoverMapping.newBuilder()
+        val voiceoverJson = it.getJSONObject(key)
+        for (lang in voiceoverJson.keys()) {
+          voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
+        }
+        stateBuilder.putRecordedVoiceovers(key, voiceoverMapping.build())
+      }
+    }
+  }
+
+  // Creates a Voiceover from Json
+  private fun createVoiceOverFromJson(voiceoverJson: JSONObject): Voiceover {
+    return Voiceover.newBuilder()
+      .setNeedsUpdate(voiceoverJson.getBoolean("needs_update"))
+      .setFileName(voiceoverJson.getString("filename"))
       .build()
   }
 
@@ -129,7 +180,22 @@ class StateRetriever @Inject constructor() {
       val inputKeysIterator = inputsJson.keys()
       while (inputKeysIterator.hasNext()) {
         val inputName = inputKeysIterator.next()
-        ruleSpecBuilder.putInput(inputName, createInputFromJson(inputsJson, inputName, interactionId))
+        when (ruleSpecBuilder.ruleType) {
+          "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setSignedInt(inputsJson.getInt(inputName))
+              .build()
+          )
+          "HasDenominatorEqualTo" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setNonNegativeInt(inputsJson.getInt(inputName))
+              .build()
+          )
+          else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
+        }
+
       }
       ruleSpecList.add(ruleSpecBuilder.build())
     }
@@ -137,7 +203,7 @@ class StateRetriever @Inject constructor() {
   }
 
   // Creates an input interaction object from JSON
-  private fun createInputFromJson(
+  private fun createExactInputFromJson(
     inputJson: JSONObject?, keyName: String, interactionId: String
   ): InteractionObject {
     if (inputJson == null) {
@@ -147,14 +213,58 @@ class StateRetriever @Inject constructor() {
       "MultipleChoiceInput" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
+      "ItemSelectionInput" -> InteractionObject.newBuilder()
+        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
+        .build()
       "TextInput" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
+        .build()
+      "NumberWithUnits" -> InteractionObject.newBuilder()
+        .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
         .build()
       "NumericInput" -> InteractionObject.newBuilder()
         .setReal(inputJson.getDouble(keyName))
         .build()
+      "FractionInput" -> InteractionObject.newBuilder()
+        .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
+    val stringListBuilder = StringList.newBuilder()
+    for (i in 0 until itemSelectionAnswer.length()) {
+      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+    }
+    return stringListBuilder.build()
+  }
+
+  private fun parseNumberWithUnitsObject(numberWithUnitsAnswer: JSONObject): NumberWithUnits {
+    val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
+    when (numberWithUnitsAnswer.getString("type")) {
+      "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
+      "fraction" -> numberWithUnitsBuilder.fraction = parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
+    }
+    val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
+    for (i in 0 until unitsArray.length()) {
+      val unit = unitsArray.getJSONObject(i)
+      numberWithUnitsBuilder.addUnit(
+        NumberUnit.newBuilder()
+          .setUnit(unit.getString("unit"))
+          .setExponent(unit.getInt("exponent"))
+      )
+    }
+    return numberWithUnitsBuilder.build()
+  }
+
+  private fun parseFraction(fractionAnswer: JSONObject): Fraction {
+    return Fraction.newBuilder()
+      .setWholeNumber(fractionAnswer.getInt("wholeNumber"))
+      .setDenominator(fractionAnswer.getInt("denominator"))
+      .setNumerator(fractionAnswer.getInt("numerator"))
+      .setIsNegative(fractionAnswer.getBoolean("isNegative"))
+      .build()
   }
 
   // Creates a customization arg mapping from JSON
@@ -180,28 +290,26 @@ class StateRetriever @Inject constructor() {
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when (customizationArgValue) {
-      is String -> return interactionObjectBuilder
-        .setNormalizedString(customizationArgValue).build()
-      is Int -> return interactionObjectBuilder
-        .setSignedInt(customizationArgValue).build()
-      is Double -> return interactionObjectBuilder
-        .setReal(customizationArgValue).build()
-      is List<*> -> if (customizationArgValue.size > 0) {
-        return interactionObjectBuilder.setSetOfHtmlString(
-          createStringList(customizationArgValue)
-        ).build()
+      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue).build()
+      is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
+      is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
+      is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()
+      is JSONArray -> {
+        if (customizationArgValue.length() > 0) {
+          return interactionObjectBuilder.setSetOfHtmlString(
+            parseJsonStringList(customizationArgValue)
+          ).build()
+        }
       }
     }
     return InteractionObject.getDefaultInstance()
   }
 
-  @Suppress("UNCHECKED_CAST") // Checked cast in the if statement
-  private fun createStringList(value: List<*>): StringList {
-    val stringList = mutableListOf<String>()
-    if (value[0] is String) {
-      stringList.addAll(value as List<String>)
-      return StringList.newBuilder().addAllHtml(stringList).build()
+  private fun parseJsonStringList(jsonArray: JSONArray): StringList {
+    val list: MutableList<String> = ArrayList()
+    for (i in 0 until jsonArray.length()) {
+      list.add(jsonArray.get(i).toString())
     }
-    return StringList.getDefaultInstance()
+    return StringList.newBuilder().addAllHtml(list).build()
   }
 }

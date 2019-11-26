@@ -1,9 +1,15 @@
 package org.oppia.app.customview.interaction
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_BACK
+import android.view.View
 import android.widget.EditText
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
+import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789."
@@ -17,13 +23,22 @@ class NumericInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
+) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
+  init {
+    onFocusChangeListener = this
+  }
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
-    if (!text.isNullOrEmpty()) {
-      interactionObjectBuilder.real = text.toString().toDouble()
-    }
-    return interactionObjectBuilder.build()
+  override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
+    typeface = Typeface.DEFAULT
+    showSoftKeyboard(v, context)
+  } else {
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    hideSoftKeyboard(v, context)
+  }
+
+  override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
+    if (event.keyCode == KEYCODE_BACK && event.action == ACTION_UP)
+      this.clearFocus()
+    return super.onKeyPreIme(keyCode, event)
   }
 }

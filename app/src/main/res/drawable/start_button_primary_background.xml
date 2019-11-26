@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <layer-list>
+      <item android:right="2dp" android:top="2dp">
+        <shape>
+          <corners android:radius="4dp" />
+          <solid android:color="@color/oppiaDisabledButtonBackground" />
+        </shape>
+      </item>
+      <item android:bottom="2dp">
+        <shape>
+          <solid android:color="@color/colorPrimary" />
+          <corners android:radius="4dp" />
+        </shape>
+      </item>
+    </layer-list>
+  </item>
+</selector>

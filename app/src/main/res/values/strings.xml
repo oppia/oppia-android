@@ -6,25 +6,66 @@
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
-  <string name="audio_language_select_dialog_cancel_button">CANCEL</string>
+  <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="cellular_data_alert_dialog_okay_button">OK</string>
-  <string name="cellular_data_alert_dialog_cancel_button">CANCEL</string>
+  <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
+  <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
+  <string name="stop_exploration_dialog_description">Your progress will be saved.</string>
+  <string name="stop_exploration_dialog_cancel_button">Cancel</string>
+  <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_train_master_these_skills">Master These Skills</string>
   <string name="topic_train_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_train_start">Start</string>
-  <string name="state_continue_button">CONTINUE</string>
-  <string name="state_continue_submit">SUBMIT</string>
-  <string name="previous_state_description">Button to go to previous state</string>
-  <string name="next_state_description">Button to go to next state</string>
-  <string name="state_submit_button">SUBMIT</string>
-  <string name="state_end_exploration_button">RETURN TO TOPIC</string>
-  <string name="state_learn_again_button">LEARN AGAIN</string>
+  <string name="state_continue_button">Continue</string>
+  <string name="state_continue_submit">Submit</string>
+  <string name="previous_state_description">Navigate to previous state</string>
+  <string name="next_state_description">Navigate to next state</string>
+  <string name="state_submit_button">Submit</string>
+  <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_overview_see_more">See More</string>
-  <string name="topic_download_text"> (%s MB)</string>
+  <string name="topic_download_text">(%s)</string>
+  <string name="overview">Overview</string>
+  <string name="play">Play</string>
+  <string name="train">Train</string>
+  <string name="review">Review</string>
+  <string name="topic">Topic</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="topic_play_chapter_index">%s.</string>
+  <string name="chapter_name">Chapter %s: %s</string>
+  <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="text_input_default_content_description">Enter text.</string>
+  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
+  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
+  <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="view_all">View All</string>
+  <string name="ongoing_story_last_week">Played within the Last Week</string>
+  <string name="ongoing_story_last_month">Played within the Last Month</string>
+  <string name="all_topics">All Topics</string>
+  <string name="stories_you_can_play">Stories You Can Play</string>
+  <string name="go_to_previous_page">Go to previous page.</string>
+  <string name="continue_playing_activity">Continue playing</string>
+  <string name="topic_downloaded">Topic Downloaded</string>
+  <string name="downloaded">Downloaded</string>
+  <string name="status_in_progress">In Progress</string>
+  <string name="status_completed">Completed</string>
+  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="play_pause_audio">Play/Pause Audio</string>
+  <string name="help">Help</string>
+  <string name="preferences">Preferences</string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%d Bytes</string>
+  <string name="size_kb">%d KB</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d GB</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -39,6 +80,18 @@
     </item>
     <item quantity="other">
       %d Stories
+    </item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%d of %d Chapter Completed</item>
+    <item quantity="other">%d of %d Chapters Completed</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %d Lessons
     </item>
   </plurals>
 </resources>

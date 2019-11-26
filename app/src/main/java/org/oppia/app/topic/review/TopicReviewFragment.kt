@@ -14,7 +14,7 @@ class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
   @Inject
   lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }

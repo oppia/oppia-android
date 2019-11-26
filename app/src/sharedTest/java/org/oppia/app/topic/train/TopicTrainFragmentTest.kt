@@ -7,36 +7,37 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.not
+import org.junit.After
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import org.oppia.app.R
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import androidx.test.rule.ActivityTestRule
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 
 /** Tests for [TopicTrainFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -111,6 +112,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->
@@ -121,6 +123,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
     onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
     activityScenario.onActivity { activity ->
@@ -131,6 +134,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->

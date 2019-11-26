@@ -36,13 +36,14 @@ class QuestionTrainingController @Inject constructor(
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    * The training session may still fail to load, but this provides early-failure detection.
    */
-  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any?>> {
+  fun startQuestionTrainingSession(skillIdsList: List<String>): LiveData<AsyncResult<Any>> {
     return try {
       val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       questionAssessmentProgressController.beginQuestionTrainingSession(
         retrieveQuestionsDataProvider
       )
-      val erasedDataProvider: DataProvider<Any?> = dataProviders.transform(
+      // Convert the data provider type to 'Any' via a transformation.
+      val erasedDataProvider: DataProvider<Any> = dataProviders.transform(
         RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER, retrieveQuestionsDataProvider
       ) { it }
       dataProviders.convertToLiveData(erasedDataProvider)
