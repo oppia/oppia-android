@@ -237,9 +237,9 @@ class QuestionAssessmentProgressController @Inject constructor(
           TrainStage.LOADING_TRAINING_SESSION -> {
             // If the assessment hasn't yet been initialized, initialize it now that a list of questions is available.
             initializeAssessment(questionsList)
-            AsyncResult.success(retrieveEphemeralQuestionState())
+            AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           }
-          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState())
+          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
@@ -248,10 +248,11 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun retrieveEphemeralQuestionState(): EphemeralQuestion {
+  private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
     return EphemeralQuestion.newBuilder()
       .setEphemeralState(ephemeralState)
+      .setQuestion(questionsList[progress.getCurrentQuestionIndex()])
       .setCurrentQuestionIndex(progress.getCurrentQuestionIndex())
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())

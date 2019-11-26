@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.databinding.ContentItemBinding
-import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
@@ -37,8 +36,8 @@ import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.app.topic.questionplayer.QuestionNavigationButtonViewModel.ContinuationNavigationButtonType
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.questionplayer.QuestionNavigationButtonViewModel.ContinuationNavigationButtonType
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.domain.question.QuestionTrainingController
@@ -66,6 +65,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion()
   }
+  private lateinit var questionId: String
   private var firstTry = true
   private var numCorrect = 0
 
@@ -96,6 +96,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       return
     }
     val ephemeralQuestion = result.getOrThrow()
+    questionId = ephemeralQuestion.question.questionId
     processProgress(ephemeralQuestion.currentQuestionIndex + 1, ephemeralQuestion.totalQuestionCount)
     processEphemeralState(ephemeralQuestion.ephemeralState)
   }
@@ -272,70 +273,69 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StateItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StateItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<StateItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is QuestionNavigationButtonViewModel -> ViewType.VIEW_TYPE_QUESTION_NAVIGATION_BUTTON.ordinal
-          is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT.ordinal
-          is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK.ordinal
-          is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal
-          is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal
-          is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal
-          is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal
+          is QuestionNavigationButtonViewModel -> ViewType.VIEW_TYPE_QUESTION_NAVIGATION_BUTTON
+          is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT
+          is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK
+          is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION
+          is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION
+          is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION
+          is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_QUESTION_NAVIGATION_BUTTON.ordinal,
+        viewType = ViewType.VIEW_TYPE_QUESTION_NAVIGATION_BUTTON,
         inflateDataBinding = QuestionButtonItemBinding::inflate,
         setViewModel = QuestionButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as QuestionNavigationButtonViewModel }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_CONTENT.ordinal,
+        viewType = ViewType.VIEW_TYPE_CONTENT,
         inflateView = { parent ->
           ContentItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create("", "").parseOppiaHtml(
+          binding.htmlContent = htmlParserFactory.create("question", questionId, imageCenterAlign = true).parseOppiaHtml(
             (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
           )
         }
       )
       .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_FEEDBACK.ordinal,
+        viewType = ViewType.VIEW_TYPE_FEEDBACK,
         inflateView = { parent ->
           FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create("", "").parseOppiaHtml(
+          binding.htmlContent = htmlParserFactory.create("question", questionId, imageCenterAlign = true).parseOppiaHtml(
             (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
           )
         }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal,
+        viewType = ViewType.VIEW_TYPE_SELECTION_INTERACTION,
         inflateDataBinding = SelectionInteractionItemBinding::inflate,
         setViewModel = SelectionInteractionItemBinding::setViewModel,
         transformViewModel = { it as SelectionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal,
+        viewType = ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION,
         inflateDataBinding = FractionInteractionItemBinding::inflate,
         setViewModel = FractionInteractionItemBinding::setViewModel,
         transformViewModel = { it as FractionInteractionViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal,
+        viewType = ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,
         setViewModel = NumericInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as NumericInputViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal,
+        viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION,
         inflateDataBinding = TextInputInteractionItemBinding::inflate,
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }

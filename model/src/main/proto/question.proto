@@ -44,25 +44,28 @@ message EphemeralQuestion {
   // dedicated terminal state.
   EphemeralState ephemeral_state = 1;
 
+  // The question being answered by the user.
+  Question question = 2;
+
   // Corresponds the index of the current question in the assessment, starting at 0. This index is guaranteed to be
   // unique for a specific question being assessed, even as different EphemeralQuestions are being dispatched to
   // represent different states the question is going through.
-  int32 current_question_index = 2;
+  int32 current_question_index = 3;
 
   // Corresponds to the number of questions in the assessment. This value will change across EphemeralQuestion instances
   // for a single assessment if the controller decides to add/remove questions mid-assessment.
-  int32 total_question_count = 3;
+  int32 total_question_count = 4;
 
   // Corresponds to the number of questions in the assessment when it started. This value will never change across
   // EphemeralQuestion instances for the same assessment. It can be compared with total_question_count to detect if the
   // learner required extra questions during the assessment, or completed it early.
-  int32 initial_total_question_count = 4;
+  int32 initial_total_question_count = 5;
 
   // Corresponds to skill IDs that the learner should review. This is expected only to be filled at the end of the
   // assessment (for the terminal question), but this should not be used as an indicator of whether the assessment
   // ended. If this has values outside the terminal state, they should be ignored. There's no guarantee any skill IDs
   // will be suggested to review at the end of the assessment.
-  repeated string skill_ids_to_review = 5;
+  repeated string skill_ids_to_review = 6;
 }
 
 // The outcome of submitting an answer to a question during a training session.

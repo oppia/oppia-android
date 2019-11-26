@@ -26,7 +26,7 @@ class StopExplorationDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val stopExplorationInterface: StopExplorationInterface = activity as ExplorationActivity
+    val stopExplorationInterface: StopExplorationInterface = activity as StopExplorationInterface
 
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.stop_exploration_dialog_title)

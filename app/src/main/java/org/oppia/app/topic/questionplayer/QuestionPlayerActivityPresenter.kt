@@ -5,13 +5,16 @@ import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.question.QuestionTrainingController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope
 class QuestionPlayerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val questionTrainingController: QuestionTrainingController
+  private val questionTrainingController: QuestionTrainingController,
+  private val logger: Logger
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.question_player_activity)
@@ -26,6 +29,19 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         }
       })
     }
+  }
+
+  fun stopTrainingSession() {
+    questionTrainingController.stopQuestionTrainingSession().observe(activity, Observer<AsyncResult<Any?>> {
+      when {
+        it.isPending() -> logger.d("QuestionPlayerActivity", "Stopping training session")
+        it.isFailure() -> logger.e("QuestionPlayerActivity", "Failed to stop training session", it.getErrorOrNull()!!)
+        else -> {
+          logger.d("QuestionPlayerActivity", "Successfully stopped training session")
+          activity.finish()
+        }
+      }
+    })
   }
 
   private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
