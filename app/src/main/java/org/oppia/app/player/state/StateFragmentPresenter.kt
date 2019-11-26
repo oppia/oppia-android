@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
@@ -133,9 +134,10 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
-          )
+          binding.htmlContent =
+            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+              (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
+            )
         }
       )
       .registerViewBinder(
@@ -145,9 +147,10 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
-          )
+          binding.htmlContent =
+            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+              (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
+            )
         }
       )
       .registerViewDataBinder(
@@ -327,7 +330,7 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.itemList += pendingItemList
 
     if (scrollToTop) {
-      binding.stateRecyclerView.smoothScrollToPosition(0)
+      (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 200)
     }
   }
 
