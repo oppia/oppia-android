@@ -473,7 +473,7 @@
             "value": 1
           },
           "placeholder": {
-            "value": ""
+            "value": "Enter a language"
           }
         },
         "id": "TextInput",

@@ -8,6 +8,7 @@ import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityNumericInputInteractionViewTestBinding
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
@@ -22,10 +23,15 @@ class InputInteractionViewTestActivity : AppCompatActivity() {
     existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false
   )
   val textInputViewModel = TextInputViewModel(
-    existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false
+    interaction = Interaction.getDefaultInstance(),
+    existingAnswer = InteractionObject.getDefaultInstance(),
+    isReadOnly = false
   )
   val fractionInteractionViewModel = FractionInteractionViewModel(
-    existingAnswer = InteractionObject.getDefaultInstance(), isReadOnly = false
+    interaction = Interaction.getDefaultInstance(),
+    existingAnswer = InteractionObject.getDefaultInstance(),
+    isReadOnly = false,
+    context = this@InputInteractionViewTestActivity.applicationContext
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {

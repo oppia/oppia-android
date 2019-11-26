@@ -35,7 +35,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
 
   init {
     onFocusChangeListener = this
-    hintText = hint.toString()
+    hintText = (hint ?: "").toString()
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
