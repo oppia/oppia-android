@@ -10,8 +10,9 @@ import org.oppia.domain.util.toAnswerString
 
 /** View model corresponding to fraction interactions. */
 class FractionInteractionViewModel(
-  interaction: Interaction, existingAnswer: InteractionObject?, val isReadOnly: Boolean, private val context: Context
-): StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
+  interaction: Interaction, existingAnswer: InteractionObject?, val isReadOnly: Boolean,
+  private val context: Context
+) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
   val hintText: CharSequence = deriveHintText(interaction)
 

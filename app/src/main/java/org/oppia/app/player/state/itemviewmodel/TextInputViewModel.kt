@@ -8,7 +8,7 @@ import org.oppia.domain.util.toAnswerString
 /** View model for text input interaction views. */
 class TextInputViewModel(
   interaction: Interaction, existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
+) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
   val hintText: CharSequence = deriveHintText(interaction)
 

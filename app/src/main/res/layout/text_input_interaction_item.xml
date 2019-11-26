@@ -27,6 +27,7 @@
       android:enabled="@{!viewModel.isReadOnly}"
       android:fontFamily="sans-serif"
       android:hint="@{viewModel.hintText}"
+      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_default_content_description : ``}"
       android:imeOptions="actionDone"
       android:inputType="text"
       android:longClickable="false"

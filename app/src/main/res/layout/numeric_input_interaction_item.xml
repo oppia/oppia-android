@@ -28,6 +28,7 @@
       android:enabled="@{!viewModel.isReadOnly}"
       android:fontFamily="sans-serif"
       android:imeOptions="actionDone"
+      android:contentDescription="@string/numeric_input_content_description"
       android:inputType="numberDecimal"
       android:longClickable="false"
       android:maxLength="200"
