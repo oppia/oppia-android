@@ -32,8 +32,6 @@
       android:layout_height="match_parent"
       android:paddingTop="36dp"
       android:clipToPadding="false"
-      android:paddingEnd="24dp"
-      android:paddingStart="24dp"
       android:paddingBottom="24dp"
       android:overScrollMode="never" />
   </LinearLayout>

@@ -2,22 +2,30 @@ package org.oppia.app.home.topiclist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.AllTopicsBinding
-import org.oppia.app.databinding.PromotedStoryCardBinding
+import org.oppia.app.databinding.PromotedStoryListBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.UserAppHistoryViewModel
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.SnapHelper
+
+
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
-private const val VIEW_TYPE_PROMOTED_STORY = 2
+private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2
 private const val VIEW_TYPE_ALL_TOPICS = 3
 private const val VIEW_TYPE_TOPIC_LIST = 4
 
 /** Adapter to inflate different items/views inside [RecyclerView]. The itemList consists of various ViewModels. */
 class TopicListAdapter(
-  private val itemList: MutableList<HomeItemViewModel>
+  private val activity: AppCompatActivity,
+  private val itemList: MutableList<HomeItemViewModel>,
+  private val promotedStoryList: MutableList<PromotedStoryViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -34,15 +42,15 @@ class TopicListAdapter(
           )
         WelcomeViewHolder(binding)
       }
-      VIEW_TYPE_PROMOTED_STORY -> {
+      VIEW_TYPE_PROMOTED_STORY_LIST -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          PromotedStoryCardBinding.inflate(
+          PromotedStoryListBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
           )
-        PromotedStoryViewHolder(binding)
+        PromotedStoryListViewHolder(binding)
       }
       VIEW_TYPE_ALL_TOPICS -> {
         val inflater = LayoutInflater.from(parent.context)
@@ -73,8 +81,8 @@ class TopicListAdapter(
       VIEW_TYPE_WELCOME_MESSAGE -> {
         (holder as WelcomeViewHolder).bind(itemList[position] as UserAppHistoryViewModel)
       }
-      VIEW_TYPE_PROMOTED_STORY -> {
-        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
+      VIEW_TYPE_PROMOTED_STORY_LIST -> {
+        (holder as PromotedStoryListViewHolder).bind(activity, promotedStoryList)
       }
       VIEW_TYPE_ALL_TOPICS -> {
         (holder as AllTopicsViewHolder).bind()
@@ -90,11 +98,11 @@ class TopicListAdapter(
       is UserAppHistoryViewModel -> {
         VIEW_TYPE_WELCOME_MESSAGE
       }
-      is PromotedStoryViewModel -> {
-        VIEW_TYPE_PROMOTED_STORY
-      }
       is AllTopicsViewModel -> {
         VIEW_TYPE_ALL_TOPICS
+      }
+      is PromotedStoryListViewModel -> {
+        VIEW_TYPE_PROMOTED_STORY_LIST
       }
       is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
@@ -115,11 +123,20 @@ class TopicListAdapter(
     }
   }
 
-  private class PromotedStoryViewHolder(
-    val binding: PromotedStoryCardBinding
+  private class PromotedStoryListViewHolder(
+    val binding: PromotedStoryListBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
-      binding.viewModel = promotedStoryViewModel
+    internal fun bind(activity: AppCompatActivity, promotedStoryList: MutableList<PromotedStoryViewModel>) {
+      val promotedStoryAdapter = PromotedStoryListAdapter(promotedStoryList)
+      val horizontalLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+      binding.promotedStoryListRecyclerView.apply {
+        layoutManager = horizontalLayoutManager
+        adapter = promotedStoryAdapter
+      }
+
+      val snapHelper = PagerSnapHelper()
+      binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
+      snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
     }
   }
 
