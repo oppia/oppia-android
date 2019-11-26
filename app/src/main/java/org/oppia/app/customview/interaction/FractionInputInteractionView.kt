@@ -1,6 +1,5 @@
 package org.oppia.app.customview.interaction
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.graphics.Typeface
 import android.util.AttributeSet
@@ -10,12 +9,9 @@ import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.StateFragmentPresenter
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
-import javax.inject.Inject
 
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
