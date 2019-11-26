@@ -19,8 +19,7 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface , StateKeyboardButtonListener {
-
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
