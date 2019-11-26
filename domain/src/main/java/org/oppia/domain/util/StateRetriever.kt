@@ -181,7 +181,13 @@ class StateRetriever @Inject constructor(
       while (inputKeysIterator.hasNext()) {
         val inputName = inputKeysIterator.next()
         when (ruleSpecBuilder.ruleType) {
-          "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
+          "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setSignedInt(inputsJson.getInt(inputName))
+              .build()
+          )
+          "HasDenominatorEqualTo" -> ruleSpecBuilder.putInput(
             inputName,
             InteractionObject.newBuilder()
               .setNonNegativeInt(inputsJson.getInt(inputName))
