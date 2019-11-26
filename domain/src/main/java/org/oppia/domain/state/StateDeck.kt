@@ -83,7 +83,7 @@ internal class StateDeck internal constructor(
     check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
     check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
-    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+//    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new state
     // doesn't become fully realized until navigated to.
     previousStates += EphemeralState.newBuilder()
