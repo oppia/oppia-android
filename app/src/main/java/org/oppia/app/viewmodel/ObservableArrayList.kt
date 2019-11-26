@@ -4,7 +4,7 @@ import androidx.databinding.ListChangeRegistry
 import androidx.databinding.ObservableList
 
 /** A version of Android's ObservableArrayList, except with correct Kotlin overrides. */
-class ObservableArrayList<T>: ArrayList<T>(), ObservableList<T> {
+class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
   private val listeners: ListChangeRegistry by lazy(::ListChangeRegistry)
 
   override fun add(element: T): Boolean {
