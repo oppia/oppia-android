@@ -4,12 +4,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <Button
-    android:id="@+id/open_dialog_1"
+    android:id="@+id/open_dialog_0"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 
   <Button
-    android:id="@+id/open_dialog_2"
+    android:id="@+id/open_dialog_1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 </LinearLayout>

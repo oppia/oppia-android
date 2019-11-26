@@ -60,8 +60,8 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager.setCurrentItem(tab.ordinal, true)
   }
 
-  private fun setUpViewPager(viewPager: ViewPager, topicId: String?) {
-    val adapter = ViewPagerAdapter(fragment.fragmentManager!!, topicId!!, storyId)
+  private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
+    val adapter = ViewPagerAdapter(fragment.childFragmentManager, topicId, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
