@@ -5,11 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.inputmethod.EditorInfo
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.StateFragmentPresenter
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
@@ -70,6 +67,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   override fun onEditorAction(actionCode: Int) {
-    explorationActivityPresenter.onEditorAction(actionCode)
+    explorationActivityPresenter.onKeyboardAction(actionCode)
   }
 }

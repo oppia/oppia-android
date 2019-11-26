@@ -96,7 +96,7 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  fun onEditorAction(actionCode: Int) {
+  fun onKeyboardAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
       val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
       explorationFragment.onKeyboardAction()
