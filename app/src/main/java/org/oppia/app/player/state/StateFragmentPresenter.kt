@@ -1,6 +1,7 @@
 package org.oppia.app.player.state
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -347,6 +348,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
+        binding.congratulationTextview.visibility = View.VISIBLE
         moveToNextState()
       }
     })
@@ -450,6 +452,8 @@ class StateFragmentPresenter @Inject constructor(
         stateNavigationButtonViewModel.updateContinuationButton(
           ContinuationNavigationButtonType.NEXT_BUTTON, isEnabled = canContinueToNextState
         )
+        binding.congratulationTextview.visibility=View.VISIBLE
+
       }
       stateIsTerminal -> {
         stateNavigationButtonViewModel.updateContinuationButton(

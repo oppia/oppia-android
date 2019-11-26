@@ -21,12 +21,29 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"
+      android:elevation="4dp"
       android:divider="@android:color/transparent"
       android:overScrollMode="never"
       android:paddingTop="@{viewModel.isAudioBarVisible().get()? @dimen/padding_72dp : @dimen/padding_24dp}"
       android:scrollbars="none"
       app:data="@{viewModel.itemList}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <TextView
+      android:id="@+id/congratulation_textview"
+      android:layout_width="match_parent"
+      android:layout_height="54dp"
+      android:visibility="gone"
+      android:fontFamily="sans-serif-medium"
+      android:text="@string/correct"
+      android:layout_gravity="bottom"
+      android:layout_margin="28dp"
+      android:gravity="center"
+      android:textSize="20sp"
+      android:lineSpacingExtra="1dp"
+      android:background="@drawable/congratulation_text_background_shadow"
+      android:textColor="@color/green_shade"
+      android:textAllCaps="true" />
 
     <FrameLayout
       android:id="@+id/audio_fragment_placeholder"

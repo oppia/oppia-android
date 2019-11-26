@@ -60,4 +60,10 @@
   <color name="chapterCardGreenBorder">#019489</color>
   <color name="divider">#61000000</color>
   <color name="toolbarDropShadow">#3D000000</color>
+  <color name="green_shade">#44A85A</color>
+  <color name="green_shade_80">#CC44A85A</color>
+  <color name="green_shade_60">#9944A85A</color>
+  <color name="green_shade_40">#6644A85A</color>
+  <color name="green_shade_10">#1A44A85A</color>
+  <color name="light_green">#D9F3E7</color>
 </resources>
