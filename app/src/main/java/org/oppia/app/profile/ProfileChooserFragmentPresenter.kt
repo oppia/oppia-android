@@ -30,9 +30,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
-  @ExperimentalCoroutinesApi
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
@@ -47,31 +47,32 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
   }
 
-  @ExperimentalCoroutinesApi
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserModel> {
-    return BindableAdapter.Builder
-      .newBuilder<ProfileChooserModel>()
-      .registerViewTypeComputer { value ->
-        value.modelTypeCase.number
-      }
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<ProfileChooserModel, ProfileChooserModel.ModelTypeCase>(ProfileChooserModel::getModelTypeCase)
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.PROFILE_FIELD_NUMBER,
+        viewType = ProfileChooserModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
-        setViewModel = this::bindProfileView)
+        setViewModel = this::bindProfileView
+      )
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.ADDPROFILE_FIELD_NUMBER,
+        viewType = ProfileChooserModel.ModelTypeCase.ADDPROFILE,
         inflateDataBinding = ProfileChooserAddViewBinding::inflate,
-        setViewModel = this::bindAddView)
+        setViewModel = this::bindAddView
+      )
       .build()
   }
 
-  @ExperimentalCoroutinesApi
-  private fun bindProfileView(binding: ProfileChooserProfileViewBinding, data: ProfileChooserModel) {
+  private fun bindProfileView(
+    binding: ProfileChooserProfileViewBinding,
+    data: ProfileChooserModel
+  ) {
     binding.viewModel = data
     binding.root.setOnClickListener {
       profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
         if (it.isSuccess()) {
-          fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
+          fragment.requireActivity()
+            .startActivity(Intent(fragment.context, HomeActivity::class.java))
         }
       })
     }

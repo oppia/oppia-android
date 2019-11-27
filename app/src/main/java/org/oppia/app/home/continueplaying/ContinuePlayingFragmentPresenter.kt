@@ -37,6 +37,10 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
+    binding.toolbar.setNavigationOnClickListener {
+      (activity as ContinuePlayingActivity).finish()
+    }
+
     ongoingListAdapter = OngoingListAdapter(itemList)
 
     binding.ongoingStoryRecyclerView.apply {

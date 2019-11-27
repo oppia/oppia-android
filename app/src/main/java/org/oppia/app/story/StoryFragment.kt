@@ -45,4 +45,8 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
   override fun selectExploration(explorationId: String) {
     storyFragmentPresenter.handleSelectExploration(explorationId)
   }
+
+  fun smoothScrollToPosition(position: Int) {
+    storyFragmentPresenter.smoothScrollToPosition(position)
+  }
 }

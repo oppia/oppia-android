@@ -9,14 +9,14 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController, private val logger: Logger
-): ObservableViewModel() {
+) : ObservableViewModel() {
   val profiles: LiveData<List<ProfileChooserModel>> by lazy {
     Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
   }
@@ -26,7 +26,11 @@ class ProfileChooserViewModel @Inject constructor(
   /** Sorts profiles alphabetically by name and put Admin in front. */
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserModel> {
     if (profilesResult.isFailure()) {
-      logger.e("ProfileChooserViewModel", "Failed to retrieve the list of profiles: ", profilesResult.getErrorOrNull()!!)
+      logger.e(
+        "ProfileChooserViewModel",
+        "Failed to retrieve the list of profiles: ",
+        profilesResult.getErrorOrNull()!!
+      )
     }
     val profileList = profilesResult.getOrDefault(emptyList()).map {
       ProfileChooserModel.newBuilder().setProfile(it).build()

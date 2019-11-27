@@ -15,6 +15,10 @@
     <item name="windowNoTitle">true</item>
   </style>
 
+  <style name="OppiaDialogFragmentTheme" parent="OppiaTheme" >
+    <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
     <item name="android:windowBackground">@drawable/splash_page</item>
     <item name="android:windowAnimationStyle">@style/FadeTransitionAnimation.Activity</item>
@@ -45,6 +49,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:paddingTop">8dp</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:paddingBottom">8dp</item>
     <item name="android:paddingStart">16dp</item>
     <item name="android:paddingEnd">16dp</item>
@@ -83,5 +88,24 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+  
+  <!-- TOPIC TABLAYOUT STYLE -->
+  <style name="AppTabLayout" parent="Widget.Design.TabLayout">
+    <item name="tabIndicatorColor">@color/white</item>
+    <item name="tabIndicatorHeight">4dp</item>
+    <item name="tabPaddingStart">8dp</item>
+    <item name="tabPaddingEnd">8dp</item>
+    <item name="tabBackground">?attr/selectableItemBackground</item>
+    <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
+    <item name="tabIconTint">@color/tab_icon_color_selector</item>
+    <item name="tabSelectedTextColor">@color/white</item>
+  </style>
+
+  <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
+    <item name="android:textSize">14sp</item>
+    <item name="android:textColor">@color/tab_icon_color_selector</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="textAllCaps">true</item>
   </style>
 </resources>

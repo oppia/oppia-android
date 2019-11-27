@@ -1,11 +1,12 @@
 package org.oppia.app.story
 
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
@@ -16,25 +17,37 @@ import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
+import android.util.TypedValue
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
+  private lateinit var binding: StoryFragmentBinding
+  private lateinit var linearLayoutManager: LinearLayoutManager
+  private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
     val viewModel = getStoryViewModel()
-    val binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
 
-    viewModel.storyNameLiveData.observe(fragment, Observer<String> { storyName ->
-      (fragment.activity as? AppCompatActivity)?.supportActionBar?.title = storyName
-    })
+    binding.toolbar.setNavigationOnClickListener {
+      (activity as StoryActivity).finish()
+    }
+
+    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+    linearSmoothScroller = createSmoothScroller()
 
     binding.storyChapterList.apply {
+      layoutManager = linearLayoutManager
       adapter = createRecyclerViewAdapter()
     }
 
@@ -52,23 +65,22 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StoryItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER.ordinal
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER.ordinal
+          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_HEADER.ordinal,
+        viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CHAPTER.ordinal,
+        viewType = ViewType.VIEW_TYPE_CHAPTER,
         inflateDataBinding = StoryChapterViewBinding::inflate,
         setViewModel = StoryChapterViewBinding::setViewModel,
         transformViewModel = { it as StoryChapterSummaryViewModel }
@@ -83,5 +95,37 @@ class StoryFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_CHAPTER
+  }
+
+  fun smoothScrollToPosition(position: Int) {
+    linearSmoothScroller.targetPosition = position
+    linearLayoutManager.startSmoothScroll(linearSmoothScroller)
+    binding.storyChapterList.layoutManager = linearLayoutManager
+  }
+
+  private fun createSmoothScroller(): RecyclerView.SmoothScroller {
+    val milliSecondsPerInch = 100f
+
+    return object : LinearSmoothScroller(activity) {
+      override fun getVerticalSnapPreference(): Int {
+        return SNAP_TO_START
+      }
+
+      override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+        return milliSecondsPerInch / displayMetrics!!.densityDpi
+      }
+
+      override fun calculateDyToMakeVisible(view: View, snapPreference: Int): Int {
+        return super.calculateDyToMakeVisible(view, snapPreference) + dipToPixels(48)
+      }
+    }
+  }
+
+  private fun dipToPixels(dipValue: Int): Int {
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_DIP,
+      dipValue.toFloat(),
+      Resources.getSystem().displayMetrics
+    ).toInt()
   }
 }

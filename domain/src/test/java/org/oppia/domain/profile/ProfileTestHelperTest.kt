@@ -137,7 +137,6 @@ class ProfileTestHelperTest {
     assertThat(profilesResultCaptor.value.getOrThrow().size).isEqualTo(10)
   }
 
-
   @Test
   @ExperimentalCoroutinesApi
   fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() = runBlockingTest(coroutineContext) {

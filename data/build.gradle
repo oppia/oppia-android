@@ -13,6 +13,7 @@ android {
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    multiDexEnabled true
   }
 
   compileOptions {
@@ -42,6 +43,7 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
+      'com.android.support:multidex:1.0.3',
       'com.google.dagger:dagger:2.24',
       'com.google.protobuf:protobuf-lite:3.0.0',
       'com.squareup.moshi:moshi-kotlin:1.8.0',
@@ -74,5 +76,6 @@ dependencies {
   )
 
   implementation project(":utility")
+  implementation project(":model")
   testImplementation project(":model")
 }

@@ -20,10 +20,11 @@ class UrlImageParser private constructor(
   private val context: Context,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private var imageDownloadUrlTemplate: String,
+  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
+  private val imageCenterAlign: Boolean,
   private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
   /**
@@ -32,11 +33,11 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-    imageDownloadUrlTemplate = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
     imageLoader.load(
-      gcsPrefix + gcsResource + imageDownloadUrlTemplate,
+      gcsPrefix + gcsResource + imageUrl,
       target
     )
     return urlDrawable
@@ -48,11 +49,16 @@ class UrlImageParser private constructor(
     }
 
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      val  drawable = BitmapDrawable(context.resources, resource)
+      val drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
         val drawableHeight = drawable.intrinsicHeight
         val drawableWidth = drawable.intrinsicWidth
-        val rect = Rect(0, 0, drawableWidth, drawableHeight)
+        val initialDrawableMargin = if (imageCenterAlign) {
+          calculateInitialMargin(drawableWidth)
+        } else {
+          0
+        }
+        val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
         drawable.bounds = rect
         urlDrawable.bounds = rect
         urlDrawable.drawable = drawable
@@ -62,7 +68,7 @@ class UrlImageParser private constructor(
     }
   }
 
-   class UrlDrawable : BitmapDrawable() {
+  class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
@@ -72,6 +78,11 @@ class UrlImageParser private constructor(
     }
   }
 
+  private fun calculateInitialMargin(drawableWidth: Int): Int {
+    val availableAreaWidth = htmlContentTextView.width
+    return (availableAreaWidth - drawableWidth) / 2
+  }
+
   class Factory @Inject constructor(
     private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
@@ -79,7 +90,12 @@ class UrlImageParser private constructor(
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     private val imageLoader: ImageLoader
   ) {
-    fun create(htmlContentTextView: TextView, entityType: String, entityId: String): UrlImageParser {
+    fun create(
+      htmlContentTextView: TextView,
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean
+    ): UrlImageParser {
       return UrlImageParser(
         context,
         gcsPrefix,
@@ -88,6 +104,7 @@ class UrlImageParser private constructor(
         htmlContentTextView,
         entityType,
         entityId,
+        imageCenterAlign,
         imageLoader
       )
     }
