@@ -3,6 +3,7 @@
   <color name="colorPrimary">#00645C</color>
   <color name="colorPrimaryDark">#00574B</color>
   <color name="colorAccent">#2D4A9D</color>
+  <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#C55F45</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
@@ -32,6 +33,7 @@
   <color name="white_80">#CCFFFFFF</color>
   <color name="white_70">#B3FFFFFF</color>
   <color name="black">#000000</color>
+  <color name="black_20">#33000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
   <!-- AUDIO COMPONENT -->
@@ -41,6 +43,7 @@
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="edit_text_hint">#80333333</color>
+  <color name="mid_grey">#ff333333</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>

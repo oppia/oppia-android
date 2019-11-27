@@ -7,6 +7,7 @@ import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
@@ -15,7 +16,7 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.expl
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, AudioButtonListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -62,4 +63,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
   override fun showAudioStreamingOn() = explorationActivityPresenter.showAudioStreamingOn()
   override fun showAudioStreamingOff() = explorationActivityPresenter.showAudioStreamingOff()
+
+  override fun onEditorAction(actionCode: Int) {
+    explorationActivityPresenter.onKeyboardAction(actionCode)
+  }
 }

@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableBoolean
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -22,9 +23,11 @@ import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
+import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
@@ -32,15 +35,14 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
-import org.oppia.app.player.audio.TAG_LANGUAGE_DIALOG
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -48,11 +50,14 @@ import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
+import org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -86,7 +91,7 @@ class StateFragmentPresenter @Inject constructor(
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   private val networkConnectionUtil: NetworkConnectionUtil
-) : StateNavigationButtonListener {
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -103,6 +108,18 @@ class StateFragmentPresenter @Inject constructor(
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
+  /**
+   * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
+   * retained upon configuration changes since the user can just re-expand the list. Note that the first element of this
+   * list (when initialized), will always be the previous answers header to help locate the items in the recycler view
+   * (when present).
+   */
+  private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
+  /**
+   * Whether the previously submitted wrong answers should be expanded. This value is intentionally not retained upon
+   * configuration changes since the user can just re-expand the list.
+   */
+  private var hasPreviousResponsesExpanded: Boolean = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularAudioDialogController.getCellularDataPreference()
@@ -200,6 +217,33 @@ class StateFragmentPresenter @Inject constructor(
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
       )
+      .registerViewBinder(
+        viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+        inflateView = { parent ->
+          SubmittedAnswerItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+          val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
+          when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                userAnswer.htmlAnswer, binding.submittedAnswerTextView
+              )
+            }
+            else -> binding.submittedAnswer = userAnswer.plainAnswer
+          }
+        }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER,
+        inflateDataBinding = PreviousResponsesHeaderItemBinding::inflate,
+        setViewModel = PreviousResponsesHeaderItemBinding::setViewModel,
+        transformViewModel = { it as PreviousResponsesHeaderViewModel }
+      )
       .build()
   }
 
@@ -243,7 +287,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+  fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
     handleSubmitAnswer(answer)
   }
@@ -353,14 +397,15 @@ class StateFragmentPresenter @Inject constructor(
     }
     feedbackId = null
 
+    previousAnswerViewModels.clear() // But retain whether the list is currently open.
     val pendingItemList = mutableListOf<StateItemViewModel>()
     addContentItem(pendingItemList, ephemeralState)
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.pendingState.wrongAnswerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
     }
 
     val hasPreviousState = ephemeralState.hasPreviousState
@@ -446,6 +491,11 @@ class StateFragmentPresenter @Inject constructor(
     handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
+  fun handleKeyboardAction() {
+      hideKeyboard()
+      handleSubmitAnswer(viewModel.getPendingAnswer())
+  }
+
   override fun onContinueButtonClicked() {
     hideKeyboard()
     moveToNextState()
@@ -454,7 +504,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun handleSubmitAnswer(answer: InteractionObject) {
+  private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
@@ -464,25 +514,22 @@ class StateFragmentPresenter @Inject constructor(
 
   override fun onNextButtonClicked() = moveToNextState()
 
+  override fun onResponsesHeaderClicked() {
+    togglePreviousAnswers()
+  }
+
   private fun moveToNextState() {
-    explorationProgressController.moveToNextState()
+    explorationProgressController.moveToNextState().observe(fragment, Observer<AsyncResult<Any?>> {
+      hasPreviousResponsesExpanded = false
+    })
   }
 
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
-  ) = addInteraction(pendingItemList, interaction)
-
-  private fun addInteractionForCompletedState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
-
-  private fun addInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+      explorationId, interaction, fragment as InteractionAnswerReceiver
     )
   }
 
@@ -492,21 +539,69 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction,
-    answersAndResponses: List<AnswerAndResponse>
+    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>
   ) {
-    // TODO: add support for displaying the previous answer, too.
-    for (answerAndResponse in answersAndResponses) {
-      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
-      addFeedbackItem(pendingItemList, answerAndResponse.feedback)
+    if (answersAndResponses.size > 1) {
+      PreviousResponsesHeaderViewModel(
+        answersAndResponses.size - 1, ObservableBoolean(hasPreviousResponsesExpanded), this
+      ).let { viewModel ->
+        pendingItemList += viewModel
+        previousAnswerViewModels += viewModel
+      }
+      // Only add previous answers if current responses are expanded.
+      for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
+        createSubmittedAnswer(answerAndResponse.userAnswer).let { viewModel ->
+          if (hasPreviousResponsesExpanded) {
+            pendingItemList += viewModel
+          }
+          previousAnswerViewModels += viewModel
+        }
+        createFeedbackItem(answerAndResponse.feedback)?.let { viewModel ->
+          if (hasPreviousResponsesExpanded) {
+            pendingItemList += viewModel
+          }
+          previousAnswerViewModels += viewModel
+        }
+      }
+    }
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer)
+      createFeedbackItem(answerAndResponse.feedback)?.let(pendingItemList::add)
     }
   }
 
-  private fun addFeedbackItem(pendingItemList: MutableList<StateItemViewModel>, feedback: SubtitledHtml) {
+  /**
+   * Toggles whether the previous answers should be shown based on the current state stored in
+   * [PreviousResponsesHeaderViewModel].
+   */
+  private fun togglePreviousAnswers() {
+    val headerModel = previousAnswerViewModels.first() as PreviousResponsesHeaderViewModel
+    val expandPreviousAnswers = !headerModel.isExpanded.get()
+    val headerIndex = viewModel.itemList.indexOf(headerModel)
+    val previousAnswersAndFeedbacks = previousAnswerViewModels.takeLast(previousAnswerViewModels.size - 1)
+    if (expandPreviousAnswers) {
+      // Add the pending view models to the recycler view to expand them.
+      viewModel.itemList.addAll(headerIndex + 1, previousAnswersAndFeedbacks)
+    } else {
+      // Remove the pending view models to collapse the list.
+      viewModel.itemList.removeAll(previousAnswersAndFeedbacks)
+    }
+    // Ensure the header matches the updated state.
+    headerModel.isExpanded.set(expandPreviousAnswers)
+    hasPreviousResponsesExpanded = expandPreviousAnswers
+    recyclerViewAdapter.notifyDataSetChanged()
+  }
+
+  private fun createSubmittedAnswer(userAnswer: UserAnswer): SubmittedAnswerViewModel {
+    return SubmittedAnswerViewModel(userAnswer)
+  }
+
+  private fun createFeedbackItem(feedback: SubtitledHtml): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      pendingItemList += FeedbackViewModel(feedback.html)
+      return FeedbackViewModel(feedback.html)
     }
+    return null
   }
 
   private fun updateNavigationButtonVisibility(
