@@ -23,6 +23,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -37,6 +38,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -159,11 +161,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.chapter_name_text_view)).check(
-        matches(
-          withText(containsString("The Meaning of Equal Parts"))
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
         )
-      )
+      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("The Meaning of Equal Parts")))))
     }
   }
 
@@ -171,11 +176,14 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
-          withText(containsString("Second Story"))
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
         )
-      )
+      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("Matthew Goes to the Bakery")))))
     }
   }
 
@@ -185,11 +193,14 @@ class HomeActivityTest {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
-          withText(containsString("Second Story"))
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
         )
-      )
+      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("The Meaning of Equal Parts")))))
     }
   }
 
@@ -197,10 +208,17 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
+        )
+      ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_1"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "GJ2rLXRKD5hw"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "wANbh4oOClga"))
     }
   }
 
@@ -208,11 +226,14 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("FIRST TOPIC"))
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
         )
-      )
+      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("FRACTIONS")))))
     }
   }
 
@@ -234,7 +255,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
-          withText(containsString("2 Lessons"))
+          withText(containsString("4 Lessons"))
         )
       )
     }
