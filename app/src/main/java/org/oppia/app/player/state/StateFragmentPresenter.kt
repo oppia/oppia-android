@@ -129,6 +129,23 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = this.viewModel
     }
 
+    binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+      override fun onLayoutChange(
+        view: View,
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int,
+        oldLeft: Int,
+        oldTop: Int,
+        oldRight: Int,
+        oldBottom: Int
+      ) {
+        if (bottom < oldBottom) {
+          binding.stateRecyclerView.postDelayed(Runnable { binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.getItemCount()-1) }, 100)
+        }
+      }
+    })
     subscribeToCurrentState()
 
     return binding.root
