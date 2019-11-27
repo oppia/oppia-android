@@ -6,7 +6,8 @@ import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
 class ProfileActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
+  @Inject
+  lateinit var profileActivityPresenter: ProfileActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
