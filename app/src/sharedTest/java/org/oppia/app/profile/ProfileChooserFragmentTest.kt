@@ -46,9 +46,7 @@ class ProfileChooserFragmentTest {
   @ExperimentalCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
-    GlobalScope.launch(Dispatchers.Main) {
-      profileTestHelper.initializeProfiles()
-    }
+    profileTestHelper.initializeProfiles()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -72,9 +70,7 @@ class ProfileChooserFragmentTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
-    GlobalScope.launch(Dispatchers.Main) {
-      profileTestHelper.addMoreProfiles(8)
-    }
+    profileTestHelper.addMoreProfiles(8)
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(matches(withText("A")))
