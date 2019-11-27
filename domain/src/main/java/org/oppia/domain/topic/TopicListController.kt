@@ -248,16 +248,6 @@ class TopicListController @Inject constructor(
               storyId, topic, completedChapterCount, storyProgress.chapterProgressCount, nextChapterSummary?.name
             )
           )
-          ongoingStoryListBuilder.addRecentStory(
-            createPromotedStory(
-              storyId, topic, completedChapterCount, storyProgress.chapterProgressCount, nextChapterSummary?.name
-            )
-          )
-          ongoingStoryListBuilder.addOlderStory(
-            createPromotedStory(
-              storyId, topic, completedChapterCount, storyProgress.chapterProgressCount, nextChapterSummary?.name
-            )
-          )
         }
       }
     }

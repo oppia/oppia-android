@@ -57,7 +57,7 @@ class HomeFragmentPresenter @Inject constructor(
     // data-bound view models.
 
     userAppHistoryViewModel = UserAppHistoryViewModel()
-    promotedStoryListViewModel = PromotedStoryListViewModel()
+    promotedStoryListViewModel = PromotedStoryListViewModel(activity)
     allTopicsViewModel = AllTopicsViewModel()
     itemList.add(userAppHistoryViewModel)
     itemList.add(promotedStoryListViewModel)
@@ -114,10 +114,6 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      if (result.topicSummaryList.isNotEmpty()) {
-        allTopicsViewModel = AllTopicsViewModel()
-        itemList[2] = allTopicsViewModel
-      }
       for (topicSummary in result.topicSummaryList) {
         val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemList.add(topicSummaryViewModel)
@@ -174,10 +170,6 @@ class HomeFragmentPresenter @Inject constructor(
         }
       }
 
-      if (promotedStoryList.isNotEmpty()) {
-        promotedStoryListViewModel = PromotedStoryListViewModel()
-        itemList[1] = promotedStoryListViewModel
-      }
       topicListAdapter.notifyItemChanged(1)
     })
   }
@@ -189,9 +181,5 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicListener.routeToTopic(topicSummary.topicId)
-  }
-
-  fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
-    (activity as HomeActivity).routeToContinuePlaying()
   }
 }

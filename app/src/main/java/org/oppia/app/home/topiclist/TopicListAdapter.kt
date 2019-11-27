@@ -1,9 +1,13 @@
 package org.oppia.app.home.topiclist
 
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.AllTopicsBinding
 import org.oppia.app.databinding.PromotedStoryListBinding
@@ -11,10 +15,6 @@ import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.UserAppHistoryViewModel
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.SnapHelper
-
-
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2
@@ -82,13 +82,17 @@ class TopicListAdapter(
         (holder as WelcomeViewHolder).bind(itemList[position] as UserAppHistoryViewModel)
       }
       VIEW_TYPE_PROMOTED_STORY_LIST -> {
-        (holder as PromotedStoryListViewHolder).bind(activity, promotedStoryList)
+        (holder as PromotedStoryListViewHolder).bind(
+          activity,
+          itemList[position] as PromotedStoryListViewModel,
+          promotedStoryList
+        )
       }
       VIEW_TYPE_ALL_TOPICS -> {
         (holder as AllTopicsViewHolder).bind()
       }
       VIEW_TYPE_TOPIC_LIST -> {
-        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummaryViewModel)
+        (holder as TopicListViewHolder).bind(itemList[position] as TopicSummaryViewModel, position)
       }
     }
   }
@@ -115,18 +119,20 @@ class TopicListAdapter(
     return itemList.size
   }
 
-  private class WelcomeViewHolder(
-    val binding: WelcomeBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
+  private class WelcomeViewHolder(val binding: WelcomeBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(userAppHistoryViewModel: UserAppHistoryViewModel) {
       binding.viewModel = userAppHistoryViewModel
     }
   }
 
-  private class PromotedStoryListViewHolder(
-    val binding: PromotedStoryListBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(activity: AppCompatActivity, promotedStoryList: MutableList<PromotedStoryViewModel>) {
+  private class PromotedStoryListViewHolder(val binding: PromotedStoryListBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(
+      activity: AppCompatActivity,
+      promotedStoryListViewModel: PromotedStoryListViewModel,
+      promotedStoryList: MutableList<PromotedStoryViewModel>
+    ) {
+      binding.viewModel = promotedStoryListViewModel
       val promotedStoryAdapter = PromotedStoryListAdapter(promotedStoryList)
       val horizontalLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
       binding.promotedStoryListRecyclerView.apply {
@@ -140,18 +146,32 @@ class TopicListAdapter(
     }
   }
 
-  private class AllTopicsViewHolder(
-    val binding: AllTopicsBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
+  private class AllTopicsViewHolder(binding: AllTopicsBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind() {
     }
   }
 
-  private class TopicListViewHolder(
-    val binding: TopicSummaryViewBinding
-  ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel) {
+  private class TopicListViewHolder(val binding: TopicSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
+      val param = binding.topicContainer.layoutParams as GridLayoutManager.LayoutParams
+      val margin32 = dipToPixels(32)
+      val margin8 = dipToPixels(8)
+      if (position % 2 == 0) {
+        param.setMargins(margin8, margin8, margin32, margin8)
+
+      } else {
+        param.setMargins(margin32, margin8, margin8, margin8)
+      }
+      binding.topicContainer.layoutParams = param
+    }
+
+    private fun dipToPixels(dipValue: Int): Int {
+      return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dipValue.toFloat(),
+        Resources.getSystem().displayMetrics
+      ).toInt()
     }
   }
 }

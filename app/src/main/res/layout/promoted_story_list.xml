@@ -6,8 +6,8 @@
     <import type="android.view.View" />
 
     <variable
-      name="presenter"
-      type="org.oppia.app.home.HomeFragmentPresenter" />
+      name="viewModel"
+      type="org.oppia.app.home.topiclist.PromotedStoryListViewModel" />
   </data>
 
   <LinearLayout
@@ -40,7 +40,7 @@
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
-        android:onClick="@{presenter::clickOnViewAll}"
+        android:onClick="@{viewModel::clickOnViewAll}"
         android:text="@string/view_all"
         android:textAllCaps="true"
         android:textColor="@color/oppiaPrimaryDark"
