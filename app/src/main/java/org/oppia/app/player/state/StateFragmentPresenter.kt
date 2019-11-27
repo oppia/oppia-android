@@ -3,11 +3,16 @@ package org.oppia.app.player.state
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.os.Handler
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -361,20 +366,25 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun showCongratulationMessageOnCorrectAnswer() {
     binding.congratulationTextview.setVisibility(View.VISIBLE)
-    Log.d("Congratulation"," visible= "+binding.congratulationTextview.visibility)
-//    binding.congratulationTextview.setVisibility(View.INVISIBLE)
 
-    binding.congratulationTextview.animate()
-      .translationY(binding.congratulationTextview.getHeight().toFloat())
-      .alpha(0.0f)
-      .setDuration(5000)
-      .setListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-          super.onAnimationEnd(animation)
-          binding.congratulationTextview.setVisibility(View.INVISIBLE)
-          Log.d("Congratulation"," gone= "+binding.congratulationTextview.visibility)
-        }
-      })
+    val fadeIn = AlphaAnimation(0f, 1f)
+    fadeIn.interpolator = DecelerateInterpolator() //add this
+    fadeIn.duration = 2000
+
+    val fadeOut = AlphaAnimation(1f, 0f)
+    fadeOut.interpolator = AccelerateInterpolator() //and this
+    fadeOut.startOffset = 1000
+    fadeOut.duration = 1000
+
+    val animation = AnimationSet(false) //change to false
+    animation.addAnimation(fadeIn)
+    animation.addAnimation(fadeOut)
+    binding.congratulationTextview.setAnimation(animation)
+
+    Handler().postDelayed({
+      binding.congratulationTextview.clearAnimation()
+      binding.congratulationTextview.visibility = View.INVISIBLE
+    },2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
