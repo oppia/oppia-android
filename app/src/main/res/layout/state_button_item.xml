@@ -16,10 +16,10 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingStart="24dp"
-    android:layout_marginTop="60dp"
+    android:layout_marginTop="56dp"
     android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:paddingEnd="24dp"
-    android:paddingBottom="136dp">
+    android:paddingBottom="28dp">
 
     <ImageButton
       android:id="@+id/previous_state_image_view"

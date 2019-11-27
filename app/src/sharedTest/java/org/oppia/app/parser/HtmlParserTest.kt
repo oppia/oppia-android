@@ -18,6 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.request.target.CustomTarget
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -50,6 +51,7 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+// TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
 @RunWith(AndroidJUnit4::class)
 class HtmlParserTest {
@@ -69,6 +71,7 @@ class HtmlParserTest {
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
@@ -82,7 +85,13 @@ class HtmlParserTest {
   fun tearDown() {
     Intents.release()
   }
-
+  
+  private fun setUpTestApplicationComponent() {
+    DaggerHtmlParserTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
@@ -207,6 +216,100 @@ class HtmlParserTest {
 
   @Singleton
   @Component(modules = [TestModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(htmlParserTest: HtmlParserTest)
+  }
+
+  @Qualifier
+  annotation class TestDispatcher
+
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @DefaultGcsPrefix
+    @Singleton
+    fun provideDefaultGcsPrefix(): String {
+      return "https://storage.googleapis.com/"
+    }
+
+    @Provides
+    @DefaultGcsResource
+    @Singleton
+    fun provideDefaultGcsResource(): String {
+      return "oppiaserver-resources/"
+    }
+
+    @Provides
+    @ImageDownloadUrlTemplate
+    @Singleton
+    fun provideImageDownloadUrlTemplate(): String {
+      return "%s/%s/assets/image/%s"
+    }
+
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  }
+
+  @Module
+  abstract class ImageTestModule {
+    @Binds
+    abstract fun provideGlideImageLoader(impl: GlideImageLoader): ImageLoader
+  }
+
+  @Singleton
+  @Component(modules = [TestModule::class, ImageTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

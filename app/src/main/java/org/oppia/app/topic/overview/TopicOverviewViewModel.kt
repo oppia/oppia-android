@@ -15,7 +15,7 @@ import javax.inject.Inject
 class TopicOverviewViewModel @Inject constructor(
   private val context: Context
 ) : ObservableViewModel() {
-  private val decimalFormat: DecimalFormat = DecimalFormat("#.###")
+  private val decimalFormat: DecimalFormat = DecimalFormat("##")
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
 
@@ -25,20 +25,21 @@ class TopicOverviewViewModel @Inject constructor(
 
   /** Returns the space this topic requires on disk, formatted for display. */
   fun getTopicSizeWithUnit(): String {
-    val size: Double = topic.get()?.diskSizeBytes!!.toDouble()
-    if (size == 0.0) {
-      return "0 " + context.getString(R.string.size_bytes)
-    }
-    val sizeInKB = size / 1024.0
-    val sizeInMB = size / 1024.0 / 1024.0
-    val sizeInGB = size / 1024.0 / 1024.0 / 1024.0
-    val sizeInTB = size / 1024.0 / 1024.0 / 1024.0 / 1024.0
-    return when {
-      sizeInTB >= 1 -> decimalFormat.format(sizeInTB) + " " + context.getString(R.string.size_tb)
-      sizeInGB >= 1 -> decimalFormat.format(sizeInGB) + " " + context.getString(R.string.size_gb)
-      sizeInMB >= 1 -> decimalFormat.format(sizeInMB) + " " + context.getString(R.string.size_mb)
-      sizeInKB >= 1 -> decimalFormat.format(sizeInKB) + " " + context.getString(R.string.size_kb)
-      else -> decimalFormat.format(size) + " " + context.getString(R.string.size_bytes)
-    }
+    return topic.get()?.let { topic ->
+      val sizeInBytes: Int = topic.diskSizeBytes.toInt()
+      val sizeInKb = sizeInBytes / 1024
+      val sizeInMb = sizeInKb / 1024
+      val sizeInGb = sizeInMb / 1024
+      return@let when {
+        sizeInGb >= 1 -> context.getString(R.string.size_gb, roundUpToHundreds(sizeInGb))
+        sizeInMb >= 1 -> context.getString(R.string.size_mb, roundUpToHundreds(sizeInMb))
+        sizeInKb >= 1 -> context.getString(R.string.size_kb, roundUpToHundreds(sizeInKb))
+        else -> context.getString(R.string.size_bytes, roundUpToHundreds(sizeInBytes))
+      }
+    } ?: context.getString(R.string.unknown_size)
+  }
+
+  private fun roundUpToHundreds(intValue: Int): Int {
+    return ((intValue + 9) / 10) * 10
   }
 }
