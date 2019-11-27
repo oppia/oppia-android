@@ -41,6 +41,7 @@ class FractionInteractionViewModel(
       }
 
       override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        answerText=s.toString()
         errorMessage.set(
           StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(
             context
