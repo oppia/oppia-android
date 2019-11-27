@@ -13,8 +13,9 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
   val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
- override fun getPendingAnswerError(): String? {
+) : StateItemViewModel(), InteractionAnswerHandler {
+
+  override fun getPendingAnswerError(): String? {
     return null
   }
 
