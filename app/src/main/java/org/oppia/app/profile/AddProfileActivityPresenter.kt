@@ -1,5 +1,6 @@
 package org.oppia.app.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -20,6 +21,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -31,25 +33,25 @@ class AddProfileActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<AddProfileViewModel>
 ) {
-  lateinit var uploadImageView: ImageView
-  private val addViewModel by lazy {
+  private lateinit var uploadImageView: ImageView
+  private val profileViewModel by lazy {
     getAddProfileViewModel()
   }
   private var selectedImage: Uri? = null
-  var allowDownloadAccess = false
-  var inputtedPin = false
-  var inputtedConfirmPin = false
+  private var allowDownloadAccess = false
+  private var inputtedPin = false
+  private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    activity.title = "Add Profile"
+    activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(activity, R.layout.add_profile_activity)
 
     binding.apply {
-      viewModel = addViewModel
+      viewModel = profileViewModel
     }
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -60,79 +62,97 @@ class AddProfileActivityPresenter @Inject constructor(
       showInfoDialog()
     }
 
-    addTextChangeListeners(binding)
+    uploadImageView = binding.uploadImageButton
 
+    addTextChangeListeners(binding)
+    addButtonListeners(binding)
+  }
+
+  fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+      data?.let {
+        selectedImage = data.data
+        Glide.with(activity)
+          .load(selectedImage)
+          .centerCrop()
+          .apply(RequestOptions.circleCropTransform())
+          .into(uploadImageView)
+      }
+    }
+  }
+
+  private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
       val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
       activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
     }
-    uploadImageView = binding.uploadImageButton
 
     binding.createButton.setOnClickListener {
-      addViewModel.clearAllErrorMessages()
+      profileViewModel.clearAllErrorMessages()
+
       val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+
       val name = binding.inputName.getInput()
       val pin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
-      var failed = false
-      if (name.isEmpty()) {
-        addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
-        failed = true
-      }
-      if (pin.isNotEmpty() && pin.length < 3) {
-        addViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
-        failed = true
-      }
-      if (pin != confirmPin) {
-        addViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
-        failed = true
-      }
-      if (failed)  {
+
+      if (checkInputsAreValid(name, pin, confirmPin))  {
         binding.scroll.smoothScrollTo(0,0)
         return@setOnClickListener
       }
+
       profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false).observe(activity, Observer {
-        if (it.isSuccess()) {
-          val intent = Intent(activity, ProfileActivity::class.java)
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-          activity.startActivity(intent)
-        } else if (it.isFailure()) {
-          when (it.getErrorOrNull()) {
-            is ProfileManagementController.ProfileNameNotUniqueException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_not_unique))
-            is ProfileManagementController.ProfileNameOnlyLettersException -> addViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_only_letters))
-          }
-          binding.scroll.smoothScrollTo(0,0)
-        }
+        handleAddProfileResult(it, binding)
       })
     }
   }
 
-  fun handleOnActivityResult(data: Intent?) {
-    data?.let {
-      selectedImage = data.data
-      Glide.with(activity)
-        .load(selectedImage)
-        .centerCrop()
-        .apply(RequestOptions.circleCropTransform())
-        .into(uploadImageView)
+  private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
+    var failed = false
+    if (name.isEmpty()) {
+      profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
+      failed = true
+    }
+    if (pin.isNotEmpty() && pin.length < 3) {
+      profileViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
+      failed = true
+    }
+    if (pin != confirmPin) {
+      profileViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+      failed = true
+    }
+    return failed
+  }
+
+  private fun handleAddProfileResult(result: AsyncResult<Any?>, binding: AddProfileActivityBinding) {
+    if (result.isSuccess()) {
+      val intent = Intent(activity, ProfileActivity::class.java)
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+      activity.startActivity(intent)
+    } else if (result.isFailure()) {
+      when (result.getErrorOrNull()) {
+        is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_not_unique))
+        is ProfileManagementController.ProfileNameOnlyLettersException -> profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_only_letters))
+      }
+      binding.scroll.smoothScrollTo(0,0)
     }
   }
 
   private fun addTextChangeListeners(binding: AddProfileActivityBinding) {
     fun setValidPin() {
       if (inputtedPin && inputtedConfirmPin) {
-        addViewModel.validPin.set(true)
+        profileViewModel.validPin.set(true)
       } else {
         binding.allowDownloadSwitch.isChecked = false
-        addViewModel.validPin.set(false)
+        profileViewModel.validPin.set(false)
       }
     }
 
     binding.inputPin.addTextChangedListener(object: TextWatcher {
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let {
-          addViewModel.pinErrorMsg.set("")
+          profileViewModel.pinErrorMsg.set("")
           inputtedPin = it.isNotEmpty()
           setValidPin()
         }
@@ -144,7 +164,7 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.inputConfirmPin.addTextChangedListener(object: TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
-          addViewModel.confirmPinErrorMsg.set("")
+          profileViewModel.confirmPinErrorMsg.set("")
           inputtedConfirmPin = confirmPin.isNotEmpty()
           setValidPin()
         }
@@ -156,7 +176,7 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.inputName.addTextChangedListener(object: TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
-          addViewModel.nameErrorMsg.set("")
+          profileViewModel.nameErrorMsg.set("")
         }
       }
       override fun afterTextChanged(confirmPin: Editable?) {}

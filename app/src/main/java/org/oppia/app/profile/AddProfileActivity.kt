@@ -25,8 +25,6 @@ class AddProfileActivity : InjectableAppCompatActivity() {
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == GALLERY_INTENT_RESULT_CODE && resultCode == Activity.RESULT_OK) {
-      addProfileFragmentPresenter.handleOnActivityResult(data)
-    }
+    addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
   }
 }
