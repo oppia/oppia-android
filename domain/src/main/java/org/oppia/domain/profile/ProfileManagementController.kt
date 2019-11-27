@@ -10,7 +10,6 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
@@ -131,7 +130,6 @@ class ProfileManagementController @Inject constructor(
    * @param allowDownloadAccess Indicates whether the new profile can download content.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  @ExperimentalCoroutinesApi
   fun addProfile(
     name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean, isAdmin: Boolean = false
   ): LiveData<AsyncResult<Any?>> {
@@ -180,7 +178,6 @@ class ProfileManagementController @Inject constructor(
    * @param newName New name for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
-  @ExperimentalCoroutinesApi
   fun updateName(profileId: ProfileId, newName: String): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(newName)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$newName does not contain only letters")))
@@ -210,7 +207,6 @@ class ProfileManagementController @Inject constructor(
    * @param newPin New pin for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
-  @ExperimentalCoroutinesApi
   fun updatePin(profileId: ProfileId, newPin: String): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
@@ -234,7 +230,6 @@ class ProfileManagementController @Inject constructor(
    * @param allowDownloadAccess New download access status for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
-  @ExperimentalCoroutinesApi
   fun updateAllowDownloadAccess(
     profileId: ProfileId, allowDownloadAccess: Boolean
   ): LiveData<AsyncResult<Any?>> {
@@ -293,7 +288,6 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being deleted.
    * @return a [LiveData] that indicates the success/failure of this delete operation.
    */
-  @ExperimentalCoroutinesApi
   fun deleteProfile(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
