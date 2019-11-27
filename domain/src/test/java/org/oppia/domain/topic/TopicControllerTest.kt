@@ -283,7 +283,7 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyName).isEqualTo("Matthew")
+    assertThat(story.storyName).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test
