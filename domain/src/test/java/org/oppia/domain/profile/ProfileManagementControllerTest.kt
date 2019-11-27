@@ -344,8 +344,7 @@ class ProfileManagementControllerTest {
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileResultCaptor.value.getOrThrow().name).isEmpty()
+    assertThat(profileResultCaptor.value.isFailure()).isTrue()
     assertThat(File(getAbsoluteDirPath("2")).isDirectory).isFalse()
   }
 

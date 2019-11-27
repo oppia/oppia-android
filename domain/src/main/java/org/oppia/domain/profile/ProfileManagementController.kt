@@ -36,8 +36,15 @@ private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profil
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
 private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
 private const val GRAVATAR_QUERY_STRING = "?s=100&d=identicon&r=g"
+private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
+private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
+private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
+private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_download_access_transformed_id"
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
+private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
 private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
+
+const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -51,25 +58,35 @@ class ProfileManagementController @Inject constructor(
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
 
-  // Thrown in addProfile and updateName. Indicates that the given name was is not unique.
-  class ProfileNameNotUniqueException(msg: String): Exception(msg)
-  // Thrown in addProfile and updateName. Indicates that the given name does not contain only letters.
-  class ProfileNameOnlyLettersException(msg: String): Exception(msg)
-  // Thrown in addProfile. Indicates that the selected image was not stored properly.
-  class FailedToStoreImageException(msg: String): Exception(msg)
-  // Thrown in deleteProfile. Indicates that the profile's directory was not delete properly.
-  class FailedToDeleteDirException(msg: String): Exception(msg)
-  /**
-   * Thrown in updateName, updatePin, updateDownloadAccess, and deleteProfile
-   * Indicates that the given profileId is not associated with an existing profile.
-   */
-  class ProfileNotFoundException(msg: String): Exception(msg)
+  /** Indicates that the given name was is not unique. */
+  class ProfileNameNotUniqueException(msg: String) : Exception(msg)
 
-  // This enum is associated with the exceptions above.
+  /** Indicates that the given name does not contain only letters. */
+  class ProfileNameOnlyLettersException(msg: String) : Exception(msg)
+
+  /** Indicates that the selected image was not stored properly. */
+  class FailedToStoreImageException(msg: String) : Exception(msg)
+
+  /** Indicates that the gravatar url was not formed properly. */
+  class FailedToGenerateGravatarException(msg: String) : Exception(msg)
+
+  /** Indicates that the profile's directory was not delete properly. */
+  class FailedToDeleteDirException(msg: String) : Exception(msg)
+
+  /** Indicates that the given profileId is not associated with an existing profile. */
+  class ProfileNotFoundException(msg: String) : Exception(msg)
+
+  /**
+   * These Statuses correspond to the exceptions above such that if the deferred contains
+   * PROFILE_NOT_FOUND, the [ProfileNotFoundException] will be passed to a failed AsyncResult.
+   *
+   * SUCCESS corresponds to a successful AsyncResult.
+   */
   private enum class ProfileActionStatus {
     SUCCESS,
     PROFILE_NAME_NOT_UNIQUE,
     FAILED_TO_STORE_IMAGE,
+    FAILED_TO_GENERATE_GRAVATAR,
     FAILED_TO_DELETE_DIR,
     PROFILE_NOT_FOUND
   }
@@ -93,9 +110,15 @@ class ProfileManagementController @Inject constructor(
 
   /** Returns a single profile, specified by profiledId. */
   fun getProfile(profileId: ProfileId): LiveData<AsyncResult<Profile>> {
-    val transformedDataProvider = dataProviders.transform(TRANSFORMED_GET_PROFILE_PROVIDER_ID, profileDataStore) {
-      it.profilesMap[profileId.internalId] ?: Profile.getDefaultInstance()
-    }
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, Profile>(TRANSFORMED_GET_PROFILE_PROVIDER_ID, profileDataStore) {
+        val profile = it.profilesMap[profileId.internalId]
+        if (profile != null) {
+          AsyncResult.success(profile)
+        } else {
+          AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile"))
+        }
+      }
     return dataProviders.convertToLiveData(transformedDataProvider)
   }
 
@@ -115,11 +138,11 @@ class ProfileManagementController @Inject constructor(
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
     }
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      if (!isUniqueName(name, it)) {
+      if (!isNameUnique(name, it)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
+
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
@@ -131,7 +154,9 @@ class ProfileManagementController @Inject constructor(
         }
       } else {
         // gravatar url is a md5 hash of an email address
-        imageUri = GRAVATAR_URL_PREFIX + md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com") + GRAVATAR_QUERY_STRING
+        val md5Hash = md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com")
+          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR)
+        imageUri = GRAVATAR_URL_PREFIX + md5Hash + GRAVATAR_QUERY_STRING
       }
 
       val newProfile = Profile.newBuilder()
@@ -140,22 +165,14 @@ class ProfileManagementController @Inject constructor(
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
         .build()
 
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
+      val profileDatabaseBuilder =
+        it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    deferred.invokeOnCompletion {
-      if (it != null) {
-        logger.e("ProfileManagementController", "Failed to add profile", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
-      } else {
-        when (deferred.getCompleted()) {
-          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$name is not unique to other profiles")))
-          else -> pendingLiveData.postValue(AsyncResult.failed(FailedToStoreImageException("Failed to store user's selected avatar image")))
-        }
-      }
-    }
-    return pendingLiveData
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+      })
   }
 
   /**
@@ -170,29 +187,22 @@ class ProfileManagementController @Inject constructor(
     if (!onlyLetters(newName)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$newName does not contain only letters")))
     }
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      if (!isUniqueName(newName, it)) {
+      if (!isNameUnique(newName, it)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE)
       }
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
       val updatedProfile = profile.toBuilder().setName(newName).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    deferred.invokeOnCompletion {
-      if (it != null) {
-        logger.e("ProfileManagementController", "Failed to update name", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
-      } else {
-        when (deferred.getCompleted()) {
-          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> pendingLiveData.postValue(AsyncResult.failed(ProfileNameNotUniqueException("$newName is not unique to other profiles")))
-          else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-        }
-      }
-    }
-    return pendingLiveData
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_NAME_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, newName, deferred)
+      })
   }
 
   /**
@@ -204,25 +214,19 @@ class ProfileManagementController @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun updatePin(profileId: ProfileId, newPin: String): LiveData<AsyncResult<Any?>> {
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
       val updatedProfile = profile.toBuilder().setPin(newPin).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    deferred.invokeOnCompletion {
-      if (it != null) {
-        logger.e("ProfileManagementController", "Failed to update PIN", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
-      } else {
-        when (deferred.getCompleted()) {
-          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-        }
-      }
-    }
-    return pendingLiveData
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
   }
 
   /**
@@ -236,25 +240,19 @@ class ProfileManagementController @Inject constructor(
   fun updateAllowDownloadAccess(
     profileId: ProfileId, allowDownloadAccess: Boolean
   ): LiveData<AsyncResult<Any?>> {
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
       val updatedProfile = profile.toBuilder().setAllowDownloadAccess(allowDownloadAccess).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    deferred.invokeOnCompletion {
-      if (it != null) {
-        logger.e("ProfileManagementController", "Failed to update allowDownloadAccess", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
-      } else {
-        when (deferred.getCompleted()) {
-          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          else -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-        }
-      }
-    }
-    return pendingLiveData
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
   }
 
   /**
@@ -263,15 +261,11 @@ class ProfileManagementController @Inject constructor(
    * @param profileId the ID corresponding to the profile being logged into.
    * @return a [LiveData] that indicates the success/failure of this login operation.
    */
-  fun loginToProfile (profileId: ProfileId): LiveData<AsyncResult<Any?>> {
-    return dataProviders.convertToLiveData(dataProviders.transformAsync<Any?, Any?>(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
-      val deferredResult = updateLastLoggedInAsync(profileId).await()
-      if (deferredResult == ProfileActionStatus.SUCCESS) {
-        AsyncResult.success(0)
-      } else {
-        AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile"))
-      }
-    })
+  fun loginToProfile(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
+    return dataProviders.convertToLiveData(
+      dataProviders.transformAsync(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
+        return@transformAsync getDeferredResult(profileId, null, updateLastLoggedInAsync(profileId))
+      })
   }
 
   private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
@@ -287,7 +281,8 @@ class ProfileManagementController @Inject constructor(
 
   private fun updateLastLoggedInAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
     return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val profile = it.profilesMap[profileId.internalId]
+        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(Date().time).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -302,7 +297,6 @@ class ProfileManagementController @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun deleteProfile(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
-    val pendingLiveData = MutableLiveData(AsyncResult.pending<Any?>())
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
@@ -313,19 +307,10 @@ class ProfileManagementController @Inject constructor(
       val profileDatabaseBuilder = it.toBuilder().removeProfiles(profileId.internalId)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    deferred.invokeOnCompletion {
-      if (it != null) {
-        logger.e("ProfileManagementController", "Failed to update name", it)
-        pendingLiveData.postValue(AsyncResult.failed(it))
-      } else {
-        when (deferred.getCompleted()) {
-          ProfileActionStatus.SUCCESS -> pendingLiveData.postValue(AsyncResult.success(null))
-          ProfileActionStatus.PROFILE_NOT_FOUND -> pendingLiveData.postValue(AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile")))
-          else -> pendingLiveData.postValue(AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId.internalId}")))
-        }
-      }
-    }
-    return pendingLiveData
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
   }
 
   /**
@@ -336,8 +321,23 @@ class ProfileManagementController @Inject constructor(
     return ProfileId.newBuilder().setInternalId(currentProfileId).build()
   }
 
-  private fun isUniqueName(newName: String, profileDatabase: ProfileDatabase): Boolean {
-    val lowerCaseNewName = newName.toLowerCase()
+  private suspend fun getDeferredResult(
+    profileId: ProfileId?,
+    name: String?,
+    deferred: Deferred<ProfileActionStatus>
+  ): AsyncResult<Any?> {
+    return when (deferred.await()) {
+      ProfileActionStatus.SUCCESS -> AsyncResult.success(null)
+      ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> AsyncResult.failed(ProfileNameNotUniqueException("$name is not unique to other profiles"))
+      ProfileActionStatus.FAILED_TO_STORE_IMAGE -> AsyncResult.failed(FailedToStoreImageException("Failed to store user's selected avatar image"))
+      ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR -> AsyncResult.failed(FailedToGenerateGravatarException("Failed to generate a gravatar url"))
+      ProfileActionStatus.FAILED_TO_DELETE_DIR -> AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId?.internalId}"))
+      ProfileActionStatus.PROFILE_NOT_FOUND -> AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId?.internalId} does not match an existing Profile"))
+    }
+  }
+
+  private fun isNameUnique(newName: String, profileDatabase: ProfileDatabase): Boolean {
+    val lowerCaseNewName = newName.toLowerCase(Locale.getDefault())
     profileDatabase.profilesMap.values.forEach {
       if (it.name.toLowerCase(Locale.getDefault()) == lowerCaseNewName) {
         return false
@@ -348,10 +348,10 @@ class ProfileManagementController @Inject constructor(
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val imageFile = File(profileDir, "profile.png")
+    val imageFile = File(profileDir, PROFILE_AVATAR_FILE_NAME)
     try {
       FileOutputStream(imageFile).use { fos ->
-        rotateAndCompressBitmap(avatarImagePath, bitmap, 300)
+        rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */300)
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
@@ -366,7 +366,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
-  private fun md5(s: String): String {
+  private fun md5(s: String): String? {
     try {
       val digest = MessageDigest.getInstance("MD5")
       digest.update(s.toByteArray(Charset.forName("US-ASCII")), 0, s.length)
@@ -377,7 +377,7 @@ class ProfileManagementController @Inject constructor(
     } catch (e: NoSuchAlgorithmException) {
       logger.e("ProfileManagementController", "No such algorithm when creating md5 hash for gravatar", e)
     }
-    return ""
+    return null
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
@@ -392,6 +392,6 @@ class ProfileManagementController @Inject constructor(
     }
     val matrix = Matrix()
     matrix.postRotate(rotate.toFloat())
-    return Bitmap.createBitmap(croppedBitmap, /* x= */0, /* y= */ 0, cropSize,  cropSize, matrix, /* filter= */true)
+    return Bitmap.createBitmap(croppedBitmap, /* x= */0, /* y= */ 0, cropSize, cropSize, matrix, /* filter= */true)
   }
 }
