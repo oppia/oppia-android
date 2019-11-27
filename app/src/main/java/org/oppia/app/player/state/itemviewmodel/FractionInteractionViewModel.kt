@@ -40,13 +40,9 @@ class FractionInteractionViewModel(
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
       }
 
-      override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        answerText=s.toString()
-        errorMessage.set(
-          StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
-        )
+      override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
+        answerText = answer.toString()
+        errorMessage.set(getPendingAnswerError())
       }
 
       override fun afterTextChanged(s: Editable) {
