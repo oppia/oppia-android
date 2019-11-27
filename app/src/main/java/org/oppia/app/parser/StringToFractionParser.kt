@@ -1,5 +1,6 @@
 package org.oppia.app.parser
 
+import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Fraction
 import org.oppia.app.topic.FractionParsingErrors
 import org.oppia.domain.util.normalizeWhitespace
@@ -12,14 +13,17 @@ class StringToFractionParser {
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d)+$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d)+ ?(\d+) ?/ ?(\d)+$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
-  private val fractionRegex = """^\s*-?\s*((\d*\s*\d+\s*\/\s*\d+)|\d+)\s*$""".toRegex()
-
-  fun fromRawInputString(inputText: String): FractionParsingErrors {
+  /**
+   * @param inputText is the user input in the [FractionInputInteractionView]
+   * This method helps to validate the inputText and return [FractionParsingErrors]
+   * This called on text change.
+   */
+  fun checkForErrors(inputText: String): FractionParsingErrors {
     var denominator = 1
     var rawInput: String = inputText.normalizeWhitespace()
     if (!inputText.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-    if (!fractionRegex.matches(inputText)) {
+    if (parseMixedNumber(inputText) == null && parseFraction(inputText) == null && parseWholeNumber(inputText) == null) {
       return FractionParsingErrors.INVALID_FORMAT
     }
     rawInput = rawInput.trim();
@@ -42,44 +46,34 @@ class StringToFractionParser {
   }
 
   fun getFractionFromString(text: String): Fraction {
-    //for testing the validation in a single method
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
-    if (inputText.matches(invalidCharsRegex))
-      return parseMixedNumber(inputText)
-        ?: parseFraction(inputText)
-        ?: parseWholeNumber(inputText)
-        ?: throw IllegalArgumentException(FractionParsingErrors.INVALID_FORMAT.getError())
-    else return throw IllegalArgumentException(FractionParsingErrors.INVALID_CHARS.getError())
-
+    return parseMixedNumber(inputText)
+      ?: parseFraction(inputText)
+      ?: parseWholeNumber(inputText)
+      ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
     val mixedNumberMatch = mixedNumberRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText, numeratorText, denominatorText) = mixedNumberMatch.groupValues
-    if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.getError())
-    else
-      return Fraction.newBuilder()
-        .setIsNegative(isInputNegative(inputText))
-        .setWholeNumber(wholeNumberText.toInt())
-        .setNumerator(numeratorText.toInt())
-        .setDenominator(denominatorText.toInt())
-        .build()
+    return Fraction.newBuilder()
+      .setIsNegative(isInputNegative(inputText))
+      .setWholeNumber(wholeNumberText.toInt())
+      .setNumerator(numeratorText.toInt())
+      .setDenominator(denominatorText.toInt())
+      .build()
   }
 
   private fun parseFraction(inputText: String): Fraction? {
     val fractionOnlyMatch = fractionOnlyRegex.matchEntire(inputText) ?: return null
     val (_, numeratorText, denominatorText) = fractionOnlyMatch.groupValues
-    if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FractionParsingErrors.DIVISION_BY_ZERO.getError())
-    else
     // Fraction-only numbers imply no whole number.
-      return Fraction.newBuilder()
-        .setIsNegative(isInputNegative(inputText))
-        .setNumerator(numeratorText.toInt())
-        .setDenominator(denominatorText.toInt())
-        .build()
+    return Fraction.newBuilder()
+      .setIsNegative(isInputNegative(inputText))
+      .setNumerator(numeratorText.toInt())
+      .setDenominator(denominatorText.toInt())
+      .build()
   }
 
   private fun parseWholeNumber(inputText: String): Fraction? {

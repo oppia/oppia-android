@@ -40,7 +40,7 @@
   <color name="submitButtonInactive">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="edit_text_error">#CC1705</color>
+  <color name="edit_text_error">#AB0517</color>
   <color name="edit_text_hint">#80333333</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>

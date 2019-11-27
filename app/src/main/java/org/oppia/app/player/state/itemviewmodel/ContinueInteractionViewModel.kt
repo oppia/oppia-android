@@ -14,6 +14,10 @@ class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
   val isReadOnly: Boolean
 ): StateItemViewModel(), InteractionAnswerHandler {
+ override fun getPendingAnswerError(): String? {
+    return null
+  }
+
   val answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false

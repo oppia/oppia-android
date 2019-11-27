@@ -13,7 +13,8 @@ interface InteractionAnswerHandler {
    * the lifetime of this handler instance.
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
-
+//  /** Return the current answer error messages. */
+  fun getPendingAnswerError(): String?
   /** Return the current answer that is ready for handling. */
   fun getPendingAnswer(): InteractionObject
 }

@@ -15,6 +15,11 @@ class SelectionInteractionViewModel(
   existingAnswer: InteractionObject?, val isReadOnly: Boolean
 ): StateItemViewModel(), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
+
+   override fun getPendingAnswerError(): String? {
+    return null
+  }
+
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
   }

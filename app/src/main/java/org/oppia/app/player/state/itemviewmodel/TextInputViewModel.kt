@@ -9,6 +9,10 @@ class TextInputViewModel(
 ): StateItemViewModel(), InteractionAnswerHandler {
   var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
 
+  override fun getPendingAnswerError(): String? {
+    return null
+  }
+
   override fun getPendingAnswer(): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     if (answerText.isNotEmpty()) {
