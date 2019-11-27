@@ -148,10 +148,8 @@ class ProfileManagementController @Inject constructor(
 
       val imageUri: String?
       if (avatarImagePath != null) {
-        imageUri = saveImageToInternalStorage(avatarImagePath, profileDir)
-        if (imageUri == null) {
-          return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
-        }
+        imageUri = saveImageToInternalStorage(avatarImagePath, profileDir) ?:
+            return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
       } else {
         // gravatar url is a md5 hash of an email address
         val md5Hash = md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com")
@@ -351,7 +349,7 @@ class ProfileManagementController @Inject constructor(
     val imageFile = File(profileDir, PROFILE_AVATAR_FILE_NAME)
     try {
       FileOutputStream(imageFile).use { fos ->
-        rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */300)
+        rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */ 300)
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
@@ -392,6 +390,6 @@ class ProfileManagementController @Inject constructor(
     }
     val matrix = Matrix()
     matrix.postRotate(rotate.toFloat())
-    return Bitmap.createBitmap(croppedBitmap, /* x= */0, /* y= */ 0, cropSize, cropSize, matrix, /* filter= */true)
+    return Bitmap.createBitmap(croppedBitmap, /* x= */ 0, /* y= */ 0, cropSize, cropSize, matrix, /* filter= */ true)
   }
 }
