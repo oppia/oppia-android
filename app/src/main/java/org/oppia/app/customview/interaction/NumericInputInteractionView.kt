@@ -7,7 +7,9 @@ import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_UP
 import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
@@ -24,19 +26,17 @@ class NumericInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: String
+  private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
-    hintText = hint.toString()
+    stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
     typeface = Typeface.DEFAULT
     showSoftKeyboard(v, context)
   } else {
-    hint = hintText
     if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
     hideSoftKeyboard(v, context)
   }
@@ -46,5 +46,11 @@ class NumericInputInteractionView @JvmOverloads constructor(
       this.clearFocus()
     return super.onKeyPreIme(keyCode, event)
   }
-}
 
+  override fun onEditorAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
+    }
+    super.onEditorAction(actionCode)
+  }
+}

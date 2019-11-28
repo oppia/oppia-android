@@ -29,7 +29,8 @@
     <activity
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustResize"/>
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.ProfileActivity"
