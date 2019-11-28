@@ -4,6 +4,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList

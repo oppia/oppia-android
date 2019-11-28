@@ -20,9 +20,11 @@ import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
+import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
@@ -31,6 +33,7 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver

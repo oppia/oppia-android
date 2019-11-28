@@ -11,6 +11,7 @@ import org.oppia.app.model.Outcome
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.CellularDataInterface
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject

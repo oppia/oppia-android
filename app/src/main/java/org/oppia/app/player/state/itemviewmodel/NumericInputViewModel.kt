@@ -1,6 +1,7 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the numeric input interaction. */

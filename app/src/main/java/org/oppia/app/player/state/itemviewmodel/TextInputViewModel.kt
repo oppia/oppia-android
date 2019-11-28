@@ -2,6 +2,7 @@ package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the text input interaction. */
@@ -15,8 +16,8 @@ class TextInputViewModel(
     return null
   }
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder().setNormalizedString(answerTextString).build()

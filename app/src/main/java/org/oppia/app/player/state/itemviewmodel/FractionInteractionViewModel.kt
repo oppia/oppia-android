@@ -8,15 +8,14 @@ import androidx.databinding.ObservableField
 import org.oppia.app.R
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.topic.FractionParsingErrors
 
 /** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
-  existingAnswer: InteractionObject?,
-  val isReadOnly: Boolean,
-  val context: Context
+  interaction: Interaction, private val context: Context
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")

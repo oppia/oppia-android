@@ -33,6 +33,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule

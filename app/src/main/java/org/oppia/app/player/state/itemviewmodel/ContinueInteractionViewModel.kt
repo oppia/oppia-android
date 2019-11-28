@@ -1,6 +1,7 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
@@ -10,8 +11,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** [ViewModel] for the 'Continue' button. */
 class ContinueInteractionViewModel(
-  private val interactionAnswerReceiver: InteractionAnswerReceiver, existingAnswer: InteractionObject?,
-  val isReadOnly: Boolean
+  private val interactionAnswerReceiver: InteractionAnswerReceiver
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun getPendingAnswerError(): String? {

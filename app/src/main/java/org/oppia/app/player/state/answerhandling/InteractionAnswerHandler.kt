@@ -1,5 +1,7 @@
 package org.oppia.app.player.state.answerhandling
 
+import org.oppia.app.model.UserAnswer
+
 /**
  * A handler for interaction answers. Handlers can either require an additional user action before the answer can be
  * processed, or they can push the answer directly to a  [InteractionAnswerReceiver]. Implementations must indicate
