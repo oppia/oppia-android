@@ -369,7 +369,7 @@ class StateFragmentPresenter @Inject constructor(
 
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator() //add this
-    fadeIn.duration = 3000
+    fadeIn.duration = 2000
 
     val fadeOut = AlphaAnimation(1f, 0f)
     fadeOut.interpolator = AccelerateInterpolator() //and this

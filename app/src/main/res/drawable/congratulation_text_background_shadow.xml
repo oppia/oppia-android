@@ -13,6 +13,28 @@
   </item>
   <item>
     <shape>
+      <corners android:radius="10dp" />
+      <solid android:color="@color/grey_shade_05" />
+      <padding
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:top="1dp" />
+    </shape>
+  </item>
+  <item>
+    <shape>
+      <corners android:radius="10dp" />
+      <solid android:color="@color/grey_shade_05" />
+      <padding
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:top="1dp" />
+    </shape>
+  </item>
+  <item>
+    <shape>
       <corners android:radius="11dp" />
       <solid android:color="@color/grey_shade_10" />
       <padding
