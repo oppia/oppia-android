@@ -95,23 +95,27 @@ class AddProfileActivityTest {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.getString(R.string.add_profile_error_name_empty))))
-
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
     }
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
-    GlobalScope.launch(Dispatchers.Main) {
-      profileTestHelper.initializeProfiles()
-    }
+    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
+    }
+  }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfileActivity_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
     }
@@ -123,7 +127,14 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.getString(R.string.add_profile_error_name_only_letters))))
+    }
+  }
 
+  @Test
+  fun testAddProfileActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
     }
@@ -135,19 +146,35 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
+    }
+  }
 
+  @Test
+  fun testAddProfileActivity_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12"))
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("3"))
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
     }
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_inputWrongConfirmPin_checkConfirmWrongError() {
+  fun testAddProfileActivity_inputWrongConfirmPin_checkConfirmWrongError() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo()).perform(typeText("12"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText(context.getString(R.string.add_profile_error_pin_confirm_wrong))))
+    }
+  }
 
+  @Test
+  fun testAddProfileActivity_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo()).perform(typeText("12"))
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("3"))
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText("")))
     }

@@ -23,7 +23,7 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    activity.title = "Add Profile"
+    activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
@@ -34,12 +34,13 @@ class AdminAuthActivityPresenter @Inject constructor(
       viewModel = authViewModel
     }
 
-    binding.inputPin.addTextChangedListener(object: TextWatcher {
+    binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
           authViewModel.errorMessage.set("")
         }
       }
+
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })

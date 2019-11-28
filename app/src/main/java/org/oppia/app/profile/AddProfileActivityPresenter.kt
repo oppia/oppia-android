@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -64,7 +65,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-    addTextChangeListeners(binding)
+    addTextChangedListeners(binding)
     addButtonListeners(binding)
   }
 
@@ -97,14 +98,15 @@ class AddProfileActivityPresenter @Inject constructor(
       val pin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
 
-      if (checkInputsAreValid(name, pin, confirmPin))  {
-        binding.scroll.smoothScrollTo(0,0)
+      if (checkInputsAreValid(name, pin, confirmPin)) {
+        binding.scroll.smoothScrollTo(0, 0)
         return@setOnClickListener
       }
 
-      profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false).observe(activity, Observer {
-        handleAddProfileResult(it, binding)
-      })
+      profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false)
+        .observe(activity, Observer {
+          handleAddProfileResult(it, binding)
+        })
     }
   }
 
@@ -132,14 +134,22 @@ class AddProfileActivityPresenter @Inject constructor(
       activity.startActivity(intent)
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_not_unique))
-        is ProfileManagementController.ProfileNameOnlyLettersException -> profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_only_letters))
+        is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(
+          activity.resources.getString(
+            R.string.add_profile_error_name_not_unique
+          )
+        )
+        is ProfileManagementController.ProfileNameOnlyLettersException -> profileViewModel.nameErrorMsg.set(
+          activity.resources.getString(
+            R.string.add_profile_error_name_only_letters
+          )
+        )
       }
-      binding.scroll.smoothScrollTo(0,0)
+      binding.scroll.smoothScrollTo(0, 0)
     }
   }
 
-  private fun addTextChangeListeners(binding: AddProfileActivityBinding) {
+  private fun addTextChangedListeners(binding: AddProfileActivityBinding) {
     fun setValidPin() {
       if (inputtedPin && inputtedConfirmPin) {
         profileViewModel.validPin.set(true)
@@ -149,38 +159,37 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputPin.addTextChangedListener(object: TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
-        pin?.let {
-          profileViewModel.pinErrorMsg.set("")
-          inputtedPin = it.isNotEmpty()
-          setValidPin()
-        }
+    addTextChangedListener(binding.inputPin) { pin ->
+      pin?.let {
+        profileViewModel.pinErrorMsg.set("")
+        inputtedPin = pin.isNotEmpty()
+        setValidPin()
       }
-      override fun afterTextChanged(confirmPin: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
+    }
 
-    binding.inputConfirmPin.addTextChangedListener(object: TextWatcher {
-      override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
-        confirmPin?.let {
-          profileViewModel.confirmPinErrorMsg.set("")
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
-        }
+    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+      confirmPin?.let {
+        profileViewModel.confirmPinErrorMsg.set("")
+        inputtedConfirmPin = confirmPin.isNotEmpty()
+        setValidPin()
       }
-      override fun afterTextChanged(confirmPin: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
+    }
 
-    binding.inputName.addTextChangedListener(object: TextWatcher {
-      override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
-        confirmPin?.let {
-          profileViewModel.nameErrorMsg.set("")
-        }
+    addTextChangedListener(binding.inputName) { name ->
+      name?.let {
+        profileViewModel.nameErrorMsg.set("")
       }
-      override fun afterTextChanged(confirmPin: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    }
+  }
+
+  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+    profileInputView.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        onTextChanged(p0)
+      }
+
+      override fun afterTextChanged(p0: Editable?) {}
+      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
   }
 

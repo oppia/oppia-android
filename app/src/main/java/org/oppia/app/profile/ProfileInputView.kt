@@ -6,7 +6,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,8 +13,8 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileInputViewBinding
-import org.oppia.app.model.Profile
 
+/** Custom view that is used for name or pin input with error messages */
 class ProfileInputView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -57,12 +56,19 @@ class ProfileInputView @JvmOverloads constructor(
     attributes.recycle()
   }
 
+  /** Gets input of editText. */
   fun getInput() = input.text.toString()
+
+  /** Allows editText to be watched. */
   fun addTextChangedListener(textWatcher: TextWatcher) = input.addTextChangedListener(textWatcher)
+
+  /** Clears red border and error text. */
   fun clearErrorText() {
     input.background = context.resources.getDrawable(R.drawable.edit_text_black_border)
     errorText.text = ""
   }
+
+  /** Sets red border and error text. */
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
