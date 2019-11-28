@@ -4,7 +4,6 @@
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="nav_header_vertical_spacing">8dp</dimen>
-  <dimen name="nav_header_height">176dp</dimen>
 
   <integer name="fade_in_duration_ms">1000</integer>
   <integer name="fade_out_duration_ms">1000</integer>
