@@ -1,9 +1,19 @@
 package org.oppia.app.player.state
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.os.Handler
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -387,9 +397,34 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-        moveToNextState()
+         moveToNextState()
+      }else if (result.labelledAsCorrectAnswer){
+        showCongratulationMessageOnCorrectAnswer()
       }
     })
+  }
+
+  private fun showCongratulationMessageOnCorrectAnswer() {
+    binding.congratulationTextview.setVisibility(View.VISIBLE)
+
+    val fadeIn = AlphaAnimation(0f, 1f)
+    fadeIn.interpolator = DecelerateInterpolator() //add this
+    fadeIn.duration = 2000
+
+    val fadeOut = AlphaAnimation(1f, 0f)
+    fadeOut.interpolator = AccelerateInterpolator() //and this
+    fadeOut.startOffset = 1000
+    fadeOut.duration = 1000
+
+    val animation = AnimationSet(false) //change to false
+    animation.addAnimation(fadeIn)
+    animation.addAnimation(fadeOut)
+    binding.congratulationTextview.setAnimation(animation)
+
+    Handler().postDelayed({
+      binding.congratulationTextview.clearAnimation()
+      binding.congratulationTextview.visibility = View.INVISIBLE
+    },2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
