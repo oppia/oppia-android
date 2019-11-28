@@ -13,7 +13,6 @@ class StringToFractionParser {
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
-  private val fractionRegex = """^\s*-?\s*((\d*\s*\d+\s*\/\s*\d+)|\d+)\s*$""".toRegex()
   /**
    * @param inputText is the user input in the [FractionInputInteractionView]
    * This method helps to validate the inputText and return [FractionParsingErrors]
