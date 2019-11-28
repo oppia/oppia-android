@@ -34,7 +34,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    if (menuItemId != null && previousmMenuItemId != menuItemId && menuItemId != 0) {
+    if (previousmMenuItemId != menuItemId && menuItemId != 0) {
       var intent = Intent(fragment.activity, HomeActivity::class.java)
       when (menuItemId) {
         R.id.nav_home -> {
