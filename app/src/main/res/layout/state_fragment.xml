@@ -16,6 +16,31 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
+    <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="16dp"
+      android:elevation="8dp"
+      android:background="@drawable/congratulation_text_background_shadow"
+      android:layout_marginEnd="24dp" >
+      <TextView
+        android:id="@+id/congratulation_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/correct"
+        android:layout_margin="28dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:lineSpacingExtra="1dp"
+        android:textColor="@color/green_shade"
+        android:textAllCaps="true" />
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/state_recycler_view"
       android:layout_width="match_parent"
@@ -39,26 +64,6 @@
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp" />
 
-    <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:layout_marginStart="24dp"
-      android:layout_marginEnd="24dp" >
-      <TextView
-        android:id="@+id/congratulation_textview"
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:visibility="invisible"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/correct"
-        android:layout_margin="28dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:lineSpacingExtra="1dp"
-        android:background="@drawable/congratulation_text_background_shadow"
-        android:textColor="@color/green_shade"
-        android:textAllCaps="true" />
-    </FrameLayout>
+
   </FrameLayout>
 </layout>
