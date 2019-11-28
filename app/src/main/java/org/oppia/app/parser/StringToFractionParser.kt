@@ -11,7 +11,10 @@ import java.util.regex.Pattern
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
+  private val partialFractionOnlyRegex = """^-? ?(\d+) ?/ ?$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
+  private val partialMixedNumberRegexFirst = """^-? ?(\d+) (\d+) ?$""".toRegex()
+  private val partialMixedNumberRegexSecond = """^-? ?(\d+) (\d+) ?/ ?$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   /**
    * @param inputText is the user input in the [FractionInputInteractionView]
@@ -22,9 +25,10 @@ class StringToFractionParser {
     var rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-    if (!rawInput.equals("-") && parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(
-        rawInput
-      ) == null
+    if (!rawInput.equals("-") && wholeNumberOnlyRegex.matchEntire(rawInput) == null &&
+      fractionOnlyRegex.matchEntire(rawInput) == null && partialFractionOnlyRegex.matchEntire(rawInput) == null &&
+      mixedNumberRegex.matchEntire(rawInput) == null && partialMixedNumberRegexFirst.matchEntire(rawInput) == null &&
+      partialMixedNumberRegexSecond.matchEntire(rawInput) == null
     ) {
       return FractionParsingErrors.INVALID_FORMAT
     }
@@ -43,7 +47,9 @@ class StringToFractionParser {
     var rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-    if (parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(rawInput) == null) {
+    if (mixedNumberRegex.matchEntire(rawInput) == null && fractionOnlyRegex.matchEntire(rawInput) == null &&
+      wholeNumberOnlyRegex.matchEntire(rawInput) == null
+    ) {
       return FractionParsingErrors.INVALID_FORMAT
     }
     rawInput = rawInput.trim();
