@@ -23,11 +23,16 @@ class StringToFractionParser {
     var rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-      if (!rawInput.equals("-")&&parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(rawInput) == null) {
+    if (!rawInput.equals("-") && parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(
+        rawInput
+      ) == null
+    ) {
       return FractionParsingErrors.INVALID_FORMAT
     }
     return FractionParsingErrors.VALID
   }
+
+//TODO(#377): use this method check value valid and activate submit button click
 
   /**
    * @param inputText is the user input in the [FractionInputInteractionView]
