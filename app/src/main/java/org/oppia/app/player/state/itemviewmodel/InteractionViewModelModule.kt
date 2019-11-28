@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -17,8 +18,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, interactionAnswerReceiver, existingAnswer, isReadOnly ->
-      ContinueInteractionViewModel(interactionAnswerReceiver, existingAnswer, isReadOnly)
+    return { _, _, interactionAnswerReceiver ->
+      ContinueInteractionViewModel(interactionAnswerReceiver)
     }
   }
 
@@ -39,21 +40,21 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("FractionInput")
-  fun provideFractionInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> FractionInteractionViewModel(existingAnswer, isReadOnly) }
+  fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { _, interaction, _ -> FractionInteractionViewModel(interaction, context) }
   }
 
   @Provides
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> NumericInputViewModel(existingAnswer, isReadOnly) }
+    return { _, _, _ -> NumericInputViewModel() }
   }
 
   @Provides
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, existingAnswer, isReadOnly -> TextInputViewModel(existingAnswer, isReadOnly) }
+    return { _, interaction, _ -> TextInputViewModel(interaction) }
   }
 }

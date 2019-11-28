@@ -2,10 +2,11 @@ package org.oppia.app.application
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication: Application() {
+class OppiaApplication: MultiDexApplication() {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
