@@ -34,10 +34,10 @@ class FractionInteractionViewModel(
   }
 
   override fun getPendingAnswerError(): String? {
-    if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingErrors.VALID)
-      return StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
+    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingErrors.VALID)
+      StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
     else
-      return null
+      null
   }
 
   @Bindable

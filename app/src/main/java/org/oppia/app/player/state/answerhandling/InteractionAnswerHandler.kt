@@ -14,7 +14,7 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
-  //  /** Return the current answer error messages. */
+  /** Return the current answer error messages. */
   fun getPendingAnswerError(): String?
 
   /** Return the current answer that is ready for handling. */

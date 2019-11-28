@@ -10,6 +10,7 @@ import java.util.regex.Pattern
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
+  private val partialWholeNumberOnlyRegex = """^-? ?$""".toRegex()
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
   private val partialFractionOnlyRegex = """^-? ?(\d+) ?/ ?$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
@@ -17,15 +18,16 @@ class StringToFractionParser {
   private val partialMixedNumberRegexSecond = """^-? ?(\d+) (\d+) ?/ ?$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   /**
-   * @param inputText is the user input in the [FractionInputInteractionView]
    * This method helps to validate the inputText and return [FractionParsingErrors]
    * This called on text change.
+   * @param inputText is the user input in the [FractionInputInteractionView]
+   * @return enum [FractionParsingErrors]
    */
   fun checkForErrors(inputText: String): FractionParsingErrors {
-    var rawInput: String = inputText.normalizeWhitespace()
+    val rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-    if (!rawInput.equals("-") && wholeNumberOnlyRegex.matchEntire(rawInput) == null &&
+    if (wholeNumberOnlyRegex.matchEntire(rawInput) == null && partialWholeNumberOnlyRegex.matchEntire(rawInput) == null &&
       fractionOnlyRegex.matchEntire(rawInput) == null && partialFractionOnlyRegex.matchEntire(rawInput) == null &&
       mixedNumberRegex.matchEntire(rawInput) == null && partialMixedNumberRegexFirst.matchEntire(rawInput) == null &&
       partialMixedNumberRegexSecond.matchEntire(rawInput) == null
@@ -35,12 +37,13 @@ class StringToFractionParser {
     return FractionParsingErrors.VALID
   }
 
-//TODO(#377): use this method check value valid and activate submit button click
+  //TODO(#377): use this method check value valid and activate submit button click
 
   /**
-   * @param inputText is the user input in the [FractionInputInteractionView]
    * This method helps to validate the inputText and return [FractionParsingErrors]
    * This called on submit button click.
+   * @param inputText is the user input in the [FractionInputInteractionView]
+   * @return enum [FractionParsingErrors]
    */
   fun checkForErrorsOnSubmit(inputText: String): FractionParsingErrors {
     var denominator = 1
@@ -58,12 +61,12 @@ class StringToFractionParser {
       rawInput = rawInput.substring(1).trim()
     }
     // Filter result from split to remove empty strings.
-    var numbers = Pattern.compile("[\\s|/]+").split(rawInput)
-    if (numbers.size == 1) {
-    } else if (numbers.size == 2) {
-      denominator = parseInt(numbers[1])
-    } else {
-      denominator = parseInt(numbers[2])
+    val numbers = Pattern.compile("[\\s|/]+").split(rawInput)
+    when {
+      numbers.size == 1 -> {
+      }
+      numbers.size == 2 -> denominator = parseInt(numbers[1])
+      else -> denominator = parseInt(numbers[2])
     }
     if (denominator == 0) {
       return FractionParsingErrors.DIVISION_BY_ZERO
