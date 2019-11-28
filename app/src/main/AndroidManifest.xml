@@ -16,8 +16,7 @@
     <activity
       android:name=".home.continueplaying.ContinuePlayingActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait"
-      />
+      android:screenOrientation="portrait" />
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait"

@@ -21,10 +21,10 @@ import javax.inject.Inject
 class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) : NavigationView.OnNavigationItemSelectedListener {
-  lateinit var navView: NavigationView
-  lateinit var drawerToggle: ActionBarDrawerToggle
-  lateinit var drawerLayout: DrawerLayout
-  private var previousmMenuItemId: Int? = null
+  private lateinit var navView: NavigationView
+  private lateinit var drawerToggle: ActionBarDrawerToggle
+  private lateinit var drawerLayout: DrawerLayout
+  private var previousMenuItemId: Int? = null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
     navView = view!!.findViewById(R.id.nav_view)
@@ -34,7 +34,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    if (previousmMenuItemId != menuItemId && menuItemId != 0) {
+    if (previousMenuItemId != menuItemId && menuItemId != 0) {
       var intent = Intent(fragment.activity, HomeActivity::class.java)
       when (menuItemId) {
         R.id.nav_home -> {
@@ -62,7 +62,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       }
     }
     this.drawerLayout = drawerLayout
-    previousmMenuItemId = menuItemId
+    previousMenuItemId = menuItemId
     drawerToggle = object : ActionBarDrawerToggle(
       fragment.activity,
       drawerLayout,
