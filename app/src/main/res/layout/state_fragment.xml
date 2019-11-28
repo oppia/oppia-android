@@ -14,23 +14,21 @@
     android:layout_height="match_parent"
     android:background="@color/oppiaLightGreen"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/state_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"
-      android:elevation="4dp"
       android:divider="@android:color/transparent"
+      android:elevation="4dp"
       android:overScrollMode="never"
       android:paddingTop="@{viewModel.isAudioBarVisible().get()? @dimen/padding_72dp : @dimen/padding_24dp}"
       android:scrollbars="none"
       app:data="@{viewModel.itemList}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-
 
     <FrameLayout
       android:id="@+id/audio_fragment_placeholder"
@@ -46,23 +44,24 @@
       android:layout_gravity="bottom"
       android:layout_marginStart="28dp"
       android:layout_marginTop="8dp"
+      android:layout_marginEnd="28dp"
       android:layout_marginBottom="16dp"
-      android:elevation="8dp"
-      android:layout_marginEnd="28dp" >
+      android:elevation="8dp">
+
       <TextView
         android:id="@+id/congratulation_textview"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:visibility="invisible"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/correct"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:elevation="8dp"
-        android:lineSpacingExtra="1dp"
         android:background="@drawable/congratulation_text_background_shadow"
+        android:elevation="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:lineSpacingExtra="1dp"
+        android:text="@string/correct"
+        android:textAllCaps="true"
         android:textColor="@color/green_shade"
-        android:textAllCaps="true" />
+        android:textSize="20sp"
+        android:visibility="invisible" />
     </FrameLayout>
   </FrameLayout>
 </layout>
