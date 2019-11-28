@@ -1,5 +1,6 @@
 package org.oppia.app.topic.conceptcard
 
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
