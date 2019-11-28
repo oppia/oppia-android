@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +17,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [AdminAuthActivity]. */
+/** The presenter for [ResetPinDialogFragment]. */
 @FragmentScope
 class ResetPinDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,

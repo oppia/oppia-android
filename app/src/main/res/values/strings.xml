@@ -109,7 +109,7 @@
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
-  <string name="add_profile_create_btn">CREATE</string>
+  <string name="add_profile_create_btn">create</string>
   <string name="add_profile_close">CLOSE</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
@@ -119,10 +119,12 @@
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <!-- PinPasswordActivity. -->
-  <string name="pin_password_forgot_pin">I FORGOT MY PIN</string>
+  <string name="pin_password_admin_welcome">Hi, %s!\nPlease enter your Admin PIN</string>
+  <string name="pin_password_user_welcome">Hi, %s!\nPlease enter your PIN</string>
+  <string name="pin_password_forgot_pin">I forgot my pin</string>
   <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
-  <string name="pin_password_show">SHOW</string>
-  <string name="pin_password_hide">HIDE</string>
+  <string name="pin_password_show">show</string>
+  <string name="pin_password_hide">hide</string>
   <string name="pin_password_close">CLOSE</string>
   <string name="pin_password_success">PIN change is successful</string>
   <string name="pin_password_forgot_title">Forgot PIN?</string>

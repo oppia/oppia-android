@@ -85,7 +85,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindAddView(binding: ProfileChooserAddViewBinding, model: ProfileChooserModel) {
+  private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserModel) {
     binding.root.setOnClickListener {
       fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
     }

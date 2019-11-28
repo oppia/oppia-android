@@ -6,13 +6,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import org.oppia.app.R
 import org.oppia.app.databinding.AdminSettingsDialogBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [AdminAuthActivity]. */

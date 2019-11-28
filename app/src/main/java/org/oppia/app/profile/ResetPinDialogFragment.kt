@@ -10,6 +10,7 @@ import javax.inject.Inject
 const val KEY_RESET_PIN_PROFILE_ID = "RESET_PIN_PROFILE_ID"
 const val KEY_RESET_PIN_NAME = "RESET_PIN_NAME"
 
+/** Dialog Fragment to input new Pin. */
 class ResetPinDialogFragment : InjectableDialogFragment() {
   companion object {
     fun newInstance(profileId: Int, name: String): ResetPinDialogFragment {

@@ -40,13 +40,18 @@ interface FragmentComponent {
 
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
+  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(continuePlayingFragment: ContinuePlayingFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileEditFragment: ProfileEditFragment)
+  fun inject(profileListFragment: ProfileListFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
+  fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(topicFragment: TopicFragment)
@@ -54,9 +59,4 @@ interface FragmentComponent {
   fun inject(topicPlayFragment: TopicPlayFragment)
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)
-  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
-  fun inject(resetPinDialogFragment: ResetPinDialogFragment)
-  fun inject(profileListFragment: ProfileListFragment)
-  fun inject(profileEditFragment: ProfileEditFragment)
-  fun inject(profileChooserFragment: ProfileChooserFragment)
 }

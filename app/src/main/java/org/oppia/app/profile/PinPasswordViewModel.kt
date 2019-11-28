@@ -31,7 +31,7 @@ class PinPasswordViewModel @Inject constructor(
   }
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("PinPasswordViewModel", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
     correctPin = profile.pin
