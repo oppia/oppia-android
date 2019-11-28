@@ -3,6 +3,10 @@ package org.oppia.app.topic.review
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import android.text.style.CharacterStyle
+import android.view.View
+import android.widget.TextView
+import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,6 +22,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
