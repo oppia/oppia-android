@@ -77,7 +77,7 @@ class TopicFragmentPresenter @Inject constructor(
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       val topicName = result.name
-      toolbar.title = fragment.getString(R.string.topic_prefix) + topicName
+      toolbar.title = fragment.getString(R.string.topic_prefix) + " " + topicName
     })
   }
 
