@@ -228,7 +228,7 @@ class StateFragmentPresenter @Inject constructor(
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = false)
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
               )
