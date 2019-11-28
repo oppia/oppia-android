@@ -6,6 +6,4 @@ import javax.inject.Inject
 
 /** [ViewModel] for [HelpFragment]. */
 @FragmentScope
-class HelpViewModel @Inject constructor() : ViewModel() {
-
-}
+class HelpViewModel @Inject constructor() : ViewModel()

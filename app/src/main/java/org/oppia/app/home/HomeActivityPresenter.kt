@@ -26,7 +26,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
       toolbar!!, R.id.nav_home
     )
-    activity.setTitle(title)
+    activity.title = title
   }
 
   fun handleOnCreate() {

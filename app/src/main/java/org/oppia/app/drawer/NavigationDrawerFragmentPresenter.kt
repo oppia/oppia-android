@@ -16,7 +16,7 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import javax.inject.Inject
 
-/** The presenter for [HelpFragment]. */
+/** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
 class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment
@@ -26,8 +26,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   lateinit var drawerLayout: DrawerLayout
   private var previousmMenuItemId: Int? = null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    var view: View? = null
-    view = inflater.inflate(R.layout.fragment_drawer, container, false)
+    val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
     navView = view!!.findViewById(R.id.nav_view)
     navView.setNavigationItemSelectedListener(this)
     fragment.setHasOptionsMenu(true)
@@ -56,10 +55,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     when (menuItemId) {
       R.id.nav_home -> {
-        navView.getMenu().getItem(0).setChecked(true)
+        navView.menu.getItem(0).isChecked = true
       }
       R.id.nav_help -> {
-        navView.getMenu().getItem(1).setChecked(true)
+        navView.menu.getItem(1).isChecked = true
       }
     }
     this.drawerLayout = drawerLayout
@@ -87,17 +86,17 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         toolbar.alpha = 1 - slideOffset / 2
       }
     }
-    drawerLayout!!.setDrawerListener(drawerToggle)
+    drawerLayout.setDrawerListener(drawerToggle)
     /** Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout].*/
-    drawerLayout!!.post { drawerToggle!!.syncState() }
+    drawerLayout.post { drawerToggle.syncState() }
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-    if (menuItem.itemId > 0) {
+    return if (menuItem.itemId > 0) {
       openActivityByMenuItemId(menuItem.itemId)
-      return true
-    } else
-      return false
+      true
+    } else {
+      false
+    }
   }
-
 }
