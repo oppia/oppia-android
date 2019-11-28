@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
@@ -8,12 +7,12 @@ import org.oppia.app.model.StringList
 import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.viewmodel.ObservableArrayList
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  existingAnswer: InteractionObject?, val isReadOnly: Boolean
-): StateItemViewModel(), InteractionAnswerHandler {
+  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver
+): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
    override fun getPendingAnswerError(): String? {
@@ -31,28 +30,36 @@ class SelectionInteractionViewModel(
     // when either of the counts are not specified.
     interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
   }
-  private val selectedItems = computeSelectedItems(
-    existingAnswer ?: InteractionObject.getDefaultInstance(), interactionId, choiceStrings
-  )
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(
-    choiceStrings, selectedItems, isReadOnly, this
-  )
+  private val selectedItems: MutableList<Int> = mutableListOf()
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(choiceStrings, this)
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean {
     // If more than one answer is allowed, then a submission button is needed.
     return maxAllowableSelectionCount > 1
   }
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
+    val selectedItemsHtml = selectedItems.map(choiceItems::get).map { it.htmlContent }
     if (interactionId == "ItemSelectionInput") {
-      interactionObjectBuilder.setOfHtmlString = StringList.newBuilder()
-        .addAllHtml(selectedItems.map(choiceItems::get).map { it.htmlContent })
-        .build()
+      userAnswerBuilder.answer = InteractionObject.newBuilder().setSetOfHtmlString(
+        StringList.newBuilder().addAllHtml(selectedItemsHtml)
+      ).build()
+      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     } else if (selectedItems.size == 1) {
-      interactionObjectBuilder.nonNegativeInt = selectedItems.first()
+      userAnswerBuilder.answer = InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
+      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     }
-    return interactionObjectBuilder.build()
+    return userAnswerBuilder.build()
+  }
+
+  /** Returns an HTML list containing all of the HTML string elements as items in the list. */
+  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
+    return when (htmlItems.size) {
+      0 -> ""
+      1 -> htmlItems.first()
+      else -> "<ul><li>${htmlItems.joinToString(separator = "</li><li>")}</li></ul>"
+    }
   }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
@@ -98,28 +105,13 @@ class SelectionInteractionViewModel(
   }
 
   companion object {
-    private fun computeSelectedItems(
-      answer: InteractionObject, interactionId: String, choiceStrings: List<String>
-    ): MutableList<Int> {
-      return if (interactionId == "ItemSelectionInput") {
-        answer.setOfHtmlString.htmlList.map(choiceStrings::indexOf).toMutableList()
-      } else if (answer.objectTypeCase == InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT) {
-        mutableListOf(answer.nonNegativeInt)
-      } else {
-        mutableListOf()
-      }
-    }
-
     private fun computeChoiceItems(
-      choiceStrings: List<String>, selectedItems: List<Int>, isReadOnly: Boolean,
-      selectionInteractionViewModel: SelectionInteractionViewModel
+      choiceStrings: List<String>, selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
-        val isAnswerSelected = index in selectedItems
         SelectionInteractionContentViewModel(
-          htmlContent = choiceString, itemIndex = index, isAnswerInitiallySelected = isAnswerSelected,
-          isReadOnly = isReadOnly, selectionInteractionViewModel = selectionInteractionViewModel
+          htmlContent = choiceString, itemIndex = index, selectionInteractionViewModel = selectionInteractionViewModel
         )
       }
       return observableList

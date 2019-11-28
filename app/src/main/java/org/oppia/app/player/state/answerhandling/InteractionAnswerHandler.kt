@@ -1,7 +1,5 @@
 package org.oppia.app.player.state.answerhandling
 
-import org.oppia.app.model.InteractionObject
-
 /**
  * A handler for interaction answers. Handlers can either require an additional user action before the answer can be
  * processed, or they can push the answer directly to a  [InteractionAnswerReceiver]. Implementations must indicate
@@ -18,7 +16,7 @@ interface InteractionAnswerHandler {
   fun getPendingAnswerError(): String?
 
   /** Return the current answer that is ready for handling. */
-  fun getPendingAnswer(): InteractionObject
+  fun getPendingAnswer(): UserAnswer
 }
 
 /**
@@ -26,5 +24,5 @@ interface InteractionAnswerHandler {
  * the parent fragment of the handler.
  */
 interface InteractionAnswerReceiver {
-  fun onAnswerReadyForSubmission(answer: InteractionObject)
+  fun onAnswerReadyForSubmission(answer: UserAnswer)
 }

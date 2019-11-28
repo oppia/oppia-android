@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -100,7 +99,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-light"
-          android:text="@{@plurals/lesson_count(viewModel.canonicalStoryCount, viewModel.canonicalStoryCount)}"
+          android:text="@{@plurals/lesson_count(viewModel.totalChapterCount, viewModel.totalChapterCount)}"
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"

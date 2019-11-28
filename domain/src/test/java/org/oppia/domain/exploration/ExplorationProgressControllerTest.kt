@@ -41,7 +41,12 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.util.toAnswerString
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -407,7 +412,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.completedState.answerCount).isEqualTo(1)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(0)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
     assertThat(currentState.completedState.getAnswer(0).feedback.html).isEqualTo("Yes!")
   }
 
@@ -428,7 +433,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.nonNegativeInt).isEqualTo(2)
+    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(2)
     assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html).contains("Have another go?")
   }
 
@@ -449,9 +454,9 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.completedState.answerCount).isEqualTo(2)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(2)
     assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Have another go?")
-    assertThat(currentState.completedState.getAnswer(1).userAnswer.nonNegativeInt).isEqualTo(0)
+    assertThat(currentState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt).isEqualTo(0)
     assertThat(currentState.completedState.getAnswer(1).feedback.html).isEqualTo("Yes!")
   }
 
@@ -730,14 +735,38 @@ class ExplorationProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should now be completed with the correct answer.
     verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.completedState.answerCount).isEqualTo(1)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
-    assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Yes! Oppia is the Finnish word")
+    val answerAndFeedback = currentState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Finnish")
+    assertThat(answerAndFeedback.feedback.html).contains("Yes! Oppia is the Finnish word")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() = runBlockingTest(coroutineContext) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. The submitted answer should have a textual version that is a verbatim
+    // version of the user-submitted answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase).isEqualTo(UserAnswer.TextualAnswerCase.PLAIN_ANSWER)
+    assertThat(answerAndFeedback.userAnswer.plainAnswer).isEqualTo("Finnish  ")
   }
 
   @Test
@@ -753,14 +782,15 @@ class ExplorationProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-    // Verify that the current state updates. It should now be completed with the correct answer.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
     verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.normalizedString).isEqualTo("Klingon")
-    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html).contains("Sorry, nope")
+    val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
+    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
   }
 
   @Test
@@ -1007,7 +1037,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.state.name).isEqualTo("What language")
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.normalizedString).isEqualTo("Finnish")
   }
 
   @Test
@@ -1200,16 +1230,21 @@ class ExplorationProgressControllerTest {
     endExploration()
   }
 
-  private fun createMultipleChoiceAnswer(choiceIndex: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+  private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
+    return convertToUserAnswer(InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build())
   }
 
-  private fun createTextInputAnswer(textAnswer: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+  private fun createTextInputAnswer(textAnswer: String): UserAnswer {
+    val answer = InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(textAnswer).build()
   }
 
-  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(numericAnswer).build()
+  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
+    return convertToUserAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
+  }
+
+  private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
+    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
@@ -1248,6 +1283,18 @@ class ExplorationProgressControllerTest {
     fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
       return testDispatcher
     }
+
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.

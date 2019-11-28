@@ -10,8 +10,8 @@ import java.util.regex.Pattern
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
-  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d)+$""".toRegex()
-  private val mixedNumberRegex = """^-? ?(\d)+ ?(\d+) ?/ ?(\d)+$""".toRegex()
+  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
+  private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   /**
    * @param inputText is the user input in the [FractionInputInteractionView]

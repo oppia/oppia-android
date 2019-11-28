@@ -1,4 +1,5 @@
 {
+  "exploration_id": "2",
   "language_code": "en",
   "param_specs": {},
   "param_changes": [],
@@ -472,7 +473,7 @@
             "value": 1
           },
           "placeholder": {
-            "value": ""
+            "value": "Enter a language"
           }
         },
         "id": "TextInput",
