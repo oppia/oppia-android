@@ -18,14 +18,16 @@
       android:name=".home.continueplaying.ContinuePlayingActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
-    <activity android:name=".profile.ProfileActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustResize"/>
+    <activity
+      android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />
     <activity
