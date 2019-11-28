@@ -39,6 +39,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.domain.audio.AudioPlayerController
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -262,6 +263,10 @@ class AudioFragmentTest {
     fun provideTestDispatcher(): CoroutineDispatcher {
       return TestCoroutineDispatcher()
     }
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
 
     @Singleton
     @Provides

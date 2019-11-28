@@ -14,7 +14,8 @@
     android:layout_height="match_parent"
     android:background="@color/oppiaLightGreen"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/state_recycler_view"
