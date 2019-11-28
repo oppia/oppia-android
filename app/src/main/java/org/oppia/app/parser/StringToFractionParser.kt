@@ -13,17 +13,33 @@ class StringToFractionParser {
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
+  private val fractionRegex = """^\s*-?\s*((\d*\s*\d+\s*\/\s*\d+)|\d+)\s*$""".toRegex()
   /**
    * @param inputText is the user input in the [FractionInputInteractionView]
    * This method helps to validate the inputText and return [FractionParsingErrors]
    * This called on text change.
    */
   fun checkForErrors(inputText: String): FractionParsingErrors {
+    var rawInput: String = inputText.normalizeWhitespace()
+    if (!rawInput.matches(invalidCharsRegex))
+      return FractionParsingErrors.INVALID_CHARS
+      if (!rawInput.equals("-")&&parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(rawInput) == null) {
+      return FractionParsingErrors.INVALID_FORMAT
+    }
+    return FractionParsingErrors.VALID
+  }
+
+  /**
+   * @param inputText is the user input in the [FractionInputInteractionView]
+   * This method helps to validate the inputText and return [FractionParsingErrors]
+   * This called on submit button click.
+   */
+  fun checkForErrorsOnSubmit(inputText: String): FractionParsingErrors {
     var denominator = 1
     var rawInput: String = inputText.normalizeWhitespace()
-    if (!inputText.matches(invalidCharsRegex))
+    if (!rawInput.matches(invalidCharsRegex))
       return FractionParsingErrors.INVALID_CHARS
-    if (parseMixedNumber(inputText) == null && parseFraction(inputText) == null && parseWholeNumber(inputText) == null) {
+    if (parseMixedNumber(rawInput) == null && parseFraction(rawInput) == null && parseWholeNumber(rawInput) == null) {
       return FractionParsingErrors.INVALID_FORMAT
     }
     rawInput = rawInput.trim();

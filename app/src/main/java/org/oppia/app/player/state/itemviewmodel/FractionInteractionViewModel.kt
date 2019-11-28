@@ -47,7 +47,7 @@ class FractionInteractionViewModel(
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        answerText = answer.toString()
+        answerText = answer.toString().trim()
         errorMessage.set(getPendingAnswerError())
       }
 
