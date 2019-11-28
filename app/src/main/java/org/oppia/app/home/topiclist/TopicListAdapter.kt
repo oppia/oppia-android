@@ -125,7 +125,7 @@ class TopicListAdapter(
     }
   }
 
-  private class PromotedStoryListViewHolder(val binding: PromotedStoryListBinding) :
+  inner class PromotedStoryListViewHolder(val binding: PromotedStoryListBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(
       activity: AppCompatActivity,
@@ -143,6 +143,14 @@ class TopicListAdapter(
       val snapHelper = PagerSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
+
+      val padding48 = dipToPixels(48)
+      val padding16 = dipToPixels(16)
+      if (promotedStoryList.size > 1) {
+        binding.promotedStoryListRecyclerView.setPadding(padding16, 0, padding48, 0)
+      } else {
+        binding.promotedStoryListRecyclerView.setPadding(padding16, 0, padding16, 0)
+      }
     }
   }
 
@@ -151,7 +159,7 @@ class TopicListAdapter(
     }
   }
 
-  private class TopicListViewHolder(val binding: TopicSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
       val param = binding.topicContainer.layoutParams as GridLayoutManager.LayoutParams
@@ -165,13 +173,13 @@ class TopicListAdapter(
       }
       binding.topicContainer.layoutParams = param
     }
+  }
 
-    private fun dipToPixels(dipValue: Int): Int {
-      return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dipValue.toFloat(),
-        Resources.getSystem().displayMetrics
-      ).toInt()
-    }
+  fun dipToPixels(dipValue: Int): Int {
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_DIP,
+      dipValue.toFloat(),
+      Resources.getSystem().displayMetrics
+    ).toInt()
   }
 }

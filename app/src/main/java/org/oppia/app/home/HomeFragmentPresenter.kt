@@ -155,18 +155,12 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
       if (it.recentStoryCount > 0) {
-        for (promotedStory in it.recentStoryList) {
-          val recentStory = PromotedStoryViewModel(activity)
-          recentStory.setPromotedStory(promotedStory)
-          promotedStoryList.add(recentStory)
-        }
-      }
-
-      if (it.olderStoryCount > 0) {
-        for (promotedStory in it.olderStoryList) {
-          val oldStory = PromotedStoryViewModel(activity)
-          oldStory.setPromotedStory(promotedStory)
-          promotedStoryList.add(oldStory)
+        it.recentStoryList.forEachIndexed { index, promotedStory ->
+          if (index < 3) {
+            val recentStory = PromotedStoryViewModel(activity)
+            recentStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(recentStory)
+          }
         }
       }
 
