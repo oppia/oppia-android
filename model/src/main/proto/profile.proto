@@ -7,7 +7,7 @@ option java_multiple_files = true;
 
 // Top level proto used to store last used id and all profiles.
 message ProfileDatabase {
-  // Represents the last used unique ID for adding a profile.
+  // Represents the next unique ID for adding a profile.
   int32 next_profile_id = 1;
 
   // Mapping from unique ID to profile.
@@ -53,9 +53,12 @@ message ProfileId {
   int32 internal_id = 1;
 }
 
+// Used in BindableAdapter for ProfileChooserFragment.
 message ProfileChooserModel {
   oneof model_type {
+    // Indicates an individual Profile.
     Profile profile = 1;
+    //Indicates the add profile button.
     bool addProfile = 2;
   }
 }

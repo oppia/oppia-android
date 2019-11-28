@@ -21,19 +21,25 @@
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
-    <activity android:name=".profile.AdminAuthActivity" />
-    <activity android:name=".profile.AddProfileActivity" />
-    <activity android:name=".profile.PinPasswordActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".profile.ProfileActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait"/>
     <activity
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
+    <activity
+      android:name=".profile.AddProfileActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.AdminAuthActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.PinPasswordActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.ProfileActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />

@@ -32,26 +32,25 @@ class SelectionInteractionView @JvmOverloads constructor(
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var selectionItemInputType: SelectionItemInputType = SelectionItemInputType.CHECKBOXES
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject @field:ExplorationHtmlParserEntityType lateinit var entityType: String
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  @field:ExplorationHtmlParserEntityType
+  lateinit var entityType: String
   private lateinit var explorationId: String
-
-  init {
-    adapter = createAdapter()
-  }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
   }
 
-  fun setItemInputType(selectionItemInputType: SelectionItemInputType) {
+  fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
     // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
     //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.selectionItemInputType = selectionItemInputType
-    adapter!!.notifyDataSetChanged()
+    adapter = createAdapter()
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
@@ -72,9 +71,10 @@ class SelectionInteractionView @JvmOverloads constructor(
           },
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-              viewModel.htmlContent, binding.itemSelectionContentsTextView
-            )
+            binding.htmlContent =
+              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+                viewModel.htmlContent, binding.itemSelectionContentsTextView
+              )
             binding.viewModel = viewModel
           }
         )
@@ -89,9 +89,10 @@ class SelectionInteractionView @JvmOverloads constructor(
           },
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-            binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-              viewModel.htmlContent, binding.multipleChoiceContentTextView
-            )
+            binding.htmlContent =
+              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+                viewModel.htmlContent, binding.multipleChoiceContentTextView
+              )
             binding.viewModel = viewModel
           }
         )
@@ -101,11 +102,10 @@ class SelectionInteractionView @JvmOverloads constructor(
 }
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("itemInputType")
-fun setItemInputType(
+@BindingAdapter("allOptionsItemInputType")
+fun setAllOptionsItemInputType(
   selectionInteractionView: SelectionInteractionView, selectionItemInputType: SelectionItemInputType
-) = selectionInteractionView.setItemInputType(selectionItemInputType)
-
+) = selectionInteractionView.setAllOptionsItemInputType(selectionItemInputType)
 
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("explorationId")

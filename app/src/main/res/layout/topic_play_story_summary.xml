@@ -23,8 +23,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="20dp"
-    android:layout_marginTop="24dp"
+    android:layout_marginTop="12dp"
     android:layout_marginEnd="20dp"
+    android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
@@ -154,7 +155,6 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="56dp"
           android:layout_marginTop="8dp"
-          android:layout_marginEnd="16dp"
           android:layout_marginBottom="8dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>

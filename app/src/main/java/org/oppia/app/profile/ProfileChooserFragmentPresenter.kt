@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
@@ -30,9 +29,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
-  @ExperimentalCoroutinesApi
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
@@ -47,27 +46,30 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
   }
 
-  @ExperimentalCoroutinesApi
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<ProfileChooserModel, ProfileChooserModel.ModelTypeCase>(ProfileChooserModel::getModelTypeCase)
       .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
-        setViewModel = this::bindProfileView)
+        setViewModel = this::bindProfileView
+      )
       .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserModel.ModelTypeCase.ADDPROFILE,
         inflateDataBinding = ProfileChooserAddViewBinding::inflate,
-        setViewModel = this::bindAddView)
+        setViewModel = this::bindAddView
+      )
       .build()
   }
 
-  @ExperimentalCoroutinesApi
-  private fun bindProfileView(binding: ProfileChooserProfileViewBinding, data: ProfileChooserModel) {
-    binding.viewModel = data
+  private fun bindProfileView(
+    binding: ProfileChooserProfileViewBinding,
+    model: ProfileChooserModel
+  ) {
+    binding.viewModel = model
     binding.root.setOnClickListener {
-      if (data.profile.pin.isEmpty()) {
-        profileManagementController.loginToProfile(data.profile.id).observe(fragment, Observer {
+      if (model.profile.pin.isEmpty()) {
+        profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
             fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
           }
@@ -76,14 +78,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
           fragment.requireContext(),
           chooserViewModel.adminPin,
-          data.profile.id.internalId
+          model.profile.id.internalId
         )
         fragment.requireActivity().startActivity(pinPasswordIntent)
       }
     }
   }
 
-  private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
+  private fun bindAddView(binding: ProfileChooserAddViewBinding, model: ProfileChooserModel) {
     binding.root.setOnClickListener {
       fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
     }

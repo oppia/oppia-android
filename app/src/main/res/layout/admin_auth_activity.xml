@@ -20,10 +20,13 @@
       android:textColor="@color/black"
       android:textSize="24sp"
       android:textStyle="bold"
+      android:lines="2"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginTop="50dp"
-      android:layout_marginStart="30dp"/>
+      android:paddingStart="30dp"
+      android:paddingEnd="30dp"/>
     <TextView
       android:id="@+id/sub_text"
       android:layout_width="match_parent"
@@ -32,8 +35,10 @@
       android:textSize="16sp"
       app:layout_constraintTop_toBottomOf="@id/heading_text"
       app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginTop="15dp"
-      android:layout_marginStart="30dp"/>
+      android:paddingStart="30dp"
+      android:paddingEnd="30dp"/>
     <org.oppia.app.profile.ProfileInputView
       android:id="@+id/input_pin"
       android:layout_width="match_parent"

@@ -5,6 +5,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
+/** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
 class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
   val validPin = ObservableField(false)
