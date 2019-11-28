@@ -71,6 +71,7 @@
   <string name="size_kb">%d KB</string>
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
+  <string name="correct">Correct!</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
