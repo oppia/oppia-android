@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
 import org.oppia.app.databinding.TopicPlayTitleBinding
@@ -91,7 +92,7 @@ class StorySummaryAdapter(
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummaryViewModel: StorySummaryViewModel, position: Int) {
-      if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex==position) {
+      if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
         binding.isListExpanded = true
 
         if (currentExpandedChapterListIndex == position) {
@@ -101,8 +102,7 @@ class StorySummaryAdapter(
           binding.chapterListDropDownIcon.animate().rotation(0F).setDuration(400).start()
           collapse(binding.chapterListContainer)
         }
-      }
-      else {
+      } else {
         binding.isListExpanded = false
       }
       binding.viewModel = storySummaryViewModel
@@ -125,23 +125,22 @@ class StorySummaryAdapter(
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
       binding.root.setOnClickListener {
-        currentExpandedChapterListIndex =
-          if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        binding.isListExpanded = !binding.chapterListContainer.isVisible
 
-        binding.isListExpanded = currentExpandedChapterListIndex == position
-
-        if (currentExpandedChapterListIndex == position) {
+        if (!binding.chapterListContainer.isVisible) {
           binding.chapterListDropDownIcon.animate().rotation(180F).setDuration(400).start()
           expand(binding.chapterListContainer)
         } else {
           binding.chapterListDropDownIcon.animate().rotation(0F).setDuration(400).start()
           collapse(binding.chapterListContainer)
         }
+
+        if (binding.chapterListContainer.isVisible) {
+          currentExpandedChapterListIndex = position
+        } else {
+          currentExpandedChapterListIndex = null
+        }
+        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
       }
     }
 
