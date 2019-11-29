@@ -34,6 +34,14 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("\n\n", "")
     }
 
+    if(htmlContent.contains("<li>")){
+      htmlContent = htmlContent.replace("<li>","<li>\t")
+    }
+
+    if(htmlContent.contains("<ul>")){
+      htmlContent = htmlContent.replace("<ul>","<ul>\t")
+    }
+
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
       htmlContent = htmlContent.replace(
