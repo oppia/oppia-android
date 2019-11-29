@@ -7,10 +7,6 @@
     <import type="android.view.View" />
 
     <variable
-      name="isListExpanded"
-      type="Boolean" />
-
-    <variable
       name="storyPercentage"
       type="Integer" />
 
@@ -142,7 +138,7 @@
         android:layout_height="wrap_content"
         android:background="@color/whiteLight"
         android:orientation="vertical"
-        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+        android:visibility="gone">
 
         <View
           android:layout_width="match_parent"

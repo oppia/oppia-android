@@ -1,13 +1,17 @@
 package org.oppia.app.topic.play
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.Transformation
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
 import org.oppia.app.databinding.TopicPlayTitleBinding
 import org.oppia.app.model.ChapterPlayState
@@ -21,6 +25,7 @@ private const val ANIMATION_DURATION: Long = 400
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
+  private val context: Context,
   private val itemList: MutableList<TopicPlayItemViewModel>,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
@@ -92,19 +97,6 @@ class StorySummaryAdapter(
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummaryViewModel: StorySummaryViewModel, position: Int) {
-      if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
-        binding.isListExpanded = true
-
-        if (currentExpandedChapterListIndex == position) {
-          binding.chapterListDropDownIcon.animate().rotation(180F).setDuration(400).start()
-          expand(binding.chapterListContainer)
-        } else {
-          binding.chapterListDropDownIcon.animate().rotation(0F).setDuration(400).start()
-          collapse(binding.chapterListContainer)
-        }
-      } else {
-        binding.isListExpanded = false
-      }
       binding.viewModel = storySummaryViewModel
 
       val chapterSummaries = storySummaryViewModel.storySummary.chapterList
@@ -124,27 +116,35 @@ class StorySummaryAdapter(
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
-      binding.root.setOnClickListener {
-        binding.isListExpanded = !binding.chapterListContainer.isVisible
+      if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
+        val aniRotate = AnimationUtils.loadAnimation(context, R.anim.rotation_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(aniRotate)
+        expand(binding.chapterListContainer)
+      } else {
+        val aniRotate = AnimationUtils.loadAnimation(context, R.anim.rotation_anti_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(aniRotate)
+        collapse(binding.chapterListContainer)
+      }
 
-        if (!binding.chapterListContainer.isVisible) {
-          binding.chapterListDropDownIcon.animate().rotation(180F).setDuration(400).start()
-          expand(binding.chapterListContainer)
-        } else {
-          binding.chapterListDropDownIcon.animate().rotation(0F).setDuration(400).start()
-          collapse(binding.chapterListContainer)
-        }
+      binding.root.setOnClickListener {
+        val previousItem = currentExpandedChapterListIndex
+
 
         if (binding.chapterListContainer.isVisible) {
-          currentExpandedChapterListIndex = position
-        } else {
           currentExpandedChapterListIndex = null
+        } else {
+          currentExpandedChapterListIndex = position
         }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        if (previousItem != null && previousItem != position) {
+          notifyItemChanged(previousItem)
+        }
+        notifyItemChanged(position)
       }
     }
 
     private fun expand(chapterListContainer: View) {
+      Log.d("TAG", "expand")
       chapterListContainer.clearAnimation()
       val matchParentMeasureSpec =
         View.MeasureSpec.makeMeasureSpec((chapterListContainer.parent as View).width, View.MeasureSpec.EXACTLY)
@@ -174,7 +174,9 @@ class StorySummaryAdapter(
     }
 
     private fun collapse(chapterListContainer: View) {
+      Log.d("TAG", "collapse")
       chapterListContainer.clearAnimation()
+
       val initialHeight = chapterListContainer.measuredHeight
 
       val collapseAnimation = object : Animation() {
