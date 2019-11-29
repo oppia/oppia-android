@@ -113,14 +113,13 @@ class StorySummaryAdapter(
 
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
-
       if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
-        val aniRotate = AnimationUtils.loadAnimation(context, R.anim.rotation_clockwise_180)
-        binding.chapterListDropDownIcon.startAnimation(aniRotate)
+        val rotate = AnimationUtils.loadAnimation(context, R.anim.rotation_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(rotate)
         expand(binding.chapterListContainer)
       } else {
-        val aniRotate = AnimationUtils.loadAnimation(context, R.anim.rotation_anti_clockwise_180)
-        binding.chapterListDropDownIcon.startAnimation(aniRotate)
+        val rotate = AnimationUtils.loadAnimation(context, R.anim.rotation_anti_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(rotate)
         collapse(binding.chapterListContainer)
       }
 
