@@ -1,8 +1,10 @@
 package org.oppia.app.parser
 
+import android.content.Context
+import androidx.annotation.StringRes
+import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Fraction
-import org.oppia.app.topic.FractionParsingErrors
 import org.oppia.domain.util.normalizeWhitespace
 import java.lang.Integer.parseInt
 import java.util.regex.Pattern
@@ -18,40 +20,40 @@ class StringToFractionParser {
   private val partialMixedNumberRegexSecond = """^-? ?(\d+) (\d+) ?/ ?$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   /**
-   * This method helps to validate the inputText and return [FractionParsingErrors]
+   * This method helps to validate the inputText and return [FractionParsingError]
    * This called on text change.
    * @param inputText is the user input in the [FractionInputInteractionView]
-   * @return enum [FractionParsingErrors]
+   * @return enum [FractionParsingError]
    */
-  fun checkForErrors(inputText: String): FractionParsingErrors {
+  fun checkForErrors(inputText: String): FractionParsingError {
     val rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
-      return FractionParsingErrors.INVALID_CHARS
+      return FractionParsingError.INVALID_CHARS
     if (wholeNumberOnlyRegex.matchEntire(rawInput) == null && partialWholeNumberOnlyRegex.matchEntire(rawInput) == null &&
       fractionOnlyRegex.matchEntire(rawInput) == null && partialFractionOnlyRegex.matchEntire(rawInput) == null &&
       mixedNumberRegex.matchEntire(rawInput) == null && partialMixedNumberRegexFirst.matchEntire(rawInput) == null &&
       partialMixedNumberRegexSecond.matchEntire(rawInput) == null
     ) {
-      return FractionParsingErrors.INVALID_FORMAT
+      return FractionParsingError.INVALID_FORMAT
     }
-    return FractionParsingErrors.VALID
+    return FractionParsingError.VALID
   }
 
   /**
-   * This method helps to validate the inputText and return [FractionParsingErrors]
+   * This method helps to validate the inputText and return [FractionParsingError]
    * This called on submit button click.
    * @param inputText is the user input in the [FractionInputInteractionView]
-   * @return enum [FractionParsingErrors]
+   * @return enum [FractionParsingError]
    */
-  fun checkForErrorsOnSubmit(inputText: String): FractionParsingErrors {
+  fun checkForErrorsOnSubmit(inputText: String): FractionParsingError {
     var denominator = 1
     var rawInput: String = inputText.normalizeWhitespace()
     if (!rawInput.matches(invalidCharsRegex))
-      return FractionParsingErrors.INVALID_CHARS
+      return FractionParsingError.INVALID_CHARS
     if (mixedNumberRegex.matchEntire(rawInput) == null && fractionOnlyRegex.matchEntire(rawInput) == null &&
       wholeNumberOnlyRegex.matchEntire(rawInput) == null
     ) {
-      return FractionParsingErrors.INVALID_FORMAT
+      return FractionParsingError.INVALID_FORMAT
     }
     rawInput = rawInput.trim();
     if (rawInput.startsWith("-")) {
@@ -67,9 +69,9 @@ class StringToFractionParser {
       else -> denominator = parseInt(numbers[2])
     }
     if (denominator == 0) {
-      return FractionParsingErrors.DIVISION_BY_ZERO
+      return FractionParsingError.DIVISION_BY_ZERO
     }
-    return FractionParsingErrors.VALID
+    return FractionParsingError.VALID
   }
 
   fun getFractionFromString(text: String): Fraction {
@@ -116,4 +118,30 @@ class StringToFractionParser {
   }
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
+
+  /** Enum to store the errors of [FractionInputInteractionView]. */
+  enum class FractionParsingError(@StringRes error: Int) {
+    VALID(error = R.string.valid),
+    INVALID_CHARS(error = R.string.invalid_chars),
+    INVALID_FORMAT(error = R.string.invalid_format),
+    DIVISION_BY_ZERO(error = R.string.divide_by_zero);
+
+    private var error: Int
+
+    init {
+      this.error = error
+    }
+
+    fun getErrorMessageFromStringRes(context: Context): String {
+      return context.getString(this.error)
+    }
+  }
+
+  /** Categories of errors that can be inferred from a pending answer.  */
+  enum class AnswerErrorCategory {
+    /** Corresponds to errors that may be found while the user is trying to input an answer.  */
+    REAL_TIME,
+    /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
+    SUBMIT_TIME
+  }
 }

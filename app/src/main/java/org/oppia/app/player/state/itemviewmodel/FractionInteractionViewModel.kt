@@ -10,8 +10,9 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
+import org.oppia.app.parser.StringToFractionParser.FractionParsingError
+import org.oppia.app.parser.StringToFractionParser.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.topic.FractionParsingErrors
 
 /** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
@@ -32,15 +33,20 @@ class FractionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
-  override fun getPendingAnswerError(): String? {
-    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingErrors.VALID)
-      StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
-    else
-      null
+  override fun isExplicitErrorCheckRequired(): Boolean = true
+
+  override fun getPendingAnswerError(category: AnswerErrorCategory): String? {
+    if (category == AnswerErrorCategory.REAL_TIME) {
+      return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingError.VALID)
+        StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
+      else
+        null
+    } else
+      return getPendingAnswerErrorOnSubmit()
   }
 
-  override fun getPendingAnswerErrorOnSubmit(): String? {
-    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()) != FractionParsingErrors.VALID) {
+  fun getPendingAnswerErrorOnSubmit(): String? {
+    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()) != FractionParsingError.VALID) {
       errorMessage.set(
         StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()).getErrorMessageFromStringRes(
           context
@@ -59,7 +65,7 @@ class FractionInteractionViewModel(
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
-        errorMessage.set(getPendingAnswerError())
+        errorMessage.set(getPendingAnswerError(AnswerErrorCategory.REAL_TIME))
       }
 
       override fun afterTextChanged(s: Editable) {

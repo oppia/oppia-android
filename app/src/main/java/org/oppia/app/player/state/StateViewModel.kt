@@ -5,6 +5,7 @@ import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.parser.StringToFractionParser.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
@@ -33,14 +34,14 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
   fun getPendingAnswer(): UserAnswer {
-    if (getPendingAnswerHandler(itemList) is FractionInteractionViewModel && (getPendingAnswerHandler(itemList) as FractionInteractionViewModel).viewType.name.equals("FRACTION_INPUT_INTERACTION")) {
-      if ((getPendingAnswerHandler(itemList) as FractionInteractionViewModel).getPendingAnswerErrorOnSubmit() == null)
+    return if (getPendingAnswerHandler(itemList)?.isExplicitErrorCheckRequired()!!) {
+      if (getPendingAnswerHandler(itemList)?.getPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null)
         return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
       else
-        (getPendingAnswerHandler(itemList) as FractionInteractionViewModel).getPendingAnswerErrorOnSubmit()
-      return UserAnswer.getDefaultInstance()
+        (getPendingAnswerHandler(itemList) as FractionInteractionViewModel).getPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      UserAnswer.getDefaultInstance()
     } else
-      return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
+      getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
