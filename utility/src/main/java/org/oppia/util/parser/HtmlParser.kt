@@ -49,12 +49,12 @@ class HtmlParser private constructor(
         Html.fromHtml(
           htmlContent,
           Html.FROM_HTML_MODE_LEGACY,
-          imageGetter, /* tagHandler= */
-          null
+          imageGetter,
+          UlTagHandler()
         ) as SpannableStringBuilder
       )
     } else {
-      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
+      trimSpannable(Html.fromHtml(htmlContent, imageGetter, UlTagHandler()) as SpannableStringBuilder)
     }
   }
 
