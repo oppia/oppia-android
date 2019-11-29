@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import javax.inject.Inject
 
 private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
@@ -74,5 +75,9 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
 
   override fun onLanguageSelected(currentLanguageCode: String) {
     audioFragmentPresenter.languageSelected(currentLanguageCode)
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    audioFragmentPresenter.setContentIdListener(audioContentIdListener)
   }
 }

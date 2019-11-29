@@ -1,11 +1,7 @@
 package org.oppia.app.player.state
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Handler
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +9,6 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -60,6 +55,7 @@ import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
 import org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
@@ -100,6 +96,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var viewModel: StateViewModel
+  private var contentViewModel: ContentViewModel? = null
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
@@ -152,7 +149,11 @@ class StateFragmentPresenter @Inject constructor(
         oldBottom: Int
       ) {
         if (bottom < oldBottom) {
-          binding.stateRecyclerView.postDelayed(Runnable { binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.getItemCount()-1) }, 100)
+          binding.stateRecyclerView.postDelayed(Runnable {
+            binding.stateRecyclerView.scrollToPosition(
+              stateRecyclerViewAdapter.getItemCount() - 1
+            )
+          }, 100)
         }
       }
     })
@@ -181,6 +182,7 @@ class StateFragmentPresenter @Inject constructor(
             htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
               (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
             )
+          binding.viewModel = contentViewModel!!
         }
       )
       .registerViewBinder(
@@ -319,9 +321,11 @@ class StateFragmentPresenter @Inject constructor(
       if (currentYOffset == 0) {
         binding.stateRecyclerView.smoothScrollToPosition(0)
       }
+      (getAudioFragment() as AudioFragment).setContentIdListener(fragment as AudioContentIdListener)
     } else {
       if (getAudioFragment() != null) {
         fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
+        handleContentCardHighlighting(contentViewModel!!.contentId,false)
       }
     }
   }
@@ -397,8 +401,8 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
-      }else if (result.labelledAsCorrectAnswer){
+        moveToNextState()
+      } else if (result.labelledAsCorrectAnswer) {
         showCongratulationMessageOnCorrectAnswer()
       }
     })
@@ -424,7 +428,7 @@ class StateFragmentPresenter @Inject constructor(
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
-    },2000)
+    }, 2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -452,8 +456,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleKeyboardAction() {
-      hideKeyboard()
-      handleSubmitAnswer(viewModel.getPendingAnswer())
+    hideKeyboard()
+    handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   override fun onContinueButtonClicked() {
@@ -492,7 +496,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun addContentItem(pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html)
+    contentViewModel = ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html)
+    pendingItemList += contentViewModel!!
   }
 
   private fun addPreviousAnswers(
@@ -606,5 +611,11 @@ class StateFragmentPresenter @Inject constructor(
   private fun hideKeyboard() {
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+  }
+
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    if(contentViewModel!=null && contentViewModel!!.contentId == contentId){
+      contentViewModel!!.updateIsAudioPlaying(playing)
+    }
   }
 }

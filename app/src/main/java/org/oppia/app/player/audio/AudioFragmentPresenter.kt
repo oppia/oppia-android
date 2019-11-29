@@ -14,6 +14,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
@@ -40,9 +41,15 @@ class AudioFragmentPresenter @Inject constructor(
   private var languages = listOf<String>()
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?,
+    explorationId: String,
+    stateId: String
+  ): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+    binding.sbAudioProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) {
           userProgress = progress
@@ -131,11 +138,13 @@ class AudioFragmentPresenter @Inject constructor(
     processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
       val state = it.statesMap[stateId] ?: State.getDefaultInstance()
       val contentId = state.content.contentId
-      val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+      val voiceoverMapping =
+        (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
       languages = voiceoverMapping.keys.toList()
       selectedLanguageCode = languages.firstOrNull() ?: ""
       val viewModel = getAudioViewModel()
       viewModel.setVoiceoverMappings(voiceoverMapping)
+      viewModel.setContentId(contentId)
       viewModel.setAudioLanguageCode(selectedLanguageCode)
     })
   }
@@ -153,6 +162,10 @@ class AudioFragmentPresenter @Inject constructor(
       logger.e("AudioFragment", "Failed to retrieve Exploration", explorationResult.getErrorOrNull()!!)
     }
     return explorationResult.getOrDefault(Exploration.getDefaultInstance())
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    getAudioViewModel().setContentIdListener(audioContentIdListener)
   }
 }
 

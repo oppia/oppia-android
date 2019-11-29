@@ -9,10 +9,11 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.CellularDataInterface
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver, AudioContentIdListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -55,4 +56,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+
+  override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
+    stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
+  }
 }

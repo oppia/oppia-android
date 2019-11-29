@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Voiceover
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
@@ -20,8 +21,11 @@ class AudioViewModel @Inject constructor(
   @DefaultResource private val gcsResource: String
 ) : ViewModel() {
 
+  private lateinit var contentId: String
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
+
+  private var audioContentIdListener: AudioContentIdListener? = null
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -44,12 +48,20 @@ class AudioViewModel @Inject constructor(
     processPlayStatusLiveData()
   }
 
-  fun setVoiceoverMappings(map : Map<String, Voiceover>) {
+  fun setVoiceoverMappings(map: Map<String, Voiceover>) {
     voiceoverMap = map
+  }
+
+  fun setContentId(id: String) {
+    contentId = id
   }
 
   fun setExplorationId(id: String) {
     explorationId = id
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    this.audioContentIdListener = audioContentIdListener
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
@@ -62,8 +74,14 @@ class AudioViewModel @Inject constructor(
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = false)
+      }
     } else {
       audioPlayerController.play()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = true)
+      }
     }
   }
 
