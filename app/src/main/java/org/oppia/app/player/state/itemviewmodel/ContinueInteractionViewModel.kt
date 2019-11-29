@@ -14,10 +14,6 @@ class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
-  override fun getPendingAnswerError(): String? {
-    return null
-  }
-
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun getPendingAnswer(): UserAnswer {

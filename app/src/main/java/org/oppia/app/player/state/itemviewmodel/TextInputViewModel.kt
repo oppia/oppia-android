@@ -12,10 +12,6 @@ class TextInputViewModel(
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
 
-  override fun getPendingAnswerError(): String? {
-    return null
-  }
-
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {

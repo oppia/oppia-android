@@ -20,7 +20,6 @@ class FractionInteractionViewModel(
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")
   val hintText: CharSequence = deriveHintText(interaction)
-
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
@@ -37,6 +36,18 @@ class FractionInteractionViewModel(
     return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingErrors.VALID)
       StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
     else
+      null
+  }
+
+  override fun getPendingAnswerErrorOnSubmit(): String? {
+    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()) != FractionParsingErrors.VALID) {
+      errorMessage.set(
+        StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()).getErrorMessageFromStringRes(
+          context
+        )
+      )
+      StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()).getErrorMessageFromStringRes(context)
+    } else
       null
   }
 

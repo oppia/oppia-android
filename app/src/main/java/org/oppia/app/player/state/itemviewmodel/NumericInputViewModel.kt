@@ -8,10 +8,6 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 class NumericInputViewModel : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
 
-  override fun getPendingAnswerError(): String? {
-    return null
-  }
-
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {

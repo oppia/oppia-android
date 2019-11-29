@@ -37,8 +37,6 @@ class StringToFractionParser {
     return FractionParsingErrors.VALID
   }
 
-  //TODO(#377): use this method check value valid and activate submit button click
-
   /**
    * This method helps to validate the inputText and return [FractionParsingErrors]
    * This called on submit button click.
