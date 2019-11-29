@@ -21,7 +21,6 @@ import org.oppia.app.model.ChapterSummary
 
 private const val VIEW_TYPE_TITLE_TEXT = 1
 private const val VIEW_TYPE_STORY_ITEM = 2
-private const val ANIMATION_DURATION: Long = 400
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
@@ -128,18 +127,16 @@ class StorySummaryAdapter(
 
       binding.root.setOnClickListener {
         val previousItem = currentExpandedChapterListIndex
-
-
         if (binding.chapterListContainer.isVisible) {
           currentExpandedChapterListIndex = null
         } else {
           currentExpandedChapterListIndex = position
         }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        notifyItemChanged(position)
         if (previousItem != null && previousItem != position) {
           notifyItemChanged(previousItem)
         }
-        notifyItemChanged(position)
       }
     }
 
@@ -169,7 +166,7 @@ class StorySummaryAdapter(
           return true
         }
       }
-      expandAnimation.duration = ANIMATION_DURATION
+      expandAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_duration).toLong()
       chapterListContainer.startAnimation(expandAnimation)
     }
 
@@ -193,7 +190,7 @@ class StorySummaryAdapter(
           return true
         }
       }
-      collapseAnimation.duration = ANIMATION_DURATION
+      collapseAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_duration).toLong()
       chapterListContainer.startAnimation(collapseAnimation)
     }
   }
