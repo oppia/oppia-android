@@ -38,7 +38,7 @@
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/edit_text_hint"
+      android:textColorHint="@color/editTextHint"
       android:textSize="14sp"
       android:textStyle="italic" />
   </FrameLayout>

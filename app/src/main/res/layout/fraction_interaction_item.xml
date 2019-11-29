@@ -39,7 +39,7 @@
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/edit_text_hint"
+      android:textColorHint="@color/editTextHint"
       android:textSize="14sp"
       android:textStyle="italic"
       app:textChangedListener="@{viewModel.passwordTextWatcher}" />
@@ -52,7 +52,7 @@
       android:minHeight="32dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.errorMessage.get()}"
-      android:textColor="@color/edit_text_error"
+      android:textColor="@color/editTextError"
       android:textSize="12sp" />
   </LinearLayout>
 </layout>
