@@ -1,7 +1,6 @@
 package org.oppia.app.topic.play
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -141,7 +140,6 @@ class StorySummaryAdapter(
     }
 
     private fun expand(chapterListContainer: View) {
-      Log.d("TAG", "expand")
       chapterListContainer.clearAnimation()
       val matchParentMeasureSpec =
         View.MeasureSpec.makeMeasureSpec((chapterListContainer.parent as View).width, View.MeasureSpec.EXACTLY)
@@ -171,7 +169,6 @@ class StorySummaryAdapter(
     }
 
     private fun collapse(chapterListContainer: View) {
-      Log.d("TAG", "collapse")
       chapterListContainer.clearAnimation()
 
       val initialHeight = chapterListContainer.measuredHeight
