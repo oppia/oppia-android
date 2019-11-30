@@ -71,4 +71,7 @@ enum SkillThumbnailGraphic {
 
   // Corresponds to Dividing Fractions skill.
   DIVIDING_FRACTIONS = 7;
+
+  // Corresponds to Derive a ratio from a description or picture skill.
+  DERIVE_A_RATIO = 8;
 }
