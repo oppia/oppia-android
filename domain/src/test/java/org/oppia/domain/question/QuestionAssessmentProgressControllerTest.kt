@@ -66,6 +66,9 @@ class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
   private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
 
+  // TODO: add tests for multiple sessions (& verify that reverting the fix for reinitializing the question data
+  //  provider breaks as expected).
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
