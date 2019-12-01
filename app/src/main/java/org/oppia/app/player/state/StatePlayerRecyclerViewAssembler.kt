@@ -89,7 +89,7 @@ import javax.inject.Inject
  */
 class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
-  private val entityId: String, private val fragment: Fragment, private val congratulationsTextView: TextView?,
+  private val fragment: Fragment, private val congratulationsTextView: TextView?,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -109,25 +109,38 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   /**
-   * Computes a list of view models corresponding to the specified [EphemeralState] and the configuration of this
-   * assembler.
+   * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
+   * listener no-ops if backward navigation is enabled. This serves to allows the host fragment to not need to implement
+   * [PreviousNavigationButtonListener] if backward navigation is disabled.
    */
-  fun compute(ephemeralState: EphemeralState): List<StateItemViewModel> {
+  private val previousNavigationButtonListener = object : PreviousNavigationButtonListener {
+    override fun onPreviousButtonClicked() {
+      if (playerFeatureSet.backwardNavigation) {
+        (fragment as PreviousNavigationButtonListener).onPreviousButtonClicked()
+      }
+    }
+  }
+
+  /**
+   * Computes a list of view models corresponding to the specified [EphemeralState] and the configuration of this
+   * assembler, as well as the GCS entity ID that should be associated with rich-text rendering for this state.
+   */
+  fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
     val hasPreviousState = ephemeralState.hasPreviousState
 
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
     val pendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
-      addContentItem(pendingItemList, ephemeralState)
+      addContentItem(pendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
       if (playerFeatureSet.interactionSupport) {
-        addInteractionForPendingState(pendingItemList, interaction, hasPreviousState)
+        addInteractionForPendingState(pendingItemList, interaction, hasPreviousState, gcsEntityId)
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
+      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
     }
 
     var canContinueToNextState = false
@@ -154,21 +167,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean,
+    gcsEntityId: String
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      entityId, interaction, fragment as InteractionAnswerReceiver, hasPreviousButton
+      gcsEntityId, interaction, fragment as InteractionAnswerReceiver, hasPreviousButton
     )
   }
 
-  private fun addContentItem(pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState) {
+  private fun addContentItem(
+    pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState, gcsEntityId: String
+  ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html)
+    pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>
+    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>, gcsEntityId: String
   ) {
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
@@ -184,7 +200,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing || hasPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
-          createSubmittedAnswer(answerAndResponse.userAnswer).let { viewModel ->
+          createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -192,7 +208,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           }
         }
         if (playerFeatureSet.feedbackSupport) {
-          createFeedbackItem(answerAndResponse.feedback)?.let { viewModel ->
+          createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -203,10 +219,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
-        pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer)
+        pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback)?.let(pendingItemList::add)
+        createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(pendingItemList::add)
       }
     }
   }
@@ -277,14 +293,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     })
   }
 
-  private fun createSubmittedAnswer(userAnswer: UserAnswer): SubmittedAnswerViewModel {
-    return SubmittedAnswerViewModel(userAnswer)
+  private fun createSubmittedAnswer(userAnswer: UserAnswer, gcsEntityId: String): SubmittedAnswerViewModel {
+    return SubmittedAnswerViewModel(userAnswer, gcsEntityId)
   }
 
-  private fun createFeedbackItem(feedback: SubtitledHtml): FeedbackViewModel? {
+  private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html)
+      return FeedbackViewModel(feedback.html, gcsEntityId)
     }
     return null
   }
@@ -298,22 +314,22 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> ContinueNavigationButtonViewModel(
-        hasPreviousButton, fragment as PreviousNavigationButtonListener, fragment as ContinueNavigationButtonListener
+        hasPreviousButton, previousNavigationButtonListener, fragment as ContinueNavigationButtonListener
       )
       canContinueToNextState && playerFeatureSet.forwardNavigation -> NextButtonViewModel(
-        hasPreviousButton, fragment as PreviousNavigationButtonListener, fragment as NextNavigationButtonListener
+        hasPreviousButton, previousNavigationButtonListener, fragment as NextNavigationButtonListener
       )
       stateIsTerminal && playerFeatureSet.returnToTopicNavigation -> ReturnToTopicButtonViewModel(
-        hasPreviousButton, fragment as PreviousNavigationButtonListener,
+        hasPreviousButton, previousNavigationButtonListener,
         fragment as ReturnToTopicNavigationButtonListener
       )
       doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.forwardNavigation ->
         SubmitButtonViewModel(
-          hasPreviousButton, fragment as PreviousNavigationButtonListener, fragment as SubmitNavigationButtonListener
+          hasPreviousButton, previousNavigationButtonListener, fragment as SubmitNavigationButtonListener
         )
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
       hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
-        fragment as PreviousNavigationButtonListener
+        previousNavigationButtonListener
       )
       // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
       // navigation in this context is disabled.
@@ -361,7 +377,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   class Builder private constructor(
     private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
-    private val entityType: String, private val entityId: String, private val fragment: Fragment,
+    private val entityType: String, private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) {
@@ -379,11 +395,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
+          val contentViewModel = viewModel as ContentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, entityId, /* imageCenterAlign= */ true
+              resourceBucketName, entityType, contentViewModel.gcsEntityId, /* imageCenterAlign= */ true
             ).parseOppiaHtml(
-              (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
+              contentViewModel.htmlContent.toString(), binding.contentTextView
             )
         }
       )
@@ -400,11 +417,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
+          val feedbackViewModel = viewModel as FeedbackViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, entityId, /* imageCenterAlign= */ true
+              resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
             ).parseOppiaHtml(
-              (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
+              feedbackViewModel.htmlContent.toString(), binding.feedbackTextView
             )
         }
       )
@@ -458,11 +476,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
-          val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
+          val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
+          val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
               val htmlParser = htmlParserFactory.create(
-                resourceBucketName, entityType, entityId, imageCenterAlign = false
+                resourceBucketName, entityType, submittedAnswerViewModel.gcsEntityId, imageCenterAlign = false
               )
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
@@ -548,8 +567,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(), playerFeatureSet, entityId, fragment, congratulationsTextView,
-        interactionViewModelFactoryMap, backgroundCoroutineDispatcher
+        adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView, interactionViewModelFactoryMap,
+        backgroundCoroutineDispatcher
       )
     }
 
@@ -560,9 +579,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
     ) {
       /** Returns a new [Builder] for the specified GCS resource bucket information for loading assets. */
-      fun create(resourceBucketName: String, entityType: String, entityId: String): Builder {
+      fun create(resourceBucketName: String, entityType: String): Builder {
         return Builder(
-          htmlParserFactory, resourceBucketName, entityType, entityId, fragment, interactionViewModelFactoryMap,
+          htmlParserFactory, resourceBucketName, entityType, fragment, interactionViewModelFactoryMap,
           backgroundCoroutineDispatcher
         )
       }

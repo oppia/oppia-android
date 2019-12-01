@@ -71,6 +71,15 @@ class ExplorationActivityPresenter @Inject constructor(
     getExplorationFragment()?.handlePlayAudio()
   }
 
+  fun onKeyboardAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as? ExplorationFragment
+      explorationFragment?.onKeyboardAction()
+    }
+  }
+
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
@@ -93,12 +102,5 @@ class ExplorationActivityPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
-  }
-
-  fun onKeyboardAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
-      explorationFragment.onKeyboardAction()
-    }
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.app.topic.questionplayer
 
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.app.R
@@ -44,7 +45,18 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     })
   }
 
+  fun onKeyboardAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val questionPlayerFragment = activity.supportFragmentManager.findFragmentById(
+        R.id.question_player_fragment_placeholder
+      ) as? QuestionPlayerFragment
+      questionPlayerFragment?.handleKeyboardAction()
+    }
+  }
+
   private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.question_player_fragment_placeholder) as QuestionPlayerFragment?
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.question_player_fragment_placeholder
+    ) as QuestionPlayerFragment?
   }
 }

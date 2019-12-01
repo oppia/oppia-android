@@ -6,13 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.app.player.state.listener.NextNavigationButtonListener
+import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
-class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver {
+class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
+  ContinueNavigationButtonListener, NextNavigationButtonListener, ReturnToTopicNavigationButtonListener,
+  SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
@@ -28,4 +34,16 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver {
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
     questionPlayerFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
+
+  override fun onContinueButtonClicked() = questionPlayerFragmentPresenter.onContinueButtonClicked()
+
+  override fun onNextButtonClicked() = questionPlayerFragmentPresenter.onNextButtonClicked()
+
+  override fun onReturnToTopicButtonClicked() = questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
+
+  override fun onSubmitButtonClicked() = questionPlayerFragmentPresenter.onSubmitButtonClicked()
+
+  override fun onResponsesHeaderClicked() = questionPlayerFragmentPresenter.onResponsesHeaderClicked()
+
+  fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 }

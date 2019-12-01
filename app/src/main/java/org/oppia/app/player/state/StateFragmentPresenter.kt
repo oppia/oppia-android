@@ -22,7 +22,7 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
-import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -74,8 +74,8 @@ class StateFragmentPresenter @Inject constructor(
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, explorationId),
-      binding.congratulationTextView
+      assemblerBuilderFactory.create(resourceBucketName, entityType),
+      binding.congratulationsTextView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -132,7 +132,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
-    (activity as StopExplorationInterface).stopExploration()
+    (activity as StopStatePlayingSessionListener).stopSession()
   }
 
   fun onSubmitButtonClicked() {
@@ -235,7 +235,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState)
+    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
 
     if (scrollToTop) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 200)
