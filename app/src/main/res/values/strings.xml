@@ -61,7 +61,8 @@
   <string name="continue_playing_activity">Continue playing</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
-  <string name="question_player_replay">REPLAY</string>
+  <string name="question_player_title">Train Mode</string>
+  <string name="question_player_replay">Replay</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>

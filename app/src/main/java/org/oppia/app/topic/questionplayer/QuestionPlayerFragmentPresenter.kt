@@ -124,7 +124,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
     }
-
+ 
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       hasGeneralContinueButton = true
     }
