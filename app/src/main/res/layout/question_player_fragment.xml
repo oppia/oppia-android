@@ -41,7 +41,7 @@
       android:id="@+id/question_progress_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{`Question `+ viewModel.currentQuestion +` of `+ viewModel.numQuestions}"
+      android:text="@{viewModel.isAtEndOfSession ? @string/question_training_session_progress_finished : @string/question_training_session_progress(viewModel.currentQuestion, viewModel.questionCount)}"
       android:textStyle="italic"
       android:layout_marginEnd="30dp"
       android:layout_marginBottom="20dp"

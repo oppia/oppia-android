@@ -1,6 +1,7 @@
 package org.oppia.app.topic.questionplayer
 
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.app.model.InteractionObject
@@ -12,9 +13,10 @@ import javax.inject.Inject
 
 class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
-  val numQuestions = ObservableField(0)
+  val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
   val progressPercentage = ObservableField(0)
+  val isAtEndOfSession = ObservableBoolean(false)
 
   /**
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the

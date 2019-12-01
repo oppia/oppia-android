@@ -63,6 +63,8 @@
   <string name="downloaded">Downloaded</string>
   <string name="question_player_title">Train Mode</string>
   <string name="question_player_replay">Replay</string>
+  <string name="question_training_session_progress">Question %d of %d</string>
+  <string name="question_training_session_progress_finished">Complete</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>

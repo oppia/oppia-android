@@ -101,15 +101,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val ephemeralQuestion = result.getOrThrow()
     questionId = ephemeralQuestion.question.questionId
     // TODO(#497): Update this to properly link to question assets.
-    skillId = ephemeralQuestion.question.linkedSkillIdsList.first()
-    processProgress(ephemeralQuestion.currentQuestionIndex + 1, ephemeralQuestion.totalQuestionCount)
+    skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
+    processProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     processEphemeralState(ephemeralQuestion.ephemeralState)
   }
 
-  private fun processProgress(currentQuestion: Int, numQuestions: Int) {
-    questionViewModel.currentQuestion.set(currentQuestion)
-    questionViewModel.numQuestions.set(numQuestions)
-    questionViewModel.progressPercentage.set(((currentQuestion.toDouble() / numQuestions) * 100).toInt())
+  private fun processProgress(currentQuestionIndex: Int, questionCount: Int) {
+    questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
+    questionViewModel.questionCount.set(questionCount)
+    questionViewModel.progressPercentage.set((((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt())
+    questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun processEphemeralState(ephemeralState: EphemeralState) {
