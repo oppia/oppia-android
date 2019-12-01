@@ -42,7 +42,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
-  private lateinit var explorationId: String
+  private lateinit var entityId: String
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -60,8 +60,8 @@ class SelectionInteractionView @JvmOverloads constructor(
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
-  fun setExplorationId(explorationId: String) {
-    this.explorationId = explorationId
+  fun setEntityId(entityId: String) {
+    this.entityId = entityId
   }
 
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
@@ -78,7 +78,7 @@ class SelectionInteractionView @JvmOverloads constructor(
             val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
             binding.htmlContent =
               htmlParserFactory.create(
-                resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ false
+                resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
               ).parseOppiaHtml(
                 viewModel.htmlContent, binding.itemSelectionContentsTextView
               )
@@ -98,7 +98,7 @@ class SelectionInteractionView @JvmOverloads constructor(
             val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
             binding.htmlContent =
               htmlParserFactory.create(
-                resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ false
+                resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
               ).parseOppiaHtml(
                 viewModel.htmlContent, binding.multipleChoiceContentTextView
               )
@@ -117,7 +117,7 @@ fun setAllOptionsItemInputType(
 ) = selectionInteractionView.setAllOptionsItemInputType(selectionItemInputType)
 
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("explorationId")
-fun setExplorationId(
-  selectionInteractionView: SelectionInteractionView, explorationId: String
-) = selectionInteractionView.setExplorationId(explorationId)
+@BindingAdapter("entityId")
+fun setEntityId(
+  selectionInteractionView: SelectionInteractionView, entityId: String
+) = selectionInteractionView.setEntityId(entityId)

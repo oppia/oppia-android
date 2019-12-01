@@ -5,7 +5,6 @@ import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -22,28 +21,9 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     isAudioBarVisible.set(audioBarVisible)
   }
 
-  /**
-   * Returns whether there is currently a pending interaction that requires an additional user action to submit the
-   * answer.
-   */
-  fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
-  }
-
-  /** Returns whether there is currently a pending interaction that also acts like a navigation button. */
-  fun isMostRecentInteractionAutoNavigating(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
-  }
-
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
-  fun getPendingAnswer(): UserAnswer {
-    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
-  }
-
-  private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
-    // Search through all items to find the latest InteractionAnswerHandler which should be the pending one. In the
-    // future, it may be ideal to make this more robust by actually tracking the handler corresponding to the pending
-    // interaction.
-    return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
+  fun getPendingAnswer(statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer {
+    return statePlayerRecyclerViewAssembler.getPendingAnswerHandler(itemList)?.getPendingAnswer()
+      ?: UserAnswer.getDefaultInstance()
   }
 }
