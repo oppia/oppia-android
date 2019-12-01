@@ -9,6 +9,7 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
 
   /** Corresponds to the type of the view model. */
   enum class ViewType {
+    STATE_NAVIGATION_BUTTON, // TODO: remove
     CONTENT,
     FEEDBACK,
     PREVIOUS_NAVIGATION_BUTTON,

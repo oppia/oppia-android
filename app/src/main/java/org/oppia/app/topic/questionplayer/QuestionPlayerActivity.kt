@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
@@ -12,7 +13,7 @@ const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY = "QuestionPlayerA
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
 
 /** Activity for QuestionPlayer in train mode. */
-class QuestionPlayerActivity : InjectableAppCompatActivity(), StopExplorationInterface {
+class QuestionPlayerActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener {
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
@@ -27,6 +28,10 @@ class QuestionPlayerActivity : InjectableAppCompatActivity(), StopExplorationInt
   }
 
   override fun stopExploration() =  questionPlayerActivityPresenter.stopTrainingSession()
+
+  override fun onEditorAction(actionCode: Int) {
+    // TODO: implement
+  }
 
   private fun showStopExplorationDialogFragment() {
     val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)

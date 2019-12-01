@@ -27,6 +27,7 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
@@ -144,15 +145,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   ) = addInteraction(pendingItemList, interaction)
 
   private fun addInteractionForCompletedState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
+  ) = addInteraction(pendingItemList, interaction)
 
   private fun addInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false) {
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      "explorationId", interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+      "explorationId", interaction, fragment as InteractionAnswerReceiver, false // TODO: fix
     )
   }
 
@@ -162,7 +162,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   ) {
     // TODO: add support for displaying the previous answer, too.
     for (answerAndResponse in answersAndResponses) {
-      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
+      addInteractionForCompletedState(pendingItemList, interaction)
       addFeedbackItem(pendingItemList, answerAndResponse.feedback)
     }
   }
@@ -210,12 +210,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     pendingItemList += questionNavigationButtonViewModel
   }
 
-  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+  fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
     handleSubmitAnswer(answer)
   }
 
-  private fun handleSubmitAnswer(answer: InteractionObject) {
+  private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer))
   }
 

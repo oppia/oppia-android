@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver {
     return questionPlayerFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onAnswerReadyForSubmission(answer: InteractionObject) {
+  override fun onAnswerReadyForSubmission(answer: UserAnswer) {
     questionPlayerFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
 }
