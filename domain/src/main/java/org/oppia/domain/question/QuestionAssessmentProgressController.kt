@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.Question
+import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.domain.question.QuestionAssessmentProgress.TrainStage
@@ -117,9 +118,13 @@ class QuestionAssessmentProgressController @Inject constructor(
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentCard()
-            // Only push a new state if the assessment isn't completed.
             if (!progress.isAssessmentCompleted()) {
+              // Only push the next state if the assessment isn't completed.
               progress.stateDeck.pushState(progress.getNextState())
+            } else {
+              // Otherwise, push a synthetic state for the end of the session.
+              // TODO(BenHenning): Add tests for this case.
+              progress.stateDeck.pushState(State.getDefaultInstance())
             }
           }
         } finally {
@@ -226,13 +231,16 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    return EphemeralQuestion.newBuilder()
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
       .setEphemeralState(ephemeralState)
-      .setQuestion(questionsList[progress.getCurrentQuestionIndex()])
-      .setCurrentQuestionIndex(progress.getCurrentQuestionIndex())
+      .setCurrentQuestionIndex(currentQuestionIndex)
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())
-      .build()
+    if (currentQuestionIndex < questionsList.size) {
+      ephemeralQuestionBuilder.question = questionsList[currentQuestionIndex]
+    }
+    return ephemeralQuestionBuilder.build()
   }
 
   private fun initializeAssessment(questionsList: List<Question>) {

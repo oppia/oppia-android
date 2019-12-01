@@ -104,7 +104,8 @@ internal class QuestionAssessmentProgress {
   }
 
   private fun isTopStateTerminal(@Suppress("UNUSED_PARAMETER") state: State): Boolean {
-    return isAssessmentCompleted()
+    // There's a synthetic card at the end of the assessment to represent the terminal state.
+    return stateDeck.isCurrentStateTopOfDeck() && getCurrentQuestionIndex() == getTotalQuestionCount()
   }
 
   /** Different stages in which the progress controller can exist. */
