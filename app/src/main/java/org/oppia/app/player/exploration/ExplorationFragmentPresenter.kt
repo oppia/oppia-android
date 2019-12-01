@@ -37,4 +37,8 @@ class ExplorationFragmentPresenter @Inject constructor(
   private fun getStateFragment(): StateFragment? {
     return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
+
+  fun onKeyboardAction() {
+    getStateFragment()?.handleKeyboardAction()
+  }
 }

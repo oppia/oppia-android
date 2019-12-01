@@ -7,6 +7,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.UserAnswer
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
 
@@ -100,7 +101,7 @@ internal class StateDeck internal constructor(
    * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
    * terminal interaction).
    */
-  internal fun submitAnswer(userAnswer: InteractionObject, feedback: SubtitledHtml) {
+  internal fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
     check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
     currentDialogInteractions += AnswerAndResponse.newBuilder()
