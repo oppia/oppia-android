@@ -30,6 +30,11 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
+  /** Returns whether there is currently a pending interaction that also acts like a navigation button. */
+  fun isMostRecentInteractionAutoNavigating(itemList: List<StateItemViewModel>): Boolean {
+    return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
+  }
+
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
   fun getPendingAnswer(): UserAnswer {
     return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
