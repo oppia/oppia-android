@@ -184,9 +184,22 @@ message CompletedState {
   repeated AnswerAndResponse answer = 1;
 }
 
+// Corresponds to an answer that the user has submitted.
+message UserAnswer {
+  // The submitted answer.
+  InteractionObject answer = 1;
+  // A user-friendly textual representation of the answer.
+  oneof textual_answer {
+    // An HTML textual representation of the answer.
+    string html_answer = 2;
+    // A plaintext representation of the answer.
+    string plain_answer = 3;
+  }
+}
+
 message AnswerAndResponse {
   // A previous answer the learner submitted.
-  InteractionObject user_answer = 1;
+  UserAnswer user_answer = 1;
 
   // Oppia's response to the answer the learner submitted.
   SubtitledHtml feedback = 2;

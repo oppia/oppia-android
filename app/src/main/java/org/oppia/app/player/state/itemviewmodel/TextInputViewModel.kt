@@ -2,22 +2,24 @@ package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.domain.util.toAnswerString
 
-/** View model for text input interaction views. */
+/** [ViewModel] for the text input interaction. */
 class TextInputViewModel(
-  interaction: Interaction, existingAnswer: InteractionObject?, val isReadOnly: Boolean
+  interaction: Interaction
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
+  var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
-      interactionObjectBuilder.normalizedString = answerText.toString()
+      val answerTextString = answerText.toString()
+      userAnswerBuilder.answer = InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
+      userAnswerBuilder.plainAnswer = answerTextString
     }
-    return interactionObjectBuilder.build()
+    return userAnswerBuilder.build()
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {

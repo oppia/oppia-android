@@ -4,24 +4,27 @@ import android.content.Context
 import org.oppia.app.R
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.domain.util.toAnswerString
 
-/** View model corresponding to fraction interactions. */
+/** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
-  interaction: Interaction, existingAnswer: InteractionObject?, val isReadOnly: Boolean,
-  private val context: Context
+  interaction: Interaction, private val context: Context
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = existingAnswer?.toAnswerString() ?: ""
+  var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder = InteractionObject.newBuilder()
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
-      interactionObjectBuilder.fraction = StringToFractionParser().getFractionFromString(answerText.toString())
+      val answerTextString = answerText.toString()
+      userAnswerBuilder.answer = InteractionObject.newBuilder()
+        .setFraction(StringToFractionParser().getFractionFromString(answerTextString))
+        .build()
+      userAnswerBuilder.plainAnswer = answerTextString
     }
-    return interactionObjectBuilder.build()
+    return userAnswerBuilder.build()
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {

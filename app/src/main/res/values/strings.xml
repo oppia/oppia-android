@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
+  <string name="nav_header_title">Sean</string>
+  <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
+  <string name="nav_header_desc">Navigation header</string>
+  <string name="menu_home">Home</string>
+  <string name="menu_help">Help</string>
+  <string name="admin_settings">Admin Settings</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>
@@ -27,8 +33,8 @@
   <string name="next_state_description">Navigate to next state</string>
   <string name="state_submit_button">Submit</string>
   <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
-  <string name="topic_overview_see_more">See More</string>
   <string name="topic_download_text">(%s)</string>
   <string name="overview">Overview</string>
   <string name="play">Play</string>
@@ -66,6 +72,8 @@
   <string name="size_kb">%d KB</string>
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
+  <string name="correct">Correct!</string>
+  <string name="topic_prefix">Topic:</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter

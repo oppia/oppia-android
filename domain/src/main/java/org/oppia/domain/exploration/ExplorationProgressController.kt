@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
@@ -98,7 +98,7 @@ class ExplorationProgressController @Inject constructor(
    * [getCurrentState]. Also note that the returned [LiveData] will only have a single value and not be reused after
    * that point.
    */
-  fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnswerOutcome>> {
+  fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
     try {
       explorationProgressLock.withLock {
         check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -118,9 +118,9 @@ class ExplorationProgressController @Inject constructor(
         lateinit var answerOutcome: AnswerOutcome
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, answer)
+          val outcome = answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
           answerOutcome = explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
-          explorationProgress.stateDeck.submitAnswer(answer, answerOutcome.feedback)
+          explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
           // Follow the answer's outcome to another part of the graph if it's different.
           if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
             explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))

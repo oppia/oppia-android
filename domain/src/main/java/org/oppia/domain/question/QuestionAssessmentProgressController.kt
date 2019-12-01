@@ -6,6 +6,7 @@ import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Question
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.util.data.AsyncDataSubscriptionManager
@@ -95,7 +96,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * [getCurrentQuestion]. Also note that the returned [LiveData] will only have a single value and not be reused after
    * that point.
    */
-  fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
+  fun submitAnswer(answer: UserAnswer): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -115,7 +116,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, answer)
+          val outcome = answerClassificationController.classify(topPendingState.interaction, answer.answer)
           answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.

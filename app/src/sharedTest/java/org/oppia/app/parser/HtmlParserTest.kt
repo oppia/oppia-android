@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.text.Spannable
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -15,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.bumptech.glide.request.target.CustomTarget
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
@@ -63,14 +65,27 @@ class HtmlParserTest {
     HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
+  @Inject
+  @field:TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
     val intent = Intent(Intent.ACTION_PICK)
     launchedActivity = activityTestRule.launchActivity(intent)
+    DaggerHtmlParserTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+  
   private fun setUpTestApplicationComponent() {
     DaggerHtmlParserTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -113,9 +128,10 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
+  class FakeImageLoader : ImageLoader {
+    override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
+
+    }
   }
 
   @Qualifier
