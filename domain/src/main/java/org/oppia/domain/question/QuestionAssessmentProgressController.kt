@@ -138,34 +138,6 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Navigates to the previous question already answered. If the learner is currently on the first question, this method
-   * will throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
-   * navigate backward.
-   *
-   * @return a one-time [LiveData] indicating whether the movement to the previous question was successful, or a failure
-   *     if question navigation was attempted at an invalid time (such as when viewing the first question). It's
-   *     recommended that calling code only listen to this result for failures, and instead rely on [getCurrentQuestion]
-   *     for observing a successful transition to another state.
-   */
-  fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
-    try {
-      progressLock.withLock {
-        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
-          "Cannot navigate to a previous question if a training session has not begun."
-        }
-        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
-          "Cannot navigate to a previous question if an answer submission is pending."
-        }
-        progress.stateDeck.navigateToPreviousState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
-      }
-      return MutableLiveData(AsyncResult.success<Any?>(null))
-    } catch (e: Exception) {
-      return MutableLiveData(AsyncResult.failed(e))
-    }
-  }
-
-  /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
    * reported by [getCurrentQuestion] is a completed question. Calling code is responsible for ensuring this method is
    * only called when it's possible to navigate forward.
@@ -203,8 +175,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Returns a [LiveData] monitoring the current [EphemeralQuestion] the learner is currently viewing. If this state
    * corresponds to a a terminal state, then the learner has completed the training session. Note that
-   * [moveToPreviousQuestion] and [moveToNextQuestion] will automatically update observers of this live data when the
-   * next question is navigated to.
+   * [moveToNextQuestion] will automatically update observers of this live data when the next question is navigated to.
    *
    * This [LiveData] may switch from a completed to a pending result during transient operations like submitting an
    * answer via [submitAnswer]. Calling code should be made resilient to this by caching the current question object to
@@ -212,10 +183,9 @@ class QuestionAssessmentProgressController @Inject constructor(
    * across configuration changes if needed since it cannot rely on this [LiveData] for immediate UI reconstitution
    * after configuration changes.
    *
-   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion] and
-   * [moveToPreviousQuestion], or the question training controller if another question session begins. UI code can be
-   * confident only calls from the UI layer will trigger changes here to ensure atomicity between receiving and making
-   * question state changes.
+   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion], or the
+   * question training controller if another question session begins. UI code can be confident only calls from the UI
+   * layer will trigger changes here to ensure atomicity between receiving and making question state changes.
    *
    * This method is safe to be called before a training session has started. If there is no ongoing session, it should
    * return a pending state.
