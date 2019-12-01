@@ -10,6 +10,7 @@ import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -18,9 +19,9 @@ import javax.inject.Inject
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
   private val context: Context,
-  @DefaultGcsPrefix private val gcsPrefix: String,
-  @DefaultGcsResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+  private val gcsPrefix: String,
+  private val gcsResourceName: String,
+  private val imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
@@ -36,10 +37,7 @@ class UrlImageParser private constructor(
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    imageLoader.load(
-      gcsPrefix + gcsResource + imageUrl,
-      target
-    )
+    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
     return urlDrawable
   }
 
@@ -86,12 +84,12 @@ class UrlImageParser private constructor(
   class Factory @Inject constructor(
     private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
-    @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     private val imageLoader: ImageLoader
   ) {
     fun create(
       htmlContentTextView: TextView,
+      gcsResourceName: String,
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean
@@ -99,7 +97,7 @@ class UrlImageParser private constructor(
       return UrlImageParser(
         context,
         gcsPrefix,
-        gcsResource,
+        gcsResourceName,
         imageDownloadUrlTemplate,
         htmlContentTextView,
         entityType,

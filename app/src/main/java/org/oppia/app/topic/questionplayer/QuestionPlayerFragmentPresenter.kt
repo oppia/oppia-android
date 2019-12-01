@@ -25,7 +25,6 @@ import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -43,6 +42,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.domain.question.QuestionTrainingController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.QuestionResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -58,7 +58,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionTrainingController: QuestionTrainingController,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val logger: Logger,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  @QuestionResourceBucketName private val resourceBucketName: String
 ) : QuestionNavigationButtonListener {
   private val questionViewModel by lazy {
     getQuestionPlayerViewModel()
@@ -67,6 +68,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     questionAssessmentProgressController.getCurrentQuestion()
   }
   private lateinit var questionId: String
+  private lateinit var skillId: String
   private var firstTry = true
   private var numCorrect = 0
 
@@ -98,6 +100,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
     val ephemeralQuestion = result.getOrThrow()
     questionId = ephemeralQuestion.question.questionId
+    // TODO(#497): Update this to properly link to question assets.
+    skillId = ephemeralQuestion.question.linkedSkillIdsList.first()
     processProgress(ephemeralQuestion.currentQuestionIndex + 1, ephemeralQuestion.totalQuestionCount)
     processEphemeralState(ephemeralQuestion.ephemeralState)
   }
@@ -299,7 +303,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create("question", questionId, imageCenterAlign = true).parseOppiaHtml(
+          binding.htmlContent = htmlParserFactory.create(
+            resourceBucketName, "skill", skillId, imageCenterAlign = true
+          ).parseOppiaHtml(
             (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
           )
         }
@@ -311,7 +317,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create("question", questionId, imageCenterAlign = true).parseOppiaHtml(
+          binding.htmlContent = htmlParserFactory.create(
+            resourceBucketName, "skill", skillId, imageCenterAlign = true
+          ).parseOppiaHtml(
             (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
           )
         }

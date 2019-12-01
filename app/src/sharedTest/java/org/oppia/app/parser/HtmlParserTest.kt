@@ -35,6 +35,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -59,6 +60,9 @@ class HtmlParserTest {
   private lateinit var launchedActivity: Activity
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
 
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
@@ -96,7 +100,9 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
           "alt-with-value=\"\u0026amp;quot;Pineapple" +
@@ -114,7 +120,9 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
           "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
@@ -180,7 +188,7 @@ class HtmlParserTest {
     }
 
     @Provides
-    @DefaultGcsResource
+    @DefaultResourceBucketName
     @Singleton
     fun provideDefaultGcsResource(): String {
       return "oppiaserver-resources/"

@@ -10,14 +10,14 @@ import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResource
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import javax.inject.Inject
 
 /** [ViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
-  @DefaultResource private val gcsResource: String
+  @DefaultResourceBucketName private val gcsResource: String
 ) : ViewModel() {
 
   private lateinit var explorationId: String

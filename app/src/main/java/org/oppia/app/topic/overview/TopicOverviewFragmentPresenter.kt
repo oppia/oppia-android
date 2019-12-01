@@ -15,6 +15,7 @@ import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -26,12 +27,13 @@ class TopicOverviewFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<TopicOverviewViewModel>,
   private val logger: Logger,
   private val topicController: TopicController,
-  private val htmlParserFactory: HtmlParser.Factory
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private val topicOverviewViewModel = getTopicOverviewViewModel()
   private lateinit var topicId: String
   private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory.create(/* entityType= */"topic", topicId, /* imageCenterAlign= */ true)
+    htmlParserFactory.create(resourceBucketName, /* entityType= */"topic", topicId, /* imageCenterAlign= */ true)
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {

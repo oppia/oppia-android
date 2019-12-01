@@ -75,6 +75,7 @@ import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
@@ -96,7 +97,8 @@ class StateFragmentPresenter @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  @DefaultResourceBucketName private val resourceBucketName: String
 ) : PreviousResponsesHeaderClickListener {
 
   private var showCellularDataDialog = true
@@ -198,7 +200,9 @@ class StateFragmentPresenter @Inject constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+            htmlParserFactory.create(
+              resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ true
+            ).parseOppiaHtml(
               (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
             )
         }
@@ -211,7 +215,9 @@ class StateFragmentPresenter @Inject constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true).parseOppiaHtml(
+            htmlParserFactory.create(
+              resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ true
+            ).parseOppiaHtml(
               (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
             )
         }
@@ -258,7 +264,9 @@ class StateFragmentPresenter @Inject constructor(
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = false)
+              val htmlParser = htmlParserFactory.create(
+                resourceBucketName, entityType, explorationId, imageCenterAlign = false
+              )
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
               )

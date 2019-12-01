@@ -12,6 +12,7 @@ import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -37,6 +38,10 @@ class SelectionInteractionView @JvmOverloads constructor(
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
+
   private lateinit var explorationId: String
 
   override fun onAttachedToWindow() {
@@ -72,7 +77,9 @@ class SelectionInteractionView @JvmOverloads constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
             binding.htmlContent =
-              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+              htmlParserFactory.create(
+                resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ false
+              ).parseOppiaHtml(
                 viewModel.htmlContent, binding.itemSelectionContentsTextView
               )
             binding.viewModel = viewModel
@@ -90,7 +97,9 @@ class SelectionInteractionView @JvmOverloads constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
             binding.htmlContent =
-              htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
+              htmlParserFactory.create(
+                resourceBucketName, entityType, explorationId, /* imageCenterAlign= */ false
+              ).parseOppiaHtml(
                 viewModel.htmlContent, binding.multipleChoiceContentTextView
               )
             binding.viewModel = viewModel
