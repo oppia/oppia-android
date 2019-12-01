@@ -15,6 +15,7 @@ import org.oppia.app.databinding.QuestionPlayerFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
+import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
@@ -40,10 +41,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion()
   }
+  private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
@@ -106,17 +108,25 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val ephemeralQuestion = result.getOrThrow()
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
-    processProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
+    updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
+    updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(ephemeralQuestion.ephemeralState, skillId)
   }
 
-  private fun processProgress(currentQuestionIndex: Int, questionCount: Int) {
+  private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
     questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
     questionViewModel.questionCount.set(questionCount)
     questionViewModel.progressPercentage.set((((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt())
     questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
+  }
+
+  private fun updateEndSessionMessage(ephemeralState: EphemeralState) {
+    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE) {
+      binding.endSessionHeaderTextView.visibility = View.VISIBLE
+      binding.endSessionBodyTextView.visibility = View.VISIBLE
+    }
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
