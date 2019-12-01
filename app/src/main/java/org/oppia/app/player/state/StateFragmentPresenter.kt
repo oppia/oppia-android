@@ -68,6 +68,7 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.app.player.stopexploration.StopExplorationInterface
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularDialogController
@@ -460,8 +461,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
-    explorationDataController.stopPlayingExploration()
-    activity.finish()
+    (activity as StopExplorationInterface).stopExploration()
   }
 
   fun onSubmitButtonClicked() {
@@ -470,8 +470,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleKeyboardAction() {
-      hideKeyboard()
-      handleSubmitAnswer(viewModel.getPendingAnswer())
+    hideKeyboard()
+    handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   fun onContinueButtonClicked() {
