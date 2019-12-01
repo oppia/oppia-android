@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
-import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Question
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
@@ -41,12 +40,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val progressLock = ReentrantLock()
-  private var inProgressQuestionsListDataProvider: DataProvider<List<Question>> = createEmptyQuestionsListDataProvider()
-  private val currentQuestionDataSource: DataProvider<EphemeralQuestion> by lazy {
-    dataProviders.transformAsync(
-      CURRENT_QUESTION_DATA_PROVIDER_ID, inProgressQuestionsListDataProvider, this::retrieveCurrentQuestionStateAsync
-    )
-  }
+  private var currentQuestionDataProvider: DataProvider<EphemeralQuestion> =
+    createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
   internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
     progressLock.withLock {
@@ -55,7 +50,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
 
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-      inProgressQuestionsListDataProvider = questionsListDataProvider
+      currentQuestionDataProvider = createCurrentQuestionDataProvider(questionsListDataProvider)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
     }
   }
@@ -66,7 +61,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         "Cannot stop a new training session which wasn't started."
       }
       progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
-      inProgressQuestionsListDataProvider = createEmptyQuestionsListDataProvider()
+      currentQuestionDataProvider = createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
     }
   }
 
@@ -226,7 +221,17 @@ class QuestionAssessmentProgressController @Inject constructor(
    * return a pending state.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
-    return dataProviders.convertToLiveData(currentQuestionDataSource)
+    return progressLock.withLock {
+      dataProviders.convertToLiveData(currentQuestionDataProvider)
+    }
+  }
+
+  private fun createCurrentQuestionDataProvider(
+    questionsListDataProvider: DataProvider<List<Question>>
+  ): DataProvider<EphemeralQuestion> {
+    return dataProviders.transformAsync(
+      CURRENT_QUESTION_DATA_PROVIDER_ID, questionsListDataProvider, this::retrieveCurrentQuestionStateAsync
+    )
   }
 
   @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
