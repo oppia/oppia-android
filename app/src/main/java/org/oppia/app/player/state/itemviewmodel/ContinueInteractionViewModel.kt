@@ -23,6 +23,8 @@ class ContinueInteractionViewModel(
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
+  override fun isAutoNavigating(): Boolean = true
+
   override fun getPendingAnswer(): UserAnswer {
     return UserAnswer.newBuilder()
       .setAnswer(InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER))

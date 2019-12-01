@@ -600,8 +600,10 @@ class StateFragmentPresenter @Inject constructor(
         hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as SubmitNavigationButtonListener
       )
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
-      hasPreviousState -> PreviousButtonViewModel(fragment as PreviousNavigationButtonListener)
-      // Otherwise, there's no navigation button that should be shown.
+      hasPreviousState && !viewModel.isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
+        fragment as PreviousNavigationButtonListener
+      )
+      // Otherwise, there's no navigation button that should be shown since the current interaction handles this.
       else -> null
     }?.let(pendingItemList::add)
   }
