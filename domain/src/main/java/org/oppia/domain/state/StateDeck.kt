@@ -23,11 +23,6 @@ internal class StateDeck internal constructor(
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
   private var stateIndex: Int = 0
 
-  /** Returns the number of previous states. */
-  internal fun getPreviousStateCount(): Int {
-    return previousStates.size
-  }
-
   /** Resets this deck to a new, specified initial [State]. */
   internal fun resetDeck(initialState: State) {
     pendingTopState = initialState
@@ -58,9 +53,10 @@ internal class StateDeck internal constructor(
    * Returns the [State] corresponding to the latest card in the deck, regardless of whichever State the learner is
    * currently viewing.
    */
-  internal fun getPendingTopState(): State {
-    return pendingTopState
-  }
+  internal fun getPendingTopState(): State = pendingTopState
+
+  /** Returns the index of the current selected card of the deck. */
+  internal fun getTopStateIndex(): Int = stateIndex
 
   /** Returns the current [EphemeralState] the learner is viewing. */
   internal fun getCurrentEphemeralState(): EphemeralState {
@@ -84,7 +80,8 @@ internal class StateDeck internal constructor(
     check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
     check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
-    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+    // TODO(BenHenning): Reconcile this check.
+//    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new state
     // doesn't become fully realized until navigated to.
     previousStates += EphemeralState.newBuilder()

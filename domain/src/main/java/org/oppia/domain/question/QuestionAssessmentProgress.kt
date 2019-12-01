@@ -85,7 +85,7 @@ internal class QuestionAssessmentProgress {
 
   /** Returns the index of the current question being played. */
   internal fun getCurrentQuestionIndex(): Int {
-    return stateDeck.getPreviousStateCount()
+    return stateDeck.getTopStateIndex()
   }
 
   /** Returns the next [State] that should be played. */
