@@ -2,14 +2,20 @@ package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.viewmodel.ObservableViewModel
 
-/** The root [ViewModel] for all individual items that may be displayed in the state fragment recycler view. */
+/**
+ * The root [ObservableViewModel] for all individual items that may be displayed in the state fragment recycler view.
+ */
 abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel() {
 
   /** Corresponds to the type of the view model. */
   enum class ViewType {
     CONTENT,
     FEEDBACK,
-    STATE_NAVIGATION_BUTTON,
+    PREVIOUS_NAVIGATION_BUTTON,
+    NEXT_NAVIGATION_BUTTON,
+    SUBMIT_ANSWER_BUTTON,
+    CONTINUE_NAVIGATION_BUTTON,
+    RETURN_TO_TOPIC_NAVIGATION_BUTTON,
     CONTINUE_INTERACTION,
     SELECTION_INTERACTION,
     FRACTION_INPUT_INTERACTION,

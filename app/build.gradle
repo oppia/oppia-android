@@ -113,6 +113,8 @@ dependencies {
   // TODO (#59): Remove this once Bazel is introduced
   api project(':data')
   implementation project(":model")
+  testImplementation project(":model")
+  androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
 }
