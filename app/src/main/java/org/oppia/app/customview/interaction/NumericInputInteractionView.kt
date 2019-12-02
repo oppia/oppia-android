@@ -27,16 +27,20 @@ class NumericInputInteractionView @JvmOverloads constructor(
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
+  private val hintText: String
 
   init {
     onFocusChangeListener = this
+    hintText = (hint ?: "").toString()
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
+    hint = ""
     typeface = Typeface.DEFAULT
     showSoftKeyboard(v, context)
   } else {
+    hint = hintText
     if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
     hideSoftKeyboard(v, context)
   }
