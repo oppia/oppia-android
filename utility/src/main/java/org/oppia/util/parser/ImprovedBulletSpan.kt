@@ -20,8 +20,8 @@ class ImprovedBulletSpan(
 ) : LeadingMarginSpan {
 
   companion object {
-    private const val STANDARD_BULLET_RADIUS = 6
-    private const val STANDARD_GAP_WIDTH = 6
+    private const val STANDARD_BULLET_RADIUS = 8
+    private const val STANDARD_GAP_WIDTH = 32
     private const val STANDARD_COLOR = 0
   }
 
