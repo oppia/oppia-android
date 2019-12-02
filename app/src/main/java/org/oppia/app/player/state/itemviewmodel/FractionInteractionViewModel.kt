@@ -37,8 +37,8 @@ class FractionInteractionViewModel(
 
   override fun getPendingAnswerError(category: AnswerErrorCategory): String? {
     if (category == AnswerErrorCategory.REAL_TIME) {
-      return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrors(answerText.toString()) != FractionParsingError.VALID)
-        StringToFractionParser().checkForErrors(answerText.toString()).getErrorMessageFromStringRes(context)
+      return if (answerText.isNotEmpty() && StringToFractionParser().getRealTimeError(answerText.toString()) != FractionParsingError.VALID)
+        StringToFractionParser().getRealTimeError(answerText.toString()).getErrorMessageFromStringRes(context)
       else
         null
     } else
@@ -46,13 +46,13 @@ class FractionInteractionViewModel(
   }
 
   fun getPendingAnswerErrorOnSubmit(): String? {
-    return if (answerText.isNotEmpty() && StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()) != FractionParsingError.VALID) {
+    return if (answerText.isNotEmpty() && StringToFractionParser().getSubmitTimeError(answerText.toString()) != FractionParsingError.VALID) {
       errorMessage.set(
-        StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()).getErrorMessageFromStringRes(
+        StringToFractionParser().getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
           context
         )
       )
-      StringToFractionParser().checkForErrorsOnSubmit(answerText.toString()).getErrorMessageFromStringRes(context)
+      StringToFractionParser().getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(context)
     } else
       null
   }

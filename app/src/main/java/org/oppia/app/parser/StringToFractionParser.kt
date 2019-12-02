@@ -12,32 +12,9 @@ import java.util.regex.Pattern
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
-  private val partialWholeNumberOnlyRegex = """^-? ?$""".toRegex()
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
-  private val partialFractionOnlyRegex = """^-? ?(\d+) ?/ ?$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
-  private val partialMixedNumberRegexFirst = """^-? ?(\d+) (\d+) ?$""".toRegex()
-  private val partialMixedNumberRegexSecond = """^-? ?(\d+) (\d+) ?/ ?$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
-  /**
-   * This method helps to validate the inputText and return [FractionParsingError]
-   * This called on text change.
-   * @param inputText is the user input in the [FractionInputInteractionView]
-   * @return enum [FractionParsingError]
-   */
-  fun checkForErrors(inputText: String): FractionParsingError {
-    val rawInput: String = inputText.normalizeWhitespace()
-    if (!rawInput.matches(invalidCharsRegex))
-      return FractionParsingError.INVALID_CHARS
-    if (wholeNumberOnlyRegex.matchEntire(rawInput) == null && partialWholeNumberOnlyRegex.matchEntire(rawInput) == null &&
-      fractionOnlyRegex.matchEntire(rawInput) == null && partialFractionOnlyRegex.matchEntire(rawInput) == null &&
-      mixedNumberRegex.matchEntire(rawInput) == null && partialMixedNumberRegexFirst.matchEntire(rawInput) == null &&
-      partialMixedNumberRegexSecond.matchEntire(rawInput) == null
-    ) {
-      return FractionParsingError.INVALID_FORMAT
-    }
-    return FractionParsingError.VALID
-  }
 
   /**
    * This method helps to validate the inputText and return [FractionParsingError]
@@ -45,33 +22,31 @@ class StringToFractionParser {
    * @param inputText is the user input in the [FractionInputInteractionView]
    * @return enum [FractionParsingError]
    */
-  fun checkForErrorsOnSubmit(inputText: String): FractionParsingError {
-    var denominator = 1
-    var rawInput: String = inputText.normalizeWhitespace()
-    if (!rawInput.matches(invalidCharsRegex))
-      return FractionParsingError.INVALID_CHARS
-    if (mixedNumberRegex.matchEntire(rawInput) == null && fractionOnlyRegex.matchEntire(rawInput) == null &&
-      wholeNumberOnlyRegex.matchEntire(rawInput) == null
-    ) {
-      return FractionParsingError.INVALID_FORMAT
+  fun getSubmitTimeError(text: String): FractionParsingError {
+    // No need to check for real-time errors since the following logically include them.
+    val fraction = parseFraction(text)
+    return when {
+      fraction == null -> FractionParsingError.INVALID_FORMAT
+      fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
+      else -> FractionParsingError.VALID
     }
-    rawInput = rawInput.trim();
-    if (rawInput.startsWith("-")) {
-      // Remove the negative char from the string.
-      rawInput = rawInput.substring(1).trim()
+  }
+
+  /**
+   * This method helps to validate the inputText and return [FractionParsingError]
+   * This called on text change.
+   * @param inputText is the user input in the [FractionInputInteractionView]
+   * @return enum [FractionParsingError]
+   */
+  fun getRealTimeError(text: String): FractionParsingError {
+    val normalized = text.normalizeWhitespace()
+    return when {
+      !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
+      normalized.startsWith("/") -> FractionParsingError.INVALID_FORMAT
+      normalized.count { it == '/' } > 1 -> FractionParsingError.INVALID_FORMAT
+      normalized.indexOf('-') > 0 -> FractionParsingError.INVALID_FORMAT
+      else -> FractionParsingError.VALID
     }
-    // Filter result from split to remove empty strings.
-    val numbers = Pattern.compile("[\\s|/]+").split(rawInput)
-    when {
-      numbers.size == 1 -> {
-      }
-      numbers.size == 2 -> denominator = parseInt(numbers[1])
-      else -> denominator = parseInt(numbers[2])
-    }
-    if (denominator == 0) {
-      return FractionParsingError.DIVISION_BY_ZERO
-    }
-    return FractionParsingError.VALID
   }
 
   fun getFractionFromString(text: String): Fraction {
