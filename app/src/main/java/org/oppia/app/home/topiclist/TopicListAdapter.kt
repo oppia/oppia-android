@@ -1,7 +1,6 @@
 package org.oppia.app.home.topiclist
 
-import android.content.res.Resources
-import android.util.TypedValue
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.AllTopicsBinding
 import org.oppia.app.databinding.PromotedStoryListBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
@@ -140,12 +140,16 @@ class TopicListAdapter(
         adapter = promotedStoryAdapter
       }
 
+      /**
+       * The PagerSnapHelper is used to snap between items rather than smooth scrolling,
+       * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
+       */
       val snapHelper = PagerSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
-      val padding48 = dipToPixels(48)
-      val padding16 = dipToPixels(16)
+      val padding48 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
+      val padding16 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_16)
       if (promotedStoryList.size > 1) {
         binding.promotedStoryListRecyclerView.setPadding(padding16, 0, padding48, 0)
       } else {
@@ -163,23 +167,14 @@ class TopicListAdapter(
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
       val param = binding.topicContainer.layoutParams as GridLayoutManager.LayoutParams
-      val margin32 = dipToPixels(32)
-      val margin8 = dipToPixels(8)
+      val margin32 = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_32)
+      val margin8 = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
       if (position % 2 == 0) {
         param.setMargins(margin8, margin8, margin32, margin8)
-
       } else {
         param.setMargins(margin32, margin8, margin8, margin8)
       }
       binding.topicContainer.layoutParams = param
     }
-  }
-
-  fun dipToPixels(dipValue: Int): Int {
-    return TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      dipValue.toFloat(),
-      Resources.getSystem().displayMetrics
-    ).toInt()
   }
 }

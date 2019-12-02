@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.PromotedStoryCardBinding
 
+/** Adapter to bind promoted stories to [RecyclerView] inside [HomeFragment] to create carousel. */
 class PromotedStoryListAdapter(private val itemList: MutableList<PromotedStoryViewModel>) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

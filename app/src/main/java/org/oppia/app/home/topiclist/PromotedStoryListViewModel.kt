@@ -1,6 +1,5 @@
 package org.oppia.app.home.topiclist
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
@@ -11,7 +10,7 @@ import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 class PromotedStoryListViewModel(private val activity: AppCompatActivity) : HomeItemViewModel(),
   RouteToContinuePlayingListener {
 
-  fun clickOnViewAll(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnViewAll() {
     routeToContinuePlaying()
   }
 
