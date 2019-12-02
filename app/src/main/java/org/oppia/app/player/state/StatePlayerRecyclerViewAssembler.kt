@@ -11,13 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
@@ -66,8 +60,8 @@ import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /**
@@ -95,7 +89,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment, private val congratulationsTextView: TextView?,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
@@ -109,8 +103,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
-
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
@@ -291,7 +283,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    createLifecycleSafeTimer(2000).observe(fragment, Observer {
+    lifecycleSafeTimerFactory.createTimer(2000).observe(fragment, Observer {
       textView.clearAnimation()
       textView.visibility = View.INVISIBLE
     })
@@ -356,20 +348,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /**
-   * Returns a new [LiveData] that will be triggered exactly once after the specified timeout in milliseconds. This
-   * should be used instead of Android's Handler class because this guarantees that observers will not be triggered if
-   * its lifecycle is no longer valid, but will trigger upon the lifecycle becoming active again.
-   */
-  private fun createLifecycleSafeTimer(timeoutMs: Long): LiveData<Any?> {
-    val liveData = MutableLiveData<Any?>()
-    backgroundCoroutineScope.launch {
-      delay(timeoutMs)
-      liveData.postValue(null)
-    }
-    return liveData
-  }
-
-  /**
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the
    * answer.
    */
@@ -397,7 +375,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
     private val entityType: String, private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
-    private val backgroundCoroutineDispatcher: CoroutineDispatcher
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(StateItemViewModel::viewType)
     /** Tracks features individually enabled for the assembler. No features are enabled by default. */
@@ -598,7 +576,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
         adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView, interactionViewModelFactoryMap,
-        backgroundCoroutineDispatcher
+        lifecycleSafeTimerFactory
       )
     }
 
@@ -606,13 +584,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     class Factory @Inject constructor(
       private val htmlParserFactory: HtmlParser.Factory, private val fragment: Fragment,
       private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+      private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
     ) {
       /** Returns a new [Builder] for the specified GCS resource bucket information for loading assets. */
       fun create(resourceBucketName: String, entityType: String): Builder {
         return Builder(
           htmlParserFactory, resourceBucketName, entityType, fragment, interactionViewModelFactoryMap,
-          backgroundCoroutineDispatcher
+          lifecycleSafeTimerFactory
         )
       }
     }
