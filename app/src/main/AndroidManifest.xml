@@ -39,17 +39,7 @@
     <activity
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme"
-      android:screenOrientation="portrait"/>
-    <activity
-      android:name=".story.StoryActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
-    <activity android:name=".story.testing.StoryFragmentTestActivity" />
-    <activity android:name=".testing.BindableAdapterTestActivity" />
-    <activity android:name=".testing.ContentCardTestActivity" />
-    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
-    <activity android:name=".testing.HtmlParserTestActivity" />
-    <activity android:name=".testing.InputInteractionViewTestActivity" >
+      android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -59,6 +49,16 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
+    <activity
+      android:name=".story.StoryActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait" />
+    <activity android:name=".story.testing.StoryFragmentTestActivity" />
+    <activity android:name=".testing.BindableAdapterTestActivity" />
+    <activity android:name=".testing.ContentCardTestActivity" />
+    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
