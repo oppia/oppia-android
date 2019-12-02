@@ -18,6 +18,7 @@ import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
+import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.question.QuestionAssessmentProgressController
@@ -75,6 +76,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun onNextButtonClicked() = moveToNextState()
 
+  fun onReplayButtonClicked() {
+    hideKeyboard()
+    (activity as RestartPlayingSessionListener).restartSession()
+  }
+
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     (activity as StopStatePlayingSessionListener).stopSession()
@@ -123,10 +129,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      binding.endSessionHeaderTextView.visibility = View.VISIBLE
-      binding.endSessionBodyTextView.visibility = View.VISIBLE
-    }
+    val isStateTerminal = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val endSessionViewsVisibility = if (isStateTerminal) View.VISIBLE else View.GONE
+    binding.endSessionHeaderTextView.visibility = endSessionViewsVisibility
+    binding.endSessionBodyTextView.visibility = endSessionViewsVisibility
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
@@ -166,14 +172,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
-    // TODO(BenHenning): Add support for replay button & functionality, and for early exit detection & message. These
-    //  both require changes in the training progress controller & ephemeral question data model.
+    // TODO(BenHenning): Add support early exit detection & message, which requires changes in the training progress
+    //  controller & possibly the ephemeral question data model.
     return builder.addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport()
       .addPastAnswersSupport()
       .addWrongAnswerCollapsingSupport()
       .addForwardNavigationSupport()
+      .addReplayButtonSupport()
       .addReturnToTopicSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
       .build()

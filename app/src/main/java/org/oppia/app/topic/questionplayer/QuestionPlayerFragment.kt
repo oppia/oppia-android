@@ -11,14 +11,16 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
-  ContinueNavigationButtonListener, NextNavigationButtonListener, ReturnToTopicNavigationButtonListener,
-  SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+  ContinueNavigationButtonListener, NextNavigationButtonListener, ReplayButtonListener,
+  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
@@ -38,6 +40,8 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
   override fun onContinueButtonClicked() = questionPlayerFragmentPresenter.onContinueButtonClicked()
 
   override fun onNextButtonClicked() = questionPlayerFragmentPresenter.onNextButtonClicked()
+
+  override fun onReplayButtonClicked() = questionPlayerFragmentPresenter.onReplayButtonClicked()
 
   override fun onReturnToTopicButtonClicked() = questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
 

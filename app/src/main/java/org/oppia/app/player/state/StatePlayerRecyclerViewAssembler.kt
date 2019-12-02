@@ -27,6 +27,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.SubmitButtonItemBinding
@@ -50,6 +51,7 @@ import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
+import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
@@ -60,6 +62,7 @@ import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
@@ -85,6 +88,7 @@ import javax.inject.Inject
  * - [PreviousNavigationButtonListener] if previous state navigation is enabled
  * - [ContinueNavigationButtonListener] if next state navigation is enabled
  * - [NextNavigationButtonListener] if next state navigation is enabled
+ * - [ReplayButtonListener] if replay support is enabled
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
@@ -313,28 +317,42 @@ class StatePlayerRecyclerViewAssembler private constructor(
     stateIsTerminal: Boolean) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
-      hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> ContinueNavigationButtonViewModel(
-        hasPreviousButton, previousNavigationButtonListener, fragment as ContinueNavigationButtonListener
-      )
-      canContinueToNextState && playerFeatureSet.forwardNavigation -> NextButtonViewModel(
-        hasPreviousButton, previousNavigationButtonListener, fragment as NextNavigationButtonListener
-      )
-      stateIsTerminal && playerFeatureSet.returnToTopicNavigation -> ReturnToTopicButtonViewModel(
-        hasPreviousButton, previousNavigationButtonListener,
-        fragment as ReturnToTopicNavigationButtonListener
-      )
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.forwardNavigation ->
-        SubmitButtonViewModel(
+      hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
+        pendingItemList += ContinueNavigationButtonViewModel(
+          hasPreviousButton, previousNavigationButtonListener, fragment as ContinueNavigationButtonListener
+        )
+      }
+      canContinueToNextState && playerFeatureSet.forwardNavigation -> {
+        pendingItemList += NextButtonViewModel(
+          hasPreviousButton, previousNavigationButtonListener, fragment as NextNavigationButtonListener
+        )
+      }
+      stateIsTerminal -> {
+        if (playerFeatureSet.replaySupport) {
+          pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+        }
+        if (playerFeatureSet.returnToTopicNavigation) {
+          pendingItemList += ReturnToTopicButtonViewModel(
+            hasPreviousButton, previousNavigationButtonListener,
+            fragment as ReturnToTopicNavigationButtonListener
+          )
+        }
+      }
+      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.forwardNavigation -> {
+        pendingItemList += SubmitButtonViewModel(
           hasPreviousButton, previousNavigationButtonListener, fragment as SubmitNavigationButtonListener
         )
+      }
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
-      hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
-        previousNavigationButtonListener
-      )
+      hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
+        pendingItemList += PreviousButtonViewModel(
+          previousNavigationButtonListener
+        )
+      }
+
       // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
       // navigation in this context is disabled.
-      else -> null
-    }?.let(pendingItemList::add)
+    }
   }
 
   /**
@@ -544,6 +562,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Adds support for displaying a button that allows the learner to replay the lesson experience. */
+    fun addReplayButtonSupport(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.REPLAY_NAVIGATION_BUTTON,
+        inflateDataBinding = ReplayButtonItemBinding::inflate,
+        setViewModel = ReplayButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as ReplayButtonViewModel }
+      )
+      featureSets += PlayerFeatureSet(replaySupport = true)
+      return this
+    }
+
     /** Adds support for displaying a 'return to topic' button at the end of the lesson experience. */
     fun addReturnToTopicSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
@@ -597,6 +627,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val wrongAnswerCollapsing: Boolean = false,
     val backwardNavigation: Boolean = false,
     val forwardNavigation: Boolean = false,
+    val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
     val showCongratulationsOnCorrectAnswer: Boolean = false
   ) {
@@ -610,6 +641,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         wrongAnswerCollapsing = wrongAnswerCollapsing || other.wrongAnswerCollapsing,
         backwardNavigation = backwardNavigation || other.backwardNavigation,
         forwardNavigation = forwardNavigation || other.forwardNavigation,
+        replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
             || other.showCongratulationsOnCorrectAnswer
