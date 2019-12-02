@@ -95,7 +95,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(questionViewModel.itemList)
-    recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
@@ -119,8 +118,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 
-    questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(ephemeralQuestion.ephemeralState, skillId)
+    recyclerViewAssembler.compute(ephemeralQuestion.ephemeralState, skillId, questionViewModel.itemList)
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

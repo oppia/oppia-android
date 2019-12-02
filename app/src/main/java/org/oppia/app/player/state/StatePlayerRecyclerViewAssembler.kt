@@ -11,12 +11,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.LoadingDotsItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
@@ -28,6 +31,7 @@ import org.oppia.app.databinding.SubmitButtonItemBinding
 import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
+import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.SubtitledHtml
@@ -41,6 +45,7 @@ import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewMode
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
+import org.oppia.app.player.state.itemviewmodel.LoadingDotsViewModel
 import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
@@ -61,6 +66,8 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.utility.LifecycleSafeTimerFactory
+import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.util.data.AsyncResult
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -89,7 +96,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment, private val congratulationsTextView: TextView?,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val explorationProgressController: ExplorationProgressController
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
@@ -98,11 +106,22 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
+
   /**
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally not retained upon
    * configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
+
+  /** The most recent pending list of item view models to display. */
+  private val pendingItemList = mutableListOf<StateItemViewModel>()
+
+  private var isSubmitAnswerAnimationPlaying = false
+  private var pushedItemListVersion: Int = 0
+  private var updatedItemListVersion: Int = 0
+
+  /** The current pending interaction view model, or null if none (such as between or after answer submission). */
+  private var pendingInteractionViewModel: StateItemViewModel? = null
 
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
@@ -120,12 +139,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the configuration of this
    * assembler, as well as the GCS entity ID that should be associated with rich-text rendering for this state.
+   *
+   * Note that this method will change the input observable list exactly once, but it may be in the future due to
+   * animation transitions. Subsequent calls to this method will overwrite any pending loading interstitial states.
    */
-  fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
+  fun compute(ephemeralState: EphemeralState, gcsEntityId: String, itemList: ObservableList<StateItemViewModel>) {
     val hasPreviousState = ephemeralState.hasPreviousState
 
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
-    val pendingItemList = mutableListOf<StateItemViewModel>()
+    pendingItemList.clear()
     if (playerFeatureSet.contentSupport) {
       addContentItem(pendingItemList, ephemeralState, gcsEntityId)
     }
@@ -133,7 +155,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
       if (playerFeatureSet.interactionSupport) {
-        addInteractionForPendingState(pendingItemList, interaction, hasPreviousState, gcsEntityId)
+        val interactionViewModel = addInteractionForPendingState(interaction, hasPreviousState, gcsEntityId)
+        pendingInteractionViewModel = interactionViewModel
+        pendingItemList += interactionViewModel
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
@@ -159,15 +183,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     )
 
-    return pendingItemList
+    ++updatedItemListVersion
+    if (!isSubmitAnswerAnimationPlaying) {
+      // If no animation is playing, immediately update the list.
+      ++pushedItemListVersion
+      itemList.clear()
+      itemList += pendingItemList
+    }
   }
 
   private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean,
-    gcsEntityId: String
-  ) {
+    interaction: Interaction, hasPreviousButton: Boolean, gcsEntityId: String
+  ): StateItemViewModel {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
-    pendingItemList += interactionViewModelFactory(
+    return interactionViewModelFactory(
       gcsEntityId, interaction, fragment as InteractionAnswerReceiver, hasPreviousButton
     )
   }
@@ -261,6 +290,66 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousResponsesExpanded = false
   }
 
+  fun submitAnswer(
+    userAnswer: UserAnswer, itemList: ObservableList<StateItemViewModel>, gcsEntityId: String
+  ): LiveData<AsyncResult<AnswerOutcome>> {
+    val interactionIndex = itemList.indexOf(pendingInteractionViewModel)
+    val remainingModels = itemList.slice(interactionIndex until itemList.size)
+    itemList.removeAll(remainingModels)
+    itemList += createSubmittedAnswer(userAnswer, gcsEntityId)
+    itemList += LoadingDotsViewModel()
+    isSubmitAnswerAnimationPlaying = true
+
+    val submitLiveData = explorationProgressController.submitAnswer(userAnswer)
+    val timerLiveData = lifecycleSafeTimerFactory.createTimer(1000)
+    val combinedLiveData = combine(submitLiveData, timerLiveData) { v1, _ -> v1 }
+    combinedLiveData.observe(fragment, object : Observer<AsyncResult<AnswerOutcome>> {
+      override fun onChanged(t: AsyncResult<AnswerOutcome>?) {
+        // Only take this update if another change to the list hasn't since occurred.
+        if (updatedItemListVersion == pushedItemListVersion + 1) {
+          pushedItemListVersion = updatedItemListVersion
+          itemList.clear()
+          itemList += pendingItemList
+        }
+        isSubmitAnswerAnimationPlaying = false
+        combinedLiveData.removeObserver(this)
+      }
+    })
+    return combinedLiveData
+  }
+
+  /**
+   * Returns a new LiveData that combines two others together using a combiner. The combiner is only called when both
+   * [LiveData]s have values and each time they change. Only very cheap operations should be done in the combiner since
+   * this is run on the UI thread.
+   */
+  private fun <T1: Any, T2: Any, T3: Any> combine(
+    liveData1: LiveData<T1>, liveData2: LiveData<T2>, combiner: (T1, T2) -> T3
+  ): LiveData<T3> {
+    // https://stackoverflow.com/a/52306675
+    return object : MediatorLiveData<T3>() {
+      private lateinit var value1: T1
+      private lateinit var value2: T2
+
+      init {
+        addSource(liveData1) { value ->
+          value1 = value
+          maybeCombineValues()
+        }
+        addSource(liveData2) { value ->
+          value2 = value
+          maybeCombineValues()
+        }
+      }
+
+      private fun maybeCombineValues() {
+        if (::value1.isInitialized && ::value2.isInitialized) {
+          value = combiner(value1, value2)
+        }
+      }
+    }
+  }
+
   /** Shows a congratulations message due to the learner having submitted a correct answer. */
   fun showCongratulationMessageOnCorrectAnswer() {
     check(playerFeatureSet.showCongratulationsOnCorrectAnswer) {
@@ -330,13 +419,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
           )
         }
       }
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.forwardNavigation -> {
+      doesMostRecentInteractionRequireExplicitSubmission() && playerFeatureSet.forwardNavigation -> {
         pendingItemList += SubmitButtonViewModel(
           hasPreviousButton, previousNavigationButtonListener, fragment as SubmitNavigationButtonListener
         )
       }
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
-      hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
+      hasPreviousButton && !isMostRecentInteractionAutoNavigating() -> {
         pendingItemList += PreviousButtonViewModel(
           previousNavigationButtonListener
         )
@@ -351,20 +440,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the
    * answer.
    */
-  private fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
+  private fun doesMostRecentInteractionRequireExplicitSubmission(): Boolean {
+    return getPendingAnswerHandler()?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
   /** Returns whether there is currently a pending interaction that also acts like a navigation button. */
-  private fun isMostRecentInteractionAutoNavigating(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
+  private fun isMostRecentInteractionAutoNavigating(): Boolean {
+    return getPendingAnswerHandler()?.isAutoNavigating() ?: false
   }
 
   /** Returns the latest [InteractionAnswerHandler] representing the current pending one, or null if there is none. */
-  fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
-    // In the future, it may be ideal to make this more robust by actually tracking the handler corresponding to the
-    // pending interaction.
-    return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
+  fun getPendingAnswerHandler(): InteractionAnswerHandler? {
+    return pendingInteractionViewModel as? InteractionAnswerHandler
   }
 
   /**
@@ -375,7 +462,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
     private val entityType: String, private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
-    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val explorationProgressController: ExplorationProgressController
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(StateItemViewModel::viewType)
     /** Tracks features individually enabled for the assembler. No features are enabled by default. */
@@ -571,12 +659,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Enables loading interstitial between certain loading states in the recycler view for smoother transitions. */
+    fun addLoadingInterstitials(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.LOADING_DOTS,
+        inflateDataBinding = LoadingDotsItemBinding::inflate,
+        setViewModel = LoadingDotsItemBinding::setViewModel,
+        transformViewModel = { it as LoadingDotsViewModel }
+      )
+      featureSets += PlayerFeatureSet(enableLoadingInterstitials = true)
+      return this
+    }
+
     /** Returns a new [StatePlayerRecyclerViewAssembler] based on the builder-specified configuration. */
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
         adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView, interactionViewModelFactoryMap,
-        lifecycleSafeTimerFactory
+        lifecycleSafeTimerFactory, explorationProgressController
       )
     }
 
@@ -584,13 +684,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     class Factory @Inject constructor(
       private val htmlParserFactory: HtmlParser.Factory, private val fragment: Fragment,
       private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-      private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+      private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+      private val explorationProgressController: ExplorationProgressController
     ) {
       /** Returns a new [Builder] for the specified GCS resource bucket information for loading assets. */
       fun create(resourceBucketName: String, entityType: String): Builder {
         return Builder(
           htmlParserFactory, resourceBucketName, entityType, fragment, interactionViewModelFactoryMap,
-          lifecycleSafeTimerFactory
+          lifecycleSafeTimerFactory, explorationProgressController
         )
       }
     }
@@ -607,7 +708,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val forwardNavigation: Boolean = false,
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
-    val showCongratulationsOnCorrectAnswer: Boolean = false
+    val showCongratulationsOnCorrectAnswer: Boolean = false,
+    val enableLoadingInterstitials: Boolean = false // TODO: use
   ) {
     /** Returns a union of this feature set with other one. Loosely based on https://stackoverflow.com/a/49605849. */
     fun union(other: PlayerFeatureSet): PlayerFeatureSet {
@@ -622,7 +724,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
-            || other.showCongratulationsOnCorrectAnswer
+            || other.showCongratulationsOnCorrectAnswer,
+        enableLoadingInterstitials = enableLoadingInterstitials || other.enableLoadingInterstitials
       )
     }
   }

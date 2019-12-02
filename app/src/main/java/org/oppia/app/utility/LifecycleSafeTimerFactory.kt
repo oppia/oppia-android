@@ -25,11 +25,11 @@ class LifecycleSafeTimerFactory @Inject constructor(
    * Returns a [LiveData] that will be triggered only after the specified timeout, in milliseconds, has elapsed. No
    * assumptions should be made regarding the payload of the live data.
    */
-  fun createTimer(timeoutMillis: Long): LiveData<Any?> {
-    val liveData = MutableLiveData<Any?>()
+  fun createTimer(timeoutMillis: Long): LiveData<Any> {
+    val liveData = MutableLiveData<Any>()
     backgroundCoroutineScope.launch {
       delay(timeoutMillis)
-      liveData.postValue(null)
+      liveData.postValue(Any())
     }
     return liveData
   }

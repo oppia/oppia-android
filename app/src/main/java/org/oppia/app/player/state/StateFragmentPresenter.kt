@@ -90,11 +90,11 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
-      if (bottom < oldBottom) {
-        binding.stateRecyclerView.postDelayed({
-          binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
-        }, 100)
-      }
+//      if (bottom < oldBottom) {
+//        binding.stateRecyclerView.postDelayed({
+//          binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+//        }, 100)
+//      }
     }
     subscribeToCurrentState()
 
@@ -142,7 +142,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
-    recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
   fun handleAudioClick() {
@@ -173,6 +172,7 @@ class StateFragmentPresenter @Inject constructor(
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addLoadingInterstitials()
       .build()
   }
 
@@ -234,8 +234,7 @@ class StateFragmentPresenter @Inject constructor(
     val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
     currentStateName = ephemeralState.state.name
 
-    viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
+    recyclerViewAssembler.compute(ephemeralState, explorationId, viewModel.itemList)
 
     if (scrollToTop) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 200)
@@ -273,7 +272,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
+    (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPosition(recyclerViewAdapter.itemCount - 1)
+    subscribeToAnswerOutcome(recyclerViewAssembler.submitAnswer(answer, viewModel.itemList, explorationId))
   }
 
   private fun moveToNextState() {

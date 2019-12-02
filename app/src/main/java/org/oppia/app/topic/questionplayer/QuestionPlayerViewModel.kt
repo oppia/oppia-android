@@ -20,7 +20,6 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
 
   // TODO(#40): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
   fun getPendingAnswer(recyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer {
-    return recyclerViewAssembler.getPendingAnswerHandler(itemList)?.getPendingAnswer()
-      ?: UserAnswer.getDefaultInstance()
+    return recyclerViewAssembler.getPendingAnswerHandler()?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
   }
 }

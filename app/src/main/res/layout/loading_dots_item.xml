@@ -1,0 +1,24 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.LoadingDotsViewModel" />
+  </data>
+  <!-- https://github.com/EyalBira/loading-dots -->
+  <com.eyalbira.loadingdots.LoadingDots
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    app:LoadingDots_dots_color="@color/colorPrimary"
+    app:LoadingDots_dots_count="3"
+    app:LoadingDots_dots_size="8dp"
+    app:LoadingDots_dots_space="4dp"
+    app:LoadingDots_loop_duration="900"
+    app:LoadingDots_loop_start_delay="100"
+    app:LoadingDots_jump_duration="400"
+    app:LoadingDots_jump_height="4dp" />
+</layout>
