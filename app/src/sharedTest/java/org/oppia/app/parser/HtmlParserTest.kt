@@ -41,7 +41,6 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
@@ -184,14 +183,14 @@ class HtmlParserTest {
     @DefaultGcsPrefix
     @Singleton
     fun provideDefaultGcsPrefix(): String {
-      return "https://storage.googleapis.com/"
+      return "https://storage.googleapis.com"
     }
 
     @Provides
     @DefaultResourceBucketName
     @Singleton
     fun provideDefaultGcsResource(): String {
-      return "oppiaserver-resources/"
+      return "oppiaserver-resources"
     }
 
     @Provides
