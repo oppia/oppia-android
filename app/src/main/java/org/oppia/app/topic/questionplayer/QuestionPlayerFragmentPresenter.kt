@@ -38,6 +38,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {
+  // TODO(#503): Add tests for the question player.
+
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion()
@@ -172,8 +174,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
-    // TODO(BenHenning): Add support early exit detection & message, which requires changes in the training progress
+    // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
+    // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder.addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport()
