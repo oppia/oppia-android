@@ -3,7 +3,6 @@ package org.oppia.app.topic.overview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -12,7 +11,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.TopicOverviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToTopicPlayListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
@@ -24,14 +22,12 @@ import javax.inject.Inject
 /** The presenter for [TopicOverviewFragment]. */
 @FragmentScope
 class TopicOverviewFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicOverviewViewModel>,
   private val logger: Logger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory
 ) {
-  private val routeToTopicPlayListener = activity as RouteToTopicPlayListener
   private val topicOverviewViewModel = getTopicOverviewViewModel()
   private lateinit var topicId: String
   private val htmlParser: HtmlParser by lazy {
@@ -46,14 +42,9 @@ class TopicOverviewFragmentPresenter @Inject constructor(
     subscribeToTopicLiveData()
     binding.let {
       it.lifecycleOwner = fragment
-      it.presenter = this
       it.viewModel = topicOverviewViewModel
     }
     return binding.root
-  }
-
-  fun seeMoreClicked(@Suppress("UNUSED_PARAMETER") v: View) {
-    routeToTopicPlayListener.routeToTopicPlayFragment()
   }
 
   private fun getTopicOverviewViewModel(): TopicOverviewViewModel {
