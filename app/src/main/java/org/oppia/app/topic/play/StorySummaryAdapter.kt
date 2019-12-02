@@ -123,7 +123,7 @@ class StorySummaryAdapter(
         collapse(binding.chapterListContainer)
       }
 
-      binding.root.setOnClickListener {
+      binding.storyContainer.setOnClickListener {
         val previousItem = currentExpandedChapterListIndex
         if (binding.chapterListContainer.isVisible) {
           currentExpandedChapterListIndex = null
@@ -163,7 +163,7 @@ class StorySummaryAdapter(
           return true
         }
       }
-      expandAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_duration).toLong()
+      expandAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_time_ms).toLong()
       chapterListContainer.startAnimation(expandAnimation)
     }
 
@@ -186,7 +186,7 @@ class StorySummaryAdapter(
           return true
         }
       }
-      collapseAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_duration).toLong()
+      collapseAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_time_ms).toLong()
       chapterListContainer.startAnimation(collapseAnimation)
     }
   }
