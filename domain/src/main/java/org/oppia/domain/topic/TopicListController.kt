@@ -322,9 +322,9 @@ class TopicListController @Inject constructor(
   }
 
   private fun getUriForImage(explorationId: String, imageFileName: String): String {
-    return gcsPrefix + gcsResource + String.format(
+    return "$gcsPrefix/$gcsResource/${String.format(
       imageDownloadUrlTemplate, "exploration", explorationId, imageFileName
-    )
+    )}"
   }
 }
 
