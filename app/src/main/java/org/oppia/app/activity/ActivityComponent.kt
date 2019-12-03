@@ -46,6 +46,7 @@ interface ActivityComponent {
   fun inject(continuePlayingActivity: ContinuePlayingActivity)
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
+  fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(profileActivity: ProfileActivity)
@@ -57,5 +58,4 @@ interface ActivityComponent {
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
-  fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
 }

@@ -2,7 +2,6 @@ package org.oppia.app.player.audio
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
@@ -17,6 +16,7 @@ import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.extensions.observeOnce
 import org.oppia.util.gcsresource.DefaultResource
 import org.oppia.util.logging.Logger
 import java.util.Locale
@@ -35,7 +35,7 @@ class AudioViewModel @Inject constructor(
   private lateinit var exploration: Exploration
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
-  private val defaultLanguage = "en"
+  private val defaultLanguage = "hi"
   private var languageSelectionShown = false
 
   var selectedLanguageCode: String = ""
@@ -43,6 +43,7 @@ class AudioViewModel @Inject constructor(
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
+    FAILED,
     LOADING,
     PREPARED,
     PLAYING,
@@ -158,6 +159,7 @@ class AudioViewModel @Inject constructor(
 
   private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): UiAudioPlayStatus {
     if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
+    if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
     return when (playProgressResult.getOrThrow().type) {
       PlayStatus.PREPARED -> UiAudioPlayStatus.PREPARED
       PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
@@ -168,14 +170,5 @@ class AudioViewModel @Inject constructor(
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
     return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
-  }
-
-  private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-    observe(lifecycleOwner, object : Observer<T> {
-      override fun onChanged(t: T?) {
-        observer.onChanged(t)
-        removeObserver(this)
-      }
-    })
   }
 }

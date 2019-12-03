@@ -2,8 +2,8 @@ package org.oppia.app.player.audio
 
 import androidx.lifecycle.LiveData
 
-/** Interface to interact with AudioFragment from [StateFragment]. */
-interface AudioFragmentInterface {
+/** Manager for updating audio state within the state player. */
+interface AudioUiManager {
   /**
    * Used to set AudioFragment's VoiceoverMappings with given stateId and contentId.
    * If no contentId is provided, AudioFragment will use state.content.contentId as default.

@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface, AudioFragmentInterface {
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager {
   @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context) {
@@ -56,6 +56,7 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioFragmentInte
 
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
+
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
 }

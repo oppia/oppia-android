@@ -10,10 +10,14 @@ import javax.inject.Singleton
 /** Utility to get the current connection status of the device. */
 @Singleton
 class NetworkConnectionUtil @Inject constructor(private val context: Context) {
+  /** Enum to distinguish different connection statuses for the device. */
   enum class ConnectionStatus {
-    LOCAL, // Connected to WIFI or Ethernet
-    CELLULAR, // Connected to Mobile or WiMax
-    NONE // Not connected to a network
+    /** Connected to WIFI or Ethernet. */
+    LOCAL,
+    /** Connected to Mobile or WiMax. */
+    CELLULAR,
+    /** Not connected to a network. */
+    NONE
   }
   private var testConnectionStatus: ConnectionStatus? = null
 

@@ -37,7 +37,8 @@ class AudioPlayerController @Inject constructor(
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
-  inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
+  inner class AudioMutableLiveData :
+    MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
     override fun onActive() {
       super.onActive()
       audioLock.withLock {
@@ -70,6 +71,9 @@ class AudioPlayerController @Inject constructor(
    * [duration]: Represents duration of current audio.
    */
   class PlayProgress(val type: PlayStatus, val position: Int, val duration: Int)
+
+  /** General audio player exception used in on error listener. */
+  class AudioPlayerException(message: String) : Exception(message)
 
   private var mediaPlayer: MediaPlayer = MediaPlayer()
   private var playProgress: AudioMutableLiveData? = null
@@ -130,10 +134,14 @@ class AudioPlayerController @Inject constructor(
       playProgress?.value =
         AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, duration))
     }
-    mediaPlayer.setOnErrorListener {_, _, _ ->
+    mediaPlayer.setOnErrorListener { _, what, extra ->
+      playProgress?.value =
+        AsyncResult.failed(
+          AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
+        )
       releaseMediaPlayer()
       initializeMediaPlayer()
-      true // Indicates that error was handled and to not invoke completion listener.
+      return@setOnErrorListener true // Indicates that error was handled and to not invoke completion listener.
     }
   }
 
@@ -263,7 +271,7 @@ class AudioPlayerController @Inject constructor(
    * Seek to specific position in MediaPlayer.
    * Controller must already have audio prepared.
    */
-  fun seekTo(position: Int)  {
+  fun seekTo(position: Int) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       mediaPlayer.seekTo(position)

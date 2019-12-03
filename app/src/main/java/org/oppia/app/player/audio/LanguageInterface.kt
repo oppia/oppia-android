@@ -5,6 +5,6 @@ interface LanguageInterface {
   /** Play the audio corresponding to the language-selected. */
   fun onLanguageSelected(currentLanguageCode: String)
 
-  /** Open the language selection dialog */
+  /** Open the language selection dialog. */
   fun languageSelectionClicked()
 }

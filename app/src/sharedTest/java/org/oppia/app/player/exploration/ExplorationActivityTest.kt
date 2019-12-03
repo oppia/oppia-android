@@ -116,7 +116,9 @@ class ExplorationActivityTest {
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
+
       onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button))).perform(click())
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
@@ -129,7 +131,9 @@ class ExplorationActivityTest {
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
+
       onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
@@ -144,7 +148,9 @@ class ExplorationActivityTest {
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button))).perform(click())
+
       onView(withId(R.id.action_audio_player)).perform(click())
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(not(isDisplayed())))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
     }
@@ -160,8 +166,10 @@ class ExplorationActivityTest {
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
+
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(doesNotExist())
     }
@@ -175,24 +183,28 @@ class ExplorationActivityTest {
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-      onView(withText("en")).check(matches(isDisplayed()))
+
+      onView(withText("HI")).check(matches(isDisplayed()))
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
   }
 
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() {
-    getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
+  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsEnglish() {
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("EN")).perform(click())
-      onView(withText("Hinglish")).perform(click())
+
+      onView(withText("HI")).perform(click())
+      onView(withText("English")).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withText("HI-EN")).check(matches(isDisplayed()))
+
+      onView(withText("EN")).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -202,14 +214,18 @@ class ExplorationActivityTest {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
-      for (x in 0..4) {
-        onView(withId(R.id.continue_button)).perform(click())
-      }
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(ViewActions.typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.interaction_button)).perform(click())
-      // Ensures that feedback audio starts playing
       Thread.sleep(1000)
+
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
