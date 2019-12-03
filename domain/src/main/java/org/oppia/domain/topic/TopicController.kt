@@ -187,15 +187,14 @@ class TopicController @Inject constructor(
           mutableListOf(
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9))
           )
         )
         FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
           mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9))
           )
         )
         RATIOS_SKILL_ID_0 -> questionsList.add(
