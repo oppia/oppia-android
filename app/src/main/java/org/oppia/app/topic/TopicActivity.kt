@@ -47,7 +47,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     }
   }
 
-  override fun dismiss() {
+  override fun dismissConceptCard() {
     getConceptCardFragment()?.dismiss()
   }
 

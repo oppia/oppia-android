@@ -416,9 +416,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val contentViewModel = viewModel as ContentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, contentViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              resourceBucketName, entityType, contentViewModel.gcsEntityId, /* imageCenterAlign= */ true, customOppiaTagActionListener = fragment as HtmlParser.CustomOppiaTagActionListener
             ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(), binding.contentTextView
+              contentViewModel.htmlContent.toString(), binding.contentTextView, supportsLinks = true
             )
         }
       )
@@ -438,9 +438,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val feedbackViewModel = viewModel as FeedbackViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true, customOppiaTagActionListener = fragment as HtmlParser.CustomOppiaTagActionListener
             ).parseOppiaHtml(
-              feedbackViewModel.htmlContent.toString(), binding.feedbackTextView
+              feedbackViewModel.htmlContent.toString(), binding.feedbackTextView, supportsLinks = true
             )
         }
       )

@@ -15,12 +15,13 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,
   ContinueNavigationButtonListener, NextNavigationButtonListener, PreviousNavigationButtonListener,
-  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener, HtmlParser.CustomOppiaTagActionListener {
 
   companion object {
     /**
@@ -73,7 +74,13 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    stateFragmentPresenter.onConceptCardLinkClicked(view, skillId)
+  }
+
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 }

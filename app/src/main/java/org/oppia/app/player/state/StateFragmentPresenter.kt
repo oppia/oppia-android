@@ -30,6 +30,7 @@ import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -42,13 +43,14 @@ import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
-private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val CELLULAR_DATA_DIALOG_FRAGMENT_TAG = "CELLULAR_DATA_DIALOG_FRAGMENT"
+private const val AUDIO_FRAGMENT_TAG = "AUDIO_FRAGMENT"
+private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  @ExplorationHtmlParserEntityType private val entityType: String,
+  @ExplorationHtmlParserEntityType private val htmlParserEntityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val cellularAudioDialogController: CellularAudioDialogController,
@@ -58,7 +60,7 @@ class StateFragmentPresenter @Inject constructor(
   private val context: Context,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-private val networkConnectionUtil: NetworkConnectionUtil
+  private val networkConnectionUtil: NetworkConnectionUtil
 ) {
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -90,7 +92,7 @@ private val networkConnectionUtil: NetworkConnectionUtil
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType),
+      assemblerBuilderFactory.create(resourceBucketName, htmlParserEntityType),
       binding.congratulationsTextView
     )
 
@@ -106,7 +108,7 @@ private val networkConnectionUtil: NetworkConnectionUtil
 
     // Initialize Audio Player
     fragment.childFragmentManager.beginTransaction()
-      .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
+      .add(R.id.audio_fragment_placeholder, AudioFragment(), AUDIO_FRAGMENT_TAG).commitNow()
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
@@ -166,6 +168,16 @@ private val networkConnectionUtil: NetworkConnectionUtil
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
+  fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+  }
+
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
+  }
+
   fun handleAudioClick() {
     if (isAudioShowing()) {
       setAudioFragmentVisible(false)
@@ -211,12 +223,12 @@ private val networkConnectionUtil: NetworkConnectionUtil
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = CellularAudioDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
+    dialogFragment.showNow(fragment.childFragmentManager, CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -224,7 +236,7 @@ private val networkConnectionUtil: NetworkConnectionUtil
   }
 
   private fun getAudioFragment(): Fragment? {
-    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
+    return fragment.childFragmentManager.findFragmentByTag(AUDIO_FRAGMENT_TAG)
   }
 
   private fun setAudioFragmentVisible(isVisible: Boolean) {

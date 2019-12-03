@@ -95,6 +95,10 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
+  fun dismissConceptCard() {
+    getExplorationFragment()?.dismissConceptCard()
+  }
+
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
