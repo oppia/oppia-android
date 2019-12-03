@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -8,7 +9,7 @@
       type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
   </data>
 
-  <FrameLayout
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="28dp"
@@ -38,8 +39,20 @@
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/edit_text_hint"
-      android:textSize="16sp"
-      android:textStyle="italic" />
-  </FrameLayout>
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{viewModel.passwordTextWatcher}" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:minHeight="32dp"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.errorMessage.get()}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp" />
+  </LinearLayout>
 </layout>
