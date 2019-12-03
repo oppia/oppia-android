@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -22,16 +25,27 @@ private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
-
   private lateinit var toolbar: Toolbar
+  private val exploreViewModel by lazy {
+    getExplorationViewModel()
+  }
 
   fun handleOnCreate(explorationId: String) {
-    activity.setContentView(R.layout.exploration_activity)
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+    binding.apply {
+      viewModel = exploreViewModel
+      lifecycleOwner = activity
+    }
 
-    toolbar = activity.findViewById(R.id.exploration_toolbar)
+    toolbar = binding.explorationToolbar
     activity.setSupportActionBar(toolbar)
+
+    binding.actionAudioPlayer.setOnClickListener {
+      getExplorationFragment()?.handlePlayAudio()
+    }
 
     updateToolbarTitle(explorationId)
 
@@ -48,6 +62,11 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
+  fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+  fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+  fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+  fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
+  
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder
@@ -65,10 +84,6 @@ class ExplorationActivityPresenter @Inject constructor(
         }
       }
     })
-  }
-
-  fun audioPlayerIconClicked() {
-    getExplorationFragment()?.handlePlayAudio()
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -89,6 +104,10 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(activity, Observer<Exploration> {
       toolbar.title = it.title
     })
+  }
+
+  private fun getExplorationViewModel(): ExplorationViewModel {
+    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */

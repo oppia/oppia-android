@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 /** Controller for persisting and retrieving the cellular data preference. */
 @Singleton
-class CellularDialogController @Inject constructor(
+class CellularAudioDialogController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders,
   private val logger: Logger
 ) {

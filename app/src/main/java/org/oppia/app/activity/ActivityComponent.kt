@@ -6,7 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
-import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
+import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.AddProfileActivity
@@ -19,6 +19,7 @@ import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
+import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
@@ -54,12 +55,13 @@ interface ActivityComponent {
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
+  fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
 }

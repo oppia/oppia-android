@@ -37,7 +37,7 @@ class AudioPlayerController @Inject constructor(
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
-  inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>() {
+  inner class AudioMutableLiveData : MutableLiveData<AsyncResult<PlayProgress>>(AsyncResult.pending()) {
     override fun onActive() {
       super.onActive()
       audioLock.withLock {
@@ -80,6 +80,8 @@ class AudioPlayerController @Inject constructor(
   private var observerActive = false
   private var mediaPlayerActive = false
   private var isReleased = false
+  private var duration = 0
+  private var completed = false
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -89,7 +91,6 @@ class AudioPlayerController @Inject constructor(
    */
   fun initializeMediaPlayer(): LiveData<AsyncResult<PlayProgress>> {
     audioLock.withLock {
-      check(!mediaPlayerActive) { "Media player has already been initialized" }
       mediaPlayerActive = true
       if (isReleased) {
         // Recreation is necessary since media player's resources have been released
@@ -118,14 +119,21 @@ class AudioPlayerController @Inject constructor(
 
   private fun setMediaPlayerListeners() {
     mediaPlayer.setOnCompletionListener {
+      completed = true
       stopUpdatingSeekBar()
       playProgress?.value =
-        AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, it.duration))
+        AsyncResult.success(PlayProgress(PlayStatus.COMPLETED, 0, duration))
     }
     mediaPlayer.setOnPreparedListener {
       prepared = true
+      duration = it.duration
       playProgress?.value =
-        AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, it.duration))
+        AsyncResult.success(PlayProgress(PlayStatus.PREPARED, 0, duration))
+    }
+    mediaPlayer.setOnErrorListener {_, _, _ ->
+      releaseMediaPlayer()
+      initializeMediaPlayer()
+      true // Indicates that error was handled and to not invoke completion listener.
     }
   }
 
@@ -193,7 +201,7 @@ class AudioPlayerController @Inject constructor(
       if (mediaPlayer.isPlaying) {
         playProgress?.value =
           AsyncResult.success(
-            PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, mediaPlayer.duration)
+            PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, duration)
           )
         mediaPlayer.pause()
         stopUpdatingSeekBar()
@@ -216,9 +224,11 @@ class AudioPlayerController @Inject constructor(
   private fun updateSeekBar() {
     audioLock.withLock {
       if (mediaPlayer.isPlaying) {
+        val position = if (completed) 0 else mediaPlayer.currentPosition
+        completed = false
         playProgress?.postValue(
           AsyncResult.success(
-            PlayProgress(PlayStatus.PLAYING, mediaPlayer.currentPosition, mediaPlayer.duration)
+            PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
         )
       }

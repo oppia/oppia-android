@@ -1,10 +1,10 @@
-package org.oppia.app.player.audio.testing
+package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import javax.inject.Inject
 
 /** The presenter for [AudioFragmentTestActivity] */
@@ -15,11 +15,12 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.audio_fragment_test_activity)
     if (getAudioFragment() == null) {
-      val audioFragment = AudioFragment.newInstance(TEST_EXPLORATION_ID_5, "END")
+      val audioFragment = AudioFragment()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.audio_fragment_placeholder,
         audioFragment
       ).commitNow()
+      audioFragment.setVoiceoverMappings(RATIOS_EXPLORATION_ID_0, "Introduction")
     }
   }
 

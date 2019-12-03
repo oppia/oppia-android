@@ -1,9 +1,12 @@
 package org.oppia.app.player.state
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +22,22 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.audio.AudioFragmentInterface
+import org.oppia.app.player.audio.AudioViewModel
+import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.audio.CellularDialogController
+import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
+import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
@@ -42,27 +51,34 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val cellularDialogController: CellularDialogController,
+  private val cellularAudioDialogController: CellularAudioDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
+  private val context: Context,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+private val networkConnectionUtil: NetworkConnectionUtil
 ) {
   private var showCellularDataDialog = true
   private var useCellularData = false
+  private var feedbackId: String? = null
+  private var autoPlayAudio = false
+  private var isFeedbackPlaying = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private lateinit var viewModel: StateViewModel
+  private val viewModel: StateViewModel by lazy {
+    getStateViewModel()
+  }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    cellularDialogController.getCellularDataPreference()
+    cellularAudioDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
           val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
@@ -83,11 +99,14 @@ class StateFragmentPresenter @Inject constructor(
       adapter = stateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
-    viewModel = getStateViewModel()
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = this.viewModel
     }
+
+    // Initialize Audio Player
+    fragment.childFragmentManager.beginTransaction()
+      .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
@@ -96,21 +115,23 @@ class StateFragmentPresenter @Inject constructor(
         }, 100)
       }
     }
+
     subscribeToCurrentState()
 
     return binding.root
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
-    showHideAudioFragment(true)
+    setAudioFragmentVisible(true)
     if (saveUserChoice) {
-      cellularDialogController.setAlwaysUseCellularDataPreference()
+      cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     }
   }
 
   fun handleDisableAudio(saveUserChoice: Boolean) {
+    setAudioFragmentVisible(false)
     if (saveUserChoice) {
-      cellularDialogController.setNeverUseCellularDataPreference()
+      cellularAudioDialogController.setNeverUseCellularDataPreference()
     }
   }
 
@@ -146,14 +167,27 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (showCellularDataDialog) {
-      showHideAudioFragment(false)
-      showCellularDataDialogFragment()
+    if (isAudioShowing()) {
+      setAudioFragmentVisible(false)
     } else {
-      if (useCellularData) {
-        showHideAudioFragment(getAudioFragment() == null)
-      } else {
-        showHideAudioFragment(false)
+      when (networkConnectionUtil.getCurrentConnectionStatus()) {
+        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+        ConnectionStatus.CELLULAR -> {
+          if (showCellularDataDialog) {
+            setAudioFragmentVisible(false)
+            showCellularDataDialogFragment()
+          } else {
+            if (useCellularData) {
+              setAudioFragmentVisible(true)
+            } else {
+              setAudioFragmentVisible(false)
+            }
+          }
+        }
+        ConnectionStatus.NONE-> {
+          showOfflineDialog()
+          setAudioFragmentVisible(false)
+        }
       }
     }
   }
@@ -181,7 +215,7 @@ class StateFragmentPresenter @Inject constructor(
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    val dialogFragment = CellularDataDialogFragment.newInstance()
+    val dialogFragment = CellularAudioDialogFragment.newInstance()
     dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
@@ -193,26 +227,65 @@ class StateFragmentPresenter @Inject constructor(
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
   }
 
-  private fun showHideAudioFragment(isVisible: Boolean) {
-    getStateViewModel().setAudioBarVisibility(isVisible)
+  private fun setAudioFragmentVisible(isVisible: Boolean) {
     if (isVisible) {
-      if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
-        fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, audioFragment,
-          TAG_AUDIO_FRAGMENT
-        ).commitNow()
-      }
-
-      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-      if (currentYOffset == 0) {
-        binding.stateRecyclerView.smoothScrollToPosition(0)
-      }
+      showAudioFragment()
     } else {
-      if (getAudioFragment() != null) {
-        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
+      hideAudioFragment()
+    }
+  }
+
+  private fun showAudioFragment() {
+    getStateViewModel().setAudioBarVisibility(true)
+    autoPlayAudio = true
+    (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOn()
+    val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
+    if (currentYOffset == 0) {
+      binding.stateRecyclerView.smoothScrollToPosition(0)
+    }
+    getAudioFragment()?.let {
+      (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
+      it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+    }
+    subscribeToAudioPlayStatus()
+  }
+
+  private fun hideAudioFragment() {
+    (fragment.requireActivity() as AudioButtonListener).showAudioStreamingOff()
+    if (isAudioShowing()) {
+      getAudioFragment()?.let {
+        (it as AudioFragmentInterface).pauseAudio()
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+          override fun onAnimationEnd(p0: Animation?) {
+            getStateViewModel().setAudioBarVisibility(false)
+          }
+          override fun onAnimationStart(p0: Animation?) {}
+          override fun onAnimationRepeat(p0: Animation?) {}
+        })
+        it.view?.startAnimation(animation)
       }
     }
+  }
+
+  private fun subscribeToAudioPlayStatus() {
+    val audioFragmentInterface = getAudioFragment() as AudioFragmentInterface
+    audioFragmentInterface.getCurrentPlayStatus().observe(fragment, Observer {
+      if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
+        getAudioFragment()?.let {
+          if (isFeedbackPlaying) {
+            audioFragmentInterface.setVoiceoverMappings(explorationId, currentStateName)
+          }
+          isFeedbackPlaying = false
+          feedbackId = null
+        }
+      } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
+        if (autoPlayAudio) {
+          autoPlayAudio = false
+          audioFragmentInterface.playAudio()
+        }
+      }
+    })
   }
 
   private fun subscribeToCurrentState() {
@@ -234,6 +307,12 @@ class StateFragmentPresenter @Inject constructor(
     val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
     currentStateName = ephemeralState.state.name
 
+    showOrHideAudioByState(ephemeralState.state)
+    if (isAudioShowing()) {
+      (getAudioFragment() as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
+    }
+    feedbackId = null
+
     viewModel.itemList.clear()
     viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
 
@@ -242,7 +321,7 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  /**
+  /**clickNegative_checkNo
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
@@ -253,8 +332,15 @@ class StateFragmentPresenter @Inject constructor(
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
          moveToNextState()
-      } else if (result.labelledAsCorrectAnswer) {
-        recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+      } else {
+        isFeedbackPlaying = true
+        feedbackId = result.feedback.contentId
+        if (result.labelledAsCorrectAnswer) {
+          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        }
+      }
+      if (isAudioShowing()) {
+        autoPlayAudio = true
       }
     })
   }
@@ -272,6 +358,14 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
+  private fun showOrHideAudioByState(state: State) {
+    if (state.recordedVoiceoversCount == 0) {
+      (fragment.requireActivity() as AudioButtonListener).hideAudioButton()
+    } else {
+      (fragment.requireActivity() as AudioButtonListener).showAudioButton()
+    }
+  }
+
   private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
@@ -286,4 +380,15 @@ class StateFragmentPresenter @Inject constructor(
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
+
+  private fun showOfflineDialog() {
+    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+      .setTitle(context.getString(R.string.audio_dialog_offline_title))
+      .setMessage(context.getString(R.string.audio_dialog_offline_message))
+      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
+  }
+
+  private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 }
