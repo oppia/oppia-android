@@ -13,7 +13,7 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="28dp"
+    android:layout_marginTop="24dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -51,10 +51,9 @@
       android:id="@+id/promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
       android:clipToPadding="false"
       android:overScrollMode="never"
-      android:paddingStart="16dp"
-      android:paddingEnd="16dp"
       android:scrollbars="none" />
   </LinearLayout>
 </layout>

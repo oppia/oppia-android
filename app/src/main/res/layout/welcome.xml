@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -19,24 +18,23 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="4dp"
       android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.isAppAlreadyOpened().get() ? @string/welcome_back_text : @string/welcome_text}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <View
       android:layout_width="172dp"
-      android:layout_height="4dp"
+      android:layout_height="6dp"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="4dp"
+      android:layout_marginEnd="28dp"
       android:background="@color/oppiaLightBrown"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.AllTopicsBinding
@@ -15,6 +14,7 @@ import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.UserAppHistoryViewModel
+import org.oppia.app.recyclerview.StartSnapHelper
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
 private const val VIEW_TYPE_PROMOTED_STORY_LIST = 2
@@ -141,19 +141,19 @@ class TopicListAdapter(
       }
 
       /**
-       * The PagerSnapHelper is used to snap between items rather than smooth scrolling,
+       * The StartSnapHelper is used to snap between items rather than smooth scrolling,
        * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
        */
-      val snapHelper = PagerSnapHelper()
+      val snapHelper = StartSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
       val padding48 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
-      val padding16 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_16)
+      val padding20 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_20)
       if (promotedStoryList.size > 1) {
-        binding.promotedStoryListRecyclerView.setPadding(padding16, 0, padding48, 0)
+        binding.promotedStoryListRecyclerView.setPadding(padding20, 0, padding48, 0)
       } else {
-        binding.promotedStoryListRecyclerView.setPadding(padding16, 0, padding16, 0)
+        binding.promotedStoryListRecyclerView.setPadding(padding20, 0, padding20, 0)
       }
     }
   }
