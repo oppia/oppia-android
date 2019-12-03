@@ -8,15 +8,15 @@ import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
-import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
 
 const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener, StateKeyboardButtonListener {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -50,7 +50,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
   }
 
-  override fun stopExploration() {
+  override fun stopSession() {
     explorationActivityPresenter.stopExploration()
   }
 

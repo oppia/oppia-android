@@ -70,4 +70,6 @@
   <color name="green_shade_40">#6644A85A</color>
   <color name="green_shade_10">#1A44A85A</color>
   <color name="light_green">#D9F3E7</color>
+  <!-- QUESTION COMPONENT -->
+  <color name="question_player_background">#F0FFFF</color>
 </resources>

@@ -14,6 +14,9 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
+  /** Returns whether this handler automatically navigates the user to a later state, including answer submission. */
+  fun isAutoNavigating(): Boolean = false
+
   /** Return the current answer that is ready for handling. */
   fun getPendingAnswer(): UserAnswer
 }

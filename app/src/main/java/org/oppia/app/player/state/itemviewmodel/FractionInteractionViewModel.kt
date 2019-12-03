@@ -8,7 +8,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
-/** [ViewModel] for the fraction input interaction. */
+/** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
   interaction: Interaction, private val context: Context
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {

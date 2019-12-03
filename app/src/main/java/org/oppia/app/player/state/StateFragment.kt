@@ -9,10 +9,19 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.CellularDataInterface
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.app.player.state.listener.NextNavigationButtonListener
+import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,
+  ContinueNavigationButtonListener, NextNavigationButtonListener, PreviousNavigationButtonListener,
+  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -51,6 +60,18 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
     stateFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
+
+  override fun onContinueButtonClicked() = stateFragmentPresenter.onContinueButtonClicked()
+
+  override fun onNextButtonClicked() = stateFragmentPresenter.onNextButtonClicked()
+
+  override fun onPreviousButtonClicked() = stateFragmentPresenter.onPreviousButtonClicked()
+
+  override fun onReturnToTopicButtonClicked() = stateFragmentPresenter.onReturnToTopicButtonClicked()
+
+  override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
+
+  override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 

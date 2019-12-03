@@ -14,6 +14,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val urlImageParserFactory: UrlImageParser.Factory,
+  private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean
@@ -43,7 +44,9 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
 
-    val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
+    val imageGetter = urlImageParserFactory.create(
+      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+    )
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
       trimSpannable(
         Html.fromHtml(
@@ -78,8 +81,8 @@ class HtmlParser private constructor(
   }
 
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
-    fun create(entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
-      return HtmlParser(urlImageParserFactory, entityType, entityId, imageCenterAlign)
+    fun create(gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
+      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign)
     }
   }
 }

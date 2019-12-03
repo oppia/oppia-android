@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="buttonViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="56dp"
+    android:gravity="center_vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="12dp">
+
+    <Button
+      android:id="@+id/replay_button"
+      style="@style/StateButtonActive"
+      android:layout_height="48dp"
+      android:layout_margin="4dp"
+      android:background="@drawable/state_button_orange_background"
+      android:drawableStart="@drawable/ic_refresh_white_24dp"
+      android:drawablePadding="4dp"
+      android:onClick="@{(v) -> buttonViewModel.replayButtonListener.onReplayButtonClicked()}"
+      android:text="@string/lesson_replay_button_text"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
