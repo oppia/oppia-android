@@ -92,15 +92,15 @@ class UrlImageParser private constructor(
   }
 
   // Reference: https://stackoverflow.com/a/51865494
-  fun <T : View> T.width(function: (Int) -> Unit) {
+  fun <T : View> T.width(calculateWidth: (Int) -> Unit) {
     if (width == 0)
       viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
           viewTreeObserver.removeOnGlobalLayoutListener(this)
-          function(width)
+          calculateWidth(width)
         }
       })
-    else function(width)
+    else calculateWidth(width)
   }
 
   class Factory @Inject constructor(
