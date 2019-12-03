@@ -318,7 +318,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun getUriForVoiceover(explorationId: String, voiceover: Voiceover): String {
-    return "https://storage.googleapis.com/${gcsResource}exploration/$explorationId/assets/audio/${voiceover.fileName}"
+    return "https://storage.googleapis.com/${gcsResource}/exploration/$explorationId/assets/audio/${voiceover.fileName}"
   }
 
   private fun getUriForImage(explorationId: String, imageFileName: String): String {
