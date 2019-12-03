@@ -19,7 +19,7 @@
       android:layout_width="80dp"
       android:layout_height="80dp"
       profile:src="@{viewModel.profile.avatarImageUri}"
-      android:layout_marginBottom="10dp"
+      android:layout_marginBottom="8dp"
       app:civ_border_width="1dp"
       app:civ_border_color="@color/avatarBorder"/>
     <TextView
@@ -35,7 +35,7 @@
       android:layout_height="wrap_content"
       android:textColor="@color/white"
       android:text="@string/profile_chooser_admin"
-      android:textSize="10sp"
+      android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}"/>
   </LinearLayout>
