@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class AudioFragmentPresenter @Inject constructor(
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+    binding.sbAudioProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) {
           userProgress = progress
@@ -105,5 +106,9 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    getAudioViewModel().setContentIdListener(audioContentIdListener)
   }
 }

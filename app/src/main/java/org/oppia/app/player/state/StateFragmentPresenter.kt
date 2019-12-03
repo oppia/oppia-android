@@ -29,6 +29,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -172,6 +173,14 @@ class StateFragmentPresenter @Inject constructor(
     ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    recyclerViewAssembler.contentViewModel?.let { contentViewModel ->
+      if (contentViewModel.contentId == contentId){
+        contentViewModel.updateIsAudioPlaying(playing)
+      }
+    }
+  }
+
   fun dismissConceptCard() {
     fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)?.let { dialogFragment ->
       fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
@@ -258,6 +267,7 @@ class StateFragmentPresenter @Inject constructor(
     getAudioFragment()?.let {
       (it as AudioFragmentInterface).setVoiceoverMappings(explorationId, currentStateName, feedbackId)
       it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+      (it as AudioFragment).setContentIdListener(fragment as AudioContentIdListener)
     }
     subscribeToAudioPlayStatus()
   }

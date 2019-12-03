@@ -12,6 +12,7 @@ import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
@@ -19,7 +20,7 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 /** [ViewModel] for audio-player state. */
@@ -33,6 +34,7 @@ class AudioViewModel @Inject constructor(
 ) : ViewModel() {
 
   private lateinit var exploration: Exploration
+  private lateinit var contentId: String
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "en"
@@ -40,6 +42,8 @@ class AudioViewModel @Inject constructor(
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
+
+  private var audioContentIdListener: AudioContentIdListener? = null
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -79,7 +83,8 @@ class AudioViewModel @Inject constructor(
 
   private fun setVoiceoverMappingsByStateAndContentId(stateId: String, contentId: String?) {
     val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
-    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
       selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
@@ -95,6 +100,11 @@ class AudioViewModel @Inject constructor(
         (fragment as LanguageInterface).languageSelectionClicked()
       }
     }
+    this.contentId = contentId ?: state.content.contentId
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    this.audioContentIdListener = audioContentIdListener
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
@@ -108,8 +118,14 @@ class AudioViewModel @Inject constructor(
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = false)
+      }
     } else {
       audioPlayerController.play()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = true)
+      }
     }
   }
 

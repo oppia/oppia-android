@@ -125,6 +125,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  var contentViewModel: ContentViewModel? = null
+
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the configuration of this
    * assembler, as well as the GCS entity ID that should be associated with rich-text rendering for this state.
@@ -184,7 +186,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState, gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
+    val contentViewModel = ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html, gcsEntityId)
+    this.contentViewModel = contentViewModel
+    pendingItemList += contentViewModel
   }
 
   private fun addPreviousAnswers(

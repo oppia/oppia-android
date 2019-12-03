@@ -5,6 +5,10 @@
     <import type="android.view.View" />
 
     <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.ContentViewModel" />
+
+    <variable
       name="htmlContent"
       type="CharSequence" />
   </data>
@@ -14,9 +18,9 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="20dp"
     android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:layout_marginEnd="28dp"
-    android:background="@drawable/content_blue_background">
+    android:layout_marginBottom="@dimen/divider_margin_bottom"
+    android:background="@{viewModel.isAudioPlaying.get()? @drawable/content_yellow_background : @drawable/content_blue_background}">
 
     <TextView
       android:id="@+id/content_text_view"

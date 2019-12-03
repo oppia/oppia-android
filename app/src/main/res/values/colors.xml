@@ -28,6 +28,7 @@
   <color name="oppiaDisabledButtonBackground">#61999999</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
+  <color name="oppiaContentHighlighting">#F2D140</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>

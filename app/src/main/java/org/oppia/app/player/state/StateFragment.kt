@@ -9,6 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.CellularDataInterface
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
@@ -21,7 +22,8 @@ import javax.inject.Inject
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,
   ContinueNavigationButtonListener, NextNavigationButtonListener, PreviousNavigationButtonListener,
-  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener, HtmlParser.CustomOppiaTagActionListener {
+  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener, HtmlParser.CustomOppiaTagActionListener,
+  AudioContentIdListener {
 
   companion object {
     /**
@@ -76,6 +78,10 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     stateFragmentPresenter.onConceptCardLinkClicked(view, skillId)
+  }
+
+  override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
+    stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
   }
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.player.state.listener.AudioContentIdListener
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
@@ -58,4 +59,8 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioFragmentInte
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    audioFragmentPresenter.setContentIdListener(audioContentIdListener)
+  }
 }
