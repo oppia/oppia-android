@@ -58,7 +58,7 @@ interface ActivityComponent {
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(storyActivity: StoryActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity: StateFragmentTestActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)

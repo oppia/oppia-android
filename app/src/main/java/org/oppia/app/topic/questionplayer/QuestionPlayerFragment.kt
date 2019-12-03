@@ -14,12 +14,14 @@ import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
   ContinueNavigationButtonListener, NextNavigationButtonListener, ReplayButtonListener,
-  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener,
+  HtmlParser.CustomOppiaTagActionListener {
 
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
@@ -48,6 +50,10 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
   override fun onSubmitButtonClicked() = questionPlayerFragmentPresenter.onSubmitButtonClicked()
 
   override fun onResponsesHeaderClicked() = questionPlayerFragmentPresenter.onResponsesHeaderClicked()
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    // TODO: make this a feature rather than overriding something that's not doing anything.
+  }
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 }
