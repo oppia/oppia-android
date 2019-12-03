@@ -123,6 +123,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /** The current pending interaction view model, or null if none (such as between or after answer submission). */
   private var pendingInteractionViewModel: StateItemViewModel? = null
 
+  private var previousStateName: String? = null
+
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
    * listener no-ops if backward navigation is enabled. This serves to allows the host fragment to not need to implement
@@ -146,21 +148,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(ephemeralState: EphemeralState, gcsEntityId: String, itemList: ObservableList<StateItemViewModel>) {
     val hasPreviousState = ephemeralState.hasPreviousState
 
-    previousAnswerViewModels.clear() // But retain whether the list is currently open.
-    pendingItemList.clear()
-    if (playerFeatureSet.contentSupport) {
-      addContentItem(pendingItemList, ephemeralState, gcsEntityId)
-    }
-    val interaction = ephemeralState.state.interaction
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
-      if (playerFeatureSet.interactionSupport) {
-        val interactionViewModel = addInteractionForPendingState(interaction, hasPreviousState, gcsEntityId)
-        pendingInteractionViewModel = interactionViewModel
-        pendingItemList += interactionViewModel
+    val isNewState = previousStateName != ephemeralState.state.name
+    previousStateName = ephemeralState.state.name
+
+    if (isNewState) {
+      previousAnswerViewModels.clear() // But retain whether the list is currently open.
+      pendingItemList.clear()
+
+      if (playerFeatureSet.contentSupport) {
+        addContentItem(pendingItemList, ephemeralState, gcsEntityId)
       }
-    } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
+      val interaction = ephemeralState.state.interaction
+      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
+        addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
+        if (playerFeatureSet.interactionSupport) {
+          val interactionViewModel = addInteractionForPendingState(interaction, hasPreviousState, gcsEntityId)
+          pendingInteractionViewModel = interactionViewModel
+          pendingItemList += interactionViewModel
+        }
+      } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
+        addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
+      }
     }
 
     var canContinueToNextState = false
@@ -175,7 +183,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
 
-    maybeAddNavigationButtons(
+    val navButtonMode = computeNavigationButtons(
       pendingItemList,
       hasPreviousState,
       canContinueToNextState,
@@ -390,50 +398,98 @@ class StatePlayerRecyclerViewAssembler private constructor(
     return null
   }
 
-  private fun maybeAddNavigationButtons(
-    pendingItemList: MutableList<StateItemViewModel>,
+  private fun computeNavigationButtons(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean) {
+    stateIsTerminal: Boolean): NavigationButtonMode {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
-    when {
+    return when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
+        NavigationButtonMode.CONTINUE_BUTTON
+      }
+      canContinueToNextState && playerFeatureSet.forwardNavigation -> {
+        NavigationButtonMode.NEXT_BUTTON
+      }
+      stateIsTerminal -> {
+        if (playerFeatureSet.replaySupport && !playerFeatureSet.returnToTopicNavigation) {
+          NavigationButtonMode.REPLAY_BUTTON
+        } else if (!playerFeatureSet.replaySupport && playerFeatureSet.returnToTopicNavigation) {
+          NavigationButtonMode.NEXT_BUTTON
+        } else if (playerFeatureSet.replaySupport && playerFeatureSet.returnToTopicNavigation) {
+          NavigationButtonMode.REPLAY_AND_RETURN_TO_TOPIC_BUTTON
+        } else {
+          NavigationButtonMode.NO_NAV_BUTTONS
+        }
+      }
+      doesMostRecentInteractionRequireExplicitSubmission() && playerFeatureSet.forwardNavigation -> {
+        NavigationButtonMode.SUBMIT_BUTTON
+      }
+      // Otherwise, just show the previous button since the interaction itself will push the answer submission.
+      hasPreviousButton && !isMostRecentInteractionAutoNavigating() -> {
+        NavigationButtonMode.PREVIOUS_BUTTON_ONLY
+      }
+      else -> {
+        // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
+        // navigation in this context is disabled.
+        NavigationButtonMode.NO_NAV_BUTTONS
+      }
+    }
+  }
+
+  private fun addNavigationButtons(
+    pendingItemList: MutableList<StateItemViewModel>, navigationButtonMode: NavigationButtonMode,
+    hasPreviousState: Boolean
+  ) {
+    val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
+    when (navigationButtonMode) {
+      NavigationButtonMode.CONTINUE_BUTTON -> {
         pendingItemList += ContinueNavigationButtonViewModel(
           hasPreviousButton, previousNavigationButtonListener, fragment as ContinueNavigationButtonListener
         )
       }
-      canContinueToNextState && playerFeatureSet.forwardNavigation -> {
+      NavigationButtonMode.NEXT_BUTTON -> {
         pendingItemList += NextButtonViewModel(
           hasPreviousButton, previousNavigationButtonListener, fragment as NextNavigationButtonListener
         )
       }
-      stateIsTerminal -> {
-        if (playerFeatureSet.replaySupport) {
-          pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
-        }
-        if (playerFeatureSet.returnToTopicNavigation) {
-          pendingItemList += ReturnToTopicButtonViewModel(
-            hasPreviousButton, previousNavigationButtonListener,
-            fragment as ReturnToTopicNavigationButtonListener
-          )
-        }
+      NavigationButtonMode.REPLAY_BUTTON -> {
+        pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
       }
-      doesMostRecentInteractionRequireExplicitSubmission() && playerFeatureSet.forwardNavigation -> {
+      NavigationButtonMode.RETURN_TO_TOPIC_BUTTON -> {
+        pendingItemList += ReturnToTopicButtonViewModel(
+          hasPreviousButton, previousNavigationButtonListener,
+          fragment as ReturnToTopicNavigationButtonListener
+        )
+      }
+      NavigationButtonMode.REPLAY_AND_RETURN_TO_TOPIC_BUTTON -> {
+        pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+        pendingItemList += ReturnToTopicButtonViewModel(
+          hasPreviousButton, previousNavigationButtonListener,
+          fragment as ReturnToTopicNavigationButtonListener
+        )
+      }
+      NavigationButtonMode.SUBMIT_BUTTON -> {
         pendingItemList += SubmitButtonViewModel(
           hasPreviousButton, previousNavigationButtonListener, fragment as SubmitNavigationButtonListener
         )
       }
-      // Otherwise, just show the previous button since the interaction itself will push the answer submission.
-      hasPreviousButton && !isMostRecentInteractionAutoNavigating() -> {
-        pendingItemList += PreviousButtonViewModel(
-          previousNavigationButtonListener
-        )
+      NavigationButtonMode.PREVIOUS_BUTTON_ONLY -> {
+        pendingItemList += PreviousButtonViewModel(previousNavigationButtonListener)
       }
-
-      // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
-      // navigation in this context is disabled.
+      NavigationButtonMode.NO_NAV_BUTTONS -> {} // Do nothing in this case.
     }
+  }
+
+  private enum class NavigationButtonMode {
+    CONTINUE_BUTTON,
+    NEXT_BUTTON,
+    REPLAY_BUTTON,
+    RETURN_TO_TOPIC_BUTTON,
+    REPLAY_AND_RETURN_TO_TOPIC_BUTTON,
+    SUBMIT_BUTTON,
+    PREVIOUS_BUTTON_ONLY,
+    NO_NAV_BUTTONS
   }
 
   /**
