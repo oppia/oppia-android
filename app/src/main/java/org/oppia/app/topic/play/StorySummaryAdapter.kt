@@ -1,8 +1,16 @@
 package org.oppia.app.topic.play
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.Transformation
+import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
 import org.oppia.app.databinding.TopicPlayTitleBinding
 import org.oppia.app.model.ChapterPlayState
@@ -15,6 +23,7 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
+  private val context: Context,
   private val itemList: MutableList<TopicPlayItemViewModel>,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
@@ -86,11 +95,6 @@ class StorySummaryAdapter(
   inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummaryViewModel: StorySummaryViewModel, position: Int) {
-      var isChapterListVisible = false
-      if (currentExpandedChapterListIndex != null) {
-        isChapterListVisible = currentExpandedChapterListIndex!! == position
-      }
-      binding.isListExpanded = isChapterListVisible
       binding.viewModel = storySummaryViewModel
 
       val chapterSummaries = storySummaryViewModel.storySummary.chapterList
@@ -109,27 +113,81 @@ class StorySummaryAdapter(
 
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
+      if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
+        val rotate = AnimationUtils.loadAnimation(context, R.anim.rotation_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(rotate)
+        expand(binding.chapterListContainer)
+      } else {
+        val rotate = AnimationUtils.loadAnimation(context, R.anim.rotation_anti_clockwise_180)
+        binding.chapterListDropDownIcon.startAnimation(rotate)
+        collapse(binding.chapterListContainer)
+      }
 
-      binding.root.setOnClickListener {
-        val previousIndex: Int? = currentExpandedChapterListIndex
-        currentExpandedChapterListIndex =
-          if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if (previousIndex != null && currentExpandedChapterListIndex != null && previousIndex == currentExpandedChapterListIndex) {
-          notifyItemChanged(currentExpandedChapterListIndex!!)
+      binding.storyContainer.setOnClickListener {
+        val previousItem = currentExpandedChapterListIndex
+        if (binding.chapterListContainer.isVisible) {
+          currentExpandedChapterListIndex = null
         } else {
-          if (previousIndex != null) {
-            notifyItemChanged(previousIndex)
-          }
-          if (currentExpandedChapterListIndex != null) {
-            notifyItemChanged(currentExpandedChapterListIndex!!)
-          }
+          currentExpandedChapterListIndex = position
+        }
+        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        notifyItemChanged(position)
+        if (previousItem != null && previousItem != position) {
+          notifyItemChanged(previousItem)
         }
       }
+    }
+
+    private fun expand(chapterListContainer: View) {
+      chapterListContainer.clearAnimation()
+      val matchParentMeasureSpec =
+        View.MeasureSpec.makeMeasureSpec((chapterListContainer.parent as View).width, View.MeasureSpec.EXACTLY)
+      val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+      chapterListContainer.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+      val targetHeight = chapterListContainer.measuredHeight
+
+      // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+      chapterListContainer.layoutParams.height = 1
+      chapterListContainer.visibility = View.VISIBLE
+      val expandAnimation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+          if (interpolatedTime == 1f) {
+            chapterListContainer.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+          } else {
+            chapterListContainer.layoutParams.height = (targetHeight * interpolatedTime).toInt()
+          }
+          chapterListContainer.requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+          return true
+        }
+      }
+      expandAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_time_ms).toLong()
+      chapterListContainer.startAnimation(expandAnimation)
+    }
+
+    private fun collapse(chapterListContainer: View) {
+      chapterListContainer.clearAnimation()
+
+      val initialHeight = chapterListContainer.measuredHeight
+
+      val collapseAnimation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+          if (interpolatedTime == 1f) {
+            chapterListContainer.visibility = View.GONE
+          } else {
+            chapterListContainer.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+          }
+          chapterListContainer.requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+          return true
+        }
+      }
+      collapseAnimation.duration = context.resources.getInteger(R.integer.topic_play_animation_time_ms).toLong()
+      chapterListContainer.startAnimation(collapseAnimation)
     }
   }
 }
