@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -32,8 +31,8 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
-import org.oppia.util.caching.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -45,8 +44,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_TOPIC_ID_0 = "test_topic_id_0"
-const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 const val EQUAL_PARTS_STORY_ID = "wANbh4oOClga"
@@ -158,8 +155,6 @@ class TopicListController @Inject constructor(
 
   private fun createTopicList(): TopicList {
     val topicListBuilder = TopicList.newBuilder()
-      .addTopicSummary(createTopicSummary0())
-      .addTopicSummary(createTopicSummary1())
       .addTopicSummary(createFractionsTopicSummary())
       .addTopicSummary(createRatiosTopicSummary())
     val ongoingStoryList = createOngoingStoryList()
@@ -193,36 +188,6 @@ class TopicListController @Inject constructor(
       .setTotalSkillCount(TOPIC_SKILL_ASSOCIATIONS.getValue(topicId).size)
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
-      .build()
-  }
-
-  private fun createTopicSummary0(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_0)
-      .setName("First Topic")
-      .setVersion(1)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(2)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(2)
-      .setTotalChapterCount(4)
-      .setTopicThumbnail(createTopicThumbnail0())
-      .build()
-  }
-
-  private fun createTopicSummary1(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setName("Second Topic")
-      .setVersion(3)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(1)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(1)
-      .setTotalChapterCount(1)
-      .setTopicThumbnail(createTopicThumbnail1())
       .build()
   }
 

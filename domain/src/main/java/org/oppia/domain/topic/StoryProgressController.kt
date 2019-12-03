@@ -11,17 +11,9 @@ import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_STORY_ID_0 = "test_story_id_0"
-const val TEST_STORY_ID_1 = "test_story_id_1"
-const val TEST_STORY_ID_2 = "test_story_id_2"
 const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
 const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
 const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
-const val TEST_EXPLORATION_ID_0 = "test_exp_id_0"
-const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
-const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
-const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
-const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
 const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
 const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
 const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
@@ -88,9 +80,6 @@ class StoryProgressController @Inject constructor(
 
   private fun createInitialStoryProgressState(): Map<String, TrackedStoryProgress> {
     return mapOf(
-      TEST_STORY_ID_0 to createStoryProgress0(),
-      TEST_STORY_ID_1 to createStoryProgress1(),
-      TEST_STORY_ID_2 to createStoryProgress2(),
       FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0),
       RATIOS_STORY_ID_0 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 0),
       RATIOS_STORY_ID_1 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 1)
@@ -116,27 +105,6 @@ class StoryProgressController @Inject constructor(
       explorationIdList.add(chapter.getString("exploration_id"))
     }
     return explorationIdList
-  }
-
-  private fun createStoryProgress0(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_0),
-      completedChapters = setOf(TEST_EXPLORATION_ID_0)
-    )
-  }
-
-  private fun createStoryProgress1(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_1, TEST_EXPLORATION_ID_2, TEST_EXPLORATION_ID_3),
-      completedChapters = setOf(TEST_EXPLORATION_ID_1)
-    )
-  }
-
-  private fun createStoryProgress2(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_4),
-      completedChapters = setOf()
-    )
   }
 
   /**
