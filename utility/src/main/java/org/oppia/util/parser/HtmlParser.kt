@@ -3,7 +3,9 @@ package org.oppia.util.parser
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
@@ -48,7 +50,7 @@ class HtmlParser private constructor(
 
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-      htmlContent = htmlContent.replace( CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+      htmlContent = htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
 
@@ -61,9 +63,23 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    return trimSpannable(CustomHtmlContentHandler.fromHtml(
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)
-    ) as SpannableStringBuilder)
+    )
+    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
+    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+    bulletSpans.forEach {
+      val start = spannableBuilder.getSpanStart(it)
+      val end = spannableBuilder.getSpanEnd(it)
+      spannableBuilder.removeSpan(it)
+      spannableBuilder.setSpan(
+        ImprovedBulletSpan(),
+        start,
+        end,
+        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+    }
+    return trimSpannable(spannableBuilder)
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
