@@ -1,12 +1,22 @@
 package org.oppia.app.player.state
 
 import android.app.AlertDialog
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.os.Handler
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -262,8 +272,7 @@ class StateFragmentPresenter @Inject constructor(
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser =
-                htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
               )
@@ -497,6 +506,9 @@ class StateFragmentPresenter @Inject constructor(
       if (result.state.interaction.id == "Continue") {
         moveToNextState()
       } else {
+        if (result.labelledAsCorrectAnswer) {
+          showCongratulationMessageOnCorrectAnswer()
+        }
         isFeedbackPlaying = true
         feedbackId = result.feedback.contentId
       }
@@ -504,6 +516,29 @@ class StateFragmentPresenter @Inject constructor(
         autoPlayAudio = true
       }
     })
+  }
+
+  private fun showCongratulationMessageOnCorrectAnswer() {
+    binding.congratulationTextview.setVisibility(View.VISIBLE)
+
+    val fadeIn = AlphaAnimation(0f, 1f)
+    fadeIn.interpolator = DecelerateInterpolator() //add this
+    fadeIn.duration = 2000
+
+    val fadeOut = AlphaAnimation(1f, 0f)
+    fadeOut.interpolator = AccelerateInterpolator() //and this
+    fadeOut.startOffset = 1000
+    fadeOut.duration = 1000
+
+    val animation = AnimationSet(false) //change to false
+    animation.addAnimation(fadeIn)
+    animation.addAnimation(fadeOut)
+    binding.congratulationTextview.setAnimation(animation)
+
+    Handler().postDelayed({
+      binding.congratulationTextview.clearAnimation()
+      binding.congratulationTextview.visibility = View.INVISIBLE
+    },2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
