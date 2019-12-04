@@ -14,7 +14,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileInputViewBinding
 
-/** Custom view that is used for name or pin input with error messages */
+/** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,

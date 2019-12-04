@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @FragmentScope
 class ResetPinDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
+  private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ResetPinViewModel>
 ) {
@@ -35,7 +37,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     checkNotNull(profileId) { "Profile Id must not be null" }
     checkNotNull(name) { "Name must not be null" }
 
-    val binding: ResetPinDialogBinding = DataBindingUtil.inflate(fragment.requireActivity().layoutInflater, R.layout.reset_pin_dialog, null, false)
+    val binding: ResetPinDialogBinding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.reset_pin_dialog, null, false)
     binding.apply {
       lifecycleOwner = fragment
       viewModel = resetViewModel
@@ -53,7 +55,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
 
     binding.inputPin.setLabel("$name's New PIN")
 
-    val dialog =  AlertDialog.Builder(fragment.requireActivity() as Context, R.style.AlertDialogTheme)
+    val dialog =  AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
       .setView(binding.root)
       .setMessage("This PIN wil be $name's new PIN and will be required when signing in.")

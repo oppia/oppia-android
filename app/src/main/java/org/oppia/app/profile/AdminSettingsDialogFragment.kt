@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 const val KEY_ADMIN_SETTINGS_PIN = "ADMIN_SETTINGS_PIN"
 
+/** DialogFragment that allows user to input admin PIN. */
 class AdminSettingsDialogFragment : InjectableDialogFragment() {
   companion object {
     fun newInstance(adminPin: String): AdminSettingsDialogFragment {

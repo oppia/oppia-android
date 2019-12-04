@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
 
+/** The presenter for [PinPasswordActivity]. */
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
@@ -71,11 +73,11 @@ class PinPasswordActivityPresenter @Inject constructor(
               })
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
-              activity.lifecycleScope.launch(Dispatchers.Main) {
-                delay(1000)
+              val handler = Handler()
+              handler.postDelayed({
                 wrong = true
                 binding.inputPin.setText("")
-              }
+              }, 1000)
               pinViewModel.showError.set(true)
             }
           }

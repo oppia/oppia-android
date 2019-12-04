@@ -10,6 +10,7 @@ import javax.inject.Inject
 const val KEY_PIN_PASSWORD_PROFILE_ID = "PIN_PASSWORD_PROFILE_ID"
 const val KEY_PIN_PASSWORD_ADMIN_PIN = "PIN_PASSWORD_ADMIN_PIN"
 
+/** Activity that allows user to input his or her PIN. */
 class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {
   @Inject lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 

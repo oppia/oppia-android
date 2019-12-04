@@ -12,6 +12,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+/** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
