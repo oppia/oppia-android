@@ -191,23 +191,27 @@ class StateFragmentPresenter @Inject constructor(
     if (isAudioShowing()) {
       setAudioFragmentVisible(false)
     } else {
-      when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-        ConnectionStatus.CELLULAR -> {
-          if (showCellularDataDialog) {
-            setAudioFragmentVisible(false)
-            showCellularDataDialogFragment()
-          } else {
-            if (useCellularData) {
-              setAudioFragmentVisible(true)
-            } else {
+      if (explorationId == "umPkwp0L1M0-") {
+        setAudioFragmentVisible(true)
+      } else {
+        when (networkConnectionUtil.getCurrentConnectionStatus()) {
+          ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+          ConnectionStatus.CELLULAR -> {
+            if (showCellularDataDialog) {
               setAudioFragmentVisible(false)
+              showCellularDataDialogFragment()
+            } else {
+              if (useCellularData) {
+                setAudioFragmentVisible(true)
+              } else {
+                setAudioFragmentVisible(false)
+              }
             }
           }
-        }
-        ConnectionStatus.NONE-> {
-          showOfflineDialog()
-          setAudioFragmentVisible(false)
+          ConnectionStatus.NONE -> {
+            showOfflineDialog()
+            setAudioFragmentVisible(false)
+          }
         }
       }
     }
@@ -353,7 +357,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
+        moveToNextState()
       } else {
         isFeedbackPlaying = true
         feedbackId = result.feedback.contentId
