@@ -308,7 +308,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId)
+      return FeedbackViewModel(feedback.contentId, feedback.html, gcsEntityId)
     }
     return null
   }
@@ -418,6 +418,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
+          binding.viewModel = contentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName, entityType, contentViewModel.gcsEntityId, /* imageCenterAlign= */ true, customOppiaTagActionListener = fragment as HtmlParser.CustomOppiaTagActionListener
@@ -440,6 +441,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
           val feedbackViewModel = viewModel as FeedbackViewModel
+          binding.viewModel = feedbackViewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true, customOppiaTagActionListener = fragment as HtmlParser.CustomOppiaTagActionListener

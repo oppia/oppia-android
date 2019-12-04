@@ -29,6 +29,9 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioFragmentInterface
 import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
+import org.oppia.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.listener.AudioContentIdListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -71,6 +74,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
+  private lateinit var currentHighlightedContentItem: StateItemViewModel
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -174,10 +178,30 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
-    recyclerViewAssembler.contentViewModel?.let { contentViewModel ->
-      if (contentViewModel.contentId == contentId){
-        contentViewModel.updateIsAudioPlaying(playing)
+    if (::currentHighlightedContentItem.isInitialized) {
+      if (currentHighlightedContentItem is ContentViewModel && (currentHighlightedContentItem as ContentViewModel).contentId != contentId) {
+        (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(false)
+      } else if (currentHighlightedContentItem is FeedbackViewModel && (currentHighlightedContentItem as FeedbackViewModel).contentId != contentId) {
+        (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(false)
       }
+    }
+    val itemList = viewModel.itemList
+    for (item in itemList) {
+      if (item is ContentViewModel) {
+        if (item.contentId == contentId) {
+          currentHighlightedContentItem = item
+        }
+      } else if (item is FeedbackViewModel) {
+        if (item.contentId == contentId) {
+          currentHighlightedContentItem = item
+        }
+      }
+    }
+    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is ContentViewModel) {
+      (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(playing)
+    }
+    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is FeedbackViewModel) {
+      (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(playing)
     }
   }
 
@@ -205,7 +229,7 @@ class StateFragmentPresenter @Inject constructor(
             }
           }
         }
-        ConnectionStatus.NONE-> {
+        ConnectionStatus.NONE -> {
           showOfflineDialog()
           setAudioFragmentVisible(false)
         }
@@ -282,6 +306,7 @@ class StateFragmentPresenter @Inject constructor(
           override fun onAnimationEnd(p0: Animation?) {
             getStateViewModel().setAudioBarVisibility(false)
           }
+
           override fun onAnimationStart(p0: Animation?) {}
           override fun onAnimationRepeat(p0: Animation?) {}
         })
@@ -353,7 +378,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
+        moveToNextState()
       } else {
         isFeedbackPlaying = true
         feedbackId = result.feedback.contentId
