@@ -24,9 +24,9 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="50dp"
-      android:paddingStart="30dp"
-      android:paddingEnd="30dp"/>
+      android:layout_marginTop="32dp"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp"/>
     <TextView
       android:id="@+id/sub_text"
       android:layout_width="match_parent"
@@ -36,14 +36,14 @@
       app:layout_constraintTop_toBottomOf="@id/heading_text"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="15dp"
-      android:paddingStart="30dp"
-      android:paddingEnd="30dp"/>
+      android:layout_marginTop="16dp"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp"/>
     <org.oppia.app.profile.ProfileInputView
       android:id="@+id/input_pin"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="40dp"
+      android:layout_marginTop="28dp"
       app:layout_constraintTop_toBottomOf="@id/sub_text"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
       style="@style/StateButtonActive"
       app:layout_constraintTop_toBottomOf="@id/input_pin"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="30dp"
-      android:layout_marginEnd="30dp"/>
+      android:layout_marginTop="20dp"
+      android:layout_marginEnd="32dp"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
