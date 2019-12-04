@@ -141,7 +141,13 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-  fun pauseAudio() = audioPlayerController.pause()
+  fun pauseAudio(){
+    audioPlayerController.pause()
+    if (audioContentIdListener != null) {
+      audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = false)
+    }
+  }
+
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 
