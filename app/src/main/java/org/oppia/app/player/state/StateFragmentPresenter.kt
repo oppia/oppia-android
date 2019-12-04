@@ -1,12 +1,8 @@
 package org.oppia.app.player.state
 
 import android.app.AlertDialog
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Handler
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +12,6 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -51,7 +46,6 @@ import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
-import org.oppia.app.player.audio.AudioViewModel
 import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
@@ -106,8 +100,6 @@ class StateFragmentPresenter @Inject constructor(
   private var showCellularDataDialog = true
   private var useCellularData = false
   private var feedbackId: String? = null
-  private var autoPlayAudio = false
-  private var isFeedbackPlaying = false
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -362,21 +354,15 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun showAudioFragment() {
     getStateViewModel().setAudioBarVisibility(true)
-    autoPlayAudio = true
     (activity as AudioButtonListener).showAudioStreamingOn()
     val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
     if (currentYOffset == 0) {
       binding.stateRecyclerView.smoothScrollToPosition(0)
     }
     getAudioFragment()?.let {
-      (it as AudioUiManager).setVoiceoverMappings(
-        explorationId,
-        currentStateName,
-        feedbackId
-      )
+      (it as AudioUiManager).loadAudio(feedbackId, true)
       it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
     }
-    subscribeToAudioPlayStatus()
   }
 
   private fun hideAudioFragment() {
@@ -396,26 +382,6 @@ class StateFragmentPresenter @Inject constructor(
         it.view?.startAnimation(animation)
       }
     }
-  }
-
-  private fun subscribeToAudioPlayStatus() {
-    val audioFragmentInterface = getAudioFragment() as AudioUiManager
-    audioFragmentInterface.getCurrentPlayStatus().observe(fragment, Observer {
-      if (it == AudioViewModel.UiAudioPlayStatus.COMPLETED) {
-        getAudioFragment()?.let {
-          if (isFeedbackPlaying) {
-            audioFragmentInterface.setVoiceoverMappings(explorationId, currentStateName)
-          }
-          isFeedbackPlaying = false
-          feedbackId = null
-        }
-      } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
-        if (autoPlayAudio) {
-          autoPlayAudio = false
-          audioFragmentInterface.playAudio()
-        }
-      }
-    })
   }
 
   private fun subscribeToCurrentState() {
@@ -441,14 +407,8 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
-    if (isAudioShowing()) {
-      (getAudioFragment() as AudioUiManager).setVoiceoverMappings(
-        explorationId,
-        currentStateName,
-        feedbackId
-      )
-    }
-    feedbackId = null
+
+
 
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -474,6 +434,11 @@ class StateFragmentPresenter @Inject constructor(
         canContinueToNextState = true
       }
     }
+
+    val audioManager = getAudioFragment() as AudioUiManager
+    audioManager.setStateAndExplorationId(ephemeralState.state, explorationId)
+    audioManager.loadAudio(feedbackId, isAudioShowing() && !canContinueToNextState)
+    feedbackId = null
 
     updateNavigationButtonVisibility(
       pendingItemList,
@@ -509,11 +474,7 @@ class StateFragmentPresenter @Inject constructor(
         if (result.labelledAsCorrectAnswer) {
           showCongratulationMessageOnCorrectAnswer()
         }
-        isFeedbackPlaying = true
         feedbackId = result.feedback.contentId
-      }
-      if (isAudioShowing()) {
-        autoPlayAudio = true
       }
     })
   }
@@ -585,9 +546,6 @@ class StateFragmentPresenter @Inject constructor(
   override fun onContinueButtonClicked() {
     hideKeyboard()
     moveToNextState()
-    if (isAudioShowing()) {
-      autoPlayAudio = true
-    }
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {

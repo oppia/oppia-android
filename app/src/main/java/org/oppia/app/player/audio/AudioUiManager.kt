@@ -1,20 +1,24 @@
 package org.oppia.app.player.audio
 
-import androidx.lifecycle.LiveData
+import org.oppia.app.model.State
 
 /** Manager for updating audio state within the state player. */
 interface AudioUiManager {
   /**
-   * Used to set AudioFragment's VoiceoverMappings with given stateId and contentId.
-   * If no contentId is provided, AudioFragment will use state.content.contentId as default.
+   * Used to set the state and explorationId for the audio player
+   *
+   * @param newState: New State for the audio player to get recorded voiceovers from.
+   * @param explorationId: Used to build voiceover uri.
    */
-  fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null)
+  fun setStateAndExplorationId(newState: State, explorationId: String)
 
-  /** Allows [StateFragment] to get the current play status of the audio player. */
-  fun getCurrentPlayStatus(): LiveData<AudioViewModel.UiAudioPlayStatus>
-
-  /** Used to automatically start playing audio when switching states. */
-  fun playAudio()
+  /**
+   * Loads audio for media player with content id.
+   *
+   * @param contentId: Used to get a specific Voiceover. If null, state.content.contentId is used as default.
+   * @param allowAutoPlay: If false, audio is guaranteed not to be autoPlayed.
+   */
+  fun loadAudio(contentId: String?, allowAutoPlay: Boolean)
 
   /** Used to pause audio when hiding [AudioFragment]. */
   fun pauseAudio()

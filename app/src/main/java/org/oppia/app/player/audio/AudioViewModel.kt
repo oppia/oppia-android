@@ -26,17 +26,17 @@ import javax.inject.Inject
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
-  private val logger: Logger,
-  private val explorationDataController: ExplorationDataController,
   private val fragment: Fragment,
   @DefaultResource private val gcsResource: String
 ) : ViewModel() {
 
-  private lateinit var exploration: Exploration
+  private lateinit var state: State
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "hi"
   private var languageSelectionShown = false
+  private var autoPlay = false
+  private var hasFeedback = false
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
@@ -63,32 +63,25 @@ class AudioViewModel @Inject constructor(
     processPlayStatusLiveData()
   }
 
-  fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) {
-    this.explorationId = explorationId
-    if (!::exploration.isInitialized) {
-      explorationDataController.getExplorationById(explorationId).observeOnce(fragment, Observer {
-        if (it.isFailure()) {
-          logger.e("AudioFragment", "Failed to get Exploration", it.getErrorOrNull()!!)
-        }
-        exploration = it.getOrDefault(Exploration.getDefaultInstance())
-        setVoiceoverMappingsByStateAndContentId(stateId, contentId)
-      })
-    } else {
-      setVoiceoverMappingsByStateAndContentId(stateId, contentId)
-    }
+  fun setStateAndExplorationId(newState: State, id: String) {
+    state = newState
+    explorationId = id
   }
 
-  private fun setVoiceoverMappingsByStateAndContentId(stateId: String, contentId: String?) {
-    val state = exploration.statesMap[stateId] ?: State.getDefaultInstance()
-    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+  fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
+    hasFeedback = contentId != null
+    autoPlay = allowAutoPlay
+    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
       selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
       languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
+        autoPlay = false
         languageSelectionShown = true
-        val languageCode = if (languages.any { it == exploration.languageCode }) {
-          exploration.languageCode
+        val languageCode = if (languages.any { it == "en" }) {
+          "en"
         } else {
           languages.first()
         }
@@ -111,15 +104,6 @@ class AudioViewModel @Inject constructor(
       audioPlayerController.pause()
     } else {
       audioPlayerController.play()
-    }
-  }
-
-  fun playAudio() {
-    // Do not auto play audio if the LanguageDialogFragment was shown
-    if (!languageSelectionShown) {
-      audioPlayerController.play()
-    } else {
-      languageSelectionShown = false
     }
   }
 
@@ -161,10 +145,18 @@ class AudioViewModel @Inject constructor(
     if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
     if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
     return when (playProgressResult.getOrThrow().type) {
-      PlayStatus.PREPARED -> UiAudioPlayStatus.PREPARED
+      PlayStatus.PREPARED -> {
+        if (autoPlay) audioPlayerController.play()
+        autoPlay = false
+        UiAudioPlayStatus.PREPARED
+      }
       PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
       PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
-      PlayStatus.COMPLETED -> UiAudioPlayStatus.COMPLETED
+      PlayStatus.COMPLETED -> {
+        if (hasFeedback) loadAudio(null, false)
+        hasFeedback = false
+        UiAudioPlayStatus.COMPLETED
+      }
     }
   }
 

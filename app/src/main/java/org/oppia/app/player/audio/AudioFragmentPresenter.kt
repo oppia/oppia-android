@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
@@ -94,15 +95,9 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String? = null) =
-    viewModel.setVoiceoverMappings(explorationId, stateId, contentId)
+  fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
 
-  fun getCurrentPlayStatus() = viewModel.playStatusLiveData
-
-  fun playAudio() {
-    if (prepared)
-      viewModel.playAudio()
-  }
+  fun loadAudio(contentId: String?, allowAutoPlay: Boolean) = viewModel.loadAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     if (prepared)

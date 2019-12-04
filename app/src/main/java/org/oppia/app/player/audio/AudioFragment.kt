@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
 class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager {
-  @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
+  @Inject
+  lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -40,19 +42,14 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager {
     audioFragmentPresenter.handleOnDestroy()
   }
 
-  override fun setVoiceoverMappings(explorationId: String, stateId: String, contentId: String?) {
-    audioFragmentPresenter.setVoiceoverMappings(explorationId, stateId, contentId)
-  }
+  override fun setStateAndExplorationId(newState: State, explorationId: String) =
+    audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
-  override fun playAudio() {
-    audioFragmentPresenter.playAudio()
-  }
+  override fun loadAudio(contentId: String?, allowAutoPlay: Boolean) = audioFragmentPresenter.loadAudio(contentId, allowAutoPlay)
 
   override fun pauseAudio() {
     audioFragmentPresenter.pauseAudio()
   }
-
-  override fun getCurrentPlayStatus() = audioFragmentPresenter.getCurrentPlayStatus()
 
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking

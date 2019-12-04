@@ -20,7 +20,7 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
         R.id.audio_fragment_placeholder,
         audioFragment
       ).commitNow()
-      audioFragment.setVoiceoverMappings(RATIOS_EXPLORATION_ID_0, "Introduction")
+//      audioFragment.setStateAndExplorationId(RATIOS_EXPLORATION_ID_0, "Introduction")
     }
   }
 
