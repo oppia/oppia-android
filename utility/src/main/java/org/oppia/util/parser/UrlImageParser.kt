@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
-import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
@@ -92,15 +91,17 @@ class UrlImageParser private constructor(
   }
 
   // Reference: https://stackoverflow.com/a/51865494
-  fun <T : View> T.width(calculateWidth: (Int) -> Unit) {
-    if (width == 0)
+  private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
+    if (width == 0) {
       viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
           viewTreeObserver.removeOnGlobalLayoutListener(this)
-          calculateWidth(width)
+          computeWidthOnGlobalLayout(width)
         }
       })
-    else calculateWidth(width)
+    } else {
+      computeWidthOnGlobalLayout(width)
+    }
   }
 
   class Factory @Inject constructor(
