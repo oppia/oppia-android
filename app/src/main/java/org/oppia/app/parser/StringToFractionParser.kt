@@ -6,8 +6,6 @@ import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Fraction
 import org.oppia.domain.util.normalizeWhitespace
-import java.lang.Integer.parseInt
-import java.util.regex.Pattern
 
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
@@ -24,7 +22,7 @@ class StringToFractionParser {
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     // No need to check for real-time errors since the following logically include them.
-    val fraction = parseFraction(text)
+    val fraction = getFractionFromString(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
@@ -49,13 +47,13 @@ class StringToFractionParser {
     }
   }
 
-  fun getFractionFromString(text: String): Fraction {
+  fun getFractionFromString(text: String): Fraction? {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
     return parseMixedNumber(inputText)
       ?: parseFraction(inputText)
       ?: parseWholeNumber(inputText)
-      ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
+      ?: null
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
