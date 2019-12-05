@@ -102,4 +102,8 @@
       %d Lessons
     </item>
   </plurals>
+  <!-- ProfileChooserFragment. -->
+  <string name="profile_chooser_admin">Administrator</string>
+  <string name="profile_chooser_select">Select your profile</string>
+  <string name="profile_chooser_add">Add Profile</string>
 </resources>

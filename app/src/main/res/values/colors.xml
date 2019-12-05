@@ -38,6 +38,9 @@
   <color name="whiteLight">#F9F9F9</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatarBorder">#4E4E50</color>
+  <color name="profileChooserBackground">#212121</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
