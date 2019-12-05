@@ -8,7 +8,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
-import org.oppia.app.player.state.StateFragment
 
 /**
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
@@ -29,7 +28,7 @@ class CellularAudioDialogFragment : DialogFragment() {
     val view = activity!!.layoutInflater.inflate(R.layout.cellular_data_dialog, null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
-    val cellularDataInterface: CellularDataInterface = parentFragment as StateFragment
+    val cellularDataInterface: CellularDataInterface = parentFragment as AudioFragment
 
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.cellular_data_alert_dialog_title)

@@ -18,7 +18,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope

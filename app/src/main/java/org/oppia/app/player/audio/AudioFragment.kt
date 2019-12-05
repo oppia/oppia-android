@@ -10,7 +10,7 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager {
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
@@ -45,15 +45,25 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager {
   override fun setStateAndExplorationId(newState: State, explorationId: String) =
     audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
-  override fun loadAudio(contentId: String?, allowAutoPlay: Boolean) = audioFragmentPresenter.loadAudio(contentId, allowAutoPlay)
+  override fun loadAudio(contentId: String?, allowAutoPlay: Boolean) =
+    audioFragmentPresenter.loadAudio(contentId, allowAutoPlay)
 
   override fun pauseAudio() {
     audioFragmentPresenter.pauseAudio()
   }
+
+  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) =
+    audioFragmentPresenter.handleEnableAudio(saveUserChoice)
+
+  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) =
+    audioFragmentPresenter.handleDisableAudio(saveUserChoice)
 
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
 
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
+
+  fun handleAudioClick(isShowing: Boolean, feedbackId: String?) =
+    audioFragmentPresenter.handleAudioClick(isShowing, feedbackId)
 }

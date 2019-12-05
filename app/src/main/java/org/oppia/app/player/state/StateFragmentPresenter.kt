@@ -283,29 +283,30 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (isAudioShowing()) {
-      setAudioFragmentVisible(false)
-    } else {
-      when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-        ConnectionStatus.CELLULAR -> {
-          if (showCellularDataDialog) {
-            setAudioFragmentVisible(false)
-            showCellularDataDialogFragment()
-          } else {
-            if (useCellularData) {
-              setAudioFragmentVisible(true)
-            } else {
-              setAudioFragmentVisible(false)
-            }
-          }
-        }
-        ConnectionStatus.NONE -> {
-          showOfflineDialog()
-          setAudioFragmentVisible(false)
-        }
-      }
-    }
+    (getAudioFragment() as AudioFragment).handleAudioClick(isAudioShowing(), feedbackId)
+//    if (isAudioShowing()) {
+//      setAudioFragmentVisible(false)
+//    } else {
+//      when (networkConnectionUtil.getCurrentConnectionStatus()) {
+//        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+//        ConnectionStatus.CELLULAR -> {
+//          if (showCellularDataDialog) {
+//            setAudioFragmentVisible(false)
+//            showCellularDataDialogFragment()
+//          } else {
+//            if (useCellularData) {
+//              setAudioFragmentVisible(true)
+//            } else {
+//              setAudioFragmentVisible(false)
+//            }
+//          }
+//        }
+//        ConnectionStatus.NONE -> {
+//          showOfflineDialog()
+//          setAudioFragmentVisible(false)
+//        }
+//      }
+//    }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -712,6 +713,8 @@ class StateFragmentPresenter @Inject constructor(
         dialog.dismiss()
       }.create().show()
   }
+
+  fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 }
