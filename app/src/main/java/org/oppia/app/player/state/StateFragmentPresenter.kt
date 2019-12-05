@@ -326,14 +326,12 @@ class StateFragmentPresenter @Inject constructor(
         getAudioFragment()?.let {
           if (isFeedbackPlaying) {
             audioFragmentInterface.setVoiceoverMappings(explorationId, currentStateName)
+            autoPlayAudio = false
           }
           isFeedbackPlaying = false
           feedbackId = null
         }
       } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
-        if(isAudioShowing() && !isFeedbackPlaying){
-          autoPlayAudio = true
-        }
         if (autoPlayAudio) {
           autoPlayAudio = false
           audioFragmentInterface.playAudio()
@@ -360,8 +358,6 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
     currentStateName = ephemeralState.state.name
-
-    isFeedbackPlaying = false
 
     showOrHideAudioByState(ephemeralState.state)
     if (isAudioShowing()) {
