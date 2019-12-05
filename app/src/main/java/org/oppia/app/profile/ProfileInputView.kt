@@ -75,6 +75,7 @@ class ProfileInputView @JvmOverloads constructor(
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
   }
+
   fun setLabel(labelText: String) {
     label.text = labelText
   }
