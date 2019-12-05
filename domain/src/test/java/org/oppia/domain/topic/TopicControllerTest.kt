@@ -91,6 +91,8 @@ class TopicControllerTest {
   private val testThread = newSingleThreadContext("TestMain")
 
   @Before
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun setUp() {
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
@@ -624,6 +626,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
@@ -634,7 +637,7 @@ class TopicControllerTest {
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
     val questionsList = questionListResultCaptor.value.getOrThrow()
     assertThat(questionsList.size).isEqualTo(5)
-    val questionIds = questionsList.map { it -> it.questionId }
+    val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
         TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
@@ -644,6 +647,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(FRACTIONS_SKILL_ID_0)
@@ -664,6 +668,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(FRACTIONS_SKILL_ID_1)
@@ -684,6 +689,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(FRACTIONS_SKILL_ID_2)
@@ -704,6 +710,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(RATIOS_SKILL_ID_0)
@@ -723,6 +730,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
