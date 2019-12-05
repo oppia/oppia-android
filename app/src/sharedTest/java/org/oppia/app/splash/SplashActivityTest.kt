@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.profile.ProfileActivity
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -33,7 +33,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(HomeActivity::class.java.getName()))
+    intended(hasComponent(ProfileActivity::class.java.getName()))
   }
 
   @After
