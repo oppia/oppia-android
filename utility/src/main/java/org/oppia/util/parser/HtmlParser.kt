@@ -9,6 +9,7 @@ import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import org.xml.sax.Attributes
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-concept-card-link"
 class HtmlParser private constructor(
   private val urlImageParserFactory: UrlImageParser.Factory,
   private val gcsResourceName: String,
+  private val activity: AppCompatActivity,
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
@@ -73,7 +75,7 @@ class HtmlParser private constructor(
       val end = spannableBuilder.getSpanEnd(it)
       spannableBuilder.removeSpan(it)
       spannableBuilder.setSpan(
-        ImprovedBulletSpan(),
+        ImprovedBulletSpan(activity),
         start,
         end,
         Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -125,13 +127,15 @@ class HtmlParser private constructor(
   }
 
   /** Factory for creating new [HtmlParser]s. */
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+  class Factory @Inject constructor(
+    private val urlImageParserFactory: UrlImageParser.Factory, private val activity: AppCompatActivity
+  ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an optionally specified
      * [CustomOppiaTagActionListener] for handling custom Oppia tag events.
      */
     fun create(gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean, customOppiaTagActionListener: CustomOppiaTagActionListener? = null): HtmlParser {
-      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign, customOppiaTagActionListener)
+      return HtmlParser(urlImageParserFactory, gcsResourceName, activity, entityType, entityId, imageCenterAlign, customOppiaTagActionListener)
     }
   }
 }
