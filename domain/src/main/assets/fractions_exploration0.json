@@ -1590,7 +1590,7 @@
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "<p>Taking his coconut cake with him, Matthew triumphantly headed home to Aunt Tina. He was already planning to have friends over the next afternoon, so he knew he’d be back to the bakery for more goodies soon!<br></p><p>Before leaving the bakery, Matthew wrote down some important notes in his notebook. Write them down, so that you remember too!<br></p><ul><li>Fractions describe <strong>parts of a whole</strong>. They can be written using a slash or a horizontal bar, e.g. 2/3.</li><li>The number on the left (or top) is called the <strong>numerator</strong>. It is the number of selected pieces.</li><li>The number on the right (or bottom) is called the <strong>denominator</strong>. It is the total number of equal pieces that the whole is divided into.<br></li></ul>"
+        "html": "<p>Taking his coconut cake with him, Matthew triumphantly headed home to Aunt Tina. He was already planning to have friends over the next afternoon, so he knew he’d be back to the bakery for more goodies soon!<br></p><p>Before leaving the bakery, Matthew wrote down some important notes in his notebook. Write them down, so that you remember too!<br></p><ul><li>Fractions describe <strong>parts of a whole</strong>. They can be written using a slash, e.g. 2/3.</li><li>The number on the left is called the <strong>numerator</strong>. It is the number of selected pieces.</li><li>The number on the right is called the <strong>denominator</strong>. It is the total number of equal pieces that the whole is divided into.<br></li></ul>"
       },
       "written_translations": {
         "translations_mapping": {
