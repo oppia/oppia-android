@@ -20,10 +20,12 @@ class ImprovedBulletSpan(activity: AppCompatActivity) : LeadingMarginSpan {
 
   private var bulletRadius: Int = 0
   private var gapWidth: Int = 0
+  private var yOffset: Int = 0
 
   init {
     bulletRadius = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_radius)
     gapWidth = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+    yOffset = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
   }
 
   private var mBulletPath: Path? = null
@@ -43,12 +45,13 @@ class ImprovedBulletSpan(activity: AppCompatActivity) : LeadingMarginSpan {
       val style = paint.style
       paint.style = Paint.Style.FILL
 
-      val yPosition = if (layout != null) {
+      var yPosition = if (layout != null) {
         val line = layout.getLineForOffset(start)
         layout.getLineBaseline(line).toFloat() - bulletRadius * 2f
       } else {
         (top + bottom) / 2f
       }
+      yPosition += yOffset
 
       val xPosition = (x + dir * bulletRadius).toFloat()
 
