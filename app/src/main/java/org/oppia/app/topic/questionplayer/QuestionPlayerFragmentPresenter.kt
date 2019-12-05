@@ -46,6 +46,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  private var numCorrect = 0
+  private var firstTry = true
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -72,6 +74,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
+    firstTry = true
     hideKeyboard()
     moveToNextState()
   }
@@ -135,6 +138,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val endSessionViewsVisibility = if (isStateTerminal) View.VISIBLE else View.GONE
     binding.endSessionHeaderTextView.visibility = endSessionViewsVisibility
     binding.endSessionBodyTextView.visibility = endSessionViewsVisibility
+    binding.endSessionNumCorrect.visibility = endSessionViewsVisibility
+    if (numCorrect == 1) {
+      binding.endSessionNumCorrect.text = "You got $numCorrect question right on the first try."
+    } else {
+      binding.endSessionNumCorrect.text = "You got $numCorrect questions right on the first try."
+    }
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
@@ -146,8 +155,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val answerOutcomeLiveData = Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
     answerOutcomeLiveData.observe(fragment, Observer<AnsweredQuestionOutcome> { result ->
       if (result.isCorrectAnswer) {
+        if (firstTry) {
+          numCorrect++
+        }
         recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
       }
+      firstTry = false
     })
   }
 
