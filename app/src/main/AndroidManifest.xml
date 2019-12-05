@@ -28,6 +28,12 @@
       android:windowSoftInputMode="adjustResize"/>
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
+      android:name=".profile.AddProfileActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.AdminAuthActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />

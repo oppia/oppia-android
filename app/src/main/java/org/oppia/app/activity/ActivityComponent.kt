@@ -9,6 +9,8 @@ import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.profile.AddProfileActivity
+import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
@@ -39,6 +41,8 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(addProfileActivity: AddProfileActivity)
+  fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)

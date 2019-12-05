@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
@@ -25,12 +24,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  private val chooserViewModel: ProfileChooserViewModel by lazy {
+    getProfileChooserViewModel()
+  }
+
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding =
       ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
-      viewModel = getProfileChooserViewModel()
+      viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
     binding.profileRecyclerView.apply {
@@ -74,24 +77,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindAddView(binding: ProfileChooserAddViewBinding, data: ProfileChooserModel) {
+  private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") data: ProfileChooserModel) {
     binding.root.setOnClickListener {
-      if (getAdminAuthFragment() == null) {
-        fragment.requireActivity().supportFragmentManager.beginTransaction()
-          .setCustomAnimations(
-            R.anim.slide_up,
-            R.anim.slide_down,
-            R.anim.slide_up,
-            R.anim.slide_down
-          ).add(
-            R.id.profile_chooser_fragment_placeholder,
-            AdminAuthFragment()
-          ).addToBackStack(null).commit()
-      }
+      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
     }
-  }
-
-  private fun getAdminAuthFragment(): AdminAuthFragment? {
-    return fragment.requireActivity().supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as? AdminAuthFragment?
   }
 }
