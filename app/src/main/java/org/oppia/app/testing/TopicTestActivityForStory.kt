@@ -8,11 +8,8 @@ import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.RouteToConceptCardListener
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.app.topic.RouteToTopicPlayListener
-import org.oppia.app.topic.TOPIC_FRAGMENT_TAG
 import org.oppia.app.topic.TopicActivityPresenter
 import org.oppia.app.topic.TopicFragment
-import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.conceptcard.ConceptCardListener
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
@@ -22,7 +19,7 @@ import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToConceptCardListener, RouteToTopicPlayListener, RouteToStoryListener,
+  RouteToConceptCardListener, RouteToStoryListener,
   RouteToExplorationListener, ConceptCardListener {
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -39,11 +36,6 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
 
   override fun routeToStory(storyId: String) {
     startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
-  }
-
-  override fun routeToTopicPlayFragment() {
-    val topicFragment = supportFragmentManager.findFragmentByTag(TOPIC_FRAGMENT_TAG) as TopicFragment
-    topicFragment.topicFragmentPresenter.setCurrentTab(TopicTab.PLAY)
   }
 
   override fun routeToConceptCard(skillId: String) {
