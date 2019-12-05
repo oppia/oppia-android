@@ -3933,7 +3933,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_4",
-                "html": "<p>No, that's not right.</p><p>It looks like you've forgotten what the numerator and denominator represent. You should probably try the <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">refresher lesson</oppia-concept-card-link> to refresh your memory.<br></p>"
+                "html": "<p>No, that's not right.</p><p>It looks like you've forgotten what the numerator and denominator represent. If you like, you can take a look at this <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">concept card</oppia-concept-card-link> to refresh your memory.<br></p>"
               },
               "dest": "Question 2",
               "refresher_exploration_id": "xHwiGtvK2N4L",
@@ -5304,7 +5304,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_6",
-                "html": "<p>No, that's not right. It looks like you've forgotten what the numerator and denominator represent! The denominator should be the <strong>total</strong> <strong>number of equal parts</strong>, but it isn't in your answer.</p><p>You should probably try the <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">refresher lesson</oppia-concept-card-link> to refresh your memory.</p>"
+                "html": "<p>No, that's not right. It looks like you've forgotten what the numerator and denominator represent! The denominator should be the <strong>total</strong> <strong>number of equal parts</strong>, but it isn't in your answer.</p><p>Take a look at this <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">concept card</oppia-concept-card-link> to refresh your memory.</p>"
               },
               "dest": "Question 1",
               "refresher_exploration_id": "xHwiGtvK2N4L",
