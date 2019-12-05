@@ -26,6 +26,7 @@
       android:id="@+id/feedback_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:paddingStart="12dp"
       android:paddingTop="16dp"
