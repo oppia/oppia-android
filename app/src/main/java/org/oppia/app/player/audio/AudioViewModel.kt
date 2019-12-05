@@ -133,12 +133,21 @@ class AudioViewModel @Inject constructor(
     // Do not auto play audio if the LanguageDialogFragment was shown
     if (!languageSelectionShown) {
       audioPlayerController.play()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = true)
+      }
     } else {
       languageSelectionShown = false
     }
   }
 
-  fun pauseAudio() = audioPlayerController.pause()
+  fun pauseAudio(){
+    audioPlayerController.pause()
+    if (audioContentIdListener != null) {
+      audioContentIdListener!!.contentIdForCurrentAudio(contentId, isPlaying = false)
+    }
+  }
+
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 
