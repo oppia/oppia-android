@@ -86,19 +86,15 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val cellularAudioDialogController: CellularAudioDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  private val networkConnectionUtil: NetworkConnectionUtil
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
-  private var showCellularDataDialog = true
-  private var useCellularData = false
   private var feedbackId: String? = null
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
@@ -124,14 +120,6 @@ class StateFragmentPresenter @Inject constructor(
   private var hasPreviousResponsesExpanded: Boolean = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    cellularAudioDialogController.getCellularDataPreference()
-      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
-        if (it.isSuccess()) {
-          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-          showCellularDataDialog = !(prefs.hideDialog)
-          useCellularData = prefs.useCellularData
-        }
-      })
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -163,7 +151,7 @@ class StateFragmentPresenter @Inject constructor(
         oldBottom: Int
       ) {
         if (bottom < oldBottom) {
-          binding.stateRecyclerView.postDelayed(Runnable {
+          binding.stateRecyclerView.postDelayed({
             binding.stateRecyclerView.scrollToPosition(
               stateRecyclerViewAdapter.getItemCount() - 1
             )
@@ -284,57 +272,11 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleAudioClick() {
     (getAudioFragment() as AudioFragment).handleAudioClick(isAudioShowing(), feedbackId)
-//    if (isAudioShowing()) {
-//      setAudioFragmentVisible(false)
-//    } else {
-//      when (networkConnectionUtil.getCurrentConnectionStatus()) {
-//        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-//        ConnectionStatus.CELLULAR -> {
-//          if (showCellularDataDialog) {
-//            setAudioFragmentVisible(false)
-//            showCellularDataDialogFragment()
-//          } else {
-//            if (useCellularData) {
-//              setAudioFragmentVisible(true)
-//            } else {
-//              setAudioFragmentVisible(false)
-//            }
-//          }
-//        }
-//        ConnectionStatus.NONE -> {
-//          showOfflineDialog()
-//          setAudioFragmentVisible(false)
-//        }
-//      }
-//    }
-  }
-
-  fun handleEnableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(true)
-    if (saveUserChoice) {
-      cellularAudioDialogController.setAlwaysUseCellularDataPreference()
-    }
-  }
-
-  fun handleDisableAudio(saveUserChoice: Boolean) {
-    setAudioFragmentVisible(false)
-    if (saveUserChoice) {
-      cellularAudioDialogController.setNeverUseCellularDataPreference()
-    }
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
     handleSubmitAnswer(answer)
-  }
-
-  private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
-    if (previousFragment != null) {
-      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = CellularAudioDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -343,46 +285,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun getAudioFragment(): Fragment? {
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
-  }
-
-  private fun setAudioFragmentVisible(isVisible: Boolean) {
-    if (isVisible) {
-      showAudioFragment()
-    } else {
-      hideAudioFragment()
-    }
-  }
-
-  private fun showAudioFragment() {
-    getStateViewModel().setAudioBarVisibility(true)
-    (activity as AudioButtonListener).showAudioStreamingOn()
-    val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-    if (currentYOffset == 0) {
-      binding.stateRecyclerView.smoothScrollToPosition(0)
-    }
-    getAudioFragment()?.let {
-      (it as AudioUiManager).loadAudio(feedbackId, true)
-      it.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
-    }
-  }
-
-  private fun hideAudioFragment() {
-    (activity as AudioButtonListener).showAudioStreamingOff()
-    if (isAudioShowing()) {
-      getAudioFragment()?.let {
-        (it as AudioUiManager).pauseAudio()
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
-        animation.setAnimationListener(object : Animation.AnimationListener {
-          override fun onAnimationEnd(p0: Animation?) {
-            getStateViewModel().setAudioBarVisibility(false)
-          }
-
-          override fun onAnimationStart(p0: Animation?) {}
-          override fun onAnimationRepeat(p0: Animation?) {}
-        })
-        it.view?.startAnimation(animation)
-      }
-    }
   }
 
   private fun subscribeToCurrentState() {
@@ -408,8 +310,6 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
-
-
 
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -703,15 +603,6 @@ class StateFragmentPresenter @Inject constructor(
       fragment.view!!.windowToken,
       InputMethodManager.SHOW_FORCED
     )
-  }
-
-  private fun showOfflineDialog() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
-      .setTitle(context.getString(R.string.audio_dialog_offline_title))
-      .setMessage(context.getString(R.string.audio_dialog_offline_message))
-      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
-        dialog.dismiss()
-      }.create().show()
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)

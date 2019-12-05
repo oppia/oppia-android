@@ -350,7 +350,7 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_invokeErrorListener_invokePrepared_verifyAudioPlayerIsStillPending()
+  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure()
       = runBlockingTest(coroutineContext) {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL)
@@ -359,7 +359,7 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokePreparedListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+    assertThat(audioPlayerResultCaptor.value.isFailure()).isTrue()
   }
 
   @Test

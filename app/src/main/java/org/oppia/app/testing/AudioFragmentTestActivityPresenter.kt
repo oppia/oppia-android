@@ -3,6 +3,10 @@ package org.oppia.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.State
+import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import javax.inject.Inject
@@ -20,7 +24,13 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
         R.id.audio_fragment_placeholder,
         audioFragment
       ).commitNow()
-//      audioFragment.setStateAndExplorationId(RATIOS_EXPLORATION_ID_0, "Introduction")
+      val state = State.newBuilder().setContent(SubtitledHtml.newBuilder().setContentId("content"))
+        .putRecordedVoiceovers("content", VoiceoverMapping.newBuilder()
+          .putVoiceoverMapping("en", Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build())
+          .putVoiceoverMapping("es", Voiceover.newBuilder().setFileName("content-es-i0nhu49z0q.mp3").build())
+          .build()).build()
+      audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
+      audioFragment.loadAudio(null, false)
     }
   }
 
