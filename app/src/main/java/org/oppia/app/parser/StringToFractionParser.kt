@@ -42,7 +42,7 @@ class StringToFractionParser {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
       normalized.startsWith("/") -> FractionParsingError.INVALID_FORMAT
       normalized.count { it == '/' } > 1 -> FractionParsingError.INVALID_FORMAT
-      normalized.indexOf('-') > 0 || normalized.count { it == '-' } > 1-> FractionParsingError.INVALID_FORMAT
+      normalized.lastIndexOf('-') > 0 -> FractionParsingError.INVALID_FORMAT
       else -> FractionParsingError.VALID
     }
   }
