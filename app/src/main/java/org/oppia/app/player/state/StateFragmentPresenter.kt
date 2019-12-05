@@ -215,7 +215,7 @@ class StateFragmentPresenter @Inject constructor(
     if (isAudioShowing()) {
       setAudioFragmentVisible(false)
     } else {
-      if (explorationId == "umPkwp0L1M0-") {
+      if (explorationId == "MjZzEVOG47_1") {
         setAudioFragmentVisible(true)
       } else {
         when (networkConnectionUtil.getCurrentConnectionStatus()) {
