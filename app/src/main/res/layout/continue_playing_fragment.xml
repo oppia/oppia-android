@@ -30,28 +30,34 @@
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <View
-      android:id="@+id/toolbar_shadow_view"
-      android:layout_width="match_parent"
-      android:layout_height="6dp"
-      android:background="@drawable/toolbar_drop_shadow"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout" />
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/ongoing_story_recycler_view"
+    <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:clipToPadding="false"
-      android:overScrollMode="never"
-      android:paddingTop="8dp"
-      android:paddingBottom="128dp"
-      android:scrollbars="none"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view" />
+      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ongoing_story_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="8dp"
+        android:paddingBottom="128dp"
+        android:scrollbars="none"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view" />
+
+      <View
+        android:id="@+id/toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

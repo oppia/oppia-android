@@ -1,6 +1,7 @@
 package org.oppia.app.player.exploration
 
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -13,6 +14,8 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+
+private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
@@ -39,7 +42,8 @@ class ExplorationActivityPresenter @Inject constructor(
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        explorationFragment
+        explorationFragment,
+        TAG_EXPLORATION_FRAGMENT
       ).commitNow()
     }
   }
@@ -89,5 +93,12 @@ class ExplorationActivityPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
+  }
+
+  fun onKeyboardAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      explorationFragment.onKeyboardAction()
+    }
   }
 }

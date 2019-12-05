@@ -615,7 +615,7 @@ class TopicControllerTest {
       "Derive a ratio from a description or a picture"
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>There are originally 9 apples and 6 pears,")
+      "<p>A ratio represents a relative relationship between two or more amounts.")
   }
 
   @Test
