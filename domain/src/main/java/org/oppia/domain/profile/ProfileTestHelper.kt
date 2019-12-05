@@ -23,7 +23,7 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = false,
       isAdmin = false
     )
-    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build()).observeForever {}
   }
 
   /** Create [numProfiles] number of user profiles. */
