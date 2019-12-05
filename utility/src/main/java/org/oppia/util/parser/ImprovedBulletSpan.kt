@@ -1,5 +1,6 @@
 package org.oppia.util.parser
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -7,22 +8,22 @@ import android.graphics.Path.Direction
 import android.text.Layout
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
+import androidx.appcompat.app.AppCompatActivity
+import org.oppia.util.R
 
 /**
  * Copy of [android.text.style.BulletSpan] from android SDK 28 with removed internal code.
  *
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
-class ImprovedBulletSpan(
-  private val bulletRadius: Int = STANDARD_BULLET_RADIUS,
-  private val gapWidth: Int = STANDARD_GAP_WIDTH,
-  val color: Int = STANDARD_COLOR
-) : LeadingMarginSpan {
+class ImprovedBulletSpan(activity: AppCompatActivity) : LeadingMarginSpan {
 
-  companion object {
-    private const val STANDARD_BULLET_RADIUS = 8
-    private const val STANDARD_GAP_WIDTH = 32
-    private const val STANDARD_COLOR = 0
+  private var bulletRadius: Int = 0
+  private var gapWidth: Int = 0
+
+  init {
+    bulletRadius = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_radius)
+    gapWidth = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
   }
 
   private var mBulletPath: Path? = null
