@@ -215,23 +215,27 @@ class StateFragmentPresenter @Inject constructor(
     if (isAudioShowing()) {
       setAudioFragmentVisible(false)
     } else {
-      when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-        ConnectionStatus.CELLULAR -> {
-          if (showCellularDataDialog) {
-            setAudioFragmentVisible(false)
-            showCellularDataDialogFragment()
-          } else {
-            if (useCellularData) {
-              setAudioFragmentVisible(true)
-            } else {
+      if (explorationId == "umPkwp0L1M0-") {
+        setAudioFragmentVisible(true)
+      } else {
+        when (networkConnectionUtil.getCurrentConnectionStatus()) {
+          ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+          ConnectionStatus.CELLULAR -> {
+            if (showCellularDataDialog) {
               setAudioFragmentVisible(false)
+              showCellularDataDialogFragment()
+            } else {
+              if (useCellularData) {
+                setAudioFragmentVisible(true)
+              } else {
+                setAudioFragmentVisible(false)
+              }
             }
           }
-        }
-        ConnectionStatus.NONE -> {
-          showOfflineDialog()
-          setAudioFragmentVisible(false)
+          ConnectionStatus.NONE -> {
+            showOfflineDialog()
+            setAudioFragmentVisible(false)
+          }
         }
       }
     }
@@ -327,6 +331,9 @@ class StateFragmentPresenter @Inject constructor(
           feedbackId = null
         }
       } else if (it == AudioViewModel.UiAudioPlayStatus.PREPARED) {
+        if(isAudioShowing() && !isFeedbackPlaying){
+          autoPlayAudio = true
+        }
         if (autoPlayAudio) {
           autoPlayAudio = false
           audioFragmentInterface.playAudio()
@@ -353,6 +360,8 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
     currentStateName = ephemeralState.state.name
+
+    isFeedbackPlaying = false
 
     showOrHideAudioByState(ephemeralState.state)
     if (isAudioShowing()) {
