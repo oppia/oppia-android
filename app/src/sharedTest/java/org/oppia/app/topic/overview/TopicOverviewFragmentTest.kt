@@ -8,7 +8,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -38,14 +37,6 @@ class TopicOverviewFragmentTest {
   fun testTopicOverviewFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
-    }
-  }
-
-  // TODO(#135): Update this test case to check on click of See More play tab is shown.
-  @Test
-  fun testTopicOverviewFragment_loadFragment_seeMoreIsClickable() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
-      onView(withId(R.id.see_more_text_view)).check(matches(isClickable()))
     }
   }
 

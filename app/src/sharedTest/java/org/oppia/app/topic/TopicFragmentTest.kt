@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -331,27 +330,6 @@ class TopicFragmentTest {
           )
         )
       )
-    }
-  }
-
-  @Test
-  fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
-    launch(TopicTestActivity::class.java).use {
-      onView(
-        withId(R.id.see_more_text_view)
-      ).perform(scrollTo(), click())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle("PLAY")))
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      onView(
-        RecyclerViewMatcher.atPosition(
-          R.id.story_summary_recycler_view,
-          0
-        )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("First Story")))))
     }
   }
 

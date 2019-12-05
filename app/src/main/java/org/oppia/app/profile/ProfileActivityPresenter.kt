@@ -14,7 +14,6 @@ class ProfileActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) {
   /** Adds [ProfileChooserFragment] to view. */
-  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
     profileManagementController.addProfile("Sean", "12345", null, true, true)

@@ -62,7 +62,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_3",
-                "html": "<p>No, that's not correct. For a ratio to be in simplest form, each of the numbers used should be a counting number (like 1, 2, 3, ...).</p>\n\n<p>But <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{7}&amp;quot;\"></oppia-noninteractive-math> is not a counting number. Try again.</p>"
+                "html": "<p>No, that's not correct. For a ratio to be in simplest form, each of the numbers used should be a counting number (like 1, 2, 3, ...).</p>\n\n<p>But 1/7 is not a counting number. Try again.</p>"
               },
               "dest": "Practice 1",
               "refresher_exploration_id": null,
@@ -120,7 +120,7 @@
               "<p>14:2</p>\n",
               "<p>4:1</p>\n",
               "<p>7:1</p>\n",
-              "<p>1:<oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{7}&amp;quot;\"></oppia-noninteractive-math></p>",
+              "<p>1:1/7</p>",
               "<p>28:4</p>"
             ]
           }
@@ -1613,7 +1613,7 @@
         "customization_args": {
           "choices": {
             "value": [
-              "<p><oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}2:1&amp;quot;\"></oppia-noninteractive-math></p>\n",
+              "<p>1/2:1</p>\n",
               "<p>1:2</p>\n",
               "<p>2:4</p>\n",
               "<p>3:6</p>\n"
@@ -2541,7 +2541,7 @@
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "<p>\"Remember,\" said Uncle Berry. \"Two ratios are called <strong>equivalent</strong> if they have the <strong>same relative relationship</strong>. Do 2:4 and 3:6 have the same relative relationship?\"</p>\n\n<p>James thought a bit. \"Yes!\" he said. \"We can multiply 2 to the left side, and get the number on the right.\"</p>\n\n<p>\"Good! So, 2:4 and 3:6 are equivalent,\" said Uncle Berry. \"In fact, you can multiply 2:4 by <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;1 \\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> to get 3:6.\"</p>\n\n<p>\"Oh, yes!\" said James. \"But that's hard to spot. Is there a simpler way to tell when two ratios are equivalent?\"</p>\n\n<p>\"Yes,\" said Uncle Berry. \"You can do that by writing the ratios in their simplest form. If the simplest forms are the same, the ratios are equivalent. If the simplest forms are different, then they are not equivalent.\"</p>\n\n<p>\"For example, the simplest forms of both 2:4 and 3:6 are 1:2. Since the two ratios have the same simplest form, they're both equivalent, and we can write 2:4 = 3:6.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Text: 2:4 = 1:2 = 3:6&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_174903_abpwh1gddh_height_67_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"But 3:9 isn't equivalent to 2:4, because the simplest form of 3:9 is 1:3, which is different from 1:2.”</p>\n\n<p>\"Got it!\" said James.</p>\n\n<p>\"Great,\" said Uncle Berry. \"Now, can you figure out which of the following ratios is equivalent to 3:9?\"</p>"
+        "html": "<p>\"Remember,\" said Uncle Berry. \"Two ratios are called <strong>equivalent</strong> if they have the <strong>same relative relationship</strong>. Do 2:4 and 3:6 have the same relative relationship?\"</p>\n\n<p>James thought a bit. \"Yes!\" he said. \"We can multiply 2 to the left side, and get the number on the right.\"</p>\n\n<p>\"Good! So, 2:4 and 3:6 are equivalent,\" said Uncle Berry. \"In fact, you can multiply 2:4 by 1 1/2 to get 3:6.\"</p>\n\n<p>\"Oh, yes!\" said James. \"But that's hard to spot. Is there a simpler way to tell when two ratios are equivalent?\"</p>\n\n<p>\"Yes,\" said Uncle Berry. \"You can do that by writing the ratios in their simplest form. If the simplest forms are the same, the ratios are equivalent. If the simplest forms are different, then they are not equivalent.\"</p>\n\n<p>\"For example, the simplest forms of both 2:4 and 3:6 are 1:2. Since the two ratios have the same simplest form, they're both equivalent, and we can write 2:4 = 3:6.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Text: 2:4 = 1:2 = 3:6&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_174903_abpwh1gddh_height_67_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"But 3:9 isn't equivalent to 2:4, because the simplest form of 3:9 is 1:3, which is different from 1:2.”</p>\n\n<p>\"Got it!\" said James.</p>\n\n<p>\"Great,\" said Uncle Berry. \"Now, can you figure out which of the following ratios is equivalent to 3:9?\"</p>"
       },
       "written_translations": {
         "translations_mapping": {

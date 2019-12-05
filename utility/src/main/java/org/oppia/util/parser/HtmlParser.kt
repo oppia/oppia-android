@@ -2,6 +2,7 @@ package org.oppia.util.parser
 
 import android.text.Html
 import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.widget.TextView
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class HtmlParser private constructor(
     if (htmlContent.contains("\n\n")) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
+
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
       htmlContent = htmlContent.replace(
@@ -43,10 +45,36 @@ class HtmlParser private constructor(
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, /* tagHandler= */ null) as Spannable
+      trimSpannable(
+        Html.fromHtml(
+          htmlContent,
+          Html.FROM_HTML_MODE_LEGACY,
+          imageGetter, /* tagHandler= */
+          null
+        ) as SpannableStringBuilder
+      )
     } else {
-      Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as Spannable
+      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
     }
+  }
+
+  private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
+    var trimStart = 0
+    var trimEnd = 0
+
+    var text = spannable.toString()
+
+    if (text.startsWith("\n")) {
+      text = text.substring(1)
+      trimStart += 1
+    }
+
+    if (text.endsWith("\n")) {
+      text = text.substring(0, text.length - 1)
+      trimEnd += 2
+    }
+
+    return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
