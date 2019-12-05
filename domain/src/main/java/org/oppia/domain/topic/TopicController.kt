@@ -7,6 +7,8 @@ import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
+import org.oppia.app.model.LessonThumbnail
+import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
@@ -28,21 +30,10 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_SKILL_ID_0 = "test_skill_id_0"
-const val TEST_SKILL_ID_1 = "test_skill_id_1"
-const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
-const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
-const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
-const val TEST_QUESTION_ID_0 = "question_id_0"
-const val TEST_QUESTION_ID_1 = "question_id_1"
-const val TEST_QUESTION_ID_2 = "question_id_2"
-const val TEST_QUESTION_ID_3 = "question_id_3"
-const val TEST_QUESTION_ID_4 = "question_id_4"
-const val TEST_QUESTION_ID_5 = "question_id_5"
 const val FRACTIONS_QUESTION_ID_0 = "dobbibJorU9T"
 const val FRACTIONS_QUESTION_ID_1 = "EwbUb5oITtUX"
 const val FRACTIONS_QUESTION_ID_2 = "ryIPWUmts8rN"
@@ -89,25 +80,17 @@ class TopicController @Inject constructor(
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
-      try {
-        AsyncResult.success(retrieveTopic(topicId))
-      } catch (e: Exception) {
-        AsyncResult.failed<Topic>(e)
-      }
+      try { AsyncResult.success(retrieveTopic(topicId)) }
+      catch (e: Exception) { AsyncResult.failed<Topic>(e) }
     )
   }
 
-  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
     return when (topicId) {
-      TEST_TOPIC_ID_0 -> createTestTopic0()
-      TEST_TOPIC_ID_1 -> createTestTopic1()
       FRACTIONS_TOPIC_ID -> createTopicFromJson(
-        "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
-      )
+        "fractions_topic.json", "fractions_skills.json", "fractions_stories.json")
       RATIOS_TOPIC_ID -> createTopicFromJson(
-        "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
-      )
+        "ratios_topic.json", "ratios_skills.json", "ratios_stories.json")
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
   }
@@ -118,9 +101,6 @@ class TopicController @Inject constructor(
   fun getStory(storyId: String): LiveData<AsyncResult<StorySummary>> {
     return MutableLiveData(
       when (storyId) {
-        TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
-        TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
-        TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
         FRACTIONS_STORY_ID_0 -> AsyncResult.success(
           createStoryFromJsonFile(
             "fractions_stories.json", /* index= */ 0
@@ -145,9 +125,6 @@ class TopicController @Inject constructor(
   fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
     return MutableLiveData(
       when (skillId) {
-        TEST_SKILL_ID_0 -> AsyncResult.success(createTestConceptCardForSkill0())
-        TEST_SKILL_ID_1 -> AsyncResult.success(createTestConceptCardForSkill1())
-        TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
         FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
             "fractions_skills.json", /* index= */ 0
@@ -197,26 +174,6 @@ class TopicController @Inject constructor(
     )?.getJSONArray("questions")!!
     for (skillId in skillIdsList) {
       when (skillId) {
-        TEST_SKILL_ID_0 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion0(questionsJSON),
-            createTestQuestion1(questionsJSON),
-            createTestQuestion2(questionsJSON)
-          )
-        )
-        TEST_SKILL_ID_1 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion0(questionsJSON),
-            createTestQuestion3(questionsJSON)
-          )
-        )
-        TEST_SKILL_ID_2 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion2(questionsJSON),
-            createTestQuestion4(questionsJSON),
-            createTestQuestion5(questionsJSON)
-          )
-        )
         FRACTIONS_SKILL_ID_0 -> questionsList.addAll(
           mutableListOf(
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
@@ -230,15 +187,14 @@ class TopicController @Inject constructor(
           mutableListOf(
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9))
           )
         )
         FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
           mutableListOf(
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
             createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
+            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9))
           )
         )
         RATIOS_SKILL_ID_0 -> questionsList.add(
@@ -261,109 +217,6 @@ class TopicController @Inject constructor(
         )
       )
       .addAllLinkedSkillIds(jsonAssetRetriever.getStringsFromJSONArray(questionJson.getJSONArray("linked_skill_ids")))
-      .build()
-  }
-
-  private fun createTestQuestion0(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_0)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(0)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestQuestion1(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_1)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(1)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0))
-      .build()
-  }
-
-  private fun createTestQuestion2(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_2)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(2)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createTestQuestion3(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_3)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(0)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestQuestion4(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_4)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(1)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createTestQuestion5(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_5)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(2)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createTestTopic0(): Topic {
-    return Topic.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_0)
-      .setName("First Test Topic")
-      .setDescription("A topic investigating the interesting aspects of the Oppia Android app.")
-      .addStory(createTestTopic0Story0())
-      .addSkill(createTestTopic0Skill0())
-      .addStory(createTestTopic0Story1())
-      .addSkill(createTestTopic0Skill1())
-      .addSkill(createTestTopic0Skill2())
-      .addSkill(createTestTopic0Skill3())
-      .setTopicThumbnail(createTopicThumbnail0())
-      .build()
-  }
-
-  private fun createTestTopic1(): Topic {
-    return Topic.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setName("Second Test Topic")
-      .setDescription(
-        "A topic considering the various implications of having especially long topic descriptions. " +
-            "These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on " +
-            "small screens). Consider also that there may even be multiple points pertaining to a topic, some of which " +
-            "may require expanding the description section in order to read the whole topic description."
-      )
-      .addStory(createTestTopic1Story2())
-      .addSkill(createTestTopic1Skill0())
-      .setTopicThumbnail(createTopicThumbnail1())
       .build()
   }
 
@@ -462,119 +315,20 @@ class TopicController @Inject constructor(
     return chapterList
   }
 
-  private fun createTestTopic0Story0(): StorySummary {
-    return StorySummary.newBuilder()
-      .setStoryId(TEST_STORY_ID_0)
-      .setStoryName("First Story")
-      .addChapter(createTestTopic0Story0Chapter0())
-      .build()
-  }
-
-  private fun createTestTopic0Story0Chapter0(): ChapterSummary {
-    return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_30)
-      .setName("Prototype Exploration")
-      .setSummary("This is the prototype exploration to verify interaction functionality.")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
-      .setChapterThumbnail(createChapterThumbnail0())
-      .build()
-  }
-
-  private fun createTestTopic0Story1(): StorySummary {
-    return StorySummary.newBuilder()
-      .setStoryId(TEST_STORY_ID_1)
-      .setStoryName("Second Story")
-      .addChapter(createTestTopic0Story1Chapter0())
-      .addChapter(createTestTopic0Story1Chapter1())
-      .addChapter(createTestTopic0Story1Chapter2())
-      .build()
-  }
-
-  private fun createTestTopic0Story1Chapter0(): ChapterSummary {
-    return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_1)
-      .setName("Second Exploration")
-      .setSummary("This is the second exploration summary")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
-      .setChapterThumbnail(createChapterThumbnail1())
-      .build()
-  }
-
-  private fun createTestTopic0Story1Chapter1(): ChapterSummary {
-    return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_2)
-      .setName("Third Exploration")
-      .setSummary("This is the third exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
-      .setChapterThumbnail(createChapterThumbnail2())
-      .build()
-  }
-
-  private fun createTestTopic0Story1Chapter2(): ChapterSummary {
-    return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_3)
-      .setName("Fourth Exploration")
-      .setSummary("This is the fourth exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      .setChapterThumbnail(createChapterThumbnail3())
-      .build()
-  }
-
-  private fun createTestTopic1Story2(): StorySummary {
-    return StorySummary.newBuilder()
-      .setStoryId(TEST_STORY_ID_2)
-      .setStoryName("Other Interesting Story")
-      .addChapter(createTestTopic1Story2Chapter0())
-      .build()
-  }
-
-  private fun createTestTopic1Story2Chapter0(): ChapterSummary {
-    return ChapterSummary.newBuilder()
-      .setExplorationId(TEST_EXPLORATION_ID_4)
-      .setName("Fifth Exploration")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
-      .setChapterThumbnail(createChapterThumbnail4())
-      .build()
-  }
-
-  private fun createTestTopic0Skill0(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_0)
-      .setDescription("An important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_0))
-      .build()
-  }
-
-  private fun createTestTopic0Skill1(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setDescription("Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestTopic0Skill2(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setDescription("A different skill in a different topic Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestTopic0Skill3(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setDescription("Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestTopic1Skill0(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_2)
-      .setDescription("A different skill in a different topic")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_2))
-      .build()
+  private fun createTopicThumbnail(fileName: String): LessonThumbnail {
+    return when (fileName) {
+      "fractions_topic.json" -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+      "ratios_topic.json" -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+      else -> LessonThumbnail.newBuilder().setThumbnailGraphic(LessonThumbnailGraphic.UNRECOGNIZED)
+        .setBackgroundColorRgb(0xf7bf73)
+        .build()
+    }
   }
 
   private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
@@ -607,58 +361,6 @@ class TopicController @Inject constructor(
       )
     }
     return workedExampleList
-  }
-
-  private fun createTestConceptCardForSkill0(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_0)
-      .setSkillDescription(createTestTopic0Skill0().description)
-      .setExplanation(
-        SubtitledHtml.newBuilder().setHtml("Hello. Welcome to Oppia.").setContentId(TEST_SKILL_CONTENT_ID_0).build()
-      )
-      .addWorkedExample(
-        SubtitledHtml.newBuilder().setHtml("This is the first example.").setContentId(TEST_SKILL_CONTENT_ID_1).build()
-      )
-      .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_0, VoiceoverMapping.newBuilder().putVoiceoverMapping(
-          "es", Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3").setFileSizeBytes(456).build()
-        ).build()
-      )
-      .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_1, VoiceoverMapping.newBuilder().putVoiceoverMapping(
-          "es", Voiceover.newBuilder().setFileName("fake_spanish_xlated_example.mp3").setFileSizeBytes(123).build()
-        ).build()
-      )
-      .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_0, TranslationMapping.newBuilder().putTranslationMapping(
-          "es", Translation.newBuilder().setHtml("Hola. Bienvenidos a Oppia.").build()
-        ).build()
-      )
-      .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_1, TranslationMapping.newBuilder().putTranslationMapping(
-          "es", Translation.newBuilder().setHtml("Este es el primer ejemplo trabajado.").build()
-        ).build()
-      )
-      .build()
-  }
-
-  private fun createTestConceptCardForSkill1(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setSkillDescription(createTestTopic0Skill1().description)
-      .setExplanation(SubtitledHtml.newBuilder().setHtml("Explanation with <b>rich text</b>.").build())
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example with <i>rich text</i>.").build())
-      .build()
-  }
-
-  private fun createTestConceptCardForSkill2(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_2)
-      .setSkillDescription(createTestTopic1Skill0().description)
-      .setExplanation(SubtitledHtml.newBuilder().setHtml("Explanation without rich text.").build())
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build())
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Second worked example.").build())
-      .build()
   }
 
   private fun createSkillThumbnail(skillId: String): SkillThumbnail {

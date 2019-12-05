@@ -24,7 +24,7 @@ class QuestionTrainingController @Inject constructor(
   @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
 
-  private val random = Random(questionTrainingSeed)
+  private val seedRandom = Random(questionTrainingSeed)
   /**
    * Begins a question training session given a list of skill Ids and a total number of questions.
    *
@@ -54,12 +54,16 @@ class QuestionTrainingController @Inject constructor(
 
   private fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
     val questionsDataProvider = topicController.retrieveQuestionsForSkillIds(skillIdsList)
+    // Cache the seed so that re-notifying that the underlying structure has changed won't regenerate the session
+    // (unless the questions themselves change).
+    // TODO(BenHenning): add test for this case
+    val seed = seedRandom.nextLong()
     return dataProviders.transform(TRAINING_QUESTIONS_PROVIDER, questionsDataProvider) {
       if (skillIdsList.isEmpty()) {
         listOf()
       } else {
         getFilteredQuestionsForTraining(
-          skillIdsList, it.shuffled(random),
+          skillIdsList, it.shuffled(Random(seed)),
           questionCountPerSession / skillIdsList.size
         )
       }

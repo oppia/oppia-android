@@ -4,7 +4,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
-/** [ViewModel] for the numeric input interaction. */
+/** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
 

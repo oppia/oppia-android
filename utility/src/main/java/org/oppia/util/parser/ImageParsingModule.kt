@@ -11,14 +11,7 @@ class ImageParsingModule {
   @DefaultGcsPrefix
   @Singleton
   fun provideDefaultGcsPrefix(): String {
-    return "https://storage.googleapis.com/"
-  }
-
-  @Provides
-  @DefaultGcsResource
-  @Singleton
-  fun provideDefaultGcsResource(): String {
-    return "oppiaserver-resources/"
+    return "https://storage.googleapis.com"
   }
 
   @Provides

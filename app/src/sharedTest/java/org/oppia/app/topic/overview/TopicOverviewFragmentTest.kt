@@ -27,7 +27,7 @@ private const val TOPIC_DESCRIPTION =
       "some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe " +
       "situations like these."
 
-// NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
+// NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.Mode.PAUSED) to pass on Robolectric.
 /** Tests for [TopicOverviewFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicOverviewFragmentTest {

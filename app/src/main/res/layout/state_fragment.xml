@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-
   <data>
-
+    <import type="android.view.View" />
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel" />
   </data>
-
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,18 +22,23 @@
       android:clipToPadding="false"
       android:divider="@android:color/transparent"
       android:overScrollMode="never"
-      android:paddingTop="@{viewModel.isAudioBarVisible().get()? @dimen/padding_72dp : @dimen/padding_24dp}"
+      android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
       android:scrollbars="none"
       app:data="@{viewModel.itemList}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
     <FrameLayout
-      android:id="@+id/audio_fragment_placeholder"
+      android:id="@+id/audio_fragment_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="top"
       android:layout_marginStart="24dp"
-      android:layout_marginEnd="24dp" />
+      android:layout_marginEnd="24dp">
+      <FrameLayout
+        android:id="@+id/audio_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}"/>
+    </FrameLayout>
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -49,10 +52,10 @@
       android:elevation="8dp">
 
       <TextView
-        android:id="@+id/congratulation_textview"
+        android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:background="@drawable/congratulation_text_background_shadow"
+        android:background="@drawable/congratulations_text_background_shadow"
         android:elevation="8dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"

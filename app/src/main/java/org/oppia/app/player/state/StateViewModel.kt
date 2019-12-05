@@ -5,7 +5,8 @@ import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.parser.StringToFractionParser.AnswerErrorCategory
+import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -22,23 +23,16 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     isAudioBarVisible.set(audioBarVisible)
   }
 
-  /**
-   * Returns whether there is currently a pending interaction that requires an additional user action to submit the
-   * answer.
-   */
-  fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
-  }
-
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
-  fun getPendingAnswer(): UserAnswer {
-    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
-  }
-
-  private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
-    // Search through all items to find the latest InteractionAnswerHandler which should be the pending one. In the
-    // future, it may be ideal to make this more robust by actually tracking the handler corresponding to the pending
-    // interaction.
-    return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
+  fun getPendingAnswer(statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer {
+    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(itemList)
+    return if (answerHandler?.isExplicitErrorCheckRequired()!!) {
+      if (answerHandler?.getPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null)
+        return answerHandler?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
+      else
+        (answerHandler as FractionInteractionViewModel).getPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      UserAnswer.getDefaultInstance()
+    } else
+      answerHandler?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
   }
 }

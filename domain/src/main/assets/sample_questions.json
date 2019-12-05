@@ -352,7 +352,7 @@
         "defaultOutcome": {
           "dest": null,
           "feedback": {
-            "html": "",
+            "html": "Incorrect. Try again.",
             "content_id": "default_outcome"
           },
           "labelled_as_correct": false,

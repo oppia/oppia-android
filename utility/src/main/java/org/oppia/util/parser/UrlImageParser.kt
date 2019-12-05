@@ -7,9 +7,11 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -18,9 +20,9 @@ import javax.inject.Inject
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
   private val context: Context,
-  @DefaultGcsPrefix private val gcsPrefix: String,
-  @DefaultGcsResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+  private val gcsPrefix: String,
+  private val gcsResourceName: String,
+  private val imageDownloadUrlTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
@@ -36,10 +38,7 @@ class UrlImageParser private constructor(
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    imageLoader.load(
-      gcsPrefix + gcsResource + imageUrl,
-      target
-    )
+    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
     return urlDrawable
   }
 
@@ -51,19 +50,21 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
       val drawable = BitmapDrawable(context.resources, resource)
       htmlContentTextView.post {
-        val drawableHeight = drawable.intrinsicHeight
-        val drawableWidth = drawable.intrinsicWidth
-        val initialDrawableMargin = if (imageCenterAlign) {
-          calculateInitialMargin(drawableWidth)
-        } else {
-          0
+        htmlContentTextView.width {
+          val drawableHeight = drawable.intrinsicHeight
+          val drawableWidth = drawable.intrinsicWidth
+          val initialDrawableMargin = if (imageCenterAlign) {
+            calculateInitialMargin(it, drawableWidth)
+          } else {
+            0
+          }
+          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          drawable.bounds = rect
+          urlDrawable.bounds = rect
+          urlDrawable.drawable = drawable
+          htmlContentTextView.text = htmlContentTextView.text
+          htmlContentTextView.invalidate()
         }
-        val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
-        drawable.bounds = rect
-        urlDrawable.bounds = rect
-        urlDrawable.drawable = drawable
-        htmlContentTextView.text = htmlContentTextView.text
-        htmlContentTextView.invalidate()
       }
     }
   }
@@ -78,20 +79,38 @@ class UrlImageParser private constructor(
     }
   }
 
-  private fun calculateInitialMargin(drawableWidth: Int): Int {
-    val availableAreaWidth = htmlContentTextView.width
-    return (availableAreaWidth - drawableWidth) / 2
+  private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Int): Int {
+    val margin = (availableAreaWidth - drawableWidth) / 2
+    return if (margin > 0) {
+      margin
+    } else {
+      0
+    }
+  }
+
+  // Reference: https://stackoverflow.com/a/51865494
+  private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
+    if (width == 0) {
+      viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+          viewTreeObserver.removeOnGlobalLayoutListener(this)
+          computeWidthOnGlobalLayout(width)
+        }
+      })
+    } else {
+      computeWidthOnGlobalLayout(width)
+    }
   }
 
   class Factory @Inject constructor(
     private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
-    @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     private val imageLoader: ImageLoader
   ) {
     fun create(
       htmlContentTextView: TextView,
+      gcsResourceName: String,
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean
@@ -99,7 +118,7 @@ class UrlImageParser private constructor(
       return UrlImageParser(
         context,
         gcsPrefix,
-        gcsResource,
+        gcsResourceName,
         imageDownloadUrlTemplate,
         htmlContentTextView,
         entityType,

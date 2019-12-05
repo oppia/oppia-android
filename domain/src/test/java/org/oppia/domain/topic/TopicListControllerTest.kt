@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -325,7 +326,7 @@ class TopicListControllerTest {
     }
 
     @Provides
-    @DefaultGcsResource
+    @DefaultResourceBucketName
     @Singleton
     fun provideDefaultGcsResource(): String {
       return "oppiaserver-resources/"

@@ -26,7 +26,7 @@ import javax.inject.Inject
 /** The presenter for [TopicPlayFragment]. */
 @FragmentScope
 class TopicPlayFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val explorationDataController: ExplorationDataController,
@@ -86,6 +86,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
         }
         val storySummaryAdapter =
           StorySummaryAdapter(
+            activity,
             itemList,
             this as ChapterSummarySelector,
             expandedChapterListIndexListener,

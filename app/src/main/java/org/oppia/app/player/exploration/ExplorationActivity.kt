@@ -4,19 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
-import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener, ConceptCardListener, StateKeyboardButtonListener, AudioButtonListener {
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -50,7 +51,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
   }
 
-  override fun stopExploration() {
+  override fun stopSession() {
     explorationActivityPresenter.stopExploration()
   }
 
@@ -59,14 +60,14 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     return super.onCreateOptionsMenu(menu)
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    when (item!!.itemId) {
-      R.id.action_audio_player -> explorationActivityPresenter.audioPlayerIconClicked()
-    }
-    return super.onOptionsItemSelected(item)
-  }
+  override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
+  override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
+  override fun showAudioStreamingOn() = explorationActivityPresenter.showAudioStreamingOn()
+  override fun showAudioStreamingOff() = explorationActivityPresenter.showAudioStreamingOff()
 
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }
+
+  override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
 }

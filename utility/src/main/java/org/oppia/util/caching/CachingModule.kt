@@ -8,5 +8,5 @@ import dagger.Provides
 class CachingModule {
   @Provides
   @CacheAssetsLocally
-  fun provideCacheAssetsLocally(): Boolean = false
+  fun provideCacheAssetsLocally(): Boolean = true
 }
