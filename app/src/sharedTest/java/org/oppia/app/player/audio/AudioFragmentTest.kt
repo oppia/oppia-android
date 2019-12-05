@@ -264,10 +264,6 @@ class AudioFragmentTest {
       return TestCoroutineDispatcher()
     }
 
-    @CacheAssetsLocally
-    @Provides
-    fun provideCacheAssetsLocally(): Boolean = false
-
     @Singleton
     @Provides
     @BackgroundDispatcher
