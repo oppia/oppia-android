@@ -249,6 +249,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val expandPreviousAnswers = !headerModel.isExpanded.get()
     val headerIndex = itemList.indexOf(headerModel)
     val previousAnswersAndFeedbacks = previousAnswerViewModels.takeLast(previousAnswerViewModels.size - 1)
+    val tempList = itemList.toMutableList()
+    itemList.clear()
+    itemList += tempList
     if (expandPreviousAnswers) {
       // Add the pending view models to the recycler view to expand them.
       itemList.addAll(headerIndex + 1, previousAnswersAndFeedbacks)
