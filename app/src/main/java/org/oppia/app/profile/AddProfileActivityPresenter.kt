@@ -3,15 +3,16 @@ package org.oppia.app.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -26,6 +27,7 @@ import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
+const val KEY_PROFILE_AVATAR_COLOR = "KEY_PROFILE_AVATAR_COLOR"
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -103,7 +105,11 @@ class AddProfileActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
 
-      profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false)
+      profileManagementController.addProfile(
+        name, pin, selectedImage, allowDownloadAccess, activity.intent.getIntExtra(
+          KEY_PROFILE_AVATAR_COLOR, 0
+        ), false
+      )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
         })

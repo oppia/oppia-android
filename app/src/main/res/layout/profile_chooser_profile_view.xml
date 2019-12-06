@@ -6,7 +6,7 @@
   <data>
 
     <import type="android.view.View" />
-
+    <import type="android.text.TextUtils" />
     <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserModel" />
@@ -27,7 +27,7 @@
       android:layout_marginBottom="8dp"
       app:civ_border_color="@color/avatarBorder"
       app:civ_border_width="1dp"
-      profile:src="@{viewModel.profile.avatarImageUri}" />
+      profile:src="@{TextUtils.isEmpty(viewModel.profile.avatarImageUri) ? Integer.toString(viewModel.profile.avatarColorHex) : viewModel.profile.avatarImageUri}" />
 
     <TextView
       android:id="@+id/profile_name_text"

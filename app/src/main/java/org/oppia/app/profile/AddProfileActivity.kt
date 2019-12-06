@@ -1,5 +1,6 @@
 package org.oppia.app.profile
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,6 +11,14 @@ import javax.inject.Inject
 class AddProfileActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
+
+  companion object {
+    fun createAddProfileActivityIntent(context: Context, color: Int): Intent {
+      val intent = Intent(context, AddProfileActivity::class.java)
+      intent.putExtra(KEY_PROFILE_AVATAR_COLOR, color)
+      return intent
+    }
+  }
 
   @ExperimentalCoroutinesApi
   override fun onCreate(savedInstanceState: Bundle?) {

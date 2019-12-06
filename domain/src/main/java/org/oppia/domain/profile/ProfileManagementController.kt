@@ -14,6 +14,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
@@ -128,10 +129,16 @@ class ProfileManagementController @Inject constructor(
    * @param pin Pin of the new profile.
    * @param avatarImagePath Uri path to user selected image.
    * @param allowDownloadAccess Indicates whether the new profile can download content.
+   * @param color Indicates id of color used if the user does not select an image.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
   fun addProfile(
-    name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean, isAdmin: Boolean = false
+    name: String,
+    pin: String,
+    avatarImagePath: Uri?,
+    allowDownloadAccess: Boolean,
+    color: Int = 0,
+    isAdmin: Boolean = false
   ): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
@@ -144,25 +151,24 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val imageUri: String?
+      val newProfileBuilder = Profile.newBuilder()
+        .setName(name).setPin(pin).setAllowDownloadAccess(allowDownloadAccess)
+        .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
+        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
+
       if (avatarImagePath != null) {
-        imageUri = saveImageToInternalStorage(avatarImagePath, profileDir) ?:
-            return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir) ?: return@storeDataWithCustomChannelAsync Pair(
+            it,
+            ProfileActionStatus.FAILED_TO_STORE_IMAGE
+          )
+        newProfileBuilder.avatarImageUri = imageUri
       } else {
-        // gravatar url is a md5 hash of an email address
-        val md5Hash = md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com")
-          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR)
-        imageUri = GRAVATAR_URL_PREFIX + md5Hash + GRAVATAR_QUERY_STRING
+        newProfileBuilder.avatarColorHex = color
       }
 
-      val newProfile = Profile.newBuilder()
-        .setName(name).setPin(pin).setAvatarImageUri(imageUri)
-        .setAllowDownloadAccess(allowDownloadAccess).setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .build()
-
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
+        it.toBuilder().putProfiles(nextProfileId, newProfileBuilder.build()).setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
