@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.story.StoryActivity
-import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Activity for recent stories. */
-class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToStoryListener {
-  @Inject lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
+class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
+
+  @Inject
+  lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToStoryListe
     }
   }
 
-  override fun routeToStory(storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
+  override fun routeToExploration(explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 }
