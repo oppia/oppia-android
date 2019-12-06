@@ -11,24 +11,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/profileChooserBackground">
+
     <TextView
       android:id="@+id/profile_select_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginStart="36dp"
+      android:layout_marginTop="60dp"
+      android:fontFamily="sans-serif"
       android:text="@string/profile_chooser_select"
-      android:layout_marginStart="24dp"
-      android:layout_marginTop="40dp"
-      android:paddingBottom="20dp"
+      android:textColor="@color/white"
       android:textSize="24sp"
-      android:textColor="@color/white"/>
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/profile_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="0dp"
-      android:layout_marginStart="24dp"
-      android:layout_marginEnd="24dp"
+      android:layout_marginTop="36dp"
+      android:layout_marginStart="36dp"
+      android:layout_marginEnd="36dp"
       android:orientation="vertical"
       app:data="@{viewModel.profiles}"
       app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
