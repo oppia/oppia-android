@@ -40,7 +40,7 @@
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
   <!-- PROFILE COMPONENT -->
-  <color name="avatarBorder">#4E4E50</color>
+  <color name="avatarBorder">#707070</color>
   <color name="addProfileBackground">#FFFFF0</color>
   <color name="profileChooserBackground">#212121</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
