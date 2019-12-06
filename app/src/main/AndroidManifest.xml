@@ -32,6 +32,7 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.AdminAuthActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.ProfileActivity"
