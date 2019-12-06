@@ -163,7 +163,7 @@ message PromotedStory {
   // The name of the next chapter (exploration title) to complete.
   string next_chapter_name = 5;
 
-  // The id of the next chapter (exploration title) to complete.
+  // The exploration id next chapter to complete.
   string exploration_id = 6;
 
   // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
