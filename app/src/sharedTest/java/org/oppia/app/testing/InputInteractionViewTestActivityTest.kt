@@ -235,7 +235,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedPartialValue_ClickSubmitButton_numberFormatErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedPartialValue_clickSubmitButton_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5 5/"))
     closeSoftKeyboard()
@@ -243,7 +243,7 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
   }
   @Test
-  fun testFractionInputInteractionView_withInputtedValidValue_ClickSubmitButton_noErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedValidValue_clickSubmitButton_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("3 1/2"))
     closeSoftKeyboard()
@@ -259,7 +259,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDivideByZero_ClickSubmitButton_divideByZeroErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedDivideByZero_clickSubmitButton_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("1/0"))
     closeSoftKeyboard()
@@ -268,7 +268,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedInvalidCharacter_ClickSubmitButton_invalidCharacterErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedInvalidCharacter_clickSubmitButton_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("."))
       onView(withId(R.id.fraction_input_error)).check(matches(withText("Please only use numerical digits, spaces or forward slashes (/)")))

@@ -5,9 +5,7 @@ import android.widget.EditText
 import androidx.databinding.BindingAdapter
 
 /** This bindingAdapter tells the compiler how to set a TextWatcher on an EditText.  */
-
 @BindingAdapter("app:textChangedListener")
 fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
   editText.addTextChangedListener(textWatcher)
 }
-

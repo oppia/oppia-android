@@ -94,9 +94,9 @@ class StringToFractionParser {
 
   /** Enum to store the errors of [FractionInputInteractionView]. */
   enum class FractionParsingError(@StringRes error: Int) {
-    VALID(error = R.string.valid),
-    INVALID_CHARS(error = R.string.invalid_chars),
-    INVALID_FORMAT(error = R.string.invalid_format),
+    VALID(error = R.string.fraction_error_valid),
+    INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
+    INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
     DIVISION_BY_ZERO(error = R.string.divide_by_zero);
 
     private var error: Int
