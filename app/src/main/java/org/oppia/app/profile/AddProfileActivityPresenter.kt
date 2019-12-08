@@ -107,7 +107,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
       profileManagementController.addProfile(
         name, pin, selectedImage, allowDownloadAccess, activity.intent.getIntExtra(
-          KEY_PROFILE_AVATAR_COLOR, 0
+          KEY_PROFILE_AVATAR_COLOR, R.color.avatar_background_1
         ), false
       )
         .observe(activity, Observer {

@@ -2,6 +2,7 @@ package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.ProfileId
+import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
@@ -15,15 +16,17 @@ class ProfileTestHelper @Inject constructor(
       "Sean",
       "12345",
       null,
-      allowDownloadAccess = true,
-      isAdmin = true
+      true,
+      R.color.abc_tint_default,
+      true
     )
     profileManagementController.addProfile(
       "Ben",
       "123",
       null,
-      allowDownloadAccess = false,
-      isAdmin = false
+      false,
+      R.color.abc_tint_default,
+      false
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
@@ -35,8 +38,9 @@ class ProfileTestHelper @Inject constructor(
         (x + 65).toChar().toString(),
         "123",
         null,
-        allowDownloadAccess = false,
-        isAdmin = false
+        false,
+        R.color.abc_tint_default,
+        false
       )
     }
   }
