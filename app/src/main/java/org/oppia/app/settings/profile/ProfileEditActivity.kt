@@ -25,4 +25,9 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     profileEditActivityPresenter.handleOnCreate()
   }
+
+  override fun onSupportNavigateUp(): Boolean {
+    finish()
+    return false
+  }
 }
