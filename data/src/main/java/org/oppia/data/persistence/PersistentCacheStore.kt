@@ -102,7 +102,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    *
    * @return a deferred value that contains the value of the cached payload.
    */
-  // Returns a deferred value that contains the cache payload value
   fun readDataAsync(): Deferred<T> {
     val deferred = cache.updateWithCustomChannelIfPresentAsync { cachePayload ->
       if (cachePayload.state == CacheState.UNLOADED) {

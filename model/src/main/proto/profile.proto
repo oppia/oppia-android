@@ -54,11 +54,11 @@ message ProfileId {
 }
 
 // Used in BindableAdapter for ProfileChooserFragment.
-message ProfileChooserModel {
+message ProfileChooserUiModel {
   oneof model_type {
     // Indicates an individual Profile.
     Profile profile = 1;
     //Indicates the add profile button.
-    bool addProfile = 2;
+    bool add_profile = 2;
   }
 }
