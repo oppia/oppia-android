@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult

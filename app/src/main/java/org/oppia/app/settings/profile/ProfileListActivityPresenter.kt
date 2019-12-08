@@ -39,9 +39,19 @@ class ProfileListActivityPresenter @Inject constructor(
       .newBuilder<Profile>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ProfileListProfileViewBinding::inflate,
-        setViewModel = ProfileListProfileViewBinding::setProfile
+        setViewModel = ::bindProfileView
       )
       .build()
+  }
+
+  private fun bindProfileView(
+    binding: ProfileListProfileViewBinding,
+    profile: Profile
+  ) {
+    binding.profile = profile
+    binding.root.setOnClickListener {
+      activity.startActivity(ProfileEditActivity.createProfileEditActivity(activity, profile.id.internalId))
+    }
   }
 
   private fun getProfileListViewModel(): ProfileListViewModel {
