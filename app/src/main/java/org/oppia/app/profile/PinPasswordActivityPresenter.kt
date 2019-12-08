@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -33,6 +34,7 @@ private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
 class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>
 ) {
   private val pinViewModel by lazy {
@@ -73,11 +75,10 @@ class PinPasswordActivityPresenter @Inject constructor(
               })
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
-              val handler = Handler()
-              handler.postDelayed({
+              lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
                 wrong = true
                 binding.inputPin.setText("")
-              }, 1000)
+              })
               pinViewModel.showError.set(true)
             }
           }
