@@ -111,6 +111,13 @@
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
   <string name="admin_auth_pin">Administrator\'s PIN (5 digits)</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <!-- AdminPinActivity. -->
+  <string name="admin_pin_main">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
+  <string name="admin_pin_warning">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_new_pin">New 5-Digit PIN</string>
+  <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
+  <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <!-- AddProfileActivity. -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name (required)</string>

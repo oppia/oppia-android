@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileChooserModel
+import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -22,6 +23,7 @@ class ProfileChooserViewModel @Inject constructor(
   }
 
   lateinit var adminPin: String
+  lateinit var adminProfileId: ProfileId
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
@@ -51,6 +53,7 @@ class ProfileChooserViewModel @Inject constructor(
     adminProfile?.let {
       sortedProfileList.remove(adminProfile)
       adminPin = it.profile.pin
+      adminProfileId = it.profile.id
       sortedProfileList.add(0, it)
     }
 

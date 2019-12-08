@@ -34,6 +34,9 @@
       android:name=".profile.AdminAuthActivity"
       android:screenOrientation="portrait" />
     <activity
+      android:name=".profile.AdminPinActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".profile.PinPasswordActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />

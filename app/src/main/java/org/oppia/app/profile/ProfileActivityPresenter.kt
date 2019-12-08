@@ -16,7 +16,7 @@ class ProfileActivityPresenter @Inject constructor(
   /** Adds [ProfileChooserFragment] to view. */
   fun handleOnCreate() {
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
-    profileManagementController.addProfile("Sean", "12345", null, true, R.color.avatar_background_1, isAdmin = true)
+    profileManagementController.addProfile("Sean", "", null, true, R.color.avatar_background_1, isAdmin = true)
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
