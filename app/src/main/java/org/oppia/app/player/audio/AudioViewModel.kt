@@ -3,22 +3,17 @@ package org.oppia.app.player.audio
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
-import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.extensions.observeOnce
 import org.oppia.util.gcsresource.DefaultResource
-import org.oppia.util.logging.Logger
 import java.util.Locale
 import javax.inject.Inject
 
@@ -33,7 +28,7 @@ class AudioViewModel @Inject constructor(
   private lateinit var state: State
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
-  private val defaultLanguage = "hi"
+  private val defaultLanguage = "en"
   private var languageSelectionShown = false
   private var autoPlay = false
   private var hasFeedback = false
@@ -80,7 +75,7 @@ class AudioViewModel @Inject constructor(
       languages.isNotEmpty() -> {
         autoPlay = false
         languageSelectionShown = true
-        val languageCode = if (languages.any { it == "en" }) {
+        val languageCode = if (languages.contains("en")) {
           "en"
         } else {
           languages.first()

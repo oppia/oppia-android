@@ -184,7 +184,7 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
 
-      onView(withText("HI")).check(matches(isDisplayed()))
+      onView(withText("EN")).check(matches(isDisplayed()))
 
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
@@ -192,19 +192,18 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsEnglish() {
-    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
+  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() {
+    getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
 
-      onView(withText("HI")).perform(click())
-      onView(withText("English")).perform(click())
+      onView(withText("EN")).perform(click())
+      onView(withText("Hinglish")).perform(click())
       onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
-
-      onView(withText("EN")).check(matches(isDisplayed()))
+      onView(withText("HI-EN")).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }

@@ -20,6 +20,6 @@ interface AudioUiManager {
    */
   fun loadAudio(contentId: String?, allowAutoPlay: Boolean)
 
-  /** Used to pause audio when hiding [AudioFragment]. */
+  /** Used to pause all playing audio. */
   fun pauseAudio()
 }

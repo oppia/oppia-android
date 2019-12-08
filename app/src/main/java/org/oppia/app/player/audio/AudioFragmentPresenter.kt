@@ -186,7 +186,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun showAudioFragment() {
     getStateFragment()?.setAudioBarVisibility(true)
     (activity as AudioButtonListener).showAudioStreamingOn()
-    loadAudio(feedbackId, true)
+    loadAudio(/* contentId= */ feedbackId, /* allowAutoPlay= */ true)
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
   }
 

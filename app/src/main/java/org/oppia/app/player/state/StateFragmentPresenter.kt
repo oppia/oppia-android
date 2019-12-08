@@ -1,13 +1,10 @@
 package org.oppia.app.player.state
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
@@ -37,7 +34,6 @@ import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.State
@@ -46,7 +42,6 @@ import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
-import org.oppia.app.player.audio.CellularAudioDialogFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -65,19 +60,15 @@ import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import org.oppia.util.networking.NetworkConnectionUtil
-import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -179,8 +170,8 @@ class StateFragmentPresenter @Inject constructor(
         inflateView = { parent ->
           ContentItemBinding.inflate(
             LayoutInflater.from(parent.context),
-            parent, /* attachToParent= */
-            false
+            parent,
+            /* attachToParent= */ false
           ).root
         },
         bindView = { view, viewModel ->
@@ -197,8 +188,8 @@ class StateFragmentPresenter @Inject constructor(
         inflateView = { parent ->
           FeedbackItemBinding.inflate(
             LayoutInflater.from(parent.context),
-            parent, /* attachToParent= */
-            false
+            parent,
+            /* attachToParent= */ false
           ).root
         },
         bindView = { view, viewModel ->
