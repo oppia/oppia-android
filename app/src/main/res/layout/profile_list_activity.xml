@@ -10,8 +10,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/profile_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      app:data="@{viewModel.profiles}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />

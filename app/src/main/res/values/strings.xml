@@ -159,4 +159,6 @@
   <string name="home_activity_back_dialog_message">Exit your profile and go to the Profile Chooser?</string>
   <string name="home_activity_back_dialog_cancel">CANCEL</string>
   <string name="home_activity_back_dialog_exit">EXIT</string>
+  <!-- ProfileListActivity. -->
+  <string name="profile_list_activity_title">Profiles</string>
 </resources>
