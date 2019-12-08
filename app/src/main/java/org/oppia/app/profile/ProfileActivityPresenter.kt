@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.profile.ProfileManagementController

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileChooserModel
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class ProfileChooserViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController, private val logger: Logger
 ) : ObservableViewModel() {
-  val profiles: LiveData<List<ProfileChooserModel>> by lazy {
+  val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
     Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
   }
 
@@ -27,7 +27,7 @@ class ProfileChooserViewModel @Inject constructor(
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
-  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserModel> {
+  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserUiModel> {
     if (profilesResult.isFailure()) {
       logger.e(
         "ProfileChooserViewModel",
@@ -36,7 +36,7 @@ class ProfileChooserViewModel @Inject constructor(
       )
     }
     val profileList = profilesResult.getOrDefault(emptyList()).map {
-      ProfileChooserModel.newBuilder().setProfile(it).build()
+      ProfileChooserUiModel.newBuilder().setProfile(it).build()
     }.toMutableList()
 
     profileList.forEach {
@@ -58,7 +58,7 @@ class ProfileChooserViewModel @Inject constructor(
     }
 
     if (sortedProfileList.size < 10) {
-      sortedProfileList.add(ProfileChooserModel.newBuilder().setAddProfile(true).build())
+      sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())
     }
 
     return sortedProfileList

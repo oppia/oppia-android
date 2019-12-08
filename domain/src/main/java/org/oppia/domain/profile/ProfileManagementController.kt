@@ -137,7 +137,7 @@ class ProfileManagementController @Inject constructor(
     pin: String,
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
-    color: Int = 0,
+    color: Int,
     isAdmin: Boolean = false
   ): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(name)) {

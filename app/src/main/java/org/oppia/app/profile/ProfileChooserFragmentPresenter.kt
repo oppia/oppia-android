@@ -13,7 +13,7 @@ import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.model.ProfileChooserModel
+import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
@@ -79,16 +79,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileChooserModel, ProfileChooserModel.ModelTypeCase>(ProfileChooserModel::getModelTypeCase)
+      .newBuilder<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(ProfileChooserUiModel::getModelTypeCase)
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.ModelTypeCase.PROFILE,
+        viewType = ProfileChooserUiModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
         setViewModel = this::bindProfileView
       )
       .registerViewDataBinderWithSameModelType(
-        viewType = ProfileChooserModel.ModelTypeCase.ADDPROFILE,
+        viewType = ProfileChooserUiModel.ModelTypeCase.ADD_PROFILE,
         inflateDataBinding = ProfileChooserAddViewBinding::inflate,
         setViewModel = this::bindAddView
       )
@@ -97,7 +97,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindProfileView(
     binding: ProfileChooserProfileViewBinding,
-    model: ProfileChooserModel
+    model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
     binding.root.setOnClickListener {
@@ -118,7 +118,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserModel) {
+  private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
