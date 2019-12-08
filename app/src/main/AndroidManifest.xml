@@ -45,6 +45,12 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />
     <activity
+      android:name=".settings.profile.ProfileEditActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />
     <activity

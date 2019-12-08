@@ -9,8 +9,6 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.profile.AdminSettingsDialogFragment
-import org.oppia.app.settings.profile.ProfileEditFragment
-import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
@@ -48,8 +46,6 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
-  fun inject(profileEditFragment: ProfileEditFragment)
-  fun inject(profileListFragment: ProfileListFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(stateFragment: StateFragment)
