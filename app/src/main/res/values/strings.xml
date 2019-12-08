@@ -155,4 +155,8 @@
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <!-- ResetPinDialogFragment. -->
   <string name="reset_pin_enter">Enter a New Pin</string>
+  <!-- HomeActivityBackDialog. -->
+  <string name="home_activity_back_dialog_message">Exit your profile and go to the Profile Chooser?</string>
+  <string name="home_activity_back_dialog_cancel">CANCEL</string>
+  <string name="home_activity_back_dialog_exit">EXIT</string>
 </resources>
