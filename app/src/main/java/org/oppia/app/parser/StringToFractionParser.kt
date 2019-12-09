@@ -22,7 +22,7 @@ class StringToFractionParser {
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     // No need to check for real-time errors since the following logically include them.
-    val fraction = getFractionFromString(text)
+    val fraction = parseFunction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
@@ -47,13 +47,17 @@ class StringToFractionParser {
     }
   }
 
-  fun getFractionFromString(text: String): Fraction? {
+  fun parseFunction(text: String): Fraction? {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
     return parseMixedNumber(inputText)
       ?: parseFraction(inputText)
       ?: parseWholeNumber(inputText)
       ?: null
+  }
+
+  fun getFractionFromString(text: String): Fraction {
+    return parseFunction(text) ?: throw IllegalArgumentException("...")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
