@@ -77,7 +77,7 @@ class ExplorationActivityTest {
 
   private fun createExplorationActivityIntent(explorationId: String): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
-      ApplicationProvider.getApplicationContext(), explorationId
+      ApplicationProvider.getApplicationContext(), explorationId, null
     )
   }
 

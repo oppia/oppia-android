@@ -116,10 +116,10 @@ class TopicPlayFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(chapterSummary: ChapterSummary) {
-    playExploration(chapterSummary.explorationId)
+    playExploration(chapterSummary.explorationId, topicId)
   }
 
-  private fun playExploration(explorationId: String) {
+  private fun playExploration(explorationId: String, topicId: String) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -128,7 +128,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
         result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d("TopicPlayFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId)
+          routeToExplorationListener.routeToExploration(explorationId, topicId)
         }
       }
     })

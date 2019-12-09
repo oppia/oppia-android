@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -32,8 +31,8 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
-import org.oppia.util.caching.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -245,7 +244,12 @@ class TopicListController @Inject constructor(
             storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
           ongoingStoryListBuilder.addRecentStory(
             createPromotedStory(
-              storyId, topic, completedChapterCount, storyProgress.chapterProgressCount, nextChapterSummary?.name
+              storyId,
+              topic,
+              completedChapterCount,
+              storyProgress.chapterProgressCount,
+              nextChapterSummary?.name,
+              nextChapterSummary?.explorationId
             )
           )
         }
@@ -255,7 +259,12 @@ class TopicListController @Inject constructor(
   }
 
   private fun createPromotedStory(
-    storyId: String, topic: Topic, completedChapterCount: Int, totalChapterCount: Int, nextChapterName: String?
+    storyId: String,
+    topic: Topic,
+    completedChapterCount: Int,
+    totalChapterCount: Int,
+    nextChapterName: String?,
+    explorationId: String?
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -266,8 +275,9 @@ class TopicListController @Inject constructor(
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setLessonThumbnail(STORY_THUMBNAILS.getValue(storyId))
-    if (nextChapterName != null) {
+    if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
+      promotedStoryBuilder.explorationId = explorationId
     }
     return promotedStoryBuilder.build()
   }

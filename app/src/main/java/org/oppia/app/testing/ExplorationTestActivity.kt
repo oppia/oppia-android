@@ -4,17 +4,18 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.topic.TopicFragment
 import javax.inject.Inject
 
-/** Test activity for recent stories. */
-class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(),
-  RouteToExplorationListener {
-  @Inject lateinit var continuePlayingFragmentTestActivityPresenter: ContinuePlayingFragmentTestActivityPresenter
+/** The activity for testing [TopicFragment]. */
+class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
+  @Inject
+  lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    continuePlayingFragmentTestActivityPresenter.handleOnCreate()
+    explorationTestActivityPresenter.handleOnCreate()
   }
 
   override fun routeToExploration(explorationId: String, topicId: String?) {
