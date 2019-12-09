@@ -5,7 +5,15 @@ If you are running Oppia on an emulator running on Android Studio, you can direc
 <p align="center">
 <img width="436" alt="Screen Shot 2019-11-08 at 3 58 05 PM" src="https://user-images.githubusercontent.com/11780495/68518631-a1dd8300-0241-11ea-9186-8315a0f1e5e0.png">
 </p>
-The default location for the screenshot would be on Desktop.
+
+Also, you can create a video/gif file from emulator by following these steps:
+1. Click on three dots present at the bottom on emulator side bar.
+2. In the extended menu click on `Record and Playback`.
+3. Click on `Start Recording`. This will only record the emulator screen.
+4. Once finished, click on `Stop Recording`.
+5. You can save this file in `WEBM` or `GIF` format.
+
+The default location for the screenshot, video and gif would be on Desktop.
 
 ## Using Android Studio on a local device
 If you are running Oppia on a local Android device, you can take a screenshot using the Logcat window of Android Studio. 
