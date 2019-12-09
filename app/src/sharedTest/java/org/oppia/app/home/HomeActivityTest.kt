@@ -49,6 +49,8 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -173,7 +175,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Second Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -187,7 +189,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Second Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -199,8 +201,8 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_1"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, FRACTIONS_STORY_ID_0))
     }
   }
 
@@ -210,7 +212,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FIRST TOPIC"))
+          withText(containsString("FRACTIONS"))
         )
       )
     }
@@ -234,7 +236,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
-          withText(containsString("2 Lessons"))
+          withText(containsString("4 Lessons"))
         )
       )
     }

@@ -24,6 +24,7 @@ import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
+import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 
@@ -50,6 +51,7 @@ interface ActivityComponent {
   fun inject(continuePlayingActivity: ContinuePlayingActivity)
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
+  fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(profileActivity: ProfileActivity)

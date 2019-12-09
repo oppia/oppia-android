@@ -26,6 +26,17 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait"
       android:windowSoftInputMode="adjustResize"/>
+    <activity
+      android:name=".testing.ExplorationTestActivity" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.AddProfileActivity"
@@ -47,14 +58,6 @@
       android:name=".splash.SplashActivity"
       android:theme="@style/SplashScreenTheme"
       android:screenOrientation="portrait">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
     </activity>
     <activity
       android:name=".story.StoryActivity"
