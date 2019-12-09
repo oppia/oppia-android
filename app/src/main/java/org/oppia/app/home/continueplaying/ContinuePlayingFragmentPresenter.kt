@@ -112,7 +112,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
         else -> {
           logger.d("ContinuePlayingFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(explorationId, topicId)
-          (activity as ContinuePlayingActivity).finish()
+          activity.finish()
         }
       }
     })

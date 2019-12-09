@@ -11,8 +11,7 @@ import javax.inject.Inject
 /** Activity for recent stories. */
 class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
 
-  @Inject
-  lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
+  @Inject lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
