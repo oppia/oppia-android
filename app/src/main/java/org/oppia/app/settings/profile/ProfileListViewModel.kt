@@ -24,8 +24,8 @@ class ProfileListViewModel @Inject constructor(
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
     if (profilesResult.isFailure()) {
       logger.e(
-        "ProfileChooserViewModel",
-        "Failed to retrieve the list of profiles: ",
+        "ProfileListViewModel",
+        "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
       )
     }

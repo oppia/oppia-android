@@ -32,7 +32,7 @@ class ProfileChooserViewModel @Inject constructor(
     if (profilesResult.isFailure()) {
       logger.e(
         "ProfileChooserViewModel",
-        "Failed to retrieve the list of profiles: ",
+        "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
       )
     }
