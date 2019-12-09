@@ -26,8 +26,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait"
       android:windowSoftInputMode="adjustResize"/>
-    <activity
-      android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.AddProfileActivity"
@@ -66,6 +64,7 @@
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
