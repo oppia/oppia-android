@@ -13,13 +13,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:overScrollMode="never"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    android:background="@color/profileChooserBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/profile_chooser_container"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/profileChooserBackground">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/profile_select_text"
