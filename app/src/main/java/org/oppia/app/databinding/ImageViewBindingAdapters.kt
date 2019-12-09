@@ -84,6 +84,7 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
 fun setProfileImage(imageView: ImageView, colorOrUri: String) {
   val colorId = colorOrUri.toIntOrNull()
   if (colorId != null) {
+    if (colorId == 0) return
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
       .into(imageView)

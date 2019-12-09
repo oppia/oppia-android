@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 const val KEY_PROFILE_EDIT_PROFILE_ID = "KEY_PROFILE_EDIT_PROFILE_ID"
 
-/** Activity that allows user to select a profile to edit from settings. */
+/** Activity that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
   @Inject lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 

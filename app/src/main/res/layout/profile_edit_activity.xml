@@ -1,19 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
   <data>
+
+    <import type="android.view.View" />
+
+    <import type="android.text.TextUtils" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.settings.profile.ProfileEditViewModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-      android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/profileEditBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/profile_edit_main"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@{viewModel.profile.name}"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      android:background="@color/white"
+      android:paddingBottom="52dp"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_edit_image"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        profile:src="@{TextUtils.isEmpty(viewModel.profile.avatarImageUri) ? Integer.toString(viewModel.profile.avatarColorHex) : viewModel.profile.avatarImageUri}" />
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/profile_edit_image"
+        app:layout_constraintStart_toEndOf="@id/profile_edit_image"
+        app:layout_constraintTop_toTopOf="@id/profile_edit_image">
+
+        <TextView
+          android:id="@+id/profile_edit_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{viewModel.profile.name}"
+          android:textColor="@color/black"
+          android:textSize="24dp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/profile_edit_created"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18dp"
+          profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
+      </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:id="@+id/profile_hr_top"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintTop_toBottomOf="@id/profile_edit_main" />
+
+    <Button
+      android:id="@+id/profile_rename_button"
+      android:layout_width="match_parent"
+      android:layout_height="72dp"
+      android:background="@color/white"
+      android:gravity="left|center_vertical"
+      android:paddingLeft="28dp"
+      android:text="@string/profile_edit_rename"
+      android:textAllCaps="false"
+      android:textSize="16dp"
+      app:layout_constraintTop_toBottomOf="@id/profile_hr_top" />
+
+    <View
+      android:id="@+id/profile_hr_middle"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintTop_toBottomOf="@id/profile_rename_button" />
+
+    <Button
+      android:id="@+id/profile_reset_button"
+      android:layout_width="match_parent"
+      android:layout_height="72dp"
+      android:background="@color/white"
+      android:gravity="left|center_vertical"
+      android:paddingLeft="28dp"
+      android:text="@string/profile_edit_reset"
+      android:textAllCaps="false"
+      android:textSize="16dp"
+      app:layout_constraintTop_toBottomOf="@id/profile_hr_middle" />
+
+    <View
+      android:id="@+id/profile_hr_bottom"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintTop_toBottomOf="@id/profile_reset_button" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/profile_edit_allow_download_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:paddingTop="16dp"
+      android:paddingBottom="16dp"
+      android:paddingStart="28dp"
+      android:paddingEnd="28dp"
+      app:layout_constraintTop_toBottomOf="@id/profile_hr_bottom">
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/profile_edit_allow_download_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+          android:id="@+id/profile_edit_allow_download_heading"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/profile_edit_allow_download_heading"
+          android:textColor="@color/black"
+          android:textSize="16dp" />
+
+        <TextView
+          android:id="@+id/profile_edit_allow_download_sub"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/profile_edit_allow_download_sub" />
+      </LinearLayout>
+
+      <Switch
+        android:id="@+id/profile_edit_allow_download_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintTop_toBottomOf="@id/profile_edit_allow_download_container" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintBottom_toTopOf="@id/profile_delete_button" />
+    <Button
+      android:id="@+id/profile_delete_button"
+      android:layout_width="match_parent"
+      android:layout_height="72dp"
+      android:background="@color/white"
+      android:gravity="left|center_vertical"
+      android:paddingLeft="28dp"
+      android:text="@string/profile_edit_delete"
+      android:textColor="@color/red"
+      android:textAllCaps="false"
+      android:textSize="16dp"
+      android:layout_marginBottom="20dp"
+      app:layout_constraintBottom_toBottomOf="parent" />
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/grey"
+      app:layout_constraintBottom_toTopOf="@id/profile_delete_button" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
