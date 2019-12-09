@@ -27,7 +27,15 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   }
 
   override fun onSupportNavigateUp(): Boolean {
-    finish()
+    val intent = Intent(this, ProfileListActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    startActivity(intent)
     return false
+  }
+
+  override fun onBackPressed() {
+    val intent = Intent(this, ProfileListActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    startActivity(intent)
   }
 }

@@ -166,6 +166,19 @@
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
   <string name="profile_edit_delete">Profile Deletion</string>
+  <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
+  <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
+  <string name="profile_edit_delete_dialog_positive">DELETE</string>
+  <string name="profile_edit_delete_dialog_negative">CANCEL</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfileRenameActivity. -->
+  <string name="profile_rename_title">Rename Profile</string>
+  <string name="profile_rename_label">New Name</string>
+  <string name="profile_rename_save">save</string>
+  <!-- ProfileResetPinActivity. -->
+  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
+  <string name="profile_reset_pin_pin_label">3-Digit PIN</string>
+  <string name="profile_reset_pin_confirm_label">Confirm 3-Digit PIN</string>
 </resources>

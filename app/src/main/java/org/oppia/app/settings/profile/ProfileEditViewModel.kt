@@ -1,8 +1,10 @@
 package org.oppia.app.settings.profile
 
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
@@ -38,6 +40,8 @@ class ProfileEditViewModel @Inject constructor(
       )
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
+    val switch = activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
+    switch.isChecked = profile.allowDownloadAccess
     activity.title = profile.name
     return profile
   }
