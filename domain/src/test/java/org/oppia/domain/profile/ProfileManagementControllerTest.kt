@@ -34,6 +34,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
+import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -124,7 +125,8 @@ class ProfileManagementControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testAddProfile_addProfile_checkProfileIsAdded() = runBlockingTest(coroutineContext) {
-    profileManagementController.addProfile("James", "123", null, true).observeForever(mockUpdateResultObserver)
+    profileManagementController.addProfile("James", "123", null, true
+      , R.color.abc_tint_default).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
     val profileDatabase = readProfileDatabase()
@@ -145,7 +147,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     advanceUntilIdle()
 
-    profileManagementController.addProfile("JAMES", "321", null, true).observeForever(mockUpdateResultObserver)
+    profileManagementController.addProfile("JAMES", "321", null, true, R.color.abc_tint_default).observeForever(mockUpdateResultObserver)
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
@@ -158,7 +160,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     advanceUntilIdle()
 
-    profileManagementController.addProfile("James034", "321", null, true).observeForever(mockUpdateResultObserver)
+    profileManagementController.addProfile("James034", "321", null, true, R.color.abc_tint_default).observeForever(mockUpdateResultObserver)
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isFailure()).isTrue()
@@ -205,7 +207,7 @@ class ProfileManagementControllerTest {
     advanceUntilIdle()
 
     setUpTestApplicationComponent()
-    profileManagementController.addProfile("Nikita", "678", null, false)
+    profileManagementController.addProfile("Nikita", "678", null, false, R.color.abc_tint_default)
     advanceUntilIdle()
     profileManagementController.getProfiles().observeForever(mockProfilesObserver)
 
@@ -358,7 +360,7 @@ class ProfileManagementControllerTest {
     val profileId4 = ProfileId.newBuilder().setInternalId(4).build()
     profileManagementController.deleteProfile(profileId3)
     profileManagementController.deleteProfile(profileId4)
-    profileManagementController.addProfile("John", "321", null, true)
+    profileManagementController.addProfile("John", "321", null, true, R.color.abc_tint_default)
     advanceUntilIdle()
     profileManagementController.getProfiles().observeForever(mockProfilesObserver)
 
@@ -439,7 +441,7 @@ class ProfileManagementControllerTest {
   @ExperimentalCoroutinesApi
   private fun addTestProfiles() {
     PROFILES_LIST.forEach {
-      profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess)
+      profileManagementController.addProfile(it.name, it.pin, null, it.allowDownloadAccess, R.color.abc_tint_default)
     }
   }
 
