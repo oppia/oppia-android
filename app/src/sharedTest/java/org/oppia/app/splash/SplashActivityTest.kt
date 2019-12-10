@@ -23,7 +23,8 @@ class SplashActivityTest {
   // disabled to launch Activity explicitly within each test case.
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false)
+    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -33,7 +34,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(ProfileActivity::class.java.getName()))
+    intended(hasComponent(ProfileActivity::class.java.name))
   }
 
   @After
