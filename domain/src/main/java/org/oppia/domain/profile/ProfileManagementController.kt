@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
 import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
@@ -162,9 +163,9 @@ class ProfileManagementController @Inject constructor(
             it,
             ProfileActionStatus.FAILED_TO_STORE_IMAGE
           )
-        newProfileBuilder.avatarImageUri = imageUri
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
-        newProfileBuilder.avatarColorHex = color
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorHex(color).build()
       }
 
       val profileDatabaseBuilder =

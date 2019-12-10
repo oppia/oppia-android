@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
@@ -38,8 +39,8 @@ class ProfileChooserViewModel @Inject constructor(
     }.toMutableList()
 
     profileList.forEach {
-      if (it.profile.avatarColorHex != 0) {
-        usedColors.add(it.profile.avatarColorHex)
+      if (it.profile.avatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
+        usedColors.add(it.profile.avatar.avatarColorHex)
       }
     }
 
