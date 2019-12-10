@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.app">
-
   <!-- TODO(#56): Reenable landscape support. -->
-
   <uses-permission android:name="android.permission.INTERNET" />
   <application
     android:name=".application.OppiaApplication"
@@ -15,17 +13,17 @@
     android:theme="@style/OppiaTheme">
     <activity
       android:name=".home.continueplaying.ContinuePlayingActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait"
-      android:windowSoftInputMode="adjustResize"/>
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustResize" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.AddProfileActivity"
@@ -35,8 +33,8 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />
@@ -45,8 +43,8 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme"
-      android:screenOrientation="portrait">
+      android:screenOrientation="portrait"
+      android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -58,12 +56,15 @@
     </activity>
     <activity
       android:name=".story.StoryActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
-    <activity android:name=".story.testing.StoryFragmentTestActivity" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".story.testing.StoryFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
@@ -78,7 +79,7 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>
