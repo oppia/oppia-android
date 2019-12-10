@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.SkillThumbnailGraphic
 
 /**
@@ -81,17 +82,20 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
  * @param colorOrUri Represents either a colorId or local image uri.
  */
 @BindingAdapter("profile:src")
-fun setProfileImage(imageView: ImageView, colorOrUri: String) {
-  val colorId = colorOrUri.toIntOrNull()
-  if (colorId != null) {
-    if (colorId == 0) return
+fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar) {
+  if (profileAvatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
       .into(imageView)
-    imageView.setColorFilter(ContextCompat.getColor(imageView.context, colorId), PorterDuff.Mode.DST_OVER)
+    imageView.setColorFilter(
+      ContextCompat.getColor(
+        imageView.context,
+        profileAvatar.avatarColorHex
+      ), PorterDuff.Mode.DST_OVER
+    )
   } else {
     Glide.with(imageView.context)
-      .load(colorOrUri)
+      .load(profileAvatar.avatarImageUri)
       .placeholder(R.drawable.ic_default_avatar)
       .into(imageView)
   }

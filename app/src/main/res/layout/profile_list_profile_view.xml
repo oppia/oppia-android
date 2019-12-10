@@ -4,7 +4,6 @@
   xmlns:profile="http://schemas.android.com/tools">
   <data>
     <import type="android.view.View" />
-    <import type="android.text.TextUtils" />
     <variable
       name="profile"
       type="org.oppia.app.model.Profile" />
@@ -16,7 +15,7 @@
     android:id="@+id/profile_list_image"
     android:layout_width="68dp"
     android:layout_height="68dp"
-    profile:src="@{TextUtils.isEmpty(profile.avatarImageUri) ? Integer.toString(profile.avatarColorHex) : profile.avatarImageUri}"
+    profile:src="@{profile.avatar}"
     android:layout_marginStart="36dp"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
