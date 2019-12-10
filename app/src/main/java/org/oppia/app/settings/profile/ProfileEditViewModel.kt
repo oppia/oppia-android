@@ -27,6 +27,8 @@ class ProfileEditViewModel @Inject constructor(
     Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
 
+  var isAdmin = false
+
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
@@ -43,6 +45,7 @@ class ProfileEditViewModel @Inject constructor(
     val switch = activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
     switch.isChecked = profile.allowDownloadAccess
     activity.title = profile.name
+    isAdmin = profile.isAdmin
     return profile
   }
 }

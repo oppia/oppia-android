@@ -43,7 +43,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     binding.profileResetButton.setOnClickListener {
-      activity.startActivity(ProfileResetPinActivity.createProfileResetPinActivity(activity, profileId))
+      activity.startActivity(ProfileResetPinActivity.createProfileResetPinActivity(activity, profileId, editViewModel.isAdmin))
     }
 
     binding.profileDeleteButton.setOnClickListener {

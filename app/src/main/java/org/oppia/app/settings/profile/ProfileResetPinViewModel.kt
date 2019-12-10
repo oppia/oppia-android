@@ -10,4 +10,5 @@ import javax.inject.Inject
 class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
   val pinErrorMsg = ObservableField("")
   val confirmErrorMsg = ObservableField("")
+  val isAdmin = ObservableField(false)
 }

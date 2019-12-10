@@ -179,6 +179,10 @@
   <!-- ProfileResetPinActivity. -->
   <string name="profile_reset_pin_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
-  <string name="profile_reset_pin_pin_label">3-Digit PIN</string>
-  <string name="profile_reset_pin_confirm_label">Confirm 3-Digit PIN</string>
+  <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>
+  <string name="profile_reset_pin_user_confirm_label">Confirm 3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
+  <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
+  <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
 </resources>

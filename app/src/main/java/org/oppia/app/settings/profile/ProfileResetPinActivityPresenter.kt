@@ -36,6 +36,8 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     val binding =
       DataBindingUtil.setContentView<ProfileResetPinActivityBinding>(activity, R.layout.profile_reset_pin_activity)
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_RESET_PIN_PROFILE_ID, 0)
+    val isAdmin = activity.intent.getBooleanExtra(KEY_PROFILE_RESET_PIN_IS_ADMIN, false)
+    resetViewModel.isAdmin.set(isAdmin)
 
     binding.apply {
       viewModel = resetViewModel
@@ -58,9 +60,16 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       val pin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
-      if (pin.isNotEmpty() && pin.length < 3) {
-        resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
-        failed = true
+      if (isAdmin) {
+        if (pin.length < 5) {
+          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_admin_pin_length))
+          failed = true
+        }
+      } else {
+        if (pin.length < 3) {
+          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_user_pin_length))
+          failed = true
+        }
       }
       if (pin != confirmPin) {
         resetViewModel.confirmErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))

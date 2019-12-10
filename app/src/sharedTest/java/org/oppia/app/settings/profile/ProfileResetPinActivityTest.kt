@@ -66,8 +66,18 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
-    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1)).use {
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("12345"))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      intended(hasComponent(ProfileEditActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivityWithUser_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("123"))
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -76,17 +86,57 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputShortPin_clickSave_checkPinLengthError() {
-    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12"))
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1234"))
       onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.profile_reset_pin_error_admin_pin_length))))
     }
   }
 
   @Test
-  fun testProfileResetPinActivity_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1)).use {
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1234"))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("5"))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText(context.getString(R.string.add_profile_error_pin_confirm_wrong))))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("5"))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_checkPinLengthError() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12"))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.profile_reset_pin_error_user_pin_length))))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12"))
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("3"))
@@ -95,8 +145,8 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
-    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1)).use {
+  fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("12"))
       onView(withId(R.id.profile_reset_save_button)).perform(click())
@@ -105,8 +155,8 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPinActivity_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1)).use {
+  fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("12"))
       onView(withId(R.id.profile_reset_save_button)).perform(click())
