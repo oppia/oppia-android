@@ -4,11 +4,7 @@
   xmlns:profile="http://schemas.android.com/tools">
 
   <data>
-
     <import type="android.view.View" />
-
-    <import type="android.text.TextUtils" />
-
     <variable
       name="viewModel"
       type="org.oppia.app.settings.profile.ProfileEditViewModel" />
@@ -35,7 +31,7 @@
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        profile:src="@{TextUtils.isEmpty(viewModel.profile.avatarImageUri) ? Integer.toString(viewModel.profile.avatarColorHex) : viewModel.profile.avatarImageUri}" />
+        profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout
         android:layout_width="wrap_content"

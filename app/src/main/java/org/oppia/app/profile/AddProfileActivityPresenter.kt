@@ -122,7 +122,7 @@ class AddProfileActivityPresenter @Inject constructor(
       profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
       failed = true
     }
-    if (pin.length < 3) {
+    if (pin.isNotEmpty() && pin.length < 3) {
       profileViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
       failed = true
     }

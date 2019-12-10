@@ -82,7 +82,8 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
  * @param colorOrUri Represents either a colorId or local image uri.
  */
 @BindingAdapter("profile:src")
-fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar) {
+fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
+  if (profileAvatar == null) return
   if (profileAvatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
