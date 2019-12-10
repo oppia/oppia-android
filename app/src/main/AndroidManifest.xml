@@ -28,6 +28,12 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
+      android:name=".profile.AddProfileActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.AdminAuthActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".profile.ProfileActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -54,10 +60,13 @@
       android:name=".story.StoryActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".story.testing.StoryFragmentTestActivity" />
+    <activity
+      android:name=".story.testing.StoryFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity

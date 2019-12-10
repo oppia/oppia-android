@@ -1,5 +1,7 @@
 package org.oppia.app.player.exploration
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.topic.TopicActivity
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -29,11 +32,13 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: Logger
 ) {
   private lateinit var toolbar: Toolbar
+  private var topicId: String? = null
+
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(explorationId: String) {
+  fun handleOnCreate(explorationId: String, topicId: String?) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -48,11 +53,12 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
+    this.topicId = topicId
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, explorationId)
+      args.putString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -80,6 +86,12 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
+          if (topicId != null) {
+            val intent = Intent(activity, TopicActivity::class.java)
+            intent.putExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+            intent.addFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
+            activity.startActivity(intent)
+          }
           (activity as ExplorationActivity).finish()
         }
       }
@@ -116,7 +128,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun onKeyboardAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      val explorationFragment =
+        activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
       explorationFragment.onKeyboardAction()
     }
   }
