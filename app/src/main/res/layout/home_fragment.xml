@@ -24,6 +24,7 @@
       android:clipToPadding="false"
       android:overScrollMode="never"
       android:paddingTop="36dp"
-      android:paddingBottom="24dp" />
+      android:paddingBottom="@dimen/bottom_white_space"
+      android:scrollbars="none" />
   </LinearLayout>
 </layout>
