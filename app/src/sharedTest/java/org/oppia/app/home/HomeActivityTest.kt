@@ -51,8 +51,8 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
-import org.oppia.domain.topic.EQUAL_PARTS_STORY_ID
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.MATTHEW_GOES_TO_THE_BAKERY_STORY_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -234,7 +234,7 @@ class HomeActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, EQUAL_PARTS_STORY_ID))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, MATTHEW_GOES_TO_THE_BAKERY_STORY_ID))
     }
   }
 

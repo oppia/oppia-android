@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -49,7 +48,7 @@ const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
-const val EQUAL_PARTS_STORY_ID = "wANbh4oOClga"
+const val MATTHEW_GOES_TO_THE_BAKERY_STORY_ID = "wANbh4oOClga"
 val TOPIC_IDS = listOf(FRACTIONS_TOPIC_ID, RATIOS_TOPIC_ID)
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),

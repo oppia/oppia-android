@@ -134,13 +134,14 @@ class TopicListAdapter(
     ) {
       binding.viewModel = promotedStoryListViewModel
       val promotedStoryAdapter = PromotedStoryListAdapter(promotedStoryList)
-      val horizontalLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+      val horizontalLayoutManager =
+        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
       binding.promotedStoryListRecyclerView.apply {
         layoutManager = horizontalLayoutManager
         adapter = promotedStoryAdapter
       }
 
-      /**
+      /*
        * The PagerSnapHelper is used to snap between items rather than smooth scrolling,
        * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
        */
