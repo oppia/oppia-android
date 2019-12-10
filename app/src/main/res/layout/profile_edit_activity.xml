@@ -52,7 +52,7 @@
           android:layout_height="wrap_content"
           android:text="@{viewModel.profile.name}"
           android:textColor="@color/black"
-          android:textSize="24dp"
+          android:textSize="24sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="18dp"
+          android:textSize="18sp"
           profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -84,11 +84,11 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="@color/white"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="28dp"
+        android:gravity="start|center_vertical"
+        android:paddingStart="28dp"
         android:text="@string/profile_edit_rename"
         android:textAllCaps="false"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
       <View
         android:layout_width="match_parent"
@@ -100,11 +100,11 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="@color/white"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="28dp"
+        android:gravity="start|center_vertical"
+        android:paddingStart="28dp"
         android:text="@string/profile_edit_reset"
         android:textAllCaps="false"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
       <View
         android:layout_width="match_parent"
@@ -142,7 +142,7 @@
               android:layout_height="wrap_content"
               android:text="@string/profile_edit_allow_download_heading"
               android:textColor="@color/black"
-              android:textSize="16dp" />
+              android:textSize="16sp" />
 
             <TextView
               android:id="@+id/profile_edit_allow_download_sub"
@@ -184,12 +184,12 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="@color/white"
-        android:gravity="left|center_vertical"
-        android:paddingLeft="28dp"
+        android:gravity="start|center_vertical"
+        android:paddingStart="28dp"
         android:text="@string/profile_edit_delete"
         android:textAllCaps="false"
         android:textColor="@color/red"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
       <View
         android:layout_width="match_parent"
