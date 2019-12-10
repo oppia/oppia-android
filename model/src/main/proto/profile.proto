@@ -28,23 +28,30 @@ message Profile {
   // PIN of the profile.
   string pin = 4;
 
-  // User selected image or gravatar.
-  string avatar_image_uri = 5;
-
-  // Random color used if user does not provide image
-  int32 avatar_color_hex = 6;
+  ProfileAvatar avatar = 5;
 
   // Determines whether profile is admin.
-  bool is_admin = 7;
+  bool is_admin = 6;
 
   // Determines whether profile can download content.
-  bool allow_download_access = 8;
+  bool allow_download_access = 7;
 
   // Represents the time the user was last logged in.
-  int64 last_logged_in_timestamp_ms = 9;
+  int64 last_logged_in_timestamp_ms = 8;
 
   // Represents the time the user's profile was created.
-  int64 date_created_timestamp_ms = 10;
+  int64 date_created_timestamp_ms = 9;
+}
+
+// Structure for profile avatar image
+message ProfileAvatar {
+  oneof avatar_type {
+    // User selected image or gravatar.
+    string avatar_image_uri = 5;
+
+    // Random color used if user does not provide image
+    int32 avatar_color_hex = 6;
+  }
 }
 
 // Opaque data structure to pass ID.
