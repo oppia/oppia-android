@@ -66,7 +66,16 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
       SkillThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS -> R.drawable.topic_fractions_06
       SkillThumbnailGraphic.MULTIPLYING_FRACTIONS -> R.drawable.topic_fractions_07
       SkillThumbnailGraphic.DIVIDING_FRACTIONS -> R.drawable.topic_fractions_08
+      SkillThumbnailGraphic.DERIVE_A_RATIO -> R.drawable.topic_ratios_01
       else -> R.drawable.topic_fractions_01
     }
   )
+}
+
+@BindingAdapter("profile:src")
+fun setProfileImage(imageView: ImageView, imageUrl: String) {
+  Glide.with(imageView.context)
+    .load(imageUrl)
+    .placeholder(R.drawable.ic_default_avatar)
+    .into(imageView)
 }

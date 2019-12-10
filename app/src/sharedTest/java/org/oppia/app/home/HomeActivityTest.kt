@@ -54,6 +54,7 @@ import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.MATTHEW_GOES_TO_THE_BAKERY_STORY_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -191,14 +192,11 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(
-        Matchers.allOf(
-          withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
-            atPosition(R.id.home_recycler_view, 1)
-          )
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
+        matches(
+          withText(containsString("Matthew Goes to the Bakery"))
         )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("Matthew Goes to the Bakery")))))
+      )
     }
   }
 
@@ -208,20 +206,16 @@ class HomeActivityTest {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        Matchers.allOf(
-          withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
-            atPosition(R.id.home_recycler_view, 1)
-          )
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
+        matches(
+          withText(containsString("Matthew Goes to the Bakery"))
         )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("The Meaning of Equal Parts")))))
+      )
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
-
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
@@ -234,7 +228,7 @@ class HomeActivityTest {
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, MATTHEW_GOES_TO_THE_BAKERY_STORY_ID))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, FRACTIONS_STORY_ID_0))
     }
   }
 
@@ -242,14 +236,11 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(
-        Matchers.allOf(
-          withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
-            atPosition(R.id.home_recycler_view, 1)
-          )
+      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("FRACTIONS"))
         )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("FRACTIONS")))))
+      )
     }
   }
 

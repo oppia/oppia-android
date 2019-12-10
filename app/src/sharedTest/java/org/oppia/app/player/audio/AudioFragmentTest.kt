@@ -264,10 +264,6 @@ class AudioFragmentTest {
       return TestCoroutineDispatcher()
     }
 
-    @CacheAssetsLocally
-    @Provides
-    fun provideCacheAssetsLocally(): Boolean = false
-
     @Singleton
     @Provides
     @BackgroundDispatcher
@@ -295,6 +291,10 @@ class AudioFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   @Singleton
