@@ -7,7 +7,6 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BulletSpan
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import javax.inject.Inject
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
@@ -18,7 +17,6 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val urlImageParserFactory: UrlImageParser.Factory,
-  private val activity: AppCompatActivity,
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean
@@ -64,7 +62,7 @@ class HtmlParser private constructor(
       val end = spannableBuilder.getSpanEnd(it)
       spannableBuilder.removeSpan(it)
       spannableBuilder.setSpan(
-        CustomBulletSpan(activity),
+        CustomBulletSpan(htmlContentTextView.context),
         start,
         end,
         Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -92,9 +90,9 @@ class HtmlParser private constructor(
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory, private val activity: AppCompatActivity) {
+  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
     fun create(entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
-      return HtmlParser(urlImageParserFactory, activity, entityType, entityId, imageCenterAlign)
+      return HtmlParser(urlImageParserFactory, entityType, entityId, imageCenterAlign)
     }
   }
 }
