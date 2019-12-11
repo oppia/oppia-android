@@ -6,7 +6,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.settings.profile.ProfileListActivity
 
 /** An activity that shows a temporary loading page until the app is fully loaded then navigates to [ProfileActivity]. */
 class SplashActivity : AppCompatActivity() {
