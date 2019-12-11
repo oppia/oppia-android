@@ -11,8 +11,6 @@ import org.oppia.app.player.state.StateFragment
 import org.oppia.app.settings.profile.ProfileEditFragment
 import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
-import org.oppia.app.profile.AddProfileFragment
-import org.oppia.app.profile.AdminAuthFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
@@ -57,6 +55,4 @@ interface FragmentComponent {
   fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileEditFragment: ProfileEditFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
-  fun inject(adminAuthFragment: AdminAuthFragment)
-  fun inject(addProfileFragment: AddProfileFragment)
 }
