@@ -16,7 +16,6 @@ import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
-
 /**
  * This is a dummy activity to test input interaction views.
  * It contains [NumericInputInteractionView], [TextInputInteractionView],and [FractionInputInteractionView].
@@ -44,7 +43,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.getPendingAnswerError(StringToFractionParser.AnswerErrorCategory.SUBMIT_TIME)
+    fractionInteractionViewModel.setPendingAnswerError(StringToFractionParser.AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onEditorAction(actionCode: Int) {

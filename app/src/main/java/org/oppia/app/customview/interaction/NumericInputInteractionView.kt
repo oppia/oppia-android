@@ -27,11 +27,11 @@ class NumericInputInteractionView @JvmOverloads constructor(
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
-  private val hintText: String
+  private val hintText: CharSequence
 
   init {
     onFocusChangeListener = this
-    hintText = (hint ?: "").toString()
+    hintText = (hint ?: "")
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 

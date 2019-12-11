@@ -15,14 +15,16 @@ class StringToFractionParser {
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
 
   /**
-   * This method helps to validate the inputText and return [FractionParsingError]
-   * This called on submit button click.
-   * @param inputText is the user input in the [FractionInputInteractionView]
-   * @return enum [FractionParsingError]
+   * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
+   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by this method is guaranteed
+   * to be parsed correctly by [parseRegularFraction].
+   *
+   * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
+   * using [setPendingAnswerErrorOnRealTime], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     // No need to check for real-time errors since the following logically include them.
-    val fraction = parseFunction(text)
+    val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
       fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
@@ -31,12 +33,14 @@ class StringToFractionParser {
   }
 
   /**
-   * This method helps to validate the inputText and return [FractionParsingError]
-   * This called on text change.
-   * @param inputText is the user input in the [FractionInputInteractionView]
-   * @return enum [FractionParsingError]
+   * Returns a [FractionParsingError] for obvious incorrect fraction formatting issues for the specified raw text, or
+   * [FractionParsingError.VALID] if not such issues are found.
+   *
+   * Note that this method returning a valid result does not guarantee the text is a valid fraction--
+   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
+   * general validity, not for definite correctness.
    */
-  fun getRealTimeError(text: String): FractionParsingError {
+  fun setPendingAnswerErrorOnRealTime(text: String): FractionParsingError {
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
@@ -47,17 +51,17 @@ class StringToFractionParser {
     }
   }
 
-  fun parseFunction(text: String): Fraction? {
+  private fun parseFraction(text: String): Fraction? {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
     return parseMixedNumber(inputText)
-      ?: parseFraction(inputText)
+      ?: parseRegularFraction(inputText)
       ?: parseWholeNumber(inputText)
       ?: null
   }
 
   fun getFractionFromString(text: String): Fraction {
-    return parseFunction(text) ?: throw IllegalArgumentException("...")
+    return parseFraction(text) ?: throw IllegalArgumentException("...")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
@@ -71,7 +75,7 @@ class StringToFractionParser {
       .build()
   }
 
-  private fun parseFraction(inputText: String): Fraction? {
+  private fun parseRegularFraction(inputText: String): Fraction? {
     val fractionOnlyMatch = fractionOnlyRegex.matchEntire(inputText) ?: return null
     val (_, numeratorText, denominatorText) = fractionOnlyMatch.groupValues
     // Fraction-only numbers imply no whole number.
@@ -97,28 +101,23 @@ class StringToFractionParser {
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
 
   /** Enum to store the errors of [FractionInputInteractionView]. */
-  enum class FractionParsingError(@StringRes error: Int) {
-    VALID(error = R.string.fraction_error_valid),
+  enum class FractionParsingError(@StringRes error: Int?) {
+    VALID(error = null),
     INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
     INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
-    DIVISION_BY_ZERO(error = R.string.divide_by_zero);
+    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero);
 
-    private var error: Int
+    private var error: Int?
 
     init {
       this.error = error
     }
 
     fun getErrorMessageFromStringRes(context: Context): String {
-      return context.getString(this.error)
+      when {
+        this.error != null -> return context.getString(this.error!!)
+        else -> return "valid"
+      }
     }
-  }
-
-  /** Categories of errors that can be inferred from a pending answer.  */
-  enum class AnswerErrorCategory {
-    /** Corresponds to errors that may be found while the user is trying to input an answer.  */
-    REAL_TIME,
-    /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
-    SUBMIT_TIME
   }
 }
