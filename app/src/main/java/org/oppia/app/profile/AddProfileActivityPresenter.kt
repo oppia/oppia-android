@@ -129,9 +129,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, binding: AddProfileActivityBinding) {
     if (result.isSuccess()) {
-      val intent = Intent(activity, ProfileActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
+      activity.finish()
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(
