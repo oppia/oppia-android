@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
     setContentView(R.layout.splash_activity)
 
     window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    val intent = Intent(this@SplashActivity, ProfileListActivity::class.java)
+    val intent = Intent(this@SplashActivity, ProfileActivity::class.java)
     startActivity(intent)
     finish()
   }
