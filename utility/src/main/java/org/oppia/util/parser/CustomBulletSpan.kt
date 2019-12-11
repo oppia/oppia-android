@@ -1,6 +1,5 @@
 package org.oppia.util.parser
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -13,19 +12,18 @@ import org.oppia.util.R
 
 /**
  * Copy of [android.text.style.BulletSpan] from android SDK 28 with removed internal code.
- *
+ * This class helps us to customise bullet radius, gap width and offset present in rich-text.
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
-class ImprovedBulletSpan(activity: AppCompatActivity) : LeadingMarginSpan {
-
+class CustomBulletSpan(activity: AppCompatActivity) : LeadingMarginSpan {
   private var bulletRadius: Int = 0
   private var gapWidth: Int = 0
   private var yOffset: Int = 0
 
   init {
-    bulletRadius = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_radius)
-    gapWidth = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
-    yOffset = (activity as Context).resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
+    bulletRadius = activity.resources.getDimensionPixelSize(R.dimen.bullet_radius)
+    gapWidth = activity.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+    yOffset = activity.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
   }
 
   private var mBulletPath: Path? = null

@@ -64,7 +64,7 @@ class HtmlParser private constructor(
       val end = spannableBuilder.getSpanEnd(it)
       spannableBuilder.removeSpan(it)
       spannableBuilder.setSpan(
-        ImprovedBulletSpan(activity),
+        CustomBulletSpan(activity),
         start,
         end,
         Spanned.SPAN_INCLUSIVE_EXCLUSIVE
