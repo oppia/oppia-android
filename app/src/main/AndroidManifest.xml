@@ -18,6 +18,10 @@
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
+    <activity
+      android:name=".onboarding.OnboardingActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
       android:name=".player.exploration.ExplorationActivity"

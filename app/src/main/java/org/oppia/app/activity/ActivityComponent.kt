@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -54,6 +55,7 @@ interface ActivityComponent {
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
+  fun inject(onboardingActivity: OnboardingActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
