@@ -132,30 +132,39 @@
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
-
-      <LinearLayout
+      <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/whiteLight"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:background="@color/colorPrimaryDark"
+        app:el_duration="300"
+        app:el_expanded="true">
 
-        <View
-          android:layout_width="match_parent"
-          android:layout_height="2dp"
-          android:layout_gravity="center_horizontal"
-          android:background="@drawable/dashed_divider" />
-
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/chapter_recycler_view"
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="56dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-      </LinearLayout>
+          android:background="@color/whiteLight"
+          android:orientation="vertical"
+         >
+
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/dashed_divider" />
+
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chapter_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
+
+      </net.cachapa.expandablelayout.ExpandableLayout>
+
     </LinearLayout>
   </com.google.android.material.card.MaterialCardView>
 </layout>
