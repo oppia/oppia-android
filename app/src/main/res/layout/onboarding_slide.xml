@@ -3,11 +3,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.app.onboarding.OnboardingViewModel" />
   </data>
-  
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,11 +27,11 @@
       android:id="@+id/slide_title_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginEnd="28dp"
       android:layout_marginBottom="16dp"
       android:fontFamily="sans-serif-medium"
-      android:text="Title"
+      android:paddingStart="28dp"
+      android:paddingEnd="28dp"
+      android:text="@{viewModel.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintBottom_toTopOf="@+id/slide_description_text_view"
@@ -41,11 +42,12 @@
       android:id="@+id/slide_description_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="48dp"
-      android:layout_marginEnd="48dp"
       android:layout_marginBottom="48dp"
       android:fontFamily="sans-serif"
-      android:text="Description"
+      android:gravity="center"
+      android:paddingStart="48dp"
+      android:paddingEnd="48dp"
+      android:text="@{viewModel.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toTopOf="@+id/slide_dots_container"
@@ -65,11 +67,21 @@
       app:layout_constraintStart_toStartOf="parent">
 
       <View
+        android:id="@+id/slide_0_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:alpha="@{viewModel.slideNumber == 0 ? 1.0F : 0.3F}"
+        android:background="@drawable/onboarding_dot_active" />
+
+      <View
         android:id="@+id/slide_1_dot"
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:alpha="@{viewModel.slideNumber == 1 ? 1.0F : 0.3F}"
         android:background="@drawable/onboarding_dot_active" />
 
       <View
@@ -78,6 +90,7 @@
         android:layout_height="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:alpha="@{viewModel.slideNumber == 2 ? 1.0F : 0.3F}"
         android:background="@drawable/onboarding_dot_active" />
 
       <View
@@ -86,14 +99,7 @@
         android:layout_height="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:background="@drawable/onboarding_dot_active" />
-
-      <View
-        android:id="@+id/slide_4_dot"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:alpha="@{viewModel.slideNumber == 3 ? 1.0F : 0.3F}"
         android:background="@drawable/onboarding_dot_active" />
     </LinearLayout>
 

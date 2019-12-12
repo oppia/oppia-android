@@ -28,6 +28,21 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, slideNumber: Int) {
+    val customPagerAdapter = OnboardingPagerAdapter(fragment.requireContext(), slideNumber)
+    viewPager.adapter = customPagerAdapter
 
+    viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+      override fun onPageScrollStateChanged(state: Int) {
+      }
+
+      override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+      }
+
+      override fun onPageSelected(position: Int) {
+        customPagerAdapter.slideChanged(position)
+      }
+
+    })
   }
 }
