@@ -10,7 +10,7 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityNumericInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
-import org.oppia.app.parser.StringToFractionParser
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
@@ -43,7 +43,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.setPendingAnswerError(StringToFractionParser.AnswerErrorCategory.SUBMIT_TIME)
+    fractionInteractionViewModel.setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onEditorAction(actionCode: Int) {

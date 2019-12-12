@@ -64,7 +64,6 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
-      android:digits="0123456789/- ."
       android:fontFamily="sans-serif"
       android:hint="@{fractionInteractionViewModel.hintText}"
       android:imeOptions="actionDone"
