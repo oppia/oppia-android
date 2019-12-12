@@ -31,7 +31,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val binding = DataBindingUtil.setContentView<ActivityNumericInputInteractionViewTestBinding>(
-      this, R.layout.activity_numeric_input_interaction_view_test
+      this, R.layout.activity_input_interaction_view_test
     )
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
