@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <integer name="default_fade_anim_time_ms">300</integer>
-  <integer name="topic_play_animation_time_ms">400</integer>
 </resources>
