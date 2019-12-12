@@ -28,6 +28,7 @@
   <color name="oppiaDisabledButtonBackground">#61999999</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
+  <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
@@ -75,4 +76,21 @@
   <color name="green_shade_40">#6644A85A</color>
   <color name="green_shade_10">#1A44A85A</color>
   <color name="light_green">#D9F3E7</color>
+  <!-- ONBOARDING FLOW -->
+  <color name="onboardingDotActive">#333333</color>
+  <color name="onboardingDotInactive">#4D333333</color>
+
+  <array name="array_dot_active">
+    <item>@color/onboardingDotActive</item>
+    <item>@color/onboardingDotActive</item>
+    <item>@color/onboardingDotActive</item>
+    <item>@color/onboardingDotActive</item>
+  </array>
+
+  <array name="array_dot_inactive">
+    <item>@color/onboardingDotInactive</item>
+    <item>@color/onboardingDotInactive</item>
+    <item>@color/onboardingDotInactive</item>
+    <item>@color/onboardingDotInactive</item>
+  </array>
 </resources>

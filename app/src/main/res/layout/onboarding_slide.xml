@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.onboarding.OnboardingViewModel" />
+  </data>
+  
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/oppiaBackgroundYellowIvory"
+    android:orientation="vertical">
+
+    <ImageView
+      android:id="@+id/slide_1_image_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/slide_title_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="28dp"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="16dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="Title"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      app:layout_constraintBottom_toTopOf="@+id/slide_description_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+      android:id="@+id/slide_description_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="48dp"
+      android:layout_marginEnd="48dp"
+      android:layout_marginBottom="48dp"
+      android:fontFamily="sans-serif"
+      android:text="Description"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toTopOf="@+id/slide_dots_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+      android:id="@+id/slide_dots_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="36dp"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+      <View
+        android:id="@+id/slide_1_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/onboarding_dot_active" />
+
+      <View
+        android:id="@+id/slide_2_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/onboarding_dot_active" />
+
+      <View
+        android:id="@+id/slide_3_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/onboarding_dot_active" />
+
+      <View
+        android:id="@+id/slide_4_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/onboarding_dot_active" />
+    </LinearLayout>
+
+    <TextView
+      android:id="@+id/skip_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="20dp"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:minHeight="48dp"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:text="@string/skip"
+      android:textAllCaps="true"
+      android:textColor="@color/colorPrimary"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toBottomOf="@+id/slide_dots_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
