@@ -50,7 +50,7 @@ message ProfileAvatar {
     string avatar_image_uri = 5;
 
     // Tint color to be used with a generic profile image.
-    string avatar_color_hex = 6;
+    int32 avatar_color_rgb = 6;
   }
 }
 

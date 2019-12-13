@@ -110,7 +110,7 @@ class AddProfileActivityPresenter @Inject constructor(
         pin = pin,
         avatarImagePath = selectedImage,
         allowDownloadAccess = allowDownloadAccess,
-        colorHex = activity.intent.getStringExtra(KEY_ADD_PROFILE_COLOR_HEX),
+        colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
         isAdmin = false
       )
         .observe(activity, Observer {

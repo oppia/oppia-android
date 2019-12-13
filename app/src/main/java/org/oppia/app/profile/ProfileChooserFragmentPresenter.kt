@@ -74,9 +74,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
-  private fun getColor(): String {
+  private fun selectUniqueRandomColor(): Int {
     return COLORS_LIST.map {
-      String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, it))
+      ContextCompat.getColor(context, it)
     }.minus(chooserViewModel.usedColors).random()
   }
 
@@ -125,7 +125,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
     binding.root.setOnClickListener {
-      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin, getColor()))
+      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin, selectUniqueRandomColor()))
     }
   }
 }
