@@ -614,6 +614,5 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   override fun onAnswerRealTimeError(error: AnswerErrorCategory) {
-
-}
+  }
 }
