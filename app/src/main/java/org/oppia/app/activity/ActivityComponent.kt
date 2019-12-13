@@ -18,14 +18,14 @@ import org.oppia.app.settings.profile.ProfileResetPinActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
+import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
+import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.testing.ConceptCardFragmentTestActivity
-import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 
@@ -55,15 +55,15 @@ interface ActivityComponent {
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
+  fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
-  fun inject(questionPlayerActivity: QuestionPlayerActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
-  fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
 }

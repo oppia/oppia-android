@@ -45,8 +45,8 @@
       android:layout_marginTop="8dp"
       android:layout_marginEnd="28dp"
       android:layout_marginBottom="16dp"
-      android:translationZ="4dp"
-      android:elevation="8dp">
+      android:elevation="8dp"
+      android:translationZ="4dp">
 
       <TextView
         android:id="@+id/congratulation_textview"

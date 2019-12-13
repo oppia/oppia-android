@@ -13,6 +13,6 @@
     android:id="@+id/test_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:data="@{viewModel.dataListLiveData}" />
+    app:data="@{viewModel.dataListLiveData}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </layout>

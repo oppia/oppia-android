@@ -33,8 +33,8 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.PinPasswordActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
       android:screenOrientation="portrait"
