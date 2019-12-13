@@ -3,13 +3,14 @@ package org.oppia.app.topic
 import android.app.Application
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -31,9 +32,9 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -46,14 +47,14 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
       onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(1).name)))
@@ -62,21 +63,21 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_overviewTopicTab_isDisplayedInTabLayout() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withText(TopicTab.getTabForPosition(0).name)).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsOverview_isSuccessful() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(0).name)))
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsOverview_showsMatchingContent() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
@@ -89,7 +90,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -102,7 +103,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabWithContentMatched() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -110,22 +111,22 @@ class TopicFragmentTest {
         )
       ).perform(click())
       onView(withId(R.id.story_summary_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
         )
       )
       onView(
         RecyclerViewMatcher.atPosition(
           R.id.story_summary_recycler_view,
-          0
+          1
         )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("First Story")))))
+      ).check(matches(ViewMatchers.hasDescendant(withText(containsString("First Story")))))
     }
   }
 
   @Test
   fun testTopicFragment_clickOnTrainTab_showsTrainTabSelected() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -138,7 +139,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnTrainTab_showsTrainTabWithContentMatched() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -151,7 +152,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -164,7 +165,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -185,7 +186,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTab() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -210,7 +211,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTabWithContentMatched() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -236,7 +237,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsContent() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -252,14 +253,14 @@ class TopicFragmentTest {
         )
       )
       onView(withId(R.id.story_summary_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
         )
       )
       onView(
         RecyclerViewMatcher.atPosition(
           R.id.story_summary_recycler_view,
-          0
+          1
         )
       ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("First Story")))))
     }
@@ -268,7 +269,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsContent() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -291,7 +292,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -315,7 +316,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
-    launch(TopicTestActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
@@ -334,25 +335,9 @@ class TopicFragmentTest {
     }
   }
 
-  @Test
-  fun testTopicActivity_clickOnSeeMore_isPlayTabIsSelectedAndContentMatched() {
-    launch(TopicTestActivity::class.java).use {
-      onView(
-        withId(R.id.see_more_text_view)
-      ).perform(scrollTo(), click())
-      onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle("PLAY")))
-      onView(withId(R.id.story_summary_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      )
-      onView(
-        RecyclerViewMatcher.atPosition(
-          R.id.story_summary_recycler_view,
-          0
-        )
-      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("First Story")))))
-    }
+  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
+    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+    return launch(intent)
   }
 
   @Module

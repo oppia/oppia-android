@@ -36,8 +36,14 @@
   <color name="black_20">#33000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
+  <color name="red">#FF0000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatarBorder">#707070</color>
+  <color name="addProfileBackground">#FFFFF0</color>
+  <color name="pinPasswordBackground">#E4F2F1</color>
+  <color name="profileChooserBackground">#212121</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>

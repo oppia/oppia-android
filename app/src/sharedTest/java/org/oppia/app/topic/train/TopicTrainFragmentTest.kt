@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,6 +15,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,6 +25,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -34,7 +37,9 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -54,7 +59,7 @@ class TopicTrainFragmentTest {
 
   @Before
   fun setUp() {
-    activityScenario = ActivityScenario.launch(TopicActivity::class.java)
+    activityScenario = launchTopicActivityIntent(TEST_TOPIC_ID_0)
 
     Intents.init()
     skillIdList.add("test_skill_id_0")
@@ -62,7 +67,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_displaySkills_startButtonIsInactive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
       onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
@@ -71,7 +82,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_isSuccessful() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 1)).perform(click())
     }
@@ -79,7 +96,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_startButtonIsActive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
     }
@@ -87,7 +110,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_isSuccessful() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     }
@@ -95,7 +124,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
@@ -104,7 +139,13 @@ class TopicTrainFragmentTest {
 
   @Test
   fun testTopicTrainFragment_loadFragment_selectSkills_clickStartButton_skillListTransferSuccessfully() {
-    activityTestRule.launchActivity(null)
+    launchTopicActivityIntent(TEST_TOPIC_ID_0)
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(2).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     onView(withId(R.id.topic_train_start_button)).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
@@ -142,6 +183,11 @@ class TopicTrainFragmentTest {
     }
     activityScenario.recreate()
     onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+  }
+
+  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
+    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+    return ActivityScenario.launch(intent)
   }
 
   @After
