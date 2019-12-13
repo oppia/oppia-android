@@ -13,12 +13,19 @@ interface AudioUiManager {
   fun setStateAndExplorationId(newState: State, explorationId: String)
 
   /**
-   * Loads audio for media player with content id.
+   * Loads audio for media player with the main content's id.
    *
-   * @param contentId: Used to get a specific Voiceover. If null, state.content.contentId is used as default.
    * @param allowAutoPlay: If false, audio is guaranteed not to be autoPlayed.
    */
-  fun loadAudio(contentId: String?, allowAutoPlay: Boolean)
+  fun loadMainContentAudio(allowAutoPlay: Boolean)
+
+  /**
+   * Loads audio for media player with content id for feedback.
+   *
+   * @param contentId: Used to get a specific Voiceover for feedback.
+   * @param allowAutoPlay: If false, audio is guaranteed not to be autoPlayed.
+   */
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean)
 
   /** Used to pause all playing audio. */
   fun pauseAudio()

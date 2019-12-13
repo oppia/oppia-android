@@ -63,8 +63,23 @@ class AudioViewModel @Inject constructor(
     explorationId = id
   }
 
-  fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
-    hasFeedback = contentId != null
+  fun loadMainContentAudio(allowAutoPlay: Boolean) {
+    hasFeedback = false
+    loadAudio(null, allowAutoPlay)
+  }
+
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
+    hasFeedback = true
+    loadAudio(contentId, allowAutoPlay)
+  }
+
+  /**
+   * Load audio based on the contentId.
+   *
+   * @param contentId If contentId is null, then state.content.contentId is used as default.
+   * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
+   */
+  private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
     autoPlay = allowAutoPlay
     voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
       ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap

@@ -16,7 +16,6 @@ import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.State
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.util.data.AsyncResult
@@ -125,7 +124,9 @@ class AudioFragmentPresenter @Inject constructor(
 
   fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
 
-  fun loadAudio(contentId: String?, allowAutoPlay: Boolean) = viewModel.loadAudio(contentId, allowAutoPlay)
+  fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
+
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) = viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     if (prepared)
@@ -186,7 +187,11 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.setAudioBarVisibility(true)
     audioButtonListener.showAudioStreamingOn()
     audioButtonListener.scrollToTop()
-    loadAudio(/* contentId= */ feedbackId, /* allowAutoPlay= */ true)
+    if (feedbackId == null) {
+      loadMainContentAudio(true)
+    } else {
+      loadFeedbackAudio(feedbackId!!, true)
+    }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
   }
 

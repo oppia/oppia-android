@@ -329,8 +329,13 @@ class StateFragmentPresenter @Inject constructor(
 
     val audioManager = getAudioFragment() as AudioUiManager
     audioManager.setStateAndExplorationId(ephemeralState.state, explorationId)
-    audioManager.loadAudio(feedbackId, isAudioShowing() && !canContinueToNextState)
-    feedbackId = null
+    if (viewModel.currentStateName == null || viewModel.currentStateName != currentStateName) {
+      feedbackId = null
+      viewModel.currentStateName = currentStateName
+      if (isAudioShowing()) {
+        audioManager.loadMainContentAudio(!canContinueToNextState)
+      }
+    }
 
     updateNavigationButtonVisibility(
       pendingItemList,
@@ -367,6 +372,9 @@ class StateFragmentPresenter @Inject constructor(
           showCongratulationMessageOnCorrectAnswer()
         }
         feedbackId = result.feedback.contentId
+        if (isAudioShowing()) {
+          (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
+        }
       }
     })
   }
@@ -599,10 +607,7 @@ class StateFragmentPresenter @Inject constructor(
   fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
-    val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-    if (currentYOffset != 0) {
-      binding.stateRecyclerView.smoothScrollToPosition(0)
-    }
+    binding.stateRecyclerView.smoothScrollToPosition(0)
   }
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!

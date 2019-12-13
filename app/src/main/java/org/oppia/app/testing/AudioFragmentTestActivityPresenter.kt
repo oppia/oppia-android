@@ -30,7 +30,7 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
           .putVoiceoverMapping("es", Voiceover.newBuilder().setFileName("content-es-i0nhu49z0q.mp3").build())
           .build()).build()
       audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
-      audioFragment.loadAudio(null, false)
+      audioFragment.loadMainContentAudio(false)
     }
   }
 
