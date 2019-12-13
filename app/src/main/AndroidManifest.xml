@@ -18,6 +18,10 @@
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
+    <activity
+      android:name=".mydownloads.MyDownloadsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
@@ -33,8 +37,8 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.PinPasswordActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
       android:screenOrientation="portrait"

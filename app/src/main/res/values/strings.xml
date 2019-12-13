@@ -149,4 +149,8 @@
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <!-- ResetPinDialogFragment. -->
   <string name="reset_pin_enter">Enter a New Pin</string>
+  <!-- MyDownloadsActivity -->
+  <string name="my_downloads">My Downloads</string>
+  <string name="tab_downloads">Downloads</string>
+  <string name="tab_updates">Updates (2)</string>
 </resources>

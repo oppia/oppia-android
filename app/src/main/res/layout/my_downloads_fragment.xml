@@ -7,11 +7,11 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
+      android:id="@+id/my_downloads_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-      app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
+      app:layout_constraintBottom_toTopOf="@+id/my_downloads_tabs_viewpager_container"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
@@ -23,10 +23,11 @@
         android:background="@color/oppiaPrimaryDark"
         android:textSize="20sp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/my_downloads"
         app:titleTextColor="@color/white" />
 
       <com.google.android.material.tabs.TabLayout
-        android:id="@+id/topic_tabs_container"
+        android:id="@+id/my_downloads_tabs_container"
         style="@style/AppTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,16 +43,16 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-      android:id="@+id/topic_tabs_viewpager_container"
+      android:id="@+id/my_downloads_tabs_viewpager_container"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/topic_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@+id/my_downloads_app_bar_layout">
 
       <androidx.viewpager.widget.ViewPager
-        android:id="@+id/topic_tabs_viewpager"
+        android:id="@+id/my_downloads_tabs_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
