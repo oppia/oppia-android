@@ -16,9 +16,7 @@ import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.State
-import org.oppia.app.player.exploration.ExplorationFragment
-import org.oppia.app.player.exploration.TAG_EXPLORATION_FRAGMENT
-import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.util.data.AsyncResult
@@ -113,14 +111,14 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Pauses audio if in prepared state */
   fun handleOnStop() {
-    if (!fragment.requireActivity().isChangingConfigurations && prepared) {
+    if (!activity.isChangingConfigurations && prepared) {
       viewModel.pauseAudio()
     }
   }
 
   /** Releases audio player resources */
   fun handleOnDestroy() {
-    if (!fragment.requireActivity().isChangingConfigurations) {
+    if (!activity.isChangingConfigurations) {
       viewModel.handleRelease()
     }
   }
@@ -184,7 +182,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showAudioFragment() {
-    getStateFragment()?.setAudioBarVisibility(true)
+    (activity as AudioButtonListener).setAudioBarVisibility(true)
     (activity as AudioButtonListener).showAudioStreamingOn()
     loadAudio(/* contentId= */ feedbackId, /* allowAutoPlay= */ true)
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
@@ -196,7 +194,7 @@ class AudioFragmentPresenter @Inject constructor(
     val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
     animation.setAnimationListener(object : Animation.AnimationListener {
       override fun onAnimationEnd(p0: Animation?) {
-        getStateFragment()?.setAudioBarVisibility(false)
+        (activity as AudioButtonListener).setAudioBarVisibility(false)
       }
       override fun onAnimationStart(p0: Animation?) {}
       override fun onAnimationRepeat(p0: Animation?) {}
@@ -220,11 +218,6 @@ class AudioFragmentPresenter @Inject constructor(
       .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
-  }
-
-  private fun getStateFragment(): StateFragment? {
-    val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment?
-    return explorationFragment?.childFragmentManager?.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
 
   private fun getAudioViewModel(): AudioViewModel {

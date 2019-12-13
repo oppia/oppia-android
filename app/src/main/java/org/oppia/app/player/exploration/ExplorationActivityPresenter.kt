@@ -69,10 +69,15 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+
   fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+
   fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+
   fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
-  
+
+  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder

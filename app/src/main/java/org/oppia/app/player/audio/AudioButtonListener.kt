@@ -13,4 +13,7 @@ interface AudioButtonListener {
 
   /** Change audio image view src to streaming off. */
   fun showAudioStreamingOff()
+
+  /** Adds padding to recycler view to accommodate audio bar */
+  fun setAudioBarVisibility(isVisible: Boolean)
 }

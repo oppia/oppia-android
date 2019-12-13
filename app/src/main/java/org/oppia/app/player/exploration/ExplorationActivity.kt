@@ -66,9 +66,16 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
+
   override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
+
   override fun showAudioStreamingOn() = explorationActivityPresenter.showAudioStreamingOn()
+
   override fun showAudioStreamingOff() = explorationActivityPresenter.showAudioStreamingOff()
+
+  override fun setAudioBarVisibility(isVisible: Boolean) {
+    explorationActivityPresenter.setAudioBarVisibility(isVisible)
+  }
 
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onKeyboardAction(actionCode)
