@@ -12,8 +12,7 @@ import javax.inject.Inject
 /** The presenter for [HelpFragment]. */
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HelpViewModel>
+  private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

@@ -2,11 +2,10 @@ package org.oppia.app.drawer
 
 import org.oppia.app.R
 
-enum class NavigationDrawerItem constructor(private val value: Int) {
+enum class NavigationDrawerItem(val value: Int) {
   HOME(R.id.nav_home), HELP(R.id.nav_help);
 
   companion object {
-
     fun valueFromInt(v: Int): NavigationDrawerItem {
       var item = HOME
       when (v) {
