@@ -84,12 +84,12 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
  */
 @BindingAdapter("profile:src")
 fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar) {
-  if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_HEX) {
+  if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
       .into(imageView)
     imageView.setColorFilter(
-      Color.parseColor(profileAvatar.avatarColorHex), PorterDuff.Mode.DST_OVER
+      profileAvatar.avatarColorRgb, PorterDuff.Mode.DST_OVER
     )
   } else {
     Glide.with(imageView.context)

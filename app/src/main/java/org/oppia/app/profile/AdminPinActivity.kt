@@ -7,7 +7,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val KEY_ADMIN_PIN_PROFILE_ID = "ADMIN_PIN_PROFILE_ID"
-const val KEY_ADMIN_PIN_COLOR_HEX = "ADMIN_PIN_COLOR_HEX"
+const val KEY_ADMIN_PIN_COLOR_RGB = "ADMIN_PIN_COLOR_RGB"
 
 /** Activity that sets the admin's PIN. */
 class AdminPinActivity : InjectableAppCompatActivity() {
@@ -15,11 +15,11 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
-    fun createAdminPinActivity(context: Context, profileId: Int, colorHex: String): Intent {
+    fun createAdminPinActivity(context: Context, profileId: Int, colorRgb: Int): Intent {
       val intent = Intent(context, AdminPinActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_ADMIN_PIN_PROFILE_ID, profileId)
-      intent.putExtra(KEY_ADMIN_PIN_COLOR_HEX, colorHex)
+      intent.putExtra(KEY_ADMIN_PIN_COLOR_RGB, colorRgb)
       return intent
     }
   }

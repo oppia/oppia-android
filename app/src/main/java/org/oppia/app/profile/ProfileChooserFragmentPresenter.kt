@@ -76,9 +76,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
-  private fun getColor(): String {
+  private fun selectUniqueRandomColor(): Int {
     return COLORS_LIST.map {
-      String.format("#%06X", 0xFFFFFF and ContextCompat.getColor(context, it))
+      ContextCompat.getColor(context, it)
     }.minus(chooserViewModel.usedColors).random()
   }
 
@@ -129,11 +129,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivity(activity, chooserViewModel.adminProfileId.internalId, getColor())
+          AdminPinActivity.createAdminPinActivity(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
         )
       } else {
         activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, getColor())
+          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
         )
       }
     }

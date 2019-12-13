@@ -17,7 +17,7 @@ class ProfileTestHelper @Inject constructor(
       pin = "12345",
       avatarImagePath = null,
       allowDownloadAccess = true,
-      colorHex = "#E65C5C",
+      colorRgb = -10710042,
       isAdmin = true
     )
     profileManagementController.addProfile(
@@ -25,7 +25,7 @@ class ProfileTestHelper @Inject constructor(
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = false,
-      colorHex = "#E65C5C",
+      colorRgb = -10710042,
       isAdmin = false
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
@@ -39,7 +39,7 @@ class ProfileTestHelper @Inject constructor(
         pin = "123",
         avatarImagePath = null,
         allowDownloadAccess = false,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = false
       )
     }

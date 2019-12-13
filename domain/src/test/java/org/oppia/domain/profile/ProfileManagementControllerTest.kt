@@ -130,7 +130,7 @@ class ProfileManagementControllerTest {
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = true,
-      colorHex = "#E65C5C",
+      colorRgb = -10710042,
       isAdmin = true
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
@@ -159,7 +159,7 @@ class ProfileManagementControllerTest {
         pin = "321",
         avatarImagePath = null,
         allowDownloadAccess = false,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = true
       ).observeForever(mockUpdateResultObserver)
 
@@ -181,7 +181,7 @@ class ProfileManagementControllerTest {
         pin = "321",
         avatarImagePath = null,
         allowDownloadAccess = false,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = true
       ).observeForever(mockUpdateResultObserver)
 
@@ -239,7 +239,7 @@ class ProfileManagementControllerTest {
         pin = "678",
         avatarImagePath = null,
         allowDownloadAccess = false,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = false
       )
       advanceUntilIdle()
@@ -419,7 +419,7 @@ class ProfileManagementControllerTest {
         pin = "321",
         avatarImagePath = null,
         allowDownloadAccess = false,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = true
       )
       advanceUntilIdle()
@@ -512,7 +512,7 @@ class ProfileManagementControllerTest {
         pin = it.pin,
         avatarImagePath = null,
         allowDownloadAccess = it.allowDownloadAccess,
-        colorHex = "#E65C5C",
+        colorRgb = -10710042,
         isAdmin = false
       )
     }

@@ -20,7 +20,7 @@ class ProfileActivityPresenter @Inject constructor(
       pin = "",
       avatarImagePath = null,
       allowDownloadAccess = true,
-      colorHex = "#E65C5C",
+      colorRgb = -10710042,
       isAdmin = true
     )
     activity.setContentView(R.layout.profile_activity)

@@ -62,7 +62,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(), typeText("12345"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
@@ -72,7 +72,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputShortPin_clickSubmit_checkPinLengthError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_length))))
@@ -81,7 +81,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("45"), closeSoftKeyboard())
@@ -91,7 +91,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
@@ -101,7 +101,7 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())

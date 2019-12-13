@@ -127,7 +127,7 @@ class ProfileManagementController @Inject constructor(
    * @param pin Pin of the new profile.
    * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
    * @param allowDownloadAccess Indicates whether the new profile can download content.
-   * @param colorHex Indicates the color hex used for the avatar background.
+   * @param colorRgb Indicates the color RGB integer used for the avatar background.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
   fun addProfile(
@@ -135,7 +135,7 @@ class ProfileManagementController @Inject constructor(
     pin: String,
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
-    colorHex: String,
+    colorRgb: Int,
     isAdmin: Boolean
   ): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(name)) {
@@ -150,7 +150,9 @@ class ProfileManagementController @Inject constructor(
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
       val newProfileBuilder = Profile.newBuilder()
-        .setName(name).setPin(pin).setAllowDownloadAccess(allowDownloadAccess)
+        .setName(name)
+        .setPin(pin)
+        .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
 
@@ -162,7 +164,7 @@ class ProfileManagementController @Inject constructor(
           )
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorHex(colorHex).build()
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
       val profileDatabaseBuilder =
