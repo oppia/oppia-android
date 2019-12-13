@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.model.ProfileChooserModel" />
+      type="org.oppia.app.model.ProfileChooserUiModel" />
   </data>
 
   <LinearLayout
