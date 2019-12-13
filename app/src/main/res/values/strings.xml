@@ -118,7 +118,7 @@
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
-  <string name="add_profile_create_btn">create</string>
+  <string name="add_profile_create_btn">Create</string>
   <string name="add_profile_close">CLOSE</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
@@ -141,6 +141,7 @@
   <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
   <string name="pin_password_play_store">GO TO PLAY STORE</string>
   <!-- AdminSettingsDialogFragment. -->
+  <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
   <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_cancel">CANCEL</string>

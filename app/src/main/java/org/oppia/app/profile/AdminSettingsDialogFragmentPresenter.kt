@@ -54,7 +54,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
       .create()
 
-    // https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
+    // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
         if (binding.inputPin.getInput().isEmpty()) {
