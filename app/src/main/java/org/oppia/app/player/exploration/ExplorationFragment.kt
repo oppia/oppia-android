@@ -26,4 +26,6 @@ class ExplorationFragment : InjectableFragment() {
   fun onKeyboardAction() = explorationFragmentPresenter.onKeyboardAction()
 
   fun setAudioBarVisibility(isVisible: Boolean) = explorationFragmentPresenter.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
 }

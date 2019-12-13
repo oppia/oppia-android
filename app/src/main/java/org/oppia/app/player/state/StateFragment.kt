@@ -48,4 +48,6 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver {
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+
+  fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 }

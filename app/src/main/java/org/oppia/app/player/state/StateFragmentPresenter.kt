@@ -598,5 +598,12 @@ class StateFragmentPresenter @Inject constructor(
 
   fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
 
+  fun scrollToTop() {
+    val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
+    if (currentYOffset != 0) {
+      binding.stateRecyclerView.smoothScrollToPosition(0)
+    }
+  }
+
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 }

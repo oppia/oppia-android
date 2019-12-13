@@ -77,6 +77,10 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     explorationActivityPresenter.setAudioBarVisibility(isVisible)
   }
 
+  override fun scrollToTop() {
+    explorationActivityPresenter.scrollToTop()
+  }
+
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }

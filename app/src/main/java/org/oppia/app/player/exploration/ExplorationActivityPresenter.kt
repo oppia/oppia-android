@@ -78,6 +78,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
 
+  fun scrollToTop() = getExplorationFragment()?.scrollToTop()
+
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder
