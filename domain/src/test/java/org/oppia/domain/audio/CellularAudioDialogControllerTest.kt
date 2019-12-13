@@ -44,13 +44,13 @@ import kotlin.coroutines.EmptyCoroutineContext
 /** Tests for [UserAppHistoryController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class CellularDialogControllerTest {
+class CellularAudioDialogControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
-  lateinit var cellularDialogController: CellularDialogController
+  lateinit var cellularAudioDialogController: CellularAudioDialogController
 
   @Inject
   @field:TestDispatcher
@@ -80,7 +80,7 @@ class CellularDialogControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCellularDialogControllerTest_TestApplicationComponent.builder()
+    DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -90,7 +90,7 @@ class CellularDialogControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveData_indicatesToNotHideDialogAndNotUseCellularData()
       = runBlockingTest(coroutineContext) {
-    val cellularDataPreference = cellularDialogController.getCellularDataPreference()
+    val cellularDataPreference = cellularAudioDialogController.getCellularDataPreference()
     cellularDataPreference.observeForever(mockCellularDataObserver)
     testBlockingDispatcher.advanceUntilIdle()
 
@@ -104,10 +104,10 @@ class CellularDialogControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData()
       = runBlockingTest(coroutineContext) {
-    val appHistory = cellularDialogController.getCellularDataPreference()
+    val appHistory = cellularAudioDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
-    cellularDialogController.setNeverUseCellularDataPreference()
+    cellularAudioDialogController.setNeverUseCellularDataPreference()
     testBlockingDispatcher.advanceUntilIdle()
 
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
@@ -120,10 +120,10 @@ class CellularDialogControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData()
       = runBlockingTest(coroutineContext) {
-    val appHistory = cellularDialogController.getCellularDataPreference()
+    val appHistory = cellularAudioDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
-    cellularDialogController.setAlwaysUseCellularDataPreference()
+    cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     testBlockingDispatcher.advanceUntilIdle()
 
     verify(mockCellularDataObserver, atLeastOnce()).onChanged(cellularDataResultCaptor.capture())
@@ -135,11 +135,11 @@ class CellularDialogControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_setNeverUseCellularDataPref_observedNewController_indicatesToHideDialogAndNotUseCellularData()
       = runBlockingTest(coroutineContext) {
-    cellularDialogController.setNeverUseCellularDataPreference()
+    cellularAudioDialogController.setNeverUseCellularDataPreference()
     testBlockingDispatcher.advanceUntilIdle()
 
     setUpTestApplicationComponent()
-    val appHistory = cellularDialogController.getCellularDataPreference()
+    val appHistory = cellularAudioDialogController.getCellularDataPreference()
     appHistory.observeForever(mockCellularDataObserver)
     testBlockingDispatcher.advanceUntilIdle()
 
@@ -153,11 +153,11 @@ class CellularDialogControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_setAlwaysUseCellularDataPref_observedNewController_indicatesToHideDialogAndUseCellularData()
       = runBlockingTest(coroutineContext) {
-    cellularDialogController.setAlwaysUseCellularDataPreference()
+    cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     testBlockingDispatcher.advanceUntilIdle()
 
     setUpTestApplicationComponent()
-    val appHistory = cellularDialogController.getCellularDataPreference()
+    val appHistory = cellularAudioDialogController.getCellularDataPreference()
     appHistory.observeForever(mockCellularDataObserver)
     testBlockingDispatcher.advanceUntilIdle()
 
@@ -235,6 +235,6 @@ class CellularDialogControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(cellularDataControllerTest: CellularDialogControllerTest)
+    fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest)
   }
 }
