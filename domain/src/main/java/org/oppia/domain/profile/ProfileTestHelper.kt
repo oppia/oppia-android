@@ -45,11 +45,11 @@ class ProfileTestHelper @Inject constructor(
     }
   }
 
-  /** Login to Admin profile. */
+  /** Login to admin profile. */
   fun loginToAdmin() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
 
-  /* Login to user profile. */
+  /** Login to user profile. */
   fun loginToUser() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(1).build())
 }
