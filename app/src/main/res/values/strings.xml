@@ -127,4 +127,12 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+
+  <!--Preferences-->
+  <string name="key_story_text_size">key_story_text_size</string>
+  <string name="key_app_language">key_app_language</string>
+  <string name="key_default_audio">key_default_audio</string>
+  <string name="title_story_text_size">Story Text Size</string>
+  <string name="title_app_language">App Language</string>
+  <string name="title_default_audio">Default Audio Language</string>
 </resources>

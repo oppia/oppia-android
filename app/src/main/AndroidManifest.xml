@@ -20,6 +20,18 @@
       android:screenOrientation="portrait" />
     <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
+      android:name=".option.OptionActivity"
+      android:screenOrientation="portrait"/>
+    <activity android:name=".option.StoryTextSizeActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".option.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".option.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".player.exploration.ExplorationActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/story_list_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/title_story_text_size"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <TextView
+          android:id="@+id/preview_textview"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="80dp"
+          android:layout_marginBottom="80dp"
+          android:gravity="center"
+          android:text="Story text will look like this"/>
+        <View
+          android:id="@+id/divider_view"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@drawable/toolbar_drop_shadow" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/textView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="32dp"
+          android:layout_marginTop="60dp"
+          android:layout_marginBottom="60dp"
+          android:gravity="center"
+          android:text="A"
+          android:textSize="16sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <SeekBar
+          android:id="@+id/seekBar"
+          android:layout_width="match_parent"
+          android:layout_height="27dp"
+          android:layout_marginStart="44dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="44dp"
+          android:layout_marginBottom="8dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toStartOf="@+id/textView2"
+          app:layout_constraintStart_toEndOf="@+id/textView"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/textView2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="60dp"
+          android:layout_marginEnd="32dp"
+          android:layout_marginBottom="60dp"
+          android:fontFamily="sans-serif"
+          android:gravity="center"
+          android:text="A"
+          android:textSize="28dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintVertical_bias="0.0" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+      </LinearLayout>
+
+
+      <View
+        android:id="@+id/toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

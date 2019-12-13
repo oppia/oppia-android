@@ -6,6 +6,10 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.option.AppLanguageActivity
+import org.oppia.app.option.DefaultAudioActivity
+import org.oppia.app.option.OptionActivity
+import org.oppia.app.option.StoryTextSizeActivity
 import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -45,11 +49,13 @@ interface ActivityComponent {
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
+  fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
   fun inject(continuePlayingActivity: ContinuePlayingActivity)
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
+  fun inject(defaultAudioActivity: DefaultAudioActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(homeActivity: HomeActivity)
@@ -57,9 +63,11 @@ interface ActivityComponent {
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
+  fun inject(optionActivity: OptionActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(storyTextSizeActivity: StoryTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
