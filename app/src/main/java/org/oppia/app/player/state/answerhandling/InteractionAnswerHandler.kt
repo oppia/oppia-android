@@ -20,6 +20,8 @@ interface InteractionAnswerHandler {
    * [setPendingAnswerError] in order to return errors at the right time.
    */
   fun isExplicitErrorCheckRequired(): Boolean = false
+  fun onAnswerRealTimeError(category: AnswerErrorCategory){
+  }
 
   /**
    * Returns the current answer's error message if the current answer is invalid, otherwise null. Note that this method
@@ -38,7 +40,9 @@ interface InteractionAnswerHandler {
   }
 
   /** Return the current answer that is ready for handling. */
-  fun getPendingAnswer(): UserAnswer
+  fun getPendingAnswer(): UserAnswer?{
+    return null
+  }
 }
 
 /**

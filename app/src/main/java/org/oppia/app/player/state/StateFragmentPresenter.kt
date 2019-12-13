@@ -46,6 +46,8 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -91,8 +93,7 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
-
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener, InteractionAnswerHandler {
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var explorationId: String
@@ -152,7 +153,11 @@ class StateFragmentPresenter @Inject constructor(
         oldBottom: Int
       ) {
         if (bottom < oldBottom) {
-          binding.stateRecyclerView.postDelayed(Runnable { binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.getItemCount()-1) }, 100)
+          binding.stateRecyclerView.postDelayed(Runnable {
+            binding.stateRecyclerView.scrollToPosition(
+              stateRecyclerViewAdapter.getItemCount() - 1
+            )
+          }, 100)
         }
       }
     })
@@ -397,8 +402,8 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
-      }else if (result.labelledAsCorrectAnswer){
+        moveToNextState()
+      } else if (result.labelledAsCorrectAnswer) {
         showCongratulationMessageOnCorrectAnswer()
       }
     })
@@ -424,7 +429,7 @@ class StateFragmentPresenter @Inject constructor(
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
-    },2000)
+    }, 2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -452,8 +457,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleKeyboardAction() {
-      hideKeyboard()
-      handleSubmitAnswer(viewModel.getPendingAnswer())
+    hideKeyboard()
+    handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   override fun onContinueButtonClicked() {
@@ -607,4 +612,8 @@ class StateFragmentPresenter @Inject constructor(
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
+
+  override fun onAnswerRealTimeError(error: AnswerErrorCategory) {
+
+}
 }
