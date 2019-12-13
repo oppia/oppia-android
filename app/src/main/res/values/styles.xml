@@ -97,7 +97,6 @@
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
-
   <!-- TOPIC TABLAYOUT STYLE -->
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">
     <item name="tabIndicatorColor">@color/white</item>
