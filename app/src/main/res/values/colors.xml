@@ -7,6 +7,7 @@
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#C55F45</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
+  <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>

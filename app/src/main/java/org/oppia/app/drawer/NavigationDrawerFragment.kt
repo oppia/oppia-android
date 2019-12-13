@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -21,5 +23,9 @@ class NavigationDrawerFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
+    navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
   }
 }

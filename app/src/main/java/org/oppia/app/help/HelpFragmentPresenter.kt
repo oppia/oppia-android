@@ -20,13 +20,8 @@ class HelpFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
-      it.viewModel = getHelpViewModel()
       it.lifecycleOwner = fragment
     }
     return binding.root
-  }
-
-  private fun getHelpViewModel(): HelpViewModel {
-    return viewModelProvider.getForFragment(fragment, HelpViewModel::class.java)
   }
 }

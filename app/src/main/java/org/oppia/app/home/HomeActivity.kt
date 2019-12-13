@@ -1,6 +1,7 @@
 package org.oppia.app.home
 
 import android.os.Bundle
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.topic.TopicActivity
@@ -15,6 +16,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener, 
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     homeActivityPresenter.handleOnCreate()
+    title = getString(R.string.menu_home)
   }
 
   override fun routeToExploration(explorationId: String) {

@@ -12,32 +12,29 @@ import javax.inject.Inject
 /** The presenter for [HomeActivity]. */
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  var toolbar: Toolbar? = null
   var navigationDrawerFragment: NavigationDrawerFragment? = null
-
-  fun init(title: String) {
-    toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar?
-
-    activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.navigationDrawerFragmentPresenter.setUpDrawer(
-      activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
-      toolbar!!, R.id.nav_home
-    )
-    activity.title = title
-  }
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
-    init(activity.getString(R.string.menu_home))
+    setUpNavigationDrawer()
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
         HomeFragment()
       ).commitNow()
     }
+  }
+
+  private fun setUpNavigationDrawer() {
+    val toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+    navigationDrawerFragment =
+      activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment!!.setUpDrawer(
+      activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
+      toolbar, R.id.nav_home
+    )
   }
 
   private fun getHomeFragment(): HomeFragment? {

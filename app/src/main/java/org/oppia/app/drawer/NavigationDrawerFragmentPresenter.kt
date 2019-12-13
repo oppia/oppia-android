@@ -25,6 +25,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
   private var previousMenuItemId: Int? = null
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
     navView = view!!.findViewById(R.id.nav_view)
@@ -35,13 +36,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
-      var intent = Intent(fragment.activity, HomeActivity::class.java)
-      when (menuItemId) {
-        R.id.nav_home -> {
-          intent = Intent(fragment.activity, HomeActivity::class.java)
+      val intent = when (NavigationDrawerItem.valueFromInt(menuItemId)) {
+        NavigationDrawerItem.HOME -> {
+          Intent(fragment.activity, HomeActivity::class.java)
         }
-        R.id.nav_help -> {
-          intent = Intent(fragment.activity, HelpActivity::class.java)
+        NavigationDrawerItem.HELP -> {
+          Intent(fragment.activity, HelpActivity::class.java)
         }
       }
       fragment.activity!!.startActivity(intent)
@@ -51,14 +51,17 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     }
   }
 
-  /** This function contains the DrawerListener and also set the drawer toggle. */
+  /**
+   * Initializes the navigation drawer for the specified [DrawerLayout] and [Toolbar], which the host activity is
+   * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
+   */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    when (menuItemId) {
-      R.id.nav_home -> {
-        navView.menu.getItem(0).isChecked = true
+    when (NavigationDrawerItem.valueFromInt(menuItemId)) {
+      NavigationDrawerItem.HOME -> {
+        navView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
       }
-      R.id.nav_help -> {
-        navView.menu.getItem(1).isChecked = true
+      NavigationDrawerItem.HELP -> {
+        navView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
       }
     }
     this.drawerLayout = drawerLayout
@@ -67,8 +70,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       fragment.activity,
       drawerLayout,
       toolbar,
-      R.string.drawer_open,
-      R.string.drawer_close
+      R.string.drawer_open_content_description,
+      R.string.drawer_close_content_description
     ) {
       override fun onDrawerOpened(drawerView: View) {
         super.onDrawerOpened(drawerView)
@@ -79,24 +82,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         super.onDrawerClosed(drawerView)
         fragment.activity!!.invalidateOptionsMenu()
       }
-
-      override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-        super.onDrawerSlide(drawerView, slideOffset)
-        /** Whenever drawer is visible reduse the opacity of toolbar. */
-        toolbar.alpha = 1 - slideOffset / 2
-      }
     }
     drawerLayout.setDrawerListener(drawerToggle)
-    /** Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout].*/
+    /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
     drawerLayout.post { drawerToggle.syncState() }
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-    return if (menuItem.itemId > 0) {
-      openActivityByMenuItemId(menuItem.itemId)
-      true
-    } else {
-      false
-    }
+    openActivityByMenuItemId(menuItem.itemId)
+    return true
   }
 }
