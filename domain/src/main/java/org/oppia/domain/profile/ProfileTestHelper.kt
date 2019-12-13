@@ -13,20 +13,20 @@ class ProfileTestHelper @Inject constructor(
   /** Creates one admin profile and one user profile. Logs in to admin profile. */
   fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
-      "Sean",
-      "12345",
-      null,
-      true,
-      R.color.abc_tint_default,
-      true
+      name = "Sean",
+      pin = "12345",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorHex = "#E65C5C",
+      isAdmin = true
     )
     profileManagementController.addProfile(
-      "Ben",
-      "123",
-      null,
-      false,
-      R.color.abc_tint_default,
-      false
+      name = "Ben",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorHex = "#E65C5C",
+      isAdmin = false
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
@@ -35,12 +35,12 @@ class ProfileTestHelper @Inject constructor(
   fun addMoreProfiles(numProfiles: Int) {
     for (x in 0 until numProfiles) {
       profileManagementController.addProfile(
-        (x + 65).toChar().toString(),
-        "123",
-        null,
-        false,
-        R.color.abc_tint_default,
-        false
+        name = (x + 65).toChar().toString(),
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = false,
+        colorHex = "#E65C5C",
+        isAdmin = false
       )
     }
   }

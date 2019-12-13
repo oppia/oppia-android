@@ -7,15 +7,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+const val KEY_ADD_PROFILE_COLOR_HEX = "KEY_ADD_PROFILE_COLOR_HEX"
+
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
 
   companion object {
-    fun createAddProfileActivityIntent(context: Context, color: Int): Intent {
+    fun createAddProfileActivityIntent(context: Context, colorHex: String): Intent {
       val intent = Intent(context, AddProfileActivity::class.java)
-      intent.putExtra(KEY_PROFILE_AVATAR_COLOR, color)
+      intent.putExtra(KEY_ADD_PROFILE_COLOR_HEX, colorHex)
       return intent
     }
   }
