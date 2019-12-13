@@ -8,6 +8,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -58,18 +60,11 @@ class AdminPinActivityTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    DaggerAdminPinActivityTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
-
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, R.color.avatar_background_1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("12345"))
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(), typeText("12345"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
@@ -77,28 +72,28 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputShortPin_clickSubmit_checkPinLengthError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, R.color.avatar_background_1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
-      onView(withId(R.id.submit_button)).perform(click())
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_length))))
     }
   }
 
   @Test
   fun testAdminAuthActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, R.color.avatar_background_1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
-      onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("45"))
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("45"), closeSoftKeyboard())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
     }
   }
 
   @Test
   fun testAdminAuthActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, R.color.avatar_background_1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"))
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_confirm_wrong))))
     }
@@ -106,13 +101,20 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, R.color.avatar_background_1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"))
+    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivity(context, 0, "#E65C5C")).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("1234"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("5"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("5"), closeSoftKeyboard())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText("")))
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerAdminPinActivityTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Qualifier

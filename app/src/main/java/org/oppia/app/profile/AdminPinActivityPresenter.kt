@@ -77,9 +77,7 @@ class AdminPinActivityPresenter @Inject constructor(
         if (it.isSuccess()) {
           activity.startActivity(
             AddProfileActivity.createAddProfileActivityIntent(
-              context, activity.intent.getIntExtra(
-                KEY_PROFILE_AVATAR_COLOR, R.color.avatar_background_1
-              )
+              context, activity.intent.getStringExtra(KEY_ADMIN_PIN_COLOR_HEX)
             )
           )
         }

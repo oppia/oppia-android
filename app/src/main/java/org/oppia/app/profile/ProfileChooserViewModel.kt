@@ -25,7 +25,7 @@ class ProfileChooserViewModel @Inject constructor(
 
   lateinit var adminPin: String
   lateinit var adminProfileId: ProfileId
-  val usedColors = mutableListOf<Int>()
+  val usedColors = mutableListOf<String>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserUiModel> {
@@ -41,7 +41,7 @@ class ProfileChooserViewModel @Inject constructor(
     }.toMutableList()
 
     profileList.forEach {
-      if (it.profile.avatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
+      if (it.profile.avatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_HEX) {
         usedColors.add(it.profile.avatar.avatarColorHex)
       }
     }

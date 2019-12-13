@@ -3,7 +3,6 @@ package org.oppia.app.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
@@ -12,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -27,7 +25,6 @@ import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
-const val KEY_PROFILE_AVATAR_COLOR = "KEY_PROFILE_AVATAR_COLOR"
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -51,7 +48,10 @@ class AddProfileActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
-    val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(activity, R.layout.add_profile_activity)
+    val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
+      activity,
+      R.layout.add_profile_activity
+    )
 
     binding.apply {
       viewModel = profileViewModel
@@ -106,9 +106,12 @@ class AddProfileActivityPresenter @Inject constructor(
       }
 
       profileManagementController.addProfile(
-        name, pin, selectedImage, allowDownloadAccess, activity.intent.getIntExtra(
-          KEY_PROFILE_AVATAR_COLOR, R.color.avatar_background_1
-        ), false
+        name = name,
+        pin = pin,
+        avatarImagePath = selectedImage,
+        allowDownloadAccess = allowDownloadAccess,
+        colorHex = activity.intent.getStringExtra(KEY_ADD_PROFILE_COLOR_HEX),
+        isAdmin = false
       )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
@@ -133,7 +136,10 @@ class AddProfileActivityPresenter @Inject constructor(
     return failed
   }
 
-  private fun handleAddProfileResult(result: AsyncResult<Any?>, binding: AddProfileActivityBinding) {
+  private fun handleAddProfileResult(
+    result: AsyncResult<Any?>,
+    binding: AddProfileActivityBinding
+  ) {
     if (result.isSuccess()) {
       val intent = Intent(activity, ProfileActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -188,7 +194,10 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+  private fun addTextChangedListener(
+    profileInputView: ProfileInputView,
+    onTextChanged: (CharSequence?) -> Unit
+  ) {
     profileInputView.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         onTextChanged(p0)

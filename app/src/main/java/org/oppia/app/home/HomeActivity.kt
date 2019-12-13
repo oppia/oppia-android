@@ -1,6 +1,5 @@
 package org.oppia.app.home
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
