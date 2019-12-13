@@ -14,6 +14,7 @@ import org.hamcrest.Matchers
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -61,6 +62,13 @@ class NavigationDrawerTestActivityTest {
         )
       )
         .check(matches(ViewMatchers.withText("Home")))
+      onView(
+        RecyclerViewMatcher.atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(ViewMatchers.withText("Welcome to Oppia!")))
     }
   }
 }
