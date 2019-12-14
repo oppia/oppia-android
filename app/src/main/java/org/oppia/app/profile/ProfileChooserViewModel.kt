@@ -50,13 +50,12 @@ class ProfileChooserViewModel @Inject constructor(
       it.profile.name.toLowerCase(Locale.getDefault())
     }.toMutableList()
 
-    val adminProfile = sortedProfileList.find { it.profile.isAdmin }
-    adminProfile?.let {
-      sortedProfileList.remove(adminProfile)
-      adminPin = it.profile.pin
-      adminProfileId = it.profile.id
-      sortedProfileList.add(0, it)
-    }
+    val adminProfile = sortedProfileList.find { it.profile.isAdmin }!!
+
+    sortedProfileList.remove(adminProfile)
+    adminPin = adminProfile.profile.pin
+    adminProfileId = adminProfile.profile.id
+    sortedProfileList.add(0, adminProfile)
 
     if (sortedProfileList.size < 10) {
       sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())
