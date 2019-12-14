@@ -1,6 +1,6 @@
 package org.oppia.app.profile
 
-import android.content.Intent
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +14,7 @@ import javax.inject.Inject
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
 class AdminAuthActivityPresenter @Inject constructor(
+  private val context: Context,
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>
 ) {
@@ -51,7 +52,11 @@ class AdminAuthActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
-        activity.startActivity(Intent(activity, AddProfileActivity::class.java))
+        activity.startActivity(
+          AddProfileActivity.createAddProfileActivityIntent(
+            context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
+          )
+        )
       } else {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }

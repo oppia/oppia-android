@@ -71,7 +71,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", R.color.avatar_background_1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
       onView(withId(R.id.submit_button)).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -80,7 +80,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", R.color.avatar_background_1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(withId(R.id.submit_button)).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
@@ -92,7 +92,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", R.color.avatar_background_1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(withId(R.id.submit_button)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("4"))

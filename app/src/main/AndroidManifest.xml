@@ -39,8 +39,8 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />

@@ -1,11 +1,14 @@
 package org.oppia.app.profile
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
@@ -17,10 +20,38 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
+private val COLORS_LIST = listOf(
+  R.color.avatar_background_1,
+  R.color.avatar_background_2,
+  R.color.avatar_background_3,
+  R.color.avatar_background_4,
+  R.color.avatar_background_5,
+  R.color.avatar_background_6,
+  R.color.avatar_background_7,
+  R.color.avatar_background_8,
+  R.color.avatar_background_9,
+  R.color.avatar_background_10,
+  R.color.avatar_background_11,
+  R.color.avatar_background_12,
+  R.color.avatar_background_13,
+  R.color.avatar_background_14,
+  R.color.avatar_background_15,
+  R.color.avatar_background_16,
+  R.color.avatar_background_17,
+  R.color.avatar_background_18,
+  R.color.avatar_background_19,
+  R.color.avatar_background_20,
+  R.color.avatar_background_21,
+  R.color.avatar_background_22,
+  R.color.avatar_background_23,
+  R.color.avatar_background_24
+)
+
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
+  private val context: Context,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
@@ -41,6 +72,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
     return binding.root
+  }
+
+  /** Randomly selects a color for the new profile that is not already in use. */
+  private fun selectUniqueRandomColor(): Int {
+    return COLORS_LIST.map {
+      ContextCompat.getColor(context, it)
+    }.minus(chooserViewModel.usedColors).random()
   }
 
   private fun getProfileChooserViewModel(): ProfileChooserViewModel {
@@ -88,7 +126,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
     binding.root.setOnClickListener {
-      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin))
+      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin, selectUniqueRandomColor()))
     }
   }
 }
