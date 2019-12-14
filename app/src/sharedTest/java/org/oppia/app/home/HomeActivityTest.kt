@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -23,6 +24,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -46,13 +48,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.domain.topic.MATTHEW_GOES_TO_THE_BAKERY_STORY_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
@@ -313,6 +315,23 @@ class HomeActivityTest {
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, TEST_TOPIC_ID_0))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
+    launch(HomeActivity::class.java).use {
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
+    launch(HomeActivity::class.java).use {
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
 

@@ -17,7 +17,7 @@ class ProfileActivityPresenter @Inject constructor(
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
     profileManagementController.addProfile(
       name = "Sean",
-      pin = "12345",
+      pin = "",
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,

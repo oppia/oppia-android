@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -51,6 +52,7 @@ private val COLORS_LIST = listOf(
 @FragmentScope
 class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
+  private val activity: AppCompatActivity,
   private val context: Context,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
@@ -110,23 +112,31 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
-            fragment.requireActivity().startActivity(Intent(fragment.context, HomeActivity::class.java))
+            activity.startActivity(Intent(fragment.context, HomeActivity::class.java))
           }
         })
       } else {
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
-          fragment.requireContext(),
+          activity,
           chooserViewModel.adminPin,
           model.profile.id.internalId
         )
-        fragment.requireActivity().startActivity(pinPasswordIntent)
+        activity.startActivity(pinPasswordIntent)
       }
     }
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
     binding.root.setOnClickListener {
-      fragment.requireActivity().startActivity(AdminAuthActivity.createAdminAuthActivityIntent(fragment.requireContext(), chooserViewModel.adminPin, selectUniqueRandomColor()))
+      if (chooserViewModel.adminPin.isEmpty()) {
+        activity.startActivity(
+          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+        )
+      } else {
+        activity.startActivity(
+          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
+        )
+      }
     }
   }
 }
