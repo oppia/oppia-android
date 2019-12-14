@@ -1,10 +1,8 @@
 package org.oppia.app.databinding
 
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -83,7 +81,8 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
  * @param profileAvatar Represents either a colorId or local image uri.
  */
 @BindingAdapter("profile:src")
-fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar) {
+fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
+  if (profileAvatar == null) return
   if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)

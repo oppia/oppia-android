@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 const val KEY_PROFILE_EDIT_PROFILE_ID = "KEY_PROFILE_EDIT_PROFILE_ID"
 
-/** Activity that allows user to select a profile to edit from settings. */
+/** Activity that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
   @Inject lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
@@ -24,5 +24,18 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     profileEditActivityPresenter.handleOnCreate()
+  }
+
+  override fun onSupportNavigateUp(): Boolean {
+    val intent = Intent(this, ProfileListActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    startActivity(intent)
+    return false
+  }
+
+  override fun onBackPressed() {
+    val intent = Intent(this, ProfileListActivity::class.java)
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    startActivity(intent)
   }
 }
