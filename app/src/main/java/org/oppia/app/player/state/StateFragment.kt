@@ -7,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.audio.CellularDataInterface
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), InteractionAnswerReceiver {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -40,14 +39,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     return stateFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleEnableAudio(saveUserChoice)
-  }
-
-  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleDisableAudio(saveUserChoice)
-  }
-
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
     stateFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
@@ -55,4 +46,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+
+  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+
+  fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 }
