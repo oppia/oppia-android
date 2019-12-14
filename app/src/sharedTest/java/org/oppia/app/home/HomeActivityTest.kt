@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -23,6 +24,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -37,6 +40,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -44,11 +48,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -80,7 +88,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
     launch(HomeActivity::class.java).use {
-      onView(withId(R.id.welcome_text_view)).check(matches(withText("Welcome to Oppia!")))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Welcome to Oppia!")))
     }
   }
 
@@ -91,7 +105,13 @@ class HomeActivityTest {
     launch(HomeActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
       waitForTheView(withText("Welcome back to Oppia!"))
-      onView(withId(R.id.welcome_text_view)).check(matches(withText("Welcome back to Oppia!")))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Welcome back to Oppia!")))
     }
   }
 
@@ -159,11 +179,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
     launch(HomeActivity::class.java).use {
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.chapter_name_text_view)).check(
-        matches(
-          withText(containsString("The Meaning of Equal Parts"))
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
         )
-      )
+      ).check(matches(ViewMatchers.hasDescendant(withText(Matchers.containsString("The Meaning of Equal Parts")))))
     }
   }
 
@@ -173,7 +196,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Second Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -187,7 +210,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Second Story"))
+          withText(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -197,10 +220,17 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch(HomeActivity::class.java).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPosition(R.id.home_recycler_view, 1)).perform(click())
+      onView(
+        Matchers.allOf(
+          withId(R.id.promoted_story_list_recycler_view),
+          ViewMatchers.withParent(
+            atPosition(R.id.home_recycler_view, 1)
+          )
+        )
+      ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, "test_story_id_1"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, FRACTIONS_STORY_ID_0))
     }
   }
 
@@ -210,7 +240,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FIRST TOPIC"))
+          withText(containsString("FRACTIONS"))
         )
       )
     }
@@ -234,7 +264,7 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
-          withText(containsString("2 Lessons"))
+          withText(containsString("4 Lessons"))
         )
       )
     }
@@ -284,7 +314,24 @@ class HomeActivityTest {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, "test_topic_id_0"))
+      intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, TEST_TOPIC_ID_0))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
+    launch(HomeActivity::class.java).use {
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
+    launch(HomeActivity::class.java).use {
+      pressBack()
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
 

@@ -1,44 +1,64 @@
 package org.oppia.app.player.exploration
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.topic.TopicActivity
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
-
   private lateinit var toolbar: Toolbar
+  private var topicId: String? = null
 
-  fun handleOnCreate(explorationId: String) {
-    activity.setContentView(R.layout.exploration_activity)
+  private val exploreViewModel by lazy {
+    getExplorationViewModel()
+  }
 
-    toolbar = activity.findViewById(R.id.exploration_toolbar)
+  fun handleOnCreate(explorationId: String, topicId: String?) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+    binding.apply {
+      viewModel = exploreViewModel
+      lifecycleOwner = activity
+    }
+
+    toolbar = binding.explorationToolbar
     activity.setSupportActionBar(toolbar)
 
+    binding.actionAudioPlayer.setOnClickListener {
+      getExplorationFragment()?.handlePlayAudio()
+    }
+
     updateToolbarTitle(explorationId)
+    this.topicId = topicId
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, explorationId)
+      args.putString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -47,6 +67,18 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
   }
+
+  fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+
+  fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+
+  fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+
+  fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
+
+  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -61,14 +93,16 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
+          if (topicId != null) {
+            val intent = Intent(activity, TopicActivity::class.java)
+            intent.putExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+            intent.addFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
+            activity.startActivity(intent)
+          }
           (activity as ExplorationActivity).finish()
         }
       }
     })
-  }
-
-  fun audioPlayerIconClicked() {
-    getExplorationFragment()?.handlePlayAudio()
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -80,6 +114,10 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(activity, Observer<Exploration> {
       toolbar.title = it.title
     })
+  }
+
+  private fun getExplorationViewModel(): ExplorationViewModel {
+    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */
@@ -97,7 +135,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun onKeyboardAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      val explorationFragment =
+        activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
       explorationFragment.onKeyboardAction()
     }
   }

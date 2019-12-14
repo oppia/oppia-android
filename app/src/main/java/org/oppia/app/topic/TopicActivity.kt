@@ -51,8 +51,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     getConceptCardFragment()?.dismiss()
   }
 
-  override fun routeToExploration(explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
+  override fun routeToExploration(explorationId: String, topicId: String?) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {

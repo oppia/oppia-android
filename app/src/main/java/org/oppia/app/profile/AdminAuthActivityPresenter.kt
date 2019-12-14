@@ -54,9 +54,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         activity.startActivity(
           AddProfileActivity.createAddProfileActivityIntent(
-            context, activity.intent.getIntExtra(
-              KEY_PROFILE_AVATAR_COLOR, 0
-            )
+            context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
           )
         )
       } else {

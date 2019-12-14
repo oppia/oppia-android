@@ -3,7 +3,6 @@ package org.oppia.app.databinding
 import android.graphics.PorterDuff
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -79,20 +78,17 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
  * Binding adapter for profile images. Used to either display a local image or custom colored avatar.
  *
  * @param imageView View where the profile avatar will be loaded into.
- * @param colorOrUri Represents either a colorId or local image uri.
+ * @param profileAvatar Represents either a colorId or local image uri.
  */
 @BindingAdapter("profile:src")
 fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
   if (profileAvatar == null) return
-  if (profileAvatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
+  if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
       .into(imageView)
     imageView.setColorFilter(
-      ContextCompat.getColor(
-        imageView.context,
-        profileAvatar.avatarColorHex
-      ), PorterDuff.Mode.DST_OVER
+      profileAvatar.avatarColorRgb, PorterDuff.Mode.DST_OVER
     )
   } else {
     Glide.with(imageView.context)
