@@ -31,7 +31,6 @@ class ProfileListViewModel @Inject constructor(
     }
     val profileList = profilesResult.getOrDefault(emptyList())
 
-
     val sortedProfileList = profileList.sortedBy {
       it.name.toLowerCase(Locale.getDefault())
     }.toMutableList()
