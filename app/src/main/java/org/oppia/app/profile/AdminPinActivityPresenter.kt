@@ -39,7 +39,7 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_warning)
+    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_pin_description)
 
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
@@ -77,9 +77,7 @@ class AdminPinActivityPresenter @Inject constructor(
         if (it.isSuccess()) {
           activity.startActivity(
             AddProfileActivity.createAddProfileActivityIntent(
-              context, activity.intent.getIntExtra(
-                KEY_PROFILE_AVATAR_COLOR, R.color.avatar_background_1
-              )
+              context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
             )
           )
         }

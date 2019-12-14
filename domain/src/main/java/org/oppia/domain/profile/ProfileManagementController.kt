@@ -15,7 +15,6 @@ import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
@@ -35,8 +34,6 @@ import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
-private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
-private const val GRAVATAR_QUERY_STRING = "?s=100&d=identicon&r=g"
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
@@ -128,9 +125,9 @@ class ProfileManagementController @Inject constructor(
    *
    * @param name Name of the new profile.
    * @param pin Pin of the new profile.
-   * @param avatarImagePath Uri path to user selected image.
+   * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
    * @param allowDownloadAccess Indicates whether the new profile can download content.
-   * @param color Indicates id of color used if the user does not select an image.
+   * @param colorRgb Indicates the color RGB integer used for the avatar background.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
   fun addProfile(
@@ -138,8 +135,8 @@ class ProfileManagementController @Inject constructor(
     pin: String,
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
-    color: Int,
-    isAdmin: Boolean = false
+    colorRgb: Int,
+    isAdmin: Boolean
   ): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
@@ -153,7 +150,9 @@ class ProfileManagementController @Inject constructor(
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
       val newProfileBuilder = Profile.newBuilder()
-        .setName(name).setPin(pin).setAllowDownloadAccess(allowDownloadAccess)
+        .setName(name)
+        .setPin(pin)
+        .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
 
@@ -165,7 +164,7 @@ class ProfileManagementController @Inject constructor(
           )
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorHex(color).build()
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
       val profileDatabaseBuilder =

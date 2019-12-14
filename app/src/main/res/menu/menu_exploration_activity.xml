@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <item
-    android:id="@+id/action_audio_player"
-    android:icon="@drawable/ic_volume_off_48dp"
-    android:title="@string/play_pause_audio"
-    app:showAsAction="ifRoom" />
-  <item
     android:id="@+id/action_preferences"
     android:title="@string/preferences"
     app:showAsAction="never" />

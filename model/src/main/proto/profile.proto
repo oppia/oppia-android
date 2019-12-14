@@ -43,14 +43,14 @@ message Profile {
   int64 date_created_timestamp_ms = 9;
 }
 
-// Structure for profile avatar image
+// Represents a profile avatar image.
 message ProfileAvatar {
   oneof avatar_type {
     // User selected image or gravatar.
     string avatar_image_uri = 5;
 
-    // Random color used if user does not provide image
-    int32 avatar_color_hex = 6;
+    // Tint color to be used with a generic profile image.
+    int32 avatar_color_rgb = 6;
   }
 }
 

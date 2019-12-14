@@ -49,12 +49,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -139,7 +136,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
-    profileManagementController.addProfile("Sean", "", null, true, R.color.abc_tint_default, true)
+    profileManagementController.addProfile("Sean", "", null, true, -10710042, true)
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))

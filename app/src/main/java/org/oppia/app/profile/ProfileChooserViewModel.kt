@@ -26,6 +26,7 @@ class ProfileChooserViewModel @Inject constructor(
 
   lateinit var adminPin: String
   lateinit var adminProfileId: ProfileId
+
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
@@ -42,8 +43,8 @@ class ProfileChooserViewModel @Inject constructor(
     }.toMutableList()
 
     profileList.forEach {
-      if (it.profile.avatar.avatarTypeCase.number == ProfileAvatar.AVATAR_COLOR_HEX_FIELD_NUMBER) {
-        usedColors.add(it.profile.avatar.avatarColorHex)
+      if (it.profile.avatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
+        usedColors.add(it.profile.avatar.avatarColorRgb)
       }
     }
 
@@ -51,13 +52,12 @@ class ProfileChooserViewModel @Inject constructor(
       it.profile.name.toLowerCase(Locale.getDefault())
     }.toMutableList()
 
-    val adminProfile = sortedProfileList.find { it.profile.isAdmin }
-    adminProfile?.let {
-      sortedProfileList.remove(adminProfile)
-      adminPin = it.profile.pin
-      adminProfileId = it.profile.id
-      sortedProfileList.add(0, it)
-    }
+    val adminProfile = sortedProfileList.find { it.profile.isAdmin }!!
+
+    sortedProfileList.remove(adminProfile)
+    adminPin = adminProfile.profile.pin
+    adminProfileId = adminProfile.profile.id
+    sortedProfileList.add(0, adminProfile)
 
     if (sortedProfileList.size < 10) {
       sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())

@@ -1,15 +1,14 @@
 package org.oppia.app.testing
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.story.StoryActivity
-import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Test activity for recent stories. */
-class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(), RouteToStoryListener {
+class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(),
+  RouteToExplorationListener {
   @Inject lateinit var continuePlayingFragmentTestActivityPresenter: ContinuePlayingFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,14 +17,7 @@ class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(), Route
     continuePlayingFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  companion object {
-    /** Returns a new [Intent] to route to [ContinuePlayingFragmentTestActivity]. */
-    fun createContinuePlayingActivityIntent(context: Context): Intent {
-      return Intent(context, ContinuePlayingFragmentTestActivity::class.java)
-    }
-  }
-
-  override fun routeToStory(storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
+  override fun routeToExploration(explorationId: String, topicId: String?) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
   }
 }

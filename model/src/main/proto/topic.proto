@@ -163,15 +163,18 @@ message PromotedStory {
   // The name of the next chapter (exploration title) to complete.
   string next_chapter_name = 5;
 
+  // The exploration id next chapter to complete.
+  string exploration_id = 6;
+
   // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
   // reasons other than to complete it (e.g. it's recommended).
-  int32 completed_chapter_count = 6;
+  int32 completed_chapter_count = 7;
 
   // The total number of lessons this story contains.
-  int32 total_chapter_count = 7;
+  int32 total_chapter_count = 8;
 
   // The thumbnail that should be displayed for this promoted story.
-  LessonThumbnail lesson_thumbnail = 8;
+  LessonThumbnail lesson_thumbnail = 9;
 }
 
 // A homescreen summary of a topic.
