@@ -15,7 +15,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       profile:error="@{viewModel.errorMessage}"
-      app:label="Administrator's PIN"
+      app:label="@string/admin_settings_label"
       app:inputLength="5"
       app:isPasswordInput="true"/>
   </RelativeLayout>

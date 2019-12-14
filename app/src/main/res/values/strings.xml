@@ -14,6 +14,9 @@
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
+  <string name="audio_dialog_offline_title">Currently Offline</string>
+  <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
+  <string name="audio_dialog_offline_positive">OK</string>
   <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
@@ -149,6 +152,7 @@
   <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
   <string name="pin_password_play_store">Go to the play store</string>
   <!-- AdminSettingsDialogFragment -->
+  <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
   <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
   <string name="admin_settings_cancel">Cancel</string>

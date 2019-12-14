@@ -69,6 +69,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
+    binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }

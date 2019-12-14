@@ -1,30 +1,44 @@
 package org.oppia.app.player.audio
 
 import androidx.databinding.ObservableField
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.State
 import org.oppia.app.model.Voiceover
+import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResource
+import java.util.Locale
 import javax.inject.Inject
 
 /** [ViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
+  private val fragment: Fragment,
   @DefaultResource private val gcsResource: String
 ) : ViewModel() {
 
+  private lateinit var state: State
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
+  private val defaultLanguage = "en"
+  private var languageSelectionShown = false
+  private var autoPlay = false
+  private var hasFeedback = false
+
+  var selectedLanguageCode: String = ""
+  var languages = listOf<String>()
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
+    FAILED,
     LOADING,
     PREPARED,
     PLAYING,
@@ -44,16 +58,52 @@ class AudioViewModel @Inject constructor(
     processPlayStatusLiveData()
   }
 
-  fun setVoiceoverMappings(map : Map<String, Voiceover>) {
-    voiceoverMap = map
+  fun setStateAndExplorationId(newState: State, id: String) {
+    state = newState
+    explorationId = id
   }
 
-  fun setExplorationId(id: String) {
-    explorationId = id
+  fun loadMainContentAudio(allowAutoPlay: Boolean) {
+    hasFeedback = false
+    loadAudio(null, allowAutoPlay)
+  }
+
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
+    hasFeedback = true
+    loadAudio(contentId, allowAutoPlay)
+  }
+
+  /**
+   * Load audio based on the contentId.
+   *
+   * @param contentId If contentId is null, then state.content.contentId is used as default.
+   * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
+   */
+  private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
+    autoPlay = allowAutoPlay
+    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
+    when {
+      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
+      languages.isNotEmpty() -> {
+        autoPlay = false
+        languageSelectionShown = true
+        val languageCode = if (languages.contains("en")) {
+          "en"
+        } else {
+          languages.first()
+        }
+        setAudioLanguageCode(languageCode)
+        (fragment as LanguageInterface).languageSelectionClicked()
+      }
+    }
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
+    selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))
   }
@@ -103,11 +153,20 @@ class AudioViewModel @Inject constructor(
 
   private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): UiAudioPlayStatus {
     if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
+    if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
     return when (playProgressResult.getOrThrow().type) {
-      PlayStatus.PREPARED -> UiAudioPlayStatus.PREPARED
+      PlayStatus.PREPARED -> {
+        if (autoPlay) audioPlayerController.play()
+        autoPlay = false
+        UiAudioPlayStatus.PREPARED
+      }
       PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
       PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
-      PlayStatus.COMPLETED -> UiAudioPlayStatus.COMPLETED
+      PlayStatus.COMPLETED -> {
+        if (hasFeedback) loadAudio(null, false)
+        hasFeedback = false
+        UiAudioPlayStatus.COMPLETED
+      }
     }
   }
 

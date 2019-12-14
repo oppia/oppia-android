@@ -11,7 +11,7 @@ import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
-class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener, RouteToTopicListener {
+class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
 
@@ -19,10 +19,6 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToExplorationListener, 
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     homeActivityPresenter.handleOnCreate()
-  }
-
-  override fun routeToExploration(explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
   }
 
   override fun routeToTopic(topicId: String) {

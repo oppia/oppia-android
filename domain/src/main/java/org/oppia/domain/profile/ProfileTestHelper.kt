@@ -2,7 +2,6 @@ package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.ProfileId
-import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
