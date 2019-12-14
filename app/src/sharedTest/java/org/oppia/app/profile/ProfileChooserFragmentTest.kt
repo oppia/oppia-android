@@ -136,7 +136,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
-    profileManagementController.addProfile("Sean", "", null, true, "#E65C5C", true)
+    profileManagementController.addProfile("Sean", "", null, true, -10710042, true)
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))

@@ -15,7 +15,7 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
-    fun createAdminPinActivity(context: Context, profileId: Int, colorRgb: Int): Intent {
+    fun createAdminPinActivityIntent(context: Context, profileId: Int, colorRgb: Int): Intent {
       val intent = Intent(context, AdminPinActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_ADMIN_PIN_PROFILE_ID, profileId)

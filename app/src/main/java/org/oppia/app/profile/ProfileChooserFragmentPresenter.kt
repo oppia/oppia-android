@@ -129,7 +129,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivity(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
         )
       } else {
         activity.startActivity(
