@@ -17,7 +17,8 @@ import javax.inject.Inject
 /** The ViewModel for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
-  private val profileManagementController: ProfileManagementController, private val logger: Logger
+  private val logger: Logger,
+  private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
     Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
@@ -33,7 +34,7 @@ class ProfileChooserViewModel @Inject constructor(
     if (profilesResult.isFailure()) {
       logger.e(
         "ProfileChooserViewModel",
-        "Failed to retrieve the list of profiles: ",
+        "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
       )
     }
