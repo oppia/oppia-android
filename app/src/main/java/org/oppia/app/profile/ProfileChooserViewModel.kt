@@ -25,6 +25,7 @@ class ProfileChooserViewModel @Inject constructor(
 
   lateinit var adminPin: String
   lateinit var adminProfileId: ProfileId
+
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
