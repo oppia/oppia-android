@@ -123,7 +123,14 @@ class ProfileEditActivityTest {
 
   @Test
   fun testProfileEditActivity_startActivityWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile("James", "123", null, true, R.color.avatar_background_1, false)
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 2)).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
     }

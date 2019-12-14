@@ -35,7 +35,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
       DataBindingUtil.setContentView<ProfileRenameActivityBinding>(activity, R.layout.profile_rename_activity)
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_RENAME_PROFILE_ID, 0)
 
-
     binding.apply {
       viewModel = renameViewModel
       lifecycleOwner = activity
