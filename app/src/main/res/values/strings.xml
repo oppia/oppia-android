@@ -116,7 +116,7 @@
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
-  <string name="admin_pin_warning">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_new_pin">New 5-Digit PIN</string>
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
