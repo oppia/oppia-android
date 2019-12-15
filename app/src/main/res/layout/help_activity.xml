@@ -1,7 +1,7 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/drawer_layout"
+  android:id="@+id/help_activity_drawer_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -10,25 +10,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-      android:id="@+id/container_toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-    </LinearLayout>
+    <include
+      android:id="@+id/help_activity_toolbar"
+      layout="@layout/toolbar" />
 
     <FrameLayout
-      android:id="@+id/container_body"
+      android:id="@+id/help_fragment_placeholder"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
   </LinearLayout>
 
   <fragment
-    android:id="@+id/fragment_navigation_drawer"
+    android:id="@+id/help_avtivity_fragment_navigation_drawer"
     android:name="org.oppia.app.drawer.NavigationDrawerFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

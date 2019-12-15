@@ -29,7 +29,7 @@ class NavigationDrawerTestActivityTest {
       ).perform(click())
       onView(withId(R.id.home_fragment_placeholder))
         .check(matches(isDisplayed()))
-      onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
     }
   }
 
@@ -39,8 +39,8 @@ class NavigationDrawerTestActivityTest {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isDisplayed())
       ).perform(click())
-      onView(withId(R.id.drawer_layout)).perform(DrawerActions.close())
-      onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
     }
   }
 
@@ -89,8 +89,8 @@ class NavigationDrawerTestActivityTest {
       onView(ViewMatchers.withText("Help")).check(matches(isDisplayed())).perform(click())
       onView(withContentDescription(R.string.drawer_open_content_description))
         .perform(click())
-      onView(withId(R.id.drawer_layout)).perform(DrawerActions.close())
-      onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
       onView(
         Matchers.allOf(
           Matchers.instanceOf(TextView::class.java),
@@ -101,8 +101,8 @@ class NavigationDrawerTestActivityTest {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isDisplayed())
       ).perform(click())
-      onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
-      onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.open())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
     }
   }
 
@@ -121,9 +121,9 @@ class NavigationDrawerTestActivityTest {
         )
       )
         .check(matches(ViewMatchers.withText("Help")))
-      onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
-      onView(withId(R.id.drawer_layout)).perform(DrawerActions.close())
-      onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.open())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
     }
   }
 

@@ -26,13 +26,13 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.toolbar) as Toolbar
+    val toolbar = activity.findViewById<View>(R.id.home_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
+      activity.supportFragmentManager.findFragmentById(R.id.home_avtivity_fragment_navigation_drawer) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
-      activity.findViewById<View>(R.id.drawer_layout) as DrawerLayout,
+      activity.findViewById<View>(R.id.home_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_home
     )
   }

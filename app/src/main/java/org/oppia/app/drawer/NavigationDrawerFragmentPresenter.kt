@@ -28,7 +28,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
-    navView = view!!.findViewById(R.id.nav_view)
+    navView = view!!.findViewById(R.id.fragment_drawer_nav_view)
     navView.setNavigationItemSelectedListener(this)
     fragment.setHasOptionsMenu(true)
     return view
