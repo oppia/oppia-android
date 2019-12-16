@@ -41,7 +41,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.continuePlayingToolbar.setNavigationOnClickListener {
       (activity as ContinuePlayingActivity).finish()
     }
 
