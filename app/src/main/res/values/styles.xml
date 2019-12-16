@@ -96,8 +96,14 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
+    <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
+    <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
   </style>
-  
+
+  <style name="textAllCaps">
+    <item name="android:textAllCaps">true</item>
+  </style>
+
   <!-- TOPIC TABLAYOUT STYLE -->
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">
     <item name="tabIndicatorColor">@color/white</item>

@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +48,10 @@ class AddProfileActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
-    val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(activity, R.layout.add_profile_activity)
+    val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
+      activity,
+      R.layout.add_profile_activity
+    )
 
     binding.apply {
       viewModel = profileViewModel
@@ -103,7 +105,14 @@ class AddProfileActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
 
-      profileManagementController.addProfile(name, pin, selectedImage, allowDownloadAccess, isAdmin = false)
+      profileManagementController.addProfile(
+        name = name,
+        pin = pin,
+        avatarImagePath = selectedImage,
+        allowDownloadAccess = allowDownloadAccess,
+        colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
+        isAdmin = false
+      )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
         })
@@ -127,7 +136,10 @@ class AddProfileActivityPresenter @Inject constructor(
     return failed
   }
 
-  private fun handleAddProfileResult(result: AsyncResult<Any?>, binding: AddProfileActivityBinding) {
+  private fun handleAddProfileResult(
+    result: AsyncResult<Any?>,
+    binding: AddProfileActivityBinding
+  ) {
     if (result.isSuccess()) {
       val intent = Intent(activity, ProfileActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -182,7 +194,10 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+  private fun addTextChangedListener(
+    profileInputView: ProfileInputView,
+    onTextChanged: (CharSequence?) -> Unit
+  ) {
     profileInputView.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         onTextChanged(p0)
