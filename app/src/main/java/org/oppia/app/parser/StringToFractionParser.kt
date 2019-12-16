@@ -99,7 +99,6 @@ class StringToFractionParser {
   }
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
-
   /** Enum to store the errors of [FractionInputInteractionView]. */
   enum class FractionParsingError(@StringRes error: Int?) {
     VALID(error = null),
@@ -113,11 +112,9 @@ class StringToFractionParser {
       this.error = error
     }
 
-    fun getErrorMessageFromStringRes(context: Context): String {
-      when {
-        this.error != null -> return context.getString(this.error!!)
-        else -> return "valid"
-      }
+    /** Returns the string corresponding to this error's string resources, or null if there is none. */
+    fun getErrorMessageFromStringRes(context: Context): String? {
+      return error?.let(context::getString)
     }
   }
 }

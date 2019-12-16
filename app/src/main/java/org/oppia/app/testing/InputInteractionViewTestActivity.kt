@@ -11,6 +11,7 @@ import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
@@ -20,7 +21,7 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  * This is a dummy activity to test input interaction views.
  * It contains [NumericInputInteractionView], [TextInputInteractionView],and [FractionInputInteractionView].
  */
-class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener {
+class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener, InteractionAnswerHandler {
 
   val numericInputViewModel = NumericInputViewModel()
   val textInputViewModel = TextInputViewModel(
@@ -36,7 +37,8 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
-    null)
+      interactionAnswerHandler = this
+    )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
@@ -46,6 +48,4 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     fractionInteractionViewModel.setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
-  override fun onEditorAction(actionCode: Int) {
-  }
 }

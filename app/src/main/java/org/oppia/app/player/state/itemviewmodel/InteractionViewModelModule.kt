@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import org.oppia.app.model.Interaction
-import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import kotlin.reflect.KFunction4
 
@@ -30,7 +30,7 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): KFunction4<String, Interaction, InteractionAnswerReceiver, StateFragment, SelectionInteractionViewModel> {
+  fun provideMultipleChoiceInputViewModelFactory(): KFunction4<String, Interaction, InteractionAnswerReceiver, InteractionAnswerHandler, SelectionInteractionViewModel> {
     return ::SelectionInteractionViewModel
   }
 
@@ -45,7 +45,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _, fragment -> FractionInteractionViewModel(interaction, context, fragment) }
+    return { _, interaction, _, interactionAnswerHandler -> FractionInteractionViewModel(interaction, context, interactionAnswerHandler) }
   }
 
   @Provides

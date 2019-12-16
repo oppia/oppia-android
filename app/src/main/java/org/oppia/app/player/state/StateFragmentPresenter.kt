@@ -42,6 +42,7 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -110,6 +111,7 @@ class StateFragmentPresenter @Inject constructor(
    * configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
+  private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularDialogController.getCellularDataPreference()
@@ -485,7 +487,7 @@ class StateFragmentPresenter @Inject constructor(
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver
+      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerHandler
     )
   }
 
@@ -567,7 +569,7 @@ class StateFragmentPresenter @Inject constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean
   ) {
-    val stateNavigationButtonViewModel = StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
+    stateNavigationButtonViewModel = StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
     stateNavigationButtonViewModel.updatePreviousButton(isEnabled = hasPreviousState)
 
     // Set continuation button.
@@ -607,9 +609,14 @@ class StateFragmentPresenter @Inject constructor(
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
 
-   fun onAnswerRealTimeError(
+  fun onAnswerRealTimeError(
     errorMessage: ObservableField<String>,
-    pendingAnswerError: String?) {
-errorMessage.set(pendingAnswerError)
+    pendingAnswerError: String?
+  ) {
+    if (pendingAnswerError != null)
+      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
+    else
+      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
+    errorMessage.set(pendingAnswerError)
   }
 }
