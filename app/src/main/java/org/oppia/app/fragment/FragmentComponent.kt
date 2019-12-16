@@ -11,12 +11,10 @@ import org.oppia.app.mydownloads.UpdatesTabFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
-import org.oppia.app.settings.profile.ProfileEditFragment
-import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -53,8 +51,6 @@ interface FragmentComponent {
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
-  fun inject(profileEditFragment: ProfileEditFragment)
-  fun inject(profileListFragment: ProfileListFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(stateFragment: StateFragment)

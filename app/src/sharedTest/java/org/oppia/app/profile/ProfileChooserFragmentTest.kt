@@ -35,6 +35,7 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -49,6 +50,7 @@ import javax.inject.Singleton
 class ProfileChooserFragmentTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var context: Context
 
   @Before
@@ -56,7 +58,6 @@ class ProfileChooserFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -73,6 +74,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
+    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
@@ -88,6 +90,7 @@ class ProfileChooserFragmentTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
+    profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(8)
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
@@ -115,6 +118,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
+    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
@@ -123,9 +127,19 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity() {
+    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 2)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
+    profileManagementController.addProfile("Sean", "", null, true, -10710042, true)
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
+      intended(hasComponent(AdminPinActivity::class.java.name))
     }
   }
 

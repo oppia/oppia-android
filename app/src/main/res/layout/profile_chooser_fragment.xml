@@ -12,9 +12,9 @@
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/profileChooserBackground"
     android:overScrollMode="never"
-    android:scrollbars="none"
-    android:background="@color/profileChooserBackground">
+    android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/profile_chooser_container"
@@ -26,8 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginEnd="36dp"
         android:layout_marginTop="60dp"
+        android:layout_marginEnd="36dp"
         android:fontFamily="sans-serif"
         android:text="@string/profile_chooser_select"
         android:textColor="@color/white"

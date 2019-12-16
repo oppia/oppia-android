@@ -38,13 +38,22 @@
       android:name=".profile.AdminAuthActivity"
       android:screenOrientation="portrait" />
     <activity
+      android:name=".profile.AdminPinActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".settings.profile.ProfileEditActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />

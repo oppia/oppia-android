@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.app.settings.profile
 
 import android.app.Application
 import android.content.Context
@@ -22,12 +22,13 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -39,15 +40,17 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-class AdminAuthActivityTest {
+class ProfileRenameActivityTest {
 
   @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -56,40 +59,57 @@ class AdminAuthActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAdminAuthActivityTest_TestApplicationComponent.builder()
+    DaggerProfileRenameActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
-      onView(withId(R.id.submit_button)).perform(click())
-      intended(hasComponent(AddProfileActivity::class.java.name))
+  fun testProfileRenameActivity_inputNewName_clickSave_checkNameIsSaved() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
     }
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
-      onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("4"))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+  fun testProfileRenameActivity_inputNotUniqueName_clickSave_checkNameNotUniqueError() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
     }
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
-      onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("4"))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+  fun testProfileRenameActivity_inputNotUniqueName_clickSave_inputName_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText(context.getString(R.string.add_profile_error_name_only_letters))))
+    }
+  }
+
+  @Test
+  fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
     }
   }
 
@@ -152,6 +172,6 @@ class AdminAuthActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(adminAuthActivityTest: AdminAuthActivityTest)
+    fun inject(profileRenameActivity: ProfileRenameActivityTest)
   }
 }
