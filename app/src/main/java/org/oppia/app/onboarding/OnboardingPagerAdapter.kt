@@ -11,7 +11,7 @@ import org.oppia.app.databinding.OnboardingSlideBinding
 class OnboardingPagerAdapter(val context: Context, val index: Int) : PagerAdapter() {
   private lateinit var binding: OnboardingSlideBinding
 
-  private lateinit var onboardingViewModel: OnboardingViewModel
+  private lateinit var onboardingSlideViewModel: OnboardingSlideViewModel
   private lateinit var container: ViewGroup
 
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -26,8 +26,8 @@ class OnboardingPagerAdapter(val context: Context, val index: Int) : PagerAdapte
     if (container.childCount > 0) {
       container.removeView(binding.root)
     }
-    onboardingViewModel = OnboardingViewModel(context, index)
-    binding.viewModel = onboardingViewModel
+    onboardingSlideViewModel = OnboardingSlideViewModel(context, index)
+    binding.viewModel = onboardingSlideViewModel
     container.addView(binding.root)
   }
 
