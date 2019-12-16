@@ -1,5 +1,7 @@
 package org.oppia.app.profile
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.activity.InjectableAppCompatActivity
@@ -15,5 +17,12 @@ class ProfileActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     profileActivityPresenter.handleOnCreate()
+  }
+
+  companion object {
+    /** Returns a new [Intent] to route to [ProfileActivity]. */
+    fun createProfileActivityIntent(context: Context): Intent {
+      return Intent(context, ProfileActivity::class.java)
+    }
   }
 }

@@ -3,6 +3,7 @@ package org.oppia.app.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.onboarding_fragment.view.*
@@ -14,9 +15,12 @@ import javax.inject.Inject
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
 class OnboardingFragmentPresenter @Inject constructor(
+  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
 ) {
+
+  private val routeToProfileListener = activity as RouteToProfileListener
   private lateinit var binding: OnboardingFragmentBinding
   private lateinit var slidesViewPager: ViewPager
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -24,8 +28,11 @@ class OnboardingFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
+    binding.let {
+      it.presenter = this
+      it.viewModel = getOnboardingViewModel()
+    }
     slidesViewPager = binding.root.onboarding_slide_view_pager as ViewPager
-    binding.viewModel = getOnboardingViewModel()
     setUpViewPager(slidesViewPager, /* slideNumber= */ 0)
     return binding.root
   }
@@ -46,6 +53,10 @@ class OnboardingFragmentPresenter @Inject constructor(
         customPagerAdapter.slideChanged(position)
       }
     })
+  }
+
+  fun clickOnGetStarted() {
+    routeToProfileListener.routeToProfile()
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {

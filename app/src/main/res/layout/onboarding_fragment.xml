@@ -7,6 +7,10 @@
     <import type="android.view.View" />
 
     <variable
+      name="presenter"
+      type="org.oppia.app.onboarding.OnboardingFragmentPresenter" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.onboarding.OnboardingViewModel" />
   </data>
@@ -48,6 +52,7 @@
         android:minHeight="48dp"
         android:text="@string/get_started"
         android:textColor="@color/white"
+        android:onClick="@{(v) -> presenter.clickOnGetStarted()}"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
