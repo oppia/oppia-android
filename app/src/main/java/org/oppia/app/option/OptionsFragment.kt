@@ -9,12 +9,10 @@ import androidx.preference.PreferenceManager
 
 class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
 
-  private lateinit var optionSelectorListener: OptionSelectorListener
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
 
-    optionSelectorListener = context as OptionSelectorListener
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
@@ -55,14 +53,14 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     }
   }
 
-  private fun bindPreferenceSummaryToValue(preference: Preference) {
+  private fun bindPreferenceSummaryToValue(typeOfValue: String, preference: Preference) {
     preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
 
     sBindPreferenceSummaryToValueListener.onPreferenceChange(
       preference,
       PreferenceManager
         .getDefaultSharedPreferences(preference.context)
-        .getString(preference.key, "")
+        .getString(preference.key, typeOfValue)
     )
   }
 
@@ -83,16 +81,16 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     }
 
   override fun storyTextSizeSelected(textSize: String, pref_key: String) {
-    bindPreferenceSummaryToValue(findPreference(getString(R.string.key_story_text_size)))
+    bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
   }
 
   override fun appLanguageSelected(appLanguage: String, pref_key: String) {
     Log.d("interface","=="+appLanguage)
-    bindPreferenceSummaryToValue(findPreference(getString(R.string.key_app_language)))
+    bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
   }
 
   override fun audioLanguageSelected(audioLanguage: String, pref_key: String) {
-    bindPreferenceSummaryToValue(findPreference(getString(R.string.key_default_audio)))
+    bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
 
   }
 }
