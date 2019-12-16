@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.HelpFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [HelpFragment]. */
