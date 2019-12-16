@@ -20,6 +20,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
 ) {
 
+  private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
   private val routeToProfileListener = activity as RouteToProfileListener
   private lateinit var binding: OnboardingFragmentBinding
   private lateinit var slidesViewPager: ViewPager
@@ -38,8 +39,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, slideNumber: Int) {
-    val customPagerAdapter = OnboardingPagerAdapter(fragment.requireContext(), slideNumber)
-    viewPager.adapter = customPagerAdapter
+    onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext(), slideNumber)
+    viewPager.adapter = onboardingPagerAdapter
 
     viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
@@ -50,13 +51,17 @@ class OnboardingFragmentPresenter @Inject constructor(
 
       override fun onPageSelected(position: Int) {
         getOnboardingViewModel().slideChanged(position)
-        customPagerAdapter.slideChanged(position)
+        onboardingPagerAdapter.slideChanged(position)
       }
     })
   }
 
   fun clickOnGetStarted() {
     routeToProfileListener.routeToProfile()
+  }
+  fun clickOnSkip() {
+    getOnboardingViewModel().slideChanged(3)
+    onboardingPagerAdapter.slideChanged(3)
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
