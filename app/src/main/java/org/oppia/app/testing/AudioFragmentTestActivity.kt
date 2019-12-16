@@ -1,4 +1,4 @@
-package org.oppia.app.player.audio.testing
+package org.oppia.app.testing
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity

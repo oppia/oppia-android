@@ -14,7 +14,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileInputViewBinding
 
-/** Custom view that is used for name or pin input with error messages */
+/** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -32,6 +32,7 @@ class ProfileInputView @JvmOverloads constructor(
     }
   }
 
+  private var label: TextView
   private var errorText: TextView
   private var input: EditText
 
@@ -43,6 +44,7 @@ class ProfileInputView @JvmOverloads constructor(
     )
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
     binding.labelText.text = attributes.getString(R.styleable.ProfileInputView_label)
+    label = binding.labelText
     input = binding.input
     errorText = binding.errorText
     orientation = VERTICAL
@@ -72,5 +74,9 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
+  }
+
+  fun setLabel(labelText: String) {
+    label.text = labelText
   }
 }

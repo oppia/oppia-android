@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.app">
-  <!-- TODO(#56): Reenable landscape support. -->
+
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
+
+  <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -15,10 +18,10 @@
       android:name=".home.continueplaying.ContinuePlayingActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity
       android:name=".home.HomeActivity"
       android:screenOrientation="portrait" />
-    <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
     <activity
       android:name=".option.OptionActivity"
       android:screenOrientation="portrait"/>
@@ -36,12 +39,15 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.AddProfileActivity"
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.AdminAuthActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".profile.PinPasswordActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.ProfileActivity"
@@ -85,6 +91,7 @@
     <activity
       android:name=".testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"

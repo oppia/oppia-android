@@ -110,12 +110,14 @@ class ProfileTestHelperTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() = runBlockingTest(coroutineContext) {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
     profileManagementController.getProfiles().observeForever(mockProfilesObserver)
     advanceUntilIdle()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow()
     assertThat(profiles[0].name).isEqualTo("Sean")
     assertThat(profiles[0].isAdmin).isTrue()

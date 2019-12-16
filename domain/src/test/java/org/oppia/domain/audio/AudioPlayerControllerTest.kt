@@ -209,12 +209,12 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokeCompletionListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.allValues.size).isEqualTo(6)
-    assertThat(audioPlayerResultCaptor.allValues[1].isPending()).isTrue()
-    assertThat(audioPlayerResultCaptor.allValues[2].getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
-    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues.size).isEqualTo(7)
+    assertThat(audioPlayerResultCaptor.allValues[2].isPending()).isTrue()
+    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
     assertThat(audioPlayerResultCaptor.allValues[4].getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
-    assertThat(audioPlayerResultCaptor.allValues[5].getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.allValues[5].getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.allValues[6].getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
   }
 
   @Test
@@ -349,14 +349,17 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  fun testController_alreadyInitialized_initializePlayer_fails() {
-    arrangeMediaPlayer()
+  @ExperimentalCoroutinesApi
+  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure()
+      = runBlockingTest(coroutineContext) {
+    audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
+    audioPlayerController.changeDataSource(TEST_URL)
 
-    val exception = assertThrows(IllegalStateException::class) {
-      audioPlayerController.initializeMediaPlayer()
-    }
+    shadowMediaPlayer.invokeErrorListener(/* what= */ 0, /* extra= */ 0)
+    shadowMediaPlayer.invokePreparedListener()
 
-    assertThat(exception).hasMessageThat().contains("Media player has already been initialized")
+    verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
+    assertThat(audioPlayerResultCaptor.value.isFailure()).isTrue()
   }
 
   @Test

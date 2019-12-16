@@ -1,6 +1,8 @@
 package org.oppia.domain.profile
 
+import androidx.lifecycle.LiveData
 import org.oppia.app.model.ProfileId
+import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 /** This helper allows tests to easily create new profiles and switch between them. */
@@ -8,7 +10,7 @@ class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) {
   /** Creates one admin profile and one user profile. Logs in to admin profile. */
-  fun initializeProfiles() {
+  fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
       "Sean",
       "12345",
@@ -23,7 +25,7 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = false,
       isAdmin = false
     )
-    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build()).observeForever {}
+    return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
 
   /** Create [numProfiles] number of user profiles. */
