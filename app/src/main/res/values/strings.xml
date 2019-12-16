@@ -148,6 +148,7 @@
   <string name="slide_3_title">Have fun!</string>
   <string name="slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
   <string name="skip">Skip</string>
+  <string name="get_started">Get Started</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your \nAdministrator PIN</string>
@@ -204,5 +205,4 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
-  <string name="get_started">Get Started</string>
 </resources>

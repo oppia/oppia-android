@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** [ViewModel] for slide in onboarding flow. */
+/** [ViewModel] for [OnboardingFragment]. */
 class OnboardingViewModel @Inject constructor() : ObservableViewModel() {
   val slideNumber = ObservableField<Int>(0)
 

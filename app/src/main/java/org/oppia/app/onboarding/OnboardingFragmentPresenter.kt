@@ -27,7 +27,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     binding = OnboardingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
-
     binding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
@@ -41,7 +40,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun setUpViewPager(viewPager: ViewPager) {
     onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
     viewPager.adapter = onboardingPagerAdapter
-
     viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
       }
