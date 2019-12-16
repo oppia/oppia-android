@@ -8,27 +8,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.app.databinding.OnboardingSlideBinding
 
-class OnboardingPagerAdapter(val context: Context, val index: Int) : PagerAdapter() {
-  private lateinit var binding: OnboardingSlideBinding
-
-  private lateinit var onboardingSlideViewModel: OnboardingSlideViewModel
-  private lateinit var container: ViewGroup
-
+/** Adapter to control the slide details in onboarding flow. */
+class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
-    this.container = container
-    binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
-
-    slideChanged(index)
-    return binding.root
-  }
-
-  fun slideChanged(index: Int) {
-    if (container.childCount > 0) {
-      container.removeView(binding.root)
-    }
-    onboardingSlideViewModel = OnboardingSlideViewModel(context, index)
+    val binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
+    val onboardingSlideViewModel = OnboardingSlideViewModel(context, position)
     binding.viewModel = onboardingSlideViewModel
     container.addView(binding.root)
+    return binding.root
   }
 
   override fun getCount(): Int {
