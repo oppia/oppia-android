@@ -15,11 +15,12 @@
     android:orientation="vertical">
 
     <ImageView
-      android:id="@+id/slide_1_image_view"
+      android:id="@+id/slide_image_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:contentDescription="@{viewModel.title}"
       android:src="@{viewModel.slideImage}"
+      android:tag="@{viewModel.slideImage}"
       app:layout_constraintDimensionRatio="V,4:4"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -36,9 +37,9 @@
       android:text="@{viewModel.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
-      app:layout_constraintTop_toBottomOf="@+id/slide_1_image_view"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/slide_image_view" />
 
     <TextView
       android:id="@+id/slide_description_text_view"
@@ -52,9 +53,9 @@
       android:text="@{viewModel.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      app:layout_constraintTop_toBottomOf="@+id/slide_title_text_view"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/slide_title_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
