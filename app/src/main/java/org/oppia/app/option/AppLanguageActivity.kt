@@ -10,6 +10,7 @@ private const val PREFERENCE_KEY ="PREFERENCE_KEY"
 
 /** The activity to change the language of the app. */
 class AppLanguageActivity : InjectableAppCompatActivity() {
+  var pref_summary_value: String = ""
   @Inject
   lateinit var appLanguageActivityPresenter: AppLanguageActivityPresenter
   private  var  pref_key: String = ""
@@ -17,17 +18,20 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     pref_key = intent.getStringExtra(PREFERENCE_KEY)
-    appLanguageActivityPresenter.handleOnCreate(pref_key)
+    pref_summary_value = intent.getStringExtra(PREFERENCE_SUMMARY_VALUE)
+    appLanguageActivityPresenter.handleOnCreate(pref_key,pref_summary_value)
   }
 
   companion object {
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
     fun createAppLanguageActivityIntent(
       context: Context,
-      pref_key: String
+      pref_key: String,
+      summaryValue: String
     ): Intent {
       val intent = Intent(context, AppLanguageActivity::class.java)
       intent.putExtra(PREFERENCE_KEY, pref_key)
+      intent.putExtra(PREFERENCE_SUMMARY_VALUE,summaryValue)
       return intent
     }
   }

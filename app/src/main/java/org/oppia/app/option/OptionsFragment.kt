@@ -1,14 +1,13 @@
 package org.oppia.app.option
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import org.oppia.app.R
 import androidx.preference.PreferenceManager
+import org.oppia.app.R
 
-class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
-
+class OptionsFragment : PreferenceFragmentCompat() {
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
@@ -16,11 +15,11 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
-        startActivity(
+        startActivityForResult(
           StoryTextSizeActivity.createStoryTextSizeActivityIntent(
             requireContext(),
-            getString(R.string.key_story_text_size)
-          )
+            textSizePref.summary.toString()
+          ), 1
         )
         return true
       }
@@ -29,11 +28,12 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     val appLanguagePref = findPreference<Preference>(getString(R.string.key_app_language))
     appLanguagePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
-        startActivity(
+        startActivityForResult(
           AppLanguageActivity.createAppLanguageActivityIntent(
             requireContext(),
-            getString(R.string.key_app_language)
-          )
+            getString(R.string.key_app_language),
+            appLanguagePref.summary.toString()
+          ), 2
         )
         return true
       }
@@ -42,11 +42,12 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     val defaultAudioPref = findPreference<Preference>(getString(R.string.key_default_audio))
     defaultAudioPref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
-        startActivity(
+        startActivityForResult(
           DefaultAudioActivity.createDefaultAudioActivityIntent(
             requireContext(),
-            getString(R.string.key_default_audio)
-          )
+            getString(R.string.key_default_audio),
+            defaultAudioPref.summary.toString()
+          ),3
         )
         return true
       }
@@ -54,9 +55,9 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
   }
 
   private fun bindPreferenceSummaryToValue(typeOfValue: String, preference: Preference) {
-    preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
+    preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
 
-    sBindPreferenceSummaryToValueListener.onPreferenceChange(
+    bindPreferenceSummaryToValueListener.onPreferenceChange(
       preference,
       PreferenceManager
         .getDefaultSharedPreferences(preference.context)
@@ -64,7 +65,7 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
     )
   }
 
-  private val sBindPreferenceSummaryToValueListener =
+  private val bindPreferenceSummaryToValueListener =
     Preference.OnPreferenceChangeListener { preference, newValue ->
       val stringValue = newValue.toString()
       if (preference.key == getString(R.string.key_story_text_size)) {
@@ -80,17 +81,18 @@ class OptionsFragment : PreferenceFragmentCompat(), OptionSelectorListener {
       true
     }
 
-  override fun storyTextSizeSelected(textSize: String, pref_key: String) {
-    bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    // Check which request we're responding to
+    if (requestCode == 1) {
+        val textSize = data!!.getStringExtra("MESSAGE") as String
+        bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
+    }else if (requestCode == 2){
+        val appLanguage = data!!.getStringExtra("MESSAGE") as String
+        bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
+    }else {
+        val audioLanguage = data!!.getStringExtra("MESSAGE") as String
+        bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
+    }
   }
 
-  override fun appLanguageSelected(appLanguage: String, pref_key: String) {
-    Log.d("interface","=="+appLanguage)
-    bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
-  }
-
-  override fun audioLanguageSelected(audioLanguage: String, pref_key: String) {
-    bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
-
-  }
 }
