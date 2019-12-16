@@ -1,11 +1,7 @@
 package org.oppia.app.player.state
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Handler
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +9,11 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -46,8 +42,6 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.CellularDataDialogFragment
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -93,7 +87,7 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener, InteractionAnswerHandler {
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
   private var showCellularDataDialog = true
   private var useCellularData = false
   private lateinit var explorationId: String
@@ -613,6 +607,9 @@ class StateFragmentPresenter @Inject constructor(
     inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
   }
 
-  override fun onAnswerRealTimeError(error: AnswerErrorCategory) {
+   fun onAnswerRealTimeError(
+    errorMessage: ObservableField<String>,
+    pendingAnswerError: String?) {
+errorMessage.set(pendingAnswerError)
   }
 }

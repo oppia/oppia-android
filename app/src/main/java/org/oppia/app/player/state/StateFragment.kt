@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ObservableField
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.CellularDataInterface
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,InteractionAnswerHandler {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -55,4 +57,9 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+  override fun onAnswerRealTimeError(
+    errorMessage: ObservableField<String>,
+    pendingAnswerError: String?) {
+    stateFragmentPresenter.onAnswerRealTimeError(errorMessage,pendingAnswerError)
+  }
 }

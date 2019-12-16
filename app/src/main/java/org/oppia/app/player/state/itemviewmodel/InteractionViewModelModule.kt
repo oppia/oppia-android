@@ -5,6 +5,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import org.oppia.app.model.Interaction
+import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import kotlin.reflect.KFunction4
 
 /**
  * Module to provide interaction view model-specific dependencies for intreactions that should be explicitly displayed
@@ -18,7 +22,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, interactionAnswerReceiver ->
+    return { _, _, interactionAnswerReceiver, _ ->
       ContinueInteractionViewModel(interactionAnswerReceiver)
     }
   }
@@ -26,7 +30,7 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
+  fun provideMultipleChoiceInputViewModelFactory(): KFunction4<String, Interaction, InteractionAnswerReceiver, StateFragment, SelectionInteractionViewModel> {
     return ::SelectionInteractionViewModel
   }
 
@@ -41,20 +45,20 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _ -> FractionInteractionViewModel(interaction, context) }
+    return { _, interaction, _, fragment -> FractionInteractionViewModel(interaction, context, fragment) }
   }
 
   @Provides
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _ -> NumericInputViewModel() }
+    return { _, _, _, _ -> NumericInputViewModel() }
   }
 
   @Provides
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _ -> TextInputViewModel(interaction) }
+    return { _, interaction, _, _ -> TextInputViewModel(interaction) }
   }
 }

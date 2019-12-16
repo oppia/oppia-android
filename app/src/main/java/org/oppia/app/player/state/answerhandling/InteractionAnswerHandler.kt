@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.answerhandling
 
+import androidx.databinding.ObservableField
 import org.oppia.app.model.UserAnswer
 
 /**
@@ -20,7 +21,7 @@ interface InteractionAnswerHandler {
    * [setPendingAnswerError] in order to return errors at the right time.
    */
   fun isExplicitErrorCheckRequired(): Boolean = false
-  fun onAnswerRealTimeError(category: AnswerErrorCategory){
+  fun onAnswerRealTimeError(errorMessage: ObservableField<String>, pendingAnswerError: String?){
   }
 
   /**

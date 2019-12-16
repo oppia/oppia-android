@@ -6,13 +6,14 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.SelectionItemInputType
+import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver
+  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,stateFragment: StateFragment
 ): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 

@@ -11,12 +11,13 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.parser.StringToFractionParser.FractionParsingError
+import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
-  interaction: Interaction, private val context: Context
+  interaction: Interaction, private val context: Context,fragment: StateFragment
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -77,7 +78,8 @@ class FractionInteractionViewModel(
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
         pendingAnswerError = setPendingAnswerError(AnswerErrorCategory.REAL_TIME)
-        errorMessage.set(pendingAnswerError)
+//        errorMessage.set(pendingAnswerError)
+        (context as InteractionAnswerHandler).onAnswerRealTimeError(errorMessage, pendingAnswerError)
       }
 
       override fun afterTextChanged(s: Editable) {
