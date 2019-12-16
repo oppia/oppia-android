@@ -3,6 +3,7 @@ package org.oppia.app.option
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.preference.Preference
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -19,7 +20,10 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to route to [StoryTextSizeActivity]. */
-    fun createStoryTextSizeActivityIntent(context: Context): Intent {
+    fun createStoryTextSizeActivityIntent(
+      context: Context,
+      string: String
+    ): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
       return intent
     }

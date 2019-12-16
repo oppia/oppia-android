@@ -10,11 +10,15 @@ import org.oppia.app.databinding.LanguageItemsBinding
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind languages to [RecyclerView] inside [AppLanguageActivityPresenter] and [DefaultAudioActivityPresenter]. */
-class LanguageSelectionAdapter :
+class LanguageSelectionAdapter(
+  private val pref_key: String,
+  private val optionSelectorListener: OptionSelectorListener
+) :
   RecyclerView.Adapter<LanguageSelectionAdapter.languageViewHolder>() {
 
-  private var languageList: List<String> = ArrayList()
+   private var languageList: List<String> = ArrayList()
   private var selectedPosition = -1
+
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): languageViewHolder {
     val languageListItemBinding = DataBindingUtil.inflate<LanguageItemsBinding>(
       LayoutInflater.from(parent.context),
@@ -40,15 +44,15 @@ class LanguageSelectionAdapter :
   inner class languageViewHolder(val binding: LanguageItemsBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(language: String, position: Int) {
       binding.setVariable(BR.languageString, language)
-
-        if (selectedPosition == position)
-          binding.languageRadioButton.setChecked(true)
-        else
-          binding.languageRadioButton.setChecked(false)
-
       binding.radioContainer.setOnClickListener {
-        selectedPosition = getAdapterPosition()
-        notifyDataSetChanged()
+        if(pref_key.equals(binding.radioContainer.context.getString(R.string.key_app_language))) {
+          optionSelectorListener.appLanguageSelected(language, pref_key)
+          (binding.radioContainer.context as AppLanguageActivity).finish()
+        }else{
+          optionSelectorListener.audioLanguageSelected(language, pref_key)
+          (binding.radioContainer.context as DefaultAudioActivity).finish()
+        }
+
       }
     }
   }

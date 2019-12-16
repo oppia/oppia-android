@@ -13,12 +13,12 @@ class OptionActivityPresenter @Inject constructor(private val activity: AppCompa
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.option_fragment_placeholder,
-        OptionFragment()
+        OptionsFragment()
       ).commitNow()
     }
   }
 
-  private fun getOptionFragment(): OptionFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.option_fragment_placeholder) as OptionFragment?
+  private fun getOptionFragment(): OptionsFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.option_fragment_placeholder) as OptionsFragment?
   }
 }

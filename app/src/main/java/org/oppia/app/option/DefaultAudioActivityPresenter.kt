@@ -9,12 +9,24 @@ import javax.inject.Inject
 
 /** The presenter for [DefaultAudioActivity]. */
 @ActivityScope
-class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity):OptionSelectorListener {
+  override fun storyTextSizeSelected(textSize: String, pref_key: String) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun appLanguageSelected(appLanguage: String, pref_key: String) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun audioLanguageSelected(audioLanguage: String, pref_key: String) {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
-  fun handleOnCreate() {
+  fun handleOnCreate(pref_key: String) {
     val binding = DataBindingUtil.setContentView<DefaultAudioActivityBinding>(activity, R.layout.default_audio_activity)
 
-    languageSelectionAdapter = LanguageSelectionAdapter()
+    languageSelectionAdapter = LanguageSelectionAdapter(pref_key, this)
     binding.audioLanguageRecyclerView.apply {
       adapter = languageSelectionAdapter
     }
