@@ -11,15 +11,14 @@ const val PREFERENCE_SUMMARY_VALUE = "PREFERENCE_SUMMARY_VALUE"
 /** The activity to change the Text size of the Story content in the app. */
 class StoryTextSizeActivity : InjectableAppCompatActivity() {
 
-  var pref_summary_value: String = ""
-  @Inject
-  lateinit var storyTextSizeActivityPresenter: StoryTextSizeActivityPresenter
+  @Inject lateinit var storyTextSizeActivityPresenter: StoryTextSizeActivityPresenter
+  private lateinit var prefSummaryValue: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    pref_summary_value = intent.getStringExtra(PREFERENCE_SUMMARY_VALUE)
-    storyTextSizeActivityPresenter.handleOnCreate(pref_summary_value)
+    prefSummaryValue = intent.getStringExtra(PREFERENCE_SUMMARY_VALUE)
+    storyTextSizeActivityPresenter.handleOnCreate(prefSummaryValue)
   }
 
   companion object {
@@ -29,7 +28,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
       summaryValue: String
     ): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
-      intent.putExtra(PREFERENCE_SUMMARY_VALUE,summaryValue)
+      intent.putExtra(PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
   }

@@ -34,12 +34,12 @@ class LanguageSelectionAdapter(private val prefKey: String) :
     return languageList.size
   }
 
-  fun setlanguageList(languageList: List<String>) {
+  fun setLanguageList(languageList: List<String>) {
     this.languageList = languageList
     notifyDataSetChanged()
   }
 
-  fun setDefaultlanguageSelected(prefSummaryValue: String?) {
+  fun setDefaultLanguageSelected(prefSummaryValue: String?) {
     this.prefSummaryValue = prefSummaryValue
   }
 
@@ -50,16 +50,14 @@ class LanguageSelectionAdapter(private val prefKey: String) :
       binding.languageRadioButton.isChecked = position == indexOfPreviouslySelectedValue
 
       binding.radioContainer.setOnClickListener {
-        if (prefKey.equals(binding.radioContainer.context.getString(R.string.key_app_language))) {
-          val message = language
+        if (prefKey == binding.radioContainer.context.getString(R.string.key_app_language)) {
           val intent = Intent()
-          intent.putExtra("MESSAGE", message)
+          intent.putExtra("MESSAGE", language)
           (binding.radioContainer.context as AppLanguageActivity).setResult(2, intent)
           (binding.radioContainer.context as AppLanguageActivity).finish()//finishing activity
         } else {
-          val message = language
           val intent = Intent()
-          intent.putExtra("MESSAGE", message)
+          intent.putExtra("MESSAGE", language)
           (binding.radioContainer.context as DefaultAudioActivity).setResult(3, intent)
           (binding.radioContainer.context as DefaultAudioActivity).finish()//finishing activity
         }

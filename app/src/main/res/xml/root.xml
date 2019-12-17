@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-  xmlns:app="http://schemas.android.com/apk/res-auto">
-  <Preference
-    app:title="basic_preferences"
-    app:summary="Sample preferences using basic attributes"
-    app:fragment="org.oppia.app.option.BasicPreferencesFragment"/>
-</PreferenceScreen>

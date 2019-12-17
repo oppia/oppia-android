@@ -12,8 +12,9 @@ import javax.inject.Inject
 @ActivityScope
 class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
-  private var prefSummaryValue: String? = null
+  private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
+
   fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
     val binding = DataBindingUtil.setContentView<DefaultAudioActivityBinding>(activity, R.layout.default_audio_activity)
 
@@ -22,12 +23,13 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     binding.audioLanguageRecyclerView.apply {
       adapter = languageSelectionAdapter
     }
+
     binding.toolbar.setNavigationOnClickListener {
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra("MESSAGE", message)
       (activity as DefaultAudioActivity).setResult(3, intent)
-      (activity as DefaultAudioActivity).finish()//finishing activity
+      activity.finish()
     }
     createAdapter()
   }
@@ -39,8 +41,8 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     languageList.add("French")
     languageList.add("Hindi")
     languageList.add("Chinese")
-    languageSelectionAdapter.setlanguageList(languageList)
+    languageSelectionAdapter.setLanguageList(languageList)
 
-    languageSelectionAdapter.setDefaultlanguageSelected(prefSummaryValue = prefSummaryValue)
+    languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
 }

@@ -47,7 +47,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
             requireContext(),
             getString(R.string.key_default_audio),
             defaultAudioPref.summary.toString()
-          ),3
+          ), 3
         )
         return true
       }
@@ -68,31 +68,32 @@ class OptionsFragment : PreferenceFragmentCompat() {
   private val bindPreferenceSummaryToValueListener =
     Preference.OnPreferenceChangeListener { preference, newValue ->
       val stringValue = newValue.toString()
-      if (preference.key == getString(R.string.key_story_text_size)) {
-        // update the changed Text size  to summary filed
-        preference.summary = stringValue
-      } else if (preference.key == getString(R.string.key_app_language)) {
-        // update the changed language  to summary filed
-        preference.summary = stringValue
-      } else if (preference.key == getString(R.string.key_default_audio)) {
-        // update the changed audio language  to summary filed
-        preference.summary = stringValue
+      when {
+        preference.key == getString(R.string.key_story_text_size) -> // update the changed Text size  to summary filed
+          preference.summary = stringValue
+        preference.key == getString(R.string.key_app_language) -> // update the changed language  to summary filed
+          preference.summary = stringValue
+        preference.key == getString(R.string.key_default_audio) -> // update the changed audio language  to summary filed
+          preference.summary = stringValue
       }
       true
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     // Check which request we're responding to
-    if (requestCode == 1) {
+    when (requestCode) {
+      1 -> {
         val textSize = data!!.getStringExtra("MESSAGE") as String
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
-    }else if (requestCode == 2){
+      }
+      2 -> {
         val appLanguage = data!!.getStringExtra("MESSAGE") as String
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
-    }else {
+      }
+      else -> {
         val audioLanguage = data!!.getStringExtra("MESSAGE") as String
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
+      }
     }
   }
-
 }

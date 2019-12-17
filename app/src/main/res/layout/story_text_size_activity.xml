@@ -44,14 +44,14 @@
         android:layout_marginTop="28dp"
         android:background="@color/white"
         android:orientation="vertical">
+
         <TextView
           android:id="@+id/preview_textview"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="80dp"
-          android:layout_marginBottom="80dp"
+          android:layout_height="200dp"
+          android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="Story text will look like this"/>
+          android:text="Story text will look like this" />
         <View
           android:id="@+id/divider_view"
           android:layout_width="match_parent"

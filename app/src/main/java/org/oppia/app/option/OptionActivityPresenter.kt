@@ -1,12 +1,11 @@
 package org.oppia.app.option
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The presenter for [HomeActivity]. */
+/** The presenter for [OptionActivity]. */
 @ActivityScope
 class OptionActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {

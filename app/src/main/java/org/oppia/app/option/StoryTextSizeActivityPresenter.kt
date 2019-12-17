@@ -14,7 +14,7 @@ import android.widget.SeekBar
 class StoryTextSizeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  var fontSize: String = "Small"
+  private var fontSize: String = "Small"
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
@@ -26,30 +26,55 @@ class StoryTextSizeActivityPresenter @Inject constructor(
       val intent = Intent()
       intent.putExtra("MESSAGE", fontSize)
       activity.setResult(1, intent)
-      activity.finish()//finishing activity
+      activity.finish()
     }
-    when {
-      prefSummaryValue.equals("Small") -> binding.seekBar.progress = 0
-      prefSummaryValue.equals("Medium") -> binding.seekBar.progress = 5
-      prefSummaryValue.equals("Large") -> binding.seekBar.progress = 10
-      prefSummaryValue.equals("Extra Large") -> binding.seekBar.progress = 15
+
+    when (prefSummaryValue) {
+      "Small" -> {
+        binding.seekBar.progress = 0
+        binding.previewTextview.textSize = 16f
+      }
+      "Medium" -> {
+        binding.seekBar.progress = 5
+        binding.previewTextview.textSize = 18f
+      }
+      "Large" -> {
+        binding.seekBar.progress = 10
+        binding.previewTextview.textSize = 20f
+      }
+      "Extra Large" -> {
+        binding.seekBar.progress = 15
+        binding.previewTextview.textSize = 22f
+      }
     }
 
     binding.seekBar.max = 15
 
     binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-
       override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        var progress = progress
-        progress = progress / 5
-        progress = progress * 5
-        when (progress) {
-          0 -> fontSize = "Small"
-          5 -> fontSize = "Medium"
-          10 -> fontSize = "Large"
-          else -> fontSize = "Extra Large"
+        var progressValue = progress
+        progressValue /= 5
+        progressValue *= 5
+
+        when (progressValue) {
+          0 -> {
+            fontSize = "Small"
+            binding.previewTextview.textSize = 16f
+          }
+          5 -> {
+            fontSize = "Medium"
+            binding.previewTextview.textSize = 18f
+          }
+          10 -> {
+            fontSize = "Large"
+            binding.previewTextview.textSize = 20f
+          }
+          else -> {
+            fontSize = "Extra Large"
+            binding.previewTextview.textSize = 22f
+          }
         }
-        seekBar.progress = progress
+        seekBar.progress = progressValue
       }
 
       override fun onStartTrackingTouch(seekBar: SeekBar) {

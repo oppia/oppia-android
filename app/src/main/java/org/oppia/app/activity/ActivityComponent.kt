@@ -49,8 +49,8 @@ interface ActivityComponent {
 
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
-  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(appLanguageActivity: AppLanguageActivity)
+  fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
