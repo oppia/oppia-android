@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.app.Dialog
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AlertDialog

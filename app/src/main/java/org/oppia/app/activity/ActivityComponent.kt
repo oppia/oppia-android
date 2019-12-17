@@ -6,30 +6,34 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.option.AppLanguageActivity
 import org.oppia.app.option.DefaultAudioActivity
 import org.oppia.app.option.OptionActivity
 import org.oppia.app.option.StoryTextSizeActivity
-import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
+import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.settings.profile.ProfileEditActivity
+import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
+import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
+import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
+import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.testing.ConceptCardFragmentTestActivity
-import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 
@@ -49,6 +53,7 @@ interface ActivityComponent {
 
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
+  fun inject(adminPinActivity: AdminPinActivity)
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
@@ -62,10 +67,13 @@ interface ActivityComponent {
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
+  fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(optionActivity: OptionActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(profileEditActivity: ProfileEditActivity)
+  fun inject(profileListActivity: ProfileListActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(storyActivity: StoryActivity)

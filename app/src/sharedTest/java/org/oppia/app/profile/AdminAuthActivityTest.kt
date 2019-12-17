@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -22,19 +21,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.domain.profile.ProfileTestHelper
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -71,7 +64,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
       onView(withId(R.id.submit_button)).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -80,7 +73,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(withId(R.id.submit_button)).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
@@ -92,7 +85,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345")).use {
+    ActivityScenario.launch<AdminAuthActivity>(AdminAuthActivity.createAdminAuthActivityIntent(context, "12345", -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"))
       onView(withId(R.id.submit_button)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("4"))

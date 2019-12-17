@@ -22,6 +22,18 @@ class ProfileInputView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyle) {
   companion object {
     @JvmStatic
+    @BindingAdapter("profile:label")
+    fun setLabel(profileInputView: ProfileInputView, label: String) {
+      profileInputView.label.text = label
+    }
+
+    @JvmStatic
+    @BindingAdapter("profile:inputLength")
+    fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
+      profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
+    }
+
+    @JvmStatic
     @BindingAdapter("profile:error")
     fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String) {
       if (errorMessage.isEmpty()) {

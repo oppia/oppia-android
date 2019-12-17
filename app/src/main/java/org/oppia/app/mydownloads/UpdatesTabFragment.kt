@@ -1,4 +1,4 @@
-package org.oppia.app.settings.profile
+package org.oppia.app.mydownloads
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that allows user to select a profile to edit from settings. */
-class ProfileEditFragment : InjectableFragment() {
-  @Inject lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
+/** Fragment that contains downloaded topic list that needs update. */
+class UpdatesTabFragment : InjectableFragment() {
+  @Inject lateinit var updatesTabFragmentPresenter: UpdatesTabFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class ProfileEditFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return profileEditFragmentPresenter.handleCreateView(inflater, container)
+    return updatesTabFragmentPresenter.handleCreateView(inflater, container)
   }
 }
