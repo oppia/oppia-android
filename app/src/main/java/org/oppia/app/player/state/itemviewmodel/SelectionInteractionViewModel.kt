@@ -12,8 +12,11 @@ import org.oppia.app.viewmodel.ObservableArrayList
 
 /** ViewModel for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val explorationId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver,interactionAnswerHandler: InteractionAnswerHandler
-): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
+  val explorationId: String,
+  interaction: Interaction,
+  private val interactionAnswerReceiver: InteractionAnswerReceiver,
+  interactionAnswerHandler: InteractionAnswerHandler
+) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
   private val choiceStrings: List<String> by lazy {

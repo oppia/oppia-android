@@ -15,19 +15,13 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
-  fun onAnswerRealTimeError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {
-  }
+  fun onAnswerRealTimeError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {}
 
   /**
    * Returns the flag that indicates current answer has error message or not.
    * If [setPendingAnswerError] is null then returns true else false.
    */
   fun hasPendingAnswerError(): Boolean = false
-
-//  /** Set the current answer's error messages  if not valid else return null. */
-//  fun setPendingAnswerError(category: AnswerErrorCategory): String? {
-//    return null
-//  }
 
   /** Return the current answer's error messages  if not valid else return null. */
   fun getPendingAnswerError(): String? {

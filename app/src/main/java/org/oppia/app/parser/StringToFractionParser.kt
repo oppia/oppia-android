@@ -23,7 +23,6 @@ class StringToFractionParser {
    * using [setPendingAnswerErrorOnRealTime], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
-    // No need to check for real-time errors since the following logically include them.
     val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
@@ -100,17 +99,11 @@ class StringToFractionParser {
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
   /** Enum to store the errors of [FractionInputInteractionView]. */
-  enum class FractionParsingError(@StringRes error: Int?) {
+  enum class FractionParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
     INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
     INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
     DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero);
-
-    private var error: Int?
-
-    init {
-      this.error = error
-    }
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {

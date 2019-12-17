@@ -14,7 +14,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,InteractionAnswerHandler {
+class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver, InteractionAnswerHandler {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -59,7 +59,8 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
   override fun onAnswerRealTimeError(
     errorMessage: ObservableField<String>,
-    pendingAnswerError: String?) {
-    stateFragmentPresenter.onAnswerRealTimeError(errorMessage,pendingAnswerError)
+    pendingAnswerError: String?
+  ) {
+    stateFragmentPresenter.onAnswerRealTimeError(errorMessage, pendingAnswerError)
   }
 }

@@ -9,5 +9,5 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  * pushes answers, the [Interaction] object corresponding to the interaction view, and the exploration ID.
  */
 typealias InteractionViewModelFactory = (
-  explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver, fragment: InteractionAnswerHandler
+  explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver, interactionAnswerHandler: InteractionAnswerHandler
 ) -> StateItemViewModel

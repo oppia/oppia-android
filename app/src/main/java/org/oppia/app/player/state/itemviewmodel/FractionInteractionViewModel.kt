@@ -35,7 +35,7 @@ class FractionInteractionViewModel(
   }
 
   override fun hasPendingAnswerError(): Boolean {
-    return getPendingAnswerError()==null
+    return getPendingAnswerError() == null
   }
 
   fun setPendingAnswerError(category: AnswerErrorCategory) {
