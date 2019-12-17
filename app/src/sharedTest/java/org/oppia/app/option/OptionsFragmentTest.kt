@@ -53,7 +53,6 @@ class OptionsFragmentTest {
           )
         )
       onView(withId(R.id.seekBar)).perform(clickSeekBar(5))
-//      onView(withId(R.id.toolbar)).perform(click())
     }
   }
 
