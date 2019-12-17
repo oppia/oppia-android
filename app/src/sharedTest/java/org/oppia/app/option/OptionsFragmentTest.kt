@@ -57,7 +57,7 @@ class OptionsFragmentTest {
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, object: CoordinatesProvider {
+    return GeneralClickAction(Tap.SINGLE, object : CoordinatesProvider {
       override fun calculateCoordinates(view: View?): FloatArray {
         val seekBar = view as SeekBar
         val screenPos = IntArray(2)
@@ -66,7 +66,7 @@ class OptionsFragmentTest {
 
         val percentagePos = (position.toFloat() / seekBar.max)
         val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height/2f + screenPos[1]
+        val screenY = seekBar.height / 2f + screenPos[1]
         val coordinates = FloatArray(2)
         coordinates[0] = screenX
         coordinates[1] = screenY
@@ -116,5 +116,4 @@ class OptionsFragmentTest {
         )
     }
   }
-
 }
