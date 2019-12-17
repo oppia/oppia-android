@@ -24,7 +24,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
       adapter = languageSelectionAdapter
     }
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.audioLanguageToolbar.setNavigationOnClickListener {
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra("MESSAGE", message)
