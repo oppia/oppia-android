@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 
 /**
@@ -34,7 +35,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(OnboardingActivity::class.java.name))
   }
 
   @After
