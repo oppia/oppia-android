@@ -10,6 +10,8 @@ import android.text.Spanned
 import android.text.style.LeadingMarginSpan
 import org.oppia.util.R
 
+// TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
+
 /**
  * Copy of [android.text.style.BulletSpan] from android SDK 28 with removed internal code.
  * This class helps us to customise bullet radius, gap width and offset present in rich-text.
