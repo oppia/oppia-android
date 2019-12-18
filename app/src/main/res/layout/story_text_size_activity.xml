@@ -17,7 +17,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/story_text_size_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -51,7 +51,7 @@
           android:layout_height="200dp"
           android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="Story text will look like this" />
+          android:text="@string/story_text_will_look_like_this" />
         <View
           android:id="@+id/divider_view"
           android:layout_width="match_parent"
@@ -65,21 +65,21 @@
         android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/textView"
+          android:id="@+id/story_text_size_small_textview"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="32dp"
           android:layout_marginTop="60dp"
           android:layout_marginBottom="60dp"
           android:gravity="center"
-          android:text="A"
+          android:text="@string/constant_string_for_text_size"
           android:textSize="16sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
-          android:id="@+id/seekBar"
+          android:id="@+id/story_text_size_seekBar"
           android:layout_width="match_parent"
           android:layout_height="27dp"
           android:layout_marginStart="44dp"
@@ -87,12 +87,12 @@
           android:layout_marginEnd="44dp"
           android:layout_marginBottom="8dp"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@+id/textView2"
-          app:layout_constraintStart_toEndOf="@+id/textView"
+          app:layout_constraintEnd_toStartOf="@+id/story_text_size_big_textview"
+          app:layout_constraintStart_toEndOf="@+id/story_text_size_small_textview"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          android:id="@+id/textView2"
+          android:id="@+id/story_text_size_big_textview"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="60dp"
@@ -100,7 +100,7 @@
           android:layout_marginBottom="60dp"
           android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="A"
+          android:text="@string/constant_string_for_text_size"
           android:textSize="28dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"

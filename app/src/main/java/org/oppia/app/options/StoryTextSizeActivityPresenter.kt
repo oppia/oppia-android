@@ -22,7 +22,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
     fontSize = prefSummaryValue
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.storyTextSizeToolbar.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra("MESSAGE", fontSize)
       activity.setResult(1, intent)
@@ -31,26 +31,26 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
     when (prefSummaryValue) {
       "Small" -> {
-        binding.seekBar.progress = 0
+        binding.storyTextSizeSeekBar.progress = 0
         binding.previewTextview.textSize = 16f
       }
       "Medium" -> {
-        binding.seekBar.progress = 5
+        binding.storyTextSizeSeekBar.progress = 5
         binding.previewTextview.textSize = 18f
       }
       "Large" -> {
-        binding.seekBar.progress = 10
+        binding.storyTextSizeSeekBar.progress = 10
         binding.previewTextview.textSize = 20f
       }
       "Extra Large" -> {
-        binding.seekBar.progress = 15
+        binding.storyTextSizeSeekBar.progress = 15
         binding.previewTextview.textSize = 22f
       }
     }
 
-    binding.seekBar.max = 15
+    binding.storyTextSizeSeekBar.max = 15
 
-    binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+    binding.storyTextSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         var progressValue = progress
         progressValue /= 5

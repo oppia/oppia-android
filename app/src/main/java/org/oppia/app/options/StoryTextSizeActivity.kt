@@ -23,10 +23,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to route to [StoryTextSizeActivity]. */
-    fun createStoryTextSizeActivityIntent(
-      context: Context,
-      summaryValue: String
-    ): Intent {
+    fun createStoryTextSizeActivityIntent(context: Context, summaryValue: String): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
       intent.putExtra(STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent

@@ -1,6 +1,5 @@
 package org.oppia.app.options
 
-import android.view.View
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -52,26 +51,24 @@ class OptionsFragmentTest {
             click()
           )
         )
-      onView(withId(R.id.seekBar)).perform(clickSeekBar(5))
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
     }
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, object : CoordinatesProvider {
-      override fun calculateCoordinates(view: View?): FloatArray {
-        val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
-        seekBar.getLocationInWindow(screenPos)
-        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+    return GeneralClickAction(Tap.SINGLE, CoordinatesProvider { view ->
+      val seekBar = view as SeekBar
+      val screenPos = IntArray(2)
+      seekBar.getLocationInWindow(screenPos)
+      val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
 
-        val percentagePos = (position.toFloat() / seekBar.max)
-        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height / 2f + screenPos[1]
-        val coordinates = FloatArray(2)
-        coordinates[0] = screenX
-        coordinates[1] = screenY
-        return coordinates
-      }
+      val percentagePos = (position.toFloat() / seekBar.max)
+      val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
+      val screenY = seekBar.height / 2f + screenPos[1]
+      val coordinates = FloatArray(2)
+      coordinates[0] = screenX
+      coordinates[1] = screenY
+      coordinates
     }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
   }
 
@@ -97,7 +94,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickDefaultAudioLanguange_changeDefaultAudioLanguageSuccessfully() {
+  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageSuccessfully() {
     ActivityScenario.launch(OptionActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(

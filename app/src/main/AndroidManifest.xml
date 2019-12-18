@@ -4,7 +4,6 @@
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
-
   <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".application.OppiaApplication"
@@ -27,15 +26,18 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".options.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".options.OptionActivity"
       android:screenOrientation="portrait" />
-    <activity android:name=".options.StoryTextSizeActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".options.AppLanguageActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".options.DefaultAudioActivity"
+    <activity
+      android:name=".options.StoryTextSizeActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -58,8 +60,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileEditActivity"
       android:screenOrientation="portrait" />
