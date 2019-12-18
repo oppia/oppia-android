@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -24,7 +22,6 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.story.testing.StoryFragmentTestActivity
-import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
 import org.oppia.domain.topic.TEST_STORY_ID_1
 
 /** Tests for [StoryFragment]. */
