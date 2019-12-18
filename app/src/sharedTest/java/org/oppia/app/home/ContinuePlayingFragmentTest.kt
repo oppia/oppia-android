@@ -44,7 +44,7 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
-  fun testContinuePlayingTestActivity_clickOntoolbarNavigationButton_goToPreviousScreen() {
+  fun testContinuePlayingTestActivity_clickOntoolbarNavigationButton_closeActivity() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(withId(R.id.continue_playing_toolbar)).perform(click())
     }
