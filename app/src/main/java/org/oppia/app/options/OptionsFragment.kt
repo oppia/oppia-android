@@ -19,7 +19,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
       .getDefaultSharedPreferences(requireContext())
 
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
-    textSizePref.summary = sharedPref.getString(getString(R.string.key_story_text_size), "")
+    textSizePref.summary = sharedPref.getString(getString(R.string.key_story_text_size), "Small")
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
