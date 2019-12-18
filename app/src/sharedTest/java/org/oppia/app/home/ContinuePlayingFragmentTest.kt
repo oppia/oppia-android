@@ -44,6 +44,13 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
+  fun testContinuePlayingTestActivity_clickOntoolbarNavigationButton_goToPreviousScreen() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(withId(R.id.continue_playing_toolbar)).perform(click())
+    }
+  }
+
+  @Test
   fun testContinuePlayingTestActivity_recyclerViewItem0_doesNotShowSectionDivider() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(
