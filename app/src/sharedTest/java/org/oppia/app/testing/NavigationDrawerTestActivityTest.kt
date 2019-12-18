@@ -5,7 +5,8 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.DrawerActions.close
+import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -39,16 +40,15 @@ class NavigationDrawerTestActivityTest {
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_closingOfNavigationDrawerIsVerifiedSucessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.home_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
     }
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
         allOf(
@@ -60,35 +60,31 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
         allOf(
           instanceOf(TextView::class.java),
           withParent(withId(R.id.help_activity_toolbar))
         )
-      )
-        .check(matches(withText(R.string.menu_help)))
+      ).check(matches(withText(R.string.menu_help)))
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isDisplayed())
       ).perform(click())
       onView(withId(R.id.help_activity_drawer_layout))
-
     }
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withContentDescription(R.string.drawer_open_content_description))
         .perform(click())
-      onView(withId(R.id.help_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
       onView(
         allOf(
@@ -96,38 +92,34 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.help_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_help)))
-      onView(withId(R.id.help_activity_drawer_layout)).perform(DrawerActions.open())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
     }
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
       onView(
         allOf(
           instanceOf(TextView::class.java),
           withParent(withId(R.id.help_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_help)))
-      onView(withId(R.id.help_activity_drawer_layout)).perform(DrawerActions.close())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
     }
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_home)).perform(click())
       onView(
         allOf(
