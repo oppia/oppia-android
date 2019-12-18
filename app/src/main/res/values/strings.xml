@@ -14,6 +14,9 @@
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
+  <string name="audio_dialog_offline_title">Currently Offline</string>
+  <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
+  <string name="audio_dialog_offline_positive">OK</string>
   <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
@@ -102,24 +105,32 @@
       %d Lessons
     </item>
   </plurals>
-  <!-- ProfileChooserFragment. -->
+  <!-- ProfileChooserFragment -->
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
-  <!-- AdminAuthActivity. -->
+  <!-- AdminAuthActivity -->
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
   <string name="admin_auth_pin">Administrator\'s PIN (5 digits)</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
-  <!-- AddProfileActivity. -->
+  <!-- AdminPinActivity -->
+  <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
+  <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
+  <string name="admin_pin_new_pin">New 5-Digit PIN</string>
+  <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
+  <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <string name="admin_pin_submit">Submit</string>
+  <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name (required)</string>
   <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
-  <string name="add_profile_create_btn">CREATE</string>
-  <string name="add_profile_close">CLOSE</string>
+  <string name="add_profile_create_btn">Create</string>
+  <string name="add_profile_close">Close</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="add_profile_error_name_not_unique">This name is already in use by another profile.</string>
@@ -127,4 +138,60 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <!-- PinPasswordActivity -->
+  <string name="pin_password_hello">Hi, %s!</string>
+  <string name="pin_password_admin_enter">Please enter your \nAdministrator PIN</string>
+  <string name="pin_password_user_enter">Please enter your PIN</string>
+  <string name="pin_password_forgot_pin">I forgot my pin</string>
+  <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
+  <string name="pin_password_show">show</string>
+  <string name="pin_password_hide">hide</string>
+  <string name="pin_password_close">Close</string>
+  <string name="pin_password_success">PIN change is successful</string>
+  <string name="pin_password_forgot_title">Forgot PIN?</string>
+  <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
+  <string name="pin_password_play_store">Go to the play store</string>
+  <!-- AdminSettingsDialogFragment -->
+  <string name="admin_settings_label">Administrator\'s PIN</string>
+  <string name="admin_settings_heading">Access to Administrator Settings</string>
+  <string name="admin_settings_sub">Administrator\'s PIN required to change user\'s PIN</string>
+  <string name="admin_settings_cancel">Cancel</string>
+  <string name="admin_settings_submit">Submit</string>
+  <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <!-- ResetPinDialogFragment -->
+  <string name="reset_pin_enter">Enter a New Pin</string>
+  <!-- MyDownloadsActivity -->
+  <string name="my_downloads">My Downloads</string>
+  <string name="tab_downloads">Downloads</string>
+  <string name="tab_updates">Updates (2)</string>
+  <!-- HomeActivityBackDialog -->
+  <string name="home_activity_back_dialog_message">Exit your profile and go to the Profile Chooser?</string>
+  <string name="home_activity_back_dialog_cancel">Cancel</string>
+  <string name="home_activity_back_dialog_exit">Exit</string>
+  <!-- ProfileListActivity. -->
+  <string name="profile_list_activity_title">Profiles</string>
+  <!-- ProfileEditActivity. -->
+  <string name="profile_edit_created">Created on %s</string>
+  <string name="profile_edit_rename">Rename</string>
+  <string name="profile_edit_reset">Reset PIN</string>
+  <string name="profile_edit_delete">Profile Deletion</string>
+  <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
+  <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
+  <string name="profile_edit_delete_dialog_positive">Delete</string>
+  <string name="profile_edit_delete_dialog_negative">Cancel</string>
+  <string name="profile_edit_allow_download_heading">Allow Download Access</string>
+  <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfileRenameActivity. -->
+  <string name="profile_rename_title">Rename Profile</string>
+  <string name="profile_rename_label">New Name</string>
+  <string name="profile_rename_save">save</string>
+  <!-- ProfileResetPinActivity. -->
+  <string name="profile_reset_pin_title">Reset PIN</string>
+  <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
+  <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_pin_label">5-Digit PIN</string>
+  <string name="profile_reset_pin_user_confirm_label">Confirm 3-Digit PIN</string>
+  <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
+  <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
+  <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
 </resources>

@@ -4,12 +4,10 @@
   xmlns:profile="http://schemas.android.com/tools">
 
   <data>
-
     <import type="android.view.View" />
-
     <variable
       name="viewModel"
-      type="org.oppia.app.model.ProfileChooserModel" />
+      type="org.oppia.app.model.ProfileChooserUiModel" />
   </data>
 
   <LinearLayout
@@ -26,7 +24,7 @@
       android:layout_marginBottom="8dp"
       app:civ_border_color="@color/avatarBorder"
       app:civ_border_width="1dp"
-      profile:src="@{viewModel.profile.avatarImageUri}" />
+      profile:src="@{viewModel.profile.avatar}" />
 
     <TextView
       android:id="@+id/profile_name_text"

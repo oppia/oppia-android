@@ -39,7 +39,7 @@ class StoryFragmentPresenter @Inject constructor(
     binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <import type="org.oppia.app.R" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.home.HomeFragmentPresenter" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+</layout>
