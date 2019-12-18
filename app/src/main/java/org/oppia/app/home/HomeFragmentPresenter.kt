@@ -12,23 +12,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
+import org.oppia.app.home.topiclist.PromotedStoryListViewModel
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
-
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_30
-private const val TAG_HOME_FRAGMENT = "HomeFragment"
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -37,12 +34,14 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
-  private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
-  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
+  private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private lateinit var userAppHistoryViewModel: UserAppHistoryViewModel
+  private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
+  private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -50,7 +49,13 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    topicListAdapter = TopicListAdapter(itemList)
+    userAppHistoryViewModel = UserAppHistoryViewModel()
+    promotedStoryListViewModel = PromotedStoryListViewModel(activity)
+    allTopicsViewModel = AllTopicsViewModel()
+    itemList.add(userAppHistoryViewModel)
+    itemList.add(promotedStoryListViewModel)
+    itemList.add(allTopicsViewModel)
+    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -75,24 +80,9 @@ class HomeFragmentPresenter @Inject constructor(
 
     userAppHistoryController.markUserOpenedApp()
     subscribeToUserAppHistory()
+    subscribeToOngoingStoryList()
     subscribeToTopicList()
     return binding.root
-  }
-
-  fun playExplorationButton(v: View) {
-    explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(
-      EXPLORATION_ID
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d(TAG_HOME_FRAGMENT, "Loading exploration")
-        result.isFailure() -> logger.e(TAG_HOME_FRAGMENT, "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d(TAG_HOME_FRAGMENT, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
-        }
-      }
-    })
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -101,14 +91,6 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-
-      val promotedStoryViewModel = PromotedStoryViewModel(activity)
-      promotedStoryViewModel.setPromotedStory(result.promotedStory)
-      itemList.add(promotedStoryViewModel)
-      if (result.topicSummaryList.isNotEmpty()) {
-        val allTopicsViewModel = AllTopicsViewModel()
-        itemList.add(allTopicsViewModel)
-      }
       for (topicSummary in result.topicSummaryList) {
         val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemList.add(topicSummaryViewModel)
@@ -124,10 +106,10 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun subscribeToUserAppHistory() {
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
-      val userAppHistoryViewModel = UserAppHistoryViewModel()
+      userAppHistoryViewModel = UserAppHistoryViewModel()
       userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
-      itemList.add(0, userAppHistoryViewModel)
-      topicListAdapter.notifyDataSetChanged()
+      itemList[0] = userAppHistoryViewModel
+      topicListAdapter.notifyItemChanged(0)
     })
   }
 
@@ -141,6 +123,26 @@ class HomeFragmentPresenter @Inject constructor(
       logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
+  }
+
+  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
+    topicListController.getOngoingStoryList()
+  }
+
+  private fun subscribeToOngoingStoryList() {
+    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
+      it.recentStoryList.take(3).forEach { promotedStory ->
+        val recentStory = PromotedStoryViewModel(activity)
+        recentStory.setPromotedStory(promotedStory)
+        promotedStoryList.add(recentStory)
+      }
+      topicListAdapter.notifyItemChanged(1)
+    })
+  }
+
+  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

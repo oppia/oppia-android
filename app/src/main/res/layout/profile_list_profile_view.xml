@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+  <data>
+    <import type="android.view.View" />
+    <variable
+      name="profile"
+      type="org.oppia.app.model.Profile" />
+  </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+  android:layout_width="match_parent"
+  android:layout_height="100dp">
+  <de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/profile_list_image"
+    android:layout_width="68dp"
+    android:layout_height="68dp"
+    profile:src="@{profile.avatar}"
+    android:layout_marginStart="36dp"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"/>
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="16dp"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toEndOf="@id/profile_list_image">
+    <TextView
+      android:id="@+id/profile_list_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@{profile.name}"
+      android:textSize="20dp"
+      android:textStyle="bold"
+      android:textColor="@color/black"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+      android:id="@+id/profile_list_admin_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/profile_chooser_admin"
+      android:textStyle="italic"
+      android:visibility="@{profile.isAdmin ? View.VISIBLE : View.GONE}"/>
+  </LinearLayout>
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:background="@color/grey"
+    app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

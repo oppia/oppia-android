@@ -11,11 +11,13 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.ContinuePlayingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.PromotedStory
-import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [ContinuePlayingFragment]. */
@@ -23,10 +25,12 @@ import javax.inject.Inject
 class ContinuePlayingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val logger: Logger,
+  private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController
 ) {
 
-  private val routeToStoryListener = activity as RouteToStoryListener
+  private val routeToExplorationListener = activity as RouteToExplorationListener
 
   private lateinit var binding: ContinuePlayingFragmentBinding
 
@@ -37,7 +41,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.continuePlayingToolbar.setNavigationOnClickListener {
       (activity as ContinuePlayingActivity).finish()
     }
 
@@ -91,6 +95,26 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    routeToStoryListener.routeToStory(promotedStory.storyId)
+    playExploration(promotedStory.explorationId, promotedStory.topicId)
+  }
+
+  private fun playExploration(explorationId: String, topicId: String) {
+    explorationDataController.startPlayingExploration(
+      explorationId
+    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
+      when {
+        result.isPending() -> logger.d("ContinuePlayingFragment", "Loading exploration")
+        result.isFailure() -> logger.e(
+          "ContinuePlayingFragment",
+          "Failed to load exploration",
+          result.getErrorOrNull()!!
+        )
+        else -> {
+          logger.d("ContinuePlayingFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(explorationId, topicId)
+          activity.finish()
+        }
+      }
+    })
   }
 }

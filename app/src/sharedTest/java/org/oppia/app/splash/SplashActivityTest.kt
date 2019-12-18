@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.profile.ProfileActivity
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -23,7 +23,8 @@ class SplashActivityTest {
   // disabled to launch Activity explicitly within each test case.
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false)
+    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -33,7 +34,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_initialOpen_routesToHomeActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(HomeActivity::class.java.getName()))
+    intended(hasComponent(ProfileActivity::class.java.name))
   }
 
   @After
