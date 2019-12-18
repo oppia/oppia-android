@@ -25,7 +25,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     binding.storyTextSizeToolbar.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra("MESSAGE", fontSize)
-      activity.setResult(1, intent)
+      (activity as StoryTextSizeActivity).setResult(1, intent)
       activity.finish()
     }
 

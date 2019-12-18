@@ -6,13 +6,20 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
+import android.content.SharedPreferences
 
 class OptionsFragment : PreferenceFragmentCompat() {
+
+  private lateinit var sharedPref :SharedPreferences
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
 
+    sharedPref =  PreferenceManager
+      .getDefaultSharedPreferences(requireContext())
+
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
+    textSizePref.summary = sharedPref.getString(getString(R.string.key_story_text_size), "")
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -26,6 +33,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
     }
 
     val appLanguagePref = findPreference<Preference>(getString(R.string.key_app_language))
+    appLanguagePref.summary = sharedPref.getString(getString(R.string.key_app_language), "English")
     appLanguagePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -40,6 +48,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
     }
 
     val defaultAudioPref = findPreference<Preference>(getString(R.string.key_default_audio))
+    defaultAudioPref.summary = sharedPref.getString(getString(R.string.key_default_audio), "No Audio")
     defaultAudioPref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -58,10 +67,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
     preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
 
     bindPreferenceSummaryToValueListener.onPreferenceChange(
-      preference,
-      PreferenceManager
-        .getDefaultSharedPreferences(preference.context)
-        .getString(preference.key, typeOfValue)
+      preference,sharedPref.getString(preference.key, "")
     )
   }
 
@@ -80,20 +86,28 @@ class OptionsFragment : PreferenceFragmentCompat() {
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    val editor = sharedPref.edit()
     // Check which request we're responding to
     when (requestCode) {
       1 -> {
         val textSize = data!!.getStringExtra("MESSAGE") as String
+        editor.putString(getString(R.string.key_story_text_size), textSize)
+        editor.commit()
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
       }
       2 -> {
         val appLanguage = data!!.getStringExtra("MESSAGE") as String
+        editor.putString(getString(R.string.key_app_language), appLanguage)
+        editor.commit()
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
       }
       else -> {
         val audioLanguage = data!!.getStringExtra("MESSAGE") as String
+        editor.putString(getString(R.string.key_default_audio), audioLanguage)
+        editor.commit()
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
       }
     }
+
   }
 }
