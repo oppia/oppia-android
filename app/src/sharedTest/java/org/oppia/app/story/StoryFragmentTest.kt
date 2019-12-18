@@ -9,6 +9,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -42,7 +43,7 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_clickOntoolbarNavigationButton_closeActivity() {
     launch<StoryFragmentTestActivity>(createTestActivityIntent(TEST_STORY_ID_1)).use {
-      onView(withId(R.id.story_toolbar)).perform(ViewActions.click())
+      onView(withId(R.id.story_toolbar)).perform(click())
     }
   }
 
