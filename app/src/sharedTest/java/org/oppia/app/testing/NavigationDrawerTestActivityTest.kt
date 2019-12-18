@@ -24,7 +24,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher
 @RunWith(AndroidJUnit4::class)
 class NavigationDrawerTestActivityTest {
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHandBurger_navigationDrawerIsOpenedSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isDisplayed())

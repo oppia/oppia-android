@@ -28,7 +28,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.help_avtivity_fragment_navigation_drawer) as NavigationDrawerFragment
+      activity.supportFragmentManager.findFragmentById(R.id.help_activity_fragment_navigation_drawer) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
       activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_help
