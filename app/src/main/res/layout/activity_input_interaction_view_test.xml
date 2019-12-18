@@ -67,7 +67,6 @@
       android:fontFamily="sans-serif"
       android:hint="@{fractionInteractionViewModel.hintText}"
       android:imeOptions="actionDone"
-      android:inputType="date"
       android:longClickable="false"
       android:maxLength="200"
       android:minHeight="48dp"

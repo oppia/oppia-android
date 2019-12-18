@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableField
 import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
+import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -21,7 +23,7 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  * It contains [NumericInputInteractionView], [TextInputInteractionView],and [FractionInputInteractionView].
  */
 class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener, InteractionAnswerHandler {
-
+  private lateinit var binding: ActivityInputInteractionViewTestBinding
   val numericInputViewModel = NumericInputViewModel()
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance()
@@ -30,7 +32,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
+    binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
       this, R.layout.activity_input_interaction_view_test
     )
     fractionInteractionViewModel = FractionInteractionViewModel(
@@ -45,5 +47,16 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+  }
+
+  override fun onAnswerRealTimeError(
+    errorMessage: ObservableField<String>,
+    pendingAnswerError: String?
+  ) {
+    if (pendingAnswerError != null)
+      binding.submitButton.isEnabled = false
+    else
+      binding.submitButton.isEnabled = true
+    errorMessage.set(pendingAnswerError)
   }
 }

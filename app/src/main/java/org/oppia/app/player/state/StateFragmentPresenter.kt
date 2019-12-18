@@ -454,6 +454,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
+    if(stateNavigationButtonViewModel.isInteractionButtonActive.get()!!)
     handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
