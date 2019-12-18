@@ -36,7 +36,7 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
   fun getPendingAnswer(): UserAnswer {
-    return if (getPendingAnswerHandler(itemList)?.hasPendingAnswerError()!!) {
+    return if (getPendingAnswerHandler(itemList)?.hasPendingAnswerErrorOnSubmit()!!) {
       (getPendingAnswerHandler(itemList) as FractionInteractionViewModel).setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
       UserAnswer.getDefaultInstance()
     } else

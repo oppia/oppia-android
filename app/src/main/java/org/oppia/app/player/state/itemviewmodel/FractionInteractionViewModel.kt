@@ -34,8 +34,9 @@ class FractionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
-  override fun hasPendingAnswerError(): Boolean {
-    return getPendingAnswerError() == null
+  override fun hasPendingAnswerErrorOnSubmit(): Boolean {
+    setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    return getPendingAnswerError() != null
   }
 
   fun setPendingAnswerError(category: AnswerErrorCategory) {

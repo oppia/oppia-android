@@ -39,8 +39,8 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -402,7 +402,7 @@ class StateFragmentPresenter @Inject constructor(
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
-    },2000)
+    }, 2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -443,8 +443,8 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    if(stateNavigationButtonViewModel.isInteractionButtonActive.get()!!)
-    handleSubmitAnswer(viewModel.getPendingAnswer())
+    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!)
+      handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   override fun onContinueButtonClicked() {

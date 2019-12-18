@@ -18,10 +18,10 @@ interface InteractionAnswerHandler {
   fun onAnswerRealTimeError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {}
 
   /**
-   * Returns the flag that indicates current answer has error message or not.
+   * Returns the flag that indicates current answer has error message or not on Submit button click.
    * If [setPendingAnswerError] is null then returns true else false.
    */
-  fun hasPendingAnswerError(): Boolean = false
+  fun hasPendingAnswerErrorOnSubmit(): Boolean = false
 
   /** Return the current answer's error messages  if not valid else return null. */
   fun getPendingAnswerError(): String? {
