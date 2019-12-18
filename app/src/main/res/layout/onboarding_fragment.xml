@@ -39,7 +39,7 @@
       android:layout_marginStart="56dp"
       android:layout_marginEnd="56dp"
       android:layout_marginBottom="36dp"
-      android:visibility="@{viewModel.slideNumber == 3 ? View.VISIBLE: View.GONE, default=gone}"
+      android:visibility="@{viewModel.slideNumber == (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent">
@@ -68,7 +68,7 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="36dp"
       android:layout_marginEnd="8dp"
-      android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
+      android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent">
@@ -81,44 +81,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <View
-          android:id="@+id/slide_0_dot"
-          android:layout_width="8dp"
-          android:layout_height="8dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginEnd="4dp"
-          android:alpha="@{viewModel.slideNumber == 0 ? 1.0F : 0.3F}"
-          android:background="@drawable/onboarding_dot_active" />
-
-        <View
-          android:id="@+id/slide_1_dot"
-          android:layout_width="8dp"
-          android:layout_height="8dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginEnd="4dp"
-          android:alpha="@{viewModel.slideNumber == 1 ? 1.0F : 0.3F}"
-          android:background="@drawable/onboarding_dot_active" />
-
-        <View
-          android:id="@+id/slide_2_dot"
-          android:layout_width="8dp"
-          android:layout_height="8dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginEnd="4dp"
-          android:alpha="@{viewModel.slideNumber == 2 ? 1.0F : 0.3F}"
-          android:background="@drawable/onboarding_dot_active" />
-
-        <View
-          android:id="@+id/slide_3_dot"
-          android:layout_width="8dp"
-          android:layout_height="8dp"
-          android:layout_marginStart="4dp"
-          android:layout_marginEnd="4dp"
-          android:alpha="@{viewModel.slideNumber == 3 ? 1.0F : 0.3F}"
-          android:background="@drawable/onboarding_dot_active" />
-      </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/skip_text_view"

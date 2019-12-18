@@ -19,7 +19,7 @@ class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
   }
 
   override fun getCount(): Int {
-    return 4
+    return TOTAL_NUMBER_OF_SLIDES
   }
 
   override fun isViewFromObject(view: View, `object`: Any): Boolean {

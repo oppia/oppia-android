@@ -80,6 +80,7 @@
   <color name="light_green">#D9F3E7</color>
   <!-- ONBOARDING FLOW -->
   <color name="onboardingDotActive">#333333</color>
+  <color name="onboardingDotInactive">#4D333333</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="avatar_background_1">#E65C5C</color>
   <color name="avatar_background_2">#E6935C</color>

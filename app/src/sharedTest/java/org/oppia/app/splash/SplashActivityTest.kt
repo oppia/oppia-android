@@ -33,7 +33,7 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_initialOpen_routesToHomeActivity() {
+  fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
     activityTestRule.launchActivity(null)
     intended(hasComponent(OnboardingActivity::class.java.name))
   }

@@ -8,6 +8,7 @@ import javax.inject.Inject
 /** [ViewModel] for [OnboardingFragment]. */
 class OnboardingViewModel @Inject constructor() : ObservableViewModel() {
   val slideNumber = ObservableField<Int>(0)
+  val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
 
   fun slideChanged(index: Int) {
     slideNumber.set(index)

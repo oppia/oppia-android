@@ -1,10 +1,7 @@
 package org.oppia.app.onboarding
 
-import android.content.Context
-import android.content.res.Resources
 import android.os.SystemClock
 import androidx.test.core.app.ActivityScenario.launch
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
@@ -15,6 +12,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withAlpha
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -46,7 +44,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_0_title))))
+      ).check(matches(withText(R.string.slide_0_title)))
     }
   }
 
@@ -58,7 +56,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_0_description))))
+      ).check(matches(withText(R.string.slide_0_description)))
     }
   }
 
@@ -71,6 +69,36 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withTagValue(equalTo(R.drawable.ic_onboarding_0))))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
+    launch(OnboardingActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_0),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(1.0F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_1),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_2),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_3),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
     }
   }
 
@@ -91,7 +119,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_title))))
+      ).check(matches(withText(R.string.slide_3_title)))
     }
   }
 
@@ -126,7 +154,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_1_title))))
+      ).check(matches(withText(R.string.slide_1_title)))
     }
   }
 
@@ -140,7 +168,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_1_description))))
+      ).check(matches(withText(R.string.slide_1_description)))
     }
   }
 
@@ -155,6 +183,38 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withTagValue(equalTo(R.drawable.ic_onboarding_1))))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      SystemClock.sleep(500)
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_0),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_1),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(1.0F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_2),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_3),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
     }
   }
 
@@ -178,7 +238,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_title))))
+      ).check(matches(withText(R.string.slide_3_title)))
     }
   }
 
@@ -217,7 +277,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_2_title))))
+      ).check(matches(withText(R.string.slide_2_title)))
     }
   }
 
@@ -232,7 +292,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_2_description))))
+      ).check(matches(withText(R.string.slide_2_description)))
     }
   }
 
@@ -248,6 +308,39 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withTagValue(equalTo(R.drawable.ic_onboarding_2))))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      SystemClock.sleep(500)
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_0),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_1),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_2),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(1.0F)))
+      onView(
+        allOf(
+          withId(R.id.onboarding_dot_3),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withAlpha(0.3F)))
     }
   }
 
@@ -273,7 +366,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_title))))
+      ).check(matches(withText(R.string.slide_3_title)))
     }
   }
 
@@ -299,7 +392,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_title))))
+      ).check(matches(withText(R.string.slide_3_title)))
     }
   }
 
@@ -315,7 +408,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_description))))
+      ).check(matches(withText(R.string.slide_3_description)))
     }
   }
 
@@ -382,16 +475,12 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(getResources().getString(R.string.slide_3_title))))
+      ).check(matches(withText(R.string.slide_3_title)))
     }
   }
 
   @After
   fun tearDown() {
     Intents.release()
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 }
