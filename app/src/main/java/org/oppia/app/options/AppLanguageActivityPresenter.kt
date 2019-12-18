@@ -1,4 +1,4 @@
-package org.oppia.app.option
+package org.oppia.app.options
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -34,8 +34,8 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
   }
 
   private fun createAdapter() {
-    val languageList = ArrayList<String>()//Creating an empty dummy arraylist
-    languageList.add("English")//Adding object in dummy arraylist
+    val languageList = ArrayList<String>()
+    languageList.add("English")
     languageList.add("French")
     languageList.add("Hindi")
     languageList.add("Chinese")

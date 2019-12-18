@@ -1,4 +1,4 @@
-package org.oppia.app.option
+package org.oppia.app.options
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -35,8 +35,8 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   private fun createAdapter() {
-    val languageList = ArrayList<String>()//Creating an empty dummy arraylist
-    languageList.add("No Audio")//Adding object in dummy arraylist
+    val languageList = ArrayList<String>()
+    languageList.add("No Audio")
     languageList.add("English")
     languageList.add("French")
     languageList.add("Hindi")

@@ -1,4 +1,4 @@
-package org.oppia.app.option
+package org.oppia.app.options
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R

@@ -1,4 +1,4 @@
-package org.oppia.app.option
+package org.oppia.app.options
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity

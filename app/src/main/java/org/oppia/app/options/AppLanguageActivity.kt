@@ -1,4 +1,4 @@
-package org.oppia.app.option
+package org.oppia.app.options
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 private const val APP_LANGUAGE_PREFERENCE_KEY = "APP_LANGUAGE_PREFERENCE_KEY"
+private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 
 /** The activity to change the language of the app. */
 class AppLanguageActivity : InjectableAppCompatActivity() {
@@ -18,7 +19,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     prefKey = intent.getStringExtra(APP_LANGUAGE_PREFERENCE_KEY)
-    prefSummaryValue = intent.getStringExtra(PREFERENCE_SUMMARY_VALUE)
+    prefSummaryValue = intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
 
@@ -31,7 +32,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     ): Intent {
       val intent = Intent(context, AppLanguageActivity::class.java)
       intent.putExtra(APP_LANGUAGE_PREFERENCE_KEY, prefKey)
-      intent.putExtra(PREFERENCE_SUMMARY_VALUE, summaryValue)
+      intent.putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
   }

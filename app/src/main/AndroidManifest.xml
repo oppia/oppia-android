@@ -27,15 +27,15 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".option.OptionActivity"
+      android:name=".options.OptionActivity"
       android:screenOrientation="portrait" />
-    <activity android:name=".option.StoryTextSizeActivity"
+    <activity android:name=".options.StoryTextSizeActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".option.AppLanguageActivity"
+    <activity android:name=".options.AppLanguageActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".option.DefaultAudioActivity"
+    <activity android:name=".options.DefaultAudioActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

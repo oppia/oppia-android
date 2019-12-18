@@ -7,10 +7,10 @@ import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.option.AppLanguageActivity
-import org.oppia.app.option.DefaultAudioActivity
-import org.oppia.app.option.OptionActivity
-import org.oppia.app.option.StoryTextSizeActivity
+import org.oppia.app.options.AppLanguageActivity
+import org.oppia.app.options.DefaultAudioActivity
+import org.oppia.app.options.OptionActivity
+import org.oppia.app.options.StoryTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
