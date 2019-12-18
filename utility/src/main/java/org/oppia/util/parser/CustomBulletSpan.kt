@@ -19,17 +19,19 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   private var bulletRadius: Int = 0
   private var gapWidth: Int = 0
   private var yOffset: Int = 0
+  private var bulletLeadingMargin: Int = 0
 
   init {
     bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
     gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
     yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
+    bulletLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
   }
 
   private var mBulletPath: Path? = null
 
   override fun getLeadingMargin(first: Boolean): Int {
-    return 2 * bulletRadius + gapWidth
+    return bulletLeadingMargin
   }
 
   override fun drawLeadingMargin(

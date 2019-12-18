@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.text.Spannable
 import android.widget.TextView
@@ -140,7 +141,7 @@ class HtmlParserTest {
     )
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans = htmlResult.getSpans<Any>(0, htmlResult.length, Any::class.java)
+    val bulletSpans = htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
     val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
@@ -154,6 +155,10 @@ class HtmlParserTest {
     override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
 
     }
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier annotation class TestDispatcher
