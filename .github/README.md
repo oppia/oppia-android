@@ -1,10 +1,10 @@
 # [Oppia-Android](https://www.oppia.org)
 
-Oppia-Android is a mobile application version of [Oppia](https://www.oppia.org). It is an android application that enables anyone to easily learn interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
+Oppia-Android is a mobile application version of [Oppia](https://www.oppia.org). It is an android application that enables anyone to learn easily interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
-In addition to that users can create their profile, pratice a set of skills, play with exporations, review previously finished skills and can also track the progress.
+Moreover, users can create their profile, practice a set of skills, play with explorations, review previously finished skills and also track the progress.
 
-Oppia-Android app is written using Kotlin and python, and is built on top of Google App Engine.
+Oppia-Android app is written in Kotlin and python, and is built on top of Google App Engine.
 
   * [Oppia.org community site](https://www.oppia.org)
   * [User Documentation](https://oppia.github.io/)
@@ -19,7 +19,7 @@ Oppia-Android app is written using Kotlin and python, and is built on top of Goo
 
 ## Installation
 
-Please refer to the [developer wiki](https://github.com/oppia/oppia-android/wiki) for full installation instructions. This is just a short summary for developers who would like to contribute:
+Please refer to the [developer wiki](https://github.com/oppia/oppia-android/wiki) for full installation instructions. This is just a summary for developers who would like to contribute:
 
 1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia) the Oppia repo. This will create a new folder named `opensource/oppia`.
 
