@@ -42,6 +42,10 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import android.widget.TextView
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -77,6 +81,16 @@ class ExplorationActivityTest {
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Test
+  fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
 
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {

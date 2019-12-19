@@ -22,7 +22,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
+import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
+import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -38,6 +40,12 @@ class ConceptCardFragmentTest {
     activityScenario = ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java)
   }
 
+
+  @Test
+  fun testStoryFragment_clickOntoolbarNavigationButton_closeActivity() {
+    onView(withId(R.id.open_dialog_0)).perform(click())
+      onView(withId(R.id.concept_card_toolbar)).perform(click())
+  }
   @Test
   fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
     onView(withId(R.id.open_dialog_0)).perform(click())
