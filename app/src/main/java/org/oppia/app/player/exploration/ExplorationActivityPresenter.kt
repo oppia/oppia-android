@@ -31,7 +31,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
-  private lateinit var toolbar: Toolbar
+  private lateinit var explorationToolbar: Toolbar
   private var topicId: String? = null
 
   private val exploreViewModel by lazy {
@@ -45,8 +45,8 @@ class ExplorationActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    toolbar = binding.explorationToolbar
-    activity.setSupportActionBar(toolbar)
+    explorationToolbar = binding.explorationToolbar
+    activity.setSupportActionBar(explorationToolbar)
 
     binding.actionAudioPlayer.setOnClickListener {
       getExplorationFragment()?.handlePlayAudio()
@@ -112,7 +112,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
     val explorationLiveData = getExploration(explorationResultLiveData)
     explorationLiveData.observe(activity, Observer<Exploration> {
-      toolbar.title = it.title
+      explorationToolbar.title = it.title
     })
   }
 

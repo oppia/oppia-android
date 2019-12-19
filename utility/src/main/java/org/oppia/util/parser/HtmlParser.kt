@@ -1,8 +1,11 @@
 package org.oppia.util.parser
 
+import android.os.Build
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BulletSpan
 import android.widget.TextView
 import javax.inject.Inject
 
@@ -44,18 +47,28 @@ class HtmlParser private constructor(
     }
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      trimSpannable(
-        Html.fromHtml(
-          htmlContent,
-          Html.FROM_HTML_MODE_LEGACY,
-          imageGetter, /* tagHandler= */
-          null
-        ) as SpannableStringBuilder
-      )
+
+    @Suppress("DEPRECATION")
+    val htmlSpannable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler())
     } else {
-      trimSpannable(Html.fromHtml(htmlContent, imageGetter, /* tagHandler= */ null) as SpannableStringBuilder)
+      Html.fromHtml(htmlContent, imageGetter, LiTagHandler())
     }
+
+    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
+    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+    bulletSpans.forEach {
+      val start = spannableBuilder.getSpanStart(it)
+      val end = spannableBuilder.getSpanEnd(it)
+      spannableBuilder.removeSpan(it)
+      spannableBuilder.setSpan(
+        CustomBulletSpan(htmlContentTextView.context),
+        start,
+        end,
+        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+    }
+    return trimSpannable(spannableBuilder)
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
