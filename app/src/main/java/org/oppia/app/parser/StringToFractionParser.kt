@@ -60,7 +60,7 @@ class StringToFractionParser {
   }
 
   fun getFractionFromString(text: String): Fraction {
-    return parseFraction(text) ?: throw IllegalArgumentException("...")
+    return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {

@@ -5,10 +5,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import org.oppia.app.model.Interaction
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import kotlin.reflect.KFunction4
 
 /**
  * Module to provide interaction view model-specific dependencies for intreactions that should be explicitly displayed
@@ -30,7 +26,7 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): KFunction4<String, Interaction, InteractionAnswerReceiver, InteractionAnswerHandler, SelectionInteractionViewModel> {
+  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory{
     return ::SelectionInteractionViewModel
   }
 
