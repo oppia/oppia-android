@@ -56,7 +56,7 @@ class FractionInteractionViewModel(
     return pendingAnswerError
   }
 
-  fun setPendingAnswerErrorOnSubmit(): String? {
+  private fun setPendingAnswerErrorOnSubmit(): String? {
     return if (answerText.isNotEmpty() && StringToFractionParser().getSubmitTimeError(answerText.toString()) != FractionParsingError.VALID) {
       pendingAnswerError =
         StringToFractionParser().getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
