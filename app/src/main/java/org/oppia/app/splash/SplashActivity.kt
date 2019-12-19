@@ -15,7 +15,8 @@ class SplashActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.splash_activity)
 
-    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    // TODO (#565): Control the next activity based on whether the leaner is using the app for the first time or not.
     val intent = Intent(this@SplashActivity, OnboardingActivity::class.java)
     startActivity(intent)
     finish()
