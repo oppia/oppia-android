@@ -3,6 +3,7 @@ package org.oppia.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -16,6 +17,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -25,6 +27,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Ignore
@@ -42,17 +46,14 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import android.widget.TextView
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
 class ExplorationActivityTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -270,7 +271,8 @@ class ExplorationActivityTest {
   }
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
-  @Test @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
     explorationActivityTestRule.launchActivity(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0))
     pressBack()
