@@ -2,11 +2,13 @@ package org.oppia.app.mydownloads
 
 import android.app.Application
 import android.content.Context
+import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -17,6 +19,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +32,14 @@ import javax.inject.Singleton
 /** Tests for [MyDownloadsFragment]. */
 @RunWith(AndroidJUnit4::class)
 class MyDownloadsFragmentTest {
+
+  @Test
+  fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
+    launch(MyDownloadsActivity::class.java).use {
+      onView(allOf(CoreMatchers.instanceOf(TextView::class.java), ViewMatchers.withParent(withId(R.id.my_downloads_toolbar))))
+        .check(matches(withText("My Downloads")))
+    }
+  }
 
   @Test
   fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
