@@ -7,7 +7,6 @@ Moreover, users can create their profile, practice a set of skills, play with ex
 Oppia-Android app is written in Kotlin and Python, and is built on top of Google App Engine.
 
   * [Oppia.org community site](https://www.oppia.org)
-  * [User Documentation](https://oppia.github.io/)
   * [Contributors' wiki](https://github.com/oppia/oppia-android/wiki)
   * [Developer mailing list](http://groups.google.com/group/oppia-android-dev)
   * [File an issue](https://github.com/oppia/oppia-android/issues/new/)
