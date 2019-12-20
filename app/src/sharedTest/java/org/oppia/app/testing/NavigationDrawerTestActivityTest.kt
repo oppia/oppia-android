@@ -7,8 +7,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
-import androidx.test.espresso.contrib.DrawerMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
@@ -28,11 +29,11 @@ class NavigationDrawerTestActivityTest {
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isDisplayed())
+        matches(isCompletelyDisplayed())
       ).perform(click())
       onView(withId(R.id.home_fragment_placeholder))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+        .check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
@@ -41,7 +42,7 @@ class NavigationDrawerTestActivityTest {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
 
@@ -71,7 +72,7 @@ class NavigationDrawerTestActivityTest {
         )
       ).check(matches(withText(R.string.menu_help)))
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isDisplayed())
+        matches(isCompletelyDisplayed())
       ).perform(click())
       onView(withId(R.id.help_activity_drawer_layout))
     }
@@ -85,7 +86,7 @@ class NavigationDrawerTestActivityTest {
       onView(withContentDescription(R.string.drawer_open_content_description))
         .perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
       onView(
         allOf(
           instanceOf(TextView::class.java),
@@ -93,7 +94,7 @@ class NavigationDrawerTestActivityTest {
         )
       ).check(matches(withText(R.string.menu_help)))
       onView(withId(R.id.help_activity_drawer_layout)).perform(open())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
@@ -110,7 +111,7 @@ class NavigationDrawerTestActivityTest {
         )
       ).check(matches(withText(R.string.menu_help)))
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
 
