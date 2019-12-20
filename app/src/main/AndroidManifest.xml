@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.app">
-  <!-- TODO(#56): Reenable landscape support. -->
+
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
-
+  <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -27,7 +27,12 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".mydownloads.MyDownloadsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".player.exploration.ExplorationActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
@@ -37,6 +42,9 @@
       android:name=".profile.AdminAuthActivity"
       android:screenOrientation="portrait" />
     <activity
+      android:name=".profile.AdminPinActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -44,6 +52,12 @@
       android:name=".profile.ProfileActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".settings.profile.ProfileEditActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
       android:screenOrientation="portrait" />

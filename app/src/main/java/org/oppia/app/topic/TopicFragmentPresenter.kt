@@ -27,7 +27,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val topicController: TopicController
 ) {
   private lateinit var tabLayout: TabLayout
-  private lateinit var toolbar: Toolbar
+  private lateinit var topicToolbar: Toolbar
   private lateinit var topicId: String
   lateinit var storyId: String
   private lateinit var viewPager: ViewPager
@@ -49,7 +49,7 @@ class TopicFragmentPresenter @Inject constructor(
     storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
-    toolbar = binding.root.findViewById(R.id.toolbar) as Toolbar
+    topicToolbar = binding.root.findViewById(R.id.topic_toolbar) as Toolbar
     this.topicId = topicId
     setUpViewPager(viewPager, topicId)
     subscribeToTopicLiveData()
@@ -77,7 +77,7 @@ class TopicFragmentPresenter @Inject constructor(
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       val topicName = result.name
-      toolbar.title = fragment.getString(R.string.topic_prefix) + " " + topicName
+      topicToolbar.title = fragment.getString(R.string.topic_prefix) + " " + topicName
     })
   }
 

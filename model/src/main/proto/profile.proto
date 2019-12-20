@@ -28,8 +28,7 @@ message Profile {
   // PIN of the profile.
   string pin = 4;
 
-  // User selected image or gravatar.
-  string avatar_image_uri = 5;
+  ProfileAvatar avatar = 5;
 
   // Determines whether profile is admin.
   bool is_admin = 6;
@@ -42,6 +41,17 @@ message Profile {
 
   // Represents the time the user's profile was created.
   int64 date_created_timestamp_ms = 9;
+}
+
+// Represents a profile avatar image.
+message ProfileAvatar {
+  oneof avatar_type {
+    // User selected image or gravatar.
+    string avatar_image_uri = 5;
+
+    // Tint color to be used with a generic profile image.
+    int32 avatar_color_rgb = 6;
+  }
 }
 
 // Opaque data structure to pass ID.
