@@ -6,8 +6,7 @@ import javax.inject.Inject
 
 /** Activity to test the functionality of content-card used in [StateFragment]. */
 class ContentCardTestActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var contentCardTestPresenter: ContentCardTestActivityPresenter
+  @Inject lateinit var contentCardTestPresenter: ContentCardTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

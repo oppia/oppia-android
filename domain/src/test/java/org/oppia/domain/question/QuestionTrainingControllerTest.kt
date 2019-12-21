@@ -66,8 +66,7 @@ class QuestionTrainingControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
 
   @Mock
   lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
