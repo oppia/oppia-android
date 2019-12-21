@@ -11,8 +11,7 @@ import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
 class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
-  @Inject
-  lateinit var audioFragmentPresenter: AudioFragmentPresenter
+  @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

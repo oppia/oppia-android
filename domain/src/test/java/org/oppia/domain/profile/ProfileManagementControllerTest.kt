@@ -58,11 +58,9 @@ class ProfileManagementControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>

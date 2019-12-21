@@ -72,8 +72,7 @@ class ExplorationDataControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationDataController: ExplorationDataController
 
   @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
