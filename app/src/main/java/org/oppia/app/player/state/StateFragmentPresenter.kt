@@ -616,7 +616,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
-  fun onAnswerRealTimeError(
+  fun onPendingAnswerError(
     errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {

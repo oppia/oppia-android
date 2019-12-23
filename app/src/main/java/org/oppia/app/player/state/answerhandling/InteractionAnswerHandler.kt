@@ -15,7 +15,7 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
-  fun onAnswerRealTimeError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {}
+  fun onPendingAnswerError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {}
 
   /**
    * Returns the flag that indicates current answer has error message or not on Submit button click.

@@ -48,11 +48,12 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
-  override fun onAnswerRealTimeError(
+
+  override fun onPendingAnswerError(
     errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {
-    stateFragmentPresenter.onAnswerRealTimeError(errorMessage, pendingAnswerError)
+    stateFragmentPresenter.onPendingAnswerError(errorMessage, pendingAnswerError)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)

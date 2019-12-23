@@ -20,7 +20,7 @@ class StringToFractionParser {
    * to be parsed correctly by [parseRegularFraction].
    *
    * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
-   * using [setPendingAnswerErrorOnRealTime], instead.
+   * using [getPendingAnswerErrorOnRealTime], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     val fraction = parseFraction(text)
@@ -39,7 +39,7 @@ class StringToFractionParser {
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
    * general validity, not for definite correctness.
    */
-  fun setPendingAnswerErrorOnRealTime(text: String): FractionParsingError {
+  fun getPendingAnswerErrorOnRealTime(text: String): FractionParsingError {
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS

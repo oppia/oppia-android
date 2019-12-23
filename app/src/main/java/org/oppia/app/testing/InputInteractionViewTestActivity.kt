@@ -49,7 +49,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     fractionInteractionViewModel.setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
-  override fun onAnswerRealTimeError(
+  override fun onPendingAnswerError(
     errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {
