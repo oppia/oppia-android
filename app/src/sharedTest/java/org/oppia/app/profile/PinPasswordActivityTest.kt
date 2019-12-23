@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -96,7 +97,7 @@ class PinPasswordActivityTest {
   @ExperimentalCoroutinesApi
   fun testPinPasswordActivityWithAdmin_inputWrongPin_checkIncorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, adminId)).use {
-      onView(withId(R.id.input_pin)).perform(typeText("54321"))
+      onView(withId(R.id.input_pin)).perform(typeText("54321") , closeSoftKeyboard())
       onView(withId(R.id.error_text)).check(matches(withText(context.getString(R.string.pin_password_incorrect_pin))))
     }
   }
@@ -104,7 +105,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPasswordActivityWithUser_inputWrongPin_checkIncorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
-      onView(withId(R.id.input_pin)).perform(typeText("321"))
+      onView(withId(R.id.input_pin)).perform(typeText("321") , closeSoftKeyboard())
       onView(withId(R.id.error_text)).check(matches(withText(context.getString(R.string.pin_password_incorrect_pin))))
     }
   }
@@ -121,11 +122,11 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_checkWrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1234"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1234") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_settings_incorrect))))
 
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("5"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("5") , closeSoftKeyboard())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
     }
   }
@@ -134,13 +135,13 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputShortPin_checkPinLengthError() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("32"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("32") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
 
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("1") , closeSoftKeyboard())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
     }
   }
@@ -149,12 +150,12 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("321"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("321") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(withText(context.getString(R.string.pin_password_close))).perform(click())
-      onView(withId(R.id.input_pin)).perform(typeText("123"))
+      onView(withId(R.id.input_pin)).perform(typeText("123") , closeSoftKeyboard())
       onView(withId(R.id.error_text)).check(matches(withText(context.getString(R.string.pin_password_incorrect_pin))))
     }
   }
@@ -163,9 +164,9 @@ class PinPasswordActivityTest {
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("321"))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("321") , closeSoftKeyboard())
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(withText(context.getString(R.string.pin_password_close))).perform(click())
       onView(withId(R.id.input_pin)).perform(typeText("321"))

@@ -65,8 +65,7 @@ class AudioFragmentTest {
 
   private lateinit var activityScenario: ActivityScenario<AudioFragmentTestActivity>
 
-  @Inject
-  lateinit var audioPlayerController: AudioPlayerController
+  @Inject lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"

@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
-  @Inject
-  lateinit var topicFragmentPresenter: TopicFragmentPresenter
+  @Inject lateinit var topicFragmentPresenter: TopicFragmentPresenter
+
   lateinit var topicId: String
 
   override fun onAttach(context: Context) {

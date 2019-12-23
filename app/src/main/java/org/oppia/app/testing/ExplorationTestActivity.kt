@@ -9,8 +9,7 @@ import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject
-  lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
+  @Inject lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

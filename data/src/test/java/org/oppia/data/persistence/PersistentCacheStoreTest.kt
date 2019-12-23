@@ -57,11 +57,9 @@ class PersistentCacheStoreTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var cacheFactory: PersistentCacheStore.Factory
+  @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
 
-  @Inject
-  lateinit var dataProviders: DataProviders
+  @Inject lateinit var dataProviders: DataProviders
 
   @ExperimentalCoroutinesApi
   @Inject

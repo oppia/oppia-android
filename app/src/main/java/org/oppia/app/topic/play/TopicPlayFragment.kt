@@ -13,8 +13,7 @@ private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX
 
 /** Fragment that contains subtopic list for play mode. */
 class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
-  @Inject
-  lateinit var topicPlayFragmentPresenter: TopicPlayFragmentPresenter
+  @Inject lateinit var topicPlayFragmentPresenter: TopicPlayFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
 

@@ -11,8 +11,7 @@ import javax.inject.Inject
 
 /** Fragment that allows user to select a profile or create new ones. */
 class ProfileChooserFragment : InjectableFragment() {
-  @Inject
-  lateinit var profileChooserFragmentPresenter: ProfileChooserFragmentPresenter
+  @Inject lateinit var profileChooserFragmentPresenter: ProfileChooserFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
