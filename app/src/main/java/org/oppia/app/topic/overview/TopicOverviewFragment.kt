@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains overview of Topic. */
 class TopicOverviewFragment : InjectableFragment() {
-  @Inject
-  lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
+  @Inject lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

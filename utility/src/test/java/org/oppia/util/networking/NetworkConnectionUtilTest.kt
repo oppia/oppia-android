@@ -42,12 +42,9 @@ class NetworkConnectionUtilTest {
 
   private val NO_CONNECTION = -1
 
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionUtil
 
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
