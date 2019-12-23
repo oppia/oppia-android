@@ -20,7 +20,6 @@
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity
       android:name=".home.HomeActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"
@@ -50,7 +49,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileEditActivity"

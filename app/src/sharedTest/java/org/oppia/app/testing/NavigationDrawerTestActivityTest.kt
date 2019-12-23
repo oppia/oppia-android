@@ -10,6 +10,7 @@ import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
@@ -21,6 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -38,7 +40,16 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_closingOfNavigationDrawerIsVerifiedSucessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSucessfully() {
+    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSucessfully() {
     ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())

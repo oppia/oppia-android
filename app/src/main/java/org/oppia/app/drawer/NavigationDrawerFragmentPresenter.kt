@@ -36,7 +36,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
-      val intent = when (NavigationDrawerItem.valueFromInt(menuItemId)) {
+      val intent = when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           Intent(fragment.activity, HomeActivity::class.java)
         }
@@ -56,7 +56,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    when (NavigationDrawerItem.valueFromInt(menuItemId)) {
+    when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
       NavigationDrawerItem.HOME -> {
         navView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
       }
