@@ -1,5 +1,6 @@
 package org.oppia.app.topic.play
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,15 @@ import org.oppia.app.databinding.TopicPlayFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -30,6 +34,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val explorationDataController: ExplorationDataController,
+  private val storyProgressController: StoryProgressController,
   private val topicController: TopicController
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -62,6 +67,8 @@ class TopicPlayFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
+
+    subscribeToStoryProgress()
     return binding.root
   }
 
@@ -136,5 +143,32 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(storySummary.storyId)
+  }
+
+  private fun subscribeToStoryProgress() {
+    val storyProgressResultLiveData = storyProgressController.getCompletedChapterList(ProfileId.newBuilder().setInternalId(0).build())
+    val storyProgressLiveData = getStoryProgress(storyProgressResultLiveData)
+    storyProgressLiveData.observe(fragment, Observer<StoryProgress> { result ->
+      result.chapterProgressList.forEach {
+        Log.d("TopicPlayFragment", "subscribeToStoryProgress: " + it.explorationId)
+      }
+    })
+  }
+
+  /** Helper for subscribeToStoryProgress. */
+  private fun getStoryProgress(storyProgress: LiveData<AsyncResult<StoryProgress>>): LiveData<StoryProgress> {
+    return Transformations.map(storyProgress, ::processStoryProgress)
+  }
+
+  /** Helper for subscribeToStoryProgress. */
+  private fun processStoryProgress(ephemeralStateResult: AsyncResult<StoryProgress>): StoryProgress {
+    if (ephemeralStateResult.isFailure()) {
+      logger.e(
+        "TopicPlayFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
+    }
+    return ephemeralStateResult.getOrDefault(StoryProgress.getDefaultInstance())
   }
 }

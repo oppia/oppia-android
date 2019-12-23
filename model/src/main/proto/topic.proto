@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package model;
 
+import "profile.proto";
 import "subtitled_html.proto";
 import "thumbnail.proto";
 import "translation.proto";
@@ -223,6 +224,12 @@ enum ChapterPlayState {
 
   // The chapter has been completed by the player.
   COMPLETED = 3;
+}
+
+// Top level proto used to store profileId to storyProgress mapping
+message StoryProgressDatabase {
+  // Mapping from unique ID to profile.
+  map<int32, StoryProgress> storyProgress = 1;
 }
 
 // Represents the progress a player has made for a story.
