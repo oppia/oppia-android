@@ -20,7 +20,7 @@ Oppia-Android app is written in Kotlin and Python, and is built on top of Google
 
 Please refer to the [developer wiki](https://github.com/oppia/oppia-android/wiki) for full installation instructions. This is just a summary for developers who would like to contribute:
 
-1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia/wiki/Fork-and-Clone-Oppia) the Oppia repo. This will create a new folder named `opensource/oppia`.
+1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`.
 
 2. Navigate to `opensource/oppia-android/` and run the project in Android Studio.
 
@@ -32,7 +32,7 @@ If you'd like to help out, please check out [this wiki page](https://github.com/
 
 ## Support
 
-If you have any feature requests or bug reports, please log them on our [issue tracker](https://github.com/oppia/oppia-Android/issues/new).
+If you have any feature requests or bug reports, please log them on our [issue tracker](https://github.com/oppia/oppia-android/issues/new).
 
 Please report security issues directly to admin@oppia.org.
 
