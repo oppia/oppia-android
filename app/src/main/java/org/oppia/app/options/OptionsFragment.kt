@@ -7,19 +7,55 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
+import javax.inject.Inject
 
-class OptionsFragment : PreferenceFragmentCompat() {
+class OptionsFragment @Inject constructor(
+  private val profileManagementController: ProfileManagementController,
+  private val logger: Logger
+) : PreferenceFragmentCompat() {
 
   private lateinit var sharedPref :SharedPreferences
+  private lateinit var profileId: ProfileId
+  var storyTextSize = 16f
+  var appLanguage = "English"
+  var audioLanguage = "No Audio"
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
 
-    sharedPref =  PreferenceManager
-      .getDefaultSharedPreferences(requireContext())
+    profileId = ProfileId.newBuilder().setInternalId(2).build()
+
+   updateDataIntoUI()
+
+
+  }
+
+  private fun updateDataIntoUI() {
 
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
-    textSizePref.summary = sharedPref.getString(getString(R.string.key_story_text_size), "Small")
+    when (storyTextSize) {
+      16f -> {
+        textSizePref.summary ="Small"
+      }
+      18f -> {
+        textSizePref.summary = "Medium"
+      }
+      20f -> {
+        textSizePref.summary ="Large"
+      }
+      22f -> {
+        textSizePref.summary ="Extra Large"
+      }
+    }
+
+
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -33,7 +69,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
     }
 
     val appLanguagePref = findPreference<Preference>(getString(R.string.key_app_language))
-    appLanguagePref.summary = sharedPref.getString(getString(R.string.key_app_language), "English")
+    appLanguagePref.summary = appLanguage
     appLanguagePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -48,7 +84,7 @@ class OptionsFragment : PreferenceFragmentCompat() {
     }
 
     val defaultAudioPref = findPreference<Preference>(getString(R.string.key_default_audio))
-    defaultAudioPref.summary = sharedPref.getString(getString(R.string.key_default_audio), "No Audio")
+    defaultAudioPref.summary = audioLanguage
     defaultAudioPref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -67,7 +103,9 @@ class OptionsFragment : PreferenceFragmentCompat() {
     preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
 
     bindPreferenceSummaryToValueListener.onPreferenceChange(
-      preference,sharedPref.getString(preference.key, "")
+      preference, PreferenceManager
+        .getDefaultSharedPreferences(preference.context)
+        .getString(preference.key, typeOfValue)
     )
   }
 
@@ -76,38 +114,72 @@ class OptionsFragment : PreferenceFragmentCompat() {
       val stringValue = newValue.toString()
       when {
         preference.key == getString(R.string.key_story_text_size) -> // update the changed Text size  to summary filed
+        {
           preference.summary = stringValue
+          when (stringValue) {
+            "Small" -> {
+              profileManagementController.updateStoryTextSize(profileId,16f)
+            }
+            "Medium" -> {
+              profileManagementController.updateStoryTextSize(profileId,18f)
+            }
+            "Large" -> {
+              profileManagementController.updateStoryTextSize(profileId,20f)
+            }
+            "Extra Large" -> {
+              profileManagementController.updateStoryTextSize(profileId,22f)
+            }
+          }
+        }
         preference.key == getString(R.string.key_app_language) -> // update the changed language  to summary filed
+        {
           preference.summary = stringValue
+          profileManagementController.updateAppLanguage(profileId,stringValue)
+        }
         preference.key == getString(R.string.key_default_audio) -> // update the changed audio language  to summary filed
+        {
           preference.summary = stringValue
+          profileManagementController.updateAudioLanguage(profileId,stringValue)
+        }
       }
       true
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    val editor = sharedPref.edit()
     // Check which request we're responding to
     when (requestCode) {
       1 -> {
         val textSize = data!!.getStringExtra("MESSAGE") as String
-        editor.putString(getString(R.string.key_story_text_size), textSize)
-        editor.commit()
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
       }
       2 -> {
         val appLanguage = data!!.getStringExtra("MESSAGE") as String
-        editor.putString(getString(R.string.key_app_language), appLanguage)
-        editor.commit()
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
       }
       else -> {
         val audioLanguage = data!!.getStringExtra("MESSAGE") as String
-        editor.putString(getString(R.string.key_default_audio), audioLanguage)
-        editor.commit()
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
       }
     }
 
+  }
+
+  val profile: LiveData<Profile> by lazy {
+    Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
+    storyTextSize = profile.storyTextSize
+    appLanguage = profile.appLanguage
+    audioLanguage = profile.audioLanguage
+    logger.e("storyTextSize", ""+storyTextSize)
+    logger.e("audioLanguage", ""+audioLanguage)
+    logger.e("appLanguage", ""+appLanguage)
+
+    return profile
   }
 }

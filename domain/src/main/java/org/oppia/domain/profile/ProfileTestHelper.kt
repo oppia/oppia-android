@@ -17,7 +17,10 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
+      storyTextSize = 14f,
+      appLanguage = "English",
+      audioLanguage = "Hindi"
     )
     profileManagementController.addProfile(
       name = "Ben",
@@ -25,7 +28,10 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false
+      isAdmin = false,
+      storyTextSize = 16f,
+      appLanguage = "Hindi",
+      audioLanguage = "English"
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
@@ -39,7 +45,10 @@ class ProfileTestHelper @Inject constructor(
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = 18f,
+        appLanguage = "Chinese",
+        audioLanguage = "French"
       )
     }
   }
