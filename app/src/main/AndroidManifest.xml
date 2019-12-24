@@ -20,7 +20,11 @@
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity
       android:name=".home.HomeActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.HelpActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"
@@ -49,7 +53,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileEditActivity"
@@ -91,6 +94,10 @@
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity
+      android:name=".testing.NavigationDrawerTestActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
