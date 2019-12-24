@@ -141,14 +141,14 @@
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <!-- OnboardingActivity -->
-  <string name="slide_0_title">Welcome to Oppia!</string>
-  <string name="slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
-  <string name="slide_1_title">Add users to your account.</string>
-  <string name="slide_1_description">Share the experience and create up to 10 profiles.</string>
-  <string name="slide_2_title">Download for offline.</string>
-  <string name="slide_2_description">Continue learning your lessons without internet connection.</string>
-  <string name="slide_3_title">Have fun!</string>
-  <string name="slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
+  <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
+  <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
+  <string name="onboarding_slide_1_title">Add users to your account.</string>
+  <string name="onboarding_slide_1_description">Share the experience and create up to 10 profiles.</string>
+  <string name="onboarding_slide_2_title">Download for offline.</string>
+  <string name="onboarding_slide_2_description">Continue learning your lessons without internet connection.</string>
+  <string name="onboarding_slide_3_title">Have fun!</string>
+  <string name="onboarding_slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
   <string name="skip">Skip</string>
   <string name="get_started">Get Started</string>
   <!-- PinPasswordActivity -->

@@ -6,7 +6,7 @@ import org.oppia.app.profile.ProfileActivity
 import javax.inject.Inject
 
 /** Activity to contain the onbaording flow for learners. */
-class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListener {
+class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListListener {
   @Inject lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +15,7 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListener
     onboardingActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToProfile() {
+  override fun routeToProfileList() {
     startActivity(ProfileActivity.createProfileActivityIntent(this))
     finish()
   }

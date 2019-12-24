@@ -12,7 +12,7 @@ import org.oppia.app.databinding.OnboardingSlideBinding
 class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
     val binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
-    val onboardingSlideViewModel = OnboardingSlideViewModel(context, position)
+    val onboardingSlideViewModel = OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel
     container.addView(binding.root)
     return binding.root

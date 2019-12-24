@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.onboarding_fragment.view.*
 import org.oppia.app.R
 import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -24,9 +23,9 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
-  private val routeToProfileListener = activity as RouteToProfileListener
+  private val routeToProfileListener = activity as RouteToProfileListListener
   private lateinit var binding: OnboardingFragmentBinding
-  private lateinit var slidesViewPager: ViewPager
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OnboardingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -36,16 +35,15 @@ class OnboardingFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = getOnboardingViewModel()
     }
-    slidesViewPager = binding.root.onboarding_slide_view_pager as ViewPager
-    setUpViewPager(slidesViewPager)
+    setUpViewPager()
     addDots()
     return binding.root
   }
 
-  private fun setUpViewPager(viewPager: ViewPager) {
+  private fun setUpViewPager() {
     onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
-    viewPager.adapter = onboardingPagerAdapter
-    viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+    binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
+    binding.onboardingSlideViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
       }
 
@@ -53,19 +51,19 @@ class OnboardingFragmentPresenter @Inject constructor(
       }
 
       override fun onPageSelected(position: Int) {
-        getOnboardingViewModel().slideChanged(position)
+        getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
         selectDot(position)
       }
     })
   }
 
   fun clickOnGetStarted() {
-    routeToProfileListener.routeToProfile()
+    routeToProfileListener.routeToProfileList()
   }
 
   fun clickOnSkip() {
-    getOnboardingViewModel().slideChanged(3)
-    slidesViewPager.currentItem = 3
+    getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
+    binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
@@ -83,11 +81,6 @@ class OnboardingFragmentPresenter @Inject constructor(
       val dotView = ImageView(activity)
       dotView.id = dotIdList[index]
       dotView.setImageResource(R.drawable.onboarding_dot_active)
-      if (index != 0) {
-        dotView.alpha = 0.3F
-      } else {
-        dotView.alpha = 1F
-      }
 
       val params = LinearLayout.LayoutParams(
         activity.resources.getDimensionPixelSize(R.dimen.dot_width_height),
@@ -100,9 +93,9 @@ class OnboardingFragmentPresenter @Inject constructor(
         0
       )
       dotsLayout.addView(dotView, params)
-
       dotsList.add(dotView)
     }
+    selectDot(0)
   }
 
   private fun selectDot(position: Int) {

@@ -9,41 +9,41 @@ import org.oppia.app.viewmodel.ObservableViewModel
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
 /** [ViewModel] for slide in onboarding flow. */
-class OnboardingSlideViewModel(val context: Context, val index: Int) : ObservableViewModel() {
+class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSlide) : ObservableViewModel() {
   val slideImage = ObservableField<Int>(R.drawable.ic_onboarding_0)
-  val title = ObservableField<String>(context.resources.getString(R.string.slide_0_title))
-  val description = ObservableField<String>(context.resources.getString(R.string.slide_0_description))
+  val title = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
+  val description = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_description))
 
   init {
-    slideChanged(index)
+    slideChanged(viewPagerSlide)
   }
 
-  private fun slideChanged(index: Int) {
-    when (index) {
-      0 -> {
+  private fun slideChanged(viewPagerSlide: ViewPagerSlide) {
+    when (viewPagerSlide) {
+      ViewPagerSlide.SLIDE_0 -> {
         slideImage.set(R.drawable.ic_onboarding_0)
-        title.set(context.resources.getString(R.string.slide_0_title))
-        description.set(context.resources.getString(R.string.slide_0_description))
+        title.set(context.resources.getString(R.string.onboarding_slide_0_title))
+        description.set(context.resources.getString(R.string.onboarding_slide_0_description))
       }
-      1 -> {
+      ViewPagerSlide.SLIDE_1 -> {
         slideImage.set(R.drawable.ic_onboarding_1)
-        title.set(context.resources.getString(R.string.slide_1_title))
-        description.set(context.resources.getString(R.string.slide_1_description))
+        title.set(context.resources.getString(R.string.onboarding_slide_1_title))
+        description.set(context.resources.getString(R.string.onboarding_slide_1_description))
       }
-      2 -> {
+      ViewPagerSlide.SLIDE_2 -> {
         slideImage.set(R.drawable.ic_onboarding_2)
-        title.set(context.resources.getString(R.string.slide_2_title))
-        description.set(context.resources.getString(R.string.slide_2_description))
+        title.set(context.resources.getString(R.string.onboarding_slide_2_title))
+        description.set(context.resources.getString(R.string.onboarding_slide_2_description))
       }
-      3 -> {
+      ViewPagerSlide.SLIDE_3 -> {
         slideImage.set(R.drawable.ic_onboarding_3)
-        title.set(context.resources.getString(R.string.slide_3_title))
-        description.set(context.resources.getString(R.string.slide_3_description))
+        title.set(context.resources.getString(R.string.onboarding_slide_3_title))
+        description.set(context.resources.getString(R.string.onboarding_slide_3_description))
       }
       else -> {
         slideImage.set(R.drawable.ic_onboarding_3)
-        title.set(context.resources.getString(R.string.slide_3_title))
-        description.set(context.resources.getString(R.string.slide_3_description))
+        title.set(context.resources.getString(R.string.onboarding_slide_3_title))
+        description.set(context.resources.getString(R.string.onboarding_slide_3_description))
       }
     }
   }

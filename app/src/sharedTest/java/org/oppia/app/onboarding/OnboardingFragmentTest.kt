@@ -44,7 +44,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_0_title)))
+      ).check(matches(withText(R.string.onboarding_slide_0_title)))
     }
   }
 
@@ -56,7 +56,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_0_description)))
+      ).check(matches(withText(R.string.onboarding_slide_0_description)))
     }
   }
 
@@ -119,7 +119,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -131,7 +131,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_swipeRight_isNotWorking() {
+  fun testOnboardingFragment_swipeRight_doesNotWork() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeRight())
       SystemClock.sleep(500)
@@ -154,7 +154,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_1_title)))
+      ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
 
@@ -168,7 +168,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_1_description)))
+      ).check(matches(withText(R.string.onboarding_slide_1_description)))
     }
   }
 
@@ -238,7 +238,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -277,7 +277,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_2_title)))
+      ).check(matches(withText(R.string.onboarding_slide_2_title)))
     }
   }
 
@@ -292,7 +292,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_2_description)))
+      ).check(matches(withText(R.string.onboarding_slide_2_description)))
     }
   }
 
@@ -366,7 +366,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -392,7 +392,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 
@@ -408,7 +408,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_description)))
+      ).check(matches(withText(R.string.onboarding_slide_3_description)))
     }
   }
 
@@ -463,7 +463,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_swipeLeftOnLastSlide_isNotWorking() {
+  fun testOnboardingFragment_swipeLeftOnLastSlide_doesNotWork() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
@@ -475,7 +475,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.slide_3_title)))
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
 

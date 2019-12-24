@@ -10,7 +10,7 @@ class OnboardingViewModel @Inject constructor() : ObservableViewModel() {
   val slideNumber = ObservableField<Int>(0)
   val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
 
-  fun slideChanged(index: Int) {
-    slideNumber.set(index)
+  fun slideChanged(viewPagerSlide: ViewPagerSlide) {
+    slideNumber.set(viewPagerSlide.ordinal)
   }
 }
