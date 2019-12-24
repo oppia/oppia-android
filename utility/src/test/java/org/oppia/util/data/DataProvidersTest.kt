@@ -56,11 +56,9 @@ class DataProvidersTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var dataProviders: DataProviders
+  @Inject lateinit var dataProviders: DataProviders
 
-  @Inject
-  lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 
   @Inject
   @field:TestDispatcher

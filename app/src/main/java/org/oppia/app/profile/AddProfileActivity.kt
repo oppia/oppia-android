@@ -11,8 +11,7 @@ const val KEY_ADD_PROFILE_COLOR_RGB = "KEY_ADD_PROFILE_COLOR_RGB"
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
+  @Inject lateinit var addProfileFragmentPresenter: AddProfileActivityPresenter
 
   companion object {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {

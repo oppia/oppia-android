@@ -11,8 +11,7 @@ const val KEY_ADMIN_PIN_COLOR_RGB = "ADMIN_PIN_COLOR_RGB"
 
 /** Activity that sets the admin's PIN. */
 class AdminPinActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
+  @Inject lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
 
   companion object {
     fun createAdminPinActivityIntent(context: Context, profileId: Int, colorRgb: Int): Intent {

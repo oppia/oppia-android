@@ -49,8 +49,7 @@ class CellularAudioDialogControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var cellularAudioDialogController: CellularAudioDialogController
+  @Inject lateinit var cellularAudioDialogController: CellularAudioDialogController
 
   @Inject
   @field:TestDispatcher

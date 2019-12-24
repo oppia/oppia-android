@@ -19,8 +19,7 @@ import javax.inject.Inject
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
-  @Inject
-  lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
