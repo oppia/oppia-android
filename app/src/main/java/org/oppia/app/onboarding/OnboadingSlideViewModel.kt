@@ -15,10 +15,10 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
   val description = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_description))
 
   init {
-    slideChanged(viewPagerSlide)
+    initializingSlide(viewPagerSlide)
   }
 
-  private fun slideChanged(viewPagerSlide: ViewPagerSlide) {
+  private fun initializingSlide(viewPagerSlide: ViewPagerSlide) {
     when (viewPagerSlide) {
       ViewPagerSlide.SLIDE_0 -> {
         slideImage.set(R.drawable.ic_onboarding_0)
@@ -36,11 +36,6 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         description.set(context.resources.getString(R.string.onboarding_slide_2_description))
       }
       ViewPagerSlide.SLIDE_3 -> {
-        slideImage.set(R.drawable.ic_onboarding_3)
-        title.set(context.resources.getString(R.string.onboarding_slide_3_title))
-        description.set(context.resources.getString(R.string.onboarding_slide_3_description))
-      }
-      else -> {
         slideImage.set(R.drawable.ic_onboarding_3)
         title.set(context.resources.getString(R.string.onboarding_slide_3_title))
         description.set(context.resources.getString(R.string.onboarding_slide_3_description))
