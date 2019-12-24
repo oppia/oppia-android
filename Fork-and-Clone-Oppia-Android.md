@@ -5,9 +5,9 @@ _For a detailed explanation of the fork-and-clone process, please see this [GitH
 1. Make sure that you are in the `opensource/` folder on your local machine.
 
 2. Click on the "Fork" button on the top-right corner (at the same level as the oppia/oppia-android repository name):
-![Oppia-Android Fork](https://user-images.githubusercontent.com/9396084/71338568-663f1400-2576-11ea-9893-8d616f65368f.png)
+![Oppia-Android Fork](https://user-images.githubusercontent.com/9396084/71397560-eed7b600-2643-11ea-854c-ea1d57df497d.png)
 
-3. You can now see Oppia-Android under your repositories. It will be marked as forked from `oppia/oppia-android`
+3. You can now see Oppia-Android under [your repositories](https://github.com/). It will be marked as forked from `oppia/oppia-android`
 ![Oppia-Android Origin Repo](https://user-images.githubusercontent.com/9396084/71338640-b0c09080-2576-11ea-8dc3-3d4a0ef59877.png)
 
 4. Clone this repository to your local computer by running `git clone https://github.com/USERNAME/oppia-android.git` in a terminal.
