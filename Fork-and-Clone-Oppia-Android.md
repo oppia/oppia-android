@@ -1,4 +1,4 @@
-For a detailed explanation for fork and clone, you can go to github help page
+For a detailed explanation for fork and clone, you can go to [github help page](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#platform-linux)
 
 Make sure you are in `opensource/` folder. Now follow the steps below :
 
