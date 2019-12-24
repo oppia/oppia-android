@@ -2,7 +2,7 @@ package org.oppia.app.drawer
 
 import org.oppia.app.R
 
-/** Enum Represents different destinations that can be selected by the user from the navigation drawer. */
+/** Represents different destinations that can be selected by the user from the navigation drawer. */
 enum class NavigationDrawerItem(val value: Int) {
   HOME(R.id.nav_home), HELP(R.id.nav_help);
 
