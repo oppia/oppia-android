@@ -3,11 +3,18 @@ Thanks for your interest in contributing to the Oppia Android project, and makin
 We're still working on setting up the basics of the Android project, but we are starting to welcome new contributors who'd like to help out. For now, if you're interested in contributing, please follow the following steps:
 
 1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
-1. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
-1. Check out the oppia-android codebase to become familiar with the project!
-1. Check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally, so that you can connect to a local instance of the web app when developing locally.
-1. Read the Oppia Android coding style guide: https://github.com/oppia/oppia-android/wiki/Coding-style-guide
+2. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
+3. Check out the oppia-android codebase to become familiar with the project!
+4. Check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally, so that you can connect to a local instance of the web app when developing locally.
+5. Read the Oppia Android coding style guide: https://github.com/oppia/oppia-android/wiki/Coding-style-guide
 
+## Installation
+
+Please follow these steps for initial setup of the project on your local machine.
+
+1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`.
+
+2. Navigate to `opensource/oppia-android/` and run the project in Android Studio.
 
 ## Instructions for making a code change
 
