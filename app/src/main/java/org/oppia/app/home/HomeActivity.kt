@@ -17,6 +17,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     homeActivityPresenter.handleOnCreate()
+    title = getString(R.string.menu_home)
   }
 
   override fun routeToTopic(topicId: String) {
