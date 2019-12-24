@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <style name="OppiaThemeWithoutActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+  <!-- Base style for animations.  This style specifies no animations. -->
+  <style name="Animation" />
+  <!-- Standard animations for a full-screen window or activity. -->
+  <style name="Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+    <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+  </style>
+
   <style name="AudioSeekBar" parent="Widget.AppCompat.SeekBar">
     <item name="android:progressBackgroundTint">@color/progressBackgroundTint</item>
     <item name="android:progressTint">@color/white</item>

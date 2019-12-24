@@ -19,7 +19,7 @@
   <style name="Animation" />
   <!-- Standard animations for a full-screen window or activity. -->
   <style name="Animation.Activity">
-    <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+    <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
     <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
   </style>
 
@@ -103,7 +103,6 @@
   <style name="textAllCaps">
     <item name="android:textAllCaps">true</item>
   </style>
-
   <!-- TOPIC TABLAYOUT STYLE -->
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">
     <item name="tabIndicatorColor">@color/white</item>
