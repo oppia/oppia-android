@@ -47,6 +47,18 @@ class UserAppHistoryController @Inject constructor(
         logger.e("DOMAIN", "Failed to clear user app history.", it)
       }
     }
+  } /**
+   * Saves that the user has opened the app. Note that this does not notify existing subscribers of the changed state,
+   * nor can future subscribers observe this state until app restart.
+   */
+  fun markUserOnboardedApp() {
+    appHistoryStore.storeDataAsync(updateInMemoryCache = false) {
+      it.toBuilder().setAlreadyOnBoardedApp(true).build()
+    }.invokeOnCompletion {
+      it?.let {
+        logger.e("DOMAIN", "Failed when storing that the user already opened the app.", it)
+      }
+    }
   }
 
   /**
