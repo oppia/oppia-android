@@ -1,17 +1,21 @@
-For a detailed explanation for fork and clone, you can go to [github help page](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#platform-linux)
+_For a detailed explanation of the fork-and-clone process, please see this [GitHub help page](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#platform-linux)._
 
-Make sure you are in `opensource/` folder. Now follow the steps below :
+## How to fork and clone the Oppia Android repository
 
-* Click on the `fork` button. It is placed on the top right corner opposite to repository name `oppia/oppia-android`.
+1. Make sure that you are in the `opensource/` folder on your local machine.
+
+2. Click on the "Fork" button on the top-right corner (at the same level as the oppia/oppia-android repository name):
 ![Oppia-Android Fork](https://user-images.githubusercontent.com/9396084/71338568-663f1400-2576-11ea-9893-8d616f65368f.png)
 
-* You can now see Oppia-Android under your repositories. It will be marked as forked from `oppia/oppia-android`
+3. You can now see Oppia-Android under your repositories. It will be marked as forked from `oppia/oppia-android`
 ![Oppia-Android Origin Repo](https://user-images.githubusercontent.com/9396084/71338640-b0c09080-2576-11ea-8dc3-3d4a0ef59877.png)
 
-* Let's clone this repository to your local computer using git clone `https://github.com/USERNAME/oppia-android.git`
+4. Clone this repository to your local computer by running `git clone https://github.com/USERNAME/oppia-android.git` in a terminal.
 
-* We will configure remote repositories to keep your local repository, forked repository and main oppia-android repository in sync. You can check your current remote repositories by typing `git remote -v`.
+5. To keep your local repository, forked repository and main oppia-android repository in sync, configure your remote repositories by running the following two commands in a terminal:
+   - `git remote -v` (this lists your current remote repositories)
+   - `git remote add upstream https://github.com/oppia/oppia-android` (this adds oppia/oppia-android as an upstream repo)
 
-* Type the following to add oppia as upstream `git remote add upstream https://github.com/oppia/oppia-android`.
+## Updating your local repository
 
-* And we are done! You can access main oppia repository using `git fetch upstream` and access your forked version using `git fetch origin`.
+You can download the latest contents of the main Oppia Android repository using `git fetch upstream`, and you can also access your forked version using `git fetch origin`. (Usually, you'll want to do the former.)
