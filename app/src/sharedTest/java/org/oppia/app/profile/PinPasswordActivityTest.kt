@@ -2,6 +2,7 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -18,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -75,6 +77,15 @@ class PinPasswordActivityTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  @Test
+  fun testPinPasswordActivityWithAdmin_activityVisible_checkKeyboardVisibilityByDefault() {
+    ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
+      val inputMethodManager =
+        InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      assert(inputMethodManager.isAcceptingText)
+    }
   }
 
   @Test
