@@ -57,6 +57,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
 
+    binding.inputPin.requestFocus()
     binding.inputPin.addTextChangedListener(object: TextWatcher {
       var wrong = false
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
