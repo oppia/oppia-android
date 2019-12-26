@@ -27,7 +27,7 @@ class OnboardingFlowController @Inject constructor(
   }
 
   /**
-   * Saves that the user has opened the app. Note that this does not notify existing subscribers of the changed state,
+   * Saves that the user has completed on-boarding the app. Note that this does not notify existing subscribers of the changed state,
    * nor can future subscribers observe this state until app restart.
    */
   fun markOnboardingFlowCompleted() {
@@ -40,7 +40,7 @@ class OnboardingFlowController @Inject constructor(
     }
   }
 
-  /** Clears any indication that the user has previously opened the application. */
+  /** Clears any indication that the user has previously completed on-boarding the application. */
   fun clearOnboardingFlow() {
     appHistoryStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
@@ -51,7 +51,7 @@ class OnboardingFlowController @Inject constructor(
 
   /**
    * Returns a [LiveData] result indicating whether the user has previously opened the app. This is guaranteed to
-   * provide the state of the store upon the creation of this controller even if [markUserOpenedApp] has since been
+   * provide the state of the store upon the creation of this controller even if [markOnboardingFlowCompleted] has since been
    * called.
    */
   fun getOnboardingFlow(): LiveData<AsyncResult<OnboardingFlow>> {
