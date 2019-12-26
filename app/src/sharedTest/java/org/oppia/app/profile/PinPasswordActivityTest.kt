@@ -2,7 +2,6 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.inputmethod.InputMethodManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,11 +14,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -80,11 +79,9 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPasswordActivityWithAdmin_activityVisible_checkKeyboardVisibilityByDefault() {
-    ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, userId)).use {
-      val inputMethodManager =
-        InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-      assert(inputMethodManager.isAcceptingText)
+  fun testPinPasswordActivityWithAdmin_checkKeyboardIsVisibleByDefault() {
+    ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, adminId)).use {
+      onView(withId(R.id.input_pin)).check(matches(hasFocus()))
     }
   }
 
