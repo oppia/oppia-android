@@ -32,7 +32,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.UserAppHistory
+import org.oppia.app.model.OnboardingFlow
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -46,10 +46,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-/** Tests for [UserAppHistoryController]. */
+/** Tests for [OnboardingFlowController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class UserAppHistoryControllerTest {
+class OnboardingFlowControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -59,7 +59,7 @@ class UserAppHistoryControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject
-  lateinit var userAppHistoryController: UserAppHistoryController
+  lateinit var onboardingFlowController: OnboardingFlowController
 
   @Inject
   @field:TestDispatcher
@@ -70,10 +70,10 @@ class UserAppHistoryControllerTest {
   }
 
   @Mock
-  lateinit var mockAppHistoryObserver: Observer<AsyncResult<UserAppHistory>>
+  lateinit var mockAppHistoryObserver: Observer<AsyncResult<OnboardingFlow>>
 
   @Captor
-  lateinit var appHistoryResultCaptor: ArgumentCaptor<AsyncResult<UserAppHistory>>
+  lateinit var appHistoryResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -96,7 +96,7 @@ class UserAppHistoryControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerUserAppHistoryControllerTest_TestApplicationComponent.builder()
+    DaggerOnboardingFlowControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -105,67 +105,67 @@ class UserAppHistoryControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest(coroutineContext) {
-    val appHistory = userAppHistoryController.getUserAppHistory()
+    val appHistory = onboardingFlowController.getOnboardingFlow()
     advanceUntilIdle()
     appHistory.observeForever(mockAppHistoryObserver)
 
     verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
     assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testControllerObserver_observedAfterSettingAppOpened_providesLiveData_userDidNotOpenApp() =
     runBlockingTest(coroutineContext) {
-      val appHistory = userAppHistoryController.getUserAppHistory()
+      val appHistory = onboardingFlowController.getOnboardingFlow()
 
       appHistory.observeForever(mockAppHistoryObserver)
-      userAppHistoryController.markUserOpenedApp()
+      onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
 
       // The result should not indicate that the user opened the app because markUserOpenedApp does not notify observers
       // of the change.
       verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
       assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-      assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
+      assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
     }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_settingAppOpened_observedNewController_userOpenedApp() = runBlockingTest(coroutineContext) {
-    userAppHistoryController.markUserOpenedApp()
+    onboardingFlowController.markOnboardingFlowCompleted()
     advanceUntilIdle()
 
     // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
     setUpTestApplicationComponent()
-    val appHistory = userAppHistoryController.getUserAppHistory()
+    val appHistory = onboardingFlowController.getOnboardingFlow()
     appHistory.observeForever(mockAppHistoryObserver)
     advanceUntilIdle()
 
     // The app should be considered open since a new LiveData instance was observed after marking the app as opened.
     verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
     assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isTrue()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_openedApp_cleared_observeNewController_userDidNotOpenApp() = runBlockingTest(coroutineContext) {
-    userAppHistoryController.markUserOpenedApp()
+    onboardingFlowController.markOnboardingFlowCompleted()
     advanceUntilIdle()
 
     // Clear, then recreate another controller.
-    userAppHistoryController.clearUserAppHistory()
+    onboardingFlowController.clearOnboardingFlow()
     setUpTestApplicationComponent()
-    val appHistory = userAppHistoryController.getUserAppHistory()
+    val appHistory = onboardingFlowController.getOnboardingFlow()
     appHistory.observeForever(mockAppHistoryObserver)
     advanceUntilIdle()
 
     // The app should be considered not yet opened since the previous history was cleared.
     verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
     assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
   }
 
   @Qualifier
@@ -229,6 +229,6 @@ class UserAppHistoryControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(userAppHistoryControllerTest: UserAppHistoryControllerTest)
+    fun inject(onboardingFlowControllerTest: OnboardingFlowControllerTest)
   }
 }

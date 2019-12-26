@@ -1,7 +1,7 @@
 package org.oppia.domain
 
 import androidx.lifecycle.LiveData
-import org.oppia.app.model.UserAppHistory
+import org.oppia.app.model.OnboardingFlow
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -11,11 +11,11 @@ import javax.inject.Singleton
 
 /** Controller for persisting and retrieving the previous user history of using the app. */
 @Singleton
-class UserAppHistoryController @Inject constructor(
+class OnboardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val appHistoryStore = cacheStoreFactory.create("user_app_history", UserAppHistory.getDefaultInstance())
+  private val appHistoryStore = cacheStoreFactory.create("onboarding_flow", OnboardingFlow.getDefaultInstance())
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markUserOpenedApp().
@@ -30,9 +30,9 @@ class UserAppHistoryController @Inject constructor(
    * Saves that the user has opened the app. Note that this does not notify existing subscribers of the changed state,
    * nor can future subscribers observe this state until app restart.
    */
-  fun markUserOpenedApp() {
+  fun markOnboardingFlowCompleted() {
     appHistoryStore.storeDataAsync(updateInMemoryCache = false) {
-      it.toBuilder().setAlreadyOpenedApp(true).build()
+      it.toBuilder().setAlreadyOnBoardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed when storing that the user already opened the app.", it)
@@ -41,10 +41,10 @@ class UserAppHistoryController @Inject constructor(
   }
 
   /** Clears any indication that the user has previously opened the application. */
-  fun clearUserAppHistory() {
+  fun clearOnboardingFlow() {
     appHistoryStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to clear user app history.", it)
+        logger.e("DOMAIN", "Failed to clear onboarding flow.", it)
       }
     }
   }
@@ -54,7 +54,7 @@ class UserAppHistoryController @Inject constructor(
    * provide the state of the store upon the creation of this controller even if [markUserOpenedApp] has since been
    * called.
    */
-  fun getUserAppHistory(): LiveData<AsyncResult<UserAppHistory>> {
+  fun getOnboardingFlow(): LiveData<AsyncResult<OnboardingFlow>> {
     return dataProviders.convertToLiveData(appHistoryStore)
   }
 }
