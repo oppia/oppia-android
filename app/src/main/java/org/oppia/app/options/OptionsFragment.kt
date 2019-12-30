@@ -2,16 +2,14 @@ package org.oppia.app.options
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
@@ -40,16 +38,16 @@ class OptionsFragment @Inject constructor(
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
       16f -> {
-        textSizePref.summary ="Small"
+        textSizePref.summary = "Small"
       }
       18f -> {
         textSizePref.summary = "Medium"
       }
       20f -> {
-        textSizePref.summary ="Large"
+        textSizePref.summary = "Large"
       }
       22f -> {
-        textSizePref.summary ="Extra Large"
+        textSizePref.summary = "Extra Large"
       }
     }
 
@@ -115,28 +113,28 @@ class OptionsFragment @Inject constructor(
           preference.summary = stringValue
           when (stringValue) {
             "Small" -> {
-              profileManagementController.updateStoryTextSize(profileId,16f)
+              profileManagementController.updateStoryTextSize(profileId, 16f)
             }
             "Medium" -> {
-              profileManagementController.updateStoryTextSize(profileId,18f)
+              profileManagementController.updateStoryTextSize(profileId, 18f)
             }
             "Large" -> {
-              profileManagementController.updateStoryTextSize(profileId,20f)
+              profileManagementController.updateStoryTextSize(profileId, 20f)
             }
             "Extra Large" -> {
-              profileManagementController.updateStoryTextSize(profileId,22f)
+              profileManagementController.updateStoryTextSize(profileId, 22f)
             }
           }
         }
         preference.key == getString(R.string.key_app_language) -> // update the changed language  to summary filed
         {
           preference.summary = stringValue
-          profileManagementController.updateAppLanguage(profileId,stringValue)
+          profileManagementController.updateAppLanguage(profileId, stringValue)
         }
         preference.key == getString(R.string.key_default_audio) -> // update the changed audio language  to summary filed
         {
           preference.summary = stringValue
-          profileManagementController.updateAudioLanguage(profileId,stringValue)
+          profileManagementController.updateAudioLanguage(profileId, stringValue)
         }
       }
       true
@@ -161,32 +159,29 @@ class OptionsFragment @Inject constructor(
 
   }
 
-  val profileLiveData: LiveData<Profile> by lazy {
+  private val profileLiveData: LiveData<Profile> by lazy {
     getProfileData()
   }
 
   private fun getProfileData(): LiveData<Profile> {
-     return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
 
   private fun subscribeToProfileLiveData() {
     profileLiveData.observe(activity, Observer<Profile> { result ->
-
       storyTextSize = result.storyTextSize
       appLanguage = result.appLanguage
       audioLanguage = result.audioLanguage
-      logger.e("storyTextSize", "======="+storyTextSize)
-      logger.e("audioLanguage", "======="+audioLanguage)
-      logger.e("appLanguage", "========="+appLanguage)
+
       updateDataIntoUI()
 
     })
   }
+
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
-    val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    return profile
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 }
