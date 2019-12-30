@@ -18,10 +18,11 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver {
      * @param explorationId used by StateFragment.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(explorationId: String): StateFragment {
+    fun newInstance(explorationId: String, topicId: String?): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
       stateFragment.arguments = args
       return stateFragment
     }

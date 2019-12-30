@@ -241,11 +241,14 @@ message StoryProgress {
 
 // Represents the progress a player has made on a single chapter.
 message ChapterProgress {
+  // The topic ID to get progress of a specific topic only.
+  string topic_id = 1;
+
   // The exploration ID of the chapter with possible progress made.
-  string exploration_id = 1;
+  string exploration_id = 2;
 
   // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
+  ChapterPlayState play_state = 3;
 }
 
 // Represents user's preference for using cellular data

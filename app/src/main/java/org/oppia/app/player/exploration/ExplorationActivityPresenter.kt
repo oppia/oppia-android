@@ -59,6 +59,7 @@ class ExplorationActivityPresenter @Inject constructor(
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
       args.putString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,

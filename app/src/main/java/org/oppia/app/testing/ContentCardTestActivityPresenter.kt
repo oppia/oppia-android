@@ -45,7 +45,7 @@ class ContentCardTestActivityPresenter @Inject constructor(
             logger.d("ContentCardTest", "Successfully loaded exploration")
 
             if (getStateFragment() == null) {
-              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_1)
+              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_1, /* topicId= */ null)
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.state_fragment_placeholder,
                 stateFragment
@@ -72,7 +72,7 @@ class ContentCardTestActivityPresenter @Inject constructor(
             logger.d("ContentCardTest", "Successfully loaded exploration")
 
             if (getStateFragment() == null) {
-              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_2)
+              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_2, /* topicId= */ null)
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.state_fragment_placeholder,
                 stateFragment

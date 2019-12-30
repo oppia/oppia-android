@@ -38,8 +38,8 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -62,6 +62,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -70,6 +71,7 @@ import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -81,6 +83,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
+  private val profileManagementController: ProfileManagementController,
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
@@ -90,6 +93,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private var feedbackId: String? = null
   private lateinit var explorationId: String
+  private var topicId: String? = null
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -114,6 +118,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val stateRecyclerViewAdapter = createRecyclerViewAdapter()
@@ -401,7 +406,7 @@ class StateFragmentPresenter @Inject constructor(
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
-    },2000)
+    }, 2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -432,7 +437,12 @@ class StateFragmentPresenter @Inject constructor(
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     explorationDataController.stopPlayingExploration()
-    storyProgressController.recordCompletedChapter(/* profileId= */ 0, explorationId)
+    topicId?.let {
+      storyProgressController.recordCompletedChapter(/* profileId= */ profileManagementController.getCurrentProfileId(),
+        explorationId,
+        it
+      )
+    }
     activity.finish()
 
   }
