@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,63 +51,63 @@
           android:fontFamily="sans-serif"
           android:gravity="center"
           android:text="@string/story_text_will_look_like_this" />
+
         <View
           android:id="@+id/divider_view"
           android:layout_width="match_parent"
           android:layout_height="1dp"
           android:background="@drawable/toolbar_drop_shadow" />
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal">
-
-        <TextView
-          android:id="@+id/story_text_size_small_textview"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="32dp"
-          android:layout_marginTop="60dp"
-          android:layout_marginBottom="60dp"
-          android:gravity="center"
-          android:text="@string/constant_string_for_text_size"
-          android:textSize="16sp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <SeekBar
-          android:id="@+id/story_text_size_seekBar"
+        <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
-          android:layout_height="27dp"
-          android:layout_marginStart="44dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginEnd="44dp"
-          android:layout_marginBottom="8dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toStartOf="@+id/story_text_size_big_textview"
-          app:layout_constraintStart_toEndOf="@+id/story_text_size_small_textview"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-          android:id="@+id/story_text_size_big_textview"
-          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="60dp"
-          android:layout_marginEnd="32dp"
-          android:layout_marginBottom="60dp"
-          android:fontFamily="sans-serif"
-          android:gravity="center"
-          android:text="@string/constant_string_for_text_size"
-          android:textSize="28dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintVertical_bias="0.0" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
-      </LinearLayout>
+          android:background="@color/white"
+          android:orientation="horizontal">
 
+          <TextView
+            android:id="@+id/story_text_size_small_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"
+            android:gravity="center"
+            android:text="@string/constant_string_for_text_size"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <SeekBar
+            android:id="@+id/story_text_size_seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="44dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/story_text_size_big_textview"
+            app:layout_constraintStart_toEndOf="@+id/story_text_size_small_textview"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <TextView
+            android:id="@+id/story_text_size_big_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="60dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="@string/constant_string_for_text_size"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </LinearLayout>
 
       <View
         android:id="@+id/toolbar_shadow_view"
