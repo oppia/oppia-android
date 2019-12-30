@@ -31,7 +31,6 @@ class OptionsFragment @Inject constructor(
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
     profileId = ProfileId.newBuilder().setInternalId(2).build()
     subscribeToProfileLiveData()
-
   }
 
   private fun updateDataIntoUI() {
@@ -174,7 +173,6 @@ class OptionsFragment @Inject constructor(
       audioLanguage = result.audioLanguage
 
       updateDataIntoUI()
-
     })
   }
 
