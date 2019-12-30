@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
@@ -18,10 +19,13 @@ import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -32,6 +36,7 @@ import javax.inject.Inject
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val profileManagementController: ProfileManagementController,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
   private val logger: Logger
@@ -44,6 +49,9 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
+  private lateinit var profileId: ProfileId
+  private lateinit var profileName: String
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -56,6 +64,8 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+
+    profileId = profileManagementController.getCurrentProfileId()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -79,10 +89,33 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     userAppHistoryController.markUserOpenedApp()
+    subscribeToProfileLiveData()
     subscribeToUserAppHistory()
     subscribeToOngoingStoryList()
     subscribeToTopicList()
     return binding.root
+  }
+
+
+  private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }
+
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun subscribeToProfileLiveData() {
+    profileLiveData.observe(activity, Observer<Profile> { result ->
+      profileName = result.name
+    })
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -108,6 +141,7 @@ class HomeFragmentPresenter @Inject constructor(
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
       userAppHistoryViewModel = UserAppHistoryViewModel()
       userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
+      userAppHistoryViewModel.profileName = " $profileName"
       itemList[0] = userAppHistoryViewModel
       topicListAdapter.notifyItemChanged(0)
     })
