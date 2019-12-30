@@ -8,7 +8,6 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
