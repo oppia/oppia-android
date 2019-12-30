@@ -18,7 +18,7 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = 14f,
+      storyTextSize = 16f,
       appLanguage = "English",
       audioLanguage = "Hindi"
     )

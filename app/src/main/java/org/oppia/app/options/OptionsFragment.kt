@@ -29,7 +29,7 @@ class OptionsFragment @Inject constructor(
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
-    profileId = ProfileId.newBuilder().setInternalId(2).build()
+    profileId = ProfileId.newBuilder().setInternalId(1).build()
     subscribeToProfileLiveData()
   }
 
