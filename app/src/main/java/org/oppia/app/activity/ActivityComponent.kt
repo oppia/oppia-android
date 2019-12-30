@@ -9,7 +9,7 @@ import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
-import org.oppia.app.options.OptionActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.StoryTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
@@ -68,7 +68,7 @@ interface ActivityComponent {
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
-  fun inject(optionActivity: OptionActivity)
+  fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)

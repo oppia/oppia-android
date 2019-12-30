@@ -30,13 +30,13 @@ class OptionsFragmentTest {
   private lateinit var sharedPref :SharedPreferences
 
   @get:Rule
-  var optionActivityTestRule: ActivityTestRule<OptionActivity> = ActivityTestRule(
-    OptionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  var optionActivityTestRule: ActivityTestRule<OptionsActivity> = ActivityTestRule(
+    OptionsActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
 
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -51,7 +51,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -65,7 +65,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -96,7 +96,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -117,7 +117,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -138,7 +138,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -159,7 +159,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
-    ActivityScenario.launch(OptionActivity::class.java).use {
+    ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(

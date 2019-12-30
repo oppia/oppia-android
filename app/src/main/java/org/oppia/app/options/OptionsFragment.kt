@@ -7,7 +7,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
@@ -17,11 +20,10 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 class OptionsFragment @Inject constructor(
+  private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val logger: Logger
 ) : PreferenceFragmentCompat() {
-
-  private lateinit var sharedPref :SharedPreferences
   private lateinit var profileId: ProfileId
   var storyTextSize = 16f
   var appLanguage = "English"
@@ -29,16 +31,12 @@ class OptionsFragment @Inject constructor(
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
-
     profileId = ProfileId.newBuilder().setInternalId(2).build()
-
-   updateDataIntoUI()
-
+    subscribeToProfileLiveData()
 
   }
 
   private fun updateDataIntoUI() {
-
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
       16f -> {
@@ -54,7 +52,6 @@ class OptionsFragment @Inject constructor(
         textSizePref.summary ="Extra Large"
       }
     }
-
 
     textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
@@ -164,22 +161,32 @@ class OptionsFragment @Inject constructor(
 
   }
 
-  val profile: LiveData<Profile> by lazy {
-    Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
   }
 
+  private fun getProfileData(): LiveData<Profile> {
+     return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun subscribeToProfileLiveData() {
+    profileLiveData.observe(activity, Observer<Profile> { result ->
+
+      storyTextSize = result.storyTextSize
+      appLanguage = result.appLanguage
+      audioLanguage = result.audioLanguage
+      logger.e("storyTextSize", "======="+storyTextSize)
+      logger.e("audioLanguage", "======="+audioLanguage)
+      logger.e("appLanguage", "========="+appLanguage)
+      updateDataIntoUI()
+
+    })
+  }
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    storyTextSize = profile.storyTextSize
-    appLanguage = profile.appLanguage
-    audioLanguage = profile.audioLanguage
-    logger.e("storyTextSize", ""+storyTextSize)
-    logger.e("audioLanguage", ""+audioLanguage)
-    logger.e("appLanguage", ""+appLanguage)
-
     return profile
   }
 }

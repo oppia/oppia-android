@@ -7,9 +7,9 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [OptionActivity]. */
+/** The presenter for [OptionsActivity]. */
 @ActivityScope
-class OptionActivityPresenter @Inject constructor(
+class OptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController) {
@@ -19,7 +19,7 @@ class OptionActivityPresenter @Inject constructor(
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.option_fragment_placeholder,
-        OptionsFragment(profileManagementController,logger)
+        OptionsFragment(activity,profileManagementController,logger)
       ).commitNow()
     }
   }
