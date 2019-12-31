@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.drawer.NavigationDrawerHeaderViewModel" />
+  </data>
+
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="176dp"
@@ -22,11 +28,11 @@
       app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
-      android:id="@+id/nav_name_textview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:paddingTop="8dp"
+      android:text="@{viewModel.name}"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
       android:textColor="@color/white"
       android:textSize="14sp" />
