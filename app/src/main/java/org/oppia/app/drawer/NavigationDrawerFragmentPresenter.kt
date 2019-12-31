@@ -7,31 +7,76 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.app.R
+import org.oppia.app.databinding.DrawerFragmentBinding
+import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
 class NavigationDrawerFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val profileManagementController: ProfileManagementController,
+  private val logger: Logger
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var navView: NavigationView
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
   private var previousMenuItemId: Int? = null
+  private lateinit var binding: DrawerFragmentBinding
+  private lateinit var navHeaderMainBinding: NavHeaderNavigationDrawerBinding
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
-    navView = view!!.findViewById(R.id.fragment_drawer_nav_view)
-    navView.setNavigationItemSelectedListener(this)
+    binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    navView = binding.fragmentDrawerNavView
+    binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
+
     fragment.setHasOptionsMenu(true)
-    return view
+    profileId = profileManagementController.getCurrentProfileId()
+    navHeaderMainBinding =
+      DataBindingUtil.inflate(inflater, R.layout.nav_header_navigation_drawer, navView, true)
+    navView.setNavigationItemSelectedListener(this)
+
+    subscribeToProfileLiveData()
+
+    return binding.root
+  }
+
+  private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }
+
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun subscribeToProfileLiveData() {
+    profileLiveData.observe(fragment, Observer<Profile> { result ->
+      navHeaderMainBinding.navNameTextview.text = result.name
+    })
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
