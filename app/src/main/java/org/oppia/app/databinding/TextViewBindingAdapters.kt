@@ -1,13 +1,10 @@
 package org.oppia.app.databinding
 
-import android.util.Log
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oppia.app.R
 import java.text.SimpleDateFormat
 import java.util.*
-import java.text.ParseException
-import java.util.concurrent.TimeUnit
 
 /** Binds date text with relative time. */
 @BindingAdapter("profile:created")
