@@ -36,6 +36,17 @@
       android:textSize="14sp" />
 
     <TextView
+      android:id="@+id/profile_last_visited"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="2dp"
+      android:fontFamily="sans-serif-light"
+      android:textColor="@color/white"
+      android:textSize="12sp"
+      android:textStyle="italic"
+      profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+    
+    <TextView
       android:id="@+id/profile_is_admin_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
