@@ -33,9 +33,9 @@
     <androidx.cardview.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp"
+      android:layout_marginStart="28dp"
+      android:layout_marginBottom="42dp"
+      android:layout_marginEnd="28dp"
       app:contentPadding="2dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
     android:onClick="@{viewModel.onExplorationClicked}"
