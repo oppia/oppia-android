@@ -9,8 +9,8 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.OnboardingFlow
+import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.splash.OnboardingActivity
 import org.oppia.domain.OnboardingFlowController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject

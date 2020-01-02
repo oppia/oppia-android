@@ -1,4 +1,4 @@
-package org.oppia.app.splash
+package org.oppia.app.onboarding
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity

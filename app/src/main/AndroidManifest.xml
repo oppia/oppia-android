@@ -63,7 +63,7 @@
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".splash.OnboardingActivity"
+      android:name=".onboarding.OnboardingActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
