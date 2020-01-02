@@ -30,6 +30,10 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".onboarding.OnboardingActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".player.exploration.ExplorationActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
@@ -62,10 +66,6 @@
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
-    <activity
-      android:name=".onboarding.OnboardingActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"

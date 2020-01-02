@@ -31,7 +31,9 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -39,13 +41,18 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.domain.OnboardingFlowController
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
@@ -67,15 +74,11 @@ class SplashActivityTest {
     Intents.release()
   }
 
-
-
   @Test
-  fun testMainActivity_secondOpen_showsProfileChooserScreenAndHasSelectYourProfileString() {
+  fun testSplashActivity_secondOpen_showsProfileChooserScreenAndHasSelectYourProfileString() {
     simulateAppAlreadyOpened()
-
     launch(SplashActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-//      waitForTheView(withText(R.string.profile_chooser_select))
       onView(withId(R.id.profile_select_text)).check(matches(withText(R.string.profile_chooser_select)))
     }
   }
@@ -146,6 +149,9 @@ class SplashActivityTest {
     }
   }
 
+  @Qualifier
+  annotation class TestDispatcher
+
   @Module
   class TestModule {
     @Provides
@@ -154,16 +160,34 @@ class SplashActivityTest {
       return application
     }
 
-    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-    //  test coroutine dispatcher.
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
 
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
+    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+      return testDispatcher
     }
+
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
 
     @Singleton
     @Provides
@@ -180,10 +204,12 @@ class SplashActivityTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun getOnboardingFlowController(): OnboardingFlowController
+    fun inject(splashActivityTest: SplashActivityTest)
   }
 
   // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
@@ -195,7 +221,7 @@ class SplashActivityTest {
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
    */
-  private object MainThreadExecutor: AbstractExecutorService() {
+  private object MainThreadExecutor : AbstractExecutorService() {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
@@ -227,8 +253,6 @@ class SplashActivityTest {
     }
   }
 
-
-
   // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
   // disabled to launch Activity explicitly within each test case.
   @get:Rule
@@ -236,19 +260,9 @@ class SplashActivityTest {
     SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-//  @Before
-//  fun setUp() {
-//    Intents.init()
-//  }
-
   @Test
-  fun testSplashActivity_initialOpen_routesToSplashActivity() {
+  fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(OnboardingActivity::class.java.name))
   }
-
-//  @After
-//  fun tearDown() {
-//    Intents.release()
-//  }
 }
