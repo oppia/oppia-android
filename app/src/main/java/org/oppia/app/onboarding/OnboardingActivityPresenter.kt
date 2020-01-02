@@ -1,4 +1,4 @@
-package org.oppia.app.help
+package org.oppia.app.onboarding
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

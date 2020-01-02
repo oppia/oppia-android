@@ -8,7 +8,4 @@ class UserAppHistoryViewModel : HomeItemViewModel() {
   var isAppAlreadyOpened = ObservableField<Boolean>(false)
 
   fun setAlreadyAppOpened(alreadyOpenedApp: Boolean) = isAppAlreadyOpened.set(alreadyOpenedApp)
-  var isAppAlreadyOnboarded = ObservableField<Boolean>(false)
-
-  fun setAlreadyAppOnboarded(isalreadyOnboardedApp: Boolean) = isAppAlreadyOnboarded.set(isalreadyOnboardedApp)
 }

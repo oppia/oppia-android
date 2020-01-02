@@ -9,7 +9,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Controller for persisting and retrieving the previous user history of using the app. */
+/** Controller for persisting and retrieving the user onboarding information of the app. */
 @Singleton
 class OnboardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders,
@@ -18,7 +18,7 @@ class OnboardingFlowController @Inject constructor(
   private val appHistoryStore = cacheStoreFactory.create("onboarding_flow", OnboardingFlow.getDefaultInstance())
 
   init {
-    // Prime the cache ahead of time so that any existing history is read prior to any calls to markUserOpenedApp().
+    // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingFlowCompleted().
     appHistoryStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user app open history.", it)
@@ -35,7 +35,7 @@ class OnboardingFlowController @Inject constructor(
       it.toBuilder().setAlreadyOnBoardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already opened the app.", it)
+        logger.e("DOMAIN", "Failed when storing that the user already onboarded the app.", it)
       }
     }
   }
@@ -50,7 +50,7 @@ class OnboardingFlowController @Inject constructor(
   }
 
   /**
-   * Returns a [LiveData] result indicating whether the user has previously opened the app. This is guaranteed to
+   * Returns a [LiveData] result indicating whether the user has onboarded the app. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [markOnboardingFlowCompleted] has since been
    * called.
    */

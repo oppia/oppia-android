@@ -2,7 +2,6 @@ package org.oppia.app.onboarding
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.help.OnboardingActivityPresenter
 import org.oppia.app.profile.ProfileActivity
 import javax.inject.Inject
 
