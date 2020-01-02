@@ -196,4 +196,9 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <!-- Welcome -->
+  <string name="good_morning">Good Morning</string>
+  <string name="good_afternoon">Good Afternoon</string>
+  <string name="good_evening">Good Evening</string>
+  <string name="good_night">Good Night</string>
 </resources>

@@ -30,6 +30,8 @@ import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+import java.util.*
+import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -108,6 +110,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToProfileLiveData() {
     profileLiveData.observe(activity, Observer<Profile> { result ->
       profileName = result.name
+      setProfileName()
     })
   }
 
@@ -141,7 +144,7 @@ class HomeFragmentPresenter @Inject constructor(
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
       userAppHistoryViewModel = UserAppHistoryViewModel()
       userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
-      userAppHistoryViewModel.profileName = " $profileName"
+      setProfileName()
       itemList[0] = userAppHistoryViewModel
       topicListAdapter.notifyItemChanged(0)
     })
@@ -157,6 +160,13 @@ class HomeFragmentPresenter @Inject constructor(
       logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
+  }
+
+  private fun setProfileName() {
+    if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
+      displayGreeting()
+      userAppHistoryViewModel.profileName = """${userAppHistoryViewModel.greeting}, $profileName!"""
+    }
   }
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
@@ -181,5 +191,16 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicListener.routeToTopic(topicSummary.topicId)
+  }
+
+// TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
+  private fun displayGreeting(){
+    val c = Calendar.getInstance()
+    when (c.get(Calendar.HOUR_OF_DAY)) {
+      in 0..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
+      in 12..15 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
+      in 16..20 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
+      in 21..23 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_night)
+    }
   }
 }
