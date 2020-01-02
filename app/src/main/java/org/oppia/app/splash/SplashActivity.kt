@@ -17,5 +17,4 @@ class SplashActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     splashActivityPresenter.handleOnCreate()
   }
-
 }

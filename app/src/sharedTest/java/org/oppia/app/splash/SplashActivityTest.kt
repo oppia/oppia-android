@@ -4,26 +4,18 @@ import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.espresso.util.HumanReadables
-import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -34,7 +26,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -42,6 +33,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.onboarding.OnboardingActivity
+import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.OnboardingFlowController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -51,7 +43,6 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -74,8 +65,29 @@ class SplashActivityTest {
     Intents.release()
   }
 
+  // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
+  // disabled to launch Activity explicitly within each test case.
+  @get:Rule
+  var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
+    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Test
-  fun testSplashActivity_secondOpen_showsProfileChooserScreenAndHasSelectYourProfileString() {
+  fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
+    activityTestRule.launchActivity(null)
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
+  @Test
+  fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
+    simulateAppAlreadyOpened()
+    launch(SplashActivity::class.java).use {
+      intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_secondOpen_profileChooserScreenContentVerified() {
     simulateAppAlreadyOpened()
     launch(SplashActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
@@ -100,53 +112,6 @@ class SplashActivityTest {
     return DaggerSplashActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
-  }
-
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
-  /**
-   * Perform action of waiting for a specific matcher to finish. Adapted from:
-   * https://stackoverflow.com/a/22563297/3689782.
-   */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        checkNotNull(uiController)
-        uiController.loopMainThreadUntilIdle()
-        val startTime = System.currentTimeMillis()
-        val endTime = startTime + millis
-
-        do {
-          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
-            return
-          }
-          uiController.loopMainThreadForAtLeast(50)
-        } while (System.currentTimeMillis() < endTime)
-
-        // Couldn't match in time.
-        throw PerformException.Builder()
-          .withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view))
-          .withCause(TimeoutException())
-          .build()
-      }
-    }
   }
 
   @Qualifier
@@ -251,18 +216,5 @@ class SplashActivityTest {
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
     }
-  }
-
-  // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
-  // disabled to launch Activity explicitly within each test case.
-  @get:Rule
-  var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Test
-  fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
-    activityTestRule.launchActivity(null)
-    intended(hasComponent(OnboardingActivity::class.java.name))
   }
 }
