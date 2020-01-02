@@ -205,12 +205,10 @@
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>
   </plurals>
-
   <plurals name="hours">
     <item quantity="one">an hour</item>
     <item quantity="other">%d hours</item>
   </plurals>
-
   <plurals name="days">
     <item quantity="one">a day</item>
     <item quantity="other">%d days</item>

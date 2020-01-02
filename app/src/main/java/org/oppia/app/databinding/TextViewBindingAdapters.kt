@@ -41,7 +41,7 @@ fun getTimeAgo(time: Long, context: Context): String {
 
   val now = currentDate().time
   if (time > now || time <= 0) return ""
-
+  
   val res = context.resources
   val timeDifference = now - time
   return when {
