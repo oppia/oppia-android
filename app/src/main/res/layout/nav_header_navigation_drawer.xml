@@ -28,6 +28,7 @@
       app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
+      android:id="@+id/nav_header_profile_name"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
