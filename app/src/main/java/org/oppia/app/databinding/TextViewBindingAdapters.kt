@@ -20,7 +20,12 @@ fun setProfileDataText(textView: TextView, timestamp: Long) {
 fun setProfileLastVisitedText(textView: TextView, timestamp: Long) {
   // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
   textView.text =
-    String.format(textView.context.getString(R.string.profile_last_used) + " " + getTimeAgo(timestamp,textView.context))
+    String.format(
+      textView.context.getString(R.string.profile_last_used) + " " + getTimeAgo(
+        timestamp,
+        textView.context
+      )
+    )
 }
 
 private const val SECOND_MILLIS = 1000
@@ -28,6 +33,7 @@ private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 private const val DAY_MILLIS = 24 * HOUR_MILLIS
 
+// TODO(#555): Shift this logic to central utility file for date-time related conversions.
 private fun currentDate(): Date {
   val calendar = Calendar.getInstance()
   return calendar.time
@@ -36,12 +42,12 @@ private fun currentDate(): Date {
 fun getTimeAgo(time: Long, context: Context): String {
   var time = time
   if (time < 1000000000000L)
-  // if timestamp given in seconds, convert to millis
+  // If timestamp is given in seconds, convert that to milliseconds.
     time *= 1000
 
   val now = currentDate().time
   if (time > now || time <= 0) return ""
-  
+
   val res = context.resources
   val timeDifference = now - time
   return when {

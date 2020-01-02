@@ -197,7 +197,7 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
-  <!-- time ago strings -->
+  <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>

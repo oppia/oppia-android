@@ -14,6 +14,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -77,13 +78,26 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_is_admin_text)).check(matches(withText(context.getString(R.string.profile_chooser_admin))))
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(matches(withText("Ben")))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_is_admin_text)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(matches(withText(context.getString(R.string.profile_chooser_add))))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeAreShown() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
+
+
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(
+        isDisplayed()))
+//      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(withText("Last used 1 second ago")))
     }
   }
 
