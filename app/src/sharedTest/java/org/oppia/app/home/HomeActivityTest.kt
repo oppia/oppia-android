@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -37,6 +38,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
@@ -48,12 +50,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
@@ -66,15 +71,22 @@ import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileManagementController: ProfileManagementController
+
   @Before
+  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
   }
@@ -85,16 +97,26 @@ class HomeActivityTest {
     Intents.release()
   }
 
+  private fun setUpTestApplicationComponent() {
+    DaggerHomeActivityTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
+    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+    SystemClock.sleep(10000)
     launch(HomeActivity::class.java).use {
+      SystemClock.sleep(5000)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
+          R.id.profile_name_textview
         )
-      ).check(matches(withText("Welcome to Oppia!")))
+      ).check(matches(withText("Sean")))
     }
   }
 
@@ -454,6 +476,7 @@ class HomeActivityTest {
     }
 
     fun getUserAppHistoryController(): UserAppHistoryController
+    fun inject(homeActivityTest: HomeActivityTest)
   }
 
 // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an

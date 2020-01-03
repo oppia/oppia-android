@@ -197,8 +197,8 @@
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <!-- Welcome -->
-  <string name="good_morning">Good morning</string>
-  <string name="good_afternoon">Good afternoon</string>
-  <string name="good_evening">Good evening</string>
-  <string name="good_night">Good night</string>
+  <string name="good_morning">Good morning,</string>
+  <string name="good_afternoon">Good afternoon,</string>
+  <string name="good_evening">Good evening,</string>
+  <string name="good_night">Good night,</string>
 </resources>

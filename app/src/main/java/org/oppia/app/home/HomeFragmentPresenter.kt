@@ -164,7 +164,9 @@ class HomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       displayGreeting()
-      userAppHistoryViewModel.profileName = """${userAppHistoryViewModel.greeting}, $profileName!"""
+//      userAppHistoryViewModel.profileName = "$profileName!"
+      logger.d("profile /id","=="+profileId.internalId)
+      userAppHistoryViewModel.profileName = ""+profileId.internalId
     }
   }
 
