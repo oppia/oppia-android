@@ -98,7 +98,6 @@ class HomeFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-
   private val profileLiveData: LiveData<Profile> by lazy {
     getProfileData()
   }
@@ -193,14 +192,14 @@ class HomeFragmentPresenter @Inject constructor(
     routeToTopicListener.routeToTopic(topicSummary.topicId)
   }
 
-// TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun displayGreeting(){
+  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
+  private fun displayGreeting() {
     val c = Calendar.getInstance()
     when (c.get(Calendar.HOUR_OF_DAY)) {
-      in 0..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
-      in 12..15 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
-      in 16..20 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
-      in 21..23 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_night)
+      in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
+      in 12..16 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
+      in 17..22 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
+      in 23 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_night)
     }
   }
 }
