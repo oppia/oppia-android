@@ -6,9 +6,9 @@
   android:orientation="vertical">
 
   <Button
-    android:id="@+id/onboard"
+    android:id="@+id/onBoard"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="onboard" />
+    android:text="on-board" />
 </LinearLayout>
 

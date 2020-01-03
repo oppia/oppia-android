@@ -8,54 +8,54 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.OnboardingFlow
-import org.oppia.app.onboarding.OnboardingActivity
+import org.oppia.app.model.OnboardingingFlow
+import org.oppia.app.onBoarding.OnBoardingingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.OnboardingFlowController
+import org.oppia.domain.OnboardingingFlowController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
-/** The presenter for [OnboardingActivity]. */
+/** The presenter for [OnBoardingingActivity]. */
 @ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  onboardingFlowController: OnboardingFlowController
+  onBoardingFlowController: OnboardingingFlowController
 ) {
 
-  val sample = onboardingFlowController.getOnboardingFlow()
+  val sample = onBoardingFlowController.getOnboardingingFlow()
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_activity)
     activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    subscribeToOnboardingFlow()
+    subscribeToOnboardingingFlow()
   }
 
-  private fun showOnboardingActivity() {
-    val intent = Intent(activity, OnboardingActivity::class.java)
+  private fun showOnboardingingActivity() {
+    val intent = Intent(activity, OnBoardingingActivity::class.java)
     activity.startActivity(intent)
     activity.finish()
   }
 
-  private fun subscribeToOnboardingFlow() {
-    getOnboardingFlow().observe(activity, Observer<OnboardingFlow> { result ->
+  private fun subscribeToOnboardingingFlow() {
+    getOnboardingingFlow().observe(activity, Observer<OnboardingingFlow> { result ->
       if (result.alreadyOnBoardedApp) {
         val intent = Intent(activity, ProfileActivity::class.java)
         activity.startActivity(intent)
         activity.finish()
       } else {
-        showOnboardingActivity()
+        showOnboardingingActivity()
       }
     })
   }
 
-  private fun getOnboardingFlow(): LiveData<OnboardingFlow> {
+  private fun getOnboardingingFlow(): LiveData<OnboardingingFlow> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(sample, ::processOnboardingFlowResult)
+    return Transformations.map(sample, ::processOnboardingingFlowResult)
   }
 
-  private fun processOnboardingFlowResult(appHistoryResult: AsyncResult<OnboardingFlow>): OnboardingFlow {
+  private fun processOnboardingingFlowResult(appHistoryResult: AsyncResult<OnboardingingFlow>): OnboardingingFlow {
     if (appHistoryResult.isFailure()) {
     }
-    return appHistoryResult.getOrDefault(OnboardingFlow.getDefaultInstance())
+    return appHistoryResult.getOrDefault(OnboardingingFlow.getDefaultInstance())
   }
 }

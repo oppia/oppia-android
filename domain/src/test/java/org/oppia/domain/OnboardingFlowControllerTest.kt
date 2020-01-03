@@ -32,7 +32,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.OnboardingFlow
+import org.oppia.app.model.OnboardingingFlow
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -46,10 +46,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-/** Tests for [OnboardingFlowController]. */
+/** Tests for [OnboardingingFlowController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class OnboardingFlowControllerTest {
+class OnboardingingFlowControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -59,7 +59,7 @@ class OnboardingFlowControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject
-  lateinit var onboardingFlowController: OnboardingFlowController
+  lateinit var onBoardingFlowController: OnboardingingFlowController
 
   @Inject
   @field:TestDispatcher
@@ -70,10 +70,10 @@ class OnboardingFlowControllerTest {
   }
 
   @Mock
-  lateinit var mockAppHistoryObserver: Observer<AsyncResult<OnboardingFlow>>
+  lateinit var mockOnboardingingObserver: Observer<AsyncResult<OnboardingingFlow>>
 
   @Captor
-  lateinit var appHistoryResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
+  lateinit var onBoardingResultCaptor: ArgumentCaptor<AsyncResult<OnboardingingFlow>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -96,7 +96,7 @@ class OnboardingFlowControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOnboardingFlowControllerTest_TestApplicationComponent.builder()
+    DaggerOnboardingingFlowControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -105,67 +105,67 @@ class OnboardingFlowControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest(coroutineContext) {
-    val appHistory = onboardingFlowController.getOnboardingFlow()
+    val onBoarding = onBoardingFlowController.getOnboardingingFlow()
     advanceUntilIdle()
-    appHistory.observeForever(mockAppHistoryObserver)
+    onBoarding.observeForever(mockOnboardingingObserver)
 
-    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+    verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
+    assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
+    assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testControllerObserver_observedAfterSettingAppOpened_providesLiveData_userDidNotOpenApp() =
     runBlockingTest(coroutineContext) {
-      val appHistory = onboardingFlowController.getOnboardingFlow()
+      val onBoarding = onBoardingFlowController.getOnboardingingFlow()
 
-      appHistory.observeForever(mockAppHistoryObserver)
-      onboardingFlowController.markOnboardingFlowCompleted()
+      onBoarding.observeForever(mockOnboardingingObserver)
+      onBoardingFlowController.markOnboardingingFlowCompleted()
       advanceUntilIdle()
 
       // The result should not indicate that the user opened the app because markUserOpenedApp does not notify observers
       // of the change.
-      verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-      assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-      assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+      verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
+      assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
+      assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
     }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_settingAppOpened_observedNewController_userOpenedApp() = runBlockingTest(coroutineContext) {
-    onboardingFlowController.markOnboardingFlowCompleted()
+    onBoardingFlowController.markOnboardingingFlowCompleted()
     advanceUntilIdle()
 
     // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
     setUpTestApplicationComponent()
-    val appHistory = onboardingFlowController.getOnboardingFlow()
-    appHistory.observeForever(mockAppHistoryObserver)
+    val onBoarding = onBoardingFlowController.getOnboardingingFlow()
+    onBoarding.observeForever(mockOnboardingingObserver)
     advanceUntilIdle()
 
     // The app should be considered open since a new LiveData instance was observed after marking the app as opened.
-    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isTrue()
+    verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
+    assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
+    assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_openedApp_cleared_observeNewController_userDidNotOpenApp() = runBlockingTest(coroutineContext) {
-    onboardingFlowController.markOnboardingFlowCompleted()
+    onBoardingFlowController.markOnboardingingFlowCompleted()
     advanceUntilIdle()
 
     // Clear, then recreate another controller.
-    onboardingFlowController.clearOnboardingFlow()
+    onBoardingFlowController.clearOnboardingingFlow()
     setUpTestApplicationComponent()
-    val appHistory = onboardingFlowController.getOnboardingFlow()
-    appHistory.observeForever(mockAppHistoryObserver)
+    val onBoarding = onBoardingFlowController.getOnboardingingFlow()
+    onBoarding.observeForever(mockOnboardingingObserver)
     advanceUntilIdle()
 
     // The app should be considered not yet opened since the previous history was cleared.
-    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+    verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
+    assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
+    assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
   }
 
   @Qualifier
@@ -229,6 +229,6 @@ class OnboardingFlowControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(onboardingFlowControllerTest: OnboardingFlowControllerTest)
+    fun inject(onBoardingFlowControllerTest: OnboardingingFlowControllerTest)
   }
 }
