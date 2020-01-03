@@ -80,7 +80,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
-    simulateAppAlreadyOpened()
+    simulateAppAlreadyOnBoarded()
     launch(SplashActivity::class.java).use {
       intended(hasComponent(ProfileActivity::class.java.name))
     }
@@ -88,7 +88,7 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_secondOpen_profileChooserScreenContentVerified() {
-    simulateAppAlreadyOpened()
+    simulateAppAlreadyOnBoarded()
     launch(SplashActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
       onView(withId(R.id.profile_select_text)).check(matches(withText(R.string.profile_chooser_select)))
@@ -101,7 +101,7 @@ class SplashActivityTest {
     onIdle()
   }
 
-  private fun simulateAppAlreadyOpened() {
+  private fun simulateAppAlreadyOnBoarded() {
     // Simulate the app was already onboarded by creating an isolated on-boarding flow controller and saving the onboarding status
     // on the system before the activity is opened.
     createTestRootComponent().getOnboardingingFlowController().markOnboardingingFlowCompleted()
