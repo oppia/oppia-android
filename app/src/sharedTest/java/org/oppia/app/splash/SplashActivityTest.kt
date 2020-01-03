@@ -96,13 +96,13 @@ class SplashActivityTest {
   }
 
   private fun simulateNewAppInstance() {
-    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
+    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated on-boarding flow controller.
     createTestRootComponent().getOnboardingingFlowController().clearOnboardingingFlow()
     onIdle()
   }
 
   private fun simulateAppAlreadyOpened() {
-    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
+    // Simulate the app was already onboarded by creating an isolated on-boarding flow controller and saving the onboarding status
     // on the system before the activity is opened.
     createTestRootComponent().getOnboardingingFlowController().markOnboardingingFlowCompleted()
     onIdle()

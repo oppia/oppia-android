@@ -21,7 +21,7 @@ class OnboardingingFlowController @Inject constructor(
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingingFlowCompleted().
     onBoardingStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user app open history.", it)
+        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user on-boarding data.", it)
       }
     }
   }

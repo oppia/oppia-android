@@ -104,7 +104,7 @@ class OnboardingingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOpenedTheApp() = runBlockingTest(coroutineContext) {
+  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOnBoardedTheApp() = runBlockingTest(coroutineContext) {
     val onBoarding = onBoardingFlowController.getOnboardingingFlow()
     advanceUntilIdle()
     onBoarding.observeForever(mockOnboardingingObserver)
@@ -116,7 +116,7 @@ class OnboardingingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOpened_providesLiveData_userDidNotOpenApp() =
+  fun testControllerObserver_observedAfterSettingAppOnBoarded_providesLiveData_userDidNotOpenApp() =
     runBlockingTest(coroutineContext) {
       val onBoarding = onBoardingFlowController.getOnboardingingFlow()
 
@@ -124,7 +124,7 @@ class OnboardingingFlowControllerTest {
       onBoardingFlowController.markOnboardingingFlowCompleted()
       advanceUntilIdle()
 
-      // The result should not indicate that the user opened the app because markUserOpenedApp does not notify observers
+      // The result should not indicate that the user onBoarded the app because markUserOnBoardedApp does not notify observers
       // of the change.
       verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
       assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
@@ -133,7 +133,7 @@ class OnboardingingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOpened_observedNewController_userOpenedApp() = runBlockingTest(coroutineContext) {
+  fun testController_settingAppOnBoarded_observedNewController_userOnBoardedApp() = runBlockingTest(coroutineContext) {
     onBoardingFlowController.markOnboardingingFlowCompleted()
     advanceUntilIdle()
 
@@ -143,7 +143,7 @@ class OnboardingingFlowControllerTest {
     onBoarding.observeForever(mockOnboardingingObserver)
     advanceUntilIdle()
 
-    // The app should be considered open since a new LiveData instance was observed after marking the app as opened.
+    // The app should be considered open since a new LiveData instance was observed after marking the app as onBoarded.
     verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
     assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
     assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isTrue()
@@ -151,7 +151,7 @@ class OnboardingingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_openedApp_cleared_observeNewController_userDidNotOpenApp() = runBlockingTest(coroutineContext) {
+  fun testController_onBoardedApp_cleared_observeNewController_userDidNotOpenApp() = runBlockingTest(coroutineContext) {
     onBoardingFlowController.markOnboardingingFlowCompleted()
     advanceUntilIdle()
 
@@ -162,7 +162,7 @@ class OnboardingingFlowControllerTest {
     onBoarding.observeForever(mockOnboardingingObserver)
     advanceUntilIdle()
 
-    // The app should be considered not yet opened since the previous history was cleared.
+    // The app should be considered not yet onBoarded since the previous history was cleared.
     verify(mockOnboardingingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
     assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
     assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
