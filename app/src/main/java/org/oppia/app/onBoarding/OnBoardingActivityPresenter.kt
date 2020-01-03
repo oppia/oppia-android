@@ -18,10 +18,10 @@ class OnBoardingingActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.dummy_on_board)
-    activity.onBoard.setOnClickListener({ subscribeToUserAppHistory() })
+    activity.onBoard.setOnClickListener({ subscribeOnBoarding() })
   }
 
-  private fun subscribeToUserAppHistory() {
+  private fun subscribeOnBoarding() {
     onBoardingFlowController.markOnboardingingFlowCompleted()
     val intent = Intent(activity, ProfileActivity::class.java)
     activity.startActivity(intent)

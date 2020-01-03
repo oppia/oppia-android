@@ -58,8 +58,7 @@ class UserAppHistoryControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var userAppHistoryController: UserAppHistoryController
+  @Inject lateinit var userAppHistoryController: UserAppHistoryController
 
   @Inject
   @field:TestDispatcher
@@ -116,24 +115,25 @@ class UserAppHistoryControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOpened_providesLiveData_userDidNotOpenApp() =
-    runBlockingTest(coroutineContext) {
-      val appHistory = userAppHistoryController.getUserAppHistory()
+  fun testControllerObserver_observedAfterSettingAppOpened_providesLiveData_userDidNotOpenApp()
+      = runBlockingTest(coroutineContext) {
+    val appHistory = userAppHistoryController.getUserAppHistory()
 
-      appHistory.observeForever(mockAppHistoryObserver)
-      userAppHistoryController.markUserOpenedApp()
-      advanceUntilIdle()
+    appHistory.observeForever(mockAppHistoryObserver)
+    userAppHistoryController.markUserOpenedApp()
+    advanceUntilIdle()
 
-      // The result should not indicate that the user opened the app because markUserOpenedApp does not notify observers
-      // of the change.
-      verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
-      assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
-      assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
-    }
+    // The result should not indicate that the user opened the app because markUserOpenedApp does not notify observers
+    // of the change.
+    verify(mockAppHistoryObserver, atLeastOnce()).onChanged(appHistoryResultCaptor.capture())
+    assertThat(appHistoryResultCaptor.value.isSuccess()).isTrue()
+    assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
+  }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOpened_observedNewController_userOpenedApp() = runBlockingTest(coroutineContext) {
+  fun testController_settingAppOpened_observedNewController_userOpenedApp()
+      = runBlockingTest(coroutineContext) {
     userAppHistoryController.markUserOpenedApp()
     advanceUntilIdle()
 
@@ -168,8 +168,7 @@ class UserAppHistoryControllerTest {
     assertThat(appHistoryResultCaptor.value.getOrThrow().alreadyOpenedApp).isFalse()
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -225,7 +224,6 @@ class UserAppHistoryControllerTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
-
       fun build(): TestApplicationComponent
     }
 

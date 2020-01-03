@@ -53,9 +53,9 @@ class SplashActivityPresenter @Inject constructor(
     return Transformations.map(sample, ::processOnboardingingFlowResult)
   }
 
-  private fun processOnboardingingFlowResult(appHistoryResult: AsyncResult<OnboardingingFlow>): OnboardingingFlow {
-    if (appHistoryResult.isFailure()) {
+  private fun processOnboardingingFlowResult(onboardingResult: AsyncResult<OnboardingingFlow>): OnboardingingFlow {
+    if (onboardingResult.isFailure()) {
     }
-    return appHistoryResult.getOrDefault(OnboardingingFlow.getDefaultInstance())
+    return onboardingResult.getOrDefault(OnboardingingFlow.getDefaultInstance())
   }
 }
