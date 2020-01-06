@@ -1,4 +1,4 @@
-package org.oppia.app.topic.overview
+package org.oppia.app.topic.info
 
 import android.content.pm.ActivityInfo
 import android.text.SpannedString
@@ -28,27 +28,27 @@ private const val TOPIC_DESCRIPTION =
       "situations like these."
 
 // NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
-/** Tests for [TopicOverviewFragment]. */
+/** Tests for [TopicInfoFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicOverviewFragmentTest {
+class TopicInfoFragmentTest {
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
 
   @Test
-  fun testTopicOverviewFragment_loadFragment_checkTopicName_isCorrect() {
+  fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
   }
 
   @Test
-  fun testTopicOverviewFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
+  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).check(matches(withText(containsString(TOPIC_DESCRIPTION))))
     }
   }
 
   @Test
-  fun testTopicOverviewFragment_loadFragmentWithTestTopicId1_checkTopicDescription_hasRichText() {
+  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_hasRichText() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use { scenario ->
       scenario.onActivity { activity ->
         val descriptionTextView: TextView = activity.findViewById(R.id.topic_description_text_view)
@@ -60,7 +60,7 @@ class TopicOverviewFragmentTest {
   }
 
   @Test
-  fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+  fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
@@ -68,7 +68,7 @@ class TopicOverviewFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicOverviewFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
+  fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use { scenario ->
       scenario.onActivity {  activity ->
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
