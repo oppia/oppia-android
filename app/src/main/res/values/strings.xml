@@ -5,6 +5,7 @@
   <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_options">Options</string>
   <string name="menu_help">Help</string>
   <string name="admin_settings">Admin Settings</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
