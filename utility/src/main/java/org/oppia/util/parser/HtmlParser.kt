@@ -1,7 +1,5 @@
 package org.oppia.util.parser
 
-import android.os.Build
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
