@@ -60,4 +60,7 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(1).build())
+  /** Login to user profile. */
+  fun loginToUser2() =
+    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(2).build())
 }

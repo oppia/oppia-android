@@ -3,6 +3,7 @@ package org.oppia.app.options
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -58,6 +59,7 @@ class OptionsFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.loginToUser2()
   }
 
   @After
@@ -79,9 +81,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
-    profileTestHelper.initializeProfiles()
+    System.out.println("id ======"+profileManagementController.getCurrentProfileId().internalId)
     ActivityScenario.launch(OptionsActivity::class.java).use {
-
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -95,7 +96,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -110,7 +110,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -123,26 +122,8 @@ class OptionsFragmentTest {
     }
   }
 
-  private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, CoordinatesProvider { view ->
-      val seekBar = view as SeekBar
-      val screenPos = IntArray(2)
-      seekBar.getLocationInWindow(screenPos)
-      val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
-
-      val percentagePos = (position.toFloat() / seekBar.max)
-      val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-      val screenY = seekBar.height / 2f + screenPos[1]
-      val coordinates = FloatArray(2)
-      coordinates[0] = screenX
-      coordinates[1] = screenY
-      coordinates
-    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
-  }
-
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -164,7 +145,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -186,7 +166,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -208,7 +187,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
-    profileTestHelper.initializeProfiles()
     ActivityScenario.launch(OptionsActivity::class.java).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
@@ -227,6 +205,24 @@ class OptionsFragmentTest {
         )
     }
   }
+
+  private fun clickSeekBar(position: Int): ViewAction {
+    return GeneralClickAction(Tap.SINGLE, CoordinatesProvider { view ->
+      val seekBar = view as SeekBar
+      val screenPos = IntArray(2)
+      seekBar.getLocationInWindow(screenPos)
+      val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+
+      val percentagePos = (position.toFloat() / seekBar.max)
+      val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
+      val screenY = seekBar.height / 2f + screenPos[1]
+      val coordinates = FloatArray(2)
+      coordinates[0] = screenX
+      coordinates[1] = screenY
+      coordinates
+    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
+  }
+
 
   private fun getResources(): Resources {
     return ApplicationProvider.getApplicationContext<Context>().resources
