@@ -33,9 +33,6 @@ class AdminAuthActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = authViewModel
     }
-    binding.inputPin.setOnKeyListener({ v, keyCode, event ->
-      binding.submitButton.performClick()
-    })
     binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
