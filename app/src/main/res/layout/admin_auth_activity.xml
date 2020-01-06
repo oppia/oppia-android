@@ -33,6 +33,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/add_profile_title"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -91,7 +92,9 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/sub_text"
-          profile:error="@{viewModel.errorMessage}" />
+          profile:error="@{viewModel.errorMessage}"
+          profile:imeOptions="actionDone"
+          profile:inputType="numberPassword" />
 
         <Button
           android:id="@+id/submit_button"

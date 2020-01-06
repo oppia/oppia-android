@@ -22,7 +22,7 @@ class AdminAuthViewModel @Inject constructor() : ObservableViewModel() {
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        isSubmitButtonActive.set(answer.toString().trim().length==5)
+        isSubmitButtonActive.set(answer.toString().trim().length == 5)
       }
 
       override fun afterTextChanged(s: Editable) {
