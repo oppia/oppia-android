@@ -89,6 +89,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
+    profileTestHelper.loginToAdmin()
   }
 
   @After
@@ -106,10 +107,8 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
-    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
-    SystemClock.sleep(10000)
+    System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
     launch(HomeActivity::class.java).use {
-      SystemClock.sleep(5000)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
