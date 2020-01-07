@@ -9,8 +9,7 @@ import javax.inject.Inject
 /** An activity that shows a temporary loading page until the app is fully loaded then navigates to [ProfileActivity]. */
 class SplashActivity : InjectableAppCompatActivity() {
 
-  @Inject
-  lateinit var splashActivityPresenter: SplashActivityPresenter
+  @Inject lateinit var splashActivityPresenter: SplashActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -7,15 +7,11 @@ import android.os.Looper
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -31,10 +27,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
 import org.oppia.app.onBoarding.OnBoardingingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.OnboardingingFlowController
+import org.oppia.domain.OnBoardingingFlowController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -73,7 +68,7 @@ class SplashActivityTest {
   )
 
   @Test
-  fun testSplashActivity_initialOpen_routesToOnboardingingActivity() {
+  fun testSplashActivity_initialOpen_routesToOnBoardingingActivity() {
     activityTestRule.launchActivity(null)
     intended(hasComponent(OnBoardingingActivity::class.java.name))
   }
@@ -86,25 +81,16 @@ class SplashActivityTest {
     }
   }
 
-  @Test
-  fun testSplashActivity_secondOpen_profileChooserScreenContentVerified() {
-    simulateAppAlreadyOnBoarded()
-    launch(SplashActivity::class.java).use {
-      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-      onView(withId(R.id.profile_select_text)).check(matches(withText(R.string.profile_chooser_select)))
-    }
-  }
-
   private fun simulateNewAppInstance() {
     // Simulate a fresh app install by clearing any potential on-disk caches using an isolated on-boarding flow controller.
-    createTestRootComponent().getOnboardingingFlowController().clearOnboardingingFlow()
+    createTestRootComponent().getOnBoardingingFlowController().clearOnBoardingingFlow()
     onIdle()
   }
 
   private fun simulateAppAlreadyOnBoarded() {
     // Simulate the app was already onboarded by creating an isolated on-boarding flow controller and saving the onboarding status
     // on the system before the activity is opened.
-    createTestRootComponent().getOnboardingingFlowController().markOnboardingingFlowCompleted()
+    createTestRootComponent().getOnBoardingingFlowController().markOnBoardingingFlowCompleted()
     onIdle()
   }
 
@@ -173,7 +159,7 @@ class SplashActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun getOnboardingingFlowController(): OnboardingingFlowController
+    fun getOnBoardingingFlowController(): OnBoardingingFlowController
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
