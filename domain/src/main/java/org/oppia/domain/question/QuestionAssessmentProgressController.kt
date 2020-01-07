@@ -75,7 +75,7 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    * [getCurrentQuestion]. Also note that the returned [LiveData] will only have a single value and not be reused after
    * that point.
    */
-  fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
+  private fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
     val outcome = AnsweredQuestionOutcome.newBuilder()
       .setFeedback(SubtitledHtml.newBuilder().setHtml("Response to answer: $answer"))
       .setIsCorrectAnswer(true)
@@ -93,7 +93,7 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    *     recommended that calling code only listen to this result for failures, and instead rely on [getCurrentQuestion]
    *     for observing a successful transition to another state.
    */
-  fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
+  private fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
     check(playing) { "Cannot move to the previous question unless an active training session is ongoing" }
     return MutableLiveData(AsyncResult.success<Any?>(null))
   }
