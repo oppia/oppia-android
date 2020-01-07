@@ -89,7 +89,6 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
-    profileTestHelper.loginToAdmin()
   }
 
   @After
@@ -107,8 +106,10 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
-    System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
     launch(HomeActivity::class.java).use {
+      profileTestHelper.loginToAdmin()
+      System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
+
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -121,7 +122,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-    simulateAppAlreadyOpened()
+//    simulateAppAlreadyOpened()
 
     launch(HomeActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
@@ -358,16 +359,16 @@ class HomeActivityTest {
 
   private fun simulateNewAppInstance() {
     // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
-    createTestRootComponent().getUserAppHistoryController().clearUserAppHistory()
+    createTestRootComponent().getProfileManagementController().getProfiles()
     onIdle()
   }
 
-  private fun simulateAppAlreadyOpened() {
-    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
-    // on the system before the activity is opened.
-    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
-    onIdle()
-  }
+//  private fun simulateAppAlreadyOpened() {
+//    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
+//    // on the system before the activity is opened.
+//    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
+//    onIdle()
+//  }
 
   private fun createTestRootComponent(): TestApplicationComponent {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
@@ -475,6 +476,7 @@ class HomeActivityTest {
     }
 
     fun getUserAppHistoryController(): UserAppHistoryController
+    fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }
 

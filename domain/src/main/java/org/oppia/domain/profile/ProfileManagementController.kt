@@ -273,7 +273,7 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(SET_PROFILE_TRANSFORMED_PROVIDER_ID) {
       val profileDatabase = profileDataStore.readDataAsync().await()
       if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
-        currentProfileId = profileId.internalId
+//        currentProfileId = profileId.internalId
         return@createInMemoryDataProviderAsync AsyncResult.success<Any?>(0)
       }
       AsyncResult.failed<Any?>(ProfileNotFoundException("ProfileId ${profileId.internalId} is not associated with an existing profile"))
