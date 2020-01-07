@@ -31,11 +31,11 @@ class StopExplorationDialogFragment : DialogFragment() {
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.stop_exploration_dialog_title)
       .setMessage(R.string.stop_exploration_dialog_description)
-      .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { dialog, whichButton ->
+      .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { _, _ ->
         stopExplorationInterface.stopExploration()
         dismiss()
       }
-      .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { dialog, whichButton ->
+      .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { _, _ ->
         dismiss()
       }
       .create()

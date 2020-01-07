@@ -25,7 +25,7 @@
       android:layout_marginEnd="16dp"
       android:layout_marginBottom="28dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
-      android:onClick="@{viewModel.onExplorationClicked}"
+      android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
       app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/elevation_4dp : @dimen/elevation_0dp}"
       app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
