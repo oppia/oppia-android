@@ -7,6 +7,8 @@
   <string name="menu_home">Home</string>
   <string name="menu_help">Help</string>
   <string name="admin_settings">Admin Settings</string>
+  <string name="drawer_open_content_description">Navigation Menu Open</string>
+  <string name="drawer_close_content_description">>Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
   <string name="welcome_back_text">Welcome back to Oppia!</string>
   <string name="audio_play_description">Play audio</string>
@@ -39,7 +41,7 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
-  <string name="overview">Overview</string>
+  <string name="info">Info</string>
   <string name="play">Play</string>
   <string name="train">Train</string>
   <string name="review">Review</string>

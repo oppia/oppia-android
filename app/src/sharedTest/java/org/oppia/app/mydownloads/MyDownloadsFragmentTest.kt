@@ -2,6 +2,7 @@ package org.oppia.app.mydownloads
 
 import android.app.Application
 import android.content.Context
+import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -10,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
@@ -18,6 +20,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -31,6 +34,17 @@ import javax.inject.Singleton
 class MyDownloadsFragmentTest {
 
   @Test
+  fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
+    launch(MyDownloadsActivity::class.java).use {
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.my_downloads_toolbar)))).check(
+        matches(
+          withText("My Downloads")
+        )
+      )
+    }
+  }
+
+  @Test
   fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
     launch(MyDownloadsActivity::class.java).use {
       onView(withId(R.id.my_downloads_tabs_container)).perform(click()).check(matches(isDisplayed()))
@@ -41,14 +55,30 @@ class MyDownloadsFragmentTest {
   fun testMyDownloadsFragment_swipePage_hasSwipedPage() {
     launch(MyDownloadsActivity::class.java).use {
       onView(withId(R.id.my_downloads_tabs_viewpager)).perform(swipeLeft())
-      onView(withId(R.id.my_downloads_tabs_container)).check(matches(matchCurrentTabTitle(MyDownloadsTab.getTabForPosition(1).name)))
+      onView(withId(R.id.my_downloads_tabs_container)).check(
+        matches(
+          matchCurrentTabTitle(
+            MyDownloadsTab.getTabForPosition(
+              1
+            ).name
+          )
+        )
+      )
     }
   }
 
   @Test
   fun testMyDownloadsFragment_defaultTabIsDownloads_isSuccessful() {
     launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).check(matches(matchCurrentTabTitle(MyDownloadsTab.getTabForPosition(0).name)))
+      onView(withId(R.id.my_downloads_tabs_container)).check(
+        matches(
+          matchCurrentTabTitle(
+            MyDownloadsTab.getTabForPosition(
+              0
+            ).name
+          )
+        )
+      )
     }
   }
 
@@ -61,7 +91,15 @@ class MyDownloadsFragmentTest {
           isDescendantOfA(withId(R.id.my_downloads_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(matches(matchCurrentTabTitle(MyDownloadsTab.getTabForPosition(0).name)))
+      onView(withId(R.id.my_downloads_tabs_container)).check(
+        matches(
+          matchCurrentTabTitle(
+            MyDownloadsTab.getTabForPosition(
+              0
+            ).name
+          )
+        )
+      )
     }
   }
 
@@ -74,7 +112,15 @@ class MyDownloadsFragmentTest {
           isDescendantOfA(withId(R.id.my_downloads_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(matches(matchCurrentTabTitle(MyDownloadsTab.getTabForPosition(1).name)))
+      onView(withId(R.id.my_downloads_tabs_container)).check(
+        matches(
+          matchCurrentTabTitle(
+            MyDownloadsTab.getTabForPosition(
+              1
+            ).name
+          )
+        )
+      )
     }
   }
 

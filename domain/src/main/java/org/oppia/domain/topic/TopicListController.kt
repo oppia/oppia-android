@@ -1,9 +1,9 @@
 package org.oppia.domain.topic
 
 import android.os.SystemClock
-import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -349,11 +349,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun parseHtml(html: String): Spannable {
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY) as Spannable
-    } else {
-      Html.fromHtml(html) as Spannable
-    }
+    return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY) as Spannable
   }
 
   private fun replaceCustomOppiaImageTag(html: String): String {

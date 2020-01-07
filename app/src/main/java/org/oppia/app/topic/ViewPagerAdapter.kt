@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import org.oppia.app.topic.overview.TopicOverviewFragment
+import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
@@ -21,10 +21,10 @@ class ViewPagerAdapter(
     val args = Bundle()
     args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
     when (TopicTab.getTabForPosition(position)) {
-      TopicTab.OVERVIEW -> {
-        val topicOverviewTab = TopicOverviewFragment()
-        topicOverviewTab.arguments = args
-        return topicOverviewTab
+      TopicTab.INFO -> {
+        val topicInfoTab = TopicInfoFragment()
+        topicInfoTab.arguments = args
+        return topicInfoTab
       }
       TopicTab.PLAY -> {
         val topicPlayTab = TopicPlayFragment()
