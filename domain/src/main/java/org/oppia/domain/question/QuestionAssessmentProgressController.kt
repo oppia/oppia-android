@@ -93,7 +93,7 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    *     recommended that calling code only listen to this result for failures, and instead rely on [getCurrentQuestion]
    *     for observing a successful transition to another state.
    */
-  private fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
+   fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
     check(playing) { "Cannot move to the previous question unless an active training session is ongoing" }
     return MutableLiveData(AsyncResult.success<Any?>(null))
   }
