@@ -2,64 +2,121 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:profile="http://schemas.android.com/tools">
+
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.app.profile.AdminAuthViewModel" />
   </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/addProfileBackground">
-    <TextView
-      android:id="@+id/heading_text"
-      android:layout_width="wrap_content"
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/admin_auth_app_bar_layout"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/admin_auth_heading"
-      android:textColor="@color/black"
-      android:textSize="24sp"
-      android:textStyle="bold"
-      android:lines="2"
-      app:layout_constraintTop_toTopOf="parent"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/admin_auth_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        android:textSize="20sp"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
+        app:title="@string/add_profile_title"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="32dp"
-      android:paddingStart="32dp"
-      android:paddingEnd="32dp"/>
-    <TextView
-      android:id="@+id/sub_text"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/admin_auth_sub"
-      android:textSize="16sp"
-      app:layout_constraintTop_toBottomOf="@+id/heading_text"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="16dp"
-      android:paddingStart="32dp"
-      android:paddingEnd="32dp"/>
-    <org.oppia.app.profile.ProfileInputView
-      android:id="@+id/input_pin"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="28dp"
-      app:layout_constraintTop_toBottomOf="@+id/sub_text"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:label="@string/admin_auth_pin"
-      app:isPasswordInput="true"
-      app:inputLength="5"
-      profile:error="@{viewModel.errorMessage}"/>
-    <Button
-      android:id="@+id/submit_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/state_continue_submit"
-      style="@style/StateButtonActive"
-      app:layout_constraintTop_toBottomOf="@+id/input_pin"
-      app:layout_constraintEnd_toEndOf="parent"
-      android:layout_marginTop="20dp"
-      android:layout_marginEnd="32dp"/>
+      app:layout_constraintTop_toBottomOf="@id/admin_auth_app_bar_layout">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+          android:id="@+id/heading_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="40dp"
+          android:fontFamily="sans-serif-medium"
+          android:lines="2"
+          android:paddingStart="28dp"
+          android:paddingEnd="28dp"
+          android:text="@string/admin_auth_heading"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="20sp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/sub_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:fontFamily="sans-serif"
+          android:paddingStart="28dp"
+          android:paddingEnd="28dp"
+          android:text="@string/admin_auth_sub"
+          android:textColor="@color/black_54"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/heading_text" />
+
+        <org.oppia.app.profile.ProfileInputView
+          android:id="@+id/input_pin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
+          android:imeOptions="actionDone"
+          app:inputLength="5"
+          app:isPasswordInput="true"
+          app:label="@string/admin_auth_pin"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/sub_text"
+          profile:error="@{viewModel.errorMessage}" />
+
+        <Button
+          android:id="@+id/submit_button"
+          style="@style/StateButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="36dp"
+          android:layout_marginEnd="28dp"
+          android:background="@{viewModel.isSubmitButtonActive.get()? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
+          android:gravity="center"
+          android:minHeight="48dp"
+          android:paddingStart="20dp"
+          android:paddingEnd="20dp"
+          android:text="@string/state_continue_submit"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/input_pin" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <View
+        android:id="@+id/toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,7 +1,6 @@
 package org.oppia.app.home.topiclist
 
 import android.graphics.Color
-import android.view.View
 import androidx.annotation.ColorInt
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.model.TopicSummary
@@ -26,7 +25,7 @@ class TopicSummaryViewModel(
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
 
   /** Callback from data-binding for when the summary tile is clicked. */
-  fun clickOnSummaryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnSummaryTile() {
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
