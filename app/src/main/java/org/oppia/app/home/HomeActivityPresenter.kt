@@ -12,7 +12,7 @@ import javax.inject.Inject
 /** The presenter for [HomeActivity]. */
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
