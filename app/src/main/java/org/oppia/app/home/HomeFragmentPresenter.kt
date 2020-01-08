@@ -166,7 +166,6 @@ class HomeFragmentPresenter @Inject constructor(
       displayGreeting()
       userAppHistoryViewModel.profileName = "$profileName!"
       logger.d("profile /id","=="+profileId.internalId)
-//      userAppHistoryViewModel.profileName = ""+profileId.internalId
     }
   }
 
