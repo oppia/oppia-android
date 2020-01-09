@@ -22,13 +22,7 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
-import java.math.BigInteger
-import java.nio.charset.Charset
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -361,21 +355,6 @@ class ProfileManagementController @Inject constructor(
 
   private fun onlyLetters(name: String): Boolean {
     return name.matches(Regex("^[ A-Za-z]+\$"))
-  }
-
-  // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
-  private fun md5(s: String): String? {
-    try {
-      val digest = MessageDigest.getInstance("MD5")
-      digest.update(s.toByteArray(Charset.forName("US-ASCII")), 0, s.length)
-      val magnitude = digest.digest()
-      val bi = BigInteger(1, magnitude)
-      val hash = String.format("%0" + (magnitude.size.shl(1)) + "x", bi)
-      return hash
-    } catch (e: NoSuchAlgorithmException) {
-      logger.e("ProfileManagementController", "No such algorithm when creating md5 hash for gravatar", e)
-    }
-    return null
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {

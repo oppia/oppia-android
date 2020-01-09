@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.recyclerview.BindableAdapter.MultiTypeBuilder.Companion.newBuilder
+import org.oppia.app.recyclerview.BindableAdapter.SingleTypeBuilder.Companion.newBuilder
 import kotlin.reflect.KClass
 
 /** A function that returns the integer-based type of view that can bind the specified data object. */
@@ -35,7 +37,7 @@ class BindableAdapter<T : Any> internal constructor(
   // TODO(#170): Introduce support for stable IDs.
 
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
-  fun setData(newDataList: List<T>) {
+  private fun setData(newDataList: List<T>) {
     dataList.clear()
     dataList += newDataList
     // TODO(#171): Introduce diffing to notify subsets of the view to properly support animations
@@ -151,7 +153,7 @@ class BindableAdapter<T : Any> internal constructor(
      *     when subclassing is used to represent more complex lists of data).
      * @return this
      */
-    fun <DB : ViewDataBinding, T2 : T> registerViewDataBinder(
+    private fun <DB : ViewDataBinding, T2 : T> registerViewDataBinder(
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
       setViewModel: (DB, T2) -> Unit,
       transformViewModel: (T) -> T2
