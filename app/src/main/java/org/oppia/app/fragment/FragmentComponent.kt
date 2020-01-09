@@ -13,8 +13,8 @@ import org.oppia.app.mydownloads.UpdatesTabFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.story.StoryFragment
