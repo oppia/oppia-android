@@ -20,7 +20,7 @@ class StringToFractionParser {
    * to be parsed correctly by [parseRegularFraction].
    *
    * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
-   * using [getPendingAnswerErrorOnRealTime], instead.
+   * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     val fraction = parseFraction(text)
@@ -39,7 +39,7 @@ class StringToFractionParser {
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
    * general validity, not for definite correctness.
    */
-  fun getPendingAnswerErrorOnRealTime(text: String): FractionParsingError {
+  fun getRealTimeAnswerError(text: String): FractionParsingError {
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
@@ -59,7 +59,8 @@ class StringToFractionParser {
       ?: null
   }
 
-  fun getFractionFromString(text: String): Fraction {
+  /** Returns a [Fraction] parse from the specified raw text string. */
+  fun parseFractionFromString(text: String): Fraction {
     return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
@@ -98,6 +99,7 @@ class StringToFractionParser {
   }
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
+
   /** Enum to store the errors of [FractionInputInteractionView]. */
   enum class FractionParsingError(@StringRes private var error: Int?) {
     VALID(error = null),

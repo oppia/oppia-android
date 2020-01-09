@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -617,13 +616,11 @@ class StateFragmentPresenter @Inject constructor(
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   fun onPendingAnswerError(
-    errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {
     if (pendingAnswerError != null)
       stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
     else
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
-    errorMessage.set(pendingAnswerError)
   }
 }

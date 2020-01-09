@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ObservableField
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -50,10 +49,9 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
   override fun onPendingAnswerError(
-    errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {
-    stateFragmentPresenter.onPendingAnswerError(errorMessage, pendingAnswerError)
+    stateFragmentPresenter.onPendingAnswerError(pendingAnswerError)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)

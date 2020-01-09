@@ -10,7 +10,6 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
-import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
@@ -33,7 +32,7 @@ class FractionInteractionViewModel(
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setFraction(stringToFractionParser.getFractionFromString(answerTextString))
+        .setFraction(stringToFractionParser.parseFractionFromString(answerTextString))
         .build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
@@ -45,14 +44,12 @@ class FractionInteractionViewModel(
     return getPendingAnswerError() != null
   }
 
-  /**
-   * It set pendingAnswerError, send [errorMessage] and pendingAnswerError to the presenter via [StateFragment]
-   */
+  /** It set the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   fun setPendingAnswerError(category: AnswerErrorCategory) {
     if (answerText.isNotEmpty()) {
       when (category) {
         AnswerErrorCategory.REAL_TIME -> pendingAnswerError =
-          stringToFractionParser.getPendingAnswerErrorOnRealTime(answerText.toString()).getErrorMessageFromStringRes(
+          stringToFractionParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
             context
           )
         AnswerErrorCategory.SUBMIT_TIME -> pendingAnswerError =
@@ -60,7 +57,8 @@ class FractionInteractionViewModel(
             context
           )
       }
-      interactionAnswerHandler.onPendingAnswerError(errorMessage, pendingAnswerError)
+      errorMessage.set(pendingAnswerError)
+      interactionAnswerHandler.onPendingAnswerError(pendingAnswerError)
     }
   }
 
@@ -69,7 +67,7 @@ class FractionInteractionViewModel(
   }
 
   @Bindable
-  fun getPasswordTextWatcher(): TextWatcher {
+  fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
       }

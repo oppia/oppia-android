@@ -79,7 +79,7 @@
       android:textColorHint="@color/editTextHint"
       android:textSize="14sp"
       android:textStyle="italic"
-      app:textChangedListener="@{fractionInteractionViewModel.passwordTextWatcher}" />
+      app:textChangedListener="@{fractionInteractionViewModel.answerTextWatcher}" />
 
     <TextView
       android:id="@+id/fraction_input_error"

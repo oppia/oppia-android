@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ObservableField
 import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
@@ -50,7 +49,6 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   override fun onPendingAnswerError(
-    errorMessage: ObservableField<String>,
     pendingAnswerError: String?
   ) {
     if (pendingAnswerError != null)

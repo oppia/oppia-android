@@ -42,7 +42,7 @@
       android:textColorHint="@color/editTextHint"
       android:textSize="14sp"
       android:textStyle="italic"
-      app:textChangedListener="@{viewModel.passwordTextWatcher}" />
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
 
     <TextView
       android:layout_width="match_parent"

@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.answerhandling
 
-import androidx.databinding.ObservableField
 import org.oppia.app.model.UserAnswer
 
 /**
@@ -15,7 +14,7 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
-  fun onPendingAnswerError(errorMessage: ObservableField<String>, pendingAnswerError: String?) {}
+  fun onPendingAnswerError(pendingAnswerError: String?) {}
 
   /**
    * Returns the flag that indicates current answer has error message or not on Submit button click.
