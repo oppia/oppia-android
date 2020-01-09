@@ -42,6 +42,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager() {
     onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
+    binding.onboardingSlideViewPager.offscreenPageLimit = TOTAL_NUMBER_OF_SLIDES - 1
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
     binding.onboardingSlideViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
