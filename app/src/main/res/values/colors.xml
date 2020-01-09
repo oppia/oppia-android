@@ -65,6 +65,7 @@
   <color name="grey_shade_20">#D6D6D6</color>
   <color name="grey_shade_30">#5CBABABA</color>
   <color name="grey_shade_40">#0000003D</color>
+  <color name="grey_shade_100">#00000029</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
   <color name="chapterCardShadow">#AAFFFFFF</color>
