@@ -142,9 +142,9 @@
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
-  <string name="pin_password_admin_enter">Please enter your \nAdministrator PIN</string>
-  <string name="pin_password_user_enter">Please enter your PIN</string>
-  <string name="pin_password_forgot_pin">I forgot my pin</string>
+  <string name="pin_password_admin_enter">Please enter your \nAdministrator PIN.</string>
+  <string name="pin_password_user_enter">Please enter your PIN.</string>
+  <string name="pin_password_forgot_pin">I forgot my pin.</string>
   <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
   <string name="pin_password_show">show</string>
   <string name="pin_password_hide">hide</string>
