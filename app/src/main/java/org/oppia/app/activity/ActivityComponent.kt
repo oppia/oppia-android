@@ -8,7 +8,7 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.onBoarding.OnBoardingingActivity
+import org.oppia.app.onBoarding.OnBoardingActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
@@ -68,7 +68,7 @@ interface ActivityComponent {
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
-  fun inject(onBoardingActivity: OnBoardingingActivity)
+  fun inject(onBoardingActivity: OnBoardingActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)

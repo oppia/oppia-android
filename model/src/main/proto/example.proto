@@ -9,7 +9,7 @@ message UserAppHistory {
   bool already_opened_app = 1;
 }
 
-message OnBoardingingFlow {
+message OnBoardingFlow {
   bool already_on_boarded_app = 1;
 }
 

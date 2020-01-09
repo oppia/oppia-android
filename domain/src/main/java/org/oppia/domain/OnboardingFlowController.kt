@@ -1,7 +1,7 @@
 package org.oppia.domain
 
 import androidx.lifecycle.LiveData
-import org.oppia.app.model.OnBoardingingFlow
+import org.oppia.app.model.OnBoardingFlow
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -11,12 +11,12 @@ import javax.inject.Singleton
 
 /** Controller for persisting and retrieving the user onBoarding information of the app. */
 @Singleton
-class OnBoardingingFlowController @Inject constructor(
+class OnBoardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val onBoardingFlowStore = cacheStoreFactory.create("onBoarding_flow", OnBoardingingFlow.getDefaultInstance())
+  private val onBoardingFlowStore = cacheStoreFactory.create("onBoarding_flow", OnBoardingFlow.getDefaultInstance())
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnBoardingingFlowCompleted().
@@ -31,7 +31,7 @@ class OnBoardingingFlowController @Inject constructor(
    * Saves that the user has completed on-boarding the app. Note that this does not notify existing subscribers of the changed state,
    * nor can future subscribers observe this state until app restart.
    */
-  fun markOnBoardingingFlowCompleted() {
+  fun markOnBoardingFlowCompleted() {
     onBoardingFlowStore.storeDataAsync(updateInMemoryCache = false) {
       it.toBuilder().setAlreadyOnBoardedApp(true).build()
     }.invokeOnCompletion {
@@ -42,7 +42,7 @@ class OnBoardingingFlowController @Inject constructor(
   }
 
   /** Clears any indication that the user has previously completed on-boarding the application. */
-  fun clearOnBoardingingFlow() {
+  fun clearOnBoardingFlow() {
     onBoardingFlowStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed to clear onBoarding flow.", it)
@@ -55,7 +55,7 @@ class OnBoardingingFlowController @Inject constructor(
    * provide the state of the store upon the creation of this controller even if [markOnBoardingingFlowCompleted] has since been
    * called.
    */
-  fun getOnBoardingingFlow(): LiveData<AsyncResult<OnBoardingingFlow>> {
+  fun getOnBoardingFlow(): LiveData<AsyncResult<OnBoardingFlow>> {
     return dataProviders.convertToLiveData(onBoardingFlowStore)
   }
 }

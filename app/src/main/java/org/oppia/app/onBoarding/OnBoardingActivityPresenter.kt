@@ -6,14 +6,14 @@ import kotlinx.android.synthetic.main.on_boarding_activity.*
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.OnBoardingingFlowController
+import org.oppia.domain.OnBoardingFlowController
 import javax.inject.Inject
 
 /** The presenter for [OnBoardingingActivity]. */
 @ActivityScope
-class OnBoardingingActivityPresenter @Inject constructor(
+class OnBoardingActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val onBoardingFlowController: OnBoardingingFlowController
+  private val onBoardingFlowController: OnBoardingFlowController
 ) {
 
   fun handleOnCreate() {
@@ -22,7 +22,7 @@ class OnBoardingingActivityPresenter @Inject constructor(
   }
 
   private fun subscribeOnBoarding() {
-    onBoardingFlowController.markOnBoardingingFlowCompleted()
+    onBoardingFlowController.markOnBoardingFlowCompleted()
     val intent = Intent(activity, ProfileActivity::class.java)
     activity.startActivity(intent)
     activity.finish()

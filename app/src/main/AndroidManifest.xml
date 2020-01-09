@@ -30,7 +30,7 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".onBoarding.OnBoardingingActivity"
+      android:name=".onBoarding.OnBoardingActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

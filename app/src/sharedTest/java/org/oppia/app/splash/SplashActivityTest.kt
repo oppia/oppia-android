@@ -27,9 +27,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.onBoarding.OnBoardingingActivity
+import org.oppia.app.onBoarding.OnBoardingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.OnBoardingingFlowController
+import org.oppia.domain.OnBoardingFlowController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -68,9 +68,9 @@ class SplashActivityTest {
   )
 
   @Test
-  fun testSplashActivity_initialOpen_routesToOnBoardingingActivity() {
+  fun testSplashActivity_initialOpen_routesToOnBoardingActivity() {
     activityTestRule.launchActivity(null)
-    intended(hasComponent(OnBoardingingActivity::class.java.name))
+    intended(hasComponent(OnBoardingActivity::class.java.name))
   }
 
   @Test
@@ -83,14 +83,14 @@ class SplashActivityTest {
 
   private fun simulateNewAppInstance() {
     // Simulate a fresh app install by clearing any potential on-disk caches using an isolated on-boarding flow controller.
-    createTestRootComponent().getOnBoardingingFlowController().clearOnBoardingingFlow()
+    createTestRootComponent().getOnBoardingFlowController().clearOnBoardingFlow()
     onIdle()
   }
 
   private fun simulateAppAlreadyOnBoarded() {
     // Simulate the app was already onboarded by creating an isolated on-boarding flow controller and saving the onboarding status
     // on the system before the activity is opened.
-    createTestRootComponent().getOnBoardingingFlowController().markOnBoardingingFlowCompleted()
+    createTestRootComponent().getOnBoardingFlowController().markOnBoardingFlowCompleted()
     onIdle()
   }
 
@@ -159,7 +159,7 @@ class SplashActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun getOnBoardingingFlowController(): OnBoardingingFlowController
+    fun getOnBoardingFlowController(): OnBoardingFlowController
     fun inject(splashActivityTest: SplashActivityTest)
   }
 

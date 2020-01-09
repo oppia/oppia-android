@@ -6,9 +6,9 @@ import org.oppia.app.profile.ProfileActivity
 import javax.inject.Inject
 
 /** An activity that shows a temporary OnBoardinging page until the app is onborarded then navigates to [ProfileActivity]. */
-class OnBoardingingActivity : InjectableAppCompatActivity() {
+class OnBoardingActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var onBoardingActivityPresenter: OnBoardingingActivityPresenter
+  @Inject lateinit var onBoardingActivityPresenter: OnBoardingActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
