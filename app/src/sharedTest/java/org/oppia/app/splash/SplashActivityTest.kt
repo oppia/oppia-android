@@ -27,7 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.onBoarding.OnBoardingActivity
+import org.oppia.app.onboarding.OnBoardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.OnBoardingFlowController
 import org.oppia.util.logging.EnableConsoleLog
@@ -88,7 +88,7 @@ class SplashActivityTest {
   }
 
   private fun simulateAppAlreadyOnBoarded() {
-    // Simulate the app was already onboarded by creating an isolated on-boarding flow controller and saving the onboarding status
+    // Simulate the app was already on-boarded by creating an isolated on-boarding flow controller and saving the on-boarding status
     // on the system before the activity is opened.
     createTestRootComponent().getOnBoardingFlowController().markOnBoardingFlowCompleted()
     onIdle()

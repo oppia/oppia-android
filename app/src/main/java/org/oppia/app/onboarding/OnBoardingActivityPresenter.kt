@@ -1,4 +1,4 @@
-package org.oppia.app.onBoarding
+package org.oppia.app.onboarding
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +9,7 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.OnBoardingFlowController
 import javax.inject.Inject
 
-/** The presenter for [OnBoardingingActivity]. */
+/** The presenter for [OnBoardingActivity]. */
 @ActivityScope
 class OnBoardingActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -18,7 +18,7 @@ class OnBoardingActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.on_boarding_activity)
-    activity.onBoard.setOnClickListener({ subscribeOnBoarding() })
+    activity.on_board.setOnClickListener { subscribeOnBoarding() }
   }
 
   private fun subscribeOnBoarding() {

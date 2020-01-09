@@ -46,7 +46,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-/** Tests for [OnBoardingingFlowController]. */
+/** Tests for [OnBoardingFlowController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class OnBoardingFlowControllerTest {
@@ -123,7 +123,7 @@ class OnBoardingFlowControllerTest {
       onBoardingFlowController.markOnBoardingFlowCompleted()
       advanceUntilIdle()
 
-      // The result should not indicate that the user onBoarded the app because markUserOnBoardedApp does not notify observers
+      // The result should not indicate that the user on-boarded the app because markUserOnBoardedApp does not notify observers
       // of the change.
       verify(mockOnBoardingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
       assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
@@ -161,7 +161,7 @@ class OnBoardingFlowControllerTest {
     onBoarding.observeForever(mockOnBoardingObserver)
     advanceUntilIdle()
 
-    // The app should be considered not yet onBoarded since the previous history was cleared.
+    // The app should be considered not yet on-boarded since the previous history was cleared.
     verify(mockOnBoardingObserver, atLeastOnce()).onChanged(onBoardingResultCaptor.capture())
     assertThat(onBoardingResultCaptor.value.isSuccess()).isTrue()
     assertThat(onBoardingResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()

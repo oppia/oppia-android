@@ -8,7 +8,7 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.onBoarding.OnBoardingActivity
+import org.oppia.app.onboarding.OnBoardingActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity

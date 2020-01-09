@@ -2,7 +2,6 @@ package org.oppia.app.splash
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.help.SplashActivityPresenter
 import org.oppia.app.profile.ProfileActivity
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package org.oppia.app.help
+package org.oppia.app.splash
 
 import android.content.Intent
 import android.view.WindowManager
@@ -9,7 +9,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.OnBoardingFlow
-import org.oppia.app.onBoarding.OnBoardingActivity
+import org.oppia.app.onboarding.OnBoardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.OnBoardingFlowController
 import org.oppia.util.data.AsyncResult
@@ -22,7 +22,7 @@ class SplashActivityPresenter @Inject constructor(
   onBoardingFlowController: OnBoardingFlowController
 ) {
 
-  val onBoardingFlowData = onBoardingFlowController.getOnBoardingFlow()
+  private val onBoardingFlowData = onBoardingFlowController.getOnBoardingFlow()
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_activity)
@@ -53,9 +53,9 @@ class SplashActivityPresenter @Inject constructor(
     return Transformations.map(onBoardingFlowData, ::processOnBoardingFlowResult)
   }
 
-  private fun processOnBoardingFlowResult(onboardingResult: AsyncResult<OnBoardingFlow>): OnBoardingFlow {
-    if (onboardingResult.isFailure()) {
+  private fun processOnBoardingFlowResult(onBoardingResult: AsyncResult<OnBoardingFlow>): OnBoardingFlow {
+    if (onBoardingResult.isFailure()) {
     }
-    return onboardingResult.getOrDefault(OnBoardingFlow.getDefaultInstance())
+    return onBoardingResult.getOrDefault(OnBoardingFlow.getDefaultInstance())
   }
 }

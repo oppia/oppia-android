@@ -9,17 +9,17 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Controller for persisting and retrieving the user onBoarding information of the app. */
+/** Controller for persisting and retrieving the user on-boarding information of the app. */
 @Singleton
 class OnBoardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val onBoardingFlowStore = cacheStoreFactory.create("onBoarding_flow", OnBoardingFlow.getDefaultInstance())
+  private val onBoardingFlowStore = cacheStoreFactory.create("on_boarding_flow", OnBoardingFlow.getDefaultInstance())
 
   init {
-    // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnBoardingingFlowCompleted().
+    // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnBoardingFlowCompleted().
     onBoardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user on-boarding data.", it)
@@ -36,7 +36,7 @@ class OnBoardingFlowController @Inject constructor(
       it.toBuilder().setAlreadyOnBoardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already onBoarded the app.", it)
+        logger.e("DOMAIN", "Failed when storing that the user already on-boarded the app.", it)
       }
     }
   }
@@ -51,8 +51,8 @@ class OnBoardingFlowController @Inject constructor(
   }
 
   /**
-   * Returns a [LiveData] result indicating whether the user has onBoarded the app. This is guaranteed to
-   * provide the state of the store upon the creation of this controller even if [markOnBoardingingFlowCompleted] has since been
+   * Returns a [LiveData] result indicating whether the user has on-boarded the app. This is guaranteed to
+   * provide the state of the store upon the creation of this controller even if [markOnBoardingFlowCompleted] has since been
    * called.
    */
   fun getOnBoardingFlow(): LiveData<AsyncResult<OnBoardingFlow>> {
