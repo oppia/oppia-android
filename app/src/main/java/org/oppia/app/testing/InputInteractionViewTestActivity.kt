@@ -55,6 +55,5 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
       binding.submitButton.isEnabled = false
     else
       binding.submitButton.isEnabled = true
-    errorMessage.set(pendingAnswerError)
   }
 }
