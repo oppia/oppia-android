@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -25,8 +24,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -38,8 +37,11 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -59,9 +61,9 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -107,17 +109,24 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
     launch(HomeActivity::class.java).use {
-      profileTestHelper.loginToAdmin()
-      System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
-
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Sean")))
+      val profileId = ProfileId.newBuilder().setInternalId(1).build()
+      GlobalScope.launch(Dispatchers.Main) {
+        profileManagementController.loginToProfile(profileId).observeForever {
+          if (it.isSuccess()) {
+            onView(
+              atPositionOnView(
+                R.id.home_recycler_view,
+                1,
+                R.id.profile_name_textview
+              )
+            ).check(matches(withText("Ben")))
+          }else{
+            System.out.println("id=Failed======"+profileManagementController.getCurrentProfileId().internalId)
+          }
+        }
+      }
     }
+    System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
   }
 
   @Test
