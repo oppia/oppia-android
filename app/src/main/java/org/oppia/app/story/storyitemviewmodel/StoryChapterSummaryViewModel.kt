@@ -1,6 +1,5 @@
 package org.oppia.app.story.storyitemviewmodel
 
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.model.ChapterSummary
@@ -27,7 +26,7 @@ class StoryChapterSummaryViewModel(
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
 
-  fun onExplorationClicked(v: View) {
+  fun onExplorationClicked() {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       explorationId
@@ -36,7 +35,7 @@ class StoryChapterSummaryViewModel(
         result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
         result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: " + explorationId)
+          logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
           explorationSelectionListener.selectExploration(explorationId)
         }
       }

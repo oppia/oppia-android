@@ -44,10 +44,10 @@ class DataProviders @Inject constructor(
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
-        try {
-          return dataProvider.retrieveData().transform(function)
+        return try {
+          dataProvider.retrieveData().transform(function)
         } catch (t: Throwable) {
-          return AsyncResult.failed(t)
+          AsyncResult.failed(t)
         }
       }
     }

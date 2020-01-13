@@ -1,4 +1,4 @@
-package org.oppia.app.topic.overview
+package org.oppia.app.topic.info
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains overview of Topic. */
-class TopicOverviewFragment : InjectableFragment() {
-  @Inject lateinit var topicOverviewFragmentPresenter: TopicOverviewFragmentPresenter
+/** Fragment that contains info of Topic. */
+class TopicInfoFragment : InjectableFragment() {
+  @Inject lateinit var topicInfoFragmentPresenter: TopicInfoFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class TopicOverviewFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicOverviewFragmentPresenter.handleCreateView(inflater, container)
+    return topicInfoFragmentPresenter.handleCreateView(inflater, container)
   }
 }

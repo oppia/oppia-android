@@ -8,7 +8,6 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import javax.inject.Inject
 
 /** The presenter for [AudioFragmentTestActivity] */
