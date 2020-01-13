@@ -66,6 +66,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -107,7 +108,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_firstOpen_hasWelcomeString() {
+  fun testHomeActivity_recyclerViewIndex0_displayProfileName_isDisplayedSuccessfully() {
     launch(HomeActivity::class.java).use {
       onView(
         atPositionOnView(
@@ -120,30 +121,46 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-   launch(HomeActivity::class.java).use {
-      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-      waitForTheView(withText("Welcome back to Oppia!"))
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome back to Oppia!")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_isDisplayedSuccesfully() {
     launch(HomeActivity::class.java).use {
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText(containsString("Welcome"))))
+      val c = Calendar.getInstance()
+      when (c.get(Calendar.HOUR_OF_DAY)) {
+        in 5..11 -> {
+          onView(
+            atPositionOnView(
+              R.id.home_recycler_view,
+              0,
+              R.id.welcome_text_view
+            )
+          ).check(matches(withText("Good morning,")))
+        }
+        in 12..16 -> {
+          onView(
+            atPositionOnView(
+              R.id.home_recycler_view,
+              0,
+              R.id.welcome_text_view
+            )
+          ).check(matches(withText("Good afternoon,")))
+        }
+        in 17..22 -> {
+          onView(
+            atPositionOnView(
+              R.id.home_recycler_view,
+              0,
+              R.id.welcome_text_view
+            )
+          ).check(matches(withText("Good evening,")))
+        }
+
+        else -> onView(
+          atPositionOnView(
+            R.id.home_recycler_view,
+            0,
+            R.id.welcome_text_view
+          )
+        ).check(matches(withText("Good night,")))
+      }
     }
   }
 
