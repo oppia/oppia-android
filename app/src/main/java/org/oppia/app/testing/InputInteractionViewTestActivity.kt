@@ -10,8 +10,7 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
@@ -21,7 +20,8 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  * This is a dummy activity to test input interaction views.
  * It contains [NumericInputInteractionView], [TextInputInteractionView],and [FractionInputInteractionView].
  */
-class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener, InteractionAnswerHandler {
+class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
+  InteractionAnswerErrorReceiver {
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   val numericInputViewModel = NumericInputViewModel()
   val textInputViewModel = TextInputViewModel(
@@ -37,7 +37,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
-      interactionAnswerHandler = this
+      interactionAnswerErrorReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
@@ -45,15 +45,16 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.setPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    fractionInteractionViewModel.getPendingAnswerErrorOnSubmit()
   }
 
   override fun onPendingAnswerError(
-    pendingAnswerError: String?
+    pendingAnswerError: String?, fractionInteractionViewModel: FractionInteractionViewModel
   ) {
     if (pendingAnswerError != null)
       binding.submitButton.isEnabled = false
     else
       binding.submitButton.isEnabled = true
+    fractionInteractionViewModel.setPendingAnswerError(pendingAnswerError)
   }
 }

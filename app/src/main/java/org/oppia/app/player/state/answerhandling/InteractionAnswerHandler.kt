@@ -14,16 +14,8 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
-  fun onPendingAnswerError(pendingAnswerError: String?) {}
-
-  /**
-   * Returns the flag that indicates current answer has error message or not on Submit button click.
-   * If [setPendingAnswerError] is null then returns true else false.
-   */
-  fun hasPendingAnswerErrorOnSubmit(): Boolean = false
-
   /** Return the current answer's error messages  if not valid else return null. */
-  fun getPendingAnswerError(): String? {
+  fun getPendingAnswerErrorOnSubmit(): String? {
     return null
   }
 
@@ -31,6 +23,9 @@ interface InteractionAnswerHandler {
   fun getPendingAnswer(): UserAnswer? {
     return null
   }
+
+  /** Return the current answer that is ready for handling. */
+  fun setPendingAnswerError(error: String?) {}
 }
 
 /**
@@ -39,12 +34,4 @@ interface InteractionAnswerHandler {
  */
 interface InteractionAnswerReceiver {
   fun onAnswerReadyForSubmission(answer: UserAnswer)
-}
-
-/** Categories of errors that can be inferred from a pending answer.  */
-enum class AnswerErrorCategory {
-  /** Corresponds to errors that may be found while the user is trying to input an answer.  */
-  REAL_TIME,
-  /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
-  SUBMIT_TIME
 }

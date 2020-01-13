@@ -6,6 +6,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.SelectionItemInputType
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
@@ -15,7 +16,7 @@ class SelectionInteractionViewModel(
   val explorationId: String,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  interactionAnswerHandler: InteractionAnswerHandler
+  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 

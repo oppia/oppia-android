@@ -42,6 +42,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
@@ -476,7 +477,7 @@ class StateFragmentPresenter @Inject constructor(
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerHandler
+      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver
     )
   }
 
@@ -615,7 +616,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
-  fun onPendingAnswerError(
+  fun updateSubmitButton(
     pendingAnswerError: String?
   ) {
     if (pendingAnswerError != null)
