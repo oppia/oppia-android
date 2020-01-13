@@ -14,8 +14,7 @@ const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
-  @Inject
-  lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int): Intent {
