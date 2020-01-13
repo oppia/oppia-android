@@ -1,7 +1,5 @@
 package org.oppia.app.player.state.answerhandling
 
-import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
-
 /**
  * A handler for interaction answers error receiving to update submit button.
  * Handlers can either require an additional user action before the submit button UI can be updated.
@@ -9,5 +7,5 @@ import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 interface InteractionAnswerErrorReceiver {
 
   /** Will be called to enable and disable submit button on pending answer error updated on real-time and sumbmit time answer change. */
-  fun onPendingAnswerError(pendingAnswerError: String?,fractionInteractionViewModel: FractionInteractionViewModel) {}
+  fun onPendingAnswerError(pendingAnswerError: String?) {}
 }

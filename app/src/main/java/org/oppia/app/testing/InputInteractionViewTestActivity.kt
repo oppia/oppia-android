@@ -10,6 +10,7 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
@@ -45,16 +46,15 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.getPendingAnswerErrorOnSubmit()
+    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerError(
-    pendingAnswerError: String?, fractionInteractionViewModel: FractionInteractionViewModel
+    pendingAnswerError: String?
   ) {
     if (pendingAnswerError != null)
       binding.submitButton.isEnabled = false
     else
       binding.submitButton.isEnabled = true
-    fractionInteractionViewModel.setPendingAnswerError(pendingAnswerError)
   }
 }

@@ -4,23 +4,22 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Bindable
+import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.R
-import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
-  interaction: Interaction,
-  private val context: Context,
-  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  interaction: Interaction, private val context: Context, private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
-  private var fractionPendingAnswerError: String? = null
+  private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")
   val hintText: CharSequence = deriveHintText(interaction)
@@ -28,6 +27,12 @@ class FractionInteractionViewModel(
 
   init {
     stringToFractionParser = StringToFractionParser()
+    var callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
+      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+      }
+    }
+    errorMessage.addOnPropertyChangedCallback(callback)
   }
 
   override fun getPendingAnswer(): UserAnswer {
@@ -42,21 +47,25 @@ class FractionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
-  /** get pending answer error, invoke onPendingAnswerError in StateFragment to update submit button UI and return pending answer error. */
-  override fun getPendingAnswerErrorOnSubmit(): String? {
-    fractionPendingAnswerError =
-      stringToFractionParser.getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
-        context
-      )
-    if (answerText.isNotEmpty())
-      interactionAnswerErrorReceiver.onPendingAnswerError(fractionPendingAnswerError, this)
-    return fractionPendingAnswerError
+
+  /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
+  override fun checkPendingAnswerError(category: AnswerErrorCategory):String? {
+    if (answerText.isNotEmpty()) {
+      when (category) {
+        AnswerErrorCategory.REAL_TIME -> pendingAnswerError =
+          stringToFractionParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
+            context
+          )
+        AnswerErrorCategory.SUBMIT_TIME -> pendingAnswerError =
+          stringToFractionParser.getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
+            context
+          )
+      }
+      errorMessage.set(pendingAnswerError)
+    }
+    return pendingAnswerError
   }
 
-  /** set pending answer error on [FractionInputInteractionView] */
-  override fun setPendingAnswerError(error: String?) {
-    errorMessage.set(error)
-  }
 
   @Bindable
   fun getAnswerTextWatcher(): TextWatcher {
@@ -66,12 +75,7 @@ class FractionInteractionViewModel(
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
-        fractionPendingAnswerError =
-          stringToFractionParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
-        if (answerText.isNotEmpty())
-          interactionAnswerErrorReceiver.onPendingAnswerError(fractionPendingAnswerError, this@FractionInteractionViewModel)
+        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {

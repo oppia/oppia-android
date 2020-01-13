@@ -10,7 +10,6 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
@@ -52,10 +51,9 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
   override fun onPendingAnswerError(
-    pendingAnswerError: String?,fractionInteractionViewModel: FractionInteractionViewModel
+    pendingAnswerError: String?
   ) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
-    fractionInteractionViewModel.setPendingAnswerError(pendingAnswerError)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
