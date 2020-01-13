@@ -55,9 +55,9 @@
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="edit_text_hint">#80333333</color>
   <color name="mid_grey">#ff333333</color>
-  <color name="mid_grey_10">#1A000000</color>
-  <color name="mid_grey_20">#33000000</color>
-  <color name="mid_grey_30">#4D000000</color>
+  <color name="mid_grey_05">#0D000000</color>
+  <color name="mid_grey_03">#03000000</color>
+  <color name="mid_grey_30">#0D000000</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>
