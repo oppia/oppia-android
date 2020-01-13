@@ -37,11 +37,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.launch
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -52,7 +49,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
-import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -80,9 +76,12 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   @Before
   @ExperimentalCoroutinesApi
@@ -91,6 +90,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -109,31 +109,19 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstOpen_hasWelcomeString() {
     launch(HomeActivity::class.java).use {
-      val profileId = ProfileId.newBuilder().setInternalId(1).build()
-      GlobalScope.launch(Dispatchers.Main) {
-        profileManagementController.loginToProfile(profileId).observeForever {
-          if (it.isSuccess()) {
-            onView(
-              atPositionOnView(
-                R.id.home_recycler_view,
-                1,
-                R.id.profile_name_textview
-              )
-            ).check(matches(withText("Ben")))
-          }else{
-            System.out.println("id=Failed======"+profileManagementController.getCurrentProfileId().internalId)
-          }
-        }
-      }
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Sean!")))
     }
-    System.out.println("id======="+profileManagementController.getCurrentProfileId().internalId)
   }
 
   @Test
   fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-//    simulateAppAlreadyOpened()
-
-    launch(HomeActivity::class.java).use {
+   launch(HomeActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
       waitForTheView(withText("Welcome back to Oppia!"))
       onView(

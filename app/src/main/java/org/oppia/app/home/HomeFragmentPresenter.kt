@@ -24,13 +24,14 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
+import org.oppia.app.settings.profile.KEY_PROFILE_EDIT_PROFILE_ID
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import javax.inject.Inject
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
@@ -51,6 +52,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
+  private var id:Int =-1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
@@ -67,7 +69,9 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    profileId = profileManagementController.getCurrentProfileId()
+    id = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
+    profileId = ProfileId.newBuilder().setInternalId(id).build()
+//    profileId = profileManagementController.getCurrentProfileId()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
