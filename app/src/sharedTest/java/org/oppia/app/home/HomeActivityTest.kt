@@ -15,7 +15,6 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -81,8 +80,6 @@ class HomeActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
   @Inject
   lateinit var context: Context
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
 
   @Before
   @ExperimentalCoroutinesApi
@@ -108,7 +105,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayProfileName_isDisplayedSuccessfully() {
+  fun testHomeActivity_recyclerViewIndex0_displayProfileName_profileNameDisplayedSuccessfully() {
     launch(HomeActivity::class.java).use {
       onView(
         atPositionOnView(
@@ -121,7 +118,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_isDisplayedSuccesfully() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_greetingMessageDisplayedSuccessful() {
     launch(HomeActivity::class.java).use {
       val c = Calendar.getInstance()
       when (c.get(Calendar.HOUR_OF_DAY)) {
@@ -388,10 +385,6 @@ class HomeActivityTest {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
-  }
-
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
 // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.

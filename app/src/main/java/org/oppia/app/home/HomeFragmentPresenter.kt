@@ -24,7 +24,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
-import org.oppia.app.settings.profile.KEY_PROFILE_EDIT_PROFILE_ID
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
@@ -52,7 +51,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
-  private var id:Int =-1
+  private var id: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
@@ -69,7 +68,7 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    id = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
+    id = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, 0)
     profileId = ProfileId.newBuilder().setInternalId(id).build()
 //    profileId = profileManagementController.getCurrentProfileId()
 
@@ -169,7 +168,7 @@ class HomeFragmentPresenter @Inject constructor(
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       displayGreeting()
       userAppHistoryViewModel.profileName = "$profileName!"
-      logger.d("profile /id","=="+profileId.internalId)
+      logger.d("profile /id", "==" + profileId.internalId)
     }
   }
 
