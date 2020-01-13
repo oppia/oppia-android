@@ -75,3 +75,18 @@ The Oppia app follows a combination of MVP (Model-View-Presenter) and MVVM (Mode
 * The model layer is defined by a combination of protobuf and Kotlin data objects that are provided from the controller layer using LiveData; managers are responsible for maintaining state in this layer.
 * The controller layer interacts with the database and network; it provides data via a custom data source mechanism.
 * Android Activities should only perform high-level fragment transaction logic, and are responsible for initializing dagger components and performing routing.
+
+# Codebase Walkthrough
+Here are some useful examples on how to traverse the codebase (Note: These are not real tasks/features):
+## Example
+**Task**: Add a button in Info Tab which will open an already existing activity, for example, SplashActivity.
+**Walkthrough**:
+1. Now as per the subdirectory details mentioned above we know that the `app/topic` contains all the files related to Topic and its tabs.
+2. Inside it there is another directory which is `app/topic/info` which should contain information related to already existing TopicInfo Tab. In this we see 3 files, `TopicInfoFragment`, `TopicInfoFragmentPresenter` and `TopicInfoViewModel`.
+3. Now let's first open `TopicInfoFragment` which extends a `InjectableFragment`, in this we can see that it just calls the `TopicInfoFragmentPresenter`.
+4. Inside `TopicInfoFragmentPresenter` we can see that an xml layout is getting inflated using [DataBinding](https://developer.android.com/topic/libraries/data-binding). You can see this via this line: `val binding = TopicInfoFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)`. From this we know that the corresponding xml file name is `topic_info_fragment.xml`.
+5. Now open `topic_info_fragment.xml` file and create a button inside that.
+6. Button click is handled via data binding a function (`clickDummyButton`) to the xml. That function will be created in the `TopicInfoViewModel`. From **App Architecture** section we know that the ViewModel does not handle the logic and the presenter is responsible for the logic part.
+7. So we will create another function (`goToSplashActivity`) inside the `TopicInfoFragmentPresenter` and now we will call this function inside `clickDummyButton` which was present in `TopicInfoViewModel`.
+
+This way the entire task is complete with all the code blocks in correct files.
