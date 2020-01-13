@@ -32,7 +32,7 @@ The Oppia project follows a standard Gradle project layout with five modules and
 * Module which provides data to the application via fetching data from the Oppia-Backend or by fetching data from offline store PersistanceCacheStore.
 * This module contains unit tested with a combination of JUnit and Robolectric.
 * **data/backends** - Contain APIs and models which are needed to make a data request from Oppia-Backend and convert that response to appropriate models.
-* **data/persistence** - The offline store information is saved in this subdirectory using `[PersistanceCacheStore](https://medium.com/@appmattus/caching-made-simple-on-android-d6e024e3726b)`
+* **data/persistence** - The offline store information is saved in this subdirectory using [PersistanceCacheStore](https://medium.com/@appmattus/caching-made-simple-on-android-d6e024e3726b)
 
 ### 3. domain: 
 * Contains the business logic of the application.
@@ -59,7 +59,7 @@ The Oppia project follows a standard Gradle project layout with five modules and
 * **utility/data** - Contains various classes which helps fetching locally stored data in an effective way in domain layer.
 * **utility/extensions** - This simply contains the extensions for Android classes like extension for LiveData.
 * **utility/gcsresource** - Provides the default name of the GCS Resource bucket.
-* **utility/logging** - Oppia-Android does not use `[Log](https://developer.android.com/reference/android/util/Log)` instead it has its custom Logger which is a wrapper class for Android Logcat and file logging. All logs in this project should use `Logger` instead of `Log` anywhere in the project.
+* **utility/logging** - Oppia-Android does not use [Log](https://developer.android.com/reference/android/util/Log) instead it has its custom Logger which is a wrapper class for Android Logcat and file logging. All logs in this project should use `Logger` instead of `Log` anywhere in the project.
 * **utility/networking** - Utility to get the current connection status of the device.
 * **utility/parser** - Contains parser for rich-text like HtmlParser and UrlParser which makes sure that the rich-text from Oppia Backend is parsed correctly to make to display it in android app.
 * **utility/profile** - Utility to manage creation and deletion of directories.
