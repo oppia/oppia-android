@@ -203,7 +203,7 @@ class HomeFragmentPresenter @Inject constructor(
       in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
       in 12..16 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
       in 17..22 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
-      in 23 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_night)
+      in 23 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
     }
   }
 }

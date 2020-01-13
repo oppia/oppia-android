@@ -76,10 +76,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -156,7 +154,7 @@ class HomeActivityTest {
             0,
             R.id.welcome_text_view
           )
-        ).check(matches(withText("Good night,")))
+        ).check(matches(withText("Good evening,")))
       }
     }
   }
@@ -373,13 +371,6 @@ class HomeActivityTest {
     createTestRootComponent().getProfileManagementController().getProfiles()
     onIdle()
   }
-
-//  private fun simulateAppAlreadyOpened() {
-//    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
-//    // on the system before the activity is opened.
-//    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
-//    onIdle()
-//  }
 
   private fun createTestRootComponent(): TestApplicationComponent {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
