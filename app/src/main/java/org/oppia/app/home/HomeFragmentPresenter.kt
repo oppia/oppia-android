@@ -51,7 +51,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
-  private var id: Int = -1
+  private var profileIdFromIntent: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
@@ -68,9 +68,8 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    id = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, 0)
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
-//    profileId = profileManagementController.getCurrentProfileId()
+    profileIdFromIntent = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, 0)
+    profileId = ProfileId.newBuilder().setInternalId(profileIdFromIntent).build()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -118,7 +117,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
@@ -168,7 +167,6 @@ class HomeFragmentPresenter @Inject constructor(
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       displayGreeting()
       userAppHistoryViewModel.profileName = "$profileName!"
-      logger.d("profile /id", "==" + profileId.internalId)
     }
   }
 
@@ -202,8 +200,7 @@ class HomeFragmentPresenter @Inject constructor(
     when (c.get(Calendar.HOUR_OF_DAY)) {
       in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
       in 12..16 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
-      in 17..22 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
-      in 23 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
+      in 17 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
     }
   }
 }
