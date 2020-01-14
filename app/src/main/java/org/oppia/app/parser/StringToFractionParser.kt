@@ -57,7 +57,11 @@ class StringToFractionParser {
     return parseMixedNumber(inputText)
       ?: parseRegularFraction(inputText)
       ?: parseWholeNumber(inputText)
-      ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
+  }
+
+  /** Returns a [Fraction] parse from the specified raw text string. */
+  fun parseFractionFromString(text: String): Fraction {
+    return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {

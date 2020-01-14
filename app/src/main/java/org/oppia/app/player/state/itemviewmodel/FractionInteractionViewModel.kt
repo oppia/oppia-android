@@ -41,7 +41,7 @@ class FractionInteractionViewModel(
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setFraction(stringToFractionParser.parseFraction(answerTextString))
+        .setFraction(stringToFractionParser.parseFractionFromString(answerTextString))
         .build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
