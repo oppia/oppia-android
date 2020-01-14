@@ -101,7 +101,7 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
    * retained upon configuration changes since the user can just re-expand the list. Note that the first element of this
-   * list (when initialized), will always be the previous answers header to help locate the items in the recycler view
+   * list (when initialized), will always be the previous answer's header to help locate the items in the recycler view
    * (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
