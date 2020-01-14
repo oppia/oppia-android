@@ -43,7 +43,6 @@ import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -616,9 +615,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
-  fun updateSubmitButton(
-    pendingAnswerError: String?
-  ) {
+  fun updateSubmitButton(pendingAnswerError: String?) {
     if (pendingAnswerError != null)
       stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
     else

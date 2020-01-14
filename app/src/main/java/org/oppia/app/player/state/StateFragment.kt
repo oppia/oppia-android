@@ -50,9 +50,7 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
-  override fun onPendingAnswerError(
-    pendingAnswerError: String?
-  ) {
+  override fun onPendingAnswerError(pendingAnswerError: String?) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
   }
 

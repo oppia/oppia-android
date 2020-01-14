@@ -50,18 +50,14 @@ class StringToFractionParser {
     }
   }
 
-  private fun parseFraction(text: String): Fraction? {
+  /** Returns a [Fraction] parse from the specified raw text string. */
+  fun parseFraction(text: String): Fraction? {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
     return parseMixedNumber(inputText)
       ?: parseRegularFraction(inputText)
       ?: parseWholeNumber(inputText)
-      ?: null
-  }
-
-  /** Returns a [Fraction] parse from the specified raw text string. */
-  fun parseFractionFromString(text: String): Fraction {
-    return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
+      ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {

@@ -17,17 +17,18 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [ViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
-  interaction: Interaction, private val context: Context, private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  interaction: Interaction,
+  private val context: Context,
+  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")
   val hintText: CharSequence = deriveHintText(interaction)
-  val stringToFractionParser: StringToFractionParser
+  private val stringToFractionParser: StringToFractionParser = StringToFractionParser()
 
   init {
-    stringToFractionParser = StringToFractionParser()
-    var callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
+    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
         interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
       }
@@ -40,16 +41,15 @@ class FractionInteractionViewModel(
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setFraction(stringToFractionParser.parseFractionFromString(answerTextString))
+        .setFraction(stringToFractionParser.parseFraction(answerTextString))
         .build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()
   }
 
-
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
-  override fun checkPendingAnswerError(category: AnswerErrorCategory):String? {
+  override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       when (category) {
         AnswerErrorCategory.REAL_TIME -> pendingAnswerError =
@@ -65,7 +65,6 @@ class FractionInteractionViewModel(
     }
     return pendingAnswerError
   }
-
 
   @Bindable
   fun getAnswerTextWatcher(): TextWatcher {

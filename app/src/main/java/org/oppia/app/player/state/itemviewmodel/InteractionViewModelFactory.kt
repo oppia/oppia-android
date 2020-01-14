@@ -2,7 +2,6 @@ package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /**
