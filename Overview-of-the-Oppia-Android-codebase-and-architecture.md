@@ -1,4 +1,4 @@
-The Oppia-Android codebase makes use of Kotlin and XML, and can be built using Android Studio. The Oppia app follows a layered architecture that combines parts of [MVP](https://medium.com/upday-devs/android-architecture-patterns-part-2-model-view-presenter-8a6faaae14a5) (Model-View-Presenter) and [MVVM](https://medium.com/upday-devs/android-architecture-patterns-part-3-model-view-viewmodel-e7eeee76b73b) (Model-View-ViewModel).
+The Oppia-Android codebase makes use of Kotlin and XML and can be built using Android Studio. The Oppia app follows a layered architecture that combines parts of [MVP](https://medium.com/upday-devs/android-architecture-patterns-part-2-model-view-presenter-8a6faaae14a5) (Model-View-Presenter) and [MVVM](https://medium.com/upday-devs/android-architecture-patterns-part-3-model-view-viewmodel-e7eeee76b73b) (Model-View-ViewModel).
 
 # Directory Structure
 <img width="750" alt="Screenshot 2020-01-13 at 1 21 25 PM" src="https://user-images.githubusercontent.com/9396084/72245148-e60c4b80-3615-11ea-8a28-73b2b2bfc656.png">
@@ -8,22 +8,22 @@ The Oppia project follows a standard Gradle project layout with five modules. Ea
 ### 1. app: 
 This module contains all the activities and fragments, as well as the view, view model, and presenter layers. It also contains Robolectric test cases and integration/hermetic end-to-end tests using Espresso. Here are the contents of its subdirectories:
 
-* **app/activity** - Basic Dagger code for activity implementation.
+* **app/activity** - Basic [Dagger](https://github.com/google/dagger) code for activity implementation.
 * **app/application** - Dagger code for the application, with different module declarations.
 * **app/customview** - Custom UI items used by the application.
 * **app/databinding** - Different BindingAdapters which can be used in any layout file.
 * **app/fragment** - Basic Dagger code for fragment implementation.
-* **app/home** - Fragments, activities, viewmodels, adapters, presenters and interfaces associated with the home screen.
-* **app/mydownloads** - Fragments, activities, viewmodels, adapters, presenters and interfaces associated with the "My Downloads" screen.
+* **app/home** - Fragments, activities, view models, adapters, presenters and interfaces associated with the home screen.
+* **app/mydownloads** - Fragments, activities, view models, adapters, presenters and interfaces associated with the "My Downloads" screen.
 * **app/parser** - Various classes which parse strings to other data types (e.g. String to Fraction).
 * **app/player** - Everything related to the exploration player (e.g. audio, state, etc.).
-* **app/profile** - Fragments, activities, viewmodels, adapters, presenters and interfaces for the profile screen and related subscreens.
+* **app/profile** - Fragments, activities, view models, adapters, presenters and interfaces for the profile screen and related subscreens.
 * **app/recyclerview** - Helper classes for RecyclerView, which is used in various activities and fragments.
-* **app/settings** - Fragments, activities, viewmodels, adapters, presenters and interfaces related to the Settings screen and related subscreens.
+* **app/settings** - Fragments, activities, view models, adapters, presenters and interfaces related to the Settings screen and related subscreens.
 * **app/splash** - Code related to the app's Splash screen.
-* **app/story** - Fragments, activities, viewmodels, adapters, presenters and interfaces related to the Story screen.
+* **app/story** - Fragments, activities, view models, adapters, presenters and interfaces related to the Story screen.
 * **app/testing** - All dummy test activities and fragments that are needed to test the Android functionality correctly. These help with writing test cases.
-* **app/topic** - Fragments, activities, viewmodels, adapters, presenters and interfaces related to the Topic screen and its four tabs.
+* **app/topic** - Fragments, activities, view models, adapters, presenters and interfaces related to the Topic screen and its four tabs.
 * **app/utility** - Any code which can be used centrally, e.g. date-time getter-setter, keyboard controller, etc .
 * **app/view** - Basic Dagger code for View implementation.
 * **app/viewmodel** - Basic Dagger code for ViewModel implementation.
@@ -74,7 +74,7 @@ The Oppia app follows a combination of MVP (Model-View-Presenter) and MVVM (Mode
 
 # Codebase Walkthrough
 
-Here are some examples for how to traverse the codebase. (Note that the examples below are not real tasks/features, and should not be implemented.)
+Here is an example of how to traverse the codebase. (Note that the examples below are not real tasks/features, and should not be implemented.)
 
 ## Example
 
