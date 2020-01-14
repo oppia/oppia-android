@@ -19,8 +19,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
   private lateinit var topicId: String
   private var storyId: String? = null
-  @Inject
-  lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

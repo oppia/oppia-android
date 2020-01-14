@@ -30,8 +30,7 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
     }
   }
 
-  @Inject
-  lateinit var stateFragmentPresenter: StateFragmentPresenter
+  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

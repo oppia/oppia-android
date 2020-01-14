@@ -3,6 +3,8 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.drawer.NavigationDrawerFragment
+import org.oppia.app.help.HelpFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.continueplaying.ContinuePlayingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
@@ -19,7 +21,7 @@ import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
-import org.oppia.app.topic.overview.TopicOverviewFragment
+import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.play.TopicPlayFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
@@ -48,15 +50,17 @@ interface FragmentComponent {
   fun inject(continuePlayingFragment: ContinuePlayingFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
+  fun inject(helpFragment: HelpFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
+  fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(topicFragment: TopicFragment)
-  fun inject(topicOverviewFragment: TopicOverviewFragment)
+  fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicPlayFragment: TopicPlayFragment)
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicTrainFragment: TopicTrainFragment)

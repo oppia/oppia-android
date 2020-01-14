@@ -58,8 +58,7 @@ class UserAppHistoryControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var userAppHistoryController: UserAppHistoryController
+  @Inject lateinit var userAppHistoryController: UserAppHistoryController
 
   @Inject
   @field:TestDispatcher

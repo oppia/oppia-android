@@ -12,8 +12,7 @@ private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
 
 /** Fragment that displays skills for topic train mode. */
 class TopicTrainFragment : InjectableFragment() {
-  @Inject
-  lateinit var topicTrainFragmentPresenter: TopicTrainFragmentPresenter
+  @Inject lateinit var topicTrainFragmentPresenter: TopicTrainFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

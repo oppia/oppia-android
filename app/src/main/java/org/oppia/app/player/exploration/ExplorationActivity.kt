@@ -18,8 +18,7 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener {
-  @Inject
-  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
   private var topicId: String? = null
 

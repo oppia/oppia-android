@@ -10,8 +10,7 @@ const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY = "QuestionPlayerA
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+  @Inject lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

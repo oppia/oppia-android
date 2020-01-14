@@ -34,7 +34,6 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
-import org.oppia.domain.R
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -58,11 +57,9 @@ class ProfileManagementControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>

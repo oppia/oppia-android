@@ -24,7 +24,6 @@ import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
