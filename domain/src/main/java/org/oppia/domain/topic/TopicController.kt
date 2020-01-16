@@ -1,5 +1,6 @@
 package org.oppia.domain.topic
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
@@ -11,6 +12,7 @@ import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
+import org.oppia.app.model.StoryProgressDatabase
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
@@ -94,6 +96,11 @@ class TopicController @Inject constructor(
         AsyncResult.failed<Topic>(e)
       }
     )
+  }
+
+  fun getCompletedChapterList(storyId: String): LiveData<AsyncResult<List<String>>> {
+    val transformedDataProvider =  storyProgressController.retrieveStoryProgress(storyId)
+    return dataProviders.convertToLiveData(transformedDataProvider)
   }
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
@@ -442,10 +449,6 @@ class TopicController @Inject constructor(
 
   private fun createChaptersFromJson(storyId: String, chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
-    val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-    val chapterProgressMap = storyProgress.chapterProgressList.map { progress ->
-      progress.explorationId to progress
-    }.toMap()
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
@@ -453,7 +456,6 @@ class TopicController @Inject constructor(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(chapterProgressMap.getValue(explorationId).playState)
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
