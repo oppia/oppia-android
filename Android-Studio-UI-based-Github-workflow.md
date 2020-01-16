@@ -1,29 +1,29 @@
-## How to clone the Oppia Android repository from Android Studio.
-Go to _https://github.com/oppia/oppia-android_
-Clone or download(Copy the link)>
+# Clone Oppia-Android using Android Studio
+Go to https://github.com/oppia/oppia-android
+Click on **Clone or download** and copy the link.
 <img width="1680" alt="1" src="https://user-images.githubusercontent.com/54615666/72495729-8e582500-384d-11ea-8cdb-a00f8af03294.png">
 
-Now ,go to _Android Studio>File>New> Project from Version Control >Git_
+Now, go to **Android Studio** -> **File** -> **New** -> **Project from Version Control** -> **Git**
 
 
 <img width="1680" alt="2" src="https://user-images.githubusercontent.com/54615666/72495730-8e582500-384d-11ea-8c1a-a515c48832d6.png">
-Login to gitHub with your credentials.
-Paste the URL>_Clone_ 
-Wait for a few minutes that gradle build completes. 
+Login to GitHub with your credentials.
+Paste the **URL** and click on **Clone** button.
+Wait for a few minutes until gradle build completes. 
 
 <img width="1680" alt="4" src="https://user-images.githubusercontent.com/54615666/72495731-8e582500-384d-11ea-8a89-8ee7a0ba7c00.png">
 
-## Create New Branch
+# Create New Branch
 
-Now your android studio project is ready to start your work.
-Right side bottom of your android studio screen you will find you cloned branch name "develop".
-develop>New Branch>fill your new branch name>OK
+Now the local copy of Oppia-Android is ready on your Android Studio
+Right side bottom of your android studio screen you will find a **develop** branch.
+Click on **develop** -> **New Branch** -> _Enter your new branch name_ -> **OK**
 
 <img width="1680" alt="10" src="https://user-images.githubusercontent.com/54615666/72495739-8f895200-384d-11ea-9d66-2b54f94fc39f.png">
 <img width="1680" alt="12" src="https://user-images.githubusercontent.com/54615666/72495741-9021e880-384d-11ea-8291-12e471a5f7ca.png">
 
 
-If you want to go back to develop or any branch/check out any branch you may righ click and find options for that
+If you want to go back to develop or any other branch/check out any branch you may right click and find options for that
 <img width="1680" alt="11" src="https://user-images.githubusercontent.com/54615666/72495740-8f895200-384d-11ea-8fb4-3a2aa2a533f3.png">
 Now when you create new activity it will show a dialog to add new files to Git(new files will be unversioned unless you allow this i.e. shown in reddish brown color file name.)Select files >Add
 <img width="1680" alt="5" src="https://user-images.githubusercontent.com/54615666/72495732-8ef0bb80-384d-11ea-89f4-f24d2d647783.png">
