@@ -44,7 +44,7 @@
   <string name="overview">Overview</string>
   <string name="play">Play</string>
   <string name="train">Train</string>
-  <string name="review">Review</string>
+  <string name="revision">Revision</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>

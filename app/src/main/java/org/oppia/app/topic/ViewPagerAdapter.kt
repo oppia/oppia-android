@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import org.oppia.app.topic.overview.TopicOverviewFragment
 import org.oppia.app.topic.play.TopicPlayFragment
-import org.oppia.app.topic.review.TopicReviewFragment
+import org.oppia.app.topic.revision.TopicRevisionFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
@@ -38,10 +38,10 @@ class ViewPagerAdapter(
         topicTrainTab.arguments = args
         return topicTrainTab
       }
-      TopicTab.REVIEW -> {
-        val topicReviewTab = TopicReviewFragment()
-        topicReviewTab.arguments = args
-        return topicReviewTab
+      TopicTab.REVISION -> {
+        val topicRevisionTab = TopicRevisionFragment()
+        topicRevisionTab.arguments = args
+        return topicRevisionTab
       }
     }
   }

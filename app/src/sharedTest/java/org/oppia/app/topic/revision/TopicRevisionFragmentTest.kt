@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.app.Application
 import android.content.Context
@@ -36,9 +36,9 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [TopicReviewFragment]. */
+/** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicReviewFragmentTest {
+class TopicRevisionFragmentTest {
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -46,7 +46,7 @@ class TopicReviewFragmentTest {
   )
 
   @Test
-  fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessful() {
+  fun testTopicRevisionFragment_loadFragment_displayRevisionSkills_isSuccessful() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         Matchers.allOf(
@@ -54,13 +54,13 @@ class TopicReviewFragmentTest {
           ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_skill_recycler_view, 0))
+      onView(atPosition(R.id.revision_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_opensReviewActivity() {
+  fun testTopicRevisionFragment_loadFragment_selectRevisionSkill_opensRevisionActivity() {
     topicActivityTestRule.launchActivity(
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -73,14 +73,14 @@ class TopicReviewFragmentTest {
         ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPosition(R.id.review_skill_recycler_view, 0)).perform(click())
+    onView(atPosition(R.id.revision_skill_recycler_view, 0)).perform(click())
     val conceptCardFragment: ConceptCardFragment? = topicActivityTestRule.activity.supportFragmentManager
       .findFragmentByTag(TopicActivity.TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment
     assertThat(conceptCardFragment).isNotNull()
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectRevisionSkill_conceptCardDisplaysCorrectExplanation() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         Matchers.allOf(
@@ -88,7 +88,7 @@ class TopicReviewFragmentTest {
           ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
+      onView(atPosition(R.id.revision_skill_recycler_view, 1)).perform(click())
       onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
       onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
     }
@@ -108,7 +108,7 @@ class TopicReviewFragmentTest {
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
       it.recreate()
-      onView(atPosition(R.id.review_skill_recycler_view, 0))
+      onView(atPosition(R.id.revision_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
   }

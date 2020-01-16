@@ -162,7 +162,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
+  fun testTopicFragment_clickOnRevisionTab_showsRevisionTabSelected() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -175,7 +175,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
+  fun testTopicFragment_clickOnRevisionTab_showsRevisionTabWithContentMatched() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -183,7 +183,7 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)).check(
+      onView(atPositionOnView(R.id.revision_skill_recycler_view, 0, R.id.skill_name)).check(
         matches(
           withText(
             containsString(
@@ -196,7 +196,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTab() {
+  fun testTopicFragment_clickOnRevisionTab_thenOverviewTab_showsOverviewTab() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -221,7 +221,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTabWithContentMatched() {
+  fun testTopicFragment_clickOnRevisionTab_thenOverviewTab_showsOverviewTabWithContentMatched() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -302,7 +302,7 @@ class TopicFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnRevisionTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -319,7 +319,7 @@ class TopicFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)
+        atPositionOnView(R.id.revision_skill_recycler_view, 0, R.id.skill_name)
       ).check(matches(withText(containsString("An important skill"))))
     }
   }
