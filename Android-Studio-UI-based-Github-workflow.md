@@ -36,7 +36,9 @@ Now click on commit.(This will save the reference of your changes for pushing to
 If there are errors or warnings review the code change and fix before commiting.
 
 <img width="1680" alt="13" src="https://user-images.githubusercontent.com/54615666/72495742-9021e880-384d-11ea-86a0-53110fa00529.png">
+
 ## Push Changes
+
 Now we need to Push the code changes to local branch(orgin) and upstream(remote)
 Right click app>Git>Repository >Push
 <img width="1680" alt="15" src="https://user-images.githubusercontent.com/54615666/72495744-9021e880-384d-11ea-9094-32746401595f.png">
