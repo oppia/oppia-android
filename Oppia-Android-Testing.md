@@ -11,8 +11,7 @@ In Oppia we are considering:
 
 # Guidelines for testing
 ## Naming Convention
-Test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Test names should include three things:
-Consider using a format similar to the following for naming test functions:
+Test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests.Consider using a format similar to the following for naming test functions:
 
 _`testAction_withOneCondition_withSecondCondition_hasExpectedOutcome`_
 
