@@ -163,7 +163,7 @@ A test case can never be called complete without assertions and hence it is impo
 * **isDisplayed** : Returns a matcher that matches {@link View}s that are currently displayed on the screen to the user.
 * Note: isDisplayed will select views that are partially displayed (eg: the full height/width of the view is greater then the height/width of the visible rectangle). If you wish to ensure the entire rectangle this view draws is displayed to the user use isCompletelyDisplayed
 
-### Using swipeLeft/Right and using `scrollToPage`:
+### Using swipeLeft/Right and using scrollToPage:
 * Espresso release contains new left and right swiping actions: swipeLeft() and swipeRight(). They both are really useful when you'd like to swipe between activity fragments, tab layouts or any other UI elements.
 * At times, GeneralSwipeAction can become unreliable because of its calculation varies on different screen size or density, so it may not be suitable for ViewPager. Instead, we can use to scroll with [ViewPagerActions](https://developer.android.com/reference/android/support/test/espresso/contrib/ViewPagerActions)
 
@@ -215,6 +215,6 @@ fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
 
 Espresso test might execute some checks while the app is doing some operations in the background threads, due to which the test may have no much content to interact with, therefore it throws an exception.
 
-We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like SystemClock.sleep(period) or Thread.sleep(period) . Yet with this approach, we might end up having inflexible and slow tests
+We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like `SystemClock.sleep(period)` or `Thread.sleep(period)` . Yet with this approach, we might end up having inflexible and slow tests
 
 In order to solve this in a clean and effective manner, we have integrated IdlingResources in the application, [CountingIdlingResource](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) is one of the easiest to understand resource that comes bundled within the framework.
