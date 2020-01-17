@@ -42,7 +42,7 @@ assertFalse(expected.equals(actual))
 
 Since there is no **assertNotEquals** (unless it’s custom coded) we have to use assertFalse and do an equals on the two variables. Here’s the much more readable new way with `assertThat()`:
 ```
-assertThat(actual, is(not(equalTo(expected))))
+assertThat(actual).isNotEqualTo(expected)
 ```
 
 What’s cool about the **not** method is that it can surround any other method, which makes it a negate for any matcher. Also as seen above, the matcher methods can be chained to create any number of possible assertions. Another cool thing is that there’s an equivalent shorthand version of the above equality methods which saves on typing:
