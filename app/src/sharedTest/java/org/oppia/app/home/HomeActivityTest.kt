@@ -115,11 +115,10 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_greetingMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
     launch(HomeActivity::class.java).use {
       val c = Calendar.getInstance()
-      when (c.get(Calendar.HOUR_OF_DAY)) {
-        in 5..11 -> {
+      if (c.get(Calendar.HOUR_OF_DAY) in 5..11) {
           onView(
             atPositionOnView(
               R.id.home_recycler_view,
@@ -128,7 +127,14 @@ class HomeActivityTest {
             )
           ).check(matches(withText("Good morning,")))
         }
-        in 12..16 -> {
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+    launch(HomeActivity::class.java).use {
+      val c = Calendar.getInstance()
+      if (c.get(Calendar.HOUR_OF_DAY) in 12..16) {
           onView(
             atPositionOnView(
               R.id.home_recycler_view,
@@ -137,7 +143,14 @@ class HomeActivityTest {
             )
           ).check(matches(withText("Good afternoon,")))
         }
-        in 17 downTo 4 -> {
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+    launch(HomeActivity::class.java).use {
+      val c = Calendar.getInstance()
+      if (c.get(Calendar.HOUR_OF_DAY) in 17 downTo 4 ) {
           onView(
             atPositionOnView(
               R.id.home_recycler_view,
@@ -146,31 +159,25 @@ class HomeActivityTest {
             )
           ).check(matches(withText("Good evening,")))
         }
-
-        else -> onView(
-          atPositionOnView(
-            R.id.home_recycler_view,
-            0,
-            R.id.welcome_text_view
-          )
-        ).check(matches(withText("Good evening,")))
-      }
     }
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
+  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysGreetingMessageCorrectly() {
     launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText(containsString("Welcome"))))
-    }
+        val c = Calendar.getInstance()
+        if (c.get(Calendar.HOUR_OF_DAY) in 5..11) {
+          onView(
+            atPositionOnView(
+              R.id.home_recycler_view,
+              0,
+              R.id.welcome_text_view
+            )
+          ).check(matches(withText("Good morning,")))
+        }
+      }
   }
 
   @Test
