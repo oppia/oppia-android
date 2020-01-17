@@ -32,7 +32,6 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.ongoingStory.nextChapterName)}"
-        android:paddingTop="4dp"
         android:scaleType="centerInside"
         android:src="@{viewModel.ongoingStory.lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintBottom_toBottomOf="parent"
