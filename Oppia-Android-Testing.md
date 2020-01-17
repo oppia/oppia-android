@@ -112,7 +112,7 @@ class SplashActivityTest {
 }
 ```
 
-How to use View Matchers, View Actions and View Assertions in Espresso?
+### How to use View Matchers, View Actions and View Assertions in Espresso?
 Espresso has many ViewMatcher options which are very effective in uniquely locate UI element. You can also combine and create a combination of View Matchers to find element uniquely. 
 
 The View Matcher is written like onView(ViewMatcher) which are commonly used. There are two types of actions that can be performed on View those are -
