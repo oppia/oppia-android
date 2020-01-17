@@ -93,8 +93,6 @@ Example JUnit4 test using Rules:
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
 
- // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
- // disabled to launch Activity explicitly within each test case.
  @get:Rule
  var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -197,7 +195,6 @@ Using the RecyclerViewMatcher under package ‘org.oppia.app.recyclerview’, yo
 @Test
 fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
  launch(HomeActivity::class.java).use {
-   
    onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
    intended(hasComponent(TopicActivity::class.java.name))
    intended(hasExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, TEST_TOPIC_ID_0))
