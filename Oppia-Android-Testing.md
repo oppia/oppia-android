@@ -82,7 +82,7 @@ public class MyActivityTest {
     TextView results = (TextView) activity.findViewById(R.id.results_text_view);
 
     button.performClick();
-    assertThat(results.getText().toString(), equalTo("Testing Android Rocks!"));
+    assertThat(results.getText().toString()).isEqualTo("Testing!"));
   }
 }
 ```
