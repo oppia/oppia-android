@@ -32,7 +32,7 @@ assertEquals(expected, actual)
 
 In the `assertEquals()`, you can easily get confused and interchange the actual and expected argument position.
 ``` 
-assertThat(actual, is(equalTo(expected)))
+assertThat(actual).isEqualTo(expected)
 ```
 
 The first thing to notice is that it’s the other way around (actual first, expected second), which is a big advantage. It also reads more like a sentence: “Assert that the actual value is equal to the expected value.” As another, better example of readability, compare how to check for not equals, first the old way:
