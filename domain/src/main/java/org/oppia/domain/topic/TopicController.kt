@@ -98,11 +98,6 @@ class TopicController @Inject constructor(
     )
   }
 
-  fun getCompletedChapterList(storyId: String): LiveData<AsyncResult<List<String>>> {
-    val transformedDataProvider =  storyProgressController.retrieveStoryProgress(storyId)
-    return dataProviders.convertToLiveData(transformedDataProvider)
-  }
-
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
     return when (topicId) {
