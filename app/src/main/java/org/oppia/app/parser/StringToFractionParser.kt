@@ -13,6 +13,7 @@ class StringToFractionParser {
   private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
   private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
+  private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
   /**
    * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
@@ -23,6 +24,8 @@ class StringToFractionParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
+    if (invalidCharsLengthRegex.find(text) != null)
+      return FractionParsingError.LARGER_THAN_SEVEN_DIGITS
     val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
@@ -105,7 +108,8 @@ class StringToFractionParser {
     VALID(error = null),
     INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
     INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
-    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero);
+    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
+    LARGER_THAN_SEVEN_DIGITS(error = R.string.fraction_error_larger_than_seven_digits);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
