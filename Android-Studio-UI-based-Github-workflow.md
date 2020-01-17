@@ -2,7 +2,7 @@
 Go to https://github.com/oppia/oppia-android.
 Click on **Clone or download** and copy the link.
 
-<img width="1673" alt="1" src="https://user-images.githubusercontent.com/54615666/72599229-50cfc680-3937-11ea-9ba7-f5eb181239f6.png">
+<img width="966" alt="1" src="https://user-images.githubusercontent.com/54615666/72601739-fdac4280-393b-11ea-969d-34730dfd3c74.png">
 
 Now, go to **Android Studio**>**File**>**New**>**Project from Version Control**>**Git**
 
@@ -89,8 +89,11 @@ you will find all the new changes pulled from develop in version control update 
 Follow these steps mentioned below (Note: The image is just for reference in this case) 
 * Select remote branch as **upstream**
 * Select **develop** branch
+<img width="1672" alt="25" src="https://user-images.githubusercontent.com/54615666/72599251-54fbe400-3937-11ea-8a72-75edc4ac8e24.png">
+
 * Select **your_branch_name**
 * Click on **Pull**
+
 <img width="1680" alt="27" src="https://user-images.githubusercontent.com/54615666/72599252-54fbe400-3937-11ea-9b89-8c1806472ce9.png">
 
 You will get the dialog of conflict files.You need to resolve the conflicts by merging the file changes.
