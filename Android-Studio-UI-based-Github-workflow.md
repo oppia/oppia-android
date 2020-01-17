@@ -1,10 +1,10 @@
 # Clone Oppia-Android using Android Studio
-Go to https://github.com/oppia/oppia-android
+Go to https://github.com/oppia/oppia-android.
 Click on **Clone or download** and copy the link.
 
 <img width="1673" alt="1" src="https://user-images.githubusercontent.com/54615666/72599229-50cfc680-3937-11ea-9ba7-f5eb181239f6.png">
 
-Now, go to **Android Studio**>**File**>**New**>**Project from Version Control**> **Git**
+Now, go to **Android Studio**>**File**>**New**>**Project from Version Control**>**Git**
 
 
 <img width="1680" alt="2" src="https://user-images.githubusercontent.com/54615666/72599230-51685d00-3937-11ea-8020-485cd0111566.png">
@@ -37,7 +37,7 @@ New files will be shown in green color and modified file name will be displayed 
 
 <img width="1674" alt="8" src="https://user-images.githubusercontent.com/54615666/72599233-5200f380-3937-11ea-9303-f0c4b17aadf0.png">
 
-click on the green tick symbol to commit your files 
+Click on the green tick symbol to commit your files 
 
 <img width="1676" alt="9" src="https://user-images.githubusercontent.com/54615666/72599234-5200f380-3937-11ea-8ae6-c73b27e85d51.png">
 
