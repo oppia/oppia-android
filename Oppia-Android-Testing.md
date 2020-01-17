@@ -45,7 +45,13 @@ Since there is no **assertNotEquals** (unless it’s custom coded) we have to us
 assertThat(actual).isNotEqualTo(expected)
 ```
 
-What’s cool about the **not** method is that it can surround any other method, which makes it a negate for any matcher. Also as seen above, the matcher methods can be chained to create any number of possible assertions. Another cool thing is that there’s an equivalent shorthand version of the above equality methods which saves on typing:
+If we want to verify that two values are not equal, we have to write our assertion by invoking the isNotEqualTo() method .
+
+Some simple methods exist for truth testing:
+```
+assertThat(logicalCondition).isTrue()
+assertThat(logicalCondition).isFalse()
+```
 Hence assertThat should be the preferred method over the other methods.
  
 ## Testing private methods/functions
