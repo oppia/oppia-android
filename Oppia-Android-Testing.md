@@ -150,7 +150,7 @@ A test case can never be called complete without assertions and hence it is impo
 
 * **isCompletelyDisplayed** : Returns a matcher which only accepts a view whose height and width fit perfectly within the currently displayed region of this view. 
 * There exist views (such as ScrollViews) whose height and width are larger then the physical device screen by design. Such views will _never_ be completely displayed.
-*  **isDisplayed** : Returns a matcher that matches {@link View}s that are currently displayed on the screen to the user.
+* **isDisplayed** : Returns a matcher that matches {@link View}s that are currently displayed on the screen to the user.
 * Note: isDisplayed will select views that are partially displayed (eg: the full height/width of the view is greater then the height/width of the visible rectangle). If you wish to ensure the entire rectangle this view draws is displayed to the user use isCompletelyDisplayed
 
 ### Using `swipeLeft/Right` and using `scrollToPage`:
