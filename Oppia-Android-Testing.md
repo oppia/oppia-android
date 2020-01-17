@@ -10,41 +10,44 @@ In Oppia we are considering:
 * Hermetic end-to-end testing using Espresso + some way to run the Oppia developer backend (or maybe better: drive using UIAutomator using a real production Oppia backend set up for testing purposes)
 
 # Guidelines for testing
-1. Test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Test names should include three things:
+## Naming Convention
+Test names should read like a sentence, and be consistent with other nearby test names to facilitate easily coming up with new tests. Test names should include three things:
 Consider using a format similar to the following for naming test functions:
 
-    `<testAction>_<withOneCondition>_<withSecondCondition>_<hasExpectedOutcome>`
+_`testAction_withOneCondition_withSecondCondition_hasExpectedOutcome`_
 
+where _`testAction`_, _`withCondition`_ and _`hasExpectedOutcome`_ are replaced with appropriate descriptions in camelCase. Put the outcome at the end of the name, so that you and others can easily compare consecutive tests of the same method that have slightly different conditions with divergent outcomes.
 
-where <testAction>, <withCondition> and <hasExpectedOutcome> are replaced with appropriate descriptions in snake_case. Put the outcome at the end of the name, so that you and others can easily compare consecutive tests of the same method that have slightly different conditions with divergent outcomes.
-### For Example:
-`testProfileChooserFragment_initializeProfiles_checkProfilesAreShown`
-`testSplashActivity_initialOpen_routesToHomeActivity`
+For Example:
+* `testProfileChooserFragment_initializeProfiles_checkProfilesAreShown`
+* `testSplashActivity_initialOpen_routesToHomeActivity`
 
-2. Use:
+## assertThat() vs. assertEqual(), assertTrue() / assertFalse()
+Use `assertThat()` instead of `assertEqual()`, `assertTrue()` / `assertFalse()`
 
-assertThat instead of assertEqual(), assertTrue() / assertFalse()
+The first benefit is that `assertThat()` is more readable than the other assert methods. For example take a look at the following `assertEquals()`:
 
-The first benefit is that assertThat is more readable than the other assert methods. For example take a look at the following assertEquals method:
+      assertEquals(expected, actual)
 
-     assertEquals(expected, actual);
- In the assertEquals method, you can easily get confused and interchange the  actual and  expected argument position.
+In the `assertEquals()`, you can easily get confused and interchange the actual and expected argument position.
  
-      assertThat(actual, is(equalTo(expected)));
-The first thing to notice is that it’s the other way around (actual first, expected second), which is the biggest hurdle to get over.  It also reads more like a sentence: “Assert that the actual value is equal to the expected value.”  As another, better example of readability, compare how to check for not equals, first the old way:
+      assertThat(actual, is(equalTo(expected)))
 
-        assertFalse(expected.equals(actual));
-Since there is no “assertNotEquals” (unless it’s custom coded) we have to use assertFalse and do an equals on the two variables. Here’s the much more readable new way with assertThat:
+The first thing to notice is that it’s the other way around (actual first, expected second), which is a big advantage. It also reads more like a sentence: “Assert that the actual value is equal to the expected value.” As another, better example of readability, compare how to check for not equals, first the old way:
 
-         assertThat(actual, is(not(equalTo(expected))));
-What’s cool about the “not” method is that it can surround any other method, which makes it a negate for any matcher.  Also as seen above, the matcher methods can be chained to create any number of possible assertions.  Another cool thing is that there’s an equivalent short-hand version of the above equality methods which saves on typing:
-Hence assertThat should be the preffered method over the other methods.
+        assertFalse(expected.equals(actual))
+
+Since there is no **assertNotEquals** (unless it’s custom coded) we have to use assertFalse and do an equals on the two variables. Here’s the much more readable new way with `assertThat()`:
+
+         assertThat(actual, is(not(equalTo(expected))))
+
+What’s cool about the **not** method is that it can surround any other method, which makes it a negate for any matcher. Also as seen above, the matcher methods can be chained to create any number of possible assertions. Another cool thing is that there’s an equivalent shorthand version of the above equality methods which saves on typing:
+Hence assertThat should be the preferred method over the other methods.
  
-3. Guidelines for testing private methods/functions: 
-
+## Testing private methods/functions
 Tests should only be written to verify the behaviour of public methods/functions. Private functions should not be used in behavioural tests. Here are some suggestions for what to do in specific cases (if this doesn't help for your particular case and you're not sure what to do, please talk to @BenHenning):
-* If you want to test code execution a private method/function, test it through public interface, or move it to a utility (if it's general-purpose) where it becomes public. Avoid testing private APIs since that may lead to brittle test in unexpected situations (such as when the implementation of the API changes, but the behaviour remains the same).
-*  If you’re trying to access hidden information, consider getting that information from one level below instead (e.g. datastore).
+* If you want to test code execution of a private method/function, test it through public interface, or move it to a utility (if it's general-purpose) where it becomes public. Avoid testing private APIs since that may lead to brittle test in unexpected situations (such as when the implementation of the API changes, but the behaviour remains the same).
+* If you’re trying to access hidden information, consider getting that information from one level below instead (e.g. datastore).
 
 # Oppia project organization for tests
 
