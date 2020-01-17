@@ -882,6 +882,63 @@ class DataProvidersTest {
     assertThat(fakeTransformCallbackCalled).isFalse()
   }
 
+  // testCombine_toLiveData_deliversCombinedValue
+  // testCombine_firstProviderChanges_notifiesBase_deliversNewValue
+  // testCombine_firstProviderChanges_notifiesCombined_deliversNewValue
+  // testCombine_firstProviderChanges_observeBase_notifiesBase_deliversNewValue
+  // testCombine_firstProviderChanges_observeBase_notifiesCombined_deliversOldValue
+  // testCombine_secondProviderChanges_notifiesBase_deliversNewValue
+  // testCombine_secondProviderChanges_notifiesCombined_deliversNewValue
+  // testCombine_secondProviderChanges_observeBase_notifiesBase_deliversNewValue
+  // testCombine_secondProviderChanges_observeBase_notifiesCombined_deliversOldValue
+  // testCombine_firstProviderPending_deliversPending
+  // testCombine_secondProviderPending_deliversPending
+  // testCombine_bothProvidersPending_deliversPending
+  // testCombine_firstProviderFailing_deliversFailure
+  // testCombine_secondProviderFailing_deliversFailure
+  // testCombine_bothProvidersFailing_deliversFailure
+  // testCombine_toLiveData_withObserver_callsTransform
+  // testCombine_toLiveData_withObserver_firstProviderPending_doesNotCallCombine
+  // testCombine_toLiveData_withObserver_secondProviderPending_doesNotCallCombine
+  // testCombine_toLiveData_withObserver_bothProvidersPending_doesNotCallCombine
+  // testCombine_toLiveData_withObserver_firstProviderFailing_doesNotCallCombine
+  // testCombine_toLiveData_withObserver_secondProviderFailing_doesNotCallCombine
+  // testCombine_toLiveData_withObserver_bothProvidersFailing_doesNotCallCombine
+  // testCombine_firstProviderThrowsException_deliversFailure
+  // testCombine_secondProviderThrowsException_deliversFailure
+  // testCombine_bothProvidersThrowExceptions_deliversFailure
+  // testCombine_combinerThrowsException_deliversFailure
+
+  // testCombineAsync_toLiveData_deliversCombinedValue
+  // testCombineAsync_firstProviderChanges_notifiesBase_deliversNewValue
+  // testCombineAsync_firstProviderChanges_notifiesCombined_deliversNewValue
+  // testCombineAsync_firstProviderChanges_observeBase_notifiesBase_deliversNewValue
+  // testCombineAsync_firstProviderChanges_observeBase_notifiesCombined_deliversOldValue
+  // testCombineAsync_secondProviderChanges_notifiesBase_deliversNewValue
+  // testCombineAsync_secondProviderChanges_notifiesCombined_deliversNewValue
+  // testCombineAsync_secondProviderChanges_observeBase_notifiesBase_deliversNewValue
+  // testCombineAsync_secondProviderChanges_observeBase_notifiesCombined_deliversOldValue
+  // testCombineAsync_firstProviderPending_deliversPending
+  // testCombineAsync_secondProviderPending_deliversPending
+  // testCombineAsync_bothProvidersPending_deliversPending
+  // testCombineAsync_firstProviderFailing_deliversFailure
+  // testCombineAsync_secondProviderFailing_deliversFailure
+  // testCombineAsync_bothProvidersFailing_deliversFailure
+  // testCombineAsync_toLiveData_withObserver_callsTransform
+  // testCombineAsync_toLiveData_withObserver_firstProviderPending_doesNotCallCombine
+  // testCombineAsync_toLiveData_withObserver_secondProviderPending_doesNotCallCombine
+  // testCombineAsync_toLiveData_withObserver_bothProvidersPending_doesNotCallCombine
+  // testCombineAsync_toLiveData_withObserver_firstProviderFailing_doesNotCallCombine
+  // testCombineAsync_toLiveData_withObserver_secondProviderFailing_doesNotCallCombine
+  // testCombineAsync_toLiveData_withObserver_bothProvidersFailing_doesNotCallCombine
+  // testCombineAsync_firstProviderThrowsException_deliversFailure
+  // testCombineAsync_secondProviderThrowsException_deliversFailure
+  // testCombineAsync_bothProvidersThrowExceptions_deliversFailure
+  // testCombineAsync_combineReturnsPending_deliversPending
+  // testCombineAsync_combineReturnsFailure_deliversFailure
+  // testCombineAsync_firstProviderIsBlocking_doesNotDeliver
+  // testCombineAsync_secondProviderIsBlocking_doesNotDeliver
+
   private fun transformString(str: String): Int {
     return str.length
   }
