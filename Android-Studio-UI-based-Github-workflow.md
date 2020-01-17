@@ -85,12 +85,12 @@ you will find all the new changes pulled from develop in version control update 
 
 <img width="1680" alt="23" src="https://user-images.githubusercontent.com/54615666/72599250-54634d80-3937-11ea-89ad-a24ce196d233.png">
 
-## Merge and resolve conflict 
-
-select remote branch as **upstream>select develop branch>select your branch name> pull**
-
-<img width="1672" alt="25" src="https://user-images.githubusercontent.com/54615666/72599251-54fbe400-3937-11ea-8a72-75edc4ac8e24.png">
-
+## Merge and resolve conflict
+Follow these steps mentioned below (Note: The image is just for reference in this case) 
+* Select remote branch as **upstream**
+* Select **develop** branch
+* Select **your_branch_name**
+* Click on **Pull**
 <img width="1680" alt="27" src="https://user-images.githubusercontent.com/54615666/72599252-54fbe400-3937-11ea-9b89-8c1806472ce9.png">
 
 You will get the dialog of conflict files.You need to resolve the conflicts by merging the file changes.
