@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 /** The presenter for [TopicPlayFragment]. */
 @FragmentScope
-class TopicPlayFragmentPresenter @Inject constructor(
+class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
@@ -43,7 +43,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
-  private val itemList: MutableList<TopicPlayItemViewModel> = ArrayList()
+  private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -80,7 +80,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
             currentExpandedChapterListIndex = index + 1
           }
         }
-        itemList.add(TopicPlayTitleViewModel())
+        itemList.add(TopicLessonsTitleViewModel())
         for (storySummary in it.storyList) {
           itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
         }

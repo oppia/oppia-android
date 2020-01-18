@@ -3,7 +3,7 @@ package org.oppia.app.topic
 /** Enum to store the tabs of [TopicFragment] and get tab by position. */
 enum class TopicTab(private var position: Int) {
   INFO(position = 0),
-  PLAY(position = 1),
+  LESSONS(position = 1),
   TRAIN(position = 2),
   REVIEW(position = 3);
 

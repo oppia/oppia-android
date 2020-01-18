@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,7 +15,7 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
 class StorySummaryAdapter(
-  private val itemList: MutableList<TopicPlayItemViewModel>,
+  private val itemList: MutableList<TopicLessonsItemViewModel>,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
@@ -63,7 +63,7 @@ class StorySummaryAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is TopicPlayTitleViewModel -> {
+      is TopicLessonsTitleViewModel -> {
         VIEW_TYPE_TITLE_TEXT
       }
       is StorySummaryViewModel -> {

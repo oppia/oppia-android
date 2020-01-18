@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

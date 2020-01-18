@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -39,7 +39,7 @@ import org.oppia.domain.topic.TEST_TOPIC_ID_0
 
 /** Tests for [TopicPlayFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicPlayFragmentTest {
+class TopicLessonsFragmentTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
