@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
@@ -28,10 +27,9 @@ import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.Logger
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -51,7 +49,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
-  private var profileIdFromIntent: Int = -1
+  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
@@ -68,8 +66,8 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    profileIdFromIntent = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, 0)
-    profileId = ProfileId.newBuilder().setInternalId(profileIdFromIntent).build()
+    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -165,8 +163,8 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
-      displayGreeting()
       userAppHistoryViewModel.profileName = "$profileName!"
+      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext()).displayGreeting()
     }
   }
 
@@ -194,13 +192,13 @@ class HomeFragmentPresenter @Inject constructor(
     routeToTopicListener.routeToTopic(topicSummary.topicId)
   }
 
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun displayGreeting() {
-    val c = Calendar.getInstance()
-    when (c.get(Calendar.HOUR_OF_DAY)) {
-      in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
-      in 12..16 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
-      in 17 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
-    }
-  }
+//  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
+//  private fun displayGreeting() {
+//    val c = Calendar.getInstance()
+//    when (c.get(Calendar.HOUR_OF_DAY)) {
+//      in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
+//      in 12..16 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_afternoon)
+//      in 17 downTo 4 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_evening)
+//    }
+//  }
 }

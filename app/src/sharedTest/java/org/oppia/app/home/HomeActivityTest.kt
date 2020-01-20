@@ -2,6 +2,7 @@ package org.oppia.app.home
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -31,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -58,13 +60,13 @@ import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -77,6 +79,7 @@ class HomeActivityTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
+  @Inject lateinit var dateTimeUtil: DateTimeUtil
 
   @Before
   @ExperimentalCoroutinesApi
@@ -102,8 +105,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayProfileName_profileNameDisplayedSuccessfully() {
-    launch(HomeActivity::class.java).use {
+  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -116,73 +119,52 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
-    launch(HomeActivity::class.java).use {
-      val c = Calendar.getInstance()
-      if (c.get(Calendar.HOUR_OF_DAY) in 5..11) {
-          onView(
-            atPositionOnView(
-              R.id.home_recycler_view,
-              0,
-              R.id.welcome_text_view
-            )
-          ).check(matches(withText("Good morning,")))
-        }
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good morning,")
     }
   }
-
+//  @Test
+//  fun givenFixedClock_whenNow_thenGetFixedInstant() {
+//    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+//
+//
+//    val instantExpected = "2014-12-22T10:15:30Z"
+//    val clock = Clock.fixed(Instant.parse(instantExpected), ZoneId.of("UTC"))
+//
+//    val instant = Instant.now(clock)
+//
+//    assertThat(instant.toString()).isEqualTo(instantExpected)
+//      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good afternoon,")
+//    }
+//}
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
-    launch(HomeActivity::class.java).use {
-      val c = Calendar.getInstance()
-      if (c.get(Calendar.HOUR_OF_DAY) in 12..16) {
-          onView(
-            atPositionOnView(
-              R.id.home_recycler_view,
-              0,
-              R.id.welcome_text_view
-            )
-          ).check(matches(withText("Good afternoon,")))
-        }
+  dateTimeUtil.setFakeTime("2020-01-19T15:00:00Z")
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good afternoon,")
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
-    launch(HomeActivity::class.java).use {
-      val c = Calendar.getInstance()
-      if (c.get(Calendar.HOUR_OF_DAY) in 17 downTo 4 ) {
-          onView(
-            atPositionOnView(
-              R.id.home_recycler_view,
-              0,
-              R.id.welcome_text_view
-            )
-          ).check(matches(withText("Good evening,")))
-        }
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good evening,")
     }
   }
+
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysGreetingMessageCorrectly() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
-        val c = Calendar.getInstance()
-        if (c.get(Calendar.HOUR_OF_DAY) in 5..11) {
-          onView(
-            atPositionOnView(
-              R.id.home_recycler_view,
-              0,
-              R.id.welcome_text_view
-            )
-          ).check(matches(withText("Good morning,")))
-        }
-      }
+      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good morning,")
+    }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.recently_played_stories_text_view)).check(
         matches(
@@ -194,7 +176,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
         matches(
@@ -206,7 +188,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
       intended(hasComponent(ContinuePlayingActivity::class.java.name))
@@ -215,7 +197,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         Matchers.allOf(
           withId(R.id.promoted_story_list_recycler_view),
@@ -229,7 +211,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
@@ -242,7 +224,7 @@ class HomeActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
@@ -255,7 +237,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         Matchers.allOf(
@@ -273,7 +255,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
@@ -285,7 +267,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
@@ -297,7 +279,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
@@ -309,7 +291,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
         matches(
@@ -321,7 +303,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
         matches(
@@ -334,7 +316,7 @@ class HomeActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
@@ -347,7 +329,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -357,7 +339,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
@@ -365,11 +347,15 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
     }
+  }
+
+  private fun createHomeActivityIntent(profileId: Int): Intent {
+    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
   private fun simulateNewAppInstance() {
@@ -478,6 +464,7 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
+
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }
