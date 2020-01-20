@@ -32,7 +32,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -48,6 +47,7 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.profile.ProfileActivity
@@ -80,14 +80,13 @@ class HomeActivityTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var dateTimeUtil: DateTimeUtil
+  @Inject lateinit var context: Context
+  @Inject lateinit var dateTimeUtil: DateTimeUtil
 
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
+
     Intents.init()
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
@@ -122,23 +121,46 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodMorningMessageSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(10, 12, 0))).isEqualTo("Good morning,")
+      val mockedCalendar = Mockito.mock(Calendar::class.java)
+      mockedCalendar.set(2020, 1, 20, 10,1,1)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good morning,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodAfternoonMessageSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+    dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(15, 10, 0))
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(15, 10, 0))).isEqualTo("Good afternoon,")
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good afternoon,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodEveningMessageSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+//    dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(20, 10, 0))
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(20, 10, 0))).isEqualTo("Good evening,")
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good evening,")))
     }
   }
 

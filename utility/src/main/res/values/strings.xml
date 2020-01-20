@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- HomeFragment -->
+  <!-- DateTimeUtil -->
   <string name="good_morning">Good morning,</string>
   <string name="good_afternoon">Good afternoon,</string>
   <string name="good_evening">Good evening,</string>
