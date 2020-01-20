@@ -30,10 +30,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -72,10 +72,15 @@ class ProfileChooserFragmentTest {
       .inject(this)
   }
   @Test
-  fun testProfileChooserFragment_configurationChange_checkSpanCount_spanCountVerifiedSucessfully() {
+  fun testProfileChooserFragment_checkSpanCountOnPortrait_spanCountVerifiedSuccessfully() {
     ActivityScenario.launch(ProfileActivity::class.java).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(withId(R.id.profile_recycler_view)).check(RecyclerViewMatcher.hasGridItemCount(4))
+      onView(withId(R.id.profile_recycler_view)).check(hasGridItemCount(2))
+  }
+  }  @Test
+  fun testProfileChooserFragment_configurationChange_checkSpanCount_spanCountVerifiedSuccessfully() {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_recycler_view)).check(hasGridItemCount(4))
   }
   }
 
