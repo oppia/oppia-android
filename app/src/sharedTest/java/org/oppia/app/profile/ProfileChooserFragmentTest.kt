@@ -12,6 +12,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -29,8 +30,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -67,6 +70,13 @@ class ProfileChooserFragmentTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+  @Test
+  fun testProfileChooserFragment_configurationChange_initializeProfiles_checkSpanCount_spanCountVerifiedSucessfully() {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.profile_recycler_view)).check(RecyclerViewMatcher.hasGridItemCount(4))
+  }
   }
 
   @Test
