@@ -67,6 +67,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -77,9 +78,12 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var dateTimeUtil: DateTimeUtil
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var dateTimeUtil: DateTimeUtil
 
   @Before
   @ExperimentalCoroutinesApi
@@ -118,47 +122,38 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodMorningMessageSuccessful() {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good morning,")
-    }
-  }
-//  @Test
-//  fun givenFixedClock_whenNow_thenGetFixedInstant() {
-//    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-//
-//
-//    val instantExpected = "2014-12-22T10:15:30Z"
-//    val clock = Clock.fixed(Instant.parse(instantExpected), ZoneId.of("UTC"))
-//
-//    val instant = Instant.now(clock)
-//
-//    assertThat(instant.toString()).isEqualTo(instantExpected)
-//      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good afternoon,")
-//    }
-//}
-  @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
-  dateTimeUtil.setFakeTime("2020-01-19T15:00:00Z")
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good afternoon,")
+      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(10, 12, 0))).isEqualTo("Good morning,")
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodAfternoonMessageSuccessful() {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good evening,")
+      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(15, 10, 0))).isEqualTo("Good afternoon,")
     }
   }
 
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_getGreetingMessageBasedOnTime_goodEveningMessageSuccessful() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(20, 10, 0))).isEqualTo("Good evening,")
+    }
+  }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysGreetingMessageCorrectly() {
+  fun testHomeActivity_recyclerViewIndex0_configurationChange_displayProfileNameCorrectly() {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
-      assertThat(dateTimeUtil.displayGreeting()).isEqualTo("Good morning,")
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Sean!")))
     }
   }
 
@@ -368,6 +363,14 @@ class HomeActivityTest {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
+  }
+
+  private fun getHourMinuteSecondAsTime(hour: Int, minute: Int, second: Int): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, hour)
+    calendar.set(Calendar.MINUTE, minute)
+    calendar.set(Calendar.SECOND, second)
+    return calendar
   }
 
 // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.

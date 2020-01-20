@@ -29,7 +29,9 @@ import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.Logger
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -164,7 +166,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       userAppHistoryViewModel.profileName = "$profileName!"
-      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext()).displayGreeting()
+      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext()).getGreetingMessage(Calendar.getInstance())
     }
   }
 
@@ -193,7 +195,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
 //  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-//  private fun displayGreeting() {
+//  private fun getGreetingMessage() {
 //    val c = Calendar.getInstance()
 //    when (c.get(Calendar.HOUR_OF_DAY)) {
 //      in 5..11 -> userAppHistoryViewModel.greeting = fragment.requireContext().getString(R.string.good_morning)
