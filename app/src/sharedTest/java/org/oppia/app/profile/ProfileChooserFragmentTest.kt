@@ -72,7 +72,7 @@ class ProfileChooserFragmentTest {
       .inject(this)
   }
   @Test
-  fun testProfileChooserFragment_configurationChange_initializeProfiles_checkSpanCount_spanCountVerifiedSucessfully() {
+  fun testProfileChooserFragment_configurationChange_checkSpanCount_spanCountVerifiedSucessfully() {
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.profile_recycler_view)).check(RecyclerViewMatcher.hasGridItemCount(4))
