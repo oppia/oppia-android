@@ -41,7 +41,6 @@ private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_audio_
 
 const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
 
-
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
 class ProfileManagementController @Inject constructor(

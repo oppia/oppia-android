@@ -473,7 +473,6 @@ class ProfileManagementControllerTest {
       assertThat(File(getAbsoluteDirPath("2")).isDirectory).isFalse()
     }
 
-  
   @Test
   @ExperimentalCoroutinesApi
   fun testDeleteProfile_addProfiles_deleteProfiles_addProfile_checkIdIsNotReused() =
