@@ -39,3 +39,4 @@ class ProfileActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as ProfileChooserFragment?
   }
 }
+
