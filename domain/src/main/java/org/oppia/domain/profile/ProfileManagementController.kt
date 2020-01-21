@@ -22,7 +22,9 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
+import java.lang.Exception
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,9 +37,6 @@ private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_downl
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
 private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
 private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
-private const val UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID = "update_story_text_size_transformed_id"
-private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_language_transformed_id"
-private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_audio_language_transformed_id"
 
 const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
 
@@ -133,12 +132,8 @@ class ProfileManagementController @Inject constructor(
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
     colorRgb: Int,
-    isAdmin: Boolean,
-    storyTextSize: Float?,
-    appLanguage: String?,
-    audioLanguage: String?
+    isAdmin: Boolean
   ): LiveData<AsyncResult<Any?>> {
-
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
     }
@@ -156,9 +151,6 @@ class ProfileManagementController @Inject constructor(
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .setStoryTextSize(storyTextSize!!)
-        .setAppLanguage(appLanguage)
-        .setAudioLanguage(audioLanguage)
 
       if (avatarImagePath != null) {
         val imageUri =
@@ -254,81 +246,6 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-      })
-  }
-
-  /**
-   * Updates the story text size of the profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param storyTextSize New text size for the profile being updated.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  fun updateStoryTextSize(
-    profileId: ProfileId, storyTextSize: Float
-  ): LiveData<AsyncResult<Any?>> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-        it,
-        ProfileActionStatus.PROFILE_NOT_FOUND
-      )
-      val updatedProfile = profile.toBuilder().setStoryTextSize(storyTextSize).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-      })
-  }
-
-  /**
-   * Updates the app language of the profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param appLanguage New app language for the profile being updated.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  fun updateAppLanguage(
-    profileId: ProfileId, appLanguage: String
-  ): LiveData<AsyncResult<Any?>> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-        it,
-        ProfileActionStatus.PROFILE_NOT_FOUND
-      )
-      val updatedProfile = profile.toBuilder().setAppLanguage(appLanguage).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-      })
-  }
-
-  /**
-   * Updates the audio language of the profile.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param audioLanguage New audio language for the profile being updated.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  fun updateAudioLanguage(
-    profileId: ProfileId, audioLanguage: String
-  ): LiveData<AsyncResult<Any?>> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-        it,
-        ProfileActionStatus.PROFILE_NOT_FOUND
-      )
-      val updatedProfile = profile.toBuilder().setAudioLanguage(audioLanguage).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }

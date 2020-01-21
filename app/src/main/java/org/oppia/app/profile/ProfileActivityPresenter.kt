@@ -21,10 +21,7 @@ class ProfileActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = 14f,
-      appLanguage = "English",
-      audioLanguage = "No Audio"
+      isAdmin = true
     )
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
