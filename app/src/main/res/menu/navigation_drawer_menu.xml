@@ -7,7 +7,10 @@
       android:id="@+id/nav_home"
       android:icon="@drawable/ic_home_icon_grey_24dp"
       android:title="@string/menu_home" />
-
+    <item
+      android:id="@+id/nav_options"
+      android:icon="@drawable/ic_options_icon_grey_24dp"
+      android:title="@string/menu_options" />
     <item
       android:id="@+id/nav_help"
       android:icon="@drawable/ic_help_grey_icon_24dp"

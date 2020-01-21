@@ -27,7 +27,6 @@ class OptionsFragment @Inject constructor(
   var appLanguage = "English"
   var audioLanguage = "No Audio"
 
-
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
     profileId = profileManagementController.getCurrentProfileId()

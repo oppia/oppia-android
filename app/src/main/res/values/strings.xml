@@ -5,6 +5,7 @@
   <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_options">Options</string>
   <string name="menu_help">Help</string>
   <string name="admin_settings">Admin Settings</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
@@ -197,4 +198,13 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <!-- Preferences -->
+  <string name="key_story_text_size">key_story_text_size</string>
+  <string name="key_app_language">key_app_language</string>
+  <string name="key_default_audio">key_default_audio</string>
+  <string name="title_story_text_size">Story Text Size</string>
+  <string name="title_app_language">App Language</string>
+  <string name="title_default_audio">Default Audio Language</string>
+  <string name="story_text_will_look_like_this">Story text will look like this</string>
+  <string name="constant_string_for_text_size">A</string>
 </resources>

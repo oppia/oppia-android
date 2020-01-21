@@ -12,7 +12,6 @@ import javax.inject.Inject
 @ActivityScope
 class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
-
   private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
 

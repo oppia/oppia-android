@@ -14,6 +14,7 @@ import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.options.OptionsActivity
 import javax.inject.Inject
 
 /** The presenter for [NavigationDrawerFragment]. */
@@ -34,12 +35,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     return view
   }
 
-
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
       val intent = when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           Intent(fragment.activity, HomeActivity::class.java)
+        }
+        NavigationDrawerItem.OPTIONS -> {
+          Intent(fragment.activity, OptionsActivity::class.java)
         }
         NavigationDrawerItem.HELP -> {
           Intent(fragment.activity, HelpActivity::class.java)

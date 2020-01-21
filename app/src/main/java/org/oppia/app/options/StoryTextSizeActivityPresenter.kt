@@ -1,13 +1,13 @@
 package org.oppia.app.options
 
+import android.content.Intent
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.StoryTextSizeActivityBinding
 import javax.inject.Inject
-import android.content.Intent
-import android.widget.SeekBar
 
 /** The presenter for [StoryTextSizeActivity]. */
 @ActivityScope
@@ -15,7 +15,6 @@ class StoryTextSizeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private var fontSize: String = "Small"
-
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =

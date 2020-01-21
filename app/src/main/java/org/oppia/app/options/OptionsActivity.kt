@@ -7,8 +7,6 @@ import javax.inject.Inject
 /** The activity for setting user preferences. */
 class OptionsActivity : InjectableAppCompatActivity() {
 
-
-
   @Inject lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
