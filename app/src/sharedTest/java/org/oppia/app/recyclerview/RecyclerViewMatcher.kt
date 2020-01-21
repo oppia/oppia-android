@@ -70,7 +70,7 @@ class RecyclerViewMatcher {
       return RecyclerViewItemCountAssertion(count)
     }
 
-    /** Returns span count ViewAssertion for a recycler view grid. */
+    /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
     fun hasGridItemCount(count: Int): ViewAssertion {
       return RecyclerViewGridItemCountAssertion(count)
     }
@@ -104,8 +104,10 @@ class RecyclerViewMatcher {
 
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
 
-      checkNotNull(view.layoutManager) { "No layoutManager is assigned to RecyclerView" }
+      check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
+
       val spanCount = (view.layoutManager as GridLayoutManager).spanCount
+
       ViewMatchers.assertThat(
         "RecyclerViewGrid span count",
         spanCount,

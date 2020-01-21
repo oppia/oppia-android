@@ -17,6 +17,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -57,18 +58,21 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  private lateinit var binding: ProfileChooserFragmentBinding
+
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding =
+    binding =
       ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
+    initAdapter()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -85,6 +89,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun getProfileChooserViewModel(): ProfileChooserViewModel {
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
+  }
+
+  private fun initAdapter() {
+    val layoutManager = GridAutoFitLayoutManager(activity.applicationContext, 500)
+    binding.profileRecyclerView.setLayoutManager(layoutManager)
+    binding.profileRecyclerView.setHasFixedSize(true)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
@@ -130,11 +140,19 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+          AdminPinActivity.createAdminPinActivityIntent(
+            activity,
+            chooserViewModel.adminProfileId.internalId,
+            selectUniqueRandomColor()
+          )
         )
       } else {
         activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
+          AdminAuthActivity.createAdminAuthActivityIntent(
+            activity,
+            chooserViewModel.adminPin,
+            selectUniqueRandomColor()
+          )
         )
       }
     }
