@@ -6,36 +6,51 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.topic.TopicActivity
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
-
-  private lateinit var toolbar: Toolbar
+  private lateinit var explorationToolbar: Toolbar
   private var topicId: String? = null
 
-  fun handleOnCreate(explorationId: String, topicId: String?) {
-    activity.setContentView(R.layout.exploration_activity)
+  private val exploreViewModel by lazy {
+    getExplorationViewModel()
+  }
 
-    toolbar = activity.findViewById(R.id.exploration_toolbar)
-    activity.setSupportActionBar(toolbar)
+  fun handleOnCreate(explorationId: String, topicId: String?) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+    binding.apply {
+      viewModel = exploreViewModel
+      lifecycleOwner = activity
+    }
+
+    explorationToolbar = binding.explorationToolbar
+    activity.setSupportActionBar(explorationToolbar)
+
+    binding.actionAudioPlayer.setOnClickListener {
+      getExplorationFragment()?.handlePlayAudio()
+    }
 
     updateToolbarTitle(explorationId)
     this.topicId = topicId
@@ -52,6 +67,18 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
   }
+
+  fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+
+  fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+
+  fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+
+  fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
+
+  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -78,10 +105,6 @@ class ExplorationActivityPresenter @Inject constructor(
     })
   }
 
-  fun audioPlayerIconClicked() {
-    getExplorationFragment()?.handlePlayAudio()
-  }
-
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
@@ -89,8 +112,12 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
     val explorationLiveData = getExploration(explorationResultLiveData)
     explorationLiveData.observe(activity, Observer<Exploration> {
-      toolbar.title = it.title
+      explorationToolbar.title = it.title
     })
+  }
+
+  private fun getExplorationViewModel(): ExplorationViewModel {
+    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */

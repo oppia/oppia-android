@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
@@ -17,9 +17,8 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topi
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener {
-  @Inject
-  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener {
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
   private var topicId: String? = null
 
@@ -65,11 +64,20 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     return super.onCreateOptionsMenu(menu)
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    when (item!!.itemId) {
-      R.id.action_audio_player -> explorationActivityPresenter.audioPlayerIconClicked()
-    }
-    return super.onOptionsItemSelected(item)
+  override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
+
+  override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
+
+  override fun showAudioStreamingOn() = explorationActivityPresenter.showAudioStreamingOn()
+
+  override fun showAudioStreamingOff() = explorationActivityPresenter.showAudioStreamingOff()
+
+  override fun setAudioBarVisibility(isVisible: Boolean) {
+    explorationActivityPresenter.setAudioBarVisibility(isVisible)
+  }
+
+  override fun scrollToTop() {
+    explorationActivityPresenter.scrollToTop()
   }
 
   override fun onEditorAction(actionCode: Int) {

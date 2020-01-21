@@ -20,6 +20,7 @@
   </data>
 
   <com.google.android.material.card.MaterialCardView
+    android:id="@+id/story_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="20dp"
@@ -102,7 +103,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif-medium"
-              android:onClick="@{viewModel::clickOnStorySummaryTitle}"
+              android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:text="@{viewModel.storySummary.storyName}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="20sp" />
@@ -126,6 +127,7 @@
             android:minHeight="48dp">
 
             <ImageView
+              android:id="@+id/chapter_list_drop_down_icon"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center_horizontal|bottom"

@@ -1,5 +1,6 @@
 package org.oppia.app.home
 
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -13,10 +14,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -41,6 +44,25 @@ class ContinuePlayingFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_clickOnToolbarNavigationButton_closeActivity() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(withId(R.id.continue_playing_toolbar)).perform(click())
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_toolbarTitle_isDisplayedSuccessfully() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.continue_playing_toolbar))
+        )
+      ).check(matches(withText(R.string.continue_playing_activity)))
+    }
   }
 
   @Test

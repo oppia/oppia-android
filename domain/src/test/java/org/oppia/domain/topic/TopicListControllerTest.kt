@@ -35,8 +35,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicListControllerTest {
-  @Inject
-  lateinit var topicListController: TopicListController
+  @Inject lateinit var topicListController: TopicListController
 
   @Before
   fun setUp() {

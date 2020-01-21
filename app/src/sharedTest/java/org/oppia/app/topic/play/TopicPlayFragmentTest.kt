@@ -1,9 +1,9 @@
 package org.oppia.app.topic.play
 
-import android.app.Application
-import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,17 +12,12 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import dagger.BindsInstance
-import dagger.Component
-import dagger.Module
-import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
@@ -38,21 +33,13 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
-import javax.inject.Singleton
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 
 /** Tests for [TopicPlayFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicPlayFragmentTest {
-
-  // TODO(#137): Add following test-cases once story-progress function is implemented and expandable list is introduced.
-  //  - Click on arrow to show and hide expandable list is working correctly.
-  //  - Expandable list is showing correct chapter names.
-  //  - Upon configuration change expanded list should remain expanded.
-  //  - Click on story-title or entire item should open [StoryActivity].
-  //  - Click on chapter in expandable list should start exploration.
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -67,33 +54,51 @@ class TopicPlayFragmentTest {
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyName_isCorrect() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        0
+        1
       )
     ).check(matches(hasDescendant(withText(containsString("First Story")))))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextSingle_isCorrect() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        0
+        1
       )
     ).check(matches(hasDescendant(withText(containsString("1 Chapter")))))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextMultiple_isCorrect() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        1
+        2
       )
     ).check(matches(hasDescendant(withText(containsString("3 Chapters")))))
   }
@@ -101,22 +106,34 @@ class TopicPlayFragmentTest {
   @Test
 
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_completeStoryProgress_isDisplayed() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        0
+        1
       )
     ).check(matches(hasDescendant(withText(containsString("100%")))))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_partialStoryProgress_isDisplayed() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        1
+        2
       )
     ).check(matches(hasDescendant(withText(containsString("33%")))))
   }
@@ -124,28 +141,40 @@ class TopicPlayFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
-    activityTestRule.launchActivity(null)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     activityTestRule.activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     onView(
       atPosition(
         R.id.story_summary_recycler_view,
-        0
+        1
       )
     ).check(matches(hasDescendant(withText(containsString("First Story")))))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickStoryItem_opensStoryActivityWithCorrectIntent() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.story_name_text_view)).perform(click())
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_name_text_view)).perform(click())
     intended(hasComponent(StoryActivity::class.java.name))
     intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA, storyId))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterListIsNotVisible() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.chapter_recycler_view)).check(
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_recycler_view)).check(
       matches(
         not(
           isDisplayed()
@@ -156,33 +185,34 @@ class TopicPlayFragmentTest {
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_default_arrowDown() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).check(
-      matches(
-        withDrawable(R.drawable.ic_keyboard_arrow_down_black_24dp)
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
       )
-    )
-  }
-
-  @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_iconChanges() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).check(
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_drop_down_icon)).check(
       matches(
-        withDrawable(R.drawable.ic_keyboard_arrow_up_black_24dp)
+        withDrawable(R.drawable.ic_arrow_drop_down_black_24dp)
       )
     )
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_chapterListIsVisible() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_container)).perform(click())
     onView(
       atPositionOnView(
         R.id.story_summary_recycler_view,
-        0,
+        1,
         R.id.chapter_recycler_view
       )
     ).check(matches(isDisplayed()))
@@ -190,38 +220,35 @@ class TopicPlayFragmentTest {
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickChapter_opensExplorationActivity() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
-        withId(R.id.chapter_recycler_view),
-        withParent(
-          atPosition(R.id.story_summary_recycler_view, 1)
-        )
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
       )
-    ).check(matches(hasDescendant(withText(containsString("Second"))))).perform(click())
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_container)).perform(click())
+    onView(
+      atPositionOnView(
+        R.id.story_summary_recycler_view,
+        1,
+        R.id.chapter_recycler_view
+      )
+    ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
     intended(hasComponent(ExplorationActivity::class.java.name))
   }
 
   @Test
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_clickExpandListIconIndex1_chapterListForIndex0IsNotDisplayed() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
-      atPositionOnView(
-        R.id.story_summary_recycler_view,
-        0,
-        R.id.chapter_recycler_view
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
       )
-    ).check(matches(not(isDisplayed())))
-  }
-
-  @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
-    activityTestRule.launchActivity(null)
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.expand_list_icon)).perform(click())
-    onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_container)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 2, R.id.story_container)).perform(click())
     onView(
       atPositionOnView(
         R.id.story_summary_recycler_view,
@@ -232,17 +259,43 @@ class TopicPlayFragmentTest {
   }
 
   @Test
+  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
+    activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
+    onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(1).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 2, R.id.story_container)).perform(click())
+    onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_container)).perform(click())
+    onView(
+      atPositionOnView(
+        R.id.story_summary_recycler_view,
+        2,
+        R.id.chapter_recycler_view
+      )
+    ).check(matches(not(isDisplayed())))
+  }
+
+  @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
     ActivityScenario.launch(TopicActivity::class.java).use {
-      onView(atPositionOnView(R.id.story_summary_recycler_view, 0, R.id.expand_list_icon)).perform(click())
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(1).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_container)).perform(click())
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          0,
+          1,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -254,35 +307,9 @@ class TopicPlayFragmentTest {
     Intents.release()
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-    //  test coroutine dispatcher.
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
-    }
-  }
-
-  @Singleton
-  @Component(modules = [TestModule::class])
-  interface TestApplicationComponent {
-    @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-
-      fun build(): TestApplicationComponent
-    }
+  private fun createTopicActivityIntent(topicId: String): Intent {
+    return TopicActivity.createTopicActivityIntent(
+      ApplicationProvider.getApplicationContext(), topicId
+    )
   }
 }

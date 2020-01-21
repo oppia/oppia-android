@@ -11,8 +11,7 @@ import javax.inject.Inject
 
 /** Fragment that card for topic review. */
 class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
-  @Inject
-  lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
+  @Inject lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

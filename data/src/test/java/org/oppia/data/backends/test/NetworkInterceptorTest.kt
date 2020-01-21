@@ -32,7 +32,7 @@ class NetworkInterceptorTest {
   }
 
   private fun removeSpaces(raw: String): String {
-    return raw.replace(" ", "");
+    return raw.replace(" ", "")
   }
 
   @Test

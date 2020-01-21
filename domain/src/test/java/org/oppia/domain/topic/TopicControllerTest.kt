@@ -58,8 +58,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
-  @Inject
-  lateinit var topicController: TopicController
+  @Inject lateinit var topicController: TopicController
 
   @Rule
   @JvmField
@@ -75,8 +74,7 @@ class TopicControllerTest {
   @Captor
   lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
-  @Inject
-  lateinit var dataProviders: DataProviders
+  @Inject lateinit var dataProviders: DataProviders
 
   @Inject
   @field:TestDispatcher

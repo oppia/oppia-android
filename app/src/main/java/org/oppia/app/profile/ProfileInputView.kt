@@ -14,13 +14,25 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileInputViewBinding
 
-/** Custom view that is used for name or pin input with error messages */
+/** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
   companion object {
+    @JvmStatic
+    @BindingAdapter("profile:label")
+    fun setLabel(profileInputView: ProfileInputView, label: String) {
+      profileInputView.label.text = label
+    }
+
+    @JvmStatic
+    @BindingAdapter("profile:inputLength")
+    fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
+      profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
+    }
+
     @JvmStatic
     @BindingAdapter("profile:error")
     fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String) {
@@ -30,8 +42,14 @@ class ProfileInputView @JvmOverloads constructor(
         profileInputView.setErrorText(errorMessage)
       }
     }
+    /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
+    @BindingAdapter("android:addTextChangedListener")
+    fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
+      editText.addTextChangedListener(textWatcher)
+    }
   }
 
+  private var label: TextView
   private var errorText: TextView
   private var input: EditText
 
@@ -43,6 +61,7 @@ class ProfileInputView @JvmOverloads constructor(
     )
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
     binding.labelText.text = attributes.getString(R.styleable.ProfileInputView_label)
+    label = binding.labelText
     input = binding.input
     errorText = binding.errorText
     orientation = VERTICAL
@@ -64,7 +83,7 @@ class ProfileInputView @JvmOverloads constructor(
 
   /** Clears red border and error text. */
   fun clearErrorText() {
-    input.background = context.resources.getDrawable(R.drawable.edit_text_black_border)
+    input.background = context.resources.getDrawable(R.drawable.add_profile_edit_text_background)
     errorText.text = ""
   }
 
@@ -72,5 +91,9 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
+  }
+
+  fun setLabel(labelText: String) {
+    label.text = labelText
   }
 }

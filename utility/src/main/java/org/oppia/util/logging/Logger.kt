@@ -86,7 +86,7 @@ class Logger @Inject constructor(
 
   private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
     if (!isLogEnable(logLevel)) {
-      return;
+      return
     }
     if (enableConsoleLog) {
       Log.println(logLevel.logLevel, tag, fullLog)

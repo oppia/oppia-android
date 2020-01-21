@@ -1,9 +1,9 @@
 package org.oppia.domain.topic
 
 import android.os.SystemClock
-import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -48,6 +48,7 @@ const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
+const val MATTHEW_GOES_TO_THE_BAKERY_STORY_ID = "wANbh4oOClga"
 val TOPIC_IDS = listOf(FRACTIONS_TOPIC_ID, RATIOS_TOPIC_ID)
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
@@ -348,11 +349,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun parseHtml(html: String): Spannable {
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY) as Spannable
-    } else {
-      Html.fromHtml(html) as Spannable
-    }
+    return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY) as Spannable
   }
 
   private fun replaceCustomOppiaImageTag(html: String): String {

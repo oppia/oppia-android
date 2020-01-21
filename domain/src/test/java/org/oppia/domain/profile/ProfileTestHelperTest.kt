@@ -53,14 +53,11 @@ class ProfileTestHelperTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
@@ -110,12 +107,14 @@ class ProfileTestHelperTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() = runBlockingTest(coroutineContext) {
-    profileTestHelper.initializeProfiles()
+    profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
     profileManagementController.getProfiles().observeForever(mockProfilesObserver)
     advanceUntilIdle()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow()
     assertThat(profiles[0].name).isEqualTo("Sean")
     assertThat(profiles[0].isAdmin).isTrue()

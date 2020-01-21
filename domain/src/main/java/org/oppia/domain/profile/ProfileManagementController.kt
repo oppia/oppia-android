@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
 import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.data.persistence.PersistentCacheStore
@@ -22,10 +23,6 @@ import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.Exception
-import java.math.BigInteger
-import java.nio.charset.Charset
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -33,8 +30,6 @@ import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
-private const val GRAVATAR_URL_PREFIX = "https://www.gravatar.com/avatar/"
-private const val GRAVATAR_QUERY_STRING = "?s=100&d=identicon&r=g"
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
@@ -126,12 +121,18 @@ class ProfileManagementController @Inject constructor(
    *
    * @param name Name of the new profile.
    * @param pin Pin of the new profile.
-   * @param avatarImagePath Uri path to user selected image.
+   * @param avatarImagePath Uri path to user selected image. If null, the user did not select an image.
    * @param allowDownloadAccess Indicates whether the new profile can download content.
+   * @param colorRgb Indicates the color RGB integer used for the avatar background.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
   fun addProfile(
-    name: String, pin: String, avatarImagePath: Uri?, allowDownloadAccess: Boolean, isAdmin: Boolean = false
+    name: String,
+    pin: String,
+    avatarImagePath: Uri?,
+    allowDownloadAccess: Boolean,
+    colorRgb: Int,
+    isAdmin: Boolean
   ): LiveData<AsyncResult<Any?>> {
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
@@ -144,25 +145,26 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val imageUri: String?
+      val newProfileBuilder = Profile.newBuilder()
+        .setName(name)
+        .setPin(pin)
+        .setAllowDownloadAccess(allowDownloadAccess)
+        .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
+        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
+
       if (avatarImagePath != null) {
-        imageUri = saveImageToInternalStorage(avatarImagePath, profileDir) ?:
-            return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_STORE_IMAGE)
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir) ?: return@storeDataWithCustomChannelAsync Pair(
+            it,
+            ProfileActionStatus.FAILED_TO_STORE_IMAGE
+          )
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
-        // gravatar url is a md5 hash of an email address
-        val md5Hash = md5("${name.toLowerCase(Locale.getDefault())}$nextProfileId@gmail.com")
-          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR)
-        imageUri = GRAVATAR_URL_PREFIX + md5Hash + GRAVATAR_QUERY_STRING
+        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
-      val newProfile = Profile.newBuilder()
-        .setName(name).setPin(pin).setAvatarImageUri(imageUri)
-        .setAllowDownloadAccess(allowDownloadAccess).setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .build()
-
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(nextProfileId, newProfile).setNextProfileId(nextProfileId + 1)
+        it.toBuilder().putProfiles(nextProfileId, newProfileBuilder.build()).setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
@@ -355,21 +357,6 @@ class ProfileManagementController @Inject constructor(
 
   private fun onlyLetters(name: String): Boolean {
     return name.matches(Regex("^[ A-Za-z]+\$"))
-  }
-
-  // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
-  private fun md5(s: String): String? {
-    try {
-      val digest = MessageDigest.getInstance("MD5")
-      digest.update(s.toByteArray(Charset.forName("US-ASCII")), 0, s.length)
-      val magnitude = digest.digest()
-      val bi = BigInteger(1, magnitude)
-      val hash = String.format("%0" + (magnitude.size.shl(1)) + "x", bi)
-      return hash
-    } catch (e: NoSuchAlgorithmException) {
-      logger.e("ProfileManagementController", "No such algorithm when creating md5 hash for gravatar", e)
-    }
-    return null
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {

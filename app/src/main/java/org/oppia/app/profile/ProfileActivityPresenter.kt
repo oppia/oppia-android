@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.profile.ProfileManagementController
@@ -16,7 +15,14 @@ class ProfileActivityPresenter @Inject constructor(
   /** Adds [ProfileChooserFragment] to view. */
   fun handleOnCreate() {
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
-    profileManagementController.addProfile("Sean", "12345", null, true, true)
+    profileManagementController.addProfile(
+      name = "Sean",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
+    )
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

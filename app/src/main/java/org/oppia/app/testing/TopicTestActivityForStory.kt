@@ -21,8 +21,7 @@ import javax.inject.Inject
 class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
   RouteToConceptCardListener, RouteToStoryListener,
   RouteToExplorationListener, ConceptCardListener {
-  @Inject
-  lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
