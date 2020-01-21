@@ -4,7 +4,7 @@ import org.oppia.app.R
 
 /** Represents different destinations that can be selected by the user from the navigation drawer. */
 enum class NavigationDrawerItem(val value: Int) {
-  HOME(R.id.nav_home), OPTIONS(R.id.nav_options), HELP(R.id.nav_help);
+  HOME(R.id.nav_home), HELP(R.id.nav_help);
 
   companion object {
     fun valueFromNavId(id: Int): NavigationDrawerItem {
