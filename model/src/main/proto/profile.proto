@@ -45,6 +45,7 @@ message Profile {
   // Represents user selected story-text-size.
   float story_text_size = 10;
 
+
   // Represents user selected audio-language.
   string audio_language = 11;
 

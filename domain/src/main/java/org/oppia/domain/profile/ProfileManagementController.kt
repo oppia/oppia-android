@@ -22,9 +22,7 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,6 +40,7 @@ private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_lang
 private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_audio_language_transformed_id"
 
 const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
+
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
