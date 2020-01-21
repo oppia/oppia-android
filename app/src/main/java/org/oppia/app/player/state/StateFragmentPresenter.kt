@@ -615,10 +615,12 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
+  /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?) {
-    if (pendingAnswerError != null)
+    if (pendingAnswerError != null) {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
-    else
+    } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
+    }
   }
 }

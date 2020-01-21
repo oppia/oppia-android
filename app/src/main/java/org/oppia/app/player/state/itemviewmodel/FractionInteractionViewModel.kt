@@ -24,6 +24,7 @@ class FractionInteractionViewModel(
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")
+
   val hintText: CharSequence = deriveHintText(interaction)
   private val stringToFractionParser: StringToFractionParser = StringToFractionParser()
 

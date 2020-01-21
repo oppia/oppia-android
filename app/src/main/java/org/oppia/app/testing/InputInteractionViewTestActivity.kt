@@ -23,6 +23,9 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  */
 class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
   InteractionAnswerErrorReceiver {
+  override fun onEditorAction(actionCode: Int) {
+  }
+
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   val numericInputViewModel = NumericInputViewModel()
   val textInputViewModel = TextInputViewModel(

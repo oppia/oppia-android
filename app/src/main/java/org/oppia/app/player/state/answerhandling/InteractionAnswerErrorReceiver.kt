@@ -6,6 +6,10 @@ package org.oppia.app.player.state.answerhandling
  */
 interface InteractionAnswerErrorReceiver {
 
-  /** Will be called to enable and disable submit button while pending answer error is updated by real-time and submit-time answer change. */
+  /**
+   * Called when an error was detected upon answer submission. Implementations are recommended to prevent further answer
+   * submission until the pending answer itself changes. The interaction is responsible for displaying the error provided
+   * here, not the implementation.
+   */
   fun onPendingAnswerError(pendingAnswerError: String?) {}
 }

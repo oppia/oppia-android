@@ -211,28 +211,28 @@ class InputInteractionViewTestActivityTest {
   fun testFractionInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("55-"))
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_format)))
   }
 
   @Test
   fun testFractionInputInteractionView_withInputtedNegativeSymbolAt0AndMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("--55"))
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_format)))
   }
 
   @Test
   fun testFractionInputInteractionView_withInputtedDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5/5/"))
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_format)))
   }
 
   @Test
   fun testFractionInputInteractionView_withInputtedDividerAtStart_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("/5"))
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_format)))
   }
 
   @Test
@@ -248,7 +248,7 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("5 5/"))
     closeSoftKeyboard()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_format)))
   }
 
   @Test
@@ -273,14 +273,24 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("1/0"))
     closeSoftKeyboard()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("Please do not put 0 in the denominator")))
+    onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_divide_by_zero)))
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedInvalidCharacter_clickSubmitButton_invalidCharacterErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("."))
-      onView(withId(R.id.fraction_input_error)).check(matches(withText("Please only use numerical digits, spaces or forward slashes (/)")))
+      onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_invalid_chars)))
+    }
+  }
+
+  @Test
+  fun testFractionInputInteractionView_withInputtedLongNumber_clickSubmitButton_invalidCharacterErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("12345678"))
+      closeSoftKeyboard ()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_larger_than_seven_digits)))
     }
   }
 }

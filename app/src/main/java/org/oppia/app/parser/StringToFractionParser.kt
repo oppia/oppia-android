@@ -25,7 +25,7 @@ class StringToFractionParser {
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     if (invalidCharsLengthRegex.find(text) != null)
-      return FractionParsingError.LARGER_THAN_SEVEN_DIGITS
+      return FractionParsingError.NUMBER_TOO_LONG
     val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
@@ -109,7 +109,7 @@ class StringToFractionParser {
     INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
     INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
     DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
-    LARGER_THAN_SEVEN_DIGITS(error = R.string.fraction_error_larger_than_seven_digits);
+    NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {

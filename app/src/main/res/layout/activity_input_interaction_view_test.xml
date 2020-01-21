@@ -5,6 +5,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="numericInputViewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
@@ -91,7 +93,8 @@
       android:minHeight="32dp"
       android:text="@{fractionInteractionViewModel.errorMessage.get()}"
       android:textColor="@color/editTextError"
-      android:textSize="12sp" />
+      android:textSize="12sp"
+      android:visibility="@{fractionInteractionViewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
 
     <Button
       android:id="@+id/submit_button"
