@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.databinding.TopicPlayFragmentBinding
+import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
@@ -37,7 +37,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private var currentExpandedChapterListIndex: Int? = null
 
-  private lateinit var binding: TopicPlayFragmentBinding
+  private lateinit var binding: TopicLessonsFragmentBinding
   private lateinit var topicId: String
   private lateinit var storyId: String
 
@@ -57,7 +57,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicLessonsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
     }

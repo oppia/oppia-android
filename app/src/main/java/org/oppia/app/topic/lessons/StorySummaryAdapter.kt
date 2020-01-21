@@ -3,8 +3,8 @@ package org.oppia.app.topic.lessons
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.TopicPlayStorySummaryBinding
-import org.oppia.app.databinding.TopicPlayTitleBinding
+import org.oppia.app.databinding.TopicLessonsStorySummaryBinding
+import org.oppia.app.databinding.TopicLessonsTitleBinding
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 
@@ -28,7 +28,7 @@ class StorySummaryAdapter(
       VIEW_TYPE_TITLE_TEXT -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          TopicPlayTitleBinding.inflate(
+          TopicLessonsTitleBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -38,7 +38,7 @@ class StorySummaryAdapter(
       VIEW_TYPE_STORY_ITEM -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          TopicPlayStorySummaryBinding.inflate(
+          TopicLessonsStorySummaryBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -78,12 +78,12 @@ class StorySummaryAdapter(
   }
 
   private class TopicPlayTitleViewHolder(
-    binding: TopicPlayTitleBinding
+    binding: TopicLessonsTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind() {}
   }
 
-  inner class StorySummaryViewHolder(private val binding: TopicPlayStorySummaryBinding) :
+  inner class StorySummaryViewHolder(private val binding: TopicLessonsStorySummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(storySummaryViewModel: StorySummaryViewModel, position: Int) {
       var isChapterListVisible = false
