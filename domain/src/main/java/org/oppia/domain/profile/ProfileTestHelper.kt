@@ -5,6 +5,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
+
 /** This helper allows tests to easily create new profiles and switch between them. */
 class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController

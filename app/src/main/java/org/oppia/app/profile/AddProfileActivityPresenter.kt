@@ -26,6 +26,7 @@ import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 
+
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
 class AddProfileActivityPresenter @Inject constructor(

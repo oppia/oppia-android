@@ -46,6 +46,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
 
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var context: Context
