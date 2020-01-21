@@ -128,7 +128,10 @@ class ProfileManagementControllerTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
+      storyTextSize = 14f,
+      appLanguage = "English",
+      audioLanguage = "No Audio"
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
@@ -157,7 +160,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = 14f,
+        appLanguage = "English",
+        audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -179,7 +185,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = 14f,
+        appLanguage = "English",
+        audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -237,7 +246,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = 14f,
+        appLanguage = "English",
+        audioLanguage = "No Audio"
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -381,6 +393,67 @@ class ProfileManagementControllerTest {
         .contains("ProfileId 6 does not match an existing Profile")
     }
 
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateStoryTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateStoryTextSize(profileId, 18f)
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(18f)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAppLanguage_addProfiles_updateWithChineseLanguage_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateAppLanguage(profileId, "Chinese")
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo("Chinese")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAudioLanguage_addProfiles_updateWithFrenchLanguage_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateAudioLanguage(profileId, "French")
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo("French")
+    }
+
   @Test
   @ExperimentalCoroutinesApi
   fun testDeleteProfile_addProfiles_deleteProfile_checkDeletionIsSuccessful() =
@@ -417,7 +490,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = 14f,
+        appLanguage = "English",
+        audioLanguage = "No Audio"
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -510,7 +586,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = it.allowDownloadAccess,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = it.storyTextSize,
+        appLanguage = it.appLanguage,
+        audioLanguage = it.audioLanguage
       )
     }
   }
