@@ -96,8 +96,6 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
-    <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
-    <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
   </style>
 
   <style name="textAllCaps">
