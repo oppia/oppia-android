@@ -13,7 +13,7 @@ import org.oppia.app.model.ChapterSummary
 private const val VIEW_TYPE_TITLE_TEXT = 1
 private const val VIEW_TYPE_STORY_ITEM = 2
 
-/** Adapter to bind StorySummary to [RecyclerView] inside [TopicPlayFragment]. */
+/** Adapter to bind StorySummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class StorySummaryAdapter(
   private val itemList: MutableList<TopicLessonsItemViewModel>,
   private val chapterSummarySelector: ChapterSummarySelector,

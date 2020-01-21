@@ -37,7 +37,7 @@ import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 
-/** Tests for [TopicPlayFragment]. */
+/** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicLessonsFragmentTest {
 
@@ -53,7 +53,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_storyName_isCorrect() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_storyName_isCorrect() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -70,7 +70,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextSingle_isCorrect() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextSingle_isCorrect() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -87,7 +87,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextMultiple_isCorrect() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_chapterCountTextMultiple_isCorrect() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -105,7 +105,7 @@ class TopicLessonsFragmentTest {
 
   @Test
 
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_completeStoryProgress_isDisplayed() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_completeStoryProgress_isDisplayed() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -122,7 +122,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_partialStoryProgress_isDisplayed() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_partialStoryProgress_isDisplayed() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -140,7 +140,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_configurationChange_storyName_isCorrect() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -158,7 +158,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickStoryItem_opensStoryActivityWithCorrectIntent() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickStoryItem_opensStoryActivityWithCorrectIntent() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -172,7 +172,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_chapterListIsNotVisible() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_chapterListIsNotVisible() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_recycler_view)).check(
       matches(
@@ -184,7 +184,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_default_arrowDown() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_default_arrowDown() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -200,7 +200,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_chapterListIsVisible() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIcon_chapterListIsVisible() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -219,7 +219,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickChapter_opensExplorationActivity() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickChapter_opensExplorationActivity() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -239,7 +239,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_clickExpandListIconIndex1_chapterListForIndex0IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_clickExpandListIconIndex1_chapterListForIndex0IsNotDisplayed() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -259,7 +259,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
     activityTestRule.launchActivity(createTopicActivityIntent(TEST_TOPIC_ID_0))
     onView(
       allOf(
@@ -280,7 +280,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
+  fun testLessonsPlayFragment_loadFragmentWithTopicTestId0_clickExpandListIconIndex0_configurationChange_chapterListIsVisible() {
     ActivityScenario.launch(TopicActivity::class.java).use {
       onView(
         allOf(

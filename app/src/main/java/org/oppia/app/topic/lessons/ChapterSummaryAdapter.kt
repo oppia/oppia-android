@@ -10,7 +10,7 @@ import org.oppia.app.model.ChapterSummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
-/** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicPlayFragment]. */
+/** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class ChapterSummaryAdapter(
   private val chapterList: List<ChapterSummary>,
   private val chapterSummarySelector: ChapterSummarySelector

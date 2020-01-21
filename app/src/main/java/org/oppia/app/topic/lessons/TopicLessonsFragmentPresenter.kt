@@ -23,7 +23,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [TopicPlayFragment]. */
+/** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
@@ -52,7 +52,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicPlayFragment."
+      "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
     storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
@@ -106,7 +106,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicPlayFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicLessonsFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -124,10 +124,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("TopicPlayFragment", "Loading exploration")
-        result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
+        result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-          logger.d("TopicPlayFragment", "Successfully loaded exploration")
+          logger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(explorationId, topicId)
         }
       }

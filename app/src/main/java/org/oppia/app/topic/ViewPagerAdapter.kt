@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import org.oppia.app.topic.info.TopicInfoFragment
-import org.oppia.app.topic.lessons.TopicPlayFragment
+import org.oppia.app.topic.lessons.TopicLessonsFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.train.TopicTrainFragment
 
@@ -27,7 +27,7 @@ class ViewPagerAdapter(
         return topicInfoTab
       }
       TopicTab.LESSONS -> {
-        val topicPlayTab = TopicPlayFragment()
+        val topicPlayTab = TopicLessonsFragment()
         if (storyId.isNotEmpty())
           args.putString(STORY_ID_ARGUMENT_KEY, storyId)
         topicPlayTab.arguments = args
