@@ -59,7 +59,6 @@ import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -80,7 +79,6 @@ class HomeActivityTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
-  @Inject lateinit var dateTimeUtil: DateTimeUtil
   private lateinit var oppiaClock: OppiaClock
 
   @Before
