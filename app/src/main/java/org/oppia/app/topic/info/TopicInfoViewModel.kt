@@ -1,4 +1,4 @@
-package org.oppia.app.topic.overview
+package org.oppia.app.topic.info
 
 import android.content.Context
 import androidx.databinding.ObservableField
@@ -10,9 +10,9 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import java.text.DecimalFormat
 import javax.inject.Inject
 
-/** [ViewModel] for showing topic overview details. */
+/** [ViewModel] for showing topic info details. */
 @FragmentScope
-class TopicOverviewViewModel @Inject constructor(
+class TopicInfoViewModel @Inject constructor(
   private val context: Context
 ) : ObservableViewModel() {
   private val decimalFormat: DecimalFormat = DecimalFormat("##")

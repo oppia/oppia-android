@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider

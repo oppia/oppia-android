@@ -34,11 +34,11 @@ class CellularAudioDialogFragment : DialogFragment() {
       .setTitle(R.string.cellular_data_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)
-      .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { dialog, whichButton ->
+      .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { _, _ ->
         cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { dialog, whichButton ->
+      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
         cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }
