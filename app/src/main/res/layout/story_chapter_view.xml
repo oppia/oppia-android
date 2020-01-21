@@ -40,10 +40,10 @@
         <ImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="0dp"
           android:scaleType="centerInside"
           android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
-          app:layout_constraintDimensionRatio="H,4:3"
+          app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
