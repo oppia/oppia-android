@@ -15,6 +15,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   private lateinit var prefKey: String
   private lateinit var prefSummaryValue: String
 
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)

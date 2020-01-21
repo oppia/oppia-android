@@ -35,6 +35,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     return view
   }
 
+
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
       val intent = when (NavigationDrawerItem.valueFromNavId(menuItemId)) {

@@ -39,6 +39,7 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import javax.inject.Provider
 
+
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
 @ActivityScope

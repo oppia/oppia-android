@@ -12,6 +12,7 @@ private const val AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "AUDIO_LANGUAGE_PREF
 /** The activity to change the Default Audio language of the app. */
 class DefaultAudioActivity : InjectableAppCompatActivity() {
 
+
   @Inject lateinit var defaultAudioActivityPresenter: DefaultAudioActivityPresenter
   private lateinit var prefKey: String
   private lateinit var prefSummaryValue: String

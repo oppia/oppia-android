@@ -14,6 +14,7 @@ class OptionsActivityPresenter @Inject constructor(
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController) {
 
+
   fun handleOnCreate() {
     activity.setContentView(R.layout.option_activity)
     if (getOptionFragment() == null) {

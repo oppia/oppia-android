@@ -16,6 +16,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 ) {
   private var fontSize: String = "Small"
 
+
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
       DataBindingUtil.setContentView<StoryTextSizeActivityBinding>(activity, R.layout.story_text_size_activity)

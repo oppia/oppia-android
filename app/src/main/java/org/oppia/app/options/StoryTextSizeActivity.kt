@@ -14,6 +14,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
   @Inject lateinit var storyTextSizeActivityPresenter: StoryTextSizeActivityPresenter
   private lateinit var prefSummaryValue: String
 
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)

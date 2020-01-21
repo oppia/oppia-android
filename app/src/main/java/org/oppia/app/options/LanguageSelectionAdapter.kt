@@ -14,6 +14,7 @@ import org.oppia.app.databinding.LanguageItemsBinding
 class LanguageSelectionAdapter(private val prefKey: String) :
   RecyclerView.Adapter<LanguageSelectionAdapter.LanguageViewHolder>() {
 
+
   private var prefSummaryValue: String? = null
   private var languageList: List<String> = ArrayList()
 

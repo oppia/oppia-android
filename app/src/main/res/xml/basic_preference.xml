@@ -17,4 +17,5 @@
       app:title="@string/title_default_audio"
       app:iconSpaceReserved="false"/>
   </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
