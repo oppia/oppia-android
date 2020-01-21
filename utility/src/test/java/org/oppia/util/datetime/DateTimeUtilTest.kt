@@ -25,10 +25,10 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.io.File
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -41,6 +41,7 @@ class DateTimeUtilTest {
 
   @Inject lateinit var dateTimeUtil: DateTimeUtil
   @Inject lateinit var context: Context
+  @Inject lateinit var oppiaClock: OppiaClock
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -72,18 +73,21 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceed() {
-    assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(10, 12, 0))).isEqualTo("Good morning,")
+    oppiaClock.setCurrentTimeMs(1579666500000)
+    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceed() {
-      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(15, 10, 0))).isEqualTo("Good afternoon,")
+    oppiaClock.setCurrentTimeMs(1579637700000)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
 
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceed() {
-      assertThat(dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(20, 10, 0))).isEqualTo("Good evening,")
+    oppiaClock.setCurrentTimeMs(1579659300000)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
   }
 
   private fun getHourMinuteSecondAsTime(hour: Int, minute: Int, second: Int): Calendar {
