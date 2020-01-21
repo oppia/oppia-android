@@ -129,7 +129,10 @@ class ProfileEditActivityTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false
+      isAdmin = false,
+      storyTextSize = 16f,
+      appLanguage = "English",
+      audioLanguage = "No Audio"
     )
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 2)).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))

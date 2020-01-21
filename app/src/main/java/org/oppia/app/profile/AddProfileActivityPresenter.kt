@@ -41,6 +41,9 @@ class AddProfileActivityPresenter @Inject constructor(
   private var allowDownloadAccess = false
   private var inputtedPin = false
   private var inputtedConfirmPin = false
+  private var storyTextSize = 14f
+  private var appLanguage = "English"
+  private var audioLanguage = "No Audio"
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -111,7 +114,10 @@ class AddProfileActivityPresenter @Inject constructor(
         avatarImagePath = selectedImage,
         allowDownloadAccess = allowDownloadAccess,
         colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = storyTextSize,
+        appLanguage = appLanguage,
+        audioLanguage = audioLanguage
       )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
