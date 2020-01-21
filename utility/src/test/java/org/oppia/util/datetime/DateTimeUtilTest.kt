@@ -29,7 +29,6 @@ import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -79,23 +78,14 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceed() {
-    oppiaClock.setCurrentTimeMs(1579637700000)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
-
+    oppiaClock.setCurrentTimeMs(1579774500000)
+     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceed() {
-    oppiaClock.setCurrentTimeMs(1579659300000)
+    oppiaClock.setCurrentTimeMs(1579792500000)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
-  }
-
-  private fun getHourMinuteSecondAsTime(hour: Int, minute: Int, second: Int): Calendar {
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, hour)
-    calendar.set(Calendar.MINUTE, minute)
-    calendar.set(Calendar.SECOND, second)
-    return calendar
   }
 
   @Qualifier

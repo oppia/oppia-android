@@ -47,7 +47,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.oppia.app.R
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.profile.ProfileActivity
@@ -65,6 +64,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.*
@@ -82,6 +82,7 @@ class HomeActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
   @Inject lateinit var dateTimeUtil: DateTimeUtil
+  @Inject lateinit var oppiaClock: OppiaClock
 
   @Before
   @ExperimentalCoroutinesApi
@@ -122,23 +123,20 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
-
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      val mockedCalendar = Mockito.mock(Calendar::class.java)
-      mockedCalendar.set(2020, 1, 20, 10,1,1)
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good morning,")))
-    }
+        oppiaClock.setCurrentTimeMs(1579666500000)
+        onView(
+          atPositionOnView(
+            R.id.home_recycler_view,
+            0,
+            R.id.welcome_text_view
+          )
+        ).check(matches(withText("Good morning,")))
+      }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
-    dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(15, 10, 0))
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -152,8 +150,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
-//    dateTimeUtil.getGreetingMessage(getHourMinuteSecondAsTime(20, 10, 0))
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,

@@ -40,7 +40,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
-  private val logger: Logger
+  private val logger: Logger,
+  private val oppiaClock: OppiaClock
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -165,7 +166,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       userAppHistoryViewModel.profileName = "$profileName!"
-      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext(),OppiaClock()).getGreetingMessage()
+      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext(),oppiaClock).getGreetingMessage()
     }
   }
 

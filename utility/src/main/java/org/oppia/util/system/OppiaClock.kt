@@ -4,8 +4,10 @@ import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Needs documentation. */
+@Singleton
 class OppiaClock @Inject constructor() {
   private var testTimeMs: Long? = null
 
