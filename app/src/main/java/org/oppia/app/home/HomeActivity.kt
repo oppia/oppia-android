@@ -8,6 +8,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
@@ -15,6 +16,7 @@ const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject lateinit var oppiaClock: OppiaClock
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int): Intent {
@@ -27,7 +29,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    homeActivityPresenter.handleOnCreate()
+    homeActivityPresenter.handleOnCreate(oppiaClock)
     title = getString(R.string.menu_home)
   }
 

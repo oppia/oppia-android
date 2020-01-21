@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.model.TopicSummary
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Fragment that contains an introduction to the app. */
@@ -25,5 +26,9 @@ class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     homeFragmentPresenter.onTopicSummaryClicked(topicSummary)
+  }
+
+  fun setOppiaClockInstance(oppiaClock: OppiaClock){
+    homeFragmentPresenter.setOppiaClockInstance(oppiaClock)
   }
 }

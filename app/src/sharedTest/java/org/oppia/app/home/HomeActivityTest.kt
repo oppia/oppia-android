@@ -78,11 +78,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var context: Context
   @Inject lateinit var dateTimeUtil: DateTimeUtil
-  @Inject lateinit var oppiaClock: OppiaClock
+  private lateinit var oppiaClock: OppiaClock
 
   @Before
   @ExperimentalCoroutinesApi
@@ -99,6 +98,14 @@ class HomeActivityTest {
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
     Intents.release()
+  }
+
+  private fun getApplicationDependencies() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      it.onActivity { activity ->
+        oppiaClock = activity.oppiaClock
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -123,21 +130,24 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+    getApplicationDependencies()
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
-        oppiaClock.setCurrentTimeMs(1579666500000)
-        onView(
-          atPositionOnView(
-            R.id.home_recycler_view,
-            0,
-            R.id.welcome_text_view
-          )
-        ).check(matches(withText("Good morning,")))
-      }
+      oppiaClock.setCurrentTimeMs(1579666500000)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good morning,")))
+    }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+    getApplicationDependencies()
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      oppiaClock.setCurrentTimeMs(1579774500000)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -150,7 +160,9 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
-  launch<HomeActivity>(createHomeActivityIntent(0)).use {
+    getApplicationDependencies()
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      oppiaClock.setCurrentTimeMs(1579792500000)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,

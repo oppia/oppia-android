@@ -40,9 +40,9 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
-  private val logger: Logger,
-  private val oppiaClock: OppiaClock
+  private val logger: Logger
 ) {
+  private lateinit var oppiaClock: OppiaClock
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
   private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
@@ -100,6 +100,9 @@ class HomeFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  fun setOppiaClockInstance(oppiaClock: OppiaClock){
+    this.oppiaClock = oppiaClock
+  }
   private val profileLiveData: LiveData<Profile> by lazy {
     getProfileData()
   }
