@@ -34,7 +34,7 @@ private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 private const val DAY_MILLIS = 24 * HOUR_MILLIS
 
 // TODO(#555): Shift this logic to central utility file for date-time related conversions.
-private fun currentDate(): Date {
+fun currentDate(): Date {
   val calendar = Calendar.getInstance()
   return calendar.time
 }

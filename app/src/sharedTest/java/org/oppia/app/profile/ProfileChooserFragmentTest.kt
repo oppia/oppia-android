@@ -2,6 +2,7 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -21,7 +22,10 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -29,6 +33,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.databinding.getTimeAgo
+import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.domain.profile.ProfileManagementController
@@ -84,14 +90,31 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeAreShown() {
+  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeIsShown() {
     profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
+      GlobalScope.launch(Dispatchers.Main) {
+        profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+          .observeForever {
+            if (it.isSuccess()) {
+              System.out.println("Success********************"+profileManagementController.getCurrentProfileId().internalId)
+            } else {
+              System.out.println("Failure********************")
+            }
+          }
+      }
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
 
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(
         isDisplayed()))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(withText("Last used 1 second ago")))
+
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(withText( String.format(
+        getResources().getString(R.string.profile_last_used) + " " + getTimeAgo(
+          profileManagementController.getUpdateLastLoggedInTimeAsyncForTest(
+            ProfileId.newBuilder().setInternalId(0).build(),1579677300000),
+          ApplicationProvider.getApplicationContext<Context>()
+        )
+      ))))
     }
   }
 
@@ -149,6 +172,10 @@ class ProfileChooserFragmentTest {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier
