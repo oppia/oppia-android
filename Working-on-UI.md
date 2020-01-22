@@ -4,7 +4,7 @@ Oppia-Android app mocks have been prepared on AdobeXD and the mocks have a versi
 For understanding the mocks let's take one example. 
 Open [Admin Auth Mock Link](https://xd.adobe.com/view/0687f00c-695b-437a-79a6-688e7f4f7552-70b6/screen/a841330e-efe5-4bdb-acdd-4d6e52a59571/PC-MP-Admin-Authorization-Add-Profile-Empty-)
 
-In the below image you can see that there are two icons on left side of the screen. First icon is fo comment, using which you can comment on the mock and second icon is for screen details which provides detailed information about the UI.
+In the below image you can see that there are two icons on left side of the screen. First icon is for comment, using which you can comment on the mock and second icon is for screen details which provides detailed information about the UI.
 <img width="1237" alt="Screenshot 2020-01-22 at 3 14 13 PM" src="https://user-images.githubusercontent.com/9396084/72883182-df728800-3d29-11ea-8584-446e00f91baf.png">
 
 Once you have selected the second icon, you will see a menu on right as below:
@@ -49,7 +49,7 @@ In all textviews, make sure that proper `android:maxLines` and `android:ellipsiz
 ***
 
 # Testing UI
-For you testing you can do following things:
+For UI testing you can do following things:
 ### Manual testing
 For this you can turn-on the `Show Layout Bounds` in your mobile **Settings/Developer Mode**. This helps mainly in identifying the boundaries of items and to check if there is any overlapping between the items.
 
