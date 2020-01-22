@@ -22,4 +22,12 @@
     <item name="android:progressTint">@color/white</item>
     <item name="android:colorControlActivated">@color/progressBackgroundTint</item>
   </style>
+
+  <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
+    <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
+  </style>
 </resources>
