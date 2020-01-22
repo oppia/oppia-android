@@ -22,10 +22,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -93,16 +90,6 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeIsShown() {
     profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileActivity::class.java).use {
-      GlobalScope.launch(Dispatchers.Main) {
-        profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
-          .observeForever {
-            if (it.isSuccess()) {
-              System.out.println("Success********************"+profileManagementController.getCurrentProfileId().internalId)
-            } else {
-              System.out.println("Failure********************")
-            }
-          }
-      }
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
 
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(

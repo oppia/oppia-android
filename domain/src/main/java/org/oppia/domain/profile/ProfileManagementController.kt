@@ -288,7 +288,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-   private fun getUpdateLastLoggedInTimeAsyncForTest(profileId: ProfileId, timeStamp: Long): Long{
+  fun getUpdateLastLoggedInTimeAsyncForTest(profileId: ProfileId, timeStamp: Long): Long{
     var lastLoggedInTimeStampMs : Long = 0
      profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId]
