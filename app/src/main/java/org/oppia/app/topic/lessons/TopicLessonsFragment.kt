@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
-/** Fragment that contains subtopic list for play mode. */
+/** Fragment that contains subtopic list for lessons mode. */
 class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
   @Inject lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
