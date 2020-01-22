@@ -66,8 +66,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding =
-      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
@@ -92,7 +91,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun initAdapter() {
-    val layoutManager = GridAutoFitLayoutManager(activity.applicationContext, 500)
+    val layoutManager = GridAutoFitLayoutManager(activity.applicationContext, columnWidth = 500)// assume cell width of 500px
     binding.profileRecyclerView.setLayoutManager(layoutManager)
     binding.profileRecyclerView.setHasFixedSize(true)
   }

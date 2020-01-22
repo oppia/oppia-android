@@ -1,6 +1,8 @@
 package org.oppia.app.recyclerview
 
 import android.content.res.Resources
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -70,9 +72,12 @@ class RecyclerViewMatcher {
       return RecyclerViewItemCountAssertion(count)
     }
 
-    /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
-    fun hasGridItemCount(count: Int): ViewAssertion {
-      return RecyclerViewGridItemCountAssertion(count)
+    /**
+     * Returns span count match the expected span count through displaymetrics calculations
+     * ViewAssertion for a recycler view that use GridLayoutManager.
+     */
+    fun hasGridSpanCountAsPerDisplayMetrics(displayMetrics: DisplayMetrics): ViewAssertion {
+      return RecyclerViewGridItemCountAssertion(displayMetrics)
     }
   }
 
@@ -95,8 +100,9 @@ class RecyclerViewMatcher {
     }
   }
 
-  private class RecyclerViewGridItemCountAssertion(private val count: Int) : ViewAssertion {
-
+  private class RecyclerViewGridItemCountAssertion(private val displayMetrics: DisplayMetrics) : ViewAssertion {
+    private var columnWidth: Int = 0
+    private var columnWidthChanged = true
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
       if (noViewFoundException != null) {
         throw noViewFoundException
@@ -106,13 +112,51 @@ class RecyclerViewMatcher {
 
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
 
-      val spanCount = (view.layoutManager as GridLayoutManager).spanCount
-
+      val spanCountOfAdapter = (view.layoutManager as GridAutoFitLayoutManager).spanCount
+      setColumnWidth(
+        checkedColumnWidth(
+          displayMetrics,
+          (view.layoutManager as GridAutoFitLayoutManager).getColumnWidth()
+        )
+      )
+      val spanCountAsPerDisplayMetrics = getSpanCount(view)
       ViewMatchers.assertThat(
         "RecyclerViewGrid span count",
-        spanCount,
-        CoreMatchers.equalTo(count)
+        spanCountOfAdapter,
+        CoreMatchers.equalTo(spanCountAsPerDisplayMetrics)
       )
+    }
+
+    private fun checkedColumnWidth(displayMetrics: DisplayMetrics, columnWidth: Int): Int {
+      var columnWidth = columnWidth
+      if (columnWidth <= 0) { /* Set default columnWidth value (48dp here). It is better to move this constant to static constant on top, but we need context to convert it to dp, so can't really do so. */
+        columnWidth =
+          TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48f, displayMetrics).toInt()
+      }
+      return columnWidth
+    }
+
+    private fun setColumnWidth(newColumnWidth: Int) {
+      if (newColumnWidth > 0 && newColumnWidth != columnWidth) {
+        columnWidth = newColumnWidth
+        columnWidthChanged = true
+      }
+    }
+
+    /** Returns span count by phone displayMetrics values. */
+    fun getSpanCount(view: RecyclerView): Int {
+      var spanCount = 1
+      if (columnWidthChanged && columnWidth > 0) {
+        val totalSpace: Int
+        if ((view.layoutManager as GridLayoutManager).orientation == RecyclerView.VERTICAL) {
+          totalSpace = displayMetrics.widthPixels - view.paddingRight - view.paddingLeft
+        } else {
+          totalSpace = displayMetrics.heightPixels - view.paddingTop - view.paddingBottom
+        }
+        spanCount = Math.max(1, totalSpace / columnWidth)
+        columnWidthChanged = false
+      }
+      return spanCount
     }
   }
 }
