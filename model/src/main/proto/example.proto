@@ -11,7 +11,7 @@ message UserAppHistory {
 
 message OnBoardingFlow {
   bool already_on_boarded_app = 1;
-  }
+}
 
 message TestMessage {
   int32 version = 1;
