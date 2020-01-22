@@ -15,6 +15,7 @@ message OnBoardingFlow {
 
 message TestMessage {
   int32 version = 1;
+
 }
 
 message TestModel {
