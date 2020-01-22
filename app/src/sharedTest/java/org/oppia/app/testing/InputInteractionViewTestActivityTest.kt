@@ -285,7 +285,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedLongNumber_clickSubmitButton_invalidCharacterErrorIsDisplayed() {
+  fun testFractionInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view)).perform(typeText("12345678"))
       closeSoftKeyboard ()
