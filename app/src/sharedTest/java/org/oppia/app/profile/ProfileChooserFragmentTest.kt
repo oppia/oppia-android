@@ -58,8 +58,6 @@ class ProfileChooserFragmentTest {
   lateinit var profileManagementController: ProfileManagementController
   @Inject
   lateinit var context: Context
-  private var columnWidth: Int = 0
-  private var columnWidthChanged = true
 
   @Before
   @ExperimentalCoroutinesApi
