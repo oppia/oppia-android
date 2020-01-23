@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ViewModel] for showing skills in train fragment. */
+/** [ViewModel] for showing skills in practice fragment. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
   private val topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
 
-/** Fragment that displays skills for topic train mode. */
+/** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
   @Inject lateinit var topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter
 
