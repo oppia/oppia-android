@@ -16,10 +16,9 @@ const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
-  @Inject lateinit var oppiaClock: OppiaClock
 
   companion object {
-    fun createHomeActivity(context: Context, profileId: Int): Intent {
+    fun createHomeActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, HomeActivity::class.java)
       intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
       return intent
@@ -29,7 +28,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    homeActivityPresenter.handleOnCreate(oppiaClock)
+    homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
   }
 

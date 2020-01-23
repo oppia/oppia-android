@@ -7,7 +7,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 const val TAG_HOME_FRAGMENT = "TAG_HOME_FRAGMENT"
@@ -16,12 +15,10 @@ const val TAG_HOME_FRAGMENT = "TAG_HOME_FRAGMENT"
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
-  private lateinit var oppiaClock: OppiaClock
 
-  fun handleOnCreate(oppiaClock: OppiaClock) {
+  fun handleOnCreate() {
     activity.setContentView(R.layout.home_activity)
     setUpNavigationDrawer()
-    this.oppiaClock = oppiaClock
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
@@ -29,7 +26,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
         TAG_HOME_FRAGMENT
       ).commitNow()
     }
-    setOppiaClockInstance()
+//    setOppiaClockInstance()
   }
 
   private fun setUpNavigationDrawer() {
@@ -44,11 +41,11 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     )
   }
 
-  private fun setOppiaClockInstance(){
-    val homeFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_HOME_FRAGMENT) as HomeFragment
-    homeFragment.setOppiaClockInstance(oppiaClock)
-  }
+//  private fun setOppiaClockInstance(){
+//    val homeFragment =
+//      activity.supportFragmentManager.findFragmentByTag(TAG_HOME_FRAGMENT) as HomeFragment
+//    homeFragment.setOppiaClockInstance(oppiaClock)
+//  }
 
   private fun getHomeFragment(): HomeFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.home_fragment_placeholder) as HomeFragment?
