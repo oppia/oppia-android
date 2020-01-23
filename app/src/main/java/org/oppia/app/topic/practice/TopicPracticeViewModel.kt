@@ -1,4 +1,4 @@
-package org.oppia.app.topic.train
+package org.oppia.app.topic.practice
 
 import android.view.View
 import androidx.databinding.ObservableField
@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ViewModel] for showing skills in train fragment. */
+/** [ViewModel] for showing skills in practice fragment. */
 @FragmentScope
-class TopicTrainViewModel @Inject constructor(
-  private val topicTrainFragmentPresenter: TopicTrainFragmentPresenter
+class TopicPracticeViewModel @Inject constructor(
+  private val topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter
 ) : ViewModel() {
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
@@ -19,6 +19,6 @@ class TopicTrainViewModel @Inject constructor(
   }
 
   fun startButtonClicked(v: View) {
-    topicTrainFragmentPresenter.onStartButtonClicked()
+    topicPracticeFragmentPresenter.onStartButtonClicked()
   }
 }
