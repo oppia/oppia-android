@@ -26,7 +26,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
         TAG_HOME_FRAGMENT
       ).commitNow()
     }
-//    setOppiaClockInstance()
   }
 
   private fun setUpNavigationDrawer() {
@@ -40,12 +39,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       toolbar, R.id.nav_home
     )
   }
-
-//  private fun setOppiaClockInstance(){
-//    val homeFragment =
-//      activity.supportFragmentManager.findFragmentByTag(TAG_HOME_FRAGMENT) as HomeFragment
-//    homeFragment.setOppiaClockInstance(oppiaClock)
-//  }
 
   private fun getHomeFragment(): HomeFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.home_fragment_placeholder) as HomeFragment?

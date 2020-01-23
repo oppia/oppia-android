@@ -6,28 +6,24 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Needs documentation. */
+/** Utility to get the current date/time. */
 @Singleton
 class OppiaClock @Inject constructor() {
   private var testTimeMs: Long? = null
 
-  /** Needs documentation. */
   fun getElapsedRealtimeMs(): Long {
     return SystemClock.elapsedRealtime()
   }
 
-  /** Needs documentation. */
   fun getCurrentTimeMs(): Long {
     return testTimeMs ?: System.currentTimeMillis()
   }
 
-  /** Needs documentation. */
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun setCurrentTimeMs(currentTimeMs: Long) {
     testTimeMs = currentTimeMs
   }
 
-  /** Needs documentation. */
   fun getCurrentCalendar(): Calendar {
     val calendar = Calendar.getInstance()
     calendar.setTimeInMillis(getCurrentTimeMs())
