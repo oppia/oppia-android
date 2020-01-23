@@ -27,7 +27,8 @@ Mocks uses Roboto fonts which are similar to sans-serif font in the android code
 Mocks might contain padding values like 32.5px or 15px but make sure that you use padding/margin and view dimensions in multiple of 4 in android. So 32.5px will get converted to 32dp and 15px will get converted to 16dp.
 
 ### Color Code
-Before introducing any new color code in android check if that color code is already present in the `colors.xml` file or not.
+Before introducing any new color code in android check if that color code is already present in the `colors.xml` file or not. Also, 8-character hex code on mocks uses **RGBA** convention and 8-character hex code in android is written as **ARGB** where **A** means alpha/transparency and **R**, **G**, **B** stands for red, green, blue color respectively. 
+For example, if mock contains **#33445566** then in this last two characters are for transparency and first siz are for RGB. So in android it will be written as **#66334455**.
 
 ### Opacity
 Do not forget to check the opacity value in mocks. For example you find Opacity value `20%` then in that case you can follow two approaches to use that in code:
