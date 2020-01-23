@@ -1,4 +1,4 @@
-package org.oppia.app.topic.train
+package org.oppia.app.topic.practice
 
 import android.content.Context
 import android.os.Bundle
@@ -11,8 +11,8 @@ import javax.inject.Inject
 private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
 
 /** Fragment that displays skills for topic train mode. */
-class TopicTrainFragment : InjectableFragment() {
-  @Inject lateinit var topicTrainFragmentPresenter: TopicTrainFragmentPresenter
+class TopicPracticeFragment : InjectableFragment() {
+  @Inject lateinit var topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -24,11 +24,11 @@ class TopicTrainFragment : InjectableFragment() {
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getStringArrayList(KEY_SKILL_ID_LIST)
     }
-    return topicTrainFragmentPresenter.handleCreateView(inflater, container, selectedIdList)
+    return topicPracticeFragmentPresenter.handleCreateView(inflater, container, selectedIdList)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(KEY_SKILL_ID_LIST, topicTrainFragmentPresenter.selectedSkillIdList)
+    outState.putStringArrayList(KEY_SKILL_ID_LIST, topicPracticeFragmentPresenter.selectedSkillIdList)
   }
 }
