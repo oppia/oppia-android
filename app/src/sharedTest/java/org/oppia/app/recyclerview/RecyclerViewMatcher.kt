@@ -111,7 +111,9 @@ class RecyclerViewMatcher {
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
 
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
-
+//      val params = view.getLayoutParams()
+//      params.width = 600
+//      view.setLayoutParams(params)
       val spanCountOfAdapter = (view.layoutManager as GridAutoFitLayoutManager).spanCount
       setColumnWidth(
         checkedColumnWidth(

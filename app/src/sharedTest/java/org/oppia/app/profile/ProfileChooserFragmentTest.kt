@@ -247,5 +247,6 @@ class ProfileChooserFragmentTest {
     }
 
     fun inject(profileChooserFragmentTest: ProfileChooserFragmentTest)
+    fun inject(gridAutoFitLayoutManagerTestFragmentTest: GridAutoFitLayoutManagerTestFragmentTest)
   }
 }
