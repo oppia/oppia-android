@@ -9,8 +9,10 @@ import javax.inject.Singleton
 
 /** Utility to manage date and time. */
 @Singleton
-class DateTimeUtil @Inject constructor(private val context: Context,
-                                       private val oppiaClock: OppiaClock) {
+class DateTimeUtil @Inject constructor(
+  private val context: Context,
+  private val oppiaClock: OppiaClock
+) {
 
   fun getGreetingMessage(): String {
     val calender = oppiaClock.getCurrentCalendar()

@@ -166,7 +166,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       userAppHistoryViewModel.profileName = "$profileName!"
-      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext(),oppiaClock).getGreetingMessage()
+      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage()
     }
   }
 

@@ -33,6 +33,10 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+private const val MORNING_TIMESTAMP = 1579666500000
+private const val AFTERNOON_TIMESTAMP = 1579774500000
+private const val EVENING_TIMESTAMP = 1579792500000
+
 /** Tests for [DateTimeUtil]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -72,19 +76,19 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceed() {
-    oppiaClock.setCurrentTimeMs(1579666500000)
+    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceed() {
-    oppiaClock.setCurrentTimeMs(1579774500000)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceed() {
-    oppiaClock.setCurrentTimeMs(1579792500000)
+    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
   }
 

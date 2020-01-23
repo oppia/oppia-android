@@ -26,7 +26,7 @@ class OppiaClock @Inject constructor() {
 
   fun getCurrentCalendar(): Calendar {
     val calendar = Calendar.getInstance()
-    calendar.setTimeInMillis(getCurrentTimeMs())
+    calendar.timeInMillis = getCurrentTimeMs()
     return calendar
   }
 }

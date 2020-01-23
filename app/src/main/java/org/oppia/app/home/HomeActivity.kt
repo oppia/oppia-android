@@ -8,7 +8,6 @@ import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"

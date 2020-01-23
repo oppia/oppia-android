@@ -74,12 +74,15 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val MORNING_TIMESTAMP = 1579666500000
+private const val AFTERNOON_TIMESTAMP = 1579774500000
+private const val EVENING_TIMESTAMP = 1579792500000
+
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var context: Context
   private lateinit var oppiaClock: OppiaClock
 
@@ -130,7 +133,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
     getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(1579666500000)
+    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -145,7 +148,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
     getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(1579774500000)
+    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -160,7 +163,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
     getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(1579792500000)
+    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         atPositionOnView(
