@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -34,7 +33,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasGridSpanCountAsPerDisplayMetrics
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.domain.profile.ProfileManagementController
@@ -80,22 +78,6 @@ class ProfileChooserFragmentTest {
 
   private fun getResources(): Resources {
     return ApplicationProvider.getApplicationContext<Context>().resources
-  }
-
-  @Test
-  fun testProfileChooserFragment_checkSpanCountOnPortrait_spanCountVerifiedSuccessfully() {
-    launch(ProfileActivity::class.java).use {
-      onView(ViewMatchers.isRoot()).perform(orientationPortrait())
-      onView(withId(R.id.profile_recycler_view)).check(hasGridSpanCountAsPerDisplayMetrics(getResources().displayMetrics))
-    }
-  }
-
-  @Test
-  fun testProfileChooserFragment_configurationChange_checkSpanCount_spanCountVerifiedSuccessfully() {
-    launch(ProfileActivity::class.java).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_recycler_view)).check(hasGridSpanCountAsPerDisplayMetrics(getResources().displayMetrics))
-    }
   }
 
   @Test
@@ -247,6 +229,5 @@ class ProfileChooserFragmentTest {
     }
 
     fun inject(profileChooserFragmentTest: ProfileChooserFragmentTest)
-    fun inject(gridAutoFitLayoutManagerTestFragmentTest: GridAutoFitLayoutManagerTestFragmentTest)
   }
 }

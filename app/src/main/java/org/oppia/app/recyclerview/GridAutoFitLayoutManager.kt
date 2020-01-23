@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
  * For reference https://github.com/pushpalroy/talkie/blob/master/app/src/main/java/com/pushpal/talkie/model/util/GridAutoFitLayoutManager.java.
  */
 class GridAutoFitLayoutManager : GridLayoutManager {
-  private var columnWidth: Int = 500 // assume cell width of 500px
+  private var columnWidth: Int = 0
   private var columnWidthChanged = true
 
   constructor(context: Context, columnWidth: Int) : super(context, 1) {
@@ -32,10 +32,6 @@ class GridAutoFitLayoutManager : GridLayoutManager {
       columnWidth = newColumnWidth
       columnWidthChanged = true
     }
-  }
-
-  fun getColumnWidth(): Int {
-    return columnWidth
   }
 
   override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {

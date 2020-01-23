@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_margin="8dp"
-  android:orientation="vertical"
-  android:padding="8dp">
+  android:orientation="vertical">
 
-  <ImageView
+  <de.hdodenhof.circleimageview.CircleImageView
     android:id="@+id/ivThumbnail"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:scaleType="centerCrop"
-    android:src="@android:color/holo_orange_light" />
+    android:layout_width="72dp"
+    android:layout_height="72dp"
+    android:layout_gravity="center"
+    android:layout_marginBottom="8dp"
+    android:src="@drawable/ic_help_grey_icon_24dp"
+    app:civ_border_color="@color/avatarBorder"
+    app:civ_border_width="1dp" />
 
   <TextView
     android:id="@+id/tvName"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Burjo Bosque"
+    android:gravity="center"
+    android:text="Sean"
     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline" />
-
-  <TextView
-    android:id="@+id/tvDescription"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Burjo Belakang Kampus"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 </LinearLayout>

@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/grid_recycler_view"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_marginStart="36dp"
+  android:layout_marginTop="36dp"
+  android:layout_marginEnd="36dp"
+  android:orientation="vertical"
+  android:clipToPadding="false"
+  android:overScrollMode="never"
+  android:paddingBottom="@dimen/bottom_white_space" />
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="org.oppia.app.profile.ProfileChooserViewModel" />
-  </data>
-
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/profile_recycler_view"
-    android:layout_width="320dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="36dp"
-    android:layout_marginTop="36dp"
-    android:layout_marginEnd="36dp"
-    android:clipToPadding="false"
-    android:fadingEdge="horizontal"
-    android:fadingEdgeLength="72dp"
-    android:orientation="vertical"
-    android:overScrollMode="never"
-    android:paddingBottom="@dimen/bottom_white_space"
-    android:requiresFadingEdge="vertical"
-    android:scrollbars="none"
-    app:data="@{viewModel.profiles}"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:spanCount="2" />
-</layout>
