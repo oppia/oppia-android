@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -24,8 +25,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -54,9 +55,9 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -103,15 +104,24 @@ class HomeActivityTest {
     simulateAppAlreadyOpened()
 
     launch(HomeActivity::class.java).use {
-      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-      waitForTheView(withText("Welcome back to Oppia!"))
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome back to Oppia!")))
+      it.onActivity { activity ->
+        // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
+        val textView = activity.findViewById(R.id.welcome_text_view) as TextView
+
+        System.out.println("*****Error log 1 *********" +textView.text)
+
+        waitForTheView(withText("Welcome back to Oppia!"))
+        onView(
+          atPositionOnView(
+            R.id.home_recycler_view,
+            0,
+            R.id.welcome_text_view
+          )
+        ).check(matches(withText("Welcome back to Oppia!")))
+
+        System.out.println("*****Error log 2 *********" +textView.text)
+
+      }
     }
   }
 
