@@ -117,7 +117,7 @@ class HomeActivityTest {
             0,
             R.id.welcome_text_view
           )
-        ).check(matches(withText("Welcome back to Oppia!")))
+        ).check(matches(withText("Welcome to Oppia!")))
 
         System.out.println("*****Error log 2 *********" +textView.text)
 
