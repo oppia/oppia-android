@@ -53,14 +53,13 @@ android {
       kotlin.srcDirs += "src/sharedTest/java"
     }
   }
-  // Test Logging
-  tasks.withType(Test) {
-    testLogging {
-      events = ["passed", "failed", "skipped"]
-      showStandardStreams = true
-    }
-  }
+}
 
+// Test Logging
+tasks.withType(Test) {
+  testLogging {
+    events "standardOut", "started", "passed", "skipped", "failed"
+  }
 }
 
 dependencies {
