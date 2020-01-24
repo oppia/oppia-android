@@ -108,7 +108,7 @@ class StorySummaryAdapter(
       )
 
       val chapterList = storySummaryViewModel.storySummary.chapterList
-      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
+      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector, storySummaryViewModel.storySummary.storyId)
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
