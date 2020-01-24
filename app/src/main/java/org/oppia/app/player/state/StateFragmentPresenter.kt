@@ -437,6 +437,7 @@ class StateFragmentPresenter @Inject constructor(
 
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
+    markExplorationAsCompleted()
     explorationDataController.stopPlayingExploration()
     activity.finish()
   }
@@ -619,4 +620,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
+
+  private fun markExplorationAsCompleted(){
+    storyProgressController.recordCompletedChapter(explorationId, storyId, topicId)
+  }
+
 }
