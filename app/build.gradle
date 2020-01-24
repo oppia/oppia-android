@@ -54,13 +54,6 @@ android {
     }
   }
 }
-// Test Logging
-tasks.withType(Test) {
-  testLogging {
-    events = ["passed", "failed", "skipped"]
-    showStandardStreams = true
-  }
-}
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])

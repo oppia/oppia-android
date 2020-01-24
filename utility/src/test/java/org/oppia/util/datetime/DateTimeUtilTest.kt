@@ -77,23 +77,19 @@ class DateTimeUtilTest {
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    System.out.println("MEssage 1 "+dateTimeUtil.getGreetingMessage())
-    System.err.println("MEssage 1 "+dateTimeUtil.getGreetingMessage())
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
-    System.err.println("MEssage 2 "+dateTimeUtil.getGreetingMessage())
-     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    System.err.println("MEssage 3 "+dateTimeUtil.getGreetingMessage())
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
   }
 
   @Qualifier
