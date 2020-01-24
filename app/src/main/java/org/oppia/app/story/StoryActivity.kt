@@ -21,8 +21,8 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     storyActivityPresenter.handleOnCreate(storyId)
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(explorationId: String, storyId: String, topicId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, storyId, topicId))
   }
 
   companion object {

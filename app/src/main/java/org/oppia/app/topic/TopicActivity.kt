@@ -19,7 +19,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
   private lateinit var topicId: String
   private var storyId: String? = null
-  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject
+  lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -50,8 +51,8 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     getConceptCardFragment()?.dismiss()
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(explorationId: String, storyId: String, topicId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, storyId, topicId))
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {

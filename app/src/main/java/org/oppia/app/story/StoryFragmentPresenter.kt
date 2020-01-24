@@ -61,7 +61,7 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   fun handleSelectExploration(explorationId: String) {
-    routeToExplorationListener.routeToExploration(explorationId, /* topicId= */ null)
+    routeToExplorationListener.routeToExploration(explorationId, /* storyId= */ "", /* topicId= */ "")
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {

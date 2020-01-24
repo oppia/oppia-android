@@ -128,7 +128,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
         result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d("TopicPlayFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId, topicId)
+          routeToExplorationListener.routeToExploration(explorationId, "", topicId)
         }
       }
     })

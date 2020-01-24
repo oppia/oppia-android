@@ -13,31 +13,40 @@ import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
 
 const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
+const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
 const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener {
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
+  AudioButtonListener {
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
-  private var topicId: String? = null
+  private lateinit var storyId: String
+  private lateinit var topicId: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
+    storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-    explorationActivityPresenter.handleOnCreate(explorationId, topicId)
+    explorationActivityPresenter.handleOnCreate(explorationId, storyId, topicId)
   }
 
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified topic ID. */
-    fun createExplorationActivityIntent(context: Context, explorationId: String, topicId: String?): Intent {
+    fun createExplorationActivityIntent(
+      context: Context,
+      explorationId: String,
+      storyId: String,
+      topicId: String
+    ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      if(topicId!=null) {
-        intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      }
+      intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       return intent
     }
   }

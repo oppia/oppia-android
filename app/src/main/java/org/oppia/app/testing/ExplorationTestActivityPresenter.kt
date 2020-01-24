@@ -43,7 +43,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
         result.isFailure() -> logger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(EXPLORATION_ID, null)
+          routeToExplorationListener.routeToExploration(EXPLORATION_ID, "", "")
         }
       }
     })

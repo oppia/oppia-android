@@ -14,8 +14,8 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -32,13 +32,14 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: Logger
 ) {
   private lateinit var explorationToolbar: Toolbar
-  private var topicId: String? = null
+  private lateinit var storyId: String
+  private lateinit var topicId: String
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(explorationId: String, topicId: String?) {
+  fun handleOnCreate(explorationId: String, storyId: String, topicId: String) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -53,6 +54,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
+    this.storyId = storyId
     this.topicId = topicId
 
     if (getExplorationFragment() == null) {
@@ -93,13 +95,10 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          if (topicId != null) {
-            val intent = Intent(activity, TopicActivity::class.java)
-            intent.putExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-            intent.addFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
-            activity.startActivity(intent)
-          }
-          (activity as ExplorationActivity).finish()
+          val intent = Intent(activity, TopicActivity::class.java)
+          intent.putExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+          intent.addFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
+          activity.startActivity(intent)
         }
       }
     })

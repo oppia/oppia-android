@@ -95,10 +95,10 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    playExploration(promotedStory.explorationId, promotedStory.topicId)
+    playExploration(promotedStory.explorationId, promotedStory.storyId, promotedStory.topicId)
   }
 
-  private fun playExploration(explorationId: String, topicId: String) {
+  private fun playExploration(explorationId: String, storyId: String, topicId: String) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -111,7 +111,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
         )
         else -> {
           logger.d("ContinuePlayingFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId, topicId)
+          routeToExplorationListener.routeToExploration(explorationId, storyId, topicId)
           activity.finish()
         }
       }

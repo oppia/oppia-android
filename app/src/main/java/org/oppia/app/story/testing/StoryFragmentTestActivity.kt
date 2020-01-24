@@ -19,7 +19,7 @@ class StoryFragmentTestActivity : InjectableAppCompatActivity(), RouteToExplorat
     storyFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
+  override fun routeToExploration(explorationId: String, storyId: String, topicId: String) {
     // Do nothing since routing should be tested at the StoryActivity level.
   }
 
