@@ -56,7 +56,7 @@ android {
   // Test Logging
   tasks.withType(Test) {
     testLogging {
-      events "standardOut", "started", "passed", "skipped", "failed"
+      events = ["passed", "failed", "skipped"]
       showStandardStreams = true
     }
   }
