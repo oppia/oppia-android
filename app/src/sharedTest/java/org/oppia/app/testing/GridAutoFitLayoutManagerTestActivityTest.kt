@@ -24,7 +24,7 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.robolectric.RuntimeEnvironment
 import javax.inject.Inject
-
+//https://github.com/codepath/android-robolectric-espresso-demo/blob/master/app/src/test/java/com.codepath.testingdemo/adapters/PostsAdapterTest.java
 @RunWith(AndroidJUnit4::class)
 class GridAutoFitLayoutManagerTestActivityTest {
 
