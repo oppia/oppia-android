@@ -2,6 +2,7 @@ package org.oppia.util.datetime
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -77,18 +78,24 @@ class DateTimeUtilTest {
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    System.out.println("MEssage 1 "+dateTimeUtil.getGreetingMessage())
+    Log.d("Messag 1 ",""+dateTimeUtil.getGreetingMessage())
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
+    System.out.println("MEssage 2 "+dateTimeUtil.getGreetingMessage())
+    Log.d("Messag 2 ",""+dateTimeUtil.getGreetingMessage())
      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+    System.out.println("MEssage 3 "+dateTimeUtil.getGreetingMessage())
+    Log.d("Messag 3 ",""+dateTimeUtil.getGreetingMessage())
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
   }
 
