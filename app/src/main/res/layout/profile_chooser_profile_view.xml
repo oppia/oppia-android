@@ -32,6 +32,7 @@
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
+      android:maxWidth="116dp"
       android:textColor="@color/white"
       android:textSize="14sp" />
 

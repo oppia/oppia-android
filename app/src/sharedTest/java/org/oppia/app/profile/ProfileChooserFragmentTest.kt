@@ -76,9 +76,6 @@ class ProfileChooserFragmentTest {
       .inject(this)
   }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
 
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {

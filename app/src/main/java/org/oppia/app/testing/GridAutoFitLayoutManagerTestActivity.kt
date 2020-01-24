@@ -8,25 +8,25 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 
-/** Activity that controls profile creation and selection. */
+/** Activity that test [GridAutoFitLayoutManager]. */
 class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
-
-  private lateinit var adapter: DummyGridAdapter
+  private var recyclerViewWidth = 800
+  private var columnWidth = 400
+  private lateinit var adapter: GridAutoFitTestAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.grid_auto_fit_layout_manager_test_activity)
-    val recyclerViewWidth =
-      checkNotNull(intent?.getIntExtra(GRID_AUTOFIT_TEST_ACTIVITY_RECYCLERVIEW_WIDTH_ARGUMENT_KEY, 0)) {
+    recyclerViewWidth =
+      checkNotNull(intent?.getIntExtra(GRID_AUTOFIT_TEST_ACTIVITY_RECYCLERVIEW_WIDTH_ARGUMENT_KEY, recyclerViewWidth)) {
         "Expected recyclerViewWidth to be included in intent for GridAutoFitLayoutManagerTestActivity."
       }
-    val columnWidth = checkNotNull(intent?.getIntExtra(GRID_AUTOFIT_TEST_ACTIVITY_CELL_WIDTH_ARGUMENT_KEY, 0)) {
+    columnWidth = checkNotNull(intent?.getIntExtra(GRID_AUTOFIT_TEST_ACTIVITY_CELL_WIDTH_ARGUMENT_KEY, columnWidth)) {
       "Expected columnWidth to be included in intent for GridAutoFitLayoutManagerTestActivity."
     }
     val recyclerView = findViewById(R.id.grid_recycler_view) as RecyclerView
     recyclerView.setHasFixedSize(true)
-
-    adapter = DummyGridAdapter()
+    adapter = GridAutoFitTestAdapter()
     val params = recyclerView.getLayoutParams()
     params.width = recyclerViewWidth
     recyclerView.setLayoutParams(params)
@@ -34,7 +34,6 @@ class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
     val layoutManager = GridAutoFitLayoutManager(this, columnWidth = columnWidth)// assume cell width of 500px
     recyclerView.setLayoutManager(layoutManager)
     recyclerView.setHasFixedSize(true)
-
   }
 
   companion object {
