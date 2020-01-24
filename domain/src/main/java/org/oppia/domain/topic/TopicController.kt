@@ -142,6 +142,14 @@ class TopicController @Inject constructor(
     )
   }
 
+  fun getProgressWithinATopic(topicId: String): LiveData<AsyncResult<List<String>>>{
+    return dataProviders.convertToLiveData(storyProgressController.getProgressDataProviderWithinATopic(topicId))
+  }
+
+  fun getProgressWithinAStory(storyId: String): LiveData<AsyncResult<List<String>>>{
+    return dataProviders.convertToLiveData(storyProgressController.getProgressDataProviderWithinATopic(storyId))
+  }
+
   /** Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there is none. */
   fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
     return MutableLiveData(

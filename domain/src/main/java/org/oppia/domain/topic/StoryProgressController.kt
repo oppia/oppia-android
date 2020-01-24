@@ -112,8 +112,8 @@ class StoryProgressController @Inject constructor(
     }
   }
 
-  /** Returns the list of completed chapters, specified by profiledId. */
-  fun getStoryProgressDataProvider(storyId: String): DataProvider<List<String>> {
+  /** Returns the list of completed chapters, specified by storyId. */
+  fun getProgressDataProviderWithinAStory(storyId: String): DataProvider<List<String>> {
     return dataProviders.transformAsync<StoryProgressDatabase, List<String>>(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
       storyProgressDataStore
@@ -123,8 +123,29 @@ class StoryProgressController @Inject constructor(
         val completedExplorationIdList = ArrayList<String>()
         storyProgress.chapterProgressList.forEach { chapterProgress ->
           if (chapterProgress.storyId == storyId) {
-            Log.d("TAG", "chapterProgress.topicId: " + chapterProgress.topicId)
             Log.d("TAG", "chapterProgress.storyId: " + chapterProgress.storyId)
+            completedExplorationIdList.add(chapterProgress.explorationId)
+          }
+        }
+        AsyncResult.success(completedExplorationIdList)
+      } else {
+        AsyncResult.failed(StoryProgressNotFoundException("ProfileId ${profileManagementController.getCurrentProfileId().internalId} does not contain any story progress"))
+      }
+    }
+  }
+
+  /** Returns the list of completed chapters, specified by topicId. */
+  fun getProgressDataProviderWithinATopic(topicId: String): DataProvider<List<String>> {
+    return dataProviders.transformAsync<StoryProgressDatabase, List<String>>(
+      TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
+      storyProgressDataStore
+    ) {
+      val storyProgress = it.storyProgress
+      if (storyProgress != null) {
+        val completedExplorationIdList = ArrayList<String>()
+        storyProgress.chapterProgressList.forEach { chapterProgress ->
+          if (chapterProgress.topicId == topicId) {
+            Log.d("TAG", "chapterProgress.topicId: " + chapterProgress.topicId)
             completedExplorationIdList.add(chapterProgress.explorationId)
           }
         }
