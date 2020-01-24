@@ -37,6 +37,7 @@ class OppiaClock @Inject constructor() {
 //    val date = simple.parse(simple.format(result))
 //    System.out.println(date.time)
 //    testTimeMs = date.time
+    System.out.println("timestamp"+currentTimeMs)
     testTimeMs = currentTimeMs
   }
 
@@ -44,6 +45,8 @@ class OppiaClock @Inject constructor() {
   fun getCurrentCalendar(): Calendar {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = getCurrentTimeMs()
+
+    System.out.println("date "+ getCurrentTimeMs())
     return calendar
   }
 }

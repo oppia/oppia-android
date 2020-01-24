@@ -74,9 +74,10 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val MORNING_TIMESTAMP = 1579666500000- 19800000
-private const val AFTERNOON_TIMESTAMP = 1579774500000 -19800000
-private const val EVENING_TIMESTAMP = 1579792500000 - 19800000
+private const val const1 = 330 * 60 * 1000
+private const val MORNING_TIMESTAMP = 1579666500000- const1
+private const val AFTERNOON_TIMESTAMP = 1579774500000 -const1
+private const val EVENING_TIMESTAMP = 1579792500000 - const1
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
