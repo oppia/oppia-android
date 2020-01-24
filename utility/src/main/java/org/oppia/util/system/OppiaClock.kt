@@ -2,9 +2,12 @@ package org.oppia.util.system
 
 import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+
+
 
 /** Utility to get the current date/time. */
 @Singleton
@@ -21,7 +24,20 @@ class OppiaClock @Inject constructor() {
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun setCurrentTimeMs(currentTimeMs: Long) {
-    testTimeMs = currentTimeMs
+
+    // Creating date format
+    val simple = SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z")
+
+    // Creating date from milliseconds
+    // using Date() constructor
+    val result = Date(currentTimeMs)
+
+    // Formatting Date according to the
+    // given format
+    System.out.println("Date "+simple.format(result))
+    val date = simple.parse(simple.format(result))
+    System.out.println(date.time)
+    testTimeMs = date.time
   }
 
   /** returns current date and time */
