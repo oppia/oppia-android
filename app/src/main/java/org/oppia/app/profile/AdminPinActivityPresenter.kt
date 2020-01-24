@@ -39,8 +39,6 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_pin_description)
-
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
         adminViewModel.pinErrorMsg.set("")
