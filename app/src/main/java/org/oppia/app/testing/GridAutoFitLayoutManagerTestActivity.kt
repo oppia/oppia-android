@@ -27,13 +27,14 @@ class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
     recyclerView.setHasFixedSize(true)
 
     adapter = DummyGridAdapter()
-    val layoutManager = GridAutoFitLayoutManager(this, columnWidth = columnWidth)// assume cell width of 500px
-    recyclerView.setLayoutManager(layoutManager)
-    recyclerView.setHasFixedSize(true)
     val params = recyclerView.getLayoutParams()
     params.width = recyclerViewWidth
     recyclerView.setLayoutParams(params)
     recyclerView.setAdapter(adapter)
+    val layoutManager = GridAutoFitLayoutManager(this, columnWidth = columnWidth)// assume cell width of 500px
+    recyclerView.setLayoutManager(layoutManager)
+    recyclerView.setHasFixedSize(true)
+
   }
 
   companion object {
