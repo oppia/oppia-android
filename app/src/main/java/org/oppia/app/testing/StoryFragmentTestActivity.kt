@@ -1,4 +1,4 @@
-package org.oppia.app.story.testing
+package org.oppia.app.testing
 
 import android.content.Context
 import android.content.Intent
