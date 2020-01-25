@@ -116,8 +116,7 @@ class AsyncResult<T> private constructor(
     }
   }
 
-  private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>
-  ): AsyncResult<O> {
+  private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>): AsyncResult<O> {
     return when (status) {
       Status.PENDING -> pending()
       Status.FAILED -> failed(ChainedFailureException(error!!))
