@@ -1,7 +1,7 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
 package(
-    default_visibility = ["//app:__subpackages__"],
+    default_visibility = ["//app:__pkg__"],
 )
 
 # TODO(#59): Reference needed protos directly elsewhere.

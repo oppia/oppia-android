@@ -7,6 +7,7 @@ package(
 kt_android_library(
     name = "util",
     srcs = glob(["java/**/*.kt"]),
+    custom_package = "org.oppia.util",
     deps = [
         "@maven//:androidx_appcompat_appcompat",
         "@maven//:androidx_lifecycle_lifecycle_livedata_ktx",

@@ -1,5 +1,5 @@
 package(
-    default_visibility = ["//app:__subpackages__"],
+    default_visibility = ["//app:__pkg__"],
 )
 
 android_library(

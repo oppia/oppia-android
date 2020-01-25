@@ -1,10 +1,17 @@
-# Android SDK.
-android_sdk_repository(name = "androidsdk")
-
 # TODO(BenHenning): Maybe convert all of these HTTP archives to Git repositories, and later to the Bazel Federation when it's no longer experimental.
 
 # Add support for installing third party Bazel rules from HTTP archives.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Set up the Android SDK.
+http_archive(
+    name = "build_bazel_rules_android",
+    sha256 = "cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b7a7806",
+    strip_prefix = "rules_android-0.1.1",
+    urls = ["https://github.com/bazelbuild/rules_android/archive/v0.1.1.zip"],
+)
+load("@build_bazel_rules_android//android:rules.bzl", "android_ndk_repository")
+android_sdk_repository(name = "androidsdk")
 
 # Add support for loading third party libraries from Maven. For context, see:
 # https://github.com/bazelbuild/rules_jvm_external
@@ -69,6 +76,18 @@ maven_install(
         "com.github.bumptech.glide:glide:4.9.0",
         "com.google.dagger:dagger:2.24",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:%s" % KOTLIN_LIB_VERSION,
+
+        "androidx.core:core-ktx:1.0.2",
+        "androidx.fragment:fragment:1.2.0-rc01",
+        "com.google.android.material:material:1.2.0-alpha02",
+        "androidx.constraintlayout:constraintlayout:1.1.3",
+        "com.chaos.view:pinview:1.4.3",
+
+        #"androidx.databinding:databinding-runtime:jar:3.2.1",
+        "com.android.databinding:baseLibrary:3.6.0-rc01",
+        "com.android.databinding:library:3.6.0-rc01",
+        "com.android.databinding:adapters:3.6.0-rc01",
+        "com.android.databinding:viewbinding:3.6.0-rc01",
     ],
     repositories = [
         "https://jcenter.bintray.com/",
@@ -76,3 +95,20 @@ maven_install(
         "https://repo.maven.apache.org/maven2/",
     ],
 )
+
+#'android.arch.lifecycle:extensions:1.1.1',
+#'androidx.legacy:legacy-support-v4:1.0.0',
+#'androidx.lifecycle:lifecycle-extensions:2.0.0',
+#'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
+#'androidx.navigation:navigation-fragment:2.0.0',
+#'androidx.navigation:navigation-fragment-ktx:2.0.0',
+#'androidx.navigation:navigation-ui:2.0.0',
+#'androidx.navigation:navigation-ui-ktx:2.0.0',
+#'androidx.multidex:multidex:2.0.1',
+#'androidx.recyclerview:recyclerview:1.0.0',
+#'com.google.guava:guava:28.1-android',
+#'de.hdodenhof:circleimageview:3.0.1',
+#'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
+#'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
+#'org.mockito:mockito-core:2.7.22',
+
