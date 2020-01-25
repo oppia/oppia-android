@@ -1,12 +1,11 @@
 package org.oppia.util.parser
 
-import android.os.Build
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BulletSpan
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import javax.inject.Inject
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
@@ -48,12 +47,7 @@ class HtmlParser private constructor(
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
 
-    @Suppress("DEPRECATION")
-    val htmlSpannable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler())
-    } else {
-      Html.fromHtml(htmlContent, imageGetter, LiTagHandler())
-    }
+    val htmlSpannable = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)

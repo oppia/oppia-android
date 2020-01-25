@@ -33,9 +33,9 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(
-      R.drawable.ic_overview_icon_24dp,
+      R.drawable.ic_info_icon_24dp,
       R.drawable.ic_play_icon_24dp,
-      R.drawable.ic_train_icon_24dp,
+      R.drawable.ic_practice_icon_24dp,
       R.drawable.ic_review_icon_24dp
     )
 
@@ -56,7 +56,7 @@ class TopicFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun setCurrentTab(tab: TopicTab) {
+  private fun setCurrentTab(tab: TopicTab) {
     viewPager.setCurrentItem(tab.ordinal, true)
   }
 
@@ -64,9 +64,9 @@ class TopicFragmentPresenter @Inject constructor(
     val adapter = ViewPagerAdapter(fragment.childFragmentManager, topicId, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
-    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.overview)).setIcon(tabIcons[0])
+    tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.play)).setIcon(tabIcons[1])
-    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.train)).setIcon(tabIcons[2])
+    tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.practice)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.PLAY)

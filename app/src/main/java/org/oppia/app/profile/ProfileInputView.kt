@@ -42,6 +42,11 @@ class ProfileInputView @JvmOverloads constructor(
         profileInputView.setErrorText(errorMessage)
       }
     }
+    /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
+    @BindingAdapter("android:addTextChangedListener")
+    fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
+      editText.addTextChangedListener(textWatcher)
+    }
   }
 
   private var label: TextView
@@ -78,7 +83,7 @@ class ProfileInputView @JvmOverloads constructor(
 
   /** Clears red border and error text. */
   fun clearErrorText() {
-    input.background = context.resources.getDrawable(R.drawable.edit_text_black_border)
+    input.background = context.resources.getDrawable(R.drawable.add_profile_edit_text_background)
     errorText.text = ""
   }
 

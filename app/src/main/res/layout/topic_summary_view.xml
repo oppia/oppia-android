@@ -16,7 +16,7 @@
     android:clickable="true"
     android:elevation="4dp"
     android:focusable="true"
-    android:onClick="@{viewModel::clickOnSummaryTile}"
+    android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}">
 
     <ImageView
