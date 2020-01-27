@@ -1,4 +1,4 @@
-package org.oppia.app.topic.train
+package org.oppia.app.topic.practice
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.databinding.TopicTrainFragmentBinding
+import org.oppia.app.databinding.TopicPracticeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToQuestionPlayerListener
@@ -19,14 +19,14 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [TopicTrainFragment]. */
+/** The presenter for [TopicPracticeFragment]. */
 @FragmentScope
-class TopicTrainFragmentPresenter @Inject constructor(
+class TopicPracticeFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController,
-  private val viewModelProvider: ViewModelProvider<TopicTrainViewModel>
+  private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
 ) : SkillSelector {
   lateinit var selectedSkillIdList: ArrayList<String>
   private lateinit var topicId: String
@@ -35,10 +35,10 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicTrainFragment."
+      "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
     selectedSkillIdList = skillList
-    val binding = TopicTrainFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     skillSelectionAdapter = SkillSelectionAdapter(this)
     binding.skillRecyclerView.isNestedScrollingEnabled = false
@@ -46,7 +46,7 @@ class TopicTrainFragmentPresenter @Inject constructor(
       adapter = skillSelectionAdapter
     }
     binding.let {
-      it.viewModel = getTopicTrainViewModel()
+      it.viewModel = getTopicPracticeViewModel()
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
@@ -72,27 +72,27 @@ class TopicTrainFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicTrainFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicPracticeFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
-  private fun getTopicTrainViewModel(): TopicTrainViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicTrainViewModel::class.java)
+  private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicPracticeViewModel::class.java)
   }
 
   override fun skillSelected(skillId: String) {
     if (!selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.add(skillId)
     }
-    getTopicTrainViewModel().notifySelectedSkillList(selectedSkillIdList)
+    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
   }
 
   override fun skillUnselected(skillId: String) {
     if (selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.remove(skillId)
     }
-    getTopicTrainViewModel().notifySelectedSkillList(selectedSkillIdList)
+    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
   }
 
   internal fun onStartButtonClicked() {
