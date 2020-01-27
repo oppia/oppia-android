@@ -4,7 +4,7 @@ Oppia-Android app mocks have been prepared on AdobeXD and the mocks have a versi
 For understanding the mocks let's take one example. 
 Open [Admin Auth Mock Link](https://xd.adobe.com/view/0687f00c-695b-437a-79a6-688e7f4f7552-70b6/screen/a841330e-efe5-4bdb-acdd-4d6e52a59571/PC-MP-Admin-Authorization-Add-Profile-Empty-)
 
-In the below image you can see that there are two icons on left side of the screen. First icon is for comment, using which you can comment on the mock and second icon is for screen details which provides detailed information about the UI.
+In the below image you can see that there are two icons on left side of the screen. First icon is for comment, using which you can comment on the mock and second icon is for screen details which provide detailed information about the UI.
 <img width="1237" alt="Screenshot 2020-01-22 at 3 14 13 PM" src="https://user-images.githubusercontent.com/9396084/72883182-df728800-3d29-11ea-8584-446e00f91baf.png">
 
 Once you have selected the second icon, you will see a menu on right as below:
@@ -13,7 +13,7 @@ Once you have selected the second icon, you will see a menu on right as below:
 This menu contains details about the screen width, colors, fonts, etc. Also, please note that the screen width in the mocks is **360 px**.
 
 # Gathering information about each view
-You can click on any item in mock to know more details about that view. For example, in image shown below you can see that as the **Administrator Authorization Required** text is selected, the right side menu displays properties of the textview like font, size, color, transparency, etc. Also, the pink color lines/values in mock displays the margin/padding of that item with respective to different items which helps to set margin/padding in android code.
+You can click on any item in mock to know more details about that view. For example, in image shown below you can see that as the **Administrator Authorization Required** text is selected, the right side menu displays properties of the textview like font, size, color, transparency, etc. Also, the pink color lines/values in mock displays the margin/padding of that item with respect to other items which helps to set margin/padding in android code.
 
 <img width="1235" alt="Screenshot 2020-01-22 at 3 20 19 PM" src="https://user-images.githubusercontent.com/9396084/72883662-c0282a80-3d2a-11ea-8d75-06e5f4fd0e94.png">
 
@@ -36,7 +36,7 @@ Do not forget to check the opacity value in mocks. For example you find Opacity 
 2. Add two more characters at the start of color code of that view, for example if the item color code was `#999999` with 20% opacity value then the color code for that will be `#33999999`. Check [this](https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4) link for converting percentage to hex value.
 
 ### Blur effect
-Currently we are not using blur effect in android code, so if the mock item does have a blur value than in that case optimise the android code in such a way that it does look almost like the mock without using the blur effect.
+Currently, we are not using blur effect in android code, so if the mock item does have a blur value than in that case optimise the android code in such a way that it does look almost like the mock without using the blur effect.
 
 ### ImageView Aspect Ratio
 ImageView in android code uses aspect ratio of `4:3` or `16:9` mostly, though in some special cases it can be different. So based on the dimensions in mock, calculate the aspect ratio and use it accordingly in the code.
@@ -50,9 +50,9 @@ In all textviews, make sure that proper `android:maxLines` and `android:ellipsiz
 ***
 
 # Testing UI
-For UI testing you can do following things:
+For UI testing you can do the following things:
 ### Manual testing
-For this you can turn-on the `Show Layout Bounds` in your mobile **Settings/Developer Mode**. This helps mainly in identifying the boundaries of items and to check if there is any overlapping between the items.
+For this, you can turn on the `Show Layout Bounds` in your mobile **Settings/Developer Mode**. This helps mainly in identifying the boundaries of items and to check if there is any overlapping between the items.
 
 ### Accessibility Scanner
 [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en) can help you identify opportunities to improve your app for users.
