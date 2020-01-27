@@ -1,6 +1,7 @@
 package org.oppia.app.topic.play
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.TopicPlayStorySummaryBinding
@@ -106,7 +107,7 @@ class StorySummaryAdapter(
         storySummaryViewModel.storySummary.chapterCount,
         completedChapterCount
       )
-
+      binding.topicPlayStoryDashedLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
