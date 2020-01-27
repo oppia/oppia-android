@@ -107,7 +107,7 @@ class StorySummaryAdapter(
         storySummaryViewModel.storySummary.chapterCount,
         completedChapterCount
       )
-      binding.topicPlayStoryDashedLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+      binding.topicPlayStoryDashedLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, /* paint= */ null)
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
 
