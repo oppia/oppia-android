@@ -29,9 +29,9 @@
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
-  <string name="topic_train_master_these_skills">Master These Skills</string>
-  <string name="topic_train_skills_description">Select or unselect skills that you want to practice</string>
-  <string name="topic_train_start">Start</string>
+  <string name="topic_practice_master_these_skills">Master These Skills</string>
+  <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to previous state</string>
@@ -43,7 +43,7 @@
   <string name="topic_download_text">(%s)</string>
   <string name="info">Info</string>
   <string name="play">Play</string>
-  <string name="train">Train</string>
+  <string name="practice">Practice</string>
   <string name="review">Review</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
@@ -60,6 +60,7 @@
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
   <string name="ongoing_story_last_month">Played within the Last Month</string>
+  <string name="lesson_thumbnail_content_description">Image for %s</string>
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
   <string name="go_to_previous_page">Go to previous page.</string>
@@ -72,6 +73,10 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
+  <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
+  <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers of the fraction should be larger than 7 digits.</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>
   <string name="size_kb">%d KB</string>

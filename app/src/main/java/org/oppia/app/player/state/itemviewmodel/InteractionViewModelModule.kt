@@ -18,7 +18,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, interactionAnswerReceiver ->
+    return { _, _, interactionAnswerReceiver, _ ->
       ContinueInteractionViewModel(interactionAnswerReceiver)
     }
   }
@@ -26,7 +26,7 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
+  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory{
     return ::SelectionInteractionViewModel
   }
 
@@ -41,20 +41,20 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _ -> FractionInteractionViewModel(interaction, context) }
+    return { _, interaction, _, interactionAnswerHandler -> FractionInteractionViewModel(interaction, context, interactionAnswerHandler) }
   }
 
   @Provides
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _ -> NumericInputViewModel() }
+    return { _, _, _, _ -> NumericInputViewModel() }
   }
 
   @Provides
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _ -> TextInputViewModel(interaction) }
+    return { _, interaction, _, _ -> TextInputViewModel(interaction) }
   }
 }
