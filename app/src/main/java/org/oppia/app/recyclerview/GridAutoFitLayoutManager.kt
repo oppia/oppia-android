@@ -1,6 +1,7 @@
 package org.oppia.app.recyclerview
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.TypedValue
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 class GridAutoFitLayoutManager : GridLayoutManager {
   private var columnWidth: Int = 0
   private var columnWidthChanged = true
+  private val context: Context
 
   constructor(context: Context, columnWidth: Int) : super(context, 1) {
+    this.context = context
     setColumnWidth(checkedColumnWidth(context, columnWidth))
   }/* Initially set spanCount to 1, will be changed automatically later. */
 
@@ -42,8 +45,12 @@ class GridAutoFitLayoutManager : GridLayoutManager {
       } else {
         totalSpace = height - paddingTop - paddingBottom
       }
-      val spanCount = Math.max(1, totalSpace / columnWidth)
-      setSpanCount(spanCount)
+      val autoFitspanCount = Math.max(1, totalSpace / columnWidth)
+      if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        spanCount = 2
+      } else {
+        spanCount = autoFitspanCount
+      }
       columnWidthChanged = false
     }
     super.onLayoutChildren(recycler, state)

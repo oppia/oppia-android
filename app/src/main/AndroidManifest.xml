@@ -67,7 +67,16 @@
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
-      android:theme="@style/SplashScreenTheme"/>
+      android:theme="@style/SplashScreenTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
     <activity
       android:name=".story.StoryActivity"
       android:screenOrientation="portrait"
@@ -81,16 +90,7 @@
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity
       android:name=".testing.GridAutoFitLayoutManagerTestActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" >
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
-    </activity>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity

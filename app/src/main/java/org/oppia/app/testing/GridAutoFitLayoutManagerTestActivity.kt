@@ -10,8 +10,8 @@ import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 
 /** Activity that test [GridAutoFitLayoutManager]. */
 class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
-  private var recyclerViewWidth = 800
-  private var columnWidth = 400
+  private var recyclerViewWidth = 320
+  private var columnWidth = 80
   private lateinit var adapter: GridAutoFitTestAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {

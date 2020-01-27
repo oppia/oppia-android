@@ -1,8 +1,6 @@
 package org.oppia.app.testing
 
-import android.content.Context
-import android.content.res.Resources
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -37,7 +35,7 @@ class GridAutoFitLayoutManagerTestActivityTest {
 
   @Test
   fun testGridAutoFitLayoutManagerTestActivity_checkSpanCountOnPortrait_spanCountTwoVerifiedSuccessfully() {
-    launchGridAutoFitLayoutManagerTestActivityIntent(800, 400).use {
+    launchGridAutoFitLayoutManagerTestActivityIntent(320, 160).use {
       onView(ViewMatchers.isRoot()).perform(orientationPortrait())
       onView(withId(R.id.grid_recycler_view)).check(hasGridItemCount(2))
     }
@@ -45,7 +43,7 @@ class GridAutoFitLayoutManagerTestActivityTest {
 
   @Test
   fun testGridAutoFitLayoutManagerTestActivity_checkSpanCountOnPortrait_spanCountThreeVerifiedSuccessfully() {
-    launchGridAutoFitLayoutManagerTestActivityIntent(900, 300).use {
+    launchGridAutoFitLayoutManagerTestActivityIntent(300, 100).use {
       onView(ViewMatchers.isRoot()).perform(orientationPortrait())
       onView(withId(R.id.grid_recycler_view)).check(hasGridItemCount(3))
     }
@@ -53,7 +51,7 @@ class GridAutoFitLayoutManagerTestActivityTest {
 
   @Test
   fun testGridAutoFitLayoutManagerTestActivity_configurationChange_checkSpanCount_spanCountThreeVerifiedSuccessfully() {
-    launchGridAutoFitLayoutManagerTestActivityIntent(1200, 400).use {
+    launchGridAutoFitLayoutManagerTestActivityIntent(480, 160).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       onView(withId(R.id.grid_recycler_view)).check(hasGridItemCount(3))
     }
@@ -61,7 +59,7 @@ class GridAutoFitLayoutManagerTestActivityTest {
 
   @Test
   fun testGridAutoFitLayoutManagerTestActivity_configurationChange_checkSpanCount_spanCountFourVerifiedSuccessfully() {
-    launchGridAutoFitLayoutManagerTestActivityIntent(1600, 400).use {
+    launchGridAutoFitLayoutManagerTestActivityIntent(480, 120).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       onView(withId(R.id.grid_recycler_view)).check(hasGridItemCount(4))
     }
