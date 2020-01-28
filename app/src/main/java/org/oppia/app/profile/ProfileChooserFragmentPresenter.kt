@@ -91,7 +91,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun initAdapter() {
-    // Assume cell width of 500px
+    // Assume cell width of 400px
     binding.profileRecyclerView.layoutManager = GridAutoFitLayoutManager(activity.applicationContext, columnWidth = 400)
     binding.profileRecyclerView.setHasFixedSize(true)
   }
