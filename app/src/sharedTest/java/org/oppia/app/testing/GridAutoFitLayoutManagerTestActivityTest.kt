@@ -42,14 +42,6 @@ class GridAutoFitLayoutManagerTestActivityTest {
   }
 
   @Test
-  fun testGridAutoFitLayoutManagerTestActivity_checkSpanCountOnPortrait_spanCountThreeVerifiedSuccessfully() {
-    launchGridAutoFitLayoutManagerTestActivityIntent(300, 100).use {
-      onView(ViewMatchers.isRoot()).perform(orientationPortrait())
-      onView(withId(R.id.grid_recycler_view)).check(hasGridItemCount(3))
-    }
-  }
-
-  @Test
   fun testGridAutoFitLayoutManagerTestActivity_configurationChange_checkSpanCount_spanCountThreeVerifiedSuccessfully() {
     launchGridAutoFitLayoutManagerTestActivityIntent(480, 160).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
