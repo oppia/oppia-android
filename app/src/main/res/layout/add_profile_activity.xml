@@ -29,7 +29,7 @@
       <org.oppia.app.profile.ProfileInputView
         android:id="@+id/input_name"
         android:layout_width="match_parent"
-        android:layout_height="200px"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/upload_image_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
