@@ -12,7 +12,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginBottom="8dp"
-    android:srcCompact="@drawable/ic_help_grey_icon_24dp"
+    android:src="@drawable/ic_help_grey_icon_24dp"
     app:civ_border_color="@color/avatarBorder"
     app:civ_border_width="1dp" />
 

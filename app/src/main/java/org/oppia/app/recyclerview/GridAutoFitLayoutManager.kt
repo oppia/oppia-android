@@ -49,7 +49,7 @@ class GridAutoFitLayoutManager : GridLayoutManager {
       if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         spanCount = 2
       } else {
-        spanCount = autoFitspanCount
+        spanCount = if (autoFitspanCount < 3) 3 else autoFitspanCount
       }
       columnWidthChanged = false
     }
