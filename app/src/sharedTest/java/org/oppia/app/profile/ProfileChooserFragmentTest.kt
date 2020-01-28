@@ -2,9 +2,8 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -13,7 +12,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -33,8 +31,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -50,12 +46,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -76,37 +69,18 @@ class ProfileChooserFragmentTest {
       .inject(this)
   }
 
-
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
-    launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          0,
-          R.id.profile_is_admin_text
-        )
-      ).check(matches(withText(context.getString(R.string.profile_chooser_admin))))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_is_admin_text)).check(matches(withText(context.getString(R.string.profile_chooser_admin))))
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(matches(withText("Ben")))
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.profile_is_admin_text
-        )
-      ).check(matches(not(isDisplayed())))
+      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_is_admin_text)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(
-        atPositionOnView(
-          R.id.profile_recycler_view,
-          2,
-          R.id.add_profile_text
-        )
-      ).check(matches(withText(context.getString(R.string.profile_chooser_add))))
+      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(matches(withText(context.getString(R.string.profile_chooser_add))))
     }
   }
 
@@ -115,7 +89,7 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(8)
-    launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(matches(withText("Sean")))
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -142,7 +116,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
     profileTestHelper.initializeProfiles()
-    launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
@@ -151,7 +125,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity() {
     profileTestHelper.initializeProfiles()
-    launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 2)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
     }
@@ -160,7 +134,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile("Sean", "", null, true, -10710042, true)
-    launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
