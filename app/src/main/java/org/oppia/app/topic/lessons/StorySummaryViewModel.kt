@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import androidx.lifecycle.ViewModel
 import org.oppia.app.model.StorySummary
@@ -7,7 +7,7 @@ import org.oppia.app.model.StorySummary
 class StorySummaryViewModel(
   val storySummary: StorySummary,
   private val storySummarySelector: StorySummarySelector
-) : TopicPlayItemViewModel() {
+) : TopicLessonsItemViewModel() {
 
   fun clickOnStorySummaryTitle() {
     storySummarySelector.selectStorySummary(storySummary)

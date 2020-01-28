@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.content.Context
 import android.os.Bundle
@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
-/** Fragment that contains subtopic list for play mode. */
-class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
-  @Inject lateinit var topicPlayFragmentPresenter: TopicPlayFragmentPresenter
+/** Fragment that contains subtopic list for lessons mode. */
+class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
+  @Inject lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -29,7 +29,7 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
         currentExpandedChapterListIndex = null
       }
     }
-    return topicPlayFragmentPresenter.handleCreateView(
+    return topicLessonsFragmentPresenter.handleCreateView(
       inflater,
       container,
       currentExpandedChapterListIndex,
@@ -49,6 +49,6 @@ class TopicPlayFragment : InjectableFragment(), ExpandedChapterListIndexListener
   }
 
   override fun selectStorySummary(storySummary: StorySummary) {
-    topicPlayFragmentPresenter.storySummaryClicked(storySummary)
+    topicLessonsFragmentPresenter.storySummaryClicked(storySummary)
   }
 }
