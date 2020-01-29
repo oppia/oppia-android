@@ -136,7 +136,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputTextPreservedOnRotation() {
+  fun testAdminAuthActivity_buttonState_ConfigurationChanged_ButtonStateIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -155,18 +155,11 @@ class AdminAuthActivityTest {
       onView(withId(R.id.submit_button)).check { view, noViewFoundException ->
         view.background = context.getDrawable(R.drawable.state_button_primary_background)
       }
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-      }
-      onView(withId(R.id.submit_button)).check { view, noViewFoundException ->
-        view.background = context.getDrawable(R.drawable.state_button_primary_background)
-      }
     }
   }
 
   @Test
-  fun testAdminAuthActivity_buttonStateIsPreservedOnRotation() {
+  fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -191,28 +184,6 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputCorrectPasswordLandscape_opensAddProfileActivity() {
-    launch<AdminAuthActivity>(
-      AdminAuthActivity.createAdminAuthActivityIntent(
-        context,
-        "12345",
-        -10710042
-      )
-    ).use {
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-      }
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
-      intended(hasComponent(AddProfileActivity::class.java.name))
-    }
-  }
-
-  @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
@@ -221,26 +192,27 @@ class AdminAuthActivityTest {
         -10710042
       )
     ).use {
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-      }
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      onView(withId(R.id.submit_button)).perform(click())
       onView(
         allOf(
           withId(R.id.error_text),
           isDescendantOfA(withId(R.id.input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("4"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+      }
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
     }
   }
 
