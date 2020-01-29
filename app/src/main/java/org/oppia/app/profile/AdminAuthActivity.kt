@@ -3,6 +3,8 @@ package org.oppia.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -27,6 +29,16 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     adminAuthFragmentPresenter.handleOnCreate()
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    adminAuthFragmentPresenter.handleOnSavedInstanceState(outState)
+    super.onSaveInstanceState(outState)
+  }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    adminAuthFragmentPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
   }
 
   override fun onSupportNavigateUp(): Boolean {

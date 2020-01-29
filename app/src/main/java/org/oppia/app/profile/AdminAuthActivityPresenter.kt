@@ -1,8 +1,10 @@
 package org.oppia.app.profile
 
 import android.content.Context
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
@@ -10,6 +12,8 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AdminAuthActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
+
+const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -58,6 +62,18 @@ class AdminAuthActivityPresenter @Inject constructor(
       } else {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
+    }
+  }
+
+  fun handleOnSavedInstanceState(bundle: Bundle) {
+    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
+  }
+
+  fun handleOnRestoreInstanceState(bundle: Bundle) {
+    val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
+    Log.d("Debug", "Error message = $errorMessage")
+    if(errorMessage != null && errorMessage.isNotEmpty()) {
+      authViewModel.errorMessage.set(errorMessage)
     }
   }
 
