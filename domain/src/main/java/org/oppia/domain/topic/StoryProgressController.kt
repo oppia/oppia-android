@@ -98,7 +98,7 @@ class StoryProgressController @Inject constructor(
 
   private val topicProgressDataStore =
     cacheStoreFactory.createPerProfile(
-      "story_progress_database",
+      "topic_progress_database",
       TopicProgressDatabase.getDefaultInstance(),
       profileManagementController.getCurrentProfileId()
     )
