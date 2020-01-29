@@ -1,6 +1,7 @@
 package org.oppia.app.testing
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers
@@ -13,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 
-
 /**
  * It tests GridAutoFitTestAdapter and GridAutoFitLayoutManager
  * For reference https://github.com/codepath/android-robolectric-espresso-demo/blob/master/app/src/test/java/com.codepath.testingdemo/adapters/PostsAdapterTest.java
@@ -25,6 +25,8 @@ class GridAutoFitLayoutManagerTest {
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
+    ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
+      Configuration.ORIENTATION_LANDSCAPE
     context = ApplicationProvider.getApplicationContext<Context>()
   }
 
