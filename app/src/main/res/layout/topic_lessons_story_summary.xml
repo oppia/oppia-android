@@ -16,7 +16,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.play.StorySummaryViewModel" />
+      type="org.oppia.app.topic.lessons.StorySummaryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -146,6 +146,7 @@
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
         <View
+          android:id="@+id/topic_play_story_dashed_line_view"
           android:layout_width="match_parent"
           android:layout_height="2dp"
           android:layout_gravity="center_horizontal"

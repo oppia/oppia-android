@@ -1,25 +1,25 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.PlayChapterViewBinding
+import org.oppia.app.databinding.LessonsChapterViewBinding
 import org.oppia.app.model.ChapterSummary
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
-/** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicPlayFragment]. */
+/** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class ChapterSummaryAdapter(
   private val chapterList: List<ChapterSummary>,
   private val chapterSummarySelector: ChapterSummarySelector
 ) :
   RecyclerView.Adapter<ChapterSummaryAdapter.ChapterSummaryViewHolder>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterSummaryViewHolder {
-    val chapterSummaryListItemBinding = DataBindingUtil.inflate<PlayChapterViewBinding>(
+    val chapterSummaryListItemBinding = DataBindingUtil.inflate<LessonsChapterViewBinding>(
       LayoutInflater.from(parent.context),
-      R.layout.play_chapter_view, parent,
+      R.layout.lessons_chapter_view, parent,
       /* attachToRoot= */ false
     )
     return ChapterSummaryViewHolder(chapterSummaryListItemBinding)
@@ -33,7 +33,7 @@ class ChapterSummaryAdapter(
     chapterSummaryViewHolder.bind(chapterList[position], position)
   }
 
-  inner class ChapterSummaryViewHolder(private val binding: PlayChapterViewBinding) :
+  inner class ChapterSummaryViewHolder(private val binding: LessonsChapterViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(chapterSummary: ChapterSummary, position: Int) {
       binding.chapterSummary = chapterSummary
