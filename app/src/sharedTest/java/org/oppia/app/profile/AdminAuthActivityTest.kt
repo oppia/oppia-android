@@ -2,11 +2,14 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -65,7 +68,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -83,7 +86,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -112,7 +115,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -124,6 +127,115 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("4"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputTextPreservedOnRotation() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+      }
+      onView(withId(R.id.submit_button)).check { view, noViewFoundException ->
+        view.background = context.getDrawable(R.drawable.state_button_primary_background)
+      }
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+      }
+      onView(withId(R.id.submit_button)).check { view, noViewFoundException ->
+        view.background = context.getDrawable(R.drawable.state_button_primary_background)
+      }
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_buttonStateIsPreservedOnRotation() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+      }
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("12345")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputCorrectPasswordLandscape_opensAddProfileActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+      }
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      intended(hasComponent(AddProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputIncorrectPasswordLandscape_checkError() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      it.onActivity {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+      }
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("4"),
         closeSoftKeyboard()
