@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 
-class GridAutoFitTestAdapter: RecyclerView.Adapter<GridAutoFitTestAdapter.MainViewHolder>() {
+class GridAutoFitTestAdapter : RecyclerView.Adapter<GridAutoFitTestAdapter.MainViewHolder>() {
 
   override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): MainViewHolder =
     MainViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.grid_test_item_list, viewGroup, false))

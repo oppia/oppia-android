@@ -27,11 +27,7 @@ class GridAutoFitLayoutManagerTest {
   fun setUp() {
     ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
       Configuration.ORIENTATION_LANDSCAPE
-    context = ApplicationProvider.getApplicationContext<Context>()
-  }
-
-  @After
-  fun tearDown() {
+    context = ApplicationProvider.getApplicationContext()
   }
 
   @Test

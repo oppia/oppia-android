@@ -6,22 +6,20 @@
   android:layout_margin="8dp"
   android:orientation="vertical">
 
-  <de.hdodenhof.circleimageview.CircleImageView
+  <ImageView
     android:id="@+id/ivThumbnail"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginBottom="8dp"
-    android:src="@drawable/ic_help_grey_icon_24dp"
-    app:civ_border_color="@color/avatarBorder"
-    app:civ_border_width="1dp" />
+    android:src="@drawable/ic_help_grey_icon_24dp" />
 
   <TextView
     android:id="@+id/tvName"
     android:layout_width="match_parent"
-    android:textSize="8sp"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:text="sll"
-    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline" />
+    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+    android:textSize="8sp" />
 </LinearLayout>

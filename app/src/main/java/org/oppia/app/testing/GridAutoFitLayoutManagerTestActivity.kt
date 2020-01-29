@@ -24,15 +24,15 @@ class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
     columnWidth = checkNotNull(intent?.getIntExtra(GRID_AUTOFIT_TEST_ACTIVITY_CELL_WIDTH_ARGUMENT_KEY, columnWidth)) {
       "Expected columnWidth to be included in intent for GridAutoFitLayoutManagerTestActivity."
     }
-    val recyclerView = findViewById(R.id.grid_recycler_view) as RecyclerView
+    val recyclerView = findViewById<RecyclerView>(R.id.grid_recycler_view)
     recyclerView.setHasFixedSize(true)
     adapter = GridAutoFitTestAdapter()
-    val params = recyclerView.getLayoutParams()
+    val params = recyclerView.layoutParams
     params.width = recyclerViewWidth
-    recyclerView.setLayoutParams(params)
-    recyclerView.setAdapter(adapter)
-    val layoutManager = GridAutoFitLayoutManager(this, columnWidth = columnWidth)// assume cell width of 500px
-    recyclerView.setLayoutManager(layoutManager)
+    recyclerView.layoutParams = params
+    recyclerView.adapter = adapter
+    val layoutManager = GridAutoFitLayoutManager(this, columnWidth = columnWidth)
+    recyclerView.layoutManager = layoutManager
     recyclerView.setHasFixedSize(true)
   }
 
@@ -43,7 +43,7 @@ class GridAutoFitLayoutManagerTestActivity : AppCompatActivity() {
     internal const val GRID_AUTOFIT_TEST_ACTIVITY_CELL_WIDTH_ARGUMENT_KEY =
       "GridAutoFitLayoutManagerTestActivity.cell.width"
 
-    /** Returns a new [Intent] to route to [GridAutoFitLayoutManagerTestActivity] for a specified topic ID. */
+    /** Returns a new [Intent] to route to [GridAutoFitLayoutManagerTestActivity] for a specified recycler-view width and column width. */
     fun createGridAutoFitLayoutManagerTestActivityIntent(
       context: Context,
       recyclerViewWidth: Int,
