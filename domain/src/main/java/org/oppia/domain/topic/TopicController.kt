@@ -1,6 +1,5 @@
 package org.oppia.domain.topic
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
@@ -12,7 +11,6 @@ import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
-import org.oppia.app.model.StoryProgressDatabase
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
@@ -140,14 +138,6 @@ class TopicController @Inject constructor(
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
-  }
-
-  fun getProgressWithinATopic(topicId: String): LiveData<AsyncResult<List<String>>>{
-    return dataProviders.convertToLiveData(storyProgressController.getProgressDataProviderWithinATopic(topicId))
-  }
-
-  fun getProgressWithinAStory(storyId: String): LiveData<AsyncResult<List<String>>>{
-    return dataProviders.convertToLiveData(storyProgressController.getProgressDataProviderWithinATopic(storyId))
   }
 
   /** Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there is none. */

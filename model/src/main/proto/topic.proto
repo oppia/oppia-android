@@ -225,10 +225,19 @@ enum ChapterPlayState {
   COMPLETED = 3;
 }
 
-// Top level proto used to store profileId to storyProgress mapping
-message StoryProgressDatabase {
-  // StoryProgress which will be saved profile wise.
-  StoryProgress storyProgress = 1;
+message TopicProgressDatabase {
+  // Map from topic ID to TopicProgress.
+  map<string, TopicProgress> topic_progress = 1;
+}
+
+message TopicProgress {
+  // Map from story ID to StoryProgress.
+  map<string, StoryProgressNew> story_progress = 1;
+}
+
+message StoryProgressNew {
+  // Map from exploration ID to ChapterPlayState.
+  map<string, ChapterPlayState> chapter_progress = 1;
 }
 
 // Represents the progress a player has made for a story.
