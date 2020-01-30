@@ -22,7 +22,7 @@
       android:fontFamily="sans-serif"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
-      android:text="@{viewModel.greeting}"
+      android:text="@{viewModel.isAppAlreadyOpened().get() ? @string/welcome_back_text : @string/welcome_text}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 

@@ -27,7 +27,6 @@ import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.Logger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
@@ -166,7 +165,6 @@ class HomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
       userAppHistoryViewModel.profileName = "$profileName!"
-      userAppHistoryViewModel.greeting = DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage()
     }
   }
 

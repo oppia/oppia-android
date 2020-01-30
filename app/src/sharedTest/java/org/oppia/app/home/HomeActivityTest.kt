@@ -16,6 +16,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -24,8 +25,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -52,40 +53,33 @@ import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val const1 = 330 * 60 * 1000
-private const val MORNING_TIMESTAMP = 1579666500000- const1
-private const val AFTERNOON_TIMESTAMP = 1579774500000 -const1
-private const val EVENING_TIMESTAMP = 1579792500000 - const1
-
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
-  private lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -103,13 +97,6 @@ class HomeActivityTest {
     Intents.release()
   }
 
-  private fun getApplicationDependencies() {
-    launch(HomeInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        oppiaClock = activity.oppiaClock
-      }
-    }
-  }
 
   private fun setUpTestApplicationComponent() {
     DaggerHomeActivityTest_TestApplicationComponent.builder()
@@ -132,62 +119,60 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_firstOpen_hasWelcomeString() {
+    launch(HomeActivity::class.java).use {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText("Good morning,")))
+      ).check(matches(withText("Welcome to Oppia!")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_secondOpen_hasWelcomeBackString() {
+    simulateAppAlreadyOpened()
+
+    launch(HomeActivity::class.java).use {
+      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
+      waitForTheView(withText("Welcome back to Oppia!"))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText("Good afternoon,")))
+      ).check(matches(withText("Welcome back to Oppia!")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
+    launch(HomeActivity::class.java).use {
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText("Good evening,")))
+      ).check(matches(withText(containsString("Welcome"))))
     }
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testHomeActivity_recyclerViewIndex0_configurationChange_displayProfileNameCorrectly() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
+    launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_textview
+          R.id.welcome_text_view
         )
-      ).check(matches(withText("Sean!")))
+      ).check(matches(withText(containsString("Welcome"))))
     }
   }
 
@@ -386,10 +371,16 @@ class HomeActivityTest {
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
-
   private fun simulateNewAppInstance() {
     // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
-    createTestRootComponent().getProfileManagementController().getProfiles()
+    createTestRootComponent().getUserAppHistoryController().clearUserAppHistory()
+    onIdle()
+  }
+
+  private fun simulateAppAlreadyOpened() {
+    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
+    // on the system before the activity is opened.
+    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
     onIdle()
   }
 
@@ -399,12 +390,8 @@ class HomeActivityTest {
       .build()
   }
 
-  private fun getHourMinuteSecondAsTime(hour: Int, minute: Int, second: Int): Calendar {
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, hour)
-    calendar.set(Calendar.MINUTE, minute)
-    calendar.set(Calendar.SECOND, second)
-    return calendar
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
 // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
@@ -501,7 +488,7 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
-
+    fun getUserAppHistoryController(): UserAppHistoryController
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }
