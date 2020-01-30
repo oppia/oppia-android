@@ -1,6 +1,7 @@
 package org.oppia.domain.topic
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
@@ -44,6 +45,8 @@ private val FRACTIONS_COMPLETED_CHAPTERS = listOf(FRACTIONS_EXPLORATION_ID_0)
 private val RATIOS_COMPLETED_CHAPTERS = listOf<String>()
 val COMPLETED_EXPLORATIONS = FRACTIONS_COMPLETED_CHAPTERS + RATIOS_COMPLETED_CHAPTERS
 
+private const val CACHE_NAME = "topic_progress_database"
+
 private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
 private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progress_transformed_id"
 
@@ -53,7 +56,7 @@ class StoryProgressController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController,
-  cacheStoreFactory: PersistentCacheStore.Factory,
+  private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
   private val directoryManagementUtil: DirectoryManagementUtil
@@ -96,21 +99,31 @@ class StoryProgressController @Inject constructor(
 
   private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
 
-  private val topicProgressDataStore =
-    cacheStoreFactory.createPerProfile(
-      "topic_progress_database",
-      TopicProgressDatabase.getDefaultInstance(),
-      profileManagementController.getCurrentProfileId()
-    )
+  private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
 
-  // TODO(#272): Remove init block when storeDataAsync is fixed
-  init {
-    topicProgressDataStore.primeCacheAsync().invokeOnCompletion {
-      it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for StoryProgressController.", it)
-      }
+  private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
+    Log.d("StoryProgressController", "profileId: ${profileId.internalId}")
+
+    return if (profileId in cacheStoreMap) {
+      cacheStoreMap[profileId]!!
+    } else {
+      val cacheStore =
+        cacheStoreFactory.createPerProfile(CACHE_NAME, TopicProgressDatabase.getDefaultInstance(), profileId)
+      cacheStoreMap[profileId] = cacheStore
+      cacheStore
     }
   }
+
+  //private val retrieveCacheStore(profileManagementController.getCurrentProfileId()) = retrieveCacheStore(profileManagementController.getCurrentProfileId())
+
+  // TODO(#272): Remove init block when storeDataAsync is fixed
+//  init {
+//    retrieveCacheStore(profileManagementController.getCurrentProfileId()).primeCacheAsync().invokeOnCompletion {
+//      it?.let {
+//        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for StoryProgressController.", it)
+//      }
+//    }
+//  }
 
   fun retrieveStoryProgress(storyId: String): StoryProgress {
     return createStoryProgressSnapshot(storyId)
@@ -126,7 +139,7 @@ class StoryProgressController @Inject constructor(
     storyId: String,
     topicId: String
   ): LiveData<AsyncResult<Any?>> {
-    val deferred = topicProgressDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+    val deferred = retrieveCacheStore(profileManagementController.getCurrentProfileId()).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       // Replace this with checking if the id pair already exists.
       val chapterPlayState = ChapterPlayState.COMPLETED
       val storyProgressNew = StoryProgressNew.newBuilder().putChapterProgress(explorationId, chapterPlayState).build()
@@ -146,10 +159,14 @@ class StoryProgressController @Inject constructor(
       })
   }
 
+  fun getTopicProgress(topicId: String): LiveData<AsyncResult<TopicProgress>> {
+    return dataProviders.convertToLiveData(getTopicProgressDataProvider(topicId))
+  }
+
   fun getTopicProgressDataProvider(topicId: String): DataProvider<TopicProgress> {
     return dataProviders.transformAsync<TopicProgressDatabase, TopicProgress>(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
-      topicProgressDataStore
+      retrieveCacheStore(profileManagementController.getCurrentProfileId())
     ) {
       val topicProgress = it.topicProgressMap[topicId]
       if (topicProgress != null) {
@@ -163,7 +180,7 @@ class StoryProgressController @Inject constructor(
   fun getStoryProgressDataProvider(topicId: String, storyId: String): DataProvider<StoryProgressNew> {
     return dataProviders.transformAsync<TopicProgressDatabase, StoryProgressNew>(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
-      topicProgressDataStore
+      retrieveCacheStore(profileManagementController.getCurrentProfileId())
     ) {
       val topicProgress = it.topicProgressMap[topicId]
       val storyProgress = topicProgress!!.storyProgressMap[storyId]
@@ -175,10 +192,14 @@ class StoryProgressController @Inject constructor(
     }
   }
 
-  fun getChapterProgressDataProvider(topicId: String, storyId: String, explorationId: String): DataProvider<ChapterPlayState> {
+  fun getChapterProgressDataProvider(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterPlayState> {
     return dataProviders.transformAsync<TopicProgressDatabase, ChapterPlayState>(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
-      topicProgressDataStore
+      retrieveCacheStore(profileManagementController.getCurrentProfileId())
     ) {
       val topicProgress = it.topicProgressMap[topicId]
       val storyProgress = topicProgress!!.storyProgressMap[storyId]
