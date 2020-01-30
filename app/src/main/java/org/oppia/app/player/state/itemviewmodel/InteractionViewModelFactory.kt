@@ -1,7 +1,7 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /**
@@ -9,5 +9,5 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  * pushes answers, the [Interaction] object corresponding to the interaction view, and the exploration ID.
  */
 typealias InteractionViewModelFactory = (
-  explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver
+  explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver, interactionAnswerHandler: InteractionAnswerErrorReceiver
 ) -> StateItemViewModel
