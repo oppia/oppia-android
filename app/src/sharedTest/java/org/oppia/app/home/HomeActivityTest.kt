@@ -55,6 +55,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
@@ -110,6 +111,7 @@ class HomeActivityTest {
       }
     }
   }
+
 
   private fun setUpTestApplicationComponent() {
     DaggerHomeActivityTest_TestApplicationComponent.builder()
@@ -399,12 +401,8 @@ class HomeActivityTest {
       .build()
   }
 
-  private fun getHourMinuteSecondAsTime(hour: Int, minute: Int, second: Int): Calendar {
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, hour)
-    calendar.set(Calendar.MINUTE, minute)
-    calendar.set(Calendar.SECOND, second)
-    return calendar
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
 // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
@@ -501,7 +499,7 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
-
+    fun getUserAppHistoryController(): UserAppHistoryController
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }
