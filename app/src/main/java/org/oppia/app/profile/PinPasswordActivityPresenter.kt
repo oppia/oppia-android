@@ -64,7 +64,7 @@ class PinPasswordActivityPresenter @Inject constructor(
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
                 if (it.isSuccess()) {
-                  activity.startActivity(Intent(activity, HomeActivity::class.java))
+                  activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
                 }
               })
             } else {
