@@ -25,8 +25,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -58,9 +58,9 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -96,7 +96,6 @@ class HomeActivityTest {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
     Intents.release()
   }
-
 
   private fun setUpTestApplicationComponent() {
     DaggerHomeActivityTest_TestApplicationComponent.builder()
@@ -371,6 +370,7 @@ class HomeActivityTest {
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
+
   private fun simulateNewAppInstance() {
     // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
     createTestRootComponent().getUserAppHistoryController().clearUserAppHistory()
