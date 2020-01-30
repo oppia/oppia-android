@@ -3,8 +3,6 @@ package org.oppia.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 

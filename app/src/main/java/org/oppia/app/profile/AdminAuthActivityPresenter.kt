@@ -71,8 +71,7 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   fun handleOnRestoreInstanceState(bundle: Bundle) {
     val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
-    Log.d("Debug", "Error message = $errorMessage")
-    if(errorMessage != null && errorMessage.isNotEmpty()) {
+    if (errorMessage != null && errorMessage.isNotEmpty()) {
       authViewModel.errorMessage.set(errorMessage)
     }
   }

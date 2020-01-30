@@ -16,6 +16,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,6 +33,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -136,7 +139,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_buttonState_ConfigurationChanged_ButtonStateIsPreserved() {
+  fun testAdminAuthActivity_buttonState_configurationChanged_buttonStateIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
@@ -148,13 +151,12 @@ class AdminAuthActivityTest {
         typeText("12345"),
         closeSoftKeyboard()
       )
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-      }
-      onView(withId(R.id.submit_button)).check { view, noViewFoundException ->
-        view.background = context.getDrawable(R.drawable.state_button_primary_background)
-      }
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.submit_button)).check(
+        matches(
+          withDrawable(R.drawable.state_button_primary_background)
+        )
+      )
     }
   }
 
@@ -171,10 +173,7 @@ class AdminAuthActivityTest {
         typeText("12345"),
         closeSoftKeyboard()
       )
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-      }
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
         matches(
           withText("12345")
@@ -203,10 +202,7 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-      it.onActivity {
-        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        assert(it.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-      }
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.error_text),
