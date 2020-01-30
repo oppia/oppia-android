@@ -112,7 +112,6 @@ class HomeActivityTest {
     }
   }
 
-
   private fun setUpTestApplicationComponent() {
     DaggerHomeActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())

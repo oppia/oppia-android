@@ -23,21 +23,6 @@ class OppiaClock @Inject constructor() {
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun setCurrentTimeMs(currentTimeMs: Long) {
-
-//    // Creating date format
-//    val simple = SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z")
-//
-//    // Creating date from milliseconds
-//    // using Date() constructor
-//    val result = Date(currentTimeMs)
-//
-//    // Formatting Date according to the
-//    // given format
-//    System.out.println("Date "+simple.format(result))
-//    val date = simple.parse(simple.format(result))
-//    System.out.println(date.time)
-//    testTimeMs = date.time
-    System.out.println("timestamp"+currentTimeMs)
     testTimeMs = currentTimeMs
   }
 
@@ -45,8 +30,6 @@ class OppiaClock @Inject constructor() {
   fun getCurrentCalendar(): Calendar {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = getCurrentTimeMs()
-
-    System.out.println("date "+ getCurrentTimeMs())
     return calendar
   }
 }
