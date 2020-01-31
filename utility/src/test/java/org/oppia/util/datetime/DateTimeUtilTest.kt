@@ -65,7 +65,7 @@ class DateTimeUtilTest {
     Dispatchers.resetMain()
     testThread.close()
   }
-  
+
   private fun setUpTestApplicationComponent() {
     DaggerDateTimeUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
