@@ -136,7 +136,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnTrainTab_showsTrainTabSelected() {
+  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -149,7 +149,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnTrainTab_showsTrainTabWithContentMatched() {
+  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -279,7 +279,7 @@ class TopicFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
