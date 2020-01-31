@@ -2,7 +2,7 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -13,6 +13,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -65,7 +68,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -83,7 +86,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -112,7 +115,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
-    ActivityScenario.launch<AdminAuthActivity>(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
@@ -129,6 +132,76 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_buttonState_configurationChanged_buttonStateIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.submit_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("12345")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputIncorrectPasswordLandscape_checkError() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        -10710042
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_button)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
     }
   }
 

@@ -340,8 +340,6 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this login operation.
    */
   fun loginToProfile(profileId: ProfileId): LiveData<AsyncResult<Any?>> {
-    currentProfileId = profileId.internalId
-    setCurrentProfileId(profileId)
     return dataProviders.convertToLiveData(
       dataProviders.transformAsync(LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID, setCurrentProfileId(profileId)) {
         return@transformAsync getDeferredResult(profileId, null, updateLastLoggedInAsync(profileId))

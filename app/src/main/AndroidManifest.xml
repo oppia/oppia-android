@@ -55,7 +55,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".profile.AdminAuthActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
