@@ -1,6 +1,7 @@
 package org.oppia.app.profile
 
 import android.content.Context
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AdminAuthActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
+
+const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -24,17 +27,15 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.add_profile_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-
     val binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
+    binding.adminAuthToolbar.setNavigationOnClickListener {
+      (activity as AdminAuthActivity).finish()
+    }
     val adminPin = activity.intent.getStringExtra(KEY_ADMIN_AUTH_ADMIN_PIN)
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel
     }
-
     binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
@@ -60,6 +61,17 @@ class AdminAuthActivityPresenter @Inject constructor(
       } else {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
+    }
+  }
+
+  fun handleOnSavedInstanceState(bundle: Bundle) {
+    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
+  }
+
+  fun handleOnRestoreInstanceState(bundle: Bundle) {
+    val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
+    if (errorMessage != null && errorMessage.isNotEmpty()) {
+      authViewModel.errorMessage.set(errorMessage)
     }
   }
 

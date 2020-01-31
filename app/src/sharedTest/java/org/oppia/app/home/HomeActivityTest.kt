@@ -2,6 +2,7 @@ package org.oppia.app.home
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -24,8 +25,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -37,6 +38,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
@@ -54,9 +56,11 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -66,23 +70,51 @@ import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
   @Before
+  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
+    setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
     Intents.release()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerHomeActivityTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Sean!")))
+    }
   }
 
   @Test
@@ -145,7 +177,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.recently_played_stories_text_view)).check(
         matches(
@@ -157,7 +189,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
         matches(
@@ -169,7 +201,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
       intended(hasComponent(ContinuePlayingActivity::class.java.name))
@@ -178,7 +210,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(
         Matchers.allOf(
           withId(R.id.promoted_story_list_recycler_view),
@@ -192,7 +224,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
@@ -205,7 +237,7 @@ class HomeActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
@@ -218,7 +250,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         Matchers.allOf(
@@ -236,7 +268,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
@@ -248,7 +280,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
@@ -260,7 +292,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
         matches(
@@ -272,7 +304,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
         matches(
@@ -284,7 +316,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
         matches(
@@ -297,7 +329,7 @@ class HomeActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
@@ -310,7 +342,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
@@ -320,7 +352,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
@@ -328,11 +360,15 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
     }
+  }
+
+  private fun createHomeActivityIntent(profileId: Int): Intent {
+    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
   private fun simulateNewAppInstance() {
@@ -452,8 +488,9 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
-
     fun getUserAppHistoryController(): UserAppHistoryController
+    fun getProfileManagementController(): ProfileManagementController
+    fun inject(homeActivityTest: HomeActivityTest)
   }
 
 // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an

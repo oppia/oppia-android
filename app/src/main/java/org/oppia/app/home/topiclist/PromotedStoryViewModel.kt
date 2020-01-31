@@ -1,6 +1,5 @@
 package org.oppia.app.home.topiclist
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
@@ -27,7 +26,7 @@ class PromotedStoryViewModel(private val activity: AppCompatActivity) : Observab
     promotedStoryObservable.set(promotedStory)
   }
 
-  fun clickOnStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnStoryTile() {
     routeToTopicPlayStory(promotedStoryObservable.get()!!.topicId, promotedStoryObservable.get()!!.storyId)
   }
 

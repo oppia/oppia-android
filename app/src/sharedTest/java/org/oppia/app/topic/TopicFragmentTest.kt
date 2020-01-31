@@ -73,21 +73,21 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_overviewTopicTab_isDisplayedInTabLayout() {
+  fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withText(TopicTab.getTabForPosition(0).name)).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
 
   @Test
-  fun testTopicFragment_defaultTabIsOverview_isSuccessful() {
+  fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(0).name)))
     }
   }
 
   @Test
-  fun testTopicFragment_defaultTabIsOverview_showsMatchingContent() {
+  fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
@@ -136,7 +136,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnTrainTab_showsTrainTabSelected() {
+  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -149,7 +149,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnTrainTab_showsTrainTabWithContentMatched() {
+  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -196,7 +196,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTab() {
+  fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -221,7 +221,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenOverviewTab_showsOverviewTabWithContentMatched() {
+  fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -279,7 +279,7 @@ class TopicFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicFragment_clickOnTrainTab_configurationChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
