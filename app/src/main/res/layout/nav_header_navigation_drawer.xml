@@ -33,7 +33,7 @@
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:paddingTop="8dp"
-      android:text="@{viewModel.name}"
+      android:text="@{viewModel.profileName}"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
       android:textColor="@color/white"
       android:textSize="14sp" />

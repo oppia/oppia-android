@@ -2,8 +2,9 @@ package org.oppia.app.testing
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.widget.TextView
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -59,11 +60,16 @@ class NavigationDrawerTestActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
+    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -72,10 +78,10 @@ class NavigationDrawerTestActivityTest {
       .build()
       .inject(this)
   }
+
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_displayProfileNameSuccessfully() {
-    profileTestHelper.initializeProfiles()
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -85,7 +91,7 @@ class NavigationDrawerTestActivityTest {
   }
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -97,7 +103,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSucessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -106,7 +112,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSucessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
@@ -115,7 +121,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
@@ -129,7 +135,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
@@ -147,7 +153,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withContentDescription(R.string.drawer_open_content_description))
@@ -167,7 +173,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(open())
@@ -184,7 +190,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() {
-    ActivityScenario.launch(NavigationDrawerTestActivity::class.java).use {
+    launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(open())

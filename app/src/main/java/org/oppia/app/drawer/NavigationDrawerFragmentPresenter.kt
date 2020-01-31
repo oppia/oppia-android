@@ -6,9 +6,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.app.R
 import org.oppia.app.databinding.DrawerFragmentBinding
@@ -16,33 +20,74 @@ import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.home.KEY_HOME_PROFILE_ID
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
 class NavigationDrawerFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>
+  private val profileManagementController: ProfileManagementController,
+  private val logger: Logger
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
   private var previousMenuItemId: Int? = null
   private lateinit var binding: DrawerFragmentBinding
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+  private lateinit var profileName: String
+  private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
 
+//  private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
+//
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
 
     fragment.setHasOptionsMenu(true)
-    binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
+
+    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+  navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
 
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    headerBinding.viewModel = getNavigationDrawerHeaderViewModel()
+    headerBinding.viewModel = navigationDrawerHeaderViewModel
+    subscribeToProfileLiveData()
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
     binding.executePendingBindings()
+
+
     return binding.root
+  }
+
+  private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }
+
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun subscribeToProfileLiveData() {
+    getProfileData().observe(fragment, Observer<Profile> {
+      navigationDrawerHeaderViewModel.profileName.set(it.name)
+    })
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
@@ -102,9 +147,5 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
     openActivityByMenuItemId(menuItem.itemId)
     return true
-  }
-
-  private fun getNavigationDrawerHeaderViewModel(): NavigationDrawerHeaderViewModel {
-    return headerViewModelProvider.getForFragment(fragment, NavigationDrawerHeaderViewModel::class.java)
   }
 }
