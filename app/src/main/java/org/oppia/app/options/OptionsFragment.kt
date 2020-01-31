@@ -10,6 +10,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
+import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
@@ -22,6 +23,7 @@ class OptionsFragment @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val logger: Logger
 ) : PreferenceFragmentCompat() {
+  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   var storyTextSize = 16f
   var appLanguage = "English"
@@ -29,7 +31,9 @@ class OptionsFragment @Inject constructor(
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
-    profileId = profileManagementController.getCurrentProfileId()
+    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     subscribeToProfileLiveData()
   }
 
@@ -158,20 +162,16 @@ class OptionsFragment @Inject constructor(
 
   }
 
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
-  }
-
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
 
   private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(activity, Observer<Profile> { result ->
-      storyTextSize = result.storyTextSize
-      appLanguage = result.appLanguage
-      audioLanguage = result.audioLanguage
-
+    getProfileData().observe(activity, Observer<Profile> {
+      storyTextSize = it.storyTextSize
+      appLanguage = it.appLanguage
+      audioLanguage = it.audioLanguage
+      logger.e("OptionsFragment", "Failed to retrieve profile"+ storyTextSize)
       updateDataIntoUI()
     })
   }

@@ -2,11 +2,10 @@ package org.oppia.app.options
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
-import android.util.Log
+import android.content.Intent
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
@@ -15,8 +14,10 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -33,7 +34,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -49,9 +49,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
 
-
   @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var context: Context
 
   @Before
@@ -79,9 +77,13 @@ class OptionsFragmentTest {
     OptionsActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
+  private fun createOptionActivityIntent(profileId: Int): Intent {
+    return OptionsActivity.createOptionsActivity(ApplicationProvider.getApplicationContext(), profileId)
+  }
+
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -95,7 +97,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -109,7 +111,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -123,7 +125,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -139,12 +141,24 @@ class OptionsFragmentTest {
             click()
           )
         )
+
+      onView(withId(androidx.preference.R.id.recycler_view))
+        .perform(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            2,
+            click()
+          )
+        )
+
+      onView(withId(androidx.preference.R.id.recycler_view))
+        .check(ViewAssertions.matches(ViewMatchers.withText("French")))
+
     }
   }
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -165,7 +179,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -186,7 +200,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
-    ActivityScenario.launch(OptionsActivity::class.java).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(withId(androidx.preference.R.id.recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -220,11 +234,6 @@ class OptionsFragmentTest {
       coordinates[1] = screenY
       coordinates
     }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
-  }
-
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier

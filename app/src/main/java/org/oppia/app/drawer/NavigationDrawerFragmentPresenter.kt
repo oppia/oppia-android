@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -14,24 +15,31 @@ import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.home.KEY_HOME_PROFILE_ID
+import org.oppia.app.model.ProfileId
 import org.oppia.app.options.OptionsActivity
 import javax.inject.Inject
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
 class NavigationDrawerFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val activity: AppCompatActivity
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var navView: NavigationView
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
   private var previousMenuItemId: Int? = null
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val view: View? = inflater.inflate(R.layout.fragment_drawer, container, false)
     navView = view!!.findViewById(R.id.fragment_drawer_nav_view)
     navView.setNavigationItemSelectedListener(this)
     fragment.setHasOptionsMenu(true)
+    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return view
   }
 
@@ -42,7 +50,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           Intent(fragment.activity, HomeActivity::class.java)
         }
         NavigationDrawerItem.OPTIONS -> {
-          Intent(fragment.activity, OptionsActivity::class.java)
+          OptionsActivity.createOptionsActivity(fragment.requireContext(),internalProfileId)
         }
         NavigationDrawerItem.HELP -> {
           Intent(fragment.activity, HelpActivity::class.java)
