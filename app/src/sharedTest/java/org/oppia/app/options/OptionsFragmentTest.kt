@@ -14,10 +14,8 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -133,7 +131,6 @@ class OptionsFragmentTest {
             click()
           )
         )
-
       onView(withId(R.id.language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -141,18 +138,6 @@ class OptionsFragmentTest {
             click()
           )
         )
-
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            2,
-            click()
-          )
-        )
-
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .check(ViewAssertions.matches(ViewMatchers.withText("French")))
-
     }
   }
 
@@ -166,7 +151,6 @@ class OptionsFragmentTest {
             click()
           )
         )
-
       onView(withId(R.id.language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
