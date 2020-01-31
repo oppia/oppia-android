@@ -42,11 +42,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var binding: DrawerFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private lateinit var profileName: String
   private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
 
-//  private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
-//
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
@@ -67,10 +64,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
 
     return binding.root
-  }
-
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
   }
 
   private fun getProfileData(): LiveData<Profile> {
