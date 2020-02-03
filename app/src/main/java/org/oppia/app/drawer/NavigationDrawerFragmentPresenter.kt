@@ -53,7 +53,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-  navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
+    navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
 
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
     headerBinding.viewModel = navigationDrawerHeaderViewModel
@@ -61,7 +61,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
     binding.executePendingBindings()
-
 
     return binding.root
   }

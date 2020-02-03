@@ -69,7 +69,10 @@ class NavigationDrawerTestActivityTest {
   }
 
   private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(ApplicationProvider.getApplicationContext(), profileId)
+    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
+      ApplicationProvider.getApplicationContext(),
+      profileId
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -80,7 +83,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_displayProfileNameSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
@@ -89,6 +92,17 @@ class NavigationDrawerTestActivityTest {
         .check(matches(withText("Sean")))
     }
   }
+  @Test
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(1)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.nav_header_profile_name))
+        .check(matches(withText("Ben")))
+    }
+  }
+
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {

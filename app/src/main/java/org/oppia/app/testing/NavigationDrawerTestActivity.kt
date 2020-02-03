@@ -12,8 +12,7 @@ import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopicListener {
-  @Inject
-  lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
 
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
@@ -22,6 +21,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
       return intent
     }
   }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
