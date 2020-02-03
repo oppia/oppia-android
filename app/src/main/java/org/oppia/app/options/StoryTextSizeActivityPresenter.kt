@@ -14,7 +14,7 @@ import javax.inject.Inject
 class StoryTextSizeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private var fontSize: String = "Small"
+  private var fontSize: String = STORY_TEXT_SIZE_SMALL
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
@@ -24,25 +24,25 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
     binding.storyTextSizeToolbar.setNavigationOnClickListener {
       val intent = Intent()
-      intent.putExtra("MESSAGE", fontSize)
+      intent.putExtra(MESSAGE_STORY_TEXT_SIZE, fontSize)
       (activity as StoryTextSizeActivity).setResult(1, intent)
       activity.finish()
     }
 
     when (prefSummaryValue) {
-      "Small" -> {
+      STORY_TEXT_SIZE_SMALL -> {
         binding.storyTextSizeSeekBar.progress = 0
         binding.previewTextview.textSize = 16f
       }
-      "Medium" -> {
+      STORY_TEXT_SIZE_MEDIUM -> {
         binding.storyTextSizeSeekBar.progress = 5
         binding.previewTextview.textSize = 18f
       }
-      "Large" -> {
+      STORY_TEXT_SIZE_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 10
         binding.previewTextview.textSize = 20f
       }
-      "Extra Large" -> {
+      STORY_TEXT_SIZE_EXTRA_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 15
         binding.previewTextview.textSize = 22f
       }
@@ -58,19 +58,19 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
         when (progressValue) {
           0 -> {
-            fontSize = "Small"
+            fontSize = STORY_TEXT_SIZE_SMALL
             binding.previewTextview.textSize = 16f
           }
           5 -> {
-            fontSize = "Medium"
+            fontSize = STORY_TEXT_SIZE_MEDIUM
             binding.previewTextview.textSize = 18f
           }
           10 -> {
-            fontSize = "Large"
+            fontSize = STORY_TEXT_SIZE_LARGE
             binding.previewTextview.textSize = 20f
           }
           else -> {
-            fontSize = "Extra Large"
+            fontSize = STORY_TEXT_SIZE_EXTRA_LARGE
             binding.previewTextview.textSize = 22f
           }
         }

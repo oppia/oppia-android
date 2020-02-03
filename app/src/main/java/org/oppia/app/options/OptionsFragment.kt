@@ -18,6 +18,15 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+const val STORY_TEXT_SIZE_SMALL = "Small"
+const val STORY_TEXT_SIZE_MEDIUM = "Medium"
+const val STORY_TEXT_SIZE_LARGE = "Large"
+const val STORY_TEXT_SIZE_EXTRA_LARGE = "Extra Large"
+
+const val MESSAGE_STORY_TEXT_SIZE = "Text Size"
+const val MESSAGE_APP_LANGUAGE = "App Language"
+const val MESSAGE_AUDIO_LANGUAGE = "Audio Language"
+
 class OptionsFragment @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
@@ -41,16 +50,16 @@ class OptionsFragment @Inject constructor(
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
       16f -> {
-        textSizePref.summary = "Small"
+        textSizePref.summary = STORY_TEXT_SIZE_SMALL
       }
       18f -> {
-        textSizePref.summary = "Medium"
+        textSizePref.summary = STORY_TEXT_SIZE_MEDIUM
       }
       20f -> {
-        textSizePref.summary = "Large"
+        textSizePref.summary = STORY_TEXT_SIZE_LARGE
       }
       22f -> {
-        textSizePref.summary = "Extra Large"
+        textSizePref.summary = STORY_TEXT_SIZE_EXTRA_LARGE
       }
     }
 
@@ -115,16 +124,16 @@ class OptionsFragment @Inject constructor(
         {
           preference.summary = stringValue
           when (stringValue) {
-            "Small" -> {
+            STORY_TEXT_SIZE_SMALL -> {
               profileManagementController.updateStoryTextSize(profileId, 16f)
             }
-            "Medium" -> {
+            STORY_TEXT_SIZE_MEDIUM -> {
               profileManagementController.updateStoryTextSize(profileId, 18f)
             }
-            "Large" -> {
+            STORY_TEXT_SIZE_LARGE -> {
               profileManagementController.updateStoryTextSize(profileId, 20f)
             }
-            "Extra Large" -> {
+            STORY_TEXT_SIZE_EXTRA_LARGE -> {
               profileManagementController.updateStoryTextSize(profileId, 22f)
             }
           }
@@ -144,18 +153,17 @@ class OptionsFragment @Inject constructor(
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    // Check which request we're responding to
-    when (requestCode) {
+     when (requestCode) {
       1 -> {
-        val textSize = data!!.getStringExtra("MESSAGE") as String
+        val textSize = data!!.getStringExtra(MESSAGE_STORY_TEXT_SIZE) as String
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
       }
       2 -> {
-        val appLanguage = data!!.getStringExtra("MESSAGE") as String
+        val appLanguage = data!!.getStringExtra(MESSAGE_APP_LANGUAGE) as String
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
       }
       else -> {
-        val audioLanguage = data!!.getStringExtra("MESSAGE") as String
+        val audioLanguage = data!!.getStringExtra(MESSAGE_AUDIO_LANGUAGE) as String
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
       }
     }
@@ -171,7 +179,6 @@ class OptionsFragment @Inject constructor(
       storyTextSize = it.storyTextSize
       appLanguage = it.appLanguage
       audioLanguage = it.audioLanguage
-      logger.e("OptionsFragment", "Failed to retrieve profile"+ storyTextSize)
       updateDataIntoUI()
     })
   }
