@@ -16,6 +16,7 @@ import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.normalizeWhitespace
+import java.lang.Exception
 
 /** [ViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
@@ -25,7 +26,7 @@ class NumericInputViewModel(
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
   var errorMessage = ObservableField<String>("")
-  private val invalidCharsRegex = """^[\d\s+.-]+$""".toRegex()
+  private val invalidCharsRegex = """^[\d\s.-]+$""".toRegex()
   private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
   init {
@@ -82,10 +83,10 @@ class NumericInputViewModel(
   }
 
   /**
-   * Returns a [NumericInpurParsingError] for obvious incorrect fraction formatting issues for the specified raw text, or
+   * Returns a [NumericInpurParsingError] for obvious incorrect number formatting issues for the specified raw text, or
    * [NumericInpurParsingError.VALID] if not such issues are found.
    *
-   * Note that this method returning a valid result does not guarantee the text is a valid fraction--
+   * Note that this method returning a valid result does not guarantee the text is a valid number--
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
    * general validity, not for definite correctness.
    */
@@ -93,29 +94,30 @@ class NumericInputViewModel(
     val normalized = text.normalizeWhitespace()
     return when {
       !normalized.matches(invalidCharsRegex) -> NumericInpurParsingError.INVALID_CHARS
-      normalized.startsWith(".") -> NumericInpurParsingError.INVALID_FORMAT
+      normalized.startsWith(".") -> NumericInpurParsingError.STARTING_WITH_FLOATING_POINT
       normalized.count { it == '.' } > 1 -> NumericInpurParsingError.INVALID_FORMAT
       normalized.lastIndexOf('-') > 0 -> NumericInpurParsingError.INVALID_FORMAT
-      normalized.lastIndexOf('+') > 0 -> NumericInpurParsingError.INVALID_FORMAT
       else -> NumericInpurParsingError.VALID
     }
   }
 
   /**
-   * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
-   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by this method is guaranteed
-   * to be parsed correctly by [parseRegularFraction].
+   * Returns a [NumericInpurParsingError] for the specified text input if it's an invalid number, or
+   * [NumericInpurParsingError.VALID] if no issues are found. Note that a valid number returned by this method is guaranteed
+   * to be parsed correctly.
    *
    * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): NumericInpurParsingError {
-    if (invalidCharsLengthRegex.find(text) != null)
+    if (invalidCharsLengthRegex.find(text) != null) {
       return NumericInpurParsingError.NUMBER_TOO_LONG
-    val fraction = text.toDouble()
-    return when {
-      fraction == null -> NumericInpurParsingError.INVALID_FORMAT
-      else -> NumericInpurParsingError.VALID
+    }
+    return try {
+      text.toDouble()
+      NumericInpurParsingError.VALID
+    } catch (e: Exception) {
+      NumericInpurParsingError.INVALID_FORMAT
     }
   }
 
@@ -124,6 +126,7 @@ class NumericInputViewModel(
     VALID(error = null),
     INVALID_CHARS(error = R.string.number_error_invalid_chars),
     INVALID_FORMAT(error = R.string.number_error_invalid_format),
+    STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point),
     NUMBER_TOO_LONG(error = R.string.number_error_larger_than_seven_digits);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */

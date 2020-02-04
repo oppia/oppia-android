@@ -5,6 +5,7 @@
   <data>
 
     <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
@@ -26,10 +27,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
-      android:digits="0123456789.-+"
+      android:contentDescription="@string/numeric_input_content_description"
+      android:digits="0123456789.-"
       android:fontFamily="sans-serif"
       android:imeOptions="actionDone"
-      android:contentDescription="@string/numeric_input_content_description"
       android:inputType="numberDecimal"
       android:longClickable="false"
       android:maxLength="200"
@@ -43,7 +44,8 @@
       android:textColorHint="@color/editTextHint"
       android:textSize="14sp"
       android:textStyle="italic"
-      app:textChangedListener="@{viewModel.answerTextWatcher}"/>
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

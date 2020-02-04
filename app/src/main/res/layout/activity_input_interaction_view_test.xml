@@ -35,15 +35,27 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
-      android:digits="0123456789."
       android:focusable="true"
       android:hint="Write the digit here."
-      android:inputType="numberDecimal"
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
       android:singleLine="true"
-      android:text="@={numericInputViewModel.answerText}" />
+      android:text="@={numericInputViewModel.answerText}"
+      app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/number_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{numericInputViewModel.errorMessage.get()}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{numericInputViewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.app.customview.interaction.TextInputInteractionView
       android:id="@+id/test_text_input_interaction_view"
