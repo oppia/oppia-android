@@ -23,6 +23,11 @@ const val STORY_TEXT_SIZE_MEDIUM = "Medium"
 const val STORY_TEXT_SIZE_LARGE = "Large"
 const val STORY_TEXT_SIZE_EXTRA_LARGE = "Extra Large"
 
+const val SMALL_TEXT_SIZE_VALUE = 16f
+const val MEDIUM_TEXT_SIZE_VALUE = 18f
+const val LARGE_TEXT_SIZE_VALUE = 20f
+const val EXTRA_LARGE_TEXT_SIZE_VALUE = 22f
+
 const val MESSAGE_STORY_TEXT_SIZE = "Text Size"
 const val MESSAGE_APP_LANGUAGE = "App Language"
 const val MESSAGE_AUDIO_LANGUAGE = "Audio Language"
@@ -34,7 +39,7 @@ class OptionsFragment @Inject constructor(
 ) : PreferenceFragmentCompat() {
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var storyTextSize = 16f
+  private var storyTextSize = SMALL_TEXT_SIZE_VALUE
   private var appLanguage = "English"
   private var audioLanguage = "No Audio"
 
@@ -49,16 +54,16 @@ class OptionsFragment @Inject constructor(
   private fun updateDataIntoUI() {
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
-      16f -> {
+      SMALL_TEXT_SIZE_VALUE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_SMALL
       }
-      18f -> {
+      MEDIUM_TEXT_SIZE_VALUE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_MEDIUM
       }
-      20f -> {
+      LARGE_TEXT_SIZE_VALUE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_LARGE
       }
-      22f -> {
+      EXTRA_LARGE_TEXT_SIZE_VALUE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_EXTRA_LARGE
       }
     }
@@ -121,35 +126,32 @@ class OptionsFragment @Inject constructor(
       val stringValue = newValue.toString()
       when {
         // Update the changed Text size to summary field.
-        preference.key == getString(R.string.key_story_text_size) ->
-        {
+        preference.key == getString(R.string.key_story_text_size) -> {
           preference.summary = stringValue
           when (stringValue) {
             STORY_TEXT_SIZE_SMALL -> {
-              profileManagementController.updateStoryTextSize(profileId, 16f)
+              profileManagementController.updateStoryTextSize(profileId, SMALL_TEXT_SIZE_VALUE)
             }
             STORY_TEXT_SIZE_MEDIUM -> {
-              profileManagementController.updateStoryTextSize(profileId, 18f)
+              profileManagementController.updateStoryTextSize(profileId, MEDIUM_TEXT_SIZE_VALUE)
             }
             STORY_TEXT_SIZE_LARGE -> {
-              profileManagementController.updateStoryTextSize(profileId, 20f)
+              profileManagementController.updateStoryTextSize(profileId, LARGE_TEXT_SIZE_VALUE)
             }
             STORY_TEXT_SIZE_EXTRA_LARGE -> {
-              profileManagementController.updateStoryTextSize(profileId, 22f)
+              profileManagementController.updateStoryTextSize(profileId, EXTRA_LARGE_TEXT_SIZE_VALUE)
             }
           }
         }
 
         // Update the changed language to summary field.
-        preference.key == getString(R.string.key_app_language) ->
-        {
+        preference.key == getString(R.string.key_app_language) -> {
           preference.summary = stringValue
           profileManagementController.updateAppLanguage(profileId, stringValue)
         }
 
         // Update the changed audio language to summary field.
-        preference.key == getString(R.string.key_default_audio) ->
-        {
+        preference.key == getString(R.string.key_default_audio) -> {
           preference.summary = stringValue
           profileManagementController.updateAudioLanguage(profileId, stringValue)
         }
@@ -158,7 +160,7 @@ class OptionsFragment @Inject constructor(
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-     when (requestCode) {
+    when (requestCode) {
       1 -> {
         val textSize = data!!.getStringExtra(MESSAGE_STORY_TEXT_SIZE) as String
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))

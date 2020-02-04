@@ -32,19 +32,19 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     when (prefSummaryValue) {
       STORY_TEXT_SIZE_SMALL -> {
         binding.storyTextSizeSeekBar.progress = 0
-        binding.previewTextview.textSize = 16f
+        binding.previewTextview.textSize = SMALL_TEXT_SIZE_VALUE
       }
       STORY_TEXT_SIZE_MEDIUM -> {
         binding.storyTextSizeSeekBar.progress = 5
-        binding.previewTextview.textSize = 18f
+        binding.previewTextview.textSize = MEDIUM_TEXT_SIZE_VALUE
       }
       STORY_TEXT_SIZE_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 10
-        binding.previewTextview.textSize = 20f
+        binding.previewTextview.textSize = LARGE_TEXT_SIZE_VALUE
       }
       STORY_TEXT_SIZE_EXTRA_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 15
-        binding.previewTextview.textSize = 22f
+        binding.previewTextview.textSize = EXTRA_LARGE_TEXT_SIZE_VALUE
       }
     }
 
@@ -59,19 +59,19 @@ class StoryTextSizeActivityPresenter @Inject constructor(
         when (progressValue) {
           0 -> {
             fontSize = STORY_TEXT_SIZE_SMALL
-            binding.previewTextview.textSize = 16f
+            binding.previewTextview.textSize = SMALL_TEXT_SIZE_VALUE
           }
           5 -> {
             fontSize = STORY_TEXT_SIZE_MEDIUM
-            binding.previewTextview.textSize = 18f
+            binding.previewTextview.textSize = MEDIUM_TEXT_SIZE_VALUE
           }
           10 -> {
             fontSize = STORY_TEXT_SIZE_LARGE
-            binding.previewTextview.textSize = 20f
+            binding.previewTextview.textSize = LARGE_TEXT_SIZE_VALUE
           }
           else -> {
             fontSize = STORY_TEXT_SIZE_EXTRA_LARGE
-            binding.previewTextview.textSize = 22f
+            binding.previewTextview.textSize = EXTRA_LARGE_TEXT_SIZE_VALUE
           }
         }
         seekBar.progress = progressValue
