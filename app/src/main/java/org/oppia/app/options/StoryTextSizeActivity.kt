@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-private const val STORY_TEXT_SIZE_PREFERENCE_KEY = "STORY_TEXT_SIZE_PREFERENCE"
-private const val STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE = "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
+private const val KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE = "STORY_TEXT_SIZE_PREFERENCE"
+private const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE = "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
 
 /** The activity to change the Text size of the Story content in the app. */
 class StoryTextSizeActivity : InjectableAppCompatActivity() {
@@ -20,8 +20,8 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    prefKey = intent.getStringExtra(STORY_TEXT_SIZE_PREFERENCE_KEY)
-    prefSummaryValue = intent.getStringExtra(STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
+    prefKey = intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE)
+    prefSummaryValue = intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
     storyTextSizeActivityPresenter.handleOnCreate(prefSummaryValue)
   }
 
@@ -32,8 +32,8 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
       prefKey: String, summaryValue: String
     ): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
-      intent.putExtra(STORY_TEXT_SIZE_PREFERENCE_KEY, prefKey)
-      intent.putExtra(STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
+      intent.putExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE, prefKey)
+      intent.putExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
   }

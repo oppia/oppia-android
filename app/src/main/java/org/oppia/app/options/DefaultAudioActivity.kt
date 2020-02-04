@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-private const val AUDIO_LANGUAGE_PREFERENCE_KEY = "AUDIO_LANGUAGE_PREFERENCE"
-private const val AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 
 /** The activity to change the Default Audio language of the app. */
 class DefaultAudioActivity : InjectableAppCompatActivity() {
@@ -19,8 +19,8 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    prefKey = intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_KEY)
-    prefSummaryValue = intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    prefKey = intent.getStringExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE)
+    prefSummaryValue = intent.getStringExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
     defaultAudioActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
 
@@ -28,8 +28,8 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
     /** Returns a new [Intent] to route to [DefaultAudioActivity]. */
     fun createDefaultAudioActivityIntent(context: Context, prefKey: String, summaryValue: String): Intent {
       val intent = Intent(context, DefaultAudioActivity::class.java)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_KEY, prefKey)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
+      intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefKey)
+      intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
   }
