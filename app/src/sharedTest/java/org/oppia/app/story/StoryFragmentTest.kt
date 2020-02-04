@@ -12,6 +12,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -26,6 +27,7 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.story.testing.StoryFragmentTestActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.TEST_STORY_ID_1
 
 /** Tests for [StoryFragment]. */
@@ -77,6 +79,18 @@ class StoryFragmentTest {
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
     launch<StoryFragmentTestActivity>(createTestActivityIntent(TEST_STORY_ID_1)).use {
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(4))
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
+    launch<StoryFragmentTestActivity>(createTestActivityIntent(TEST_STORY_ID_1)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0)).check(
+        matches(
+          withText("First Story")
+        )
+      )
     }
   }
 
