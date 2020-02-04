@@ -18,14 +18,14 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.normalizeWhitespace
 
 /** [ViewModel] for the numeric input interaction. */
-class NumericInputViewModel (
+class NumericInputViewModel(
   private val context: Context,
   private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
   var errorMessage = ObservableField<String>("")
-  private val invalidCharsRegex = """^-?[0-9]\d*(\.\d+)?$""".toRegex()
+  private val invalidCharsRegex = """^[\d\s+.-]+$""".toRegex()
   private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
   init {
@@ -46,7 +46,7 @@ class NumericInputViewModel (
             context
           )
         AnswerErrorCategory.SUBMIT_TIME -> pendingAnswerError =
-         getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
+          getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
             context
           )
       }
@@ -96,6 +96,7 @@ class NumericInputViewModel (
       normalized.startsWith(".") -> NumericInpurParsingError.INVALID_FORMAT
       normalized.count { it == '.' } > 1 -> NumericInpurParsingError.INVALID_FORMAT
       normalized.lastIndexOf('-') > 0 -> NumericInpurParsingError.INVALID_FORMAT
+      normalized.lastIndexOf('+') > 0 -> NumericInpurParsingError.INVALID_FORMAT
       else -> NumericInpurParsingError.VALID
     }
   }
@@ -121,9 +122,9 @@ class NumericInputViewModel (
   /** Enum to store the errors of [NumericInputInteractionView]. */
   enum class NumericInpurParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
-    INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
-    INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
-    NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+    INVALID_CHARS(error = R.string.number_error_invalid_chars),
+    INVALID_FORMAT(error = R.string.number_error_invalid_format),
+    NUMBER_TOO_LONG(error = R.string.number_error_larger_than_seven_digits);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
