@@ -8,6 +8,10 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.p2p.BluetoothDemoActivity
+import org.oppia.app.p2p.NFCDemoActivity
+import org.oppia.app.p2p.P2PDemoActivity
+import org.oppia.app.p2p.WifiDirectDemoActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
@@ -54,6 +58,7 @@ interface ActivityComponent {
   fun inject(adminPinActivity: AdminPinActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
+  fun inject(bluetoothDemoActivity: BluetoothDemoActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
   fun inject(continuePlayingActivity: ContinuePlayingActivity)
@@ -66,6 +71,7 @@ interface ActivityComponent {
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
+  fun inject(nfcDemoActivity: NFCDemoActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
@@ -73,9 +79,11 @@ interface ActivityComponent {
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(p2PDemoActivity: P2PDemoActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
+  fun inject(wifiDirectDemoActivity: WifiDirectDemoActivity)
 }
