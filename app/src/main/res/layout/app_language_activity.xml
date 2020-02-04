@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view" />
 
       <View
-        android:id="@+id/toolbar_shadow_view"
+        android:id="@+id/app_language_toolbar_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />

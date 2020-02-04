@@ -27,7 +27,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     binding.audioLanguageToolbar.setNavigationOnClickListener {
       val message = prefSummaryValue
       val intent = Intent()
-      intent.putExtra(MESSAGE_AUDIO_LANGUAGE, message)
+      intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
       (activity as DefaultAudioActivity).setResult(3, intent)
       activity.finish()
     }
@@ -35,6 +35,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   private fun createAdapter() {
+    // TODO: Replace dummy list with actual language list.
     val languageList = ArrayList<String>()
     languageList.add("No Audio")
     languageList.add("English")
@@ -42,7 +43,6 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     languageList.add("Hindi")
     languageList.add("Chinese")
     languageSelectionAdapter.setLanguageList(languageList)
-
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
 }

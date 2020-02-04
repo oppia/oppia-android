@@ -26,7 +26,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     binding.appLanguageToolbar.setNavigationOnClickListener {
       val message = prefSummaryValue
       val intent = Intent()
-      intent.putExtra(MESSAGE_APP_LANGUAGE, message)
+      intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
       (activity as AppLanguageActivity).setResult(2, intent)
       activity.finish()
     }
@@ -34,13 +34,13 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
   }
 
   private fun createAdapter() {
+    // TODO: Replace dummy list with actual language list.
     val languageList = ArrayList<String>()
     languageList.add("English")
     languageList.add("French")
     languageList.add("Hindi")
     languageList.add("Chinese")
     languageSelectionAdapter.setLanguageList(languageList)
-
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
 }

@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-private const val APP_LANGUAGE_PREFERENCE_KEY = "APP_LANGUAGE_PREFERENCE_KEY"
+private const val APP_LANGUAGE_PREFERENCE_KEY = "APP_LANGUAGE_PREFERENCE"
 private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 
 /** The activity to change the language of the app. */

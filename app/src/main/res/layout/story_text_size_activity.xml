@@ -53,7 +53,6 @@
           android:text="@string/story_text_will_look_like_this" />
 
         <View
-          android:id="@+id/divider_view"
           android:layout_width="match_parent"
           android:layout_height="1dp"
           android:background="@drawable/toolbar_drop_shadow" />
@@ -110,7 +109,7 @@
       </LinearLayout>
 
       <View
-        android:id="@+id/toolbar_shadow_view"
+        android:id="@+id/story_text_size_toolbar_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />

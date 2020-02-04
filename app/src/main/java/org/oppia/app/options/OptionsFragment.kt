@@ -28,9 +28,9 @@ const val MEDIUM_TEXT_SIZE_VALUE = 18f
 const val LARGE_TEXT_SIZE_VALUE = 20f
 const val EXTRA_LARGE_TEXT_SIZE_VALUE = 22f
 
-const val MESSAGE_STORY_TEXT_SIZE = "Text Size"
-const val MESSAGE_APP_LANGUAGE = "App Language"
-const val MESSAGE_AUDIO_LANGUAGE = "Audio Language"
+const val KEY_MESSAGE_STORY_TEXT_SIZE = "Text Size"
+const val KEY_MESSAGE_APP_LANGUAGE = "App Language"
+const val KEY_MESSAGE_AUDIO_LANGUAGE = "Audio Language"
 
 class OptionsFragment @Inject constructor(
   private val activity: AppCompatActivity,
@@ -73,6 +73,7 @@ class OptionsFragment @Inject constructor(
         startActivityForResult(
           StoryTextSizeActivity.createStoryTextSizeActivityIntent(
             requireContext(),
+            getString(R.string.key_story_text_size),
             textSizePref.summary.toString()
           ), 1
         )
@@ -162,15 +163,15 @@ class OptionsFragment @Inject constructor(
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     when (requestCode) {
       1 -> {
-        val textSize = data!!.getStringExtra(MESSAGE_STORY_TEXT_SIZE) as String
+        val textSize = data!!.getStringExtra(KEY_MESSAGE_STORY_TEXT_SIZE) as String
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
       }
       2 -> {
-        val appLanguage = data!!.getStringExtra(MESSAGE_APP_LANGUAGE) as String
+        val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
       }
       else -> {
-        val audioLanguage = data!!.getStringExtra(MESSAGE_AUDIO_LANGUAGE) as String
+        val audioLanguage = data!!.getStringExtra(KEY_MESSAGE_AUDIO_LANGUAGE) as String
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
       }
     }

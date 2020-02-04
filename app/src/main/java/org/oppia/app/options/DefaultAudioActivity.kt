@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-private const val AUDIO_LANGUAGE_PREFERENCE_KEY = "AUDIO_LANGUAGE_PREFERENCE_KEY"
+private const val AUDIO_LANGUAGE_PREFERENCE_KEY = "AUDIO_LANGUAGE_PREFERENCE"
 private const val AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 
 /** The activity to change the Default Audio language of the app. */
