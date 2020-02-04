@@ -102,8 +102,6 @@ class StoryProgressController @Inject constructor(
   private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
 
   private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
-    Log.d("StoryProgressController", "profileId: ${profileId.internalId}")
-
     return if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {
@@ -113,17 +111,6 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
   }
-
-  //private val retrieveCacheStore(profileManagementController.getCurrentProfileId()) = retrieveCacheStore(profileManagementController.getCurrentProfileId())
-
-  // TODO(#272): Remove init block when storeDataAsync is fixed
-//  init {
-//    retrieveCacheStore(profileManagementController.getCurrentProfileId()).primeCacheAsync().invokeOnCompletion {
-//      it?.let {
-//        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for StoryProgressController.", it)
-//      }
-//    }
-//  }
 
   fun retrieveStoryProgress(storyId: String): StoryProgress {
     return createStoryProgressSnapshot(storyId)
