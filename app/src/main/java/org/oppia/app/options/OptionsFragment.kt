@@ -120,7 +120,8 @@ class OptionsFragment @Inject constructor(
     Preference.OnPreferenceChangeListener { preference, newValue ->
       val stringValue = newValue.toString()
       when {
-        preference.key == getString(R.string.key_story_text_size) -> // update the changed Text size  to summary filed
+        // Update the changed Text size to summary field.
+        preference.key == getString(R.string.key_story_text_size) ->
         {
           preference.summary = stringValue
           when (stringValue) {
