@@ -624,12 +624,10 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
-<<<<<<< HEAD
   private fun markExplorationAsCompleted(){
     storyProgressController.recordCompletedChapter(explorationId, storyId, topicId)
   }
 
-=======
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?) {
     if (pendingAnswerError != null) {
@@ -638,5 +636,4 @@ class StateFragmentPresenter @Inject constructor(
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
   }
->>>>>>> upstream/develop
 }

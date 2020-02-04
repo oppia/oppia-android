@@ -133,13 +133,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
         result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
-<<<<<<< HEAD:app/src/main/java/org/oppia/app/topic/play/TopicPlayFragmentPresenter.kt
           logger.d("TopicPlayFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(explorationId, storyId, topicId)
-=======
-          logger.d("TopicLessonsFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId, topicId)
->>>>>>> upstream/develop:app/src/main/java/org/oppia/app/topic/lessons/TopicLessonsFragmentPresenter.kt
         }
       }
     })
