@@ -47,8 +47,8 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("NumericInput")
-  fun provideNumericInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, _, _, _ -> NumericInputViewModel() }
+  fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { _, _, _, interactionAnswerHandler -> NumericInputViewModel(context, interactionAnswerHandler) }
   }
 
   @Provides

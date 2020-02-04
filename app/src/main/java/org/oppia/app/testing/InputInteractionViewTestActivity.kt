@@ -27,7 +27,11 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
-  val numericInputViewModel = NumericInputViewModel()
+  val numericInputViewModel = NumericInputViewModel(
+    context = this,
+    interactionAnswerErrorReceiver = this
+  )
+
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance()
   )
