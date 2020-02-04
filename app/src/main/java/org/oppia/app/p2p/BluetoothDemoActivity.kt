@@ -12,4 +12,11 @@ class BluetoothDemoActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     bluetoothDemoActivityPresenter.handleOnCreate()
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    bluetoothDemoActivityPresenter.handleOnDestroy()
+  }
+
+  fun appendText(text: String) = bluetoothDemoActivityPresenter.appendText(text)
 }
