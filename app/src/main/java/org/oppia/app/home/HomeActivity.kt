@@ -1,5 +1,6 @@
 package org.oppia.app.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -9,9 +10,19 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
+const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
+
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+
+  companion object {
+    fun createHomeActivity(context: Context, profileId: Int?): Intent {
+      val intent = Intent(context, HomeActivity::class.java)
+      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
+      return intent
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

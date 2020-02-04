@@ -1,4 +1,4 @@
-package org.oppia.app.topic.train
+package org.oppia.app.topic.practice
 
 import android.app.Application
 import android.content.Context
@@ -44,9 +44,9 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-/** Tests for [TopicTrainFragment]. */
+/** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicTrainFragmentTest {
+class TopicPracticeFragmentTest {
 
   private var skillIdList = ArrayList<String>()
 
@@ -66,7 +66,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
-  fun testTopicTrainFragment_loadFragment_displaySkills_startButtonIsInactive() {
+  fun testTopicPracticeFragment_loadFragment_displaySkills_startButtonIsInactive() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -74,14 +74,14 @@ class TopicTrainFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_train_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
       onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
-      onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_isSuccessful() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_isSuccessful() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -95,7 +95,7 @@ class TopicTrainFragmentTest {
   }
 
   @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_startButtonIsActive() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_startButtonIsActive() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -104,26 +104,12 @@ class TopicTrainFragmentTest {
         )
       ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+      onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
     }
   }
 
   @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_isSuccessful() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(2).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-    }
-  }
-
-  @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_deselectSkills_isSuccessful() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         allOf(
@@ -133,12 +119,26 @@ class TopicTrainFragmentTest {
       ).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
       onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
-  fun testTopicTrainFragment_loadFragment_selectSkills_clickStartButton_skillListTransferSuccessfully() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_deselectSkills_startButtonIsInactive() {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testTopicPracticeFragment_loadFragment_selectSkills_clickStartButton_skillListTransferSuccessfully() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0)
     onView(
       allOf(
@@ -147,14 +147,14 @@ class TopicTrainFragmentTest {
       )
     ).perform(click())
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-    onView(withId(R.id.topic_train_start_button)).perform(click())
+    onView(withId(R.id.topic_practice_start_button)).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -165,24 +165,24 @@ class TopicTrainFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicTrainFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
-    onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+  fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
+    onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
-    onView(withId(R.id.topic_train_start_button)).check(matches(not(isClickable())))
+    onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicTrainFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
     onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
-    onView(withId(R.id.topic_train_start_button)).check(matches(isClickable()))
+    onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
   }
 
   private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {

@@ -96,7 +96,7 @@ class TopicReviewFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
+  fun testTopicPracticeFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
       onView(
         Matchers.allOf(

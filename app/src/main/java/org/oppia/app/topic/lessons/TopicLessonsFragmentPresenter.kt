@@ -1,4 +1,4 @@
-package org.oppia.app.topic.play
+package org.oppia.app.topic.lessons
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.databinding.TopicPlayFragmentBinding
+import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
@@ -27,9 +27,9 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [TopicPlayFragment]. */
+/** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
-class TopicPlayFragmentPresenter @Inject constructor(
+class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
@@ -42,13 +42,13 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private var currentExpandedChapterListIndex: Int? = null
 
-  private lateinit var binding: TopicPlayFragmentBinding
+  private lateinit var binding: TopicLessonsFragmentBinding
   private lateinit var topicId: String
   private lateinit var storyId: String
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
-  private val itemList: MutableList<TopicPlayItemViewModel> = ArrayList()
+  private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -57,12 +57,12 @@ class TopicPlayFragmentPresenter @Inject constructor(
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicPlayFragment."
+      "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
     storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-    binding = TopicPlayFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicLessonsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.let {
       it.lifecycleOwner = fragment
     }
@@ -86,7 +86,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
             currentExpandedChapterListIndex = index + 1
           }
         }
-        itemList.add(TopicPlayTitleViewModel())
+        itemList.add(TopicLessonsTitleViewModel())
         for (storySummary in it.storyList) {
           itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
         }
@@ -112,7 +112,7 @@ class TopicPlayFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicPlayFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicLessonsFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -130,11 +130,16 @@ class TopicPlayFragmentPresenter @Inject constructor(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("TopicPlayFragment", "Loading exploration")
-        result.isFailure() -> logger.e("TopicPlayFragment", "Failed to load exploration", result.getErrorOrNull()!!)
+        result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
+        result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
+<<<<<<< HEAD:app/src/main/java/org/oppia/app/topic/play/TopicPlayFragmentPresenter.kt
           logger.d("TopicPlayFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(explorationId, storyId, topicId)
+=======
+          logger.d("TopicLessonsFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(explorationId, topicId)
+>>>>>>> upstream/develop:app/src/main/java/org/oppia/app/topic/lessons/TopicLessonsFragmentPresenter.kt
         }
       }
     })
