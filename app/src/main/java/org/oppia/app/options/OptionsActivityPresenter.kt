@@ -1,8 +1,12 @@
 package org.oppia.app.options
 
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -14,18 +18,32 @@ class OptionsActivityPresenter @Inject constructor(
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController
 ) {
+  private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.option_activity)
+    setUpNavigationDrawer()
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.option_fragment_placeholder,
+        R.id.options_fragment_placeholder,
         OptionsFragment(activity, profileManagementController, logger)
       ).commitNow()
     }
   }
 
+  private fun setUpNavigationDrawer() {
+    val toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+    navigationDrawerFragment =
+      activity.supportFragmentManager.findFragmentById(R.id.options_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment!!.setUpDrawer(
+      activity.findViewById<View>(R.id.options_activity_drawer_layout) as DrawerLayout,
+      toolbar, R.id.nav_options
+    )
+  }
+
   private fun getOptionFragment(): OptionsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.option_fragment_placeholder) as OptionsFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionsFragment?
   }
 }

@@ -112,6 +112,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       NavigationDrawerItem.HOME -> {
         binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
       }
+      NavigationDrawerItem.OPTIONS -> {
+        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.OPTIONS.ordinal).isChecked = true
+      }
       NavigationDrawerItem.HELP -> {
         binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
       }

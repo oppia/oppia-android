@@ -3,6 +3,7 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import javax.inject.Inject
@@ -23,5 +24,6 @@ class OptionsActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     optionActivityPresenter.handleOnCreate()
+    title = getString(R.string.menu_options)
   }
 }
