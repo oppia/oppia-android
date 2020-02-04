@@ -34,9 +34,9 @@ class OptionsFragment @Inject constructor(
 ) : PreferenceFragmentCompat() {
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  var storyTextSize = 16f
-  var appLanguage = "English"
-  var audioLanguage = "No Audio"
+  private var storyTextSize = 16f
+  private var appLanguage = "English"
+  private var audioLanguage = "No Audio"
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
@@ -50,20 +50,20 @@ class OptionsFragment @Inject constructor(
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
       16f -> {
-        textSizePref.summary = STORY_TEXT_SIZE_SMALL
+        textSizePref!!.summary = STORY_TEXT_SIZE_SMALL
       }
       18f -> {
-        textSizePref.summary = STORY_TEXT_SIZE_MEDIUM
+        textSizePref!!.summary = STORY_TEXT_SIZE_MEDIUM
       }
       20f -> {
-        textSizePref.summary = STORY_TEXT_SIZE_LARGE
+        textSizePref!!.summary = STORY_TEXT_SIZE_LARGE
       }
       22f -> {
-        textSizePref.summary = STORY_TEXT_SIZE_EXTRA_LARGE
+        textSizePref!!.summary = STORY_TEXT_SIZE_EXTRA_LARGE
       }
     }
 
-    textSizePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
+    textSizePref!!.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
           StoryTextSizeActivity.createStoryTextSizeActivityIntent(
@@ -76,7 +76,7 @@ class OptionsFragment @Inject constructor(
     }
 
     val appLanguagePref = findPreference<Preference>(getString(R.string.key_app_language))
-    appLanguagePref.summary = appLanguage
+    appLanguagePref!!.summary = appLanguage
     appLanguagePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -91,7 +91,7 @@ class OptionsFragment @Inject constructor(
     }
 
     val defaultAudioPref = findPreference<Preference>(getString(R.string.key_default_audio))
-    defaultAudioPref.summary = audioLanguage
+    defaultAudioPref!!.summary = audioLanguage
     defaultAudioPref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -106,8 +106,8 @@ class OptionsFragment @Inject constructor(
     }
   }
 
-  private fun bindPreferenceSummaryToValue(typeOfValue: String, preference: Preference) {
-    preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
+  private fun bindPreferenceSummaryToValue(typeOfValue: String, preference: Preference?) {
+    preference!!.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
 
     bindPreferenceSummaryToValueListener.onPreferenceChange(
       preference, PreferenceManager
@@ -138,12 +138,16 @@ class OptionsFragment @Inject constructor(
             }
           }
         }
-        preference.key == getString(R.string.key_app_language) -> // update the changed language  to summary filed
+
+        // Update the changed language to summary field.
+        preference.key == getString(R.string.key_app_language) ->
         {
           preference.summary = stringValue
           profileManagementController.updateAppLanguage(profileId, stringValue)
         }
-        preference.key == getString(R.string.key_default_audio) -> // update the changed audio language  to summary filed
+
+        // Update the changed audio language to summary field.
+        preference.key == getString(R.string.key_default_audio) ->
         {
           preference.summary = stringValue
           profileManagementController.updateAudioLanguage(profileId, stringValue)

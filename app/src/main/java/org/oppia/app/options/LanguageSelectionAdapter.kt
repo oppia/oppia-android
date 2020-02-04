@@ -52,14 +52,14 @@ class LanguageSelectionAdapter(private val prefKey: String) :
       binding.radioContainer.setOnClickListener {
         if (prefKey == binding.radioContainer.context.getString(R.string.key_app_language)) {
           val intent = Intent()
-          intent.putExtra("MESSAGE", language)
+          intent.putExtra(MESSAGE_APP_LANGUAGE, language)
           (binding.radioContainer.context as AppLanguageActivity).setResult(2, intent)
-          (binding.radioContainer.context as AppLanguageActivity).finish()//finishing activity
+          (binding.radioContainer.context as AppLanguageActivity).finish()
         } else {
           val intent = Intent()
-          intent.putExtra("MESSAGE", language)
+          intent.putExtra(MESSAGE_AUDIO_LANGUAGE, language)
           (binding.radioContainer.context as DefaultAudioActivity).setResult(3, intent)
-          (binding.radioContainer.context as DefaultAudioActivity).finish()//finishing activity
+          (binding.radioContainer.context as DefaultAudioActivity).finish()
         }
       }
     }

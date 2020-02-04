@@ -41,7 +41,6 @@
       android:name=".options.OptionsActivity"
       android:screenOrientation="portrait" />
     <activity
-
       android:name=".options.StoryTextSizeActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />

@@ -90,7 +90,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           Intent(fragment.activity, HomeActivity::class.java)
         }
         NavigationDrawerItem.OPTIONS -> {
-          OptionsActivity.createOptionsActivity(fragment.requireContext(),internalProfileId)
+          OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId)
         }
         NavigationDrawerItem.HELP -> {
           Intent(fragment.activity, HelpActivity::class.java)

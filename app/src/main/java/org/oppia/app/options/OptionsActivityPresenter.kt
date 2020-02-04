@@ -12,14 +12,15 @@ import javax.inject.Inject
 class OptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: Logger,
-  private val profileManagementController: ProfileManagementController) {
+  private val profileManagementController: ProfileManagementController
+) {
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.option_activity)
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.option_fragment_placeholder,
-        OptionsFragment(activity,profileManagementController,logger)
+        OptionsFragment(activity, profileManagementController, logger)
       ).commitNow()
     }
   }
