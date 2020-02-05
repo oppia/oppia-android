@@ -33,4 +33,12 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
+
+  override fun onBackPressed() {
+    val message = prefSummaryValue
+    val intent = Intent()
+    intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
+    setResult(3, intent)
+    finish()
+  }
 }

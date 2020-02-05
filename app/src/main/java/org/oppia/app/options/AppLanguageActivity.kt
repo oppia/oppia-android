@@ -36,4 +36,12 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
+
+  override fun onBackPressed() {
+    val message = prefSummaryValue
+    val intent = Intent()
+    intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
+    setResult(2, intent)
+    finish()
+  }
 }

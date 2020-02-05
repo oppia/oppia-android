@@ -15,10 +15,10 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
   private lateinit var prefSummaryValue: String
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
 
-  fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
+  fun handleOnCreate(prefKey: String, prefValue: String) {
     val binding = DataBindingUtil.setContentView<DefaultAudioActivityBinding>(activity, R.layout.default_audio_activity)
 
-    this.prefSummaryValue = prefSummaryValue
+    prefSummaryValue = prefValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey)
     binding.audioLanguageRecyclerView.apply {
       adapter = languageSelectionAdapter

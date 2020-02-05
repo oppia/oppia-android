@@ -14,11 +14,12 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -85,12 +86,12 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-    onView(ViewMatchers.withContentDescription(R.string.drawer_open_content_description)).check(
-        ViewAssertions.matches(ViewMatchers.isCompletelyDisplayed())
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
       ).perform(click())
       onView(withId(R.id.options_fragment_placeholder))
-        .check(ViewAssertions.matches(ViewMatchers.isCompletelyDisplayed()))
-      onView(withId(R.id.options_activity_drawer_layout)).check(ViewAssertions.matches(DrawerMatchers.isOpen()))
+        .check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.options_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
     }
   }
 

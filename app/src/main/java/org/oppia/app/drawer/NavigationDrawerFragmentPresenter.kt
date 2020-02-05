@@ -97,7 +97,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
       }
       fragment.activity!!.startActivity(intent)
-      fragment.activity!!.finish()
+      drawerLayout.closeDrawers()
+//      fragment.activity!!.finish()
     } else {
       drawerLayout.closeDrawers()
     }

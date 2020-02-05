@@ -37,4 +37,12 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
+
+  override fun onBackPressed() {
+    val message = prefSummaryValue
+    val intent = Intent()
+    intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, message)
+    setResult(1, intent)
+    finish()
+  }
 }
