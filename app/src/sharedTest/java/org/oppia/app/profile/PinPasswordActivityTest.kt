@@ -14,6 +14,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -75,6 +76,13 @@ class PinPasswordActivityTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  @Test
+  fun testPinPasswordActivityWithAdmin_checkKeyboardIsVisibleByDefault() {
+    ActivityScenario.launch<PinPasswordActivity>(PinPasswordActivity.createPinPasswordActivityIntent(context, adminPin, adminId)).use {
+      onView(withId(R.id.input_pin)).check(matches(hasFocus()))
+    }
   }
 
   @Test
