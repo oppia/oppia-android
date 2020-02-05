@@ -88,10 +88,22 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0)).check(
         matches(
-          withText("First Story")
+          withText("Second Story")
         )
       )
     }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
+    onView(isRoot()).perform(orientationLandscape())
+    val headerString: String = getResources().getQuantityString(R.plurals.story_total_chapters, 3, 1, 3)
+    onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+    onView(atPositionOnView(R.id.story_chapter_list, 0, R.id.story_progress_chapter_completed_text)).check(
+      matches(
+        withText(headerString)
+      )
+    )
   }
 
   private fun createTestActivityIntent(storyId: String): Intent {
