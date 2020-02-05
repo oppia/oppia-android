@@ -83,7 +83,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
+  fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
     onView(ViewMatchers.withContentDescription(R.string.drawer_open_content_description)).check(
         ViewAssertions.matches(ViewMatchers.isCompletelyDisplayed())
