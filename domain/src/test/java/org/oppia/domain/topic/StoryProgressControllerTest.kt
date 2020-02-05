@@ -28,9 +28,8 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ChapterPlayState.COMPLETED
 import org.oppia.app.model.ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
 import org.oppia.app.model.ChapterPlayState.NOT_STARTED
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.TopicProgressDatabase
-import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.app.model.TopicProgress
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -40,8 +39,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.io.File
-import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -66,9 +63,10 @@ class StoryProgressControllerTest {
   @Inject
   lateinit var storyProgressController: StoryProgressController
   @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  lateinit var profileManagementController: ProfileManagementController
 
-  @Inject lateinit var cacheStoreFactory: PersistentCacheStore.Factory
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   @field:TestDispatcher
@@ -77,8 +75,15 @@ class StoryProgressControllerTest {
   @Inject
   lateinit var context: Context
 
-  @Mock lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
-  @Captor lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock
+  lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
+  @Captor
+  lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Mock lateinit var mockTopicProgressObserver: Observer<AsyncResult<TopicProgress>>
+
+  @Captor
+  lateinit var topicProgressResultCaptor: ArgumentCaptor<AsyncResult<TopicProgress>>
 
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
@@ -299,44 +304,22 @@ class StoryProgressControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testRecordStoryProgress_checkStoryProgressIsAdded() = runBlockingTest(coroutineContext) {
-
-    profileTestHelper.initializeProfiles()
-    profileTestHelper.loginToAdmin()
-
-    storyProgressController
-      .recordCompletedChapter(EXPLORATION_ID_1, STORY_ID_1, TOPIC_ID_1)
+    storyProgressController.recordCompletedChapter(EXPLORATION_ID_1, STORY_ID_1, TOPIC_ID_1)
       .observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
-    val topicProgressDatabase = readTopicProgressDatabase()
+    storyProgressController.getTopicProgress(TOPIC_ID_1).observeForever(mockTopicProgressObserver)
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    val topicProgress = topicProgressDatabase.topicProgressMap[TOPIC_ID_1]!!
-    assertThat(topicProgress.storyProgressMap[STORY_ID_1]!!.chapterProgressCount).isEqualTo(1)
-  }
 
-  private fun readTopicProgressDatabase(): TopicProgressDatabase {
-    retrieveCacheStore(ProfileId.newBuilder().setInternalId(0).build())
-    return FileInputStream(
-      File(
-        context.filesDir,
-        "topic_progress_database.cache"
-      )
-    ).use(TopicProgressDatabase::parseFrom)
-  }
+    verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
 
-  private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
+    assertThat(topicProgressResultCaptor.value.isSuccess()).isTrue()
 
-  private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
-    return if (profileId in cacheStoreMap) {
-      cacheStoreMap[profileId]!!
-    } else {
-      val cacheStore =
-        cacheStoreFactory.createPerProfile("topic_progress_database", TopicProgressDatabase.getDefaultInstance(), profileId)
-      cacheStoreMap[profileId] = cacheStore
-      cacheStore
-    }
+    val topicProgress = topicProgressResultCaptor.value.getOrThrow()
+    assertThat(topicProgress.storyProgressMap.size).isEqualTo(1)
+    assertThat(topicProgress.storyProgressMap[STORY_ID_1]!!.chapterProgressMap[EXPLORATION_ID_1]).isEqualTo(COMPLETED)
   }
 
   private fun setUpTestApplicationComponent() {
