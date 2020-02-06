@@ -52,21 +52,21 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ContinuePlayingItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ContinuePlayingItemViewModel, ViewType> { viewModel ->
+      .newBuilder<ContinuePlayingItemViewModel, ContinuePlayingItemViewModel.ViewType> { viewModel ->
         when (viewModel) {
-          is SectionTitleViewModel -> ViewType.VIEW_TYPE_SECTION_TITLE_TEXT
-          is OngoingStoryViewModel -> ViewType.VIEW_TYPE_SECTION_STORY_ITEM
+          is SectionTitleViewModel -> ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT
+          is OngoingStoryViewModel -> ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SECTION_TITLE_TEXT,
+        viewType = ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT,
         inflateDataBinding = SectionTitleBinding::inflate,
         setViewModel = SectionTitleBinding::setViewModel,
         transformViewModel = { it as SectionTitleViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SECTION_STORY_ITEM,
+        viewType = ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM,
         inflateDataBinding = OngoingStoryCardBinding::inflate,
         setViewModel = OngoingStoryCardBinding::setViewModel,
         transformViewModel = { it as OngoingStoryViewModel }
@@ -78,10 +78,6 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ContinuePlayViewModel::class.java)
   }
 
-  private enum class ViewType {
-    VIEW_TYPE_SECTION_TITLE_TEXT,
-    VIEW_TYPE_SECTION_STORY_ITEM
-  }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
     playExploration(promotedStory.explorationId, promotedStory.topicId)

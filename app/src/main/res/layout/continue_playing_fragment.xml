@@ -54,7 +54,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="172dp"
         android:scrollbars="none"
-        app:data="@{viewModel.onGoingStoryLiveData}"
+        app:data="@{viewModel.ongoingStoryLiveData}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
       <View

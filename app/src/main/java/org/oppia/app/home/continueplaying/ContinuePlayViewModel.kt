@@ -18,13 +18,13 @@ class ContinuePlayViewModel @Inject constructor(
   private val topicListController: TopicListController
 ) : ContinuePlayingItemViewModel() {
 
-  val itemList: MutableList<ContinuePlayingItemViewModel> = ArrayList()
+  private val itemList: MutableList<ContinuePlayingItemViewModel> = ArrayList()
 
-  val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
+  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
     topicListController.getOngoingStoryList()
   }
 
-  val onGoingStoryLiveData: LiveData<List<ContinuePlayingItemViewModel>>by lazy {
+  val ongoingStoryLiveData: LiveData<List<ContinuePlayingItemViewModel>>by lazy {
     Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
   }
 
