@@ -30,7 +30,7 @@ class ContinuePlayViewModel @Inject constructor(
 
   private fun processOngoingStoryList(ongoingStoryList: AsyncResult<OngoingStoryList>): List<ContinuePlayingItemViewModel> {
     if (ongoingStoryList.isSuccess()) {
-      if (ongoingStoryList.getOrThrow().recentStoryCount > 0) {
+      if (ongoingStoryList.getOrThrow().recentStoryList.isNotEmpty()) {
         val recentSectionTitleViewModel =
           SectionTitleViewModel(fragment.getString(R.string.ongoing_story_last_week), false)
         itemList.add(recentSectionTitleViewModel)
@@ -40,7 +40,7 @@ class ContinuePlayViewModel @Inject constructor(
         }
       }
 
-      if (ongoingStoryList.getOrThrow().olderStoryCount > 0) {
+      if (ongoingStoryList.getOrThrow().olderStoryList.isNotEmpty()) {
         val showDivider = itemList.isNotEmpty()
         val olderSectionTitleViewModel =
           SectionTitleViewModel(fragment.getString(R.string.ongoing_story_last_month), showDivider)
