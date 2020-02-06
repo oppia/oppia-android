@@ -146,7 +146,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun subscribeToStoryProgress() {
     val completedExplorationIdListResultLiveData =
-      storyProgressController.getTopicProgress(topicId)
+      storyProgressController.getTopicProgress(0, topicId)
     val completedExplorationIdListLiveData = getCompletedExplorationIdList(completedExplorationIdListResultLiveData)
     completedExplorationIdListLiveData.observe(fragment, Observer<TopicProgress> {
       Log.d("TopicPlayFragment", "subscribeToStoryProgress: " + it.storyProgressCount)

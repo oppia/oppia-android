@@ -46,6 +46,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 private const val EXPLORATION_ID_1 = "DUMMY_EXPLORATION_ID_1"
 private const val EXPLORATION_ID_2 = "DUMMY_EXPLORATION_ID_2"
+private const val PROFILE_ID_1 = 1
+private const val PROFILE_ID_2 = 2
 private const val STORY_ID_1 = "DUMMY_STORY_ID_1"
 private const val STORY_ID_2 = "DUMMY_STORY_ID_2"
 private const val TOPIC_ID_1 = "TOPIC_STORY_ID_1"
@@ -76,11 +78,12 @@ class StoryProgressControllerTest {
   lateinit var context: Context
 
   @Mock
-  lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
   @Captor
-  lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  @Mock lateinit var mockTopicProgressObserver: Observer<AsyncResult<TopicProgress>>
+  @Mock
+  lateinit var mockTopicProgressObserver: Observer<AsyncResult<TopicProgress>>
 
   @Captor
   lateinit var topicProgressResultCaptor: ArgumentCaptor<AsyncResult<TopicProgress>>
@@ -189,14 +192,25 @@ class StoryProgressControllerTest {
       .contains("No story found with ID: invalid_story_id")
   }
 
-//  @Test
-//  fun testRecordCompletedChapter_validStory_validChapter_alreadyCompleted_succeeds() {
-//    val recordProgressLiveData = storyProgressController.recordCompletedChapter(TEST_STORY_ID_1, TEST_EXPLORATION_ID_1)
-//
-//    val recordProgressResult = recordProgressLiveData.value
-//    assertThat(recordProgressResult).isNotNull()
-//    assertThat(recordProgressResult!!.isSuccess()).isTrue()
-//  }
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRecordCompletedChapter_validData_recordProgress_isCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(PROFILE_ID_1, EXPLORATION_ID_1, STORY_ID_1, TOPIC_ID_1)
+        .observeForever(mockRecordProgressObserver)
+      advanceUntilIdle()
+
+      storyProgressController.getTopicProgress(PROFILE_ID_1, TOPIC_ID_1).observeForever(mockTopicProgressObserver)
+
+      verify(mockRecordProgressObserver, atLeastOnce()).onChanged(recordProgressResultCaptor.capture())
+      assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
+
+      verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
+      assertThat(topicProgressResultCaptor.value.isSuccess()).isTrue()
+
+      val topicProgress = topicProgressResultCaptor.value.getOrThrow()
+      assertThat(topicProgress).isNotNull()
+    }
 
 //  @Test
 //  fun testRecordCompletedChapter_validStory_validChapter_alreadyCompleted_keepsChapterAsCompleted() {
@@ -304,14 +318,14 @@ class StoryProgressControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testRecordStoryProgress_checkStoryProgressIsAdded() = runBlockingTest(coroutineContext) {
-    storyProgressController.recordCompletedChapter(EXPLORATION_ID_1, STORY_ID_1, TOPIC_ID_1)
-      .observeForever(mockUpdateResultObserver)
+    storyProgressController.recordCompletedChapter(PROFILE_ID_1, EXPLORATION_ID_1, STORY_ID_1, TOPIC_ID_1)
+      .observeForever(mockRecordProgressObserver)
     advanceUntilIdle()
 
-    storyProgressController.getTopicProgress(TOPIC_ID_1).observeForever(mockTopicProgressObserver)
+    storyProgressController.getTopicProgress(PROFILE_ID_1, TOPIC_ID_1).observeForever(mockTopicProgressObserver)
 
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    verify(mockRecordProgressObserver, atLeastOnce()).onChanged(recordProgressResultCaptor.capture())
+    assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
 
     verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
 

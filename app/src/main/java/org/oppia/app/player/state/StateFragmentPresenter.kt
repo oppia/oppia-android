@@ -625,7 +625,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   private fun markExplorationAsCompleted(){
-    storyProgressController.recordCompletedChapter(explorationId, storyId, topicId)
+    storyProgressController.recordCompletedChapter(0, explorationId, storyId, topicId)
   }
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
