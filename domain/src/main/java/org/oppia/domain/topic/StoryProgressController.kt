@@ -1,13 +1,24 @@
 package org.oppia.domain.topic
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.Deferred
 import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.StoryProgressNew
+import org.oppia.app.model.TopicProgress
+import org.oppia.app.model.TopicProgressDatabase
+import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.Logger
+import org.oppia.util.profile.DirectoryManagementUtil
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,27 +43,217 @@ private val FRACTIONS_COMPLETED_CHAPTERS = listOf(FRACTIONS_EXPLORATION_ID_0)
 private val RATIOS_COMPLETED_CHAPTERS = listOf<String>()
 val COMPLETED_EXPLORATIONS = FRACTIONS_COMPLETED_CHAPTERS + RATIOS_COMPLETED_CHAPTERS
 
+private const val CACHE_NAME = "topic_progress_database"
+
+private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
+private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progress_transformed_id"
+
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
 class StoryProgressController @Inject constructor(
-  private val jsonAssetRetriever: JsonAssetRetriever
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val logger: Logger,
+  private val cacheStoreFactory: PersistentCacheStore.Factory,
+  private val dataProviders: DataProviders,
+  private val context: Context,
+  private val directoryManagementUtil: DirectoryManagementUtil
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
-  private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
+  /** Indicates that the given exploration id is not unique. */
+  class ExplorationAlreadyCompletedException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given exploration id is not not found. */
+  class ExplorationNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given story id is not not found. */
+  class StoryNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given topic id is not not found. */
+  class TopicNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given story id does not have any associated story progress. */
+  class StoryProgressNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given topic id does not have any associated topic progress. */
+  class TopicProgressNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /**
-   * Records the specified chapter completed within the context of the specified story. Returns a [LiveData] that
+   * These Statuses correspond to the exceptions above such that if the deferred contains
+   * EXPLORATION_NOT_FOUND, the [ExplorationNotFoundException] will be passed to a failed AsyncResult.
+   *
+   * SUCCESS corresponds to a successful AsyncResult.
+   */
+  private enum class StoryProgressActionStatus {
+    SUCCESS,
+    EXPLORATION_ALREADY_COMPLETED,
+    EXPLORATION_NOT_FOUND,
+    STORY_NOT_FOUND,
+    TOPIC_NOT_FOUND,
+    STORY_PROGRESS_NOT_FOUND
+  }
+
+  private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
+
+  private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
+
+  private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
+    return if (profileId in cacheStoreMap) {
+      cacheStoreMap[profileId]!!
+    } else {
+      val cacheStore =
+        cacheStoreFactory.createPerProfile(CACHE_NAME, TopicProgressDatabase.getDefaultInstance(), profileId)
+      cacheStoreMap[profileId] = cacheStore
+      cacheStore
+    }
+  }
+
+  fun retrieveStoryProgress(storyId: String): StoryProgress {
+    return createStoryProgressSnapshot(storyId)
+  }
+
+  /**
+   * Records the specified chapter completed within the context of the specified exploration, story, topic. Returns a [LiveData] that
    * provides exactly one [AsyncResult] to indicate whether this operation has succeeded. This method will never return
    * a pending result.
    */
-  fun recordCompletedChapter(storyId: String, explorationId: String): LiveData<AsyncResult<Nothing?>> {
-    return try {
-      trackCompletedChapter(storyId, explorationId)
-      MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      MutableLiveData(AsyncResult.failed(e))
+  fun recordCompletedChapter(
+    internalProfileId: Int,
+    explorationId: String,
+    storyId: String,
+    topicId: String
+  ): LiveData<AsyncResult<Any?>> {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      // Replace this with checking if the id pair already exists.
+      val chapterPlayState = ChapterPlayState.COMPLETED
+      val storyProgressNew = StoryProgressNew.newBuilder().putChapterProgress(explorationId, chapterPlayState).build()
+      val topicProgress = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgressNew).build()
+      val topicDatabaseBuilder = it.toBuilder().putTopicProgress(topicId, topicProgress)
+      Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(
+          profileId,
+          explorationId,
+          storyId,
+          topicId,
+          deferred
+        )
+      })
+  }
+
+  fun getTopicProgress(internalProfileId: Int, topicId: String): LiveData<AsyncResult<TopicProgress>> {
+    return dataProviders.convertToLiveData(getTopicProgressDataProvider(internalProfileId, topicId))
+  }
+
+  fun getTopicProgressDataProvider(internalProfileId: Int, topicId: String): DataProvider<TopicProgress> {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return dataProviders.transformAsync<TopicProgressDatabase, TopicProgress>(
+      TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) {
+      val topicProgress = it.topicProgressMap[topicId]
+      if (topicProgress != null) {
+        AsyncResult.success(topicProgress)
+      } else {
+        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
+      }
+    }
+  }
+
+  fun getStoryProgress(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): LiveData<AsyncResult<StoryProgressNew>> {
+    return dataProviders.convertToLiveData(getStoryProgressDataProvider(internalProfileId, topicId, storyId))
+  }
+
+  fun getStoryProgressDataProvider(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): DataProvider<StoryProgressNew> {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return dataProviders.transformAsync<TopicProgressDatabase, StoryProgressNew>(
+      TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) {
+      val topicProgress = it.topicProgressMap[topicId]
+      val storyProgress = topicProgress!!.storyProgressMap[storyId]
+      if (storyProgress != null) {
+        AsyncResult.success(storyProgress)
+      } else {
+        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
+      }
+    }
+  }
+
+  fun getChapterProgress(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    exploration: String
+  ): LiveData<AsyncResult<ChapterPlayState>> {
+    return dataProviders.convertToLiveData(
+      getChapterProgressDataProvider(
+        internalProfileId,
+        topicId,
+        storyId,
+        exploration
+      )
+    )
+  }
+
+  fun getChapterProgressDataProvider(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterPlayState> {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    return dataProviders.transformAsync<TopicProgressDatabase, ChapterPlayState>(
+      TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) {
+      val topicProgress = it.topicProgressMap[topicId]
+      val storyProgress = topicProgress!!.storyProgressMap[storyId]
+      val chapterProgress = storyProgress!!.chapterProgressMap[explorationId]
+      if (chapterProgress != null) {
+        AsyncResult.success(chapterProgress)
+      } else {
+        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
+      }
+    }
+  }
+
+  private suspend fun getDeferredResult(
+    profileId: ProfileId?,
+    explorationId: String?,
+    storyId: String?,
+    topicId: String?,
+    deferred: Deferred<StoryProgressActionStatus>
+  ): AsyncResult<Any?> {
+    return when (deferred.await()) {
+      StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
+      StoryProgressActionStatus.EXPLORATION_ALREADY_COMPLETED -> AsyncResult.failed(
+        ExplorationAlreadyCompletedException("$explorationId is already present.")
+      )
+      StoryProgressActionStatus.EXPLORATION_NOT_FOUND -> AsyncResult.failed(
+        ExplorationNotFoundException("ExplorationId $explorationId does not match an existing Exploration")
+      )
+      StoryProgressActionStatus.STORY_NOT_FOUND -> AsyncResult.failed(
+        StoryNotFoundException("StoryId $storyId does not match an existing story")
+      )
+      StoryProgressActionStatus.TOPIC_NOT_FOUND -> AsyncResult.failed(
+        TopicNotFoundException("TopicId $topicId does not match an existing topic")
+      )
+      StoryProgressActionStatus.STORY_PROGRESS_NOT_FOUND -> AsyncResult.failed(
+        StoryProgressNotFoundException("StoryProgress not found for profile $profileId")
+      )
     }
   }
 
@@ -69,11 +270,6 @@ class StoryProgressController @Inject constructor(
     } catch (e: Exception) {
       MutableLiveData(AsyncResult.failed(e))
     }
-  }
-
-  // TODO(#21): Hide this functionality behind a data provider rather than punching a hole in this controller.
-  internal fun retrieveStoryProgress(storyId: String): StoryProgress {
-    return createStoryProgressSnapshot(storyId)
   }
 
   private fun trackCompletedChapter(storyId: String, explorationId: String) {

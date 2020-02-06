@@ -225,6 +225,21 @@ enum ChapterPlayState {
   COMPLETED = 3;
 }
 
+message TopicProgressDatabase {
+  // Map from topic ID to TopicProgress.
+  map<string, TopicProgress> topic_progress = 1;
+}
+
+message TopicProgress {
+  // Map from story ID to StoryProgress.
+  map<string, StoryProgressNew> story_progress = 1;
+}
+
+message StoryProgressNew {
+  // Map from exploration ID to ChapterPlayState.
+  map<string, ChapterPlayState> chapter_progress = 1;
+}
+
 // Represents the progress a player has made for a story.
 message StoryProgress {
   // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
@@ -234,11 +249,17 @@ message StoryProgress {
 
 // Represents the progress a player has made on a single chapter.
 message ChapterProgress {
+  // The topic ID to get progress of a specific topic only.
+  string topic_id = 1;
+
+  // The story ID of the chapter with possible progress made.
+  string story_id = 2;
+
   // The exploration ID of the chapter with possible progress made.
-  string exploration_id = 1;
+  string exploration_id = 3;
 
   // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
+  ChapterPlayState play_state = 4;
 }
 
 // Represents user's preference for using cellular data
