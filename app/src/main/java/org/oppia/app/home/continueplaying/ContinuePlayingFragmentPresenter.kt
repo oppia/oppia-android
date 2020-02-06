@@ -15,7 +15,6 @@ import org.oppia.app.model.PromotedStory
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -26,18 +25,13 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val explorationDataController: ExplorationDataController,
-  private val topicListController: TopicListController,
+  private val explorationDataController: ExplorationDataController
   private val viewModelProvider: ViewModelProvider<ContinuePlayViewModel>
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
   private lateinit var binding: ContinuePlayingFragmentBinding
-
-//  private lateinit var ongoingListAdapter: OngoingListAdapter
-
-  private val itemList: MutableList<ContinuePlayingItemViewModel> = ArrayList()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -46,8 +40,6 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       (activity as ContinuePlayingActivity).finish()
     }
 
-//    ongoingListAdapter = OngoingListAdapter(itemList)
-
     binding.ongoingStoryRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
@@ -55,41 +47,9 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
     }
-
-//    subscribeToOngoingStoryList()
-
     return binding.root
   }
 
-//  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-//    topicListController.getOngoingStoryList()
-//  }
-//
-//  private fun subscribeToOngoingStoryList() {
-//    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> { it ->
-//      if (it.recentStoryCount > 0) {
-//        val recentSectionTitleViewModel =
-//          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
-//        itemList.add(recentSectionTitleViewModel)
-//        for (promotedStory in it.recentStoryList) {
-//          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-//          itemList.add(ongoingStoryViewModel)
-//        }
-//      }
-//
-//      if (it.olderStoryCount > 0) {
-//        val showDivider = itemList.isNotEmpty()
-//        val olderSectionTitleViewModel =
-//          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_month), showDivider)
-//        itemList.add(olderSectionTitleViewModel)
-//        for (promotedStory in it.olderStoryList) {
-//          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-//          itemList.add(ongoingStoryViewModel)
-//        }
-//      }
-////      ongoingListAdapter.notifyDataSetChanged()
-//    })
-//  }
   private fun createRecyclerViewAdapter(): BindableAdapter<ContinuePlayingItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<ContinuePlayingItemViewModel, ViewType> { viewModel ->
@@ -114,19 +74,14 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       .build()
   }
 
-
   private fun getContinuePlayModel(): ContinuePlayViewModel {
     return viewModelProvider.getForFragment(fragment, ContinuePlayViewModel::class.java)
   }
+
   private enum class ViewType {
     VIEW_TYPE_SECTION_TITLE_TEXT,
     VIEW_TYPE_SECTION_STORY_ITEM
   }
-
-//  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
-//    // If there's an error loading the data, assume the default.
-//    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
-//  }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
     playExploration(promotedStory.explorationId, promotedStory.topicId)
