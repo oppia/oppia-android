@@ -25,7 +25,7 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val explorationDataController: ExplorationDataController
+  private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ContinuePlayViewModel>
 ) {
 
