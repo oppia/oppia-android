@@ -10,13 +10,15 @@ import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.conceptcard.ConceptCardListener
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.topic.reviewcard.ReviewCardFragment
 import javax.inject.Inject
 
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
-  RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
+  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener, ConceptCardListener {
+
   private lateinit var topicId: String
   private var storyId: String? = null
   @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -46,6 +48,13 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     }
   }
 
+  override fun routeToReviewCard(subtopicId: String) {
+    if (getReviewCardFragment() == null) {
+      val reviewCardFragment: ReviewCardFragment = ReviewCardFragment.newInstance(subtopicId)
+      reviewCardFragment.showNow(supportFragmentManager, TAG_REVIEW_CARD_DIALOG)
+    }
+  }
+
   override fun dismiss() {
     getConceptCardFragment()?.dismiss()
   }
@@ -58,8 +67,13 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     return supportFragmentManager.findFragmentByTag(TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment?
   }
 
+  private fun getReviewCardFragment(): ReviewCardFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_REVIEW_CARD_DIALOG) as ReviewCardFragment?
+  }
+
   companion object {
     internal const val TAG_CONCEPT_CARD_DIALOG = "CONCEPT_CARD_DIALOG"
+    internal const val TAG_REVIEW_CARD_DIALOG = "REVIEW_CARD_DIALOG"
     internal const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
     internal const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
