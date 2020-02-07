@@ -8,10 +8,8 @@ import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.R
-import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -41,17 +39,14 @@ class NumericInputViewModel(
   /** It checks the pending error for the current numeric input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
-      when (category) {
-        AnswerErrorCategory.REAL_TIME -> pendingAnswerError =
-          getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
-        AnswerErrorCategory.SUBMIT_TIME -> pendingAnswerError =
-          getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
+      pendingAnswerError = when (category) {
+        AnswerErrorCategory.REAL_TIME -> getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
+          context
+        )
+        AnswerErrorCategory.SUBMIT_TIME -> getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
+          context
+        )
       }
-      errorMessage.set(pendingAnswerError)
     }
     return pendingAnswerError
   }
@@ -83,48 +78,47 @@ class NumericInputViewModel(
   }
 
   /**
-   * Returns a [NumericInpurParsingError] for obvious incorrect number formatting issues for the specified raw text, or
-   * [NumericInpurParsingError.VALID] if not such issues are found.
+   * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the specified raw text, or
+   * [NumericInputParsingError.VALID] if not such issues are found.
    *
-   * Note that this method returning a valid result does not guarantee the text is a valid number--
+   * Note that this method returning a valid result does not guarantee the text is a valid number
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
    * general validity, not for definite correctness.
    */
-  fun getRealTimeAnswerError(text: String): NumericInpurParsingError {
+  private fun getRealTimeAnswerError(text: String): NumericInputParsingError {
     val normalized = text.normalizeWhitespace()
     return when {
-      !normalized.matches(invalidCharsRegex) -> NumericInpurParsingError.INVALID_CHARS
-      normalized.startsWith(".") -> NumericInpurParsingError.STARTING_WITH_FLOATING_POINT
-      normalized.count { it == '.' } > 1 -> NumericInpurParsingError.INVALID_FORMAT
-      normalized.lastIndexOf('-') > 0 -> NumericInpurParsingError.INVALID_FORMAT
-      else -> NumericInpurParsingError.VALID
+      !normalized.matches(invalidCharsRegex) -> NumericInputParsingError.INVALID_FORMAT
+      normalized.startsWith(".") -> NumericInputParsingError.STARTING_WITH_FLOATING_POINT
+      normalized.count { it == '.' } > 1 -> NumericInputParsingError.INVALID_FORMAT
+      normalized.lastIndexOf('-') > 0 -> NumericInputParsingError.INVALID_FORMAT
+      else -> NumericInputParsingError.VALID
     }
   }
 
   /**
-   * Returns a [NumericInpurParsingError] for the specified text input if it's an invalid number, or
-   * [NumericInpurParsingError.VALID] if no issues are found. Note that a valid number returned by this method is guaranteed
+   * Returns a [NumericInputParsingError] for the specified text input if it's an invalid number, or
+   * [NumericInputParsingError.VALID] if no issues are found. Note that a valid number returned by this method is guaranteed
    * to be parsed correctly.
    *
    * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
    * using [getRealTimeAnswerError], instead.
    */
-  fun getSubmitTimeError(text: String): NumericInpurParsingError {
+  private fun getSubmitTimeError(text: String): NumericInputParsingError {
     if (invalidCharsLengthRegex.find(text) != null) {
-      return NumericInpurParsingError.NUMBER_TOO_LONG
+      return NumericInputParsingError.NUMBER_TOO_LONG
     }
     return try {
       text.toDouble()
-      NumericInpurParsingError.VALID
+      NumericInputParsingError.VALID
     } catch (e: Exception) {
-      NumericInpurParsingError.INVALID_FORMAT
+      NumericInputParsingError.INVALID_FORMAT
     }
   }
 
   /** Enum to store the errors of [NumericInputInteractionView]. */
-  enum class NumericInpurParsingError(@StringRes private var error: Int?) {
+  enum class NumericInputParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
-    INVALID_CHARS(error = R.string.number_error_invalid_chars),
     INVALID_FORMAT(error = R.string.number_error_invalid_format),
     STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point),
     NUMBER_TOO_LONG(error = R.string.number_error_larger_than_seven_digits);

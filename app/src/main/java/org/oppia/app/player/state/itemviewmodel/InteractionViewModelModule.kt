@@ -26,7 +26,7 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory{
+  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
     return ::SelectionInteractionViewModel
   }
 
@@ -41,7 +41,12 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerHandler -> FractionInteractionViewModel(interaction, context, interactionAnswerHandler) }
+    return { _, interaction, _, interactionAnswerHandler ->
+      FractionInteractionViewModel(
+        interaction, context,
+        interactionAnswerHandler
+      )
+    }
   }
 
   @Provides
