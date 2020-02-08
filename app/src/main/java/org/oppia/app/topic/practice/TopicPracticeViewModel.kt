@@ -23,6 +23,7 @@ class TopicPracticeViewModel @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController
 ) : ViewModel() {
+  private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
   private lateinit var topicId: String
 
@@ -54,9 +55,9 @@ class TopicPracticeViewModel @Inject constructor(
   private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
 
     // List starting with the header
-    val itemViewModelList: MutableList<TopicPracticeItemViewModel> = mutableListOf(
+    itemViewModelList.addAll( mutableListOf(
       TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel
-    )
+    ))  
 
     // Add the Skills in the list
     itemViewModelList.addAll(topic.skillList.map { skill ->

@@ -1,5 +1,6 @@
 package org.oppia.app.topic.practice
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSkillIdList: ArrayList<String>
   private lateinit var topicId: String
+  private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding;
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -98,8 +100,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     model: TopicPracticeSkillSummaryViewModel
   ) {
     binding.viewModel = model
-    binding.setVariable(BR.isChecked, selectedSkillIdList.contains(model.skillSummary.skillId))
-    binding.root.skill_check_box.setOnCheckedChangeListener { _, isChecked ->
+    binding.isChecked = selectedSkillIdList.contains(model.skillSummary.skillId)
+    binding.skillCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         skillSelected(model.skillSummary.skillId)
       } else {
@@ -112,8 +114,9 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     binding: TopicPracticeFooterViewBinding,
     model: TopicPracticeFooterViewModel
   ) {
+    topicPracticeFooterViewBinding = binding
     binding.viewModel = model
-    binding.setVariable(BR.isSubmitButtonActive, selectedSkillIdList.isNotEmpty())
+    binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
   }
 
   private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
@@ -130,17 +133,13 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     if (!selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.add(skillId)
     }
-    binding.topicPracticeSkillList.apply {
-      this.adapter?.notifyDataSetChanged()
-    }
+    topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
   }
 
   override fun skillUnselected(skillId: String) {
     if (selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.remove(skillId)
     }
-    binding.topicPracticeSkillList.apply {
-      this.adapter?.notifyDataSetChanged()
-    }
+    topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
   }
 }
