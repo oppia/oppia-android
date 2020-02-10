@@ -298,7 +298,7 @@ class InputInteractionViewTestActivityTest {
   fun testNumericInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("/"))
-      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_chars)))
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
     }
   }
 
