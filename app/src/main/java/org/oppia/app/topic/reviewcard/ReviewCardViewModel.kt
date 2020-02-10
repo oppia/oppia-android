@@ -34,7 +34,7 @@ class ReviewCardViewModel @Inject constructor(
   }
 
   /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding */
-  fun setSkillIdAndBinding(topicName: String, id: String, binding: ReviewCardFragmentBinding) {
+  fun setSubtopicIdAndBinding(topicName: String, id: String, binding: ReviewCardFragmentBinding) {
     subtopicId = id
     this.topicName = topicName
     this.binding = binding
@@ -54,17 +54,17 @@ class ReviewCardViewModel @Inject constructor(
 
   private fun processReviewCardResult(reviewCardResult: AsyncResult<ReviewCard>): ReviewCard {
     if (reviewCardResult.isFailure()) {
-      logger.e("ReviewCardFragment", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
+      logger.e("ReviewCardFragment result", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
     }
     return reviewCardResult.getOrDefault(ReviewCard.getDefaultInstance())
   }
 
   private fun processExplanationResult(reviewCardResult: AsyncResult<ReviewCard>): CharSequence {
     if (reviewCardResult.isFailure()) {
-      logger.e("ReviewCardFragment", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
+      logger.e("ReviewCardFragment final", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
     }
     val reviewCard = reviewCardResult.getOrDefault(ReviewCard.getDefaultInstance())
     return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
-      .parseOppiaHtml(reviewCard.explanation.html, binding.reviewCardExplanationText)
+      .parseOppiaHtml(reviewCard.pageContents.html, binding.reviewCardExplanationText)
   }
 }

@@ -68,6 +68,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
       reviewAdapter.setReviewList(result.subtopicList)
       topicName = result.name
       logger.e("TopicReviewFragment", ""+ result.subtopicList.get(0).title)
+      logger.e("TopicReviewFragment", ""+ result.subtopicList.get(0).skillIdListList)
     })
   }
 

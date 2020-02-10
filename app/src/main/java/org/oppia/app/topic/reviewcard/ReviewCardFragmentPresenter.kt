@@ -29,7 +29,7 @@ class ReviewCardFragmentPresenter @Inject constructor(
 
     subtopicId = id
     this.topicName = topicName
-    viewModel.setSkillIdAndBinding(topicName, subtopicId, binding)
+    viewModel.setSubtopicIdAndBinding(topicName, subtopicId, binding)
 
     binding.reviewCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.reviewCardToolbar.setNavigationOnClickListener {

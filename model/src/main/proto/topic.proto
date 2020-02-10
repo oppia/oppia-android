@@ -259,33 +259,26 @@ message Subtopic {
 
   string title = 2;
 
-  repeated SkillIdList skillIdList = 3;
+  repeated string skillIdList = 3;
 
 }
 
-message SkillIdList {
-  string skillId = 1;
-}
-
-// Corresponds to a concept card that can be displayed for a specific skill.
+// Corresponds to a review card that can be displayed for a specific subtopic.
 message ReviewCard {
-  // The ID corresponding to the skill this concept is representing.
+  // The title corresponding to the subtopic.
   string subtopic_title = 1;
 
-  // The skill's description that can help provide context on what content is being reviewed.
+  // The subtopic's description that can help provide context on what content is being reviewed.
   string subtopic_description = 2;
 
-  // The core explanation of the skill being reviewed.
-  SubtitledHtml explanation = 3;
+  // The core explanation of the subtopic being reviewed.
+  SubtitledHtml page_contents = 3;
 
-  // A list of worked examples to present to the learner.
-  repeated SubtitledHtml worked_example = 4;
-
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that has corresponding
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
   // recorded audio to play.
   map<string, VoiceoverMapping> recorded_voiceover = 5;
 
-  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card that has corresponding
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this review card that has corresponding
   // translations.
   map<string, TranslationMapping> written_translation = 6;
 }
