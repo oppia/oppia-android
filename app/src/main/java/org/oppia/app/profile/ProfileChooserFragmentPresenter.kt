@@ -2,6 +2,7 @@ package org.oppia.app.profile
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -17,7 +21,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -92,8 +95,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun initAdapter() {
     // Assume cell width of 400px
-    binding.profileRecyclerView.layoutManager = GridAutoFitLayoutManager(activity.applicationContext, columnWidth = 400)
-    binding.profileRecyclerView.setHasFixedSize(true)
+    val layoutManager = FlexboxLayoutManager(context)
+//    layoutManager.flexDirection = FlexDirection.ROW
+    layoutManager.flexWrap = FlexWrap.WRAP
+//    layoutManager.alignContent = AlignContent.CENTER
+//    layoutManager.alignItems = AlignItems.CENTER
+    if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+    layoutManager.justifyContent = JustifyContent.SPACE_BETWEEN
+    else
+      layoutManager.justifyContent = JustifyContent.FLEX_START
+    binding.profileRecyclerView.setLayoutManager(layoutManager)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {

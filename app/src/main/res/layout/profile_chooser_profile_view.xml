@@ -11,11 +11,12 @@
   </data>
 
   <LinearLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="24dp"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/profile_avatar_img"
@@ -28,7 +29,8 @@
 
     <TextView
       android:id="@+id/profile_name_text"
-      android:layout_width="wrap_content"
+      android:layout_width="116dp"
+      android:gravity="center"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
@@ -38,9 +40,10 @@
 
     <TextView
       android:id="@+id/profile_is_admin_text"
-      android:layout_width="wrap_content"
+      android:layout_width="116dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="2dp"
+      android:gravity="center"
       android:fontFamily="sans-serif-light"
       android:text="@string/profile_chooser_admin"
       android:textColor="@color/white"
