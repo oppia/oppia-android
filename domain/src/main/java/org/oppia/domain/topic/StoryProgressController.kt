@@ -120,9 +120,9 @@ class StoryProgressController @Inject constructor(
    */
   fun recordCompletedChapter(
     internalProfileId: Int,
-    explorationId: String,
+    topicId: String,
     storyId: String,
-    topicId: String
+    explorationId: String
   ): LiveData<AsyncResult<Any?>> {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
@@ -149,9 +149,9 @@ class StoryProgressController @Inject constructor(
     return dataProviders.convertToLiveData(getTopicProgressDataProvider(internalProfileId, topicId))
   }
 
-  fun getTopicProgressDataProvider(internalProfileId: Int, topicId: String): DataProvider<TopicProgress> {
+  private fun getTopicProgressDataProvider(internalProfileId: Int, topicId: String): DataProvider<TopicProgress> {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    return dataProviders.transformAsync<TopicProgressDatabase, TopicProgress>(
+    return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
     ) {
@@ -172,20 +172,24 @@ class StoryProgressController @Inject constructor(
     return dataProviders.convertToLiveData(getStoryProgressDataProvider(internalProfileId, topicId, storyId))
   }
 
-  fun getStoryProgressDataProvider(
+  private fun getStoryProgressDataProvider(
     internalProfileId: Int,
     topicId: String,
     storyId: String
   ): DataProvider<StoryProgressNew> {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    return dataProviders.transformAsync<TopicProgressDatabase, StoryProgressNew>(
+    return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
     ) {
       val topicProgress = it.topicProgressMap[topicId]
-      val storyProgress = topicProgress!!.storyProgressMap[storyId]
-      if (storyProgress != null) {
-        AsyncResult.success(storyProgress)
+      if (topicProgress != null) {
+        val storyProgress = topicProgress.storyProgressMap[storyId]
+        if (storyProgress != null) {
+          AsyncResult.success(storyProgress)
+        } else {
+          AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any story progress"))
+        }
       } else {
         AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
       }
@@ -208,22 +212,30 @@ class StoryProgressController @Inject constructor(
     )
   }
 
-  fun getChapterProgressDataProvider(
+  private fun getChapterProgressDataProvider(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<ChapterPlayState> {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    return dataProviders.transformAsync<TopicProgressDatabase, ChapterPlayState>(
+    return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
     ) {
       val topicProgress = it.topicProgressMap[topicId]
-      val storyProgress = topicProgress!!.storyProgressMap[storyId]
-      val chapterProgress = storyProgress!!.chapterProgressMap[explorationId]
-      if (chapterProgress != null) {
-        AsyncResult.success(chapterProgress)
+      if (topicProgress != null) {
+        val storyProgress = topicProgress.storyProgressMap[storyId]
+        if (storyProgress != null) {
+          val chapterProgress = storyProgress.chapterProgressMap[explorationId]
+          if (chapterProgress != null) {
+            AsyncResult.success(chapterProgress)
+          } else {
+            AsyncResult.failed(ExplorationNotFoundException("ChapterId: $explorationId does not contain any chapter progress"))
+          }
+        } else {
+          AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any story progress"))
+        }
       } else {
         AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
       }
