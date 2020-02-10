@@ -78,7 +78,6 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ContinuePlayViewModel::class.java)
   }
 
-
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
     playExploration(promotedStory.explorationId, promotedStory.topicId)
   }
