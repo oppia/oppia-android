@@ -14,7 +14,6 @@ import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.normalizeWhitespace
-import java.lang.Exception
 
 /** [ViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
@@ -48,6 +47,7 @@ class NumericInputViewModel(
         )
       }
     }
+    errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
