@@ -23,7 +23,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:title="@string/concept_card_toolbar_title"
+      app:title="@string/review_card_toolbar_title"
       app:titleTextColor="@color/white" />
 
     <FrameLayout
@@ -51,12 +51,11 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="28dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@{viewModel.conceptCardLiveData.skillDescription}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp" />
 
           <TextView
-            android:id="@+id/concept_card_explanation_text"
+            android:id="@+id/review_card_explanation_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"

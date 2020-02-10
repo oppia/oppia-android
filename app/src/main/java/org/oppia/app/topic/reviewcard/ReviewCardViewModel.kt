@@ -21,6 +21,7 @@ class ReviewCardViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @ReviewCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
+  private lateinit var topicName: String
   private lateinit var subtopicId: String
   private lateinit var binding: ReviewCardFragmentBinding
 
@@ -33,13 +34,14 @@ class ReviewCardViewModel @Inject constructor(
   }
 
   /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding */
-  fun setSkillIdAndBinding(id: String, binding: ReviewCardFragmentBinding) {
+  fun setSkillIdAndBinding(topicName: String, id: String, binding: ReviewCardFragmentBinding) {
     subtopicId = id
+    this.topicName = topicName
     this.binding = binding
   }
 
   private val reviewCardResultLiveData: LiveData<AsyncResult<ReviewCard>> by lazy {
-    topicController.getReviewCard(subtopicId)
+    topicController.getReviewCard(topicName,subtopicId)
   }
 
   private fun processReviewCardLiveData(): LiveData<ReviewCard> {

@@ -411,6 +411,7 @@ class TopicController @Inject constructor(
   private fun createSubtopicTopicFromJson(topicFileName: String): ReviewCard {
     val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
     return ReviewCard.newBuilder()
+      .setSubtopicTitle(subtopicData.getString("subtopic_title"))
       .setExplanation(
         SubtitledHtml.newBuilder()
           .setHtml(subtopicData.getJSONObject("explanation").getString("html"))

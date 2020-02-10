@@ -270,7 +270,7 @@ message SkillIdList {
 // Corresponds to a concept card that can be displayed for a specific skill.
 message ReviewCard {
   // The ID corresponding to the skill this concept is representing.
-  string subtopic_id = 1;
+  string subtopic_title = 1;
 
   // The skill's description that can help provide context on what content is being reviewed.
   string subtopic_description = 2;
