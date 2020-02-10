@@ -10,5 +10,4 @@ class TopicPracticeFooterViewModel(private val routeToQuestionPlayerListener: Ro
   fun onStartButtonClicked() {
     routeToQuestionPlayerListener.routeToQuestionPlayer(ArrayList())
   }
-
 }

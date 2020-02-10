@@ -53,18 +53,14 @@ class TopicPracticeViewModel @Inject constructor(
   }
 
   private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
-
-    // List starting with the header
     itemViewModelList.addAll( mutableListOf(
       TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel
     ))  
 
-    // Add the Skills in the list
     itemViewModelList.addAll(topic.skillList.map { skill ->
       TopicPracticeSkillSummaryViewModel(skill) as TopicPracticeItemViewModel
     })
 
-    // Add Footer in the list
     itemViewModelList.add(TopicPracticeFooterViewModel(routeToQuestionPlayerListener) as TopicPracticeItemViewModel)
 
     return itemViewModelList

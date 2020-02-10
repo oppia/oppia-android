@@ -92,10 +92,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindSkillView(
-    binding: TopicPracticeSkillViewBinding,
-    model: TopicPracticeSkillSummaryViewModel
-  ) {
+  private fun bindSkillView(binding: TopicPracticeSkillViewBinding, model: TopicPracticeSkillSummaryViewModel) {
     binding.viewModel = model
     binding.isChecked = selectedSkillIdList.contains(model.skillSummary.skillId)
     binding.skillCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -107,10 +104,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindFooterView(
-    binding: TopicPracticeFooterViewBinding,
-    model: TopicPracticeFooterViewModel
-  ) {
+  private fun bindFooterView(binding: TopicPracticeFooterViewBinding, model: TopicPracticeFooterViewModel) {
     topicPracticeFooterViewBinding = binding
     binding.viewModel = model
     binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
@@ -130,13 +124,18 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     if (!selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.add(skillId)
     }
-    topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+
+    if (::topicPracticeFooterViewBinding.isInitialized) {
+      topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+    }
   }
 
   override fun skillUnselected(skillId: String) {
     if (selectedSkillIdList.contains(skillId)) {
       selectedSkillIdList.remove(skillId)
     }
-    topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+    if (::topicPracticeFooterViewBinding.isInitialized) {
+      topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+    }
   }
 }
