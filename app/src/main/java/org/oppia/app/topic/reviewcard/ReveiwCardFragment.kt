@@ -9,7 +9,7 @@ import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-private const val KEY_TOPIC_NAME = "TOPIC_NAME"
+private const val KEY_TOPIC_ID = "TOPIC_NAME"
 private const val KEY_SUBTOPIC_ID = "SUBTOPIC_ID"
 
 /* Fragment that displays a fullscreen dialog for review cards */
@@ -25,7 +25,7 @@ class ReviewCardFragment : InjectableDialogFragment() {
       val reviewCardFrag = ReviewCardFragment()
       val args = Bundle()
       args.putString(KEY_SUBTOPIC_ID, subtopicId)
-      args.putString(KEY_TOPIC_NAME, topicName)
+      args.putString(KEY_TOPIC_ID, topicName)
       reviewCardFrag.arguments = args
       return reviewCardFrag
     }
@@ -47,8 +47,8 @@ class ReviewCardFragment : InjectableDialogFragment() {
     super.onCreateView(inflater, container, savedInstanceState)
     val args = checkNotNull(arguments) { "Expected arguments to be passed to ReviewCardFragment" }
     val subtopicId = checkNotNull(args.getString(KEY_SUBTOPIC_ID)) { "Expected subtopicId to be passed to ReviewCardFragment" }
-    val topicName = checkNotNull(args.getString(KEY_TOPIC_NAME)) { "Expected subtopicId to be passed to ReviewCardFragment" }
-    return reviewCardFragmentPresenter.handleCreateView(inflater, container,topicName, subtopicId)
+    val topicId = checkNotNull(args.getString(KEY_TOPIC_ID)) { "Expected topicId to be passed to ReviewCardFragment" }
+    return reviewCardFragmentPresenter.handleCreateView(inflater, container,topicId, subtopicId)
   }
 
   override fun onStart() {

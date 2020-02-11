@@ -54,7 +54,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicReviewSummaryClicked( subtopic: Subtopic) {
-    routeToReviewListener.routeToReviewCard(topicName, subtopic.subtopicId)
+    routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }

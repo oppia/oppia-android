@@ -48,9 +48,9 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     }
   }
 
-  override fun routeToReviewCard(topicName: String, subtopicId: String) {
+  override fun routeToReviewCard(topicId: String, subtopicId: String) {
     if (getReviewCardFragment() == null) {
-      val reviewCardFragment: ReviewCardFragment = ReviewCardFragment.newInstance(topicName, subtopicId)
+      val reviewCardFragment: ReviewCardFragment = ReviewCardFragment.newInstance(topicId, subtopicId)
       reviewCardFragment.showNow(supportFragmentManager, TAG_REVIEW_CARD_DIALOG)
     }
   }
