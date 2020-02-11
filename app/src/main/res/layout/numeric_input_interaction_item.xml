@@ -56,6 +56,6 @@
       android:text="@{viewModel.errorMessage.get()}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{viewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{viewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
   </LinearLayout>
 </layout>

@@ -55,7 +55,7 @@
       android:text="@{numericInputViewModel.errorMessage.get()}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{numericInputViewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{numericInputViewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.app.customview.interaction.TextInputInteractionView
       android:id="@+id/test_text_input_interaction_view"
@@ -106,7 +106,7 @@
       android:text="@{fractionInteractionViewModel.errorMessage.get()}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{fractionInteractionViewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{fractionInteractionViewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <Button
       android:id="@+id/submit_button"

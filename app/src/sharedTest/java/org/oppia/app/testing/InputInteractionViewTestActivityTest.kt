@@ -56,6 +56,18 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  fun testNumericInputInteractionView_withInputtedNegativeDecimal_hasCorrectPendingAnswerWithDecimalValues() {
+    val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-9.5"))
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.numericInputViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(InteractionObject.ObjectTypeCase.REAL)
+      assertThat(pendingAnswer.answer.real).isEqualTo(-9.5)
+      assertThat(pendingAnswer.answer.real).isLessThan(0.0)
+    }
+  }
+
+  @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
@@ -305,7 +317,17 @@ class InputInteractionViewTestActivityTest {
   @Test
   fun testNumericInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("12345678.6787687678"))
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-12345678.6787687678"))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
+    }
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedLongNonDecimalNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("1234567886787687678"))
       closeSoftKeyboard()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
