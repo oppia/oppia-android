@@ -9,7 +9,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Controller for persisting and retrieving the user on-boarding information of the app. */
+/** Controller for persisting and retrieving the user onboarding information of the app. */
 @Singleton
 class OnboardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -22,13 +22,13 @@ class OnboardingFlowController @Inject constructor(
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user on-boarding data.", it)
+        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user onboarding data.", it)
       }
     }
   }
 
   /**
-   * Saves that the user has completed on-boarding the app. Note that this does not notify existing subscribers of the changed state,
+   * Saves that the user has completed onboarding the app. Note that this does not notify existing subscribers of the changed state,
    * nor can future subscribers observe this state until app restart.
    */
   fun markOnboardingFlowCompleted() {
@@ -36,12 +36,12 @@ class OnboardingFlowController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already on-boarded the app.", it)
+        logger.e("DOMAIN", "Failed when storing that the user already onboarded the app.", it)
       }
     }
   }
 
-  /** Clears any indication that the user has previously completed on-boarding the application. */
+  /** Clears any indication that the user has previously completed onboarding the application. */
   fun clearOnboardingFlow() {
     onboardingFlowStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
@@ -51,7 +51,7 @@ class OnboardingFlowController @Inject constructor(
   }
 
   /**
-   * Returns a [LiveData] result indicating whether the user has on-boarded the app. This is guaranteed to
+   * Returns a [LiveData] result indicating whether the user has onboarded the app. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [markOnboardingFlowCompleted] has since been
    * called.
    */

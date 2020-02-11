@@ -125,7 +125,7 @@ class OnboardingFlowControllerTest {
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
 
-      // The result should not indicate that the user on-boarded the app because markUserOnboardedApp does not notify observers
+      // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
       // of the change.
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
@@ -144,7 +144,7 @@ class OnboardingFlowControllerTest {
     onboardingg.observeForever(mockOnboardingObserver)
     advanceUntilIdle()
 
-    // The app should be considered on-boarded since a new LiveData instance was observed after marking the app as on-boarded.
+    // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
     verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
     assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
     assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
@@ -164,7 +164,7 @@ class OnboardingFlowControllerTest {
       onboardingg.observeForever(mockOnboardingObserver)
       advanceUntilIdle()
 
-      // The app should be considered not yet on-boarded since the previous history was cleared.
+      // The app should be considered not yet onboarded since the previous history was cleared.
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
       assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
