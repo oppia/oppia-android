@@ -233,26 +233,37 @@ class TopicListController @Inject constructor(
       for (storySummary in topic.storyList) {
         val storyId = storySummary.storyId
         val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-        val completedChapterCount = storyProgress.chapterProgressList.count { progress ->
-          progress.playState == ChapterPlayState.COMPLETED
+
+        var completedChapterCount = 0
+        for (chapterPlayState in storyProgress.chapterProgressMap.values) {
+          if (chapterPlayState == ChapterPlayState.COMPLETED) {
+            completedChapterCount++
+          }
         }
+
         if (completedChapterCount > 0) {
           // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
-          val nextChapterId = storyProgress.chapterProgressList.find { progress ->
-            progress.playState == ChapterPlayState.NOT_STARTED
-          }?.explorationId
-          val nextChapterSummary =
-            storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
-          ongoingStoryListBuilder.addRecentStory(
-            createPromotedStory(
-              storyId,
-              topic,
-              completedChapterCount,
-              storyProgress.chapterProgressCount,
-              nextChapterSummary?.name,
-              nextChapterSummary?.explorationId
+          var nextChapterId = ""
+          for (chapterId in storyProgress.chapterProgressMap.keys) {
+            if (storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED) {
+              nextChapterId = chapterId
+            }
+          }
+
+          if (nextChapterId.isNotEmpty()) {
+            val nextChapterSummary =
+              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
+            ongoingStoryListBuilder.addRecentStory(
+              createPromotedStory(
+                storyId,
+                topic,
+                completedChapterCount,
+                storyProgress.chapterProgressCount,
+                nextChapterSummary?.name,
+                nextChapterSummary?.explorationId
+              )
             )
-          )
+          }
         }
       }
     }

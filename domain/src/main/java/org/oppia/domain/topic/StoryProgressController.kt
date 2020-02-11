@@ -6,13 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
 import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
-import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.StoryProgressNew
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicProgressDatabase
 import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -128,7 +127,7 @@ class StoryProgressController @Inject constructor(
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       // Replace this with checking if the id pair already exists.
       val chapterPlayState = ChapterPlayState.COMPLETED
-      val storyProgressNew = StoryProgressNew.newBuilder().putChapterProgress(explorationId, chapterPlayState).build()
+      val storyProgressNew = StoryProgress.newBuilder().putChapterProgress(explorationId, chapterPlayState).build()
       val topicProgress = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgressNew).build()
       val topicDatabaseBuilder = it.toBuilder().putTopicProgress(topicId, topicProgress)
       Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
@@ -168,7 +167,7 @@ class StoryProgressController @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String
-  ): LiveData<AsyncResult<StoryProgressNew>> {
+  ): LiveData<AsyncResult<StoryProgress>> {
     return dataProviders.convertToLiveData(getStoryProgressDataProvider(internalProfileId, topicId, storyId))
   }
 
@@ -176,7 +175,7 @@ class StoryProgressController @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String
-  ): DataProvider<StoryProgressNew> {
+  ): DataProvider<StoryProgress> {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
@@ -359,6 +358,7 @@ class StoryProgressController @Inject constructor(
     init {
       // Verify that the progress object is well-defined by ensuring that the invariant where lessons must be played in
       // order holds.
+      createTrackedCompletedChapters()
       var expectedCompleted: Boolean? = null
       chapterList.reversed().forEach { explorationId ->
         val completedChapter = explorationId in trackedCompletedChapters
@@ -384,6 +384,11 @@ class StoryProgressController @Inject constructor(
       }
     }
 
+    fun createTrackedCompletedChapters() {
+      trackedCompletedChapters.add(TEST_EXPLORATION_ID_30)
+      trackedCompletedChapters.add(TEST_EXPLORATION_ID_1)
+    }
+
     /**
      * Returns whether the specified exploration ID can be played, or if it's missing prerequisites. Fails if the
      * specified exploration ID is not contained in this story.
@@ -403,21 +408,19 @@ class StoryProgressController @Inject constructor(
 
     /** Returns an immutable [StoryProgress] representation of this progress object. */
     fun toStoryProgress(): StoryProgress {
-      return StoryProgress.newBuilder()
-        .addAllChapterProgress(chapterList.map(this::buildChapterProgress))
-        .build()
+      val storyProgressBuilder = StoryProgress.newBuilder()
+      for (explorationId in chapterList) {
+        storyProgressBuilder.putChapterProgress(explorationId, buildChapterProgress(explorationId))
+      }
+      return storyProgressBuilder.build()
     }
 
-    private fun buildChapterProgress(explorationId: String): ChapterProgress {
-      val chapterPlayState = when {
+    private fun buildChapterProgress(explorationId: String): ChapterPlayState {
+      return when {
         explorationId in trackedCompletedChapters -> ChapterPlayState.COMPLETED
         canPlayChapter(explorationId) -> ChapterPlayState.NOT_STARTED
         else -> ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES /* Assume only reason is missing prerequisites. */
       }
-      return ChapterProgress.newBuilder()
-        .setExplorationId(explorationId)
-        .setPlayState(chapterPlayState)
-        .build()
     }
   }
 }

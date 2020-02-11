@@ -443,17 +443,21 @@ class TopicController @Inject constructor(
   private fun createChaptersFromJson(storyId: String, chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
     val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-    val chapterProgressMap = storyProgress.chapterProgressList.map { progress ->
-      progress.explorationId to progress
-    }.toMap()
+
+    val chapterProgressMap = storyProgress.chapterProgressMap
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
+      var chapterPlayState = chapterProgressMap[explorationId]
+      if (chapterPlayState == null) {
+        chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+      }
+
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(chapterProgressMap.getValue(explorationId).playState)
+          .setChapterPlayState(chapterPlayState)
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )

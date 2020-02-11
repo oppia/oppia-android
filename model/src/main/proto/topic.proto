@@ -234,29 +234,13 @@ message TopicProgressDatabase {
 // Represents the topic progress.
 message TopicProgress {
   // Map from story ID to StoryProgress.
-  map<string, StoryProgressNew> story_progress = 1;
+  map<string, StoryProgress> story_progress = 1;
 }
 
 // Represents the story progress.
-message StoryProgressNew {
+message StoryProgress {
   // Map from exploration ID to ChapterPlayState.
   map<string, ChapterPlayState> chapter_progress = 1;
-}
-
-// Represents the progress a player has made for a story.
-message StoryProgress {
-  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
-  // should be completed within the story.
-  repeated ChapterProgress chapter_progress = 1;
-}
-
-// Represents the progress a player has made on a single chapter.
-message ChapterProgress {
-  // The exploration ID of the chapter with possible progress made.
-  string exploration_id = 1;
-
-  // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
 }
 
 // Represents user's preference for using cellular data
