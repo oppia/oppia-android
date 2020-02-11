@@ -33,7 +33,7 @@ class OnboardingFlowController @Inject constructor(
    */
   fun markOnboardingFlowCompleted() {
     onboardingFlowStore.storeDataAsync(updateInMemoryCache = false) {
-      it.toBuilder().setAlreadyOnBoardedApp(true).build()
+      it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
         logger.e("DOMAIN", "Failed when storing that the user already on-boarded the app.", it)
@@ -45,7 +45,7 @@ class OnboardingFlowController @Inject constructor(
   fun clearOnboardingFlow() {
     onboardingFlowStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to clear onBoarding flow.", it)
+        logger.e("DOMAIN", "Failed to clear onboarding flow.", it)
       }
     }
   }
