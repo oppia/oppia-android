@@ -104,7 +104,7 @@ class OnboardingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOnBoardedTheApp() =
+  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOnboardedTheApp() =
     runBlockingTest(coroutineContext) {
       val onboardingg = onboardingFlowController.getOnboardingFlow()
       advanceUntilIdle()
@@ -112,12 +112,12 @@ class OnboardingFlowControllerTest {
 
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOnBoarded_providesLiveData_userDidNotOnBoardApp() =
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
       val onboardingg = onboardingFlowController.getOnboardingFlow()
 
@@ -125,16 +125,16 @@ class OnboardingFlowControllerTest {
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
 
-      // The result should not indicate that the user on-boarded the app because markUserOnBoardedApp does not notify observers
+      // The result should not indicate that the user on-boarded the app because markUserOnboardedApp does not notify observers
       // of the change.
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOnBoarded_observedNewController_userOnBoardedApp() = runBlockingTest(coroutineContext) {
+  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() = runBlockingTest(coroutineContext) {
     onboardingFlowController.markOnboardingFlowCompleted()
     advanceUntilIdle()
 
@@ -147,12 +147,12 @@ class OnboardingFlowControllerTest {
     // The app should be considered on-boarded since a new LiveData instance was observed after marking the app as on-boarded.
     verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
     assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-    assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isTrue()
+    assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_onBoardedApp_cleared_observeNewController_userDidNotOnBoardApp() =
+  fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
@@ -167,7 +167,7 @@ class OnboardingFlowControllerTest {
       // The app should be considered not yet on-boarded since the previous history was cleared.
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnBoardedApp).isFalse()
+      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
   @Qualifier
