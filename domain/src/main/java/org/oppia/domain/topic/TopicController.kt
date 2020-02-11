@@ -88,6 +88,7 @@ class TopicController @Inject constructor(
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController
 ) {
+  var skillIdListFromSubtopicId : ArrayList<String> = ArrayList()
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
@@ -407,6 +408,10 @@ class TopicController @Inject constructor(
       .build()
   }
 
+   fun  getSkillIds(subtopicId: String): List<String>{
+
+    return skillIdListFromSubtopicId
+   }
   /** Utility to create a sub-topic from its json representation. */
   private fun createSubtopicTopicFromJson(topicFileName: String): ReviewCard {
     val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
@@ -433,7 +438,7 @@ class TopicController @Inject constructor(
       val skillJSONArray = currentSubtopicJSONObject.optJSONArray("skill_ids")
 
       for (j in 0 until skillJSONArray.length()){
-        skillIdList.add(skillJSONArray.optString(i))
+        skillIdList.add(skillJSONArray.optString(j))
       }
       val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJSONObject.optString("id"))
         .setTitle(currentSubtopicJSONObject.optString("title"))

@@ -29,6 +29,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
 ) : SubtopicSkillsSelector {
   lateinit var selectedSubtopicIdList: ArrayList<String>
+  lateinit var selectedSkillList: ArrayList<String>
   private lateinit var topicId: String
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
   private lateinit var subtopicSkillSelectionAdapter: SubtopicSkillSelectionAdapter
@@ -37,7 +38,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
-    selectedSubtopicIdList = skillList
+    selectedSubtopicIdList = ArrayList()
+    selectedSkillList = ArrayList()
     val binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     subtopicSkillSelectionAdapter = SubtopicSkillSelectionAdapter(this)
@@ -87,6 +89,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   ) {
     if (!selectedSubtopicIdList.contains(subtopicId)) {
       selectedSubtopicIdList.add(subtopicId)
+      selectedSkillList.addAll(skillIdList)
     }
     getTopicPracticeViewModel().notifySelectedSubtopicList(selectedSubtopicIdList)
   }
@@ -97,11 +100,14 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   ) {
     if (selectedSubtopicIdList.contains(subtopicId)) {
       selectedSubtopicIdList.remove(subtopicId)
+      selectedSkillList.removeAll(skillIdList)
     }
     getTopicPracticeViewModel().notifySelectedSubtopicList(selectedSubtopicIdList)
   }
 
   internal fun onStartButtonClicked() {
+    logger.d("subtopic list","==="+selectedSubtopicIdList)
+    logger.d("Skill list","==="+selectedSkillList)
     routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSubtopicIdList)
   }
 }
