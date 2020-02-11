@@ -53,8 +53,8 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
-    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerError(

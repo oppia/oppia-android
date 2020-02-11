@@ -79,6 +79,71 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
+  fun testNumericInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("/"))
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
+    }
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-12345678.6787687678"))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
+    }
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedLongNonDecimalNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("1234567886787687678"))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
+    }
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedMinusSymbol_clickSubmitButton_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-"))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
+    }
+  }
+
+  fun testNumericInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("55-"))
+    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedNegativeSymbolAt0AndMoreThanOnce_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("--55"))
+    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("5.5."))
+    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
+  }
+
+  @Test
+  fun testNumericInputInteractionView_withInputtedFloatingPointAtStart_numberStartingWithFloatingPointErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText(".5"))
+    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_starting_with_floating_point)))
+  }
+
+  @Test
   fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     activityScenario.onActivity { activity ->
@@ -304,70 +369,5 @@ class InputInteractionViewTestActivityTest {
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.fraction_input_error)).check(matches(withText(R.string.fraction_error_larger_than_seven_digits)))
     }
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("/"))
-      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
-    }
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-12345678.6787687678"))
-      closeSoftKeyboard()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
-    }
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedLongNonDecimalNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("1234567886787687678"))
-      closeSoftKeyboard()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_larger_than_seven_digits)))
-    }
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedMinusSymbol_clickSubmitButton_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("-"))
-      closeSoftKeyboard()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
-    }
-  }
-
-  fun testNumericInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("55-"))
-    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedNegativeSymbolAt0AndMoreThanOnce_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("--55"))
-    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText("5.5."))
-    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_invalid_format)))
-  }
-
-  @Test
-  fun testNumericInputInteractionView_withInputtedFloatingPointAtStart_numberStartingWithFloatingPointErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_input_interaction_view)).perform(typeText(".5"))
-    onView(withId(R.id.number_input_error)).check(matches(withText(R.string.number_error_starting_with_floating_point)))
   }
 }
