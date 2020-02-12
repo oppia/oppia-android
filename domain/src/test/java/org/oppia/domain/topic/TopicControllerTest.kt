@@ -624,6 +624,14 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
+    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID,"1")
+    val reviewCardResult = reviewCardLiveData.value
+    assertThat(reviewCardResult).isNotNull()
+    assertThat(reviewCardResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController.retrieveQuestionsForSkillIds(

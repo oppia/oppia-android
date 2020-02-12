@@ -8,11 +8,13 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.Question
+import org.oppia.app.model.ReviewCard
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
@@ -33,6 +35,7 @@ const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
+const val FRACTIONS_SUBTOPIC_ID_1 = "1"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
@@ -85,6 +88,7 @@ class TopicController @Inject constructor(
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController
 ) {
+  var skillIdListFromSubtopicId : ArrayList<String> = ArrayList()
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
@@ -170,6 +174,26 @@ class TopicController @Inject constructor(
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
+  }
+
+  /** Returns the [ReviewCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
+  fun getReviewCard(topicId: String, subtopicId: String): LiveData<AsyncResult<ReviewCard>> {
+    return MutableLiveData(
+      try {
+        AsyncResult.success(retrieveReviewCard(topicId,subtopicId))
+      } catch (e: Exception) {
+        AsyncResult.failed<ReviewCard>(e)
+      }
+    )
+  }
+
+  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
+  internal fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
+    return when (subtopicId) {
+      FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicTopicFromJson(
+        "fractions_subtopics.json")
+      else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
+    }
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -370,6 +394,7 @@ class TopicController @Inject constructor(
    * a key called 'topic' that holds the topic data. */
   private fun createTopicFromJson(topicFileName: String, skillFileName: String, storyFileName: String): Topic {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
+    val subtopicList: List<Subtopic> = createSubtopicListFromJSONArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -379,7 +404,48 @@ class TopicController @Inject constructor(
       .addAllStory(createStoriesFromJson(storyFileName))
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
+      .addAllSubtopic(subtopicList)
       .build()
+  }
+
+   fun  getSkillIds(subtopicId: String): List<String>{
+
+    return skillIdListFromSubtopicId
+   }
+  /** Utility to create a sub-topic from its json representation. */
+  private fun createSubtopicTopicFromJson(topicFileName: String): ReviewCard {
+    val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
+    val subtopicTitle = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getString("subtopic_title")!!
+    return ReviewCard.newBuilder()
+      .setSubtopicTitle(subtopicTitle)
+      .setPageContents(
+        SubtitledHtml.newBuilder()
+          .setHtml(subtopicData.getJSONObject("subtitled_html").getString("html"))
+          .setContentId(subtopicData.getJSONObject("subtitled_html").getString("content_id")).build()
+      )
+      .build()
+  }
+
+  /** Utility to create the subtopic list of a topic from its json representation. The json file is expected to have
+   * a key called 'subtopics' that contains id, title and  an array of skill objects, each with the key 'skill'. */
+  private fun createSubtopicListFromJSONArray(subtopicJSONArray: JSONArray?): List<Subtopic> {
+    val subtopicList = ArrayList<Subtopic>()
+
+    for (i in 0 until subtopicJSONArray!!.length()){
+      val skillIdList = ArrayList<String>()
+
+      val currentSubtopicJSONObject = subtopicJSONArray.optJSONObject(i)
+      val skillJSONArray = currentSubtopicJSONObject.optJSONArray("skill_ids")
+
+      for (j in 0 until skillJSONArray.length()){
+        skillIdList.add(skillJSONArray.optString(j))
+      }
+      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJSONObject.optString("id"))
+        .setTitle(currentSubtopicJSONObject.optString("title"))
+        .addAllSkillIdList(skillIdList).build()
+      subtopicList.add(subtopic)
+    }
+    return subtopicList
   }
 
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
