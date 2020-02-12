@@ -622,7 +622,7 @@ class TopicControllerTest {
 
     assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
   }
-  
+
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
     val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID,"1")
