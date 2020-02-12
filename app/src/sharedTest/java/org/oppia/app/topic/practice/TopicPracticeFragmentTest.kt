@@ -6,16 +6,19 @@ import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -75,7 +78,8 @@ class TopicPracticeFragmentTest {
         )
       ).perform(click())
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
-      onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.skill_check_box))))
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box))
+        .check(matches(withId(R.id.skill_check_box)))
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -89,8 +93,8 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 1)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 2, R.id.skill_check_box)).perform(click())
     }
   }
 
@@ -103,7 +107,7 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
       onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
     }
   }
@@ -117,8 +121,8 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
     }
   }
 
@@ -131,8 +135,8 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-      onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
+      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -146,7 +150,7 @@ class TopicPracticeFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
     onView(withId(R.id.topic_practice_start_button)).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
@@ -155,12 +159,12 @@ class TopicPracticeFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
-    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
-    onView(atPositionOnView(R.id.skill_recycler_view, 0, R.id.skill_check_box)).check(matches(isChecked()))
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).check(matches(isChecked()))
   }
 
   @Test
@@ -177,7 +181,7 @@ class TopicPracticeFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
-    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.skill_check_box)).perform(click())
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }

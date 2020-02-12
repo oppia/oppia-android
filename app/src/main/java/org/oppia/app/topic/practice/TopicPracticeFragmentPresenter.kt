@@ -12,6 +12,7 @@ import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.app.databinding.TopicPracticeSkillViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
@@ -31,7 +32,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSkillIdList: ArrayList<String>
   private lateinit var topicId: String
-  private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding;
+  private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding
+  private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -108,6 +110,9 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     topicPracticeFooterViewBinding = binding
     binding.viewModel = model
     binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+    binding.topicPracticeStartButton.setOnClickListener {
+      routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
+    }
   }
 
   private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
