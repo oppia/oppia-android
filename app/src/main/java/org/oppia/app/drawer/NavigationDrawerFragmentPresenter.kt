@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -23,6 +24,7 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
+import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -84,16 +86,31 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
-      val intent = when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
+      when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          Intent(fragment.activity, HomeActivity::class.java)
+          val intent = Intent(fragment.activity, HomeActivity::class.java)
+          fragment.activity!!.startActivity(intent)
+          fragment.activity!!.finish()
         }
         NavigationDrawerItem.HELP -> {
-          Intent(fragment.activity, HelpActivity::class.java)
+          val intent = Intent(fragment.activity, HelpActivity::class.java)
+          fragment.activity!!.startActivity(intent)
+          fragment.activity!!.finish()
+        }
+        NavigationDrawerItem.SWITCH_PROFILE -> {
+          AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
+            .setMessage(R.string.home_activity_back_dialog_message)
+            .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
+              dialog.dismiss()
+            }
+            .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
+              // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
+              val intent = Intent(fragment.activity, ProfileActivity::class.java)
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              fragment.activity!!.startActivity(intent)
+            }.create().show()
         }
       }
-      fragment.activity!!.startActivity(intent)
-      fragment.activity!!.finish()
     } else {
       drawerLayout.closeDrawers()
     }
@@ -110,6 +127,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       }
       NavigationDrawerItem.HELP -> {
         binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
+      }
+      NavigationDrawerItem.SWITCH_PROFILE -> {
+        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = true
       }
     }
     this.drawerLayout = drawerLayout
