@@ -13,8 +13,8 @@ import org.oppia.app.mydownloads.UpdatesTabFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
+import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.story.StoryFragment
@@ -23,9 +23,10 @@ import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
+import org.oppia.app.topic.practice.TopicPracticeFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
-import org.oppia.app.topic.practice.TopicPracticeFragment
+import org.oppia.app.topic.reviewcard.ReviewCardFragment
 import org.oppia.app.view.ViewComponent
 import javax.inject.Provider
 
@@ -57,6 +58,7 @@ interface FragmentComponent {
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
+  fun inject(reviewCardFragment: ReviewCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(topicFragment: TopicFragment)
