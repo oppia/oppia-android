@@ -13,7 +13,7 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ReviewCardHtmlParserEntityType
 import javax.inject.Inject
 
-/** [ViewModel] for concept card, providing rich text and worked examples */
+/** [ViewModel] for Review card, providing rich text and worked examples */
 @FragmentScope
 class ReviewCardViewModel @Inject constructor(
   private val topicController: TopicController,
