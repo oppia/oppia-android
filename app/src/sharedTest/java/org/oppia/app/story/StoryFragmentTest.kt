@@ -2,6 +2,7 @@ package org.oppia.app.story
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -86,9 +87,10 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
     launch<StoryFragmentTestActivity>(createTestActivityIntent(TEST_STORY_ID_1)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0)).check(
+      onView(allOf(withId(R.id.story_chapter_list))).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_title)).check(
         matches(
-          withText("Second Story")
+          withText("Chapter 1: Second Exploration")
         )
       )
     }
@@ -96,14 +98,16 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
-    onView(isRoot()).perform(orientationLandscape())
-    val headerString: String = getResources().getQuantityString(R.plurals.story_total_chapters, 3, 1, 3)
-    onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-    onView(atPositionOnView(R.id.story_chapter_list, 0, R.id.story_progress_chapter_completed_text)).check(
-      matches(
-        withText(headerString)
+    launch<StoryFragmentTestActivity>(createTestActivityIntent(TEST_STORY_ID_1)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      val headerString: String = getResources().getQuantityString(R.plurals.story_total_chapters, 3, 1, 3)
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(atPositionOnView(R.id.story_chapter_list, 0, R.id.story_progress_chapter_completed_text)).check(
+        matches(
+          withText(headerString)
+        )
       )
-    )
+    }
   }
 
   private fun createTestActivityIntent(storyId: String): Intent {
