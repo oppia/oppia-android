@@ -253,7 +253,7 @@ message CellularDataPreference {
   bool use_cellular_data = 2;
 }
 
-// Corresponds to a single subtopic that can be trained, or reviewed.
+// Corresponds to a single subtopic.
 message Subtopic {
   // The ID of the subtopic.
   string subtopic_id = 1;
@@ -261,7 +261,7 @@ message Subtopic {
   // The title of the subtopic.
   string title = 2;
 
-  // The list of skill ids associated with each of the subtopic.
+  // The list of skill ids associated with the subtopic.
   repeated string skillIdList = 3;
 }
 
@@ -270,7 +270,7 @@ message ReviewCard {
   // The title corresponding to the subtopic.
   string subtopic_title = 1;
 
-  // The subtopic's description that can help provide context on what content is being reviewed.
+  // Description related to Subtopic.
   string subtopic_description = 2;
 
   // The core explanation of the subtopic being reviewed.
