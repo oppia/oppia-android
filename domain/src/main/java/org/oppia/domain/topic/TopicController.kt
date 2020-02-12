@@ -407,10 +407,6 @@ class TopicController @Inject constructor(
       .build()
   }
 
-   fun  getSkillIds(subtopicId: String): List<String>{
-
-    return skillIdListFromSubtopicId
-   }
   /** Utility to create a sub-topic from its json representation. */
   private fun createSubtopicTopicFromJson(topicFileName: String): ReviewCard {
     val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
