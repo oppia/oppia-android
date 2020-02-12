@@ -27,23 +27,25 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
-) : SkillSelector {
-  lateinit var selectedSkillIdList: ArrayList<String>
+) : SubtopicSkillsSelector {
+  lateinit var selectedSubtopicIdList: ArrayList<String>
+  lateinit var selectedSkillList: ArrayList<String>
   private lateinit var topicId: String
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
-  private lateinit var skillSelectionAdapter: SkillSelectionAdapter
+  private lateinit var subtopicSkillSelectionAdapter: SubtopicSkillSelectionAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
-    selectedSkillIdList = skillList
+    selectedSubtopicIdList = ArrayList()
+    selectedSkillList = ArrayList()
     val binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    skillSelectionAdapter = SkillSelectionAdapter(this)
+    subtopicSkillSelectionAdapter = SubtopicSkillSelectionAdapter(this)
     binding.skillRecyclerView.isNestedScrollingEnabled = false
     binding.skillRecyclerView.apply {
-      adapter = skillSelectionAdapter
+      adapter = subtopicSkillSelectionAdapter
     }
     binding.let {
       it.viewModel = getTopicPracticeViewModel()
@@ -61,8 +63,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
-      skillSelectionAdapter.setSkillList(result.skillList)
-      skillSelectionAdapter.setSelectedSkillList(selectedSkillIdList)
+      subtopicSkillSelectionAdapter.setSubtopicSkillList(result.subtopicList)
+      subtopicSkillSelectionAdapter.setSelectedSubtopicSkillList(selectedSubtopicIdList)
     })
   }
 
@@ -81,21 +83,31 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, TopicPracticeViewModel::class.java)
   }
 
-  override fun skillSelected(skillId: String) {
-    if (!selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.add(skillId)
+  override fun subtopicSkillsSelected(
+    subtopicId: String,
+    skillIdList: MutableList<String>
+  ) {
+    if (!selectedSubtopicIdList.contains(subtopicId)) {
+      selectedSubtopicIdList.add(subtopicId)
+      selectedSkillList.addAll(skillIdList)
     }
-    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
+    getTopicPracticeViewModel().notifySelectedSubtopicList(selectedSubtopicIdList)
   }
 
-  override fun skillUnselected(skillId: String) {
-    if (selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.remove(skillId)
+  override fun subtopicSkillsUnselected(
+    subtopicId: String,
+    skillIdList: MutableList<String>
+  ) {
+    if (selectedSubtopicIdList.contains(subtopicId)) {
+      selectedSubtopicIdList.remove(subtopicId)
+      selectedSkillList.removeAll(skillIdList)
     }
-    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
+    getTopicPracticeViewModel().notifySelectedSubtopicList(selectedSubtopicIdList)
   }
 
   internal fun onStartButtonClicked() {
-    routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
+    logger.d("subtopic list","==="+selectedSubtopicIdList)
+    logger.d("Skill list","==="+selectedSkillList)
+    routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSubtopicIdList)
   }
 }

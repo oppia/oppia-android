@@ -14,8 +14,8 @@ class TopicPracticeViewModel @Inject constructor(
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
-  fun notifySelectedSkillList(selectedSkillList: ArrayList<String>) {
-    isSubmitButtonActive.set(selectedSkillList.isNotEmpty())
+  fun notifySelectedSubtopicList(selectedSubtopicList: ArrayList<String>) {
+    isSubmitButtonActive.set(selectedSubtopicList.isNotEmpty())
   }
 
   fun startButtonClicked(v: View) {
