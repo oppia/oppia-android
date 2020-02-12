@@ -29,7 +29,7 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterPlayState.COMPLETED
 import org.oppia.app.model.ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
 import org.oppia.app.model.ChapterPlayState.NOT_STARTED
-import org.oppia.app.model.StoryProgressNew
+import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.TopicProgress
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.data.AsyncResult
@@ -79,8 +79,8 @@ class StoryProgressControllerTest {
   @Mock lateinit var mockTopicProgressObserver: Observer<AsyncResult<TopicProgress>>
   @Captor lateinit var topicProgressResultCaptor: ArgumentCaptor<AsyncResult<TopicProgress>>
 
-  @Mock lateinit var mockStoryProgressObserver: Observer<AsyncResult<StoryProgressNew>>
-  @Captor lateinit var storyProgressResultCaptor: ArgumentCaptor<AsyncResult<StoryProgressNew>>
+  @Mock lateinit var mockStoryProgressObserver: Observer<AsyncResult<StoryProgress>>
+  @Captor lateinit var storyProgressResultCaptor: ArgumentCaptor<AsyncResult<StoryProgress>>
 
   @Mock lateinit var mockChapterProgressObserver: Observer<AsyncResult<ChapterPlayState>>
   @Captor lateinit var chapterProgressResultCaptor: ArgumentCaptor<AsyncResult<ChapterPlayState>>
@@ -109,8 +109,7 @@ class StoryProgressControllerTest {
 
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(1)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_0)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(COMPLETED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_0]).isEqualTo(COMPLETED)
   }
 
   @Test
@@ -120,12 +119,9 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(3)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_1)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(COMPLETED)
-    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
-    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_STARTED)
-    assertThat(storyProgress.getChapterProgress(2).explorationId).isEqualTo(TEST_EXPLORATION_ID_3)
-    assertThat(storyProgress.getChapterProgress(2).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_1]).isEqualTo(COMPLETED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_2]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_3]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -135,10 +131,8 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(COMPLETED)
-    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
-    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_0]).isEqualTo(COMPLETED)
+    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_1]).isEqualTo(NOT_STARTED)
   }
 
   @Test
@@ -148,10 +142,8 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
-    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_1)
-    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storyProgress.chapterProgressMap[RATIOS_EXPLORATION_ID_0]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[RATIOS_EXPLORATION_ID_1]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -161,10 +153,8 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
-    assertThat(storyProgress.getChapterProgress(1).explorationId).isEqualTo(RATIOS_EXPLORATION_ID_3)
-    assertThat(storyProgress.getChapterProgress(1).playState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(storyProgress.chapterProgressMap[RATIOS_EXPLORATION_ID_2]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[RATIOS_EXPLORATION_ID_3]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -173,8 +163,7 @@ class StoryProgressControllerTest {
 
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(1)
-    assertThat(storyProgress.getChapterProgress(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
-    assertThat(storyProgress.getChapterProgress(0).playState).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_4]).isEqualTo(NOT_STARTED)
   }
 
   @Test
