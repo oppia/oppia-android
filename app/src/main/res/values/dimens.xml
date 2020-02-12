@@ -22,4 +22,6 @@
   <dimen name="padding_20">20dp</dimen>
   <dimen name="margin_32">32dp</dimen>
   <dimen name="margin_8">8dp</dimen>
+  <dimen name="enter_text_view_padding_start">60dp</dimen>
+  <dimen name="enter_text_view_padding_end">60dp</dimen>
 </resources>
