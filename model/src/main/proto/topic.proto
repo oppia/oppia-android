@@ -33,6 +33,7 @@ message Topic {
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
 
+  // A list of subtopic contained within this topic.
   repeated Subtopic subtopic = 8;
 }
 
