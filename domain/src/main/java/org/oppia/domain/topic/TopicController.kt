@@ -176,11 +176,11 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [ReviewCard] corresponding to the specified topic name and subtopic ID, or a failed result if there is none. */
-  fun getReviewCard(topicName: String, subtopicId: String): LiveData<AsyncResult<ReviewCard>> {
+  /** Returns the [ReviewCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
+  fun getReviewCard(topicId: String, subtopicId: String): LiveData<AsyncResult<ReviewCard>> {
     return MutableLiveData(
       try {
-        AsyncResult.success(retrieveReviewCard(topicName,subtopicId))
+        AsyncResult.success(retrieveReviewCard(topicId,subtopicId))
       } catch (e: Exception) {
         AsyncResult.failed<ReviewCard>(e)
       }
@@ -188,11 +188,11 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
-  internal fun retrieveReviewCard(topicName: String, subtopicId: String): ReviewCard {
+  internal fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicTopicFromJson(
         "fractions_subtopics.json")
-      else -> throw IllegalArgumentException("Invalid topic Name: $topicName")
+      else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
     }
   }
 

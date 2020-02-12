@@ -9,7 +9,7 @@ import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-private const val KEY_TOPIC_ID = "TOPIC_NAME"
+private const val KEY_TOPIC_ID = "TOPIC_ID"
 private const val KEY_SUBTOPIC_ID = "SUBTOPIC_ID"
 
 /* Fragment that displays a fullscreen dialog for review cards */
@@ -21,11 +21,11 @@ class ReviewCardFragment : InjectableDialogFragment() {
      * @param subtopicId Used in TopicController to get correct review card data.
      * @return [ReviewCardFragment]: DialogFragment
      */
-    fun newInstance(topicName: String, subtopicId: String): ReviewCardFragment {
+    fun newInstance(topicId: String, subtopicId: String): ReviewCardFragment {
       val reviewCardFrag = ReviewCardFragment()
       val args = Bundle()
       args.putString(KEY_SUBTOPIC_ID, subtopicId)
-      args.putString(KEY_TOPIC_ID, topicName)
+      args.putString(KEY_TOPIC_ID, topicId)
       reviewCardFrag.arguments = args
       return reviewCardFrag
     }

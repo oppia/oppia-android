@@ -29,7 +29,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val topicController: TopicController
 ) : ReviewSelector {
   private lateinit var topicId: String
-  private lateinit var topicName: String
   private val routeToReviewListener = activity as RouteToReviewCardListener
 
   private lateinit var reviewAdapter: ReviewAdapter
@@ -66,7 +65,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       reviewAdapter.setReviewList(result.subtopicList)
-      topicName = result.name
       logger.e("TopicReviewFragment", ""+ result.subtopicList.get(0).title)
       logger.e("TopicReviewFragment", ""+ result.subtopicList.get(0).skillIdListList)
     })
