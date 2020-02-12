@@ -32,6 +32,8 @@ message Topic {
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
+
+  repeated Subtopic subtopic = 8;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -248,4 +250,35 @@ message CellularDataPreference {
 
   // Preference on whether to use cellular data
   bool use_cellular_data = 2;
+}
+
+
+message Subtopic {
+
+  string subtopic_id = 1;
+
+  string title = 2;
+
+  repeated string skillIdList = 3;
+
+}
+
+// Corresponds to a review card that can be displayed for a specific subtopic.
+message ReviewCard {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The subtopic's description that can help provide context on what content is being reviewed.
+  string subtopic_description = 2;
+
+  // The core explanation of the subtopic being reviewed.
+  SubtitledHtml page_contents = 3;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this review card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 6;
 }
