@@ -12,6 +12,7 @@
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
   <color name="oppiaPrimaryText30">#4D333333</color>
+  <color name="oppiaPrimaryText70">#B3333333</color>
   <color name="oppiaPrimaryDark">#00645C</color>
   <color name="oppiaSecondaryText">#666666</color>
   <color name="oppiaLightGreen">#F0FFFF</color>
@@ -33,6 +34,8 @@
   <color name="white_80">#CCFFFFFF</color>
   <color name="white_70">#B3FFFFFF</color>
   <color name="black">#000000</color>
+  <color name="black_61">#61000000</color>
+  <color name="black_87">#DE000000</color>
   <color name="black_20">#33000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>

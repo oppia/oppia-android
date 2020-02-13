@@ -134,7 +134,7 @@
   <string name="admin_pin_submit">Submit</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name (required)</string>
+  <string name="add_profile_input_name">Name*</string>
   <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
@@ -148,6 +148,9 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <string name="add_profile_required">*Required</string>
+  <string name="add_profile_create_a_3_digit_pin_optional">Create a 3-Digit PIN (Optional)</string>
+  <string name="add_profile_info_icon_content_description">Add profile info icon</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
