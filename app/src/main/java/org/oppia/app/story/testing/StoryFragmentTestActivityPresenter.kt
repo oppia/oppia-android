@@ -16,12 +16,12 @@ class StoryFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.story_fragment_test_activity)
     if (getStoryFragment() == null) {
-      /*val storyId = checkNotNull(activity.intent.getStringExtra(STORY_ID_TEST_INTENT_EXTRA)) {
+      val storyId = checkNotNull(activity.intent.getStringExtra(STORY_ID_TEST_INTENT_EXTRA)) {
         "Expected non-null story ID to be passed in using extra key: $STORY_ID_TEST_INTENT_EXTRA"
-      }*/
+      }
       activity.supportFragmentManager.beginTransaction().add(
         R.id.story_fragment_placeholder,
-        StoryFragment.newInstance(TEST_STORY_ID_1)
+        StoryFragment.newInstance(storyId)
       ).commitNow()
     }
   }
