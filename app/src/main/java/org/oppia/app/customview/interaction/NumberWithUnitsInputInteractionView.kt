@@ -40,7 +40,6 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
       return interactionObjectBuilder.build()
     }
 
-
     interactionObjectBuilder.setNumberWithUnits(
       getNumberWithUnits(text.toString())
     )
@@ -62,7 +61,6 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     var fractionObj = Fraction.newBuilder().setDenominator(1).build()
     var units = ""
     var value = ""
-//    var unitObj
 
     // Allow validation only when rawInput is not null or an empty string.
     if (rawInput.isNotEmpty() && rawInput != null) {

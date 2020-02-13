@@ -7,9 +7,11 @@
     <variable
       name="numericInputViewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+
     <variable
       name="textInputViewModel"
       type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
+
     <variable
       name="fractionInteractionViewModel"
       type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
@@ -18,9 +20,9 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".testing.InputInteractionViewTestActivity">
 
@@ -50,11 +52,11 @@
       android:focusable="true"
       android:hint="Write here."
       android:inputType="text"
-      android:text="@={textInputViewModel.answerText}"
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
-      android:singleLine="true" />
+      android:singleLine="true"
+      android:text="@={textInputViewModel.answerText}" />
 
     <org.oppia.app.customview.interaction.FractionInputInteractionView
       android:id="@+id/test_fraction_input_interaction_view"
@@ -63,14 +65,15 @@
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789/- "
-      android:text="@={fractionInteractionViewModel.answerText}"
       android:focusable="true"
       android:hint="Write fraction here."
       android:inputType="date"
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
-      android:singleLine="true" />
+      android:singleLine="true"
+      android:text="@={fractionInteractionViewModel.answerText}" />
+
     <org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
       android:id="@+id/test_number_with_units_input_interaction_view"
       android:layout_width="match_parent"
@@ -80,10 +83,10 @@
       android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ $.-/*^()€£¥"
       android:focusable="true"
       android:hint="Write number with units here."
-
       android:longClickable="false"
       android:maxLength="200"
       android:padding="8dp"
-      android:singleLine="true" />
+      android:singleLine="true"
+      android:text="@={fractionInteractionViewModel.answerText}" />
   </LinearLayout>
 </layout>
