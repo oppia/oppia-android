@@ -1,12 +1,10 @@
 package org.oppia.app.topic.practice
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
@@ -16,15 +14,13 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The ViewModel for [TopicPracticeFragment]. */
+/** [ViewModel] for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
-  activity: AppCompatActivity,
   private val logger: Logger,
   private val topicController: TopicController
 ) : ViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
-  private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
   private lateinit var topicId: String
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
