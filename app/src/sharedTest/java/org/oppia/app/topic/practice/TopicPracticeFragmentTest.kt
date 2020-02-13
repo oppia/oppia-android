@@ -8,8 +8,9 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -17,7 +18,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -149,13 +149,20 @@ class TopicPracticeFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-//    onView(atPosition(R.id.skill_recycler_view, 0)).perform(click())
-    onView(withId(R.id.skill_recycler_view)).perform(
-      RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-        10
-      )
-    ).perform(click())
-    onView(withId(R.id.topic_practice_start_button)).check(matches(isCompletelyDisplayed())).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(5)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(6)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(7)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(8)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(9)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(10)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(11)).perform(click())
+    onView(withId(R.id.skill_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(12)).perform(click())
+    onView(withId(R.id.topic_practice_start_button)).perform(scrollTo()).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
