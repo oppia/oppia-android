@@ -15,9 +15,9 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -156,7 +156,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
   }
 
@@ -165,9 +165,9 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(IntentMatchers.hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
 

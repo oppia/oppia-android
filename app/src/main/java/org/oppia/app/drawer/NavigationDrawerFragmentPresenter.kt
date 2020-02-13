@@ -105,8 +105,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             }
             .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
               // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-              val intent = Intent(fragment.activity, ProfileActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              val intent = ProfileActivity.createProfileActivity(fragment.context!!)
               fragment.activity!!.startActivity(intent)
             }.create().show()
         }
