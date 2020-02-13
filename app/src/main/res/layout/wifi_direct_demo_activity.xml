@@ -5,11 +5,66 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     <TextView
+      android:id="@+id/connection_status"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="WifiDirect"
+      android:text="Connection Status"
+      android:textSize="20sp"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"/>
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginTop="40dp"/>
+    <LinearLayout
+      android:id="@+id/connection_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@+id/connection_status"
+      android:layout_marginTop="20dp"
+      android:gravity="center">
+      <Button
+        android:id="@+id/on_off_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="40dp"
+        android:text="WIFI ON"/>
+      <Button
+        android:id="@+id/discover_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discover"/>
+    </LinearLayout>
+    <ListView
+      android:id="@+id/list_view"
+      android:layout_width="match_parent"
+      android:layout_height="200dp"
+      android:layout_marginTop="40dp"
+      app:layout_constraintTop_toBottomOf="@+id/connection_buttons"/>
+    <TextView
+      android:id="@+id/read_message"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Message"
+      android:textSize="20sp"
+      app:layout_constraintTop_toBottomOf="@id/list_view"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginTop="40dp"/>
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
+      <EditText
+        android:id="@+id/write_message"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+      <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND"/>
+    </LinearLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

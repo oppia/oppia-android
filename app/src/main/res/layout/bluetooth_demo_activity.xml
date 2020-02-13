@@ -19,10 +19,20 @@
         android:layout_height="wrap_content"
         android:text="Bluetooth Demo"
         android:textColor="@color/black"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+,      <Button
+        android:id="@+id/find_devices_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find Devices"
+        android:layout_marginBottom="40dp"/>
+      <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"/>
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +62,7 @@
         <TextView
           android:id="@+id/received_message"
           android:layout_width="200dp"
-          android:layout_height="200dp"/>
+          android:layout_height="wrap_content"/>
       </LinearLayout>
     </LinearLayout>
 
