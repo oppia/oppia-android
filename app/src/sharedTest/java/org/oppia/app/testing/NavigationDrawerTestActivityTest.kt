@@ -1,6 +1,6 @@
 package org.oppia.app.testing
 
-import :qandroid.app.Application
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.TextView

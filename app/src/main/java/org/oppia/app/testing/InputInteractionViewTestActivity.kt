@@ -19,7 +19,7 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView], [TextInputInteractionView],and [FractionInputInteractionView].
+ * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
  */
 class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
   InteractionAnswerErrorReceiver {
@@ -27,11 +27,15 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   }
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
-  val numericInputViewModel = NumericInputViewModel()
+  lateinit var fractionInteractionViewModel: FractionInteractionViewModel
+  val numericInputViewModel = NumericInputViewModel(
+    context = this,
+    interactionAnswerErrorReceiver = this
+  )
+
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance()
   )
-  lateinit var fractionInteractionViewModel: FractionInteractionViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -50,6 +54,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerError(
