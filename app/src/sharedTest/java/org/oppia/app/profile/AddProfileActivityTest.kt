@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -32,6 +33,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -269,6 +271,21 @@ class AddProfileActivityTest {
     }
   }
 
+  @Test
+  fun testAddProfileActivity_configurationChanged_inputTextIsPreserved() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("123")
+        )
+      )
+    }
+  }
   @Qualifier
   annotation class TestDispatcher
 

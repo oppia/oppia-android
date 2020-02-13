@@ -8,6 +8,9 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val KEY_ADD_PROFILE_COLOR_RGB = "KEY_ADD_PROFILE_COLOR_RGB"
+const val KEY_NAME_INPUT = "NAME_INPUT"
+const val KEY_PIN_INPUT = "PIN_INPUT"
+const val KEY_PIN_CONFIRM_INPUT = "PIN_CONFIRM_INPUT"
 
 /** Activity that allows users to create new profiles. */
 class AddProfileActivity : InjectableAppCompatActivity() {
@@ -16,7 +19,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   companion object {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
       val intent = Intent(context, AddProfileActivity::class.java)
-      intent.putExtra(KEY_ADD_PROFILE_COLOR_RGB, colorRgb)
+      intent.putExtra(KEY_NAME_INPUT, intent.getStringExtra(KEY_NAME_INPUT))
+      intent.putExtra(KEY_PIN_INPUT, intent.getStringExtra(KEY_PIN_INPUT))
+      intent.putExtra(KEY_PIN_CONFIRM_INPUT, intent.getStringExtra(KEY_PIN_CONFIRM_INPUT))
       return intent
     }
   }
@@ -39,5 +44,15 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    addProfileFragmentPresenter.handleOnSavedInstanceState(outState)
+    super.onSaveInstanceState(outState)
+  }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    addProfileFragmentPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
   }
 }

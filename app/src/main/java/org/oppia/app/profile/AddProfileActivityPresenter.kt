@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,6 +26,9 @@ import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
+const val KEY_NAME_INPUT_ERROR_MESSAGE = "NAME_INPUT_ERROR_MESSAGE"
+const val KEY_PIN_INPUT_ERROR_MESSAGE = "PIN_INPUT_ERROR_MESSAGE"
+const val KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE = "PIN_CONFIRM_INPUT_ERROR_MESSAGE"
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -218,5 +222,26 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun getAddProfileViewModel(): AddProfileViewModel {
     return viewModelProvider.getForActivity(activity, AddProfileViewModel::class.java)
+  }
+
+  fun handleOnSavedInstanceState(bundle: Bundle) {
+    bundle.putString(KEY_NAME_INPUT_ERROR_MESSAGE, profileViewModel.nameErrorMsg.get())
+    bundle.putString(KEY_PIN_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
+    bundle.putString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
+  }
+
+  fun handleOnRestoreInstanceState(bundle: Bundle) {
+    val errorMessageName = bundle.getString(KEY_NAME_INPUT_ERROR_MESSAGE)
+    if (errorMessageName != null && errorMessageName.isNotEmpty()) {
+      profileViewModel.nameErrorMsg.set(errorMessageName)
+    }
+    val errorMessagePin = bundle.getString(KEY_PIN_INPUT_ERROR_MESSAGE)
+    if (errorMessagePin != null && errorMessagePin.isNotEmpty()) {
+      profileViewModel.pinErrorMsg.set(errorMessagePin)
+    }
+    val errorMessagePinConfirm = bundle.getString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE)
+    if (errorMessagePinConfirm != null && errorMessagePinConfirm.isNotEmpty()) {
+      profileViewModel.confirmPinErrorMsg.set(errorMessagePinConfirm)
+    }
   }
 }
