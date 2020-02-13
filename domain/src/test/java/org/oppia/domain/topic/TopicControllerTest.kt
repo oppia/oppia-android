@@ -142,8 +142,10 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1,
-      TEST_SKILL_ID_1, TEST_SKILL_ID_1).inOrder()
+    assertThat(getSkillIds(topic)).containsExactly(
+      TEST_SKILL_ID_0, TEST_SKILL_ID_1,
+      TEST_SKILL_ID_1, TEST_SKILL_ID_1
+    ).inOrder()
   }
 
   @Test
@@ -591,7 +593,8 @@ class TopicControllerTest {
       "Given a picture divided into unequal parts, write the fraction."
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>First, divide the picture into equal parts")
+      "<p>First, divide the picture into equal parts"
+    )
   }
 
   @Test
@@ -613,7 +616,8 @@ class TopicControllerTest {
       "Derive a ratio from a description or a picture"
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>A ratio represents a relative relationship between two or more amounts.")
+      "<p>A ratio represents a relative relationship between two or more amounts."
+    )
   }
 
   @Test
@@ -625,10 +629,11 @@ class TopicControllerTest {
 
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
-    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID,"1")
+    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID, "1")
     val reviewCardResult = reviewCardLiveData.value
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
+    assertThat(reviewCardResult.getOrThrow().pageContents.html).isEqualTo("<p>Description of subtopic is here.</p>")
   }
 
   @Test
