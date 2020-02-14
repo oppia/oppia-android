@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+
+// Structure for user onboarding flow.
+message OnboardingFlow {
+  // Determines whether user already onboarded.
+  bool already_onboarded_app = 1;
+}
