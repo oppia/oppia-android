@@ -1,24 +1,17 @@
 package org.oppia.app.splash
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
-import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.activity.InjectableAppCompatActivity
+import javax.inject.Inject
 
 /** An activity that shows a temporary loading page until the app is fully loaded then navigates to [ProfileActivity]. */
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : InjectableAppCompatActivity() {
+
+  @Inject lateinit var splashActivityPresenter: SplashActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.splash_activity)
-
-    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-    // TODO (#565): Control the next activity based on whether the learner is using the app for the first time or not.
-    val intent = Intent(this@SplashActivity, OnboardingActivity::class.java)
-    startActivity(intent)
-    finish()
+    activityComponent.inject(this)
+    splashActivityPresenter.handleOnCreate()
   }
 }

@@ -12,6 +12,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.onboarding.OnboardingFlowController
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val onboardingFlowController: OnboardingFlowController,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
 ) {
   private val dotsList = ArrayList<ImageView>()
@@ -58,6 +60,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   fun clickOnGetStarted() {
+    onboardingFlowController.markOnboardingFlowCompleted()
     routeToProfileListener.routeToProfileList()
   }
 
