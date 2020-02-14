@@ -19,12 +19,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
+private const val DEFAULT_STORY_TEXT_SIZE = 16f
+private const val DEFAULT_APP_LANGUAGE = "English"
+private const val DEFAULT_AUDIO_LANGUAGE = "No Audio"
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -41,9 +45,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private var allowDownloadAccess = false
   private var inputtedPin = false
   private var inputtedConfirmPin = false
-  private var storyTextSize = 14f
-  private var appLanguage = "English"
-  private var audioLanguage = "No Audio"
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -115,9 +116,9 @@ class AddProfileActivityPresenter @Inject constructor(
         allowDownloadAccess = allowDownloadAccess,
         colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
         isAdmin = false,
-        storyTextSize = storyTextSize,
-        appLanguage = appLanguage,
-        audioLanguage = audioLanguage
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = DEFAULT_APP_LANGUAGE,
+        audioLanguage = DEFAULT_AUDIO_LANGUAGE
       )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
