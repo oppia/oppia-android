@@ -1,5 +1,6 @@
 package org.oppia.app.databinding
 
+import android.graphics.PorterDuff
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
@@ -7,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.SkillThumbnailGraphic
 
 /**
@@ -66,7 +68,32 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
       SkillThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS -> R.drawable.topic_fractions_06
       SkillThumbnailGraphic.MULTIPLYING_FRACTIONS -> R.drawable.topic_fractions_07
       SkillThumbnailGraphic.DIVIDING_FRACTIONS -> R.drawable.topic_fractions_08
+      SkillThumbnailGraphic.DERIVE_A_RATIO -> R.drawable.topic_ratios_01
       else -> R.drawable.topic_fractions_01
     }
   )
+}
+
+/**
+ * Binding adapter for profile images. Used to either display a local image or custom colored avatar.
+ *
+ * @param imageView View where the profile avatar will be loaded into.
+ * @param profileAvatar Represents either a colorId or local image uri.
+ */
+@BindingAdapter("profile:src")
+fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
+  if (profileAvatar == null) return
+  if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
+    Glide.with(imageView.context)
+      .load(R.drawable.ic_default_avatar)
+      .into(imageView)
+    imageView.setColorFilter(
+      profileAvatar.avatarColorRgb, PorterDuff.Mode.DST_OVER
+    )
+  } else {
+    Glide.with(imageView.context)
+      .load(profileAvatar.avatarImageUri)
+      .placeholder(R.drawable.ic_default_avatar)
+      .into(imageView)
+  }
 }

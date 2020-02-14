@@ -7,8 +7,8 @@ option java_multiple_files = true;
 
 // Top level proto used to store last used id and all profiles.
 message ProfileDatabase {
-  // Represents the last used unique ID for adding a profile.
-  int32 last_used_id = 1;
+  // Represents the next unique ID for adding a profile.
+  int32 next_profile_id = 1;
 
   // Mapping from unique ID to profile.
   map<int32, Profile> profiles = 2;
@@ -28,8 +28,7 @@ message Profile {
   // PIN of the profile.
   string pin = 4;
 
-  // User selected image or gravatar.
-  string avatar_image_uri = 5;
+  ProfileAvatar avatar = 5;
 
   // Determines whether profile is admin.
   bool is_admin = 6;
@@ -44,6 +43,17 @@ message Profile {
   int64 date_created_timestamp_ms = 9;
 }
 
+// Represents a profile avatar image.
+message ProfileAvatar {
+  oneof avatar_type {
+    // User selected image or gravatar.
+    string avatar_image_uri = 5;
+
+    // Tint color to be used with a generic profile image.
+    int32 avatar_color_rgb = 6;
+  }
+}
+
 // Opaque data structure to pass ID.
 message ProfileId {
   /**
@@ -51,4 +61,14 @@ message ProfileId {
    * Should not be used directory outside of the profile system.
    */
   int32 internal_id = 1;
+}
+
+// Used in BindableAdapter for ProfileChooserFragment.
+message ProfileChooserUiModel {
+  oneof model_type {
+    // Indicates an individual Profile.
+    Profile profile = 1;
+    //Indicates the add profile button.
+    bool add_profile = 2;
+  }
 }

@@ -19,7 +19,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
 
     if (getStateFragment() == null) {
-      val explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+      val explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
       checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
       val stateFragment = StateFragment.newInstance(explorationId)
       fragment.childFragmentManager.beginTransaction().add(
@@ -34,7 +34,15 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handlePlayAudio()
   }
 
+  fun setAudioBarVisibility(isVisible: Boolean) = getStateFragment()?.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = getStateFragment()?.scrollToTop()
+
   private fun getStateFragment(): StateFragment? {
     return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
+  }
+
+  fun onKeyboardAction() {
+    getStateFragment()?.handleKeyboardAction()
   }
 }

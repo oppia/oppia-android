@@ -1,8 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.settings.profile.ProfileResetPinViewModel" />
+  </data>
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/profileEditBackground">
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:paddingBottom="32dp"
+      app:layout_constraintTop_toTopOf="parent">
+      <TextView
+        android:id="@+id/profile_reset_pin_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_reset_pin_main"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+      <org.oppia.app.profile.ProfileInputView
+        android:id="@+id/input_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        profile:error="@{viewModel.pinErrorMsg}"
+        profile:inputLength="@{viewModel.isAdmin ? 5 : 3}"
+        profile:label="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
+        app:isPasswordInput="true"
+        app:layout_constraintTop_toBottomOf="@id/profile_reset_pin_main"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+      <org.oppia.app.profile.ProfileInputView
+        android:id="@+id/input_confirm_pin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        profile:error="@{viewModel.confirmErrorMsg}"
+        profile:inputLength="@{viewModel.isAdmin ? 5 : 3}"
+        profile:label="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_confirm_label : @string/profile_reset_pin_user_confirm_label}"
+        app:isPasswordInput="true"
+        app:layout_constraintTop_toBottomOf="@id/input_pin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+      <Button
+        android:id="@+id/profile_reset_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_rename_save"
+        android:textAllCaps="true"
+        style="@style/StateButtonActive"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/input_confirm_pin"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

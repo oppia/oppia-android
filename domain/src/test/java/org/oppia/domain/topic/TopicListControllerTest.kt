@@ -35,8 +35,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicListControllerTest {
-  @Inject
-  lateinit var topicListController: TopicListController
+  @Inject lateinit var topicListController: TopicListController
 
   @Before
   fun setUp() {
@@ -185,7 +184,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val promotedStory = topicList.promotedStory
     assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(promotedStory.storyName).isEqualTo("Matthew")
+    assertThat(promotedStory.storyName).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test
@@ -232,7 +231,7 @@ class TopicListControllerTest {
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
     assertThat(recentLesson.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(recentLesson.storyName).isEqualTo("Matthew")
+    assertThat(recentLesson.storyName).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test

@@ -3,6 +3,7 @@
   <color name="colorPrimary">#00645C</color>
   <color name="colorPrimaryDark">#00574B</color>
   <color name="colorAccent">#2D4A9D</color>
+  <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#C55F45</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
@@ -32,15 +33,31 @@
   <color name="white_80">#CCFFFFFF</color>
   <color name="white_70">#B3FFFFFF</color>
   <color name="black">#000000</color>
+  <color name="black_20">#33000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
+  <color name="red">#FF0000</color>
   <!-- AUDIO COMPONENT -->
   <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatarBorder">#707070</color>
+  <color name="addProfileBackground">#FFFFF0</color>
+  <color name="pinPasswordBackground">#E4F2F1</color>
+  <color name="profileChooserBackground">#212121</color>
+  <color name="profileImagePlaceHolder">#26A69A</color>
+  <color name="profileEditBackground">#E5E5E5</color>
+  <color name="highlightedNavMenuItem">#C55F45</color>
+  <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
-  <color name="submitButtonInactive">#61000000</color>
+  <color name="submitButtonInactive">#61999999</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="edit_text_hint">#80333333</color>
+  <color name="editTextError">#AB0517</color>
+  <color name="editTextHint">#80333333</color>
+  <color name="mid_grey">#ff333333</color>
+  <color name="mid_grey_05">#0D000000</color>
+  <color name="mid_grey_03">#03000000</color>
+  <color name="mid_grey_30">#0D000000</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>
@@ -51,6 +68,7 @@
   <color name="grey_shade_20">#D6D6D6</color>
   <color name="grey_shade_30">#5CBABABA</color>
   <color name="grey_shade_40">#0000003D</color>
+  <color name="grey_shade_29">#4A000000</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
   <color name="chapterCardShadow">#AAFFFFFF</color>
@@ -58,4 +76,35 @@
   <color name="chapterCardGreenBorder">#019489</color>
   <color name="divider">#61000000</color>
   <color name="toolbarDropShadow">#3D000000</color>
+  <color name="green_shade">#44A85A</color>
+  <color name="green_shade_80">#CC44A85A</color>
+  <color name="green_shade_60">#9944A85A</color>
+  <color name="green_shade_40">#6644A85A</color>
+  <color name="green_shade_10">#1A44A85A</color>
+  <color name="light_green">#D9F3E7</color>
+  <!-- AVATAR BACKGROUND COLORS -->
+  <color name="avatar_background_1">#E65C5C</color>
+  <color name="avatar_background_2">#E6935C</color>
+  <color name="avatar_background_3">#FFDB4E</color>
+  <color name="avatar_background_4">#CAE65C</color>
+  <color name="avatar_background_5">#93E65C</color>
+  <color name="avatar_background_6">#5CE6CA</color>
+  <color name="avatar_background_7">#5CCAE6</color>
+  <color name="avatar_background_8">#5C93E6</color>
+  <color name="avatar_background_9">#5C5CE6</color>
+  <color name="avatar_background_10">#935CE6</color>
+  <color name="avatar_background_11">#E65CCF</color>
+  <color name="avatar_background_12">#E65C97</color>
+  <color name="avatar_background_13">#CC2929</color>
+  <color name="avatar_background_14">#CC6A29</color>
+  <color name="avatar_background_15">#E6C12E</color>
+  <color name="avatar_background_16">#ABCC29</color>
+  <color name="avatar_background_17">#6ACC29</color>
+  <color name="avatar_background_18">#29CCAB</color>
+  <color name="avatar_background_19">#29ABCC</color>
+  <color name="avatar_background_20">#296ACC</color>
+  <color name="avatar_background_21">#6A29CC</color>
+  <color name="avatar_background_22">#AB29CC</color>
+  <color name="avatar_background_23">#CC29B1</color>
+  <color name="avatar_background_24">#CC2970</color>
 </resources>

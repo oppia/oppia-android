@@ -33,8 +33,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class StoryProgressControllerTest {
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var storyProgressController: StoryProgressController
 
   @Before
   fun setUp() {

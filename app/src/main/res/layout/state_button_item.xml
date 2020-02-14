@@ -16,10 +16,10 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingStart="24dp"
-    android:layout_marginTop="60dp"
+    android:layout_marginTop="56dp"
     android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:paddingEnd="24dp"
-    android:paddingBottom="136dp">
+    android:paddingBottom="28dp">
 
     <ImageButton
       android:id="@+id/previous_state_image_view"
@@ -60,6 +60,7 @@
       android:drawableEnd="@{buttonViewModel.interactionButtonName.get().equals(@string/state_learn_again_button)? @drawable/ic_refresh_white_24dp : null}"
       android:onClick="@{(v) -> buttonViewModel.triggerContinuationNavigationButtonCallback()}"
       android:text="@{buttonViewModel.interactionButtonName}"
+      android:background="@{buttonViewModel.isInteractionButtonActive()? @drawable/state_button_primary_background : @drawable/state_button_inactive_background}"
       android:textColor="@{buttonViewModel.isInteractionButtonActive()? @color/white : @color/oppiaSecondaryText}"
       android:visibility="@{buttonViewModel.isInteractionButtonVisible()? View.VISIBLE: View.GONE, default=gone}" />
   </RelativeLayout>

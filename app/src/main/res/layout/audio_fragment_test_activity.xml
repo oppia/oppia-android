@@ -4,4 +4,4 @@
   android:id="@+id/audio_fragment_placeholder"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".player.audio.testing.AudioFragmentTestActivity" />
+  tools:context=".testing.AudioFragmentTestActivity" />

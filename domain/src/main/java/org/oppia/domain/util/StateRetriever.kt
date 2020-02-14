@@ -149,6 +149,7 @@ class StateRetriever @Inject constructor(
       for (key in it.keys()) {
         val voiceoverMapping = VoiceoverMapping.newBuilder()
         val voiceoverJson = it.getJSONObject(key)
+        if (voiceoverJson.length() == 0) continue
         for (lang in voiceoverJson.keys()) {
           voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
         }
@@ -181,10 +182,16 @@ class StateRetriever @Inject constructor(
       while (inputKeysIterator.hasNext()) {
         val inputName = inputKeysIterator.next()
         when (ruleSpecBuilder.ruleType) {
-          "HasDenominatorEqualTo", "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
+          "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
             inputName,
             InteractionObject.newBuilder()
-              .setReal(inputsJson.getDouble(inputName))
+              .setSignedInt(inputsJson.getInt(inputName))
+              .build()
+          )
+          "HasDenominatorEqualTo" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
           else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))

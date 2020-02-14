@@ -5,10 +5,10 @@ import org.oppia.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 class SelectionInteractionContentViewModel(
-  val htmlContent: String, private val itemIndex: Int, isAnswerInitiallySelected: Boolean, val isReadOnly: Boolean,
+  val htmlContent: String, private val itemIndex: Int,
   private val selectionInteractionViewModel: SelectionInteractionViewModel
 ): ObservableViewModel() {
-  var isAnswerSelected = ObservableBoolean(isAnswerInitiallySelected)
+  var isAnswerSelected = ObservableBoolean()
 
   fun handleItemClicked() {
     val isCurrentlySelected = isAnswerSelected.get()

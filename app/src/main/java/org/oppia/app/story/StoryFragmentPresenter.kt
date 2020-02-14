@@ -2,11 +2,15 @@ package org.oppia.app.story
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
@@ -17,10 +21,6 @@ import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
-import android.util.TypedValue
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
@@ -39,7 +39,7 @@ class StoryFragmentPresenter @Inject constructor(
     binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setStoryId(storyId)
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
 
@@ -61,7 +61,7 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   fun handleSelectExploration(explorationId: String) {
-    routeToExplorationListener.routeToExploration(explorationId)
+    routeToExplorationListener.routeToExploration(explorationId, /* topicId= */ null)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {

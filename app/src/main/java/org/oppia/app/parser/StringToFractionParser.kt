@@ -1,114 +1,98 @@
 package org.oppia.app.parser
 
-import org.json.JSONObject
+import android.content.Context
+import androidx.annotation.StringRes
+import org.oppia.app.R
+import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Fraction
-import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.normalizeWhitespace
-import java.lang.Integer.parseInt
-import java.util.regex.Pattern
 
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
   private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
-  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d)+$""".toRegex()
-  private val mixedNumberRegex = """^-? ?(\d)+ ?(\d+) ?/ ?(\d)+$""".toRegex()
+  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
+  private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
-  private val fractionRegex = """^\s*-?\s*((\d*\s*\d+\s*\/\s*\d+)|\d+)\s*$""".toRegex()
+  private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
-  object FRACTION_PARSING_ERRORS {
-    const val INVALID_CHARS = "Please only use numerical digits, spaces or forward slashes (/)"
-    const val INVALID_FORMAT = "Please enter a valid fraction (e.g., 5/3 or 1 2/3)"
-    const val DIVISION_BY_ZERO = "Please do not put 0 in the denominator"
+  /**
+   * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
+   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by this method is guaranteed
+   * to be parsed correctly by [parseRegularFraction].
+   *
+   * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
+   * using [getRealTimeAnswerError], instead.
+   */
+  fun getSubmitTimeError(text: String): FractionParsingError {
+    if (invalidCharsLengthRegex.find(text) != null)
+      return FractionParsingError.NUMBER_TOO_LONG
+    val fraction = parseFraction(text)
+    return when {
+      fraction == null -> FractionParsingError.INVALID_FORMAT
+      fraction.denominator == 0 -> FractionParsingError.DIVISION_BY_ZERO
+      else -> FractionParsingError.VALID
+    }
   }
 
-  fun fromRawInputString(inputText: String): Fraction {
-    var rawInput: String = inputText.normalizeWhitespace()
-    if (!inputText.matches(invalidCharsRegex))
-      return throw IllegalArgumentException(FRACTION_PARSING_ERRORS.INVALID_CHARS)
-    if (!fractionRegex.matches(inputText)) {
-      throw IllegalArgumentException(FRACTION_PARSING_ERRORS.INVALID_FORMAT)
+  /**
+   * Returns a [FractionParsingError] for obvious incorrect fraction formatting issues for the specified raw text, or
+   * [FractionParsingError.VALID] if not such issues are found.
+   *
+   * Note that this method returning a valid result does not guarantee the text is a valid fraction--
+   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
+   * general validity, not for definite correctness.
+   */
+  fun getRealTimeAnswerError(text: String): FractionParsingError {
+    val normalized = text.normalizeWhitespace()
+    return when {
+      !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
+      normalized.startsWith("/") -> FractionParsingError.INVALID_FORMAT
+      normalized.count { it == '/' } > 1 -> FractionParsingError.INVALID_FORMAT
+      normalized.lastIndexOf('-') > 0 -> FractionParsingError.INVALID_FORMAT
+      else -> FractionParsingError.VALID
     }
-    var isNegative = false
-    var wholeNumber = 0
-    var numerator = 0
-    var denominator = 1
-
-    rawInput = rawInput.trim();
-    if (rawInput.startsWith("-")) {
-      isNegative = true
-      // Remove the negative char from the string.
-      rawInput = rawInput.substring(1).trim()
-    }
-    // Filter result from split to remove empty strings.
-    var numbers = Pattern.compile("[\\s|/]+").split(rawInput)
-    if (numbers.size == 1) {
-      wholeNumber = parseInt(numbers[0])
-    } else if (numbers.size == 2) {
-      numerator = parseInt(numbers[0])
-      denominator = parseInt(numbers[1])
-    } else {
-      // numbers.length == 3
-      wholeNumber = parseInt(numbers[0])
-      numerator = parseInt(numbers[1])
-      denominator = parseInt(numbers[2])
-    }
-    if (denominator == 0) {
-      throw IllegalArgumentException(FRACTION_PARSING_ERRORS.DIVISION_BY_ZERO)
-    }
-    return Fraction.newBuilder()
-      .setIsNegative(isNegative)
-      .setWholeNumber(wholeNumber)
-      .setNumerator(numerator)
-      .setDenominator(denominator)
-      .build()
   }
 
-  fun getFractionFromString(text: String): Fraction {
-    //for testing the validation in a single method
-    fromRawInputString(text)
+  /** Returns a [Fraction] parse from the specified raw text string. */
+  fun parseFraction(text: String): Fraction? {
     // Normalize whitespace to ensure that answer follows a simpler subset of possible patterns.
     val inputText: String = text.normalizeWhitespace()
-    if (inputText.matches(invalidCharsRegex))
-      return parseMixedNumber(inputText)
-        ?: parseFraction(inputText)
-        ?: parseWholeNumber(inputText)
-        ?: throw IllegalArgumentException(FRACTION_PARSING_ERRORS.INVALID_FORMAT)
-    else return throw IllegalArgumentException(FRACTION_PARSING_ERRORS.INVALID_CHARS)
+    return parseMixedNumber(inputText)
+      ?: parseRegularFraction(inputText)
+      ?: parseWholeNumber(inputText)
+  }
 
+  /** Returns a [Fraction] parse from the specified raw text string. */
+  fun parseFractionFromString(text: String): Fraction {
+    return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
     val mixedNumberMatch = mixedNumberRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText, numeratorText, denominatorText) = mixedNumberMatch.groupValues
-    if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FRACTION_PARSING_ERRORS.DIVISION_BY_ZERO)
-    else
-      return Fraction.newBuilder()
-        .setIsNegative(isInputNegative(inputText))
-        .setWholeNumber(wholeNumberText.toInt())
-        .setNumerator(numeratorText.toInt())
-        .setDenominator(denominatorText.toInt())
-        .build()
+    return Fraction.newBuilder()
+      .setIsNegative(isInputNegative(inputText))
+      .setWholeNumber(wholeNumberText.toInt())
+      .setNumerator(numeratorText.toInt())
+      .setDenominator(denominatorText.toInt())
+      .build()
   }
 
-  private fun parseFraction(inputText: String): Fraction? {
+  private fun parseRegularFraction(inputText: String): Fraction? {
     val fractionOnlyMatch = fractionOnlyRegex.matchEntire(inputText) ?: return null
     val (_, numeratorText, denominatorText) = fractionOnlyMatch.groupValues
-    if (denominatorText.toInt() == 0)
-      return throw IllegalArgumentException(FRACTION_PARSING_ERRORS.DIVISION_BY_ZERO)
-    else
     // Fraction-only numbers imply no whole number.
-      return Fraction.newBuilder()
-        .setIsNegative(isInputNegative(inputText))
-        .setNumerator(numeratorText.toInt())
-        .setDenominator(denominatorText.toInt())
-        .build()
+    return Fraction.newBuilder()
+      .setIsNegative(isInputNegative(inputText))
+      .setNumerator(numeratorText.toInt())
+      .setDenominator(denominatorText.toInt())
+      .build()
   }
 
   private fun parseWholeNumber(inputText: String): Fraction? {
     val wholeNumberMatch = wholeNumberOnlyRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText) = wholeNumberMatch.groupValues
-    // Whole number fractions imply "0/1" fractional parts.
+    // Whole number fractions imply '0/1' fractional parts.
     return Fraction.newBuilder()
       .setIsNegative(isInputNegative(inputText))
       .setWholeNumber(wholeNumberText.toInt())
@@ -118,4 +102,18 @@ class StringToFractionParser {
   }
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
+
+  /** Enum to store the errors of [FractionInputInteractionView]. */
+  enum class FractionParsingError(@StringRes private var error: Int?) {
+    VALID(error = null),
+    INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
+    INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
+    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
+    NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+
+    /** Returns the string corresponding to this error's string resources, or null if there is none. */
+    fun getErrorMessageFromStringRes(context: Context): String? {
+      return error?.let(context::getString)
+    }
+  }
 }

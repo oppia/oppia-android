@@ -48,7 +48,11 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
   }
 
   fun getCurrencyUnits(): JSONObject {
-    return JSONObject("{\"dollar\":{\"name\":\"dollar\",\"aliases\":[\"$\",\"dollars\",\"Dollars\",\"Dollar\",\"USD\"],\"front_units\":[\"$\"],\"base_unit\":null},\"rupee\":{\"name\":\"rupee\",\"aliases\":[\"Rs\",\"rupees\",\"\u20b9\",\"Rupees\",\"Rupee\"],\"front_units\":[\"Rs \",\"\u20b9\"],\"base_unit\":null},\"cent\":{\"name\":\"cent\",\"aliases\":[\"cents\",\"Cents\",\"Cent\"],\"front_units\":[],\"base_unit\":\"0.01 dollar\"},\"paise\":{\"name\":\"paise\",\"aliases\":[\"paisa\",\"Paise\",\"Paisa\"],\"front_units\":[],\"base_unit\":\"0.01 rupee\"}}")
+    return JSONObject("{\"dollar\":{\"name\":\"dollar\",\"aliases\":[\"$\",\"dollars\",\"Dollars\",\"Dollar\"," +
+        "\"USD\"],\"front_units\":[\"$\"],\"base_unit\":null},\"rupee\":{\"name\":\"rupee\",\"aliases\":[\"Rs\",\"rupees\"," +
+        "\"\u20b9\",\"Rupees\",\"Rupee\"],\"front_units\":[\"Rs \",\"\u20b9\"],\"base_unit\":null},\"cent\":" +
+        "{\"name\":\"cent\",\"aliases\":[\"cents\",\"Cents\",\"Cent\"],\"front_units\":[],\"base_unit\":\"0.01 dollar\"}," +
+        "\"paise\":{\"name\":\"paise\",\"aliases\":[\"paisa\",\"Paise\",\"Paisa\"],\"front_units\":[],\"base_unit\":\"0.01 rupee\"}}")
   }
 
   fun getNumberWithUnits(inputText: String): NumberWithUnits {
@@ -65,13 +69,14 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     // Allow validation only when rawInput is not null or an empty string.
     if (rawInput.isNotEmpty() && rawInput != null) {
       // Start with digit when there is no currency unit.
-      if (rawInput.matches("\\d".toRegex())) {
+      if (rawInput.matches("^\\-?\\d.*\$".toRegex())) {
         var ind = indexOf(Pattern.compile("[a-z(₹$]"), rawInput)
-        if (ind === -1) {
+        if (ind == -1) {
           // There is value with no units.
           value = rawInput;
           units = ""
         } else {
+          ind-=1
           value = rawInput.substring(0, ind).trim()
           units = rawInput.substring(ind).trim()
         }
@@ -92,16 +97,16 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
             if (rawInput.startsWith(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String)) {
-              startsWithCorrectCurrencyUnit = true;
+              startsWithCorrectCurrencyUnit = true
               break
             }
           }
         }
-        if (startsWithCorrectCurrencyUnit === false) {
+        if (startsWithCorrectCurrencyUnit == false) {
           throw  Error("INVALID_CURRENCY")
         }
 
-        var ind = indexOf(Pattern.compile("[0 - 9]"), rawInput)
+        var ind = indexOf(Pattern.compile("[0-9]"), rawInput)
 
 
         if (ind === -1) {
@@ -110,26 +115,27 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
         units = rawInput.substring(0, ind).trim()
 
         startsWithCorrectCurrencyUnit = false
+        keys = (CURRENCY_UNITS).keys()
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
             if (units == (CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String).trim()) {
               startsWithCorrectCurrencyUnit = true
-              break;
+              break
             }
           }
         }
-        if (startsWithCorrectCurrencyUnit === false) {
+        if (startsWithCorrectCurrencyUnit == false) {
           throw  Error("INVALID_CURRENCY")
         }
         units = units + ""
 
-        var ind2 = indexOf(Pattern.compile("[a - z(]"), rawInput.substring(ind))
-        if (ind2 !== -1) {
+        var ind2 = indexOf(Pattern.compile("[a-z(]"), rawInput.substring(ind))
+        if (ind2 != -1) {
           value = rawInput.substring(ind, ind2 - ind).trim()
-          units += rawInput.substring(ind2).trim();
+          units += rawInput.substring(ind2).trim()
         } else {
-          value = rawInput.substring(ind).trim();
-          units = units.trim();
+          value = rawInput.substring(ind).trim()
+          units = units.trim()
         }
       }
       // Checking invalid characters in value.
@@ -139,7 +145,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
 
       if (value.contains('/')) {
         type = "fraction"
-        fractionObj = StringToFractionParser().getFractionFromString(value)
+        fractionObj = StringToFractionParser().parseFractionFromString(value)
       } else {
         type = "real"
         real = parseDouble(value)
@@ -191,9 +197,9 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
       }
       var startsWithCorrectCurrencyUnit =
         if (Pattern.compile("^[rs,$,₹,€,£,¥]").matcher(rawInput).find()) true else false
-//      if (startsWithCorrectCurrencyUnit == false) {
-//        return false
-//      }
+      if (startsWithCorrectCurrencyUnit == false) {
+        return false
+      }
       if (startsWithCorrectCurrencyUnit && Pattern.compile("^[\\d,*,/,]").matcher(this.units).find()) {
         return false
       }
@@ -219,7 +225,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     if (this.value.contains("/")) {
       this.real = 0f
       this.type = "fraction"
-      this.fractionObject = StringToFractionParser().getFractionFromString(this.value);
+      this.fractionObject = StringToFractionParser().parseFractionFromString(this.value);
     } else {
       this.real = this.value.toFloat()
       this.type = "real"

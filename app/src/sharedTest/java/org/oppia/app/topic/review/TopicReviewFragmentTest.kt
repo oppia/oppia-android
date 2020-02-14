@@ -3,14 +3,12 @@ package org.oppia.app.topic.review
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import android.text.style.CharacterStyle
-import android.view.View
-import android.widget.TextView
-import androidx.core.text.toSpannable
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -22,8 +20,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.Matchers
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +29,9 @@ import org.oppia.app.R
 import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -48,7 +47,13 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_displayReviewSkills_isSuccessful() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        Matchers.allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
@@ -56,7 +61,18 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_opensReviewActivity() {
-    topicActivityTestRule.launchActivity(null)
+    topicActivityTestRule.launchActivity(
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        TEST_TOPIC_ID_0
+      )
+    )
+    onView(
+      Matchers.allOf(
+        withText(TopicTab.getTabForPosition(3).name),
+        ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
     onView(atPosition(R.id.review_skill_recycler_view, 0)).perform(click())
     val conceptCardFragment: ConceptCardFragment? = topicActivityTestRule.activity.supportFragmentManager
       .findFragmentByTag(TopicActivity.TAG_CONCEPT_CARD_DIALOG) as ConceptCardFragment
@@ -65,7 +81,13 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_selectReviewSkill_conceptCardDisplaysCorrectExplanation() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        Matchers.allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
       onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
       onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
@@ -74,8 +96,14 @@ class TopicReviewFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicTrainFragment_loadFragment_configurationChange_skillsAreDisplayed() {
-    ActivityScenario.launch(TopicActivity::class.java).use {
+  fun testTopicPracticeFragment_loadFragment_configurationChange_skillsAreDisplayed() {
+    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+      onView(
+        Matchers.allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       it.onActivity { activity ->
         activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
       }
@@ -83,6 +111,11 @@ class TopicReviewFragmentTest {
       onView(atPosition(R.id.review_skill_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.skill_name))))
     }
+  }
+
+  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
+    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+    return ActivityScenario.launch(intent)
   }
 
   @Module

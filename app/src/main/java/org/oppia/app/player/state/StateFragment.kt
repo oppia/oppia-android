@@ -6,13 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.player.audio.CellularDataInterface
+import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
+  InteractionAnswerErrorReceiver {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -28,8 +30,7 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     }
   }
 
-  @Inject
-  lateinit var stateFragmentPresenter: StateFragmentPresenter
+  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -40,17 +41,19 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
     return stateFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleEnableAudio(saveUserChoice)
-  }
-
-  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleDisableAudio(saveUserChoice)
-  }
-
-  override fun onAnswerReadyForSubmission(answer: InteractionObject) {
+  override fun onAnswerReadyForSubmission(answer: UserAnswer) {
     stateFragmentPresenter.handleAnswerReadyForSubmission(answer)
   }
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
+
+  fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+
+  override fun onPendingAnswerError(pendingAnswerError: String?) {
+    stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  }
+
+  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+
+  fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 }
