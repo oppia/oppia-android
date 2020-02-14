@@ -3,6 +3,7 @@ package org.oppia.domain
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,6 +12,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javolution.util.stripped.FastMap.logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,8 +35,10 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.OnboardingFlow
+import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.onboarding.OnboardingFlowController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -60,6 +64,7 @@ class OnboardingFlowControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject lateinit var onboardingFlowController: OnboardingFlowController
+  @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
   @field:TestDispatcher
@@ -154,21 +159,27 @@ class OnboardingFlowControllerTest {
   @ExperimentalCoroutinesApi
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
+      val onboardingFlowStore = cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
-
-      // Clear, then recreate another controller.
-      onboardingFlowController.clearOnboardingFlow()
+      clearOnboardingFlow(onboardingFlowStore)
       setUpTestApplicationComponent()
       val onboardingg = onboardingFlowController.getOnboardingFlow()
       onboardingg.observeForever(mockOnboardingObserver)
       advanceUntilIdle()
-
       // The app should be considered not yet onboarded since the previous history was cleared.
       verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
       assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
       assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
+
+  /** Clears any indication that the user has previously completed onboarding the application. */
+  private fun clearOnboardingFlow(onboardingFlowStore: PersistentCacheStore<OnboardingFlow>) {
+    onboardingFlowStore.clearCacheAsync().invokeOnCompletion {
+      it?.let {
+      }
+    }
+  }
 
   @Qualifier
   annotation class TestDispatcher

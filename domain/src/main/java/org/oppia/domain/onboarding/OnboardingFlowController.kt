@@ -41,15 +41,6 @@ class OnboardingFlowController @Inject constructor(
     }
   }
 
-  /** Clears any indication that the user has previously completed onboarding the application. */
-  fun clearOnboardingFlow() {
-    onboardingFlowStore.clearCacheAsync().invokeOnCompletion {
-      it?.let {
-        logger.e("DOMAIN", "Failed to clear onboarding flow.", it)
-      }
-    }
-  }
-
   /**
    * Returns a [LiveData] result indicating whether the user has onboarded the app. This is guaranteed to
    * provide the state of the store upon the creation of this controller even if [markOnboardingFlowCompleted] has since been
