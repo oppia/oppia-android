@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -33,6 +34,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -40,6 +42,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.settings.administrator.AdministratorControlsActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -134,6 +137,32 @@ class NavigationDrawerTestActivityTest {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(IntentMatchers.hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(1)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(not(isDisplayed())))
     }
   }
 

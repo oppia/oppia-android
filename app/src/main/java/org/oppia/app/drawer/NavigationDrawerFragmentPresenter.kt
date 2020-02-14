@@ -25,6 +25,7 @@ import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.settings.administrator.AdministratorControlsActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -74,6 +75,16 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(fragment, Observer<Profile> {
       navigationDrawerHeaderViewModel.profileName.set(it.name)
+      when {
+        it.isAdmin -> {
+          binding.administratorControlsLinearLayout.visibility = View.VISIBLE;
+          binding.administratorControlsLinearLayout.setOnClickListener {
+            val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(activity, internalProfileId)
+            activity.startActivity(intent)
+          }
+        }
+        else -> binding.administratorControlsLinearLayout.visibility = View.GONE
+      }
     })
   }
 
