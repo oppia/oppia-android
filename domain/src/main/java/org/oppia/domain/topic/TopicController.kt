@@ -478,7 +478,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_30)
       .setName("Prototype Exploration")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
+      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createChapterThumbnail0())
       .build()
   }
@@ -498,7 +498,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
+      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createChapterThumbnail1())
       .build()
   }

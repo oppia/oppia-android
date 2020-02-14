@@ -267,7 +267,36 @@ class TopicListController @Inject constructor(
         }
       }
     }
+    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
+      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
+    }
     return ongoingStoryListBuilder.build()
+  }
+
+  private fun recommendedStoryList(): List<PromotedStory> {
+    val recommendedStories = ArrayList<PromotedStory>()
+    recommendedStories.add(
+      createPromotedStory(
+        FRACTIONS_STORY_ID_0,
+        topicController.retrieveTopic(FRACTIONS_TOPIC_ID),
+        0,
+        2,
+        "What is a Fraction?",
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    )
+
+    recommendedStories.add(
+      createPromotedStory(
+        RATIOS_STORY_ID_0,
+        topicController.retrieveTopic(RATIOS_TOPIC_ID),
+        0,
+        2,
+        "What is a Ratio?",
+        RATIOS_EXPLORATION_ID_0
+      )
+    )
+    return recommendedStories
   }
 
   private fun createPromotedStory(

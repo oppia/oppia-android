@@ -11,7 +11,6 @@ import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicProgressDatabase
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -38,9 +37,6 @@ const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
 const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
 const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
 const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
-private val FRACTIONS_COMPLETED_CHAPTERS = listOf(FRACTIONS_EXPLORATION_ID_0)
-private val RATIOS_COMPLETED_CHAPTERS = listOf<String>()
-val COMPLETED_EXPLORATIONS = FRACTIONS_COMPLETED_CHAPTERS + RATIOS_COMPLETED_CHAPTERS
 
 private const val CACHE_NAME = "topic_progress_database"
 
@@ -312,7 +308,7 @@ class StoryProgressController @Inject constructor(
     )
     return TrackedStoryProgress(
       chapterList = explorationIdList,
-      completedChapters = COMPLETED_EXPLORATIONS.filter(explorationIdList::contains).toSet()
+      completedChapters = setOf()
     )
   }
 
@@ -328,14 +324,14 @@ class StoryProgressController @Inject constructor(
   private fun createStoryProgress0(): TrackedStoryProgress {
     return TrackedStoryProgress(
       chapterList = listOf(TEST_EXPLORATION_ID_0),
-      completedChapters = setOf(TEST_EXPLORATION_ID_0)
+      completedChapters = setOf()
     )
   }
 
   private fun createStoryProgress1(): TrackedStoryProgress {
     return TrackedStoryProgress(
       chapterList = listOf(TEST_EXPLORATION_ID_1, TEST_EXPLORATION_ID_2, TEST_EXPLORATION_ID_3),
-      completedChapters = setOf(TEST_EXPLORATION_ID_1)
+      completedChapters = setOf()
     )
   }
 
@@ -358,7 +354,6 @@ class StoryProgressController @Inject constructor(
     init {
       // Verify that the progress object is well-defined by ensuring that the invariant where lessons must be played in
       // order holds.
-      createTrackedCompletedChapters()
       var expectedCompleted: Boolean? = null
       chapterList.reversed().forEach { explorationId ->
         val completedChapter = explorationId in trackedCompletedChapters
@@ -382,11 +377,6 @@ class StoryProgressController @Inject constructor(
         }
         // Otherwise, the invariant holds. Continue on to the previous lesson.
       }
-    }
-
-    fun createTrackedCompletedChapters() {
-      trackedCompletedChapters.add(TEST_EXPLORATION_ID_30)
-      trackedCompletedChapters.add(TEST_EXPLORATION_ID_1)
     }
 
     /**
