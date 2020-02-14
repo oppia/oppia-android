@@ -60,8 +60,10 @@ class OnboardingFlowControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject lateinit var onboardingFlowController: OnboardingFlowController
-  @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
+  @Inject
+  lateinit var onboardingFlowController: OnboardingFlowController
+  @Inject
+  lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
   @field:TestDispatcher
@@ -156,7 +158,8 @@ class OnboardingFlowControllerTest {
       val onboardingFlowStore = cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
-      clearOnboardingFlow(onboardingFlowStore)
+      // Clear, then recreate another controller.
+      onboardingFlowStore.clearCacheAsync()
       setUpTestApplicationComponent()
       val onboarding = onboardingFlowController.getOnboardingFlow()
       onboarding.observeForever(mockOnboardingObserver)
@@ -166,14 +169,6 @@ class OnboardingFlowControllerTest {
       assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
-
-  /** Clears any indication that the user has previously completed onboarding the application. */
-  private fun clearOnboardingFlow(onboardingFlowStore: PersistentCacheStore<OnboardingFlow>) {
-    onboardingFlowStore.clearCacheAsync().invokeOnCompletion {
-      it?.let {
-      }
-    }
-  }
 
   @Qualifier
   annotation class TestDispatcher
