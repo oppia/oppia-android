@@ -43,7 +43,7 @@ message Profile {
   int64 date_created_timestamp_ms = 9;
 
   // Represents user selected story-text-size.
-  float story_text_size = 10;
+  StoryTextSize storyTextSize = 10;
 
   // Represents user selected audio-language.
   string audio_language = 11;
@@ -80,5 +80,13 @@ message ProfileChooserUiModel {
     //Indicates the add profile button.
     bool add_profile = 2;
   }
+}
+
+// Supported Story text sizes for user preference.
+enum StoryTextSize {
+  SMALL_TEXT_SIZE = 0;
+  MEDIUM_TEXT_SIZE = 1;
+  LARGE_TEXT_SIZE = 2;
+  EXTRA_LARGE_TEXT_SIZE =  3;
 }
 

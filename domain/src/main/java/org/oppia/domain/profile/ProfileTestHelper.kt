@@ -2,6 +2,7 @@ package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = 16f,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
       appLanguage = "English",
       audioLanguage = "Hindi"
     )
@@ -29,7 +30,7 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = false,
-      storyTextSize = 16f,
+      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
       appLanguage = "Hindi",
       audioLanguage = "English"
     )
@@ -46,7 +47,7 @@ class ProfileTestHelper @Inject constructor(
         allowDownloadAccess = false,
         colorRgb = -10710042,
         isAdmin = false,
-        storyTextSize = 18f,
+        storyTextSize = StoryTextSize.LARGE_TEXT_SIZE,
         appLanguage = "Chinese",
         audioLanguage = "French"
       )

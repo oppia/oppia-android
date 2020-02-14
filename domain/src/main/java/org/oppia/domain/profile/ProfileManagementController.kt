@@ -14,6 +14,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -134,9 +135,9 @@ class ProfileManagementController @Inject constructor(
     allowDownloadAccess: Boolean,
     colorRgb: Int,
     isAdmin: Boolean,
-    storyTextSize: Float?,
-    appLanguage: String?,
-    audioLanguage: String?
+    storyTextSize: StoryTextSize,
+    appLanguage: String,
+    audioLanguage: String
   ): LiveData<AsyncResult<Any?>> {
 
     if (!onlyLetters(name)) {
@@ -156,7 +157,7 @@ class ProfileManagementController @Inject constructor(
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .setStoryTextSize(storyTextSize!!)
+        .setStoryTextSize(storyTextSize)
         .setAppLanguage(appLanguage)
         .setAudioLanguage(audioLanguage)
 
@@ -266,7 +267,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateStoryTextSize(
-    profileId: ProfileId, storyTextSize: Float
+    profileId: ProfileId, storyTextSize: StoryTextSize
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
@@ -282,6 +283,7 @@ class ProfileManagementController @Inject constructor(
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
+
 
   /**
    * Updates the app language of the profile.
