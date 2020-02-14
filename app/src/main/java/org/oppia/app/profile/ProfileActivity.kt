@@ -11,6 +11,14 @@ import javax.inject.Inject
 class ProfileActivity : InjectableAppCompatActivity() {
   @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
 
+  companion object {
+    fun createProfileActivity(context: Context): Intent {
+      val intent = Intent(context, ProfileActivity::class.java)
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+      return  intent
+    }
+  }
+
   @ExperimentalCoroutinesApi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

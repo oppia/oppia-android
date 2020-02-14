@@ -75,9 +75,7 @@ class UrlImageParser private constructor(
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
-      if (currentDrawable != null) {
-        currentDrawable.draw(canvas)
-      }
+      currentDrawable?.draw(canvas)
     }
   }
 

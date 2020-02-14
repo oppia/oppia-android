@@ -50,11 +50,15 @@
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
-  <color name="submitButtonInactive">#61000000</color>
+  <color name="submitButtonInactive">#61999999</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="edit_text_hint">#80333333</color>
+  <color name="editTextError">#AB0517</color>
+  <color name="editTextHint">#80333333</color>
   <color name="mid_grey">#ff333333</color>
+  <color name="mid_grey_05">#0D000000</color>
+  <color name="mid_grey_03">#03000000</color>
+  <color name="mid_grey_30">#0D000000</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>
@@ -65,6 +69,7 @@
   <color name="grey_shade_20">#D6D6D6</color>
   <color name="grey_shade_30">#5CBABABA</color>
   <color name="grey_shade_40">#0000003D</color>
+  <color name="grey_shade_29">#4A000000</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
   <color name="chapterCardShadow">#AAFFFFFF</color>

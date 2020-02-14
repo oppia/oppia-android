@@ -18,10 +18,13 @@ import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -32,6 +35,7 @@ import javax.inject.Inject
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val profileManagementController: ProfileManagementController,
   private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
   private val logger: Logger
@@ -44,6 +48,10 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+  private lateinit var profileName: String
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -56,6 +64,9 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+
+    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -79,10 +90,33 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     userAppHistoryController.markUserOpenedApp()
+    subscribeToProfileLiveData()
     subscribeToUserAppHistory()
     subscribeToOngoingStoryList()
     subscribeToTopicList()
     return binding.root
+  }
+
+  private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }
+
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+  }
+
+  private fun subscribeToProfileLiveData() {
+    profileLiveData.observe(activity, Observer<Profile> { result ->
+      profileName = result.name
+      setProfileName()
+    })
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -108,6 +142,7 @@ class HomeFragmentPresenter @Inject constructor(
     getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
       userAppHistoryViewModel = UserAppHistoryViewModel()
       userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
+      setProfileName()
       itemList[0] = userAppHistoryViewModel
       topicListAdapter.notifyItemChanged(0)
     })
@@ -123,6 +158,12 @@ class HomeFragmentPresenter @Inject constructor(
       logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
     }
     return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
+  }
+
+  private fun setProfileName() {
+    if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
+      userAppHistoryViewModel.profileName = "$profileName!"
+    }
   }
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {

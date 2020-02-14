@@ -1,31 +1,25 @@
 package org.oppia.app.profile
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.databinding.PinPasswordActivityBinding
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileId
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
-import android.view.animation.AnimationUtils
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.oppia.app.utility.LifecycleSafeTimerFactory
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -57,6 +51,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
 
+    binding.inputPin.requestFocus()
     binding.inputPin.addTextChangedListener(object: TextWatcher {
       var wrong = false
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
@@ -70,7 +65,7 @@ class PinPasswordActivityPresenter @Inject constructor(
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
                 if (it.isSuccess()) {
-                  activity.startActivity(Intent(activity, HomeActivity::class.java))
+                  activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
                 }
               })
             } else {

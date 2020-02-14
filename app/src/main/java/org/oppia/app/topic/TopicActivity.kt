@@ -70,7 +70,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       return intent
     }
 
-    /** Returns a new [Intent] to route to [TopicPlayFragment] for a specified story ID. */
+    /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
     fun createTopicPlayStoryActivityIntent(context: Context, topicId: String, storyId: String): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
