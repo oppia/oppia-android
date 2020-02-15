@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.app.R
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.databinding.DrawerFragmentBinding
 import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
@@ -24,7 +25,6 @@ import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -45,6 +45,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
+  private lateinit var navigationDrawerFooterViewModel: NavigationDrawerFooterViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -56,12 +57,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
+    navigationDrawerFooterViewModel = NavigationDrawerFooterViewModel()
 
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
     headerBinding.viewModel = navigationDrawerHeaderViewModel
     subscribeToProfileLiveData()
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
+    binding.footerViewModel = navigationDrawerFooterViewModel
     binding.executePendingBindings()
 
     return binding.root
@@ -74,16 +77,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(fragment, Observer<Profile> {
       navigationDrawerHeaderViewModel.profileName.set(it.name)
-      when {
-        it.isAdmin -> {
-          binding.administratorControlsLinearLayout.visibility = View.VISIBLE;
-          binding.administratorControlsLinearLayout.setOnClickListener {
-            val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(activity, internalProfileId)
-            activity.startActivity(intent)
-            activity.finish()
-          }
-        }
-        else -> binding.administratorControlsLinearLayout.visibility = View.GONE
+      navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
+      binding.administratorControlsLinearLayout.setOnClickListener {
+        val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(activity, internalProfileId)
+        activity.startActivity(intent)
+        activity.finish()
       }
     })
   }
