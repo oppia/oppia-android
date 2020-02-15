@@ -42,7 +42,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
-import org.oppia.app.settings.administrator.AdministratorControlsActivity
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog

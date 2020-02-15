@@ -1,6 +1,5 @@
 package org.oppia.app.drawer
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -25,7 +24,7 @@ import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.settings.administrator.AdministratorControlsActivity
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger

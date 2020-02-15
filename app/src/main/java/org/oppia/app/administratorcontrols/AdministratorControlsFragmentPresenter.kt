@@ -1,4 +1,4 @@
-package org.oppia.app.settings.administrator
+package org.oppia.app.administratorcontrols
 
 import android.view.LayoutInflater
 import android.view.View

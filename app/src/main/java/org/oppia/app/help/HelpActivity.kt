@@ -6,7 +6,6 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.KEY_HOME_PROFILE_ID
-import org.oppia.app.settings.administrator.AdministratorControlsActivity
 import javax.inject.Inject
 
 /** The help page activity for users FAQ and feedbacks. */
