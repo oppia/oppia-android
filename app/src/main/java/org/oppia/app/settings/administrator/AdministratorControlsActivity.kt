@@ -3,10 +3,11 @@ package org.oppia.app.settings.administrator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import javax.inject.Inject
-
-const val ADMINISTRATOR_CONTROLS_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "AdministratorControlsActivity.profile_id"
 
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity : InjectableAppCompatActivity() {
@@ -16,17 +17,23 @@ class AdministratorControlsActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     administratorControlsActivityPresenter.handleOnCreate()
+    title = getString(R.string.administrator_controls)
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.menu_administrator_controls_activity, menu)
+    return super.onCreateOptionsMenu(menu)
   }
 
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(ADMINISTRATOR_CONTROLS_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return ADMINISTRATOR_CONTROLS_ACTIVITY_PROFILE_ID_ARGUMENT_KEY
+      return KEY_HOME_PROFILE_ID
     }
   }
 }

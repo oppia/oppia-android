@@ -54,7 +54,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.administrator.AdministratorControlsActivity"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileEditActivity"
       android:screenOrientation="portrait" />
