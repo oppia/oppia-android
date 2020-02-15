@@ -81,6 +81,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           binding.administratorControlsLinearLayout.setOnClickListener {
             val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(activity, internalProfileId)
             activity.startActivity(intent)
+            activity.finish()
           }
         }
         else -> binding.administratorControlsLinearLayout.visibility = View.GONE
@@ -99,12 +100,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          val intent = Intent(fragment.activity, HomeActivity::class.java)
+          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
         }
         NavigationDrawerItem.HELP -> {
-          val intent = Intent(fragment.activity, HelpActivity::class.java)
+          val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
         }
