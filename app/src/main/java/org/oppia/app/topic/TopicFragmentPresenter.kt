@@ -36,7 +36,7 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_info_icon_24dp,
       R.drawable.ic_lessons_icon_24dp,
       R.drawable.ic_practice_icon_24dp,
-      R.drawable.ic_review_icon_24dp
+      R.drawable.ic_revision_icon_24dp
     )
 
   fun handleCreateView(
@@ -67,7 +67,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.lessons)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.practice)).setIcon(tabIcons[2])
-    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
+    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
   }

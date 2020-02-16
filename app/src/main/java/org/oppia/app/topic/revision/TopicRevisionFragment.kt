@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.content.Context
 import android.os.Bundle
@@ -9,9 +9,10 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.SkillSummary
 import javax.inject.Inject
 
-/** Fragment that card for topic review. */
-class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
-  @Inject lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
+/** Fragment that card for topic revision. */
+class TopicRevisionFragment : InjectableFragment(),
+  RevisionSkillSelector {
+  @Inject lateinit var topicRevisionFragmentPresenter: TopicRevisionFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -19,10 +20,10 @@ class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return topicReviewFragmentPresenter.handleCreateView(inflater, container)
+    return topicRevisionFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onTopicReviewSummaryClicked(skillSummary: SkillSummary) {
-    topicReviewFragmentPresenter.onTopicReviewSummaryClicked(skillSummary)
+  override fun onTopicRevisionSummaryClicked(skillSummary: SkillSummary) {
+    topicRevisionFragmentPresenter.onTopicRevisionSummaryClicked(skillSummary)
   }
 }

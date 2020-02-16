@@ -16,7 +16,7 @@ import org.oppia.app.model.SkillThumbnailGraphic
  */
 @BindingAdapter("android:src")
 fun setImageDrawable(imageView: ImageView, imageUrl: String) {
-  val requestOptions = RequestOptions().placeholder(R.drawable.review_placeholder)
+  val requestOptions = RequestOptions().placeholder(R.drawable.revision_placeholder)
 
   Glide.with(imageView.context)
     .load(imageUrl)

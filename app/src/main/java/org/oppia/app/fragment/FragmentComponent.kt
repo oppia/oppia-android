@@ -24,7 +24,7 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
-import org.oppia.app.topic.review.TopicReviewFragment
+import org.oppia.app.topic.revision.TopicRevisionFragment
 import org.oppia.app.topic.practice.TopicPracticeFragment
 import org.oppia.app.view.ViewComponent
 import javax.inject.Provider
@@ -62,7 +62,7 @@ interface FragmentComponent {
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)
-  fun inject(topicReviewFragment: TopicReviewFragment)
+  fun inject(topicRevisionFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
 }
