@@ -207,4 +207,19 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <!-- AdministratorControlsFragment. -->
+  <string name="administrator_controls_general_label">General</string>
+  <string name="administrator_controls_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_app_information_label">App Information</string>
+  <string name="administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_account_actions_label">Account Actions</string>
+  <string name="administrator_controls_log_out">Log Out</string>
+
 </resources>
