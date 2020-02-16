@@ -17,7 +17,7 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
-import org.oppia.app.settings.administrator.AdministratorControlsFragment
+import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-
+  <data>
+    <import type="android.view.View" />
+    <variable
+      name="footerViewModel"
+      type="org.oppia.app.drawer.NavigationDrawerFooterViewModel" />
+  </data>
   <com.google.android.material.navigation.NavigationView
     android:id="@+id/fragment_drawer_nav_view"
     android:layout_width="match_parent"
@@ -19,7 +24,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
       android:orientation="horizontal"
-      android:padding="16dp">
+      android:padding="16dp"
+      android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
 
       <ImageView
         android:layout_width="24dp"

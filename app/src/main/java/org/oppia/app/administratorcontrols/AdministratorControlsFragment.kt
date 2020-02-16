@@ -1,4 +1,4 @@
-package org.oppia.app.settings.administrator
+package org.oppia.app.administratorcontrols
 
 import android.content.Context
 import android.os.Bundle

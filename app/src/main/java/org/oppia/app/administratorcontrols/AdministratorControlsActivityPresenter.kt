@@ -1,4 +1,4 @@
-package org.oppia.app.settings.administrator
+package org.oppia.app.administratorcontrols
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
