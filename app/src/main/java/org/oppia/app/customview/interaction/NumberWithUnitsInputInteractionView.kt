@@ -8,7 +8,9 @@ import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.domain.util.normalizeWhitespace
 import java.lang.Double.parseDouble
 import java.util.*
@@ -19,7 +21,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), InteractionAnswerRetriever {
+) : EditText(context, attrs, defStyle), InteractionAnswerHandler {
   private lateinit var type: String
   private var real: Float = 0f
   private lateinit var fractionObject: Fraction
@@ -33,26 +35,29 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     return if (matcher.find()) matcher.start() else -1
   }
 
-  override fun getPendingAnswer(): InteractionObject {
-    val interactionObjectBuilder =
-      InteractionObject.newBuilder().setNumberWithUnits(NumberWithUnits.getDefaultInstance())
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
     if (text.isNullOrEmpty() || isValidNumberWithUnits()) {
-      return interactionObjectBuilder.build()
+      return userAnswerBuilder.build()
     }
 
-    interactionObjectBuilder.setNumberWithUnits(
-      getNumberWithUnits(text.toString())
-    )
+    val answerTextString = text.toString()
+    userAnswerBuilder.answer = InteractionObject.newBuilder()
+      .setNumberWithUnits(getNumberWithUnits(text.toString()))
+      .build()
+    userAnswerBuilder.plainAnswer = answerTextString
 
-    return interactionObjectBuilder.build()
+    return userAnswerBuilder.build()
   }
 
   fun getCurrencyUnits(): JSONObject {
-    return JSONObject("{\"dollar\":{\"name\":\"dollar\",\"aliases\":[\"$\",\"dollars\",\"Dollars\",\"Dollar\"," +
-        "\"USD\"],\"front_units\":[\"$\"],\"base_unit\":null},\"rupee\":{\"name\":\"rupee\",\"aliases\":[\"Rs\",\"rupees\"," +
-        "\"\u20b9\",\"Rupees\",\"Rupee\"],\"front_units\":[\"Rs \",\"\u20b9\"],\"base_unit\":null},\"cent\":" +
-        "{\"name\":\"cent\",\"aliases\":[\"cents\",\"Cents\",\"Cent\"],\"front_units\":[],\"base_unit\":\"0.01 dollar\"}," +
-        "\"paise\":{\"name\":\"paise\",\"aliases\":[\"paisa\",\"Paise\",\"Paisa\"],\"front_units\":[],\"base_unit\":\"0.01 rupee\"}}")
+    return JSONObject(
+      "{\"dollar\":{\"name\":\"dollar\",\"aliases\":[\"$\",\"dollars\",\"Dollars\",\"Dollar\"," +
+          "\"USD\"],\"front_units\":[\"$\"],\"base_unit\":null},\"rupee\":{\"name\":\"rupee\",\"aliases\":[\"Rs\",\"rupees\"," +
+          "\"\u20b9\",\"Rupees\",\"Rupee\"],\"front_units\":[\"Rs \",\"\u20b9\"],\"base_unit\":null},\"cent\":" +
+          "{\"name\":\"cent\",\"aliases\":[\"cents\",\"Cents\",\"Cent\"],\"front_units\":[],\"base_unit\":\"0.01 dollar\"}," +
+          "\"paise\":{\"name\":\"paise\",\"aliases\":[\"paisa\",\"Paise\",\"Paisa\"],\"front_units\":[],\"base_unit\":\"0.01 rupee\"}}"
+    )
   }
 
   fun getNumberWithUnits(inputText: String): NumberWithUnits {
@@ -76,7 +81,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
           value = rawInput;
           units = ""
         } else {
-          ind-=1
+          ind -= 1
           value = rawInput.substring(0, ind).trim()
           units = rawInput.substring(ind).trim()
         }
@@ -84,7 +89,12 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
         var keys = (CURRENCY_UNITS).keys()
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
-            if (Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf(Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j])) != -1) {
+            if (Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf(
+                Arrays.asList(
+                  CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]
+                )
+              ) != -1
+            ) {
               throw  Error(
                 "INVALID_CURRENCY_FORMAT"
               )
