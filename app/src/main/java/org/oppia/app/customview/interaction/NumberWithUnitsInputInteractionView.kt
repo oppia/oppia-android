@@ -84,7 +84,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
         var keys = (CURRENCY_UNITS).keys()
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
-            if (Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf("Sedan") !== -1) {
+            if (Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf(Arrays.asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j])) != -1) {
               throw  Error(
                 "INVALID_CURRENCY_FORMAT"
               )
@@ -139,7 +139,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
         }
       }
       // Checking invalid characters in value.
-      if (value.matches("[a - z]".toRegex()) || value.matches("[ * ^$₹()#@]/".toRegex())) {
+      if (value.matches("[a - z]".toRegex()) || value.matches("[ *^$₹()#@]/".toRegex())) {
         throw  Error("INVALID_VALUE")
       }
 
