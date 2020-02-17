@@ -182,6 +182,14 @@ class ProfileManagementController @Inject constructor(
       })
   }
 
+  fun getStoryTextSize(storyTextSize: StoryTextSize) : Float{
+    return when(storyTextSize) {
+      StoryTextSize.SMALL_TEXT_SIZE -> 16f
+      StoryTextSize.MEDIUM_TEXT_SIZE -> 18f
+      StoryTextSize.LARGE_TEXT_SIZE -> 20f
+      else -> 22f
+    }
+  }
   /**
    * Updates the name of an existing profile.
    *

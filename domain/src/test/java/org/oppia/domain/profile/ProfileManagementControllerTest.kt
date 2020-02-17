@@ -403,7 +403,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
+      profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
@@ -412,7 +412,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(18f)
+      assertThat(profileManagementController.getStoryTextSize(profileResultCaptor.value.getOrThrow().storyTextSize)).isEqualTo(18f)
     }
 
   @Test
