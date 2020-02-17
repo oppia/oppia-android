@@ -34,7 +34,6 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.OnboardingFlow
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.DaggerOnboardingFlowControllerTest_TestApplicationComponent
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
