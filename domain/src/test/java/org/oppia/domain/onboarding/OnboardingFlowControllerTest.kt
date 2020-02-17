@@ -105,7 +105,7 @@ class OnboardingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOnboardedTheApp() =
+  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() =
     runBlockingTest(coroutineContext) {
       val onboarding = onboardingFlowController.getOnboardingFlow()
       advanceUntilIdle()
@@ -170,8 +170,7 @@ class OnboardingFlowControllerTest {
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
