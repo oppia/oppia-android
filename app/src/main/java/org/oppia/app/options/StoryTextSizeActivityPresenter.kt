@@ -7,12 +7,15 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.StoryTextSizeActivityBinding
+import org.oppia.app.model.StoryTextSize
+import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [StoryTextSizeActivity]. */
 @ActivityScope
 class StoryTextSizeActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val profileManagementController: ProfileManagementController
 ) {
   private var fontSize: String = STORY_TEXT_SIZE_SMALL
 
@@ -32,19 +35,19 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     when (prefSummaryValue) {
       STORY_TEXT_SIZE_SMALL -> {
         binding.storyTextSizeSeekBar.progress = 0
-        binding.previewTextview.textSize = SMALL_TEXT_SIZE_VALUE
+        binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
       }
       STORY_TEXT_SIZE_MEDIUM -> {
         binding.storyTextSizeSeekBar.progress = 5
-        binding.previewTextview.textSize = MEDIUM_TEXT_SIZE_VALUE
+        binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
       }
       STORY_TEXT_SIZE_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 10
-        binding.previewTextview.textSize = LARGE_TEXT_SIZE_VALUE
+        binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE)
       }
       STORY_TEXT_SIZE_EXTRA_LARGE -> {
         binding.storyTextSizeSeekBar.progress = 15
-        binding.previewTextview.textSize = EXTRA_LARGE_TEXT_SIZE_VALUE
+        binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
     }
 
@@ -59,19 +62,19 @@ class StoryTextSizeActivityPresenter @Inject constructor(
         when (progressValue) {
           0 -> {
             fontSize = STORY_TEXT_SIZE_SMALL
-            binding.previewTextview.textSize = SMALL_TEXT_SIZE_VALUE
+            binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
           }
           5 -> {
             fontSize = STORY_TEXT_SIZE_MEDIUM
-            binding.previewTextview.textSize = MEDIUM_TEXT_SIZE_VALUE
+            binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
           }
           10 -> {
             fontSize = STORY_TEXT_SIZE_LARGE
-            binding.previewTextview.textSize = LARGE_TEXT_SIZE_VALUE
+            binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE)
           }
           else -> {
             fontSize = STORY_TEXT_SIZE_EXTRA_LARGE
-            binding.previewTextview.textSize = EXTRA_LARGE_TEXT_SIZE_VALUE
+            binding.previewTextview.textSize = profileManagementController.getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
           }
         }
         seekBar.progress = progressValue

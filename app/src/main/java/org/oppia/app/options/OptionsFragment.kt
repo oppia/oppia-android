@@ -24,10 +24,10 @@ const val STORY_TEXT_SIZE_MEDIUM = "Medium"
 const val STORY_TEXT_SIZE_LARGE = "Large"
 const val STORY_TEXT_SIZE_EXTRA_LARGE = "Extra Large"
 
-const val SMALL_TEXT_SIZE_VALUE = 16f
-const val MEDIUM_TEXT_SIZE_VALUE = 18f
-const val LARGE_TEXT_SIZE_VALUE = 20f
-const val EXTRA_LARGE_TEXT_SIZE_VALUE = 22f
+//const val SMALL_TEXT_SIZE_VALUE = 16f
+//const val MEDIUM_TEXT_SIZE_VALUE = 18f
+//const val LARGE_TEXT_SIZE_VALUE = 20f
+//const val EXTRA_LARGE_TEXT_SIZE_VALUE = 22f
 
 const val KEY_MESSAGE_STORY_TEXT_SIZE = "Text Size"
 const val KEY_MESSAGE_APP_LANGUAGE = "App Language"
@@ -40,7 +40,7 @@ class OptionsFragment @Inject constructor(
 ) : PreferenceFragmentCompat() {
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var storyTextSize = SMALL_TEXT_SIZE_VALUE
+  private lateinit var storyTextSize: StoryTextSize
   private var appLanguage = "English"
   private var audioLanguage = "No Audio"
 
@@ -55,16 +55,16 @@ class OptionsFragment @Inject constructor(
   private fun updateDataIntoUI() {
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
-      SMALL_TEXT_SIZE_VALUE -> {
+      StoryTextSize.SMALL_TEXT_SIZE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_SMALL
       }
-      MEDIUM_TEXT_SIZE_VALUE -> {
+      StoryTextSize.MEDIUM_TEXT_SIZE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_MEDIUM
       }
-      LARGE_TEXT_SIZE_VALUE -> {
+      StoryTextSize.LARGE_TEXT_SIZE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_LARGE
       }
-      EXTRA_LARGE_TEXT_SIZE_VALUE -> {
+      StoryTextSize.EXTRA_LARGE_TEXT_SIZE -> {
         textSizePref!!.summary = STORY_TEXT_SIZE_EXTRA_LARGE
       }
     }
@@ -185,7 +185,7 @@ class OptionsFragment @Inject constructor(
 
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(activity, Observer<Profile> {
-      storyTextSize = profileManagementController.getStoryTextSize(it.storyTextSize)
+      storyTextSize = it.storyTextSize
       appLanguage = it.appLanguage
       audioLanguage = it.audioLanguage
       updateDataIntoUI()
