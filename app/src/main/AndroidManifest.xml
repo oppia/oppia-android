@@ -79,7 +79,6 @@
     </activity>
     <activity
       android:name=".story.StoryActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".story.testing.StoryFragmentTestActivity"

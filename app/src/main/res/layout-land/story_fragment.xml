@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <variable
       name="viewModel"
-      type="org.oppia.app.home.continueplaying.ContinuePlayViewModel" />
+      type="org.oppia.app.story.StoryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/story_list_app_bar_layout"
+      android:id="@+id/topic_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,7 +24,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/continue_playing_toolbar"
+        android:id="@+id/story_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -33,7 +33,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/continue_playing_activity"
+        app:title="@{viewModel.storyNameLiveData}"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,25 +43,27 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ongoing_story_recycler_view"
+        android:id="@+id/story_chapter_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="8dp"
-        android:paddingBottom="172dp"
+        android:paddingBottom="@dimen/bottom_white_space"
         android:scrollbars="none"
-        app:data="@{viewModel.ongoingStoryLiveData}"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:data="@{viewModel.storyChapterLiveData}"
+        tools:listitem="@layout/story_chapter_view" />
 
       <View
-        android:id="@+id/continue_playing__shadow_view"
+        android:id="@+id/story_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
+
     </FrameLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

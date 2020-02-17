@@ -9,8 +9,8 @@
       type="Boolean" />
 
     <variable
-      name="skill"
-      type="org.oppia.app.model.SkillSummary" />
+      name="viewModel"
+      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSkillSummaryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,10 +34,11 @@
       android:checked="@{isChecked}"
       android:fontFamily="sans-serif"
       android:gravity="top"
-      android:minHeight="48dp"
+      android:layout_marginTop="16dp"
       android:paddingStart="20dp"
+      android:layout_marginStart="40dp"
       android:paddingEnd="20dp"
-      android:text="@{skill.description}"
+      android:text="@{viewModel.skillSummary.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
