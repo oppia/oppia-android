@@ -19,6 +19,7 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderVie
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [TopicPracticeFragment]. */
@@ -26,11 +27,13 @@ import javax.inject.Inject
 class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val logger: Logger,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
 ) : SkillSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSkillIdList: ArrayList<String>
+  private  var skillIdHashmap = HashMap<String,MutableList<String>>()
   private lateinit var topicId: String
   private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
@@ -95,13 +98,13 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   }
 
   private fun bindSkillView(binding: TopicPracticeSkillViewBinding, model: TopicPracticeSubtopicViewModel) {
-//    binding.viewModel = model
+    binding.viewModel = model
     binding.isChecked = selectedSkillIdList.contains(model.subtopic.subtopicId)
-    binding.subtopicCheckbox.setOnCheckedChangeListener { _, isChecked ->
+    binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        skillSelected(model.subtopic.subtopicId)
+        subtopicSelected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
       } else {
-        skillUnselected(model.subtopic.subtopicId)
+        subtopicUnselected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
       }
     }
   }
@@ -111,7 +114,9 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
     binding.topicPracticeStartButton.setOnClickListener {
-      routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
+      val skillIdList = ArrayList(skillIdHashmap.values)
+      logger.d("TopicPracticeFragmentPresenter","Skill IDs = "+skillIdList.flatten())
+      routeToQuestionPlayerListener.routeToQuestionPlayer(skillIdList.flatten() as ArrayList<String>)
     }
   }
 
@@ -125,22 +130,24 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     VIEW_TYPE_FOOTER
   }
 
-  override fun skillSelected(skillId: String) {
-    if (!selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.add(skillId)
+  override fun subtopicSelected(subtopicId: String, skillIdList: MutableList<String>) {
+    if (!selectedSkillIdList.contains(subtopicId)) {
+      selectedSkillIdList.add(subtopicId)
+      skillIdHashmap.put(subtopicId, skillIdList)
     }
 
     if (::topicPracticeFooterViewBinding.isInitialized) {
-      topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+      topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashmap.isNotEmpty()
     }
   }
 
-  override fun skillUnselected(skillId: String) {
-    if (selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.remove(skillId)
+  override fun subtopicUnselected(subtopicId: String, skillIdList: MutableList<String>) {
+    if (selectedSkillIdList.contains(subtopicId)) {
+      selectedSkillIdList.remove(subtopicId)
+      skillIdHashmap.remove(subtopicId)
     }
     if (::topicPracticeFooterViewBinding.isInitialized) {
-      topicPracticeFooterViewBinding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+      topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashmap.isNotEmpty()
     }
   }
 }

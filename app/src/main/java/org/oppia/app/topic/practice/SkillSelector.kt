@@ -2,9 +2,9 @@ package org.oppia.app.topic.practice
 
 /** Interface to update the selectedSkillList in [TopicPracticeFragmentPresenter]. */
 interface SkillSelector {
-  /** This skill will get added to selectedSkillList in [TopicPracticeFragmentPresenter]. */
-  fun skillSelected(skillId: String)
+  /** This subtopic and skill will get added to selectedSubtopicList in [TopicPracticeFragmentPresenter]. */
+  fun subtopicSelected(subtopicId: String, skillIdList: MutableList<String>)
 
-  /** This skill will get removed from selectedSkillList in [TopicPracticeFragmentPresenter]. */
-  fun skillUnselected(skillId: String)
+  /** This subtopic and skill will get removed from selectedSubtopicList in [TopicPracticeFragmentPresenter]. */
+  fun subtopicUnselected(subtopicId: String, skillIdList: MutableList<String>)
 }
