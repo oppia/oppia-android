@@ -34,6 +34,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -129,7 +130,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = 14f,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
       appLanguage = "English",
       audioLanguage = "No Audio"
     ).observeForever(mockUpdateResultObserver)
@@ -161,7 +162,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = false,
         colorRgb = -10710042,
         isAdmin = true,
-        storyTextSize = 14f,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
         appLanguage = "English",
         audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
@@ -186,7 +187,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = false,
         colorRgb = -10710042,
         isAdmin = true,
-        storyTextSize = 14f,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
         appLanguage = "English",
         audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
@@ -247,7 +248,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = false,
         colorRgb = -10710042,
         isAdmin = false,
-        storyTextSize = 14f,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
         appLanguage = "English",
         audioLanguage = "No Audio"
       )
@@ -402,7 +403,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateStoryTextSize(profileId, 18f)
+      profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
@@ -411,7 +412,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(18f)
+      assertThat(profileManagementController.getStoryTextSize(profileResultCaptor.value.getOrThrow().storyTextSize)).isEqualTo(18f)
     }
 
   @Test
@@ -491,7 +492,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = false,
         colorRgb = -10710042,
         isAdmin = true,
-        storyTextSize = 14f,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
         appLanguage = "English",
         audioLanguage = "No Audio"
       )

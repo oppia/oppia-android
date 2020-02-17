@@ -3,6 +3,7 @@ package org.oppia.app.profile
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class ProfileActivityPresenter @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = 14f,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
       appLanguage = "English",
       audioLanguage = "No Audio"
     )
