@@ -262,16 +262,13 @@ message Subtopic {
   string title = 2;
 
   // The list of skill ids associated with the subtopic.
-  repeated string skillIdList = 3;
+  repeated string skill_ids = 3;
 }
 
 // Corresponds to a review card that can be displayed for a specific subtopic.
 message ReviewCard {
   // The title corresponding to the subtopic.
   string subtopic_title = 1;
-
-  // Description related to Subtopic.
-  string subtopic_description = 2;
 
   // The core explanation of the subtopic being reviewed.
   SubtitledHtml page_contents = 3;

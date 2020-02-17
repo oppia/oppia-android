@@ -186,7 +186,7 @@ class TopicController @Inject constructor(
     )
   }
 
-  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
+  // TODO(#45): Expose this as a data provider, or omit if it's not needed.
   private fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
@@ -391,12 +391,12 @@ class TopicController @Inject constructor(
   }
 
   /**
-   *  Utility to create a topic from its json representation. The json file is expected to have
+   * Creates topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data.
    */
   private fun createTopicFromJson(topicFileName: String, skillFileName: String, storyFileName: String): Topic {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
-    val subtopicList: List<Subtopic> = createSubtopicListFromJSONArray(topicData.optJSONArray("subtopics"))
+    val subtopicList: List<Subtopic> = createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -410,7 +410,7 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  /** Utility to create a sub-topic from its json representation. */
+  /** Creates a sub-topic from its json representation. */
   private fun createSubtopicFromJson(topicFileName: String): ReviewCard {
     val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
     val subtopicTitle = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getString("subtopic_title")!!
@@ -425,24 +425,24 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Utility to create the skill list of a topic from its json representation. The json file is expected to have
-   * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'.
+   * Creates the subtopic list of a topic from its json representation. The json file is expected to have
+   * a key called 'subtopic' that contains an array of skill Ids,subtopic_id and title.
    */
-  private fun createSubtopicListFromJSONArray(subtopicJSONArray: JSONArray?): List<Subtopic> {
-    val subtopicList = ArrayList<Subtopic>()
+  private fun createSubtopicListFromJsonArray(subtopicJsonArray: JSONArray?): List<Subtopic> {
+    val subtopicList = mutableListOf<Subtopic>()
 
-    for (i in 0 until subtopicJSONArray!!.length()) {
+    for (i in 0 until subtopicJsonArray!!.length()) {
       val skillIdList = ArrayList<String>()
 
-      val currentSubtopicJSONObject = subtopicJSONArray.optJSONObject(i)
-      val skillJSONArray = currentSubtopicJSONObject.optJSONArray("skill_ids")
+      val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
 
-      for (j in 0 until skillJSONArray.length()) {
-        skillIdList.add(skillJSONArray.optString(j))
+      for (j in 0 until skillJsonArray.length()) {
+        skillIdList.add(skillJsonArray.optString(j))
       }
-      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJSONObject.optString("id"))
-        .setTitle(currentSubtopicJSONObject.optString("title"))
-        .addAllSkillIdList(skillIdList).build()
+      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
+        .setTitle(currentSubtopicJsonObject.optString("title"))
+        .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
     }
     return subtopicList
@@ -455,7 +455,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Utility to create the skill list of a topic from its json representation. The json file is expected to have
+   * Creates a list of skill for topic from its json representation. The json file is expected to have
    * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'.
    */
   private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
@@ -476,7 +476,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Utility to create the story list of a topic from its json representation. The json file is expected to have
+   * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
    * a key called 'story_list' that contains an array of story objects, each with the key 'story'.
    */
   private fun createStoriesFromJson(fileName: String): List<StorySummary> {
@@ -488,7 +488,7 @@ class TopicController @Inject constructor(
     return storyList
   }
 
-  /** Utility to create a story of a topic given its json representation and the index of the story in json. */
+  /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
   private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
     val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
     if (storyData.length() < index) {
