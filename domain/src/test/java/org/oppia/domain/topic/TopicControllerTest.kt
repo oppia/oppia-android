@@ -629,7 +629,7 @@ class TopicControllerTest {
 
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
-    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID, "1")
+    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
     val reviewCardResult = reviewCardLiveData.value
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
