@@ -49,7 +49,7 @@ message Profile {
   string audio_language = 11;
 
   // Represents user selected app-language.
-  string app_language = 12;
+  AppLanguage app_language = 12;
 }
 
 // Represents a profile avatar image.
@@ -88,5 +88,13 @@ enum StoryTextSize {
   MEDIUM_TEXT_SIZE = 1;
   LARGE_TEXT_SIZE = 2;
   EXTRA_LARGE_TEXT_SIZE =  3;
+}
+
+// Supported App language for user preference.
+enum AppLanguage {
+  ENGLISH = 0;
+  HINDI = 1;
+  FRENCH = 2;
+  CHINESE =  3;
 }
 

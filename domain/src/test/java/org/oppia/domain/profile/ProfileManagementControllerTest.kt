@@ -31,6 +31,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
@@ -131,7 +132,7 @@ class ProfileManagementControllerTest {
       colorRgb = -10710042,
       isAdmin = true,
       storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = "English",
+      appLanguage = AppLanguage.ENGLISH,
       audioLanguage = "No Audio"
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
@@ -163,7 +164,7 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
+        appLanguage = AppLanguage.ENGLISH,
         audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
 
@@ -188,7 +189,7 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
+        appLanguage = AppLanguage.ENGLISH,
         audioLanguage = "No Audio"
       ).observeForever(mockUpdateResultObserver)
 
@@ -249,7 +250,7 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = false,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
+        appLanguage = AppLanguage.ENGLISH,
         audioLanguage = "No Audio"
       )
       advanceUntilIdle()
@@ -423,7 +424,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateAppLanguage(profileId, "Chinese")
+      profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
@@ -432,7 +433,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo("Chinese")
+      assertThat(profileManagementController.getAppLanguage(profileResultCaptor.value.getOrThrow().appLanguage)).isEqualTo("Chinese")
     }
 
   @Test
@@ -493,7 +494,7 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
+        appLanguage = AppLanguage.ENGLISH,
         audioLanguage = "No Audio"
       )
       advanceUntilIdle()

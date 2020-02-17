@@ -10,6 +10,7 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
+import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
@@ -136,7 +137,7 @@ class ProfileManagementController @Inject constructor(
     colorRgb: Int,
     isAdmin: Boolean,
     storyTextSize: StoryTextSize,
-    appLanguage: String,
+    appLanguage: AppLanguage,
     audioLanguage: String
   ): LiveData<AsyncResult<Any?>> {
 
@@ -188,6 +189,16 @@ class ProfileManagementController @Inject constructor(
       StoryTextSize.MEDIUM_TEXT_SIZE -> 18f
       StoryTextSize.LARGE_TEXT_SIZE -> 20f
       else -> 22f
+    }
+  }
+
+  fun getAppLanguage(appLanguage: AppLanguage) : String{
+    return when(appLanguage) {
+      AppLanguage.ENGLISH -> "English"
+      AppLanguage.HINDI -> "Hindi"
+      AppLanguage.FRENCH -> "French"
+      AppLanguage.CHINESE -> "Chinese"
+      else -> "English"
     }
   }
   /**
@@ -301,7 +312,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateAppLanguage(
-    profileId: ProfileId, appLanguage: String
+    profileId: ProfileId, appLanguage: AppLanguage
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(

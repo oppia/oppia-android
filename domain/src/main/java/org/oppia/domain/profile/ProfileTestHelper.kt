@@ -1,6 +1,7 @@
 package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
+import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
@@ -20,7 +21,7 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = true,
       storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = "English",
+      appLanguage = AppLanguage.ENGLISH,
       audioLanguage = "Hindi"
     )
     profileManagementController.addProfile(
@@ -31,7 +32,7 @@ class ProfileTestHelper @Inject constructor(
       colorRgb = -10710042,
       isAdmin = false,
       storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
-      appLanguage = "Hindi",
+      appLanguage = AppLanguage.HINDI,
       audioLanguage = "English"
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
@@ -48,7 +49,7 @@ class ProfileTestHelper @Inject constructor(
         colorRgb = -10710042,
         isAdmin = false,
         storyTextSize = StoryTextSize.LARGE_TEXT_SIZE,
-        appLanguage = "Chinese",
+        appLanguage = AppLanguage.ENGLISH,
         audioLanguage = "French"
       )
     }
