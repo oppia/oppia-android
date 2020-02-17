@@ -9,8 +9,8 @@
       type="Boolean" />
 
     <variable
-      name="subtopic"
-      type="org.oppia.app.model.Subtopic" />
+      name="viewModel"
+      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,14 +20,14 @@
     app:constraint_referenced_ids="button_example,text_view_status">
 
     <androidx.constraintlayout.widget.Barrier
-      android:id="@+id/topic_practice_skill_barrier"
+      android:id="@+id/topic_practice_subtopic_barrier"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:barrierDirection="bottom"
-      app:constraint_referenced_ids="skill_check_box" />
+      app:constraint_referenced_ids="subtopic_check_box" />
 
     <CheckBox
-      android:id="@+id/skill_check_box"
+      android:id="@+id/subtopic_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:button="@drawable/selector_checkbox"
@@ -38,7 +38,7 @@
       android:paddingStart="20dp"
       android:layout_marginStart="40dp"
       android:paddingEnd="20dp"
-      android:text="@{subtopic.title}"
+      android:text="@{viewModel.subtopic.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
