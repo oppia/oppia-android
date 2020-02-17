@@ -94,10 +94,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           fragment.activity!!.finish()
         }
         NavigationDrawerItem.OPTIONS -> {
-          val intent = Intent(fragment.activity, HomeActivity::class.java)
+//          val intent = Intent(fragment.activity, HomeActivity::class.java)
 
-          OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
+//          fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
         }
         NavigationDrawerItem.HELP -> {

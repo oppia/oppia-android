@@ -13,6 +13,7 @@ import org.oppia.app.R
 import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -131,16 +132,16 @@ class OptionsFragment @Inject constructor(
           preference.summary = stringValue
           when (stringValue) {
             STORY_TEXT_SIZE_SMALL -> {
-              profileManagementController.updateStoryTextSize(profileId, SMALL_TEXT_SIZE_VALUE)
+              profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
             }
             STORY_TEXT_SIZE_MEDIUM -> {
-              profileManagementController.updateStoryTextSize(profileId, MEDIUM_TEXT_SIZE_VALUE)
+              profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
             }
             STORY_TEXT_SIZE_LARGE -> {
-              profileManagementController.updateStoryTextSize(profileId, LARGE_TEXT_SIZE_VALUE)
+              profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
             }
             STORY_TEXT_SIZE_EXTRA_LARGE -> {
-              profileManagementController.updateStoryTextSize(profileId, EXTRA_LARGE_TEXT_SIZE_VALUE)
+              profileManagementController.updateStoryTextSize(profileId, StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
             }
           }
         }
@@ -184,7 +185,7 @@ class OptionsFragment @Inject constructor(
 
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(activity, Observer<Profile> {
-      storyTextSize = it.storyTextSize
+      storyTextSize = profileManagementController.getStoryTextSize(it.storyTextSize)
       appLanguage = it.appLanguage
       audioLanguage = it.audioLanguage
       updateDataIntoUI()
