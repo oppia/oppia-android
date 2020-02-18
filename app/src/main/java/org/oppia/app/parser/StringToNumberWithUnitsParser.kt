@@ -1,13 +1,12 @@
 package org.oppia.app.parser
 
-import org.oppia.app.model.CurrencyUnits
+import org.oppia.app.model.CurrencyUnit
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Units
 import org.oppia.domain.util.normalizeWhitespace
 import java.lang.Double
-import java.util.Arrays.asList
 
 import java.util.regex.Pattern
 
@@ -24,7 +23,7 @@ class StringToNumberWithUnitsParser {
     return if (matcher.find()) matcher.start() else -1
   }
 
-  fun getCurrencyUnits(): CurrencyUnits {
+  fun getCurrencyUnits(): CurrencyUnit {
     var currencyUnits = HashMap<String, Units>()
     currencyUnits.put(
       "dollar",
@@ -40,7 +39,7 @@ class StringToNumberWithUnitsParser {
     currencyUnits.put(
       "paise", Units("paise", mutableListOf("paisa", "Paise", "Paisa"), mutableListOf(), "0.01 rupee")
     )
-    return CurrencyUnits(currencyUnits)
+    return CurrencyUnit(currencyUnits)
   }
 
   fun getNumberWithUnits(inputText: String): NumberWithUnits {
@@ -84,7 +83,7 @@ class StringToNumberWithUnitsParser {
         var keys = (CURRENCY_UNITS).keys
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS[i]!!.frontUnits.size) {
-            if (rawInput.startsWith(CURRENCY_UNITS[i]!!.frontUnits[j] as String)) {
+            if (rawInput.startsWith(CURRENCY_UNITS[i]!!.frontUnits[j])) {
               startsWithCorrectCurrencyUnit = true
               break
             }
@@ -106,7 +105,7 @@ class StringToNumberWithUnitsParser {
         keys = (CURRENCY_UNITS).keys
         for (i in keys) {
           for (j in 0 until CURRENCY_UNITS[i]!!.frontUnits.size) {
-            if (units == (CURRENCY_UNITS[i]!!.frontUnits[j] as String).trim()) {
+            if (units == (CURRENCY_UNITS[i]!!.frontUnits[j]).trim()) {
               startsWithCorrectCurrencyUnit = true
               break
             }
