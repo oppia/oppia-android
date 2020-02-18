@@ -8,8 +8,6 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToNumberWithUnitsParser
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.domain.util.JsonAssetRetriever
-import javax.inject.Inject
 
 /** The custom EditText class for number input with units interaction view. */
 class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
