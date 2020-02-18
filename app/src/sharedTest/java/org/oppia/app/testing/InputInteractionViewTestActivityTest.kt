@@ -338,7 +338,7 @@ class InputInteractionViewTestActivityTest {
   @Test
   fun testNumberWithUnitsInputInteractionView_withInputtedDollarSymbol_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("100 $"))
+    onView(withId(R.id.test_number_with_units_input_interaction_view)).perform(typeText("$ 100"))
     activityScenario.onActivity { activity ->
       val textAnswerRetriever =
         activity.findViewById(R.id.test_number_with_units_input_interaction_view) as NumberWithUnitsInputInteractionView

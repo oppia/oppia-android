@@ -24,7 +24,7 @@ class NumberWithUnitsInputInteractionView @JvmOverloads constructor(
     if (text.isNotEmpty()) {
       val answerTextString = text.toString()
       userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setNumberWithUnits(stringToNumberWithUnitsParser.getNumberWithUnits(text.toString(), context))
+        .setNumberWithUnits(stringToNumberWithUnitsParser.getNumberWithUnits(text.toString()))
         .build()
       userAnswerBuilder.plainAnswer = answerTextString
     }

@@ -1,10 +1,10 @@
 package org.oppia.app.parser
 
-import android.content.Context
-import org.json.JSONObject
+import org.oppia.app.model.CurrencyUnits
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
+import org.oppia.app.model.Units
 import org.oppia.domain.util.normalizeWhitespace
 import java.lang.Double
 import java.util.Arrays.asList
@@ -15,8 +15,7 @@ import java.util.regex.Pattern
 class StringToNumberWithUnitsParser {
   private lateinit var value: String
   private lateinit var units: String
-  private lateinit var CURRENCY_UNITS: JSONObject
-  private val jsonParser: JSONParser = JSONParser()
+  private lateinit var CURRENCY_UNITS: HashMap<String, Units>
 
   /** @return index of pattern in s or -1, if not found
    */
@@ -25,13 +24,28 @@ class StringToNumberWithUnitsParser {
     return if (matcher.find()) matcher.start() else -1
   }
 
-  fun getCurrencyUnits(context: Context): JSONObject {
-    return JSONObject(jsonParser.loadJSONFromAsset(context))
+  fun getCurrencyUnits(): CurrencyUnits {
+    var currencyUnits = HashMap<String, Units>()
+    currencyUnits.put(
+      "dollar",
+      Units("dollar", mutableListOf("$", "dollars", "Dollars", "Dollar", "USD"), mutableListOf("$"), null)
+    )
+    currencyUnits.put(
+      "rupee",
+      Units("rupee", mutableListOf("Rs", "rupees", "₹", "Rupees", "Rupee"), mutableListOf("Rs ", "₹"), null)
+    )
+    currencyUnits.put(
+      "cent", Units("cent", mutableListOf("cents", "Cents", "Cent"), mutableListOf(), "0.01 dollar")
+    )
+    currencyUnits.put(
+      "paise", Units("paise", mutableListOf("paisa", "Paise", "Paisa"), mutableListOf(), "0.01 rupee")
+    )
+    return CurrencyUnits(currencyUnits)
   }
 
-  fun getNumberWithUnits(inputText: String, context: Context): NumberWithUnits {
+  fun getNumberWithUnits(inputText: String): NumberWithUnits {
     var rawInput: String = inputText.normalizeWhitespace()
-    CURRENCY_UNITS = getCurrencyUnits(context)
+    CURRENCY_UNITS = getCurrencyUnits().unitHashMap
     rawInput = rawInput.trim()
     var type = ""
     var real = 0.0
@@ -55,15 +69,10 @@ class StringToNumberWithUnitsParser {
           units = rawInput.substring(ind).trim()
         }
 
-        var keys = (CURRENCY_UNITS).keys()
+        var keys = (CURRENCY_UNITS).keys
         for (i in keys) {
-          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
-            if (asList(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]).indexOf(
-                asList(
-                  CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j]
-                )
-              ) != -1
-            ) {
+          for (j in 0 until CURRENCY_UNITS[i]!!.frontUnits.size) {
+            if (units.indexOf(CURRENCY_UNITS[i]!!.frontUnits[j]) != -1) {
               throw  Error(
                 "INVALID_CURRENCY_FORMAT"
               )
@@ -72,10 +81,10 @@ class StringToNumberWithUnitsParser {
         }
       } else {
         var startsWithCorrectCurrencyUnit = false
-        var keys = (CURRENCY_UNITS).keys()
+        var keys = (CURRENCY_UNITS).keys
         for (i in keys) {
-          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
-            if (rawInput.startsWith(CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String)) {
+          for (j in 0 until CURRENCY_UNITS[i]!!.frontUnits.size) {
+            if (rawInput.startsWith(CURRENCY_UNITS[i]!!.frontUnits[j] as String)) {
               startsWithCorrectCurrencyUnit = true
               break
             }
@@ -94,10 +103,10 @@ class StringToNumberWithUnitsParser {
         units = rawInput.substring(0, ind).trim()
 
         startsWithCorrectCurrencyUnit = false
-        keys = (CURRENCY_UNITS).keys()
+        keys = (CURRENCY_UNITS).keys
         for (i in keys) {
-          for (j in 0 until CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units").length()) {
-            if (units == (CURRENCY_UNITS.getJSONObject(i).getJSONArray("front_units")[j] as String).trim()) {
+          for (j in 0 until CURRENCY_UNITS[i]!!.frontUnits.size) {
+            if (units == (CURRENCY_UNITS[i]!!.frontUnits[j] as String).trim()) {
               startsWithCorrectCurrencyUnit = true
               break
             }
