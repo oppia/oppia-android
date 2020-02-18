@@ -228,7 +228,7 @@ enum ChapterPlayState {
   COMPLETED = 3;
 }
 
-// Top level proto used to store topic progress for user.
+// Top level proto used to store topic progress per-profile.
 message TopicProgressDatabase {
   // Map from topic ID to TopicProgress.
   map<string, TopicProgress> topic_progress = 1;

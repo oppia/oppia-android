@@ -518,10 +518,7 @@ class TopicController @Inject constructor(
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
-      var chapterPlayState = chapterProgressMap[explorationId]
-      if (chapterPlayState == null) {
-        chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-      }
+      val chapterPlayState = chapterProgressMap[explorationId] ?: ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
 
       chapterList.add(
         ChapterSummary.newBuilder()

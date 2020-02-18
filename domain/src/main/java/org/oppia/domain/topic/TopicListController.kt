@@ -235,23 +235,17 @@ class TopicListController @Inject constructor(
         val storyId = storySummary.storyId
         val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
 
-        var completedChapterCount = 0
-        for (chapterPlayState in storyProgress.chapterProgressMap.values) {
-          if (chapterPlayState == ChapterPlayState.COMPLETED) {
-            completedChapterCount++
-          }
+        val completedChapterCount = storyProgress.chapterProgressMap.values.count { playState ->
+          playState == ChapterPlayState.COMPLETED
         }
 
         if (completedChapterCount > 0) {
           // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
-          var nextChapterId = ""
-          for (chapterId in storyProgress.chapterProgressMap.keys) {
-            if (storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED) {
-              nextChapterId = chapterId
-            }
-          }
 
-          if (nextChapterId.isNotEmpty()) {
+          val nextChapterId =
+            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED }
+
+          if (nextChapterId != null) {
             val nextChapterSummary =
               storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
             ongoingStoryListBuilder.addRecentStory(
