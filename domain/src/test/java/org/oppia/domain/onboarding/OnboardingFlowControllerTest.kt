@@ -1,4 +1,4 @@
-package org.oppia.domain
+package org.oppia.domain.onboarding
 
 import android.app.Application
 import android.content.Context
@@ -33,7 +33,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.OnboardingFlow
-import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -59,7 +59,10 @@ class OnboardingFlowControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject lateinit var onboardingFlowController: OnboardingFlowController
+  @Inject
+  lateinit var onboardingFlowController: OnboardingFlowController
+  @Inject
+  lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
   @field:TestDispatcher
@@ -69,15 +72,12 @@ class OnboardingFlowControllerTest {
     EmptyCoroutineContext + testDispatcher
   }
 
-  @Mock
-  lateinit var mockOnboardingObserver: Observer<AsyncResult<OnboardingFlow>>
+  @Mock lateinit var mockOnboardingObserver: Observer<AsyncResult<OnboardingFlow>>
 
-  @Captor
-  lateinit var onboardinggResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
+  @Captor lateinit var onboardingResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
+  @ObsoleteCoroutinesApi private val testThread = newSingleThreadContext("TestMain")
 
   @Before
   @ExperimentalCoroutinesApi
@@ -104,32 +104,32 @@ class OnboardingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_thatIndicatesUserHasNotOnboardedTheApp() =
+  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() =
     runBlockingTest(coroutineContext) {
-      val onboardingg = onboardingFlowController.getOnboardingFlow()
+      val onboarding = onboardingFlowController.getOnboardingFlow()
       advanceUntilIdle()
-      onboardingg.observeForever(mockOnboardingObserver)
+      onboarding.observeForever(mockOnboardingObserver)
 
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
-      assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
+      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
-      val onboardingg = onboardingFlowController.getOnboardingFlow()
+      val onboarding = onboardingFlowController.getOnboardingFlow()
 
-      onboardingg.observeForever(mockOnboardingObserver)
+      onboarding.observeForever(mockOnboardingObserver)
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
 
       // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
       // of the change.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
-      assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
+      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
   @Test
@@ -140,38 +140,36 @@ class OnboardingFlowControllerTest {
 
     // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
     setUpTestApplicationComponent()
-    val onboardingg = onboardingFlowController.getOnboardingFlow()
-    onboardingg.observeForever(mockOnboardingObserver)
+    val onboarding = onboardingFlowController.getOnboardingFlow()
+    onboarding.observeForever(mockOnboardingObserver)
     advanceUntilIdle()
 
     // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
-    assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-    assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+    assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+    assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
+      val onboardingFlowStore = cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
-
       // Clear, then recreate another controller.
-      onboardingFlowController.clearOnboardingFlow()
+      onboardingFlowStore.clearCacheAsync()
       setUpTestApplicationComponent()
-      val onboardingg = onboardingFlowController.getOnboardingFlow()
-      onboardingg.observeForever(mockOnboardingObserver)
+      val onboarding = onboardingFlowController.getOnboardingFlow()
+      onboarding.observeForever(mockOnboardingObserver)
       advanceUntilIdle()
-
       // The app should be considered not yet onboarded since the previous history was cleared.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardinggResultCaptor.capture())
-      assertThat(onboardinggResultCaptor.value.isSuccess()).isTrue()
-      assertThat(onboardinggResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
+      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -231,6 +229,6 @@ class OnboardingFlowControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(onboardinggFlowControllerTest: OnboardingFlowControllerTest)
+    fun inject(onboardingFlowControllerTest: OnboardingFlowControllerTest)
   }
 }
