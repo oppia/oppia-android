@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.app.R
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.databinding.DrawerFragmentBinding
 import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
@@ -46,6 +45,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
   private lateinit var navigationDrawerFooterViewModel: NavigationDrawerFooterViewModel
+  private var routeToAdministratorControlsListener = fragment as RouteToAdministratorControlsListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -79,9 +79,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       navigationDrawerHeaderViewModel.profileName.set(it.name)
       navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
       binding.administratorControlsLinearLayout.setOnClickListener {
-        val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(activity, internalProfileId)
-        activity.startActivity(intent)
-        activity.finish()
+        routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId);
+        drawerLayout.closeDrawers()
       }
     })
   }

@@ -14,6 +14,9 @@
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <activity
+      android:name=".administratorcontrols.AdministratorControlsActivity"
+      android:screenOrientation="portrait" />
+    <activity
       android:name=".home.continueplaying.ContinuePlayingActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -52,9 +55,6 @@
     <activity
       android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".administratorcontrols.AdministratorControlsActivity"
-      android:screenOrientation="portrait" />
     <activity
       android:name=".settings.profile.ProfileEditActivity"
       android:screenOrientation="portrait" />

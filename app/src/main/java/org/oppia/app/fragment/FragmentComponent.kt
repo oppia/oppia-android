@@ -44,8 +44,8 @@ interface FragmentComponent {
 
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
-  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
+  fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
