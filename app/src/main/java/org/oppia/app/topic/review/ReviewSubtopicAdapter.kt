@@ -11,22 +11,22 @@ import org.oppia.app.model.Subtopic
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 /** Adapter to bind skills to [RecyclerView] inside [TopicReviewFragment]. */
-class ReviewAdapter(private val reviewSelector: ReviewSelector) :
-  RecyclerView.Adapter<ReviewAdapter.SkillViewHolder>() {
+class ReviewSubtopicAdapter(private val reviewSelector: ReviewSubtopicSelector) :
+  RecyclerView.Adapter<ReviewSubtopicAdapter.SubtopicViewHolder>() {
 
   private var subtopicList: List<Subtopic> = ArrayList()
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkillViewHolder {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtopicViewHolder {
     val reviewListItemBinding = DataBindingUtil.inflate<TopicReviewSummaryViewBinding>(
       LayoutInflater.from(parent.context),
       R.layout.topic_review_summary_view, parent,
       /* attachToRoot= */ false
     )
-    return SkillViewHolder(reviewListItemBinding)
+    return SubtopicViewHolder(reviewListItemBinding)
   }
 
-  override fun onBindViewHolder(skillViewHolder: SkillViewHolder, i: Int) {
-    skillViewHolder.bind(subtopicList[i], i)
+  override fun onBindViewHolder(subtopicViewHolder: SubtopicViewHolder, i: Int) {
+    subtopicViewHolder.bind(subtopicList[i])
   }
 
   override fun getItemCount(): Int {
@@ -38,8 +38,8 @@ class ReviewAdapter(private val reviewSelector: ReviewSelector) :
     notifyDataSetChanged()
   }
 
-  inner class SkillViewHolder(val binding: TopicReviewSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(subtopic: Subtopic, @Suppress("UNUSED_PARAMETER") position: Int) {
+  inner class SubtopicViewHolder(val binding: TopicReviewSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(subtopic: Subtopic) {
       binding.setVariable(BR.subtopic, subtopic)
       binding.root.setOnClickListener {
         reviewSelector.onTopicReviewSummaryClicked(subtopic)

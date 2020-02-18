@@ -1,7 +1,7 @@
 package org.oppia.app.topic.reviewcard
 
-/** Allows parent activity to dismiss the [ConceptCardFragment] */
+/** Allows parent activity to dismiss the [ReviewCardFragment] */
 interface ReviewCardListener {
-  /** Called when the concept card dialog should be dismissed. */
+  /** Called when the review card dialog should be dismissed. */
   fun dismiss()
 }

@@ -25,9 +25,7 @@ class ReviewCardViewModel @Inject constructor(
   private lateinit var subtopicId: String
   private lateinit var binding: ReviewCardFragmentBinding
 
-  val reviewCardLiveData: LiveData<ReviewCard> by lazy {
-    processReviewCardLiveData()
-  }
+  var subtopicTitle: String = ""
 
   val explanationLiveData: LiveData<CharSequence> by lazy {
     processExplanationLiveData()
@@ -44,26 +42,16 @@ class ReviewCardViewModel @Inject constructor(
     topicController.getReviewCard(topicId,subtopicId)
   }
 
-  private fun processReviewCardLiveData(): LiveData<ReviewCard> {
-    return Transformations.map(reviewCardResultLiveData, ::processReviewCardResult)
-  }
-
   private fun processExplanationLiveData(): LiveData<CharSequence> {
     return Transformations.map(reviewCardResultLiveData, ::processExplanationResult)
   }
 
-  private fun processReviewCardResult(reviewCardResult: AsyncResult<ReviewCard>): ReviewCard {
-    if (reviewCardResult.isFailure()) {
-      logger.e("ReviewCardFragment result", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
-    }
-    return reviewCardResult.getOrDefault(ReviewCard.getDefaultInstance())
-  }
-
   private fun processExplanationResult(reviewCardResult: AsyncResult<ReviewCard>): CharSequence {
     if (reviewCardResult.isFailure()) {
-      logger.e("ReviewCardFragment final", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
+      logger.e("ReviewCardFragment", "Failed to retrieve Review Card", reviewCardResult.getErrorOrNull()!!)
     }
     val reviewCard = reviewCardResult.getOrDefault(ReviewCard.getDefaultInstance())
+    subtopicTitle = reviewCard.subtopicTitle
     return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
       .parseOppiaHtml(reviewCard.pageContents.html, binding.reviewCardExplanationText)
   }

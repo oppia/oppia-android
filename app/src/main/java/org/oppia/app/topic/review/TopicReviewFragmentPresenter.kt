@@ -27,18 +27,18 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
-) : ReviewSelector {
+) : ReviewSubtopicSelector {
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToReviewCardListener
 
-  private lateinit var reviewAdapter: ReviewAdapter
+  private lateinit var reviewAdapter: ReviewSubtopicAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    reviewAdapter = ReviewAdapter(this)
+    reviewAdapter = ReviewSubtopicAdapter(this)
 
     binding.reviewRecyclerView.apply {
       adapter = reviewAdapter

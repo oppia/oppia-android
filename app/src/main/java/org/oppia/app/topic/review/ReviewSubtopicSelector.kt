@@ -2,7 +2,7 @@ package org.oppia.app.topic.review
 
 import org.oppia.app.model.Subtopic
 
-/** Listener for when a skill is selected for review. */
-interface ReviewSelector {
+/** Listener for when a subtopic is selected for review. */
+interface ReviewSubtopicSelector {
   fun onTopicReviewSummaryClicked(subtopic: Subtopic)
 }

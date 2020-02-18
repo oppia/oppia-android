@@ -8,8 +8,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -20,7 +20,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -48,9 +48,9 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_displayReviewTopics_isSuccessful() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
-        Matchers.allOf(
+        allOf(
           withText(TopicTab.getTabForPosition(3).name),
-          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+          isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       onView(atPosition(R.id.review_recycler_view, 0))
@@ -67,9 +67,9 @@ class TopicReviewFragmentTest {
       )
     )
     onView(
-      Matchers.allOf(
+      allOf(
         withText(TopicTab.getTabForPosition(3).name),
-        ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+        isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
     onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
@@ -82,9 +82,9 @@ class TopicReviewFragmentTest {
   fun testTopicReviewFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
-        Matchers.allOf(
+        allOf(
           withText(TopicTab.getTabForPosition(3).name),
-          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+          isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
@@ -94,12 +94,12 @@ class TopicReviewFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicPracticeFragment_loadFragment_configurationChange_reviewTopicsAreDisplayed() {
+  fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
-        Matchers.allOf(
+        allOf(
           withText(TopicTab.getTabForPosition(3).name),
-          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+          isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
       it.onActivity { activity ->

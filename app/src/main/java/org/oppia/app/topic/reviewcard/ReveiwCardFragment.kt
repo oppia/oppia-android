@@ -31,7 +31,8 @@ class ReviewCardFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject lateinit var reviewCardFragmentPresenter: ReviewCardFragmentPresenter
+  @Inject
+  lateinit var reviewCardFragmentPresenter: ReviewCardFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -40,19 +41,20 @@ class ReviewCardFragment : InjectableDialogFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+    setStyle(STYLE_NORMAL, R.style.FullScreenReviewDialogStyle)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     val args = checkNotNull(arguments) { "Expected arguments to be passed to ReviewCardFragment" }
-    val subtopicId = checkNotNull(args.getString(KEY_SUBTOPIC_ID)) { "Expected subtopicId to be passed to ReviewCardFragment" }
+    val subtopicId =
+      checkNotNull(args.getString(KEY_SUBTOPIC_ID)) { "Expected subtopicId to be passed to ReviewCardFragment" }
     val topicId = checkNotNull(args.getString(KEY_TOPIC_ID)) { "Expected topicId to be passed to ReviewCardFragment" }
-    return reviewCardFragmentPresenter.handleCreateView(inflater, container,topicId, subtopicId)
+    return reviewCardFragmentPresenter.handleCreateView(inflater, container, topicId, subtopicId)
   }
 
   override fun onStart() {
     super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+    dialog?.window?.setWindowAnimations(R.style.FullScreenReviewDialogStyle)
   }
 }
