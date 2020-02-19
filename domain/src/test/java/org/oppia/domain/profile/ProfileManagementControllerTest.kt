@@ -415,7 +415,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileTestHelper.getStoryTextSize(profileResultCaptor.value.getOrThrow().storyTextSize)).isEqualTo(18f)
+      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
     }
 
   @Test
@@ -435,7 +435,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileTestHelper.getAppLanguage(profileResultCaptor.value.getOrThrow().appLanguage)).isEqualTo("Chinese")
+      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
     }
 
   @Test
@@ -455,7 +455,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileTestHelper.getAudioLanguage(profileResultCaptor.value.getOrThrow().audioLanguage)).isEqualTo("French")
+      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo(AudioLanguage.FRENCH_AUDIO_LANGUAGE)
     }
 
   @Test

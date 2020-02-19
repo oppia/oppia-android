@@ -66,34 +66,4 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser2() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(2).build())
-
-  fun getStoryTextSize(storyTextSize: StoryTextSize): Any {
-    return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> 16f
-      StoryTextSize.MEDIUM_TEXT_SIZE -> 18f
-      StoryTextSize.LARGE_TEXT_SIZE -> 20f
-      else -> 22f
-    }
-  }
-
-  fun getAppLanguage(appLanguage: AppLanguage): Any {
-    return when (appLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> "English"
-      AppLanguage.HINDI_APP_LANGUAGE -> "Hindi"
-      AppLanguage.FRENCH_APP_LANGUAGE -> "French"
-      AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
-      else -> "English"
-    }
-  }
-
-  fun getAudioLanguage(audioLanguage: AudioLanguage): Any {
-    return when (audioLanguage) {
-      AudioLanguage.NO_AUDIO-> "No Audio"
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE-> "English"
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "Chinese"
-      else -> "No Audio"
-    }
-  }
 }
