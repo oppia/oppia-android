@@ -97,19 +97,6 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_changeConfigurationSupported() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
-      onView(
-        Matchers.allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-    }
-  }
-
-  @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
