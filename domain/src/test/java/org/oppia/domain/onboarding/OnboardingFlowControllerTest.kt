@@ -33,7 +33,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.OnboardingFlow
-import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -59,10 +58,9 @@ class OnboardingFlowControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var onboardingFlowController: OnboardingFlowController
-  @Inject
-  lateinit var cacheFactory: PersistentCacheStore.Factory
+  @Inject lateinit var onboardingFlowController: OnboardingFlowController
+
+  @Inject lateinit var onboardingFlowHelper: OnboardingFlowHelper
 
   @Inject
   @field:TestDispatcher
@@ -110,8 +108,7 @@ class OnboardingFlowControllerTest {
       advanceUntilIdle()
       onboarding.observeForever(mockOnboardingObserver)
 
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
-      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      verifyOnboardingFlowSucceeded()
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
@@ -127,8 +124,7 @@ class OnboardingFlowControllerTest {
 
       // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
       // of the change.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
-      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      verifyOnboardingFlowSucceeded()
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
@@ -145,29 +141,31 @@ class OnboardingFlowControllerTest {
     advanceUntilIdle()
 
     // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
-    assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+    verifyOnboardingFlowSucceeded()
     assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
+  fun testHelper_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
-      val onboardingFlowStore = cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
       // Clear, then recreate another controller.
-      onboardingFlowStore.clearCacheAsync()
+      onboardingFlowHelper.clearOnboardingFlow()
       setUpTestApplicationComponent()
       val onboarding = onboardingFlowController.getOnboardingFlow()
       onboarding.observeForever(mockOnboardingObserver)
       advanceUntilIdle()
       // The app should be considered not yet onboarded since the previous history was cleared.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
-      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      verifyOnboardingFlowSucceeded()
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
+
+  private fun verifyOnboardingFlowSucceeded() {
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+    assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+  }
 
   @Qualifier annotation class TestDispatcher
 

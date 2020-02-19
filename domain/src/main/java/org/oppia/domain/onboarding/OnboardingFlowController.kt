@@ -2,7 +2,6 @@ package org.oppia.domain.onboarding
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.OnboardingFlow
-import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
@@ -12,20 +11,11 @@ import javax.inject.Singleton
 /** Controller for persisting and retrieving the user onboarding information of the app. */
 @Singleton
 class OnboardingFlowController @Inject constructor(
-  cacheStoreFactory: PersistentCacheStore.Factory,
+  onboardingFlowCache: OnboardingFlowCache,
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val onboardingFlowStore = cacheStoreFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
-
-  init {
-    // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingFlowCompleted().
-    onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
-      it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user onboarding data.", it)
-      }
-    }
-  }
+  private var onboardingFlowStore= onboardingFlowCache.getOnboardingFlowCache()
 
   /**
    * Saves that the user has completed onboarding the app. Note that this does not notify existing subscribers of the changed state,
