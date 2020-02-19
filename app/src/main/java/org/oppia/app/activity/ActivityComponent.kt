@@ -7,6 +7,7 @@ import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
@@ -19,6 +20,7 @@ import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
+import org.oppia.app.splash.SplashActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.story.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.AudioFragmentTestActivity
@@ -68,6 +70,7 @@ interface ActivityComponent {
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
+  fun inject(onboardingActivity: OnboardingActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
@@ -75,6 +78,7 @@ interface ActivityComponent {
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
