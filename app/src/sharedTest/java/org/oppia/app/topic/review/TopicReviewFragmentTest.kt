@@ -97,22 +97,6 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewSkill_configurationChange_conceptCardIsDisplayedCorrectly() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
-      onView(
-        Matchers.allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      onView(atPosition(R.id.review_skill_recycler_view, 1)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
-      onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
-    }
-  }
-
-  @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_configurationChange_skillsAreDisplayed() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
