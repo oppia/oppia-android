@@ -20,7 +20,6 @@ import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileActivity
@@ -28,6 +27,8 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+
+const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
@@ -53,7 +54,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
@@ -79,7 +80,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       navigationDrawerHeaderViewModel.profileName.set(it.name)
       navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
       binding.administratorControlsLinearLayout.setOnClickListener {
-        routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId);
+        routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId)
         drawerLayout.closeDrawers()
       }
     })

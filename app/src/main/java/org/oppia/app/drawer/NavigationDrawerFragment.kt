@@ -14,8 +14,7 @@ import javax.inject.Inject
 /** [NavigationDrawerFragment] to show navigation drawer. */
 class NavigationDrawerFragment : InjectableFragment(), RouteToAdministratorControlsListener {
 
-  @Inject
-  lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
+  @Inject lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
