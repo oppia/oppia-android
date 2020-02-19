@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
@@ -156,7 +156,7 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-      onView(isRoot()).perform(ViewActions.pressBack());
+      onView(isRoot()).perform(pressBack());
       onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
     }
   }
