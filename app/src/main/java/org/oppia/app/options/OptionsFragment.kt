@@ -141,23 +141,50 @@ class OptionsFragment @Inject constructor(
         // Update the changed language to summary field.
         preference.key == getString(R.string.key_app_language) -> {
           preference.summary = stringValue
-          when(stringValue) {
-            getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.ENGLISH_APP_LANGUAGE)
-            getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.HINDI_APP_LANGUAGE)
-            getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE_APP_LANGUAGE)
-            getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.FRENCH_APP_LANGUAGE)
+          when (stringValue) {
+            getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(
+              profileId,
+              AppLanguage.ENGLISH_APP_LANGUAGE
+            )
+            getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(
+              profileId,
+              AppLanguage.HINDI_APP_LANGUAGE
+            )
+            getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(
+              profileId,
+              AppLanguage.CHINESE_APP_LANGUAGE
+            )
+            getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(
+              profileId,
+              AppLanguage.FRENCH_APP_LANGUAGE
+            )
           }
         }
 
         // Update the changed audio language to summary field.
         preference.key == getString(R.string.key_default_audio) -> {
           preference.summary = stringValue
-          when(stringValue) {
-            getAudioLanguage(AudioLanguage.NO_AUDIO) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.NO_AUDIO)
-            getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-            getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.HINDI_AUDIO_LANGUAGE)
-            getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId,AudioLanguage.CHINESE_AUDIO_LANGUAGE)
-            getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+          when (stringValue) {
+            getAudioLanguage(AudioLanguage.NO_AUDIO) -> profileManagementController.updateAudioLanguage(
+              profileId,
+              AudioLanguage.NO_AUDIO
+            )
+            getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(
+              profileId,
+              AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+            )
+            getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(
+              profileId,
+              AudioLanguage.HINDI_AUDIO_LANGUAGE
+            )
+            getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(
+              profileId,
+              AudioLanguage.CHINESE_AUDIO_LANGUAGE
+            )
+            getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(
+              profileId,
+              AudioLanguage.FRENCH_AUDIO_LANGUAGE
+            )
           }
         }
       }
@@ -223,8 +250,8 @@ class OptionsFragment @Inject constructor(
 
   fun getAudioLanguage(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.NO_AUDIO-> "No Audio"
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE-> "English"
+      AudioLanguage.NO_AUDIO -> "No Audio"
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "English"
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "Chinese"

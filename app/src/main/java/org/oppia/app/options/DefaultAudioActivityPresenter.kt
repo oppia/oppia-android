@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.DefaultAudioActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [DefaultAudioActivity]. */
@@ -16,7 +15,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    val binding = DataBindingUtil.setContentView<DefaultAudioActivityBinding>(activity, R.layout.default_audio_activity)
+    val binding = DataBindingUtil.setContentView<>(activity, R.layout.default_audio_activity)
 
     prefSummaryValue = prefValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey)
