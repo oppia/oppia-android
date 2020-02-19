@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.AppLanguageActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageActivity]. */
@@ -14,7 +15,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
   private var prefSummaryValue: String? = null
 
   fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
-    val binding = DataBindingUtil.setContentView<>(activity, R.layout.app_language_activity)
+    val binding = DataBindingUtil.setContentView<AppLanguageActivityBinding>(activity, R.layout.app_language_activity)
 
     this.prefSummaryValue = prefSummaryValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey)

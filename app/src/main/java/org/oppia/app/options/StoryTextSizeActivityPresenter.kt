@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.StoryTextSizeActivityBinding
 import org.oppia.app.model.StoryTextSize
 import javax.inject.Inject
 
@@ -19,7 +20,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
-      DataBindingUtil.setContentView<>(activity, R.layout.story_text_size_activity)
+      DataBindingUtil.setContentView<StoryTextSizeActivityBinding>(activity, R.layout.story_text_size_activity)
 
     fontSize = prefSummaryValue
 
