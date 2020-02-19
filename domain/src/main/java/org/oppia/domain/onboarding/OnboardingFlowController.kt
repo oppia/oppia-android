@@ -15,7 +15,7 @@ class OnboardingFlowController @Inject constructor(
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private var onboardingFlowStore= onboardingFlowCache.getOnboardingFlowCache()
+  private var onboardingFlowStore = onboardingFlowCache.getOnboardingFlowCache()
 
   /**
    * Saves that the user has completed onboarding the app. Note that this does not notify existing subscribers of the changed state,
