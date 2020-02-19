@@ -107,8 +107,23 @@ class StoryProgressController @Inject constructor(
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       // Replace this with checking if the id pair already exists.
       val chapterPlayState = ChapterPlayState.COMPLETED
-      val storyProgressNew = StoryProgress.newBuilder().putChapterProgress(explorationId, chapterPlayState).build()
-      val topicProgress = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgressNew).build()
+
+      var storyProgress: StoryProgress = StoryProgress.newBuilder().putChapterProgress(
+        explorationId,
+        chapterPlayState
+      ).build()
+      if (it.topicProgressMap[topicId] != null) {
+        if (it.topicProgressMap[topicId]!!.storyProgressMap[storyId] != null) {
+          storyProgress = it.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!
+        }
+      }
+
+      storyProgress.toBuilder().putChapterProgress(explorationId, chapterPlayState).build()
+
+      val topicProgress =
+        it.topicProgressMap[topicId] ?: TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress).build()
+      topicProgress.toBuilder().putStoryProgress(storyId, storyProgress)
+
       val topicDatabaseBuilder = it.toBuilder().putTopicProgress(topicId, topicProgress)
       Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
     }
@@ -248,11 +263,6 @@ class StoryProgressController @Inject constructor(
     }
   }
 
-  private fun trackCompletedChapter(storyId: String, explorationId: String) {
-    check(storyId in trackedStoriesProgress) { "No story found with ID: $storyId" }
-    trackedStoriesProgress.getValue(storyId).markChapterCompleted(explorationId)
-  }
-
   private fun createStoryProgressSnapshot(storyId: String): StoryProgress {
     check(storyId in trackedStoriesProgress) { "No story found with ID: $storyId" }
     return trackedStoriesProgress.getValue(storyId).toStoryProgress()
@@ -368,12 +378,6 @@ class StoryProgressController @Inject constructor(
       check(explorationId in chapterList) { "Chapter not found in story: $explorationId" }
       val chapterIndex = chapterList.indexOf(explorationId)
       return if (chapterIndex == 0) true else chapterList[chapterIndex - 1] in trackedCompletedChapters
-    }
-
-    /** Marks the specified exploration ID as completed, or fails if the exploration is not contained in this story. */
-    fun markChapterCompleted(explorationId: String) {
-      check(canPlayChapter(explorationId)) { "Cannot mark chapter as completed, missing prerequisites: $explorationId" }
-      trackedCompletedChapters.add(explorationId)
     }
 
     /** Returns an immutable [StoryProgress] representation of this progress object. */

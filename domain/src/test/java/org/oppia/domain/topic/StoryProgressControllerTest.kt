@@ -116,7 +116,7 @@ class StoryProgressControllerTest {
 
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(1)
-    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_0]).isEqualTo(COMPLETED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_0]).isEqualTo(NOT_STARTED)
   }
 
   @Test
@@ -126,8 +126,8 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(3)
-    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_1]).isEqualTo(COMPLETED)
-    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_2]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_1]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_2]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(storyProgress.chapterProgressMap[TEST_EXPLORATION_ID_3]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
@@ -138,8 +138,8 @@ class StoryProgressControllerTest {
     // The third chapter should be missing prerequisites since chapter prior to it has yet to be completed.
     val storyProgress = storyProgressLiveData.value!!.getOrThrow()
     assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
-    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_0]).isEqualTo(COMPLETED)
-    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_1]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_0]).isEqualTo(NOT_STARTED)
+    assertThat(storyProgress.chapterProgressMap[FRACTIONS_EXPLORATION_ID_1]).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -182,7 +182,7 @@ class StoryProgressControllerTest {
     assertThat(storyProgressResult!!.isFailure()).isTrue()
     assertThat(storyProgressResult.getErrorOrNull())
       .hasMessageThat()
-      .contains("No story found with Id: invalid_story_id")
+      .contains("No story found with ID: invalid_story_id")
   }
 
   @Test
@@ -410,6 +410,27 @@ class StoryProgressControllerTest {
       verifyChapterProgressFailed()
     }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testStoryProgress_validData_recordProgressForMultipleChaptersInSameStory_getChapterProgressForStory_twoResultFound() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(profileId1, TOPIC_ID_1, STORY_ID_1, EXPLORATION_ID_1)
+        .observeForever(mockRecordProgressObserver)
+
+      storyProgressController.recordCompletedChapter(profileId1, TOPIC_ID_1, STORY_ID_1, EXPLORATION_ID_2)
+        .observeForever(mockRecordProgressObserver)
+      advanceUntilIdle()
+      verifyRecordProgressSucceeded()
+
+      storyProgressController.getStoryProgress(profileId1, TOPIC_ID_1, STORY_ID_1)
+        .observeForever(mockStoryProgressObserver)
+      advanceUntilIdle()
+      verifyStoryProgressSucceeded()
+
+      val storyProgress = storyProgressResultCaptor.value.getOrThrow()
+      assertThat(storyProgress.chapterProgressCount).isEqualTo(2)
+    }
+
   private fun verifyRecordProgressSucceeded() {
     verify(mockRecordProgressObserver, atLeastOnce()).onChanged(recordProgressResultCaptor.capture())
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
@@ -422,7 +443,7 @@ class StoryProgressControllerTest {
 
   private fun verifyTopicProgressSucceeded() {
     verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
-    assertThat(topicProgressResultCaptor.value.isSuccess()).isFalse()
+    assertThat(topicProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyStoryProgressFailed() {
@@ -432,7 +453,7 @@ class StoryProgressControllerTest {
 
   private fun verifyStoryProgressSucceeded() {
     verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
-    assertThat(storyProgressResultCaptor.value.isSuccess()).isFalse()
+    assertThat(storyProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyChapterProgressFailed() {
@@ -442,7 +463,7 @@ class StoryProgressControllerTest {
 
   private fun verifyChapterProgressSucceeded() {
     verify(mockChapterProgressObserver, atLeastOnce()).onChanged(chapterProgressResultCaptor.capture())
-    assertThat(chapterProgressResultCaptor.value.isSuccess()).isFalse()
+    assertThat(chapterProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
