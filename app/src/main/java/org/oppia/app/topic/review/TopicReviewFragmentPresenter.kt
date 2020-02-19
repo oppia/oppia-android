@@ -65,7 +65,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       reviewAdapter.setReviewList(result.subtopicList)
-      logger.e("TopicReviewFragment", ""+ result.subtopicList.get(0).title)
     })
   }
 

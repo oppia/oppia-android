@@ -31,8 +31,7 @@ class ReviewCardFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject
-  lateinit var reviewCardFragmentPresenter: ReviewCardFragmentPresenter
+  @Inject lateinit var reviewCardFragmentPresenter: ReviewCardFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

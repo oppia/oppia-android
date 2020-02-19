@@ -18,8 +18,7 @@ import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener,
-  RouteToExplorationListener, ReviewCardListener {
+  RouteToStoryListener, RouteToExplorationListener, ReviewCardListener {
   @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {

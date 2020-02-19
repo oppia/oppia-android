@@ -9,7 +9,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
+/** Presenter for [ReviewCardFragment], sets up bindings from ViewModel */
 @FragmentScope
 class ReviewCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
