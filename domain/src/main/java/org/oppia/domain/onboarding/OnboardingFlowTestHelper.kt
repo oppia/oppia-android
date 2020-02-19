@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 /** Helper class to clear onboarding flow cache. */
 @Singleton
-class OnboardingFlowHelper @Inject constructor(
+class OnboardingFlowTestHelper @Inject constructor(
   onboardingFlowCache: OnboardingFlowCache,
   private val logger: Logger
 ) {
@@ -18,7 +18,7 @@ class OnboardingFlowHelper @Inject constructor(
   fun clearOnboardingFlow() {
     onboardingFlowStore.clearCacheAsync().invokeOnCompletion { it ->
       it?.let {
-        logger.e("OnboardingFlowHelper", "Failed to clear onboarding flow.", it)
+        logger.e("OnboardingFlowTestHelper", "Failed to clear onboarding flow.", it)
       }
     }
   }

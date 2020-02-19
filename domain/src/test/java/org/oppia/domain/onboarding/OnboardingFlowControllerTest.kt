@@ -60,7 +60,7 @@ class OnboardingFlowControllerTest {
 
   @Inject lateinit var onboardingFlowController: OnboardingFlowController
 
-  @Inject lateinit var onboardingFlowHelper: OnboardingFlowHelper
+  @Inject lateinit var onboardingFlowTestHelper: OnboardingFlowTestHelper
 
   @Inject
   @field:TestDispatcher
@@ -152,7 +152,7 @@ class OnboardingFlowControllerTest {
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
       // Clear, then recreate another controller.
-      onboardingFlowHelper.clearOnboardingFlow()
+      onboardingFlowTestHelper.clearOnboardingFlow()
       setUpTestApplicationComponent()
       val onboarding = onboardingFlowController.getOnboardingFlow()
       onboarding.observeForever(mockOnboardingObserver)
