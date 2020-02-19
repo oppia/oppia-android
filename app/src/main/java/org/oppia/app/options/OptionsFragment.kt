@@ -11,6 +11,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import org.oppia.app.R
 import org.oppia.app.home.KEY_HOME_PROFILE_ID
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
@@ -18,16 +20,6 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
-
-const val STORY_TEXT_SIZE_SMALL = "Small"
-const val STORY_TEXT_SIZE_MEDIUM = "Medium"
-const val STORY_TEXT_SIZE_LARGE = "Large"
-const val STORY_TEXT_SIZE_EXTRA_LARGE = "Extra Large"
-
-//const val SMALL_TEXT_SIZE_VALUE = 16f
-//const val MEDIUM_TEXT_SIZE_VALUE = 18f
-//const val LARGE_TEXT_SIZE_VALUE = 20f
-//const val EXTRA_LARGE_TEXT_SIZE_VALUE = 22f
 
 const val KEY_MESSAGE_STORY_TEXT_SIZE = "Text Size"
 const val KEY_MESSAGE_APP_LANGUAGE = "App Language"
@@ -40,9 +32,9 @@ class OptionsFragment @Inject constructor(
 ) : PreferenceFragmentCompat() {
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private lateinit var storyTextSize: StoryTextSize
-  private var appLanguage = "English"
-  private var audioLanguage = "No Audio"
+  private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
+  private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+  private var audioLanguage = AudioLanguage.NO_AUDIO
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(R.xml.basic_preference, rootKey)
@@ -56,16 +48,16 @@ class OptionsFragment @Inject constructor(
     val textSizePref = findPreference<Preference>(getString(R.string.key_story_text_size))
     when (storyTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE -> {
-        textSizePref!!.summary = STORY_TEXT_SIZE_SMALL
+        textSizePref!!.summary = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
       }
       StoryTextSize.MEDIUM_TEXT_SIZE -> {
-        textSizePref!!.summary = STORY_TEXT_SIZE_MEDIUM
+        textSizePref!!.summary = getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
       }
       StoryTextSize.LARGE_TEXT_SIZE -> {
-        textSizePref!!.summary = STORY_TEXT_SIZE_LARGE
+        textSizePref!!.summary = getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE)
       }
       StoryTextSize.EXTRA_LARGE_TEXT_SIZE -> {
-        textSizePref!!.summary = STORY_TEXT_SIZE_EXTRA_LARGE
+        textSizePref!!.summary = getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
     }
 
@@ -75,7 +67,7 @@ class OptionsFragment @Inject constructor(
           StoryTextSizeActivity.createStoryTextSizeActivityIntent(
             requireContext(),
             getString(R.string.key_story_text_size),
-            textSizePref.summary.toString()
+            textSizePref!!.summary.toString()
           ), 1
         )
         return true
@@ -83,14 +75,14 @@ class OptionsFragment @Inject constructor(
     }
 
     val appLanguagePref = findPreference<Preference>(getString(R.string.key_app_language))
-    appLanguagePref!!.summary = appLanguage
+    appLanguagePref!!.summary = getAppLanguage(appLanguage)
     appLanguagePref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
           AppLanguageActivity.createAppLanguageActivityIntent(
             requireContext(),
             getString(R.string.key_app_language),
-            appLanguagePref.summary.toString()
+            appLanguagePref!!.summary.toString()
           ), 2
         )
         return true
@@ -98,7 +90,7 @@ class OptionsFragment @Inject constructor(
     }
 
     val defaultAudioPref = findPreference<Preference>(getString(R.string.key_default_audio))
-    defaultAudioPref!!.summary = audioLanguage
+    defaultAudioPref!!.summary = getAudioLanguage(audioLanguage)
     defaultAudioPref.onPreferenceClickListener = object : Preference.OnPreferenceClickListener {
       override fun onPreferenceClick(preference: Preference): Boolean {
         startActivityForResult(
@@ -131,16 +123,16 @@ class OptionsFragment @Inject constructor(
         preference.key == getString(R.string.key_story_text_size) -> {
           preference.summary = stringValue
           when (stringValue) {
-            STORY_TEXT_SIZE_SMALL -> {
+            getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
               profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
             }
-            STORY_TEXT_SIZE_MEDIUM -> {
+            getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
               profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
             }
-            STORY_TEXT_SIZE_LARGE -> {
+            getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
               profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
             }
-            STORY_TEXT_SIZE_EXTRA_LARGE -> {
+            getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
               profileManagementController.updateStoryTextSize(profileId, StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
             }
           }
@@ -149,13 +141,24 @@ class OptionsFragment @Inject constructor(
         // Update the changed language to summary field.
         preference.key == getString(R.string.key_app_language) -> {
           preference.summary = stringValue
-          profileManagementController.updateAppLanguage(profileId, stringValue)
+          when(stringValue) {
+            getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.ENGLISH_APP_LANGUAGE)
+            getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.HINDI_APP_LANGUAGE)
+            getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE_APP_LANGUAGE)
+            getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> profileManagementController.updateAppLanguage(profileId, AppLanguage.FRENCH_APP_LANGUAGE)
+          }
         }
 
         // Update the changed audio language to summary field.
         preference.key == getString(R.string.key_default_audio) -> {
           preference.summary = stringValue
-          profileManagementController.updateAudioLanguage(profileId, stringValue)
+          when(stringValue) {
+            getAudioLanguage(AudioLanguage.NO_AUDIO) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.NO_AUDIO)
+            getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+            getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.HINDI_AUDIO_LANGUAGE)
+            getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId,AudioLanguage.CHINESE_AUDIO_LANGUAGE)
+            getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> profileManagementController.updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+          }
         }
       }
       true
@@ -197,5 +200,35 @@ class OptionsFragment @Inject constructor(
       logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
+  }
+
+  fun getStoryTextSize(storyTextSize: StoryTextSize): String {
+    return when (storyTextSize) {
+      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
+      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
+      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
+      else -> "Extra Large"
+    }
+  }
+
+  fun getAppLanguage(appLanguage: AppLanguage): String {
+    return when (appLanguage) {
+      AppLanguage.ENGLISH_APP_LANGUAGE -> "English"
+      AppLanguage.HINDI_APP_LANGUAGE -> "Hindi"
+      AppLanguage.FRENCH_APP_LANGUAGE -> "French"
+      AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
+      else -> "English"
+    }
+  }
+
+  fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+    return when (audioLanguage) {
+      AudioLanguage.NO_AUDIO-> "No Audio"
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE-> "English"
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "Chinese"
+      else -> "No Audio"
+    }
   }
 }
