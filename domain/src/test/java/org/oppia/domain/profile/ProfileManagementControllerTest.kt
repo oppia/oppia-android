@@ -31,6 +31,8 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
@@ -60,6 +62,7 @@ class ProfileManagementControllerTest {
 
   @Inject lateinit var context: Context
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Mock
@@ -131,8 +134,8 @@ class ProfileManagementControllerTest {
       colorRgb = -10710042,
       isAdmin = true,
       storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = "English",
-      audioLanguage = "No Audio"
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
@@ -163,8 +166,8 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
-        audioLanguage = "No Audio"
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -188,8 +191,8 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
-        audioLanguage = "No Audio"
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -249,8 +252,8 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = false,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
-        audioLanguage = "No Audio"
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -412,7 +415,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileManagementController.getStoryTextSize(profileResultCaptor.value.getOrThrow().storyTextSize)).isEqualTo(18f)
+      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
     }
 
   @Test
@@ -423,7 +426,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateAppLanguage(profileId, "Chinese")
+      profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE_APP_LANGUAGE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
@@ -432,7 +435,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo("Chinese")
+      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
     }
 
   @Test
@@ -443,7 +446,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateAudioLanguage(profileId, "French")
+      profileManagementController.updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
@@ -452,7 +455,7 @@ class ProfileManagementControllerTest {
       verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
       assertThat(updateResultCaptor.value.isSuccess()).isTrue()
       assertThat(profileResultCaptor.value.isSuccess()).isTrue()
-      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo("French")
+      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo(AudioLanguage.FRENCH_AUDIO_LANGUAGE)
     }
 
   @Test
@@ -493,8 +496,8 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = true,
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = "English",
-        audioLanguage = "No Audio"
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)

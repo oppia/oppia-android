@@ -3,6 +3,8 @@ package org.oppia.app.profile
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -24,8 +26,8 @@ class ProfileActivityPresenter @Inject constructor(
       colorRgb = -10710042,
       isAdmin = true,
       storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = "English",
-      audioLanguage = "No Audio"
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
