@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <item name="selection_interaction_recyclerview" type="id" />
+  <item name="onboarding_dot_0" type="id" />
+  <item name="onboarding_dot_1" type="id" />
+  <item name="onboarding_dot_2" type="id" />
+  <item name="onboarding_dot_3" type="id" />
 </resources>

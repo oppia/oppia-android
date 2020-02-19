@@ -7,6 +7,7 @@ import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.continueplaying.ContinuePlayingFragment
+import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
 import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
@@ -54,6 +55,7 @@ interface FragmentComponent {
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
+  fun inject(onboardingFragment: OnboardingFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
