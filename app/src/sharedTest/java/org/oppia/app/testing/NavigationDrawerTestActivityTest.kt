@@ -42,7 +42,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.home.HomeActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
