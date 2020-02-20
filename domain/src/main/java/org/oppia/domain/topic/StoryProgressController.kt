@@ -14,6 +14,7 @@ import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,6 +38,7 @@ const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 private const val CACHE_NAME = "topic_progress_database"
 
+private const val TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID = "transformed_get_profile_progress_provider_id"
 private const val TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID = "transformed_get_topic_progress_provider_id"
 private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
 private const val TRANSFORMED_GET_CHAPTER_PROGRESS_PROVIDER_ID = "transformed_get_chapter_progress_provider_id"
@@ -47,7 +49,8 @@ private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progre
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val jsonAssetRetriever: JsonAssetRetriever
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val logger: Logger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
@@ -69,6 +72,9 @@ class StoryProgressController @Inject constructor(
 
   /** Indicates that the given topic id does not have any associated topic progress. */
   class TopicProgressNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given profile id does not have any associated progress. */
+  class ProfileProgressNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /**
    * These Statuses correspond to the exceptions above such that if the deferred contains
@@ -146,6 +152,11 @@ class StoryProgressController @Inject constructor(
       })
   }
 
+  /** Returns entire progress of user. */
+  fun getProfileProgress(profileId: ProfileId): LiveData<AsyncResult<TopicProgressDatabase>> {
+    return dataProviders.convertToLiveData(getProfileProgressDataProvider(profileId))
+  }
+
   /** Returns topic progress on per-profile basis specified by topicId. */
   fun getTopicProgress(profileId: ProfileId, topicId: String): LiveData<AsyncResult<TopicProgress>> {
     return dataProviders.convertToLiveData(getTopicProgressDataProvider(profileId, topicId))
@@ -175,6 +186,19 @@ class StoryProgressController @Inject constructor(
         exploration
       )
     )
+  }
+
+  private fun getProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
+    return dataProviders.transformAsync(
+      TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) {
+      if (it.topicProgressMap.keys.isNotEmpty()) {
+        AsyncResult.success(it)
+      } else {
+        AsyncResult.failed(ProfileProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+      }
+    }
   }
 
   private fun getTopicProgressDataProvider(profileId: ProfileId, topicId: String): DataProvider<TopicProgress> {
@@ -330,7 +354,7 @@ class StoryProgressController @Inject constructor(
 
   private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
     //return profileDataStore
-    val data = if (profileId in cacheStoreMap) {
+    val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {
       val cacheStore =
@@ -339,12 +363,17 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
 
-    data.primeCacheAsync().invokeOnCompletion {
-      it?.let {
+    cacheStore.primeCacheAsync().invokeOnCompletion {
+      it?.let { it ->
+        logger.e(
+          "StoryProgressController",
+          "Failed to prime cache ahead of LiveData conversion for StoryProgressController.",
+          it
+        )
       }
     }
 
-    return data
+    return cacheStore
   }
 
   /**
