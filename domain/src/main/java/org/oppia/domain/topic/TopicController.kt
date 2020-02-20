@@ -575,7 +575,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_2)
       .setName("Third Exploration")
       .setSummary("This is the third exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createChapterThumbnail2())
       .build()
   }
