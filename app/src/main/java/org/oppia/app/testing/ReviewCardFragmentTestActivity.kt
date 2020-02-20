@@ -8,7 +8,7 @@ import org.oppia.app.topic.reviewcard.SUBTOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.reviewcard.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
-/** Test activity for recent stories. */
+/** Test activity for review card. */
 class ReviewCardFragmentTestActivity : InjectableAppCompatActivity() {
   @Inject lateinit var reviewCardFragmentTestActivityPresenter: ReviewCardFragmentTestActivityPresenter
 
@@ -19,7 +19,7 @@ class ReviewCardFragmentTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ContinuePlayingActivity]. */
+    /** Returns a new [Intent] to route to [ReviewCardFragmentTestActivity]. */
     fun createReviewCardActivityIntent(context: Context, topicId: String, subtopicId: String): Intent {
       val intent = Intent(context, ReviewCardFragmentTestActivity::class.java)
       intent.putExtra(TOPIC_ID_ARGUMENT_KEY, topicId)

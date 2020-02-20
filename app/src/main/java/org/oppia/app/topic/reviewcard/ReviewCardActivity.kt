@@ -21,8 +21,8 @@ class ReviewCardActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ContinuePlayingActivity]. */
-    fun createReviewCardActivityIntent(context: Context,topicId: String, subtopicId: String): Intent {
+    /** Returns a new [Intent] to route to [ReviewCardActivity]. */
+    fun createReviewCardActivityIntent(context: Context, topicId: String, subtopicId: String): Intent {
       val intent = Intent(context, ReviewCardActivity::class.java)
       intent.putExtra(TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
