@@ -6,18 +6,19 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.RouteToQuestionPlayerListener
+import org.oppia.app.topic.RouteToReviewCardListener
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.TopicActivityPresenter
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.reviewcard.ReviewCardFragment
-import org.oppia.app.topic.reviewcard.ReviewCardListener
+import org.oppia.app.topic.reviewcard.ReviewCardActivity
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, ReviewCardListener {
+  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener {
+
   @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,16 +35,12 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
     startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
   }
 
-  override fun dismiss() {
-    getReviewCard()?.dismiss()
-  }
-
   override fun routeToExploration(explorationId: String, topicId: String?) {
     startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
   }
 
-  private fun getReviewCard(): ReviewCardFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_REVIEW_CARD_DIALOG) as ReviewCardFragment?
+  override fun routeToReviewCard(topicId: String, subtopicId: String) {
+    startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 
   companion object {

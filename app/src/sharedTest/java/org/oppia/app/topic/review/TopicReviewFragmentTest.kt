@@ -14,7 +14,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -29,7 +28,6 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
-import org.oppia.app.topic.reviewcard.ReviewCardFragment
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -73,9 +71,6 @@ class TopicReviewFragmentTest {
       )
     ).perform(click())
     onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
-    val reviewCardFragment: ReviewCardFragment? = topicActivityTestRule.activity.supportFragmentManager
-      .findFragmentByTag(TopicActivity.TAG_REVIEW_CARD_DIALOG) as ReviewCardFragment
-    assertThat(reviewCardFragment).isNotNull()
   }
 
   @Test

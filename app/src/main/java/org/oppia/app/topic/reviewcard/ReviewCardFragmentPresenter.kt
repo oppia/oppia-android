@@ -15,14 +15,15 @@ class ReviewCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ReviewCardViewModel>
 ) {
+  private lateinit var topicId: String
+  private lateinit var subtopicId: String
 
-  /**
-   * Sets up data binding and toolbar.
-   * Host activity must inherit ConceptCardListener to dismiss this fragment.
-   */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String, subtopicId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ReviewCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getReveiwCardViewModel()
+
+    topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
+    subtopicId = fragment.activity!!.intent.getStringExtra(SUBTOPIC_ID_ARGUMENT_KEY)
 
     viewModel.setSubtopicIdAndBinding(topicId, subtopicId, binding)
 

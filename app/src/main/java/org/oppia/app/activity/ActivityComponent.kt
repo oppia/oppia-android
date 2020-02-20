@@ -29,10 +29,12 @@ import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
+import org.oppia.app.testing.ReviewCardFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.topic.reviewcard.ReviewCardActivity
 import javax.inject.Provider
 
 /** Root subcomponent for all activities. */
@@ -73,6 +75,8 @@ interface ActivityComponent {
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(reviewCardActivity: ReviewCardActivity)
+  fun inject(reviewCardFragmentTestActivity: ReviewCardFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)

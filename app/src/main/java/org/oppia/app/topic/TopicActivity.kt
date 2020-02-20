@@ -8,15 +8,14 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.reviewcard.ReviewCardFragment
-import org.oppia.app.topic.reviewcard.ReviewCardListener
+import org.oppia.app.topic.reviewcard.ReviewCardActivity
 import javax.inject.Inject
 
 const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener, ReviewCardListener {
+  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener {
 
   private lateinit var topicId: String
   private var storyId: String? = null
@@ -41,26 +40,14 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToReviewCard(topicId: String, subtopicId: String) {
-    if (getReviewCardFragment() == null) {
-      val reviewCardFragment: ReviewCardFragment = ReviewCardFragment.newInstance(topicId, subtopicId)
-      reviewCardFragment.showNow(supportFragmentManager, TAG_REVIEW_CARD_DIALOG)
-    }
+    startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 
   override fun routeToExploration(explorationId: String, topicId: String?) {
     startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
   }
 
-  override fun dismiss() {
-    getReviewCardFragment()?.dismiss()
-  }
-
-  private fun getReviewCardFragment(): ReviewCardFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_REVIEW_CARD_DIALOG) as ReviewCardFragment?
-  }
-
   companion object {
-    internal const val TAG_REVIEW_CARD_DIALOG = "REVIEW_CARD_DIALOG"
     internal const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
     internal const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
