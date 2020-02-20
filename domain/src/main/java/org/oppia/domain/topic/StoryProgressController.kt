@@ -105,28 +105,35 @@ class StoryProgressController @Inject constructor(
     explorationId: String
   ): LiveData<AsyncResult<Any?>> {
     val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      // Replace this with checking if the id pair already exists.
       val chapterPlayState = ChapterPlayState.COMPLETED
 
-      var storyProgress: StoryProgress = StoryProgress.newBuilder().putChapterProgress(
-        explorationId,
-        chapterPlayState
-      ).build()
-      if (it.topicProgressMap[topicId] != null) {
-        if (it.topicProgressMap[topicId]!!.storyProgressMap[storyId] != null) {
-          storyProgress = it.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!
-        }
+      val storyProgress = if (it.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
+        val storyProgressBuilder = StoryProgress.newBuilder()
+          .putAllChapterProgress(it.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
+          .putChapterProgress(explorationId, chapterPlayState)
+        storyProgressBuilder.build()
+      } else {
+        val storyProgressBuilder = StoryProgress.newBuilder().putChapterProgress(
+          explorationId,
+          chapterPlayState
+        )
+        storyProgressBuilder.build()
       }
 
-      storyProgress.toBuilder().putChapterProgress(explorationId, chapterPlayState).build()
-
-      val topicProgress =
-        it.topicProgressMap[topicId] ?: TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress).build()
-      topicProgress.toBuilder().putStoryProgress(storyId, storyProgress)
+      val topicProgress = if (it.topicProgressMap[topicId] != null) {
+        val topicProgressBuilder =
+          TopicProgress.newBuilder().putAllStoryProgress(it.topicProgressMap[topicId]!!.storyProgressMap)
+            .putStoryProgress(storyId, storyProgress)
+        topicProgressBuilder.build()
+      } else {
+        val topicProgressBuilder = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress)
+        topicProgressBuilder.build()
+      }
 
       val topicDatabaseBuilder = it.toBuilder().putTopicProgress(topicId, topicProgress)
       Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
     }
+
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(
@@ -322,7 +329,8 @@ class StoryProgressController @Inject constructor(
   }
 
   private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
-    return if (profileId in cacheStoreMap) {
+    //return profileDataStore
+    val data = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {
       val cacheStore =
@@ -330,6 +338,13 @@ class StoryProgressController @Inject constructor(
       cacheStoreMap[profileId] = cacheStore
       cacheStore
     }
+
+    data.primeCacheAsync().invokeOnCompletion {
+      it?.let {
+      }
+    }
+
+    return data
   }
 
   /**
