@@ -260,8 +260,40 @@ class ContinuePlayingFragmentTest {
     }
   }
 
+  /** Landscape Tests */
+
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testContinuePlayingTestActivity_changeConfiguration_toolbarTitle_isDisplayedSuccessfully() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.continue_playing_toolbar))
+        )
+      ).check(matches(withText(R.string.continue_playing_activity)))
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem0_doesNotShowSectionDivider() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          0,
+          R.id.divider_view
+        )
+      ).check(
+        matches(
+          not(isDisplayed())
+        )
+      )
+    }
+  }
+
+  @Test
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -280,23 +312,6 @@ class ContinuePlayingFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem3_showsLastMonthSectionTitle() {
-    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
-      onView(
-        atPositionOnView(
-          R.id.ongoing_story_recycler_view,
-          3,
-          R.id.section_title_text_view
-        )
-      ).check(matches(withText(R.string.ongoing_story_last_month)))
-    }
-  }
-
-  @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem4_chapterNameIsCorrect() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -316,6 +331,90 @@ class ContinuePlayingFragmentTest {
           withText(containsString("Miguel Reads a Book"))
         )
       )
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          1,
+          R.id.story_name_text_view
+        )
+      ).check(
+        matches(
+          withText(containsString("Matthew Goes to the Bakery"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem1_topicNameIsCorrect() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          1,
+          R.id.topic_name_text_view
+        )
+      ).check(
+        matches(
+          withText(containsString("FRACTIONS"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem1_lessonThumbnailIsCorrect() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          1,
+          R.id.lesson_thumbnail
+        )
+      ).check(
+        matches(
+          withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testContinuePlayingTestActivity_changeConfiguration_recyclerViewItem3_showsLastMonthSectionTitle() {
+    ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(
+        atPositionOnView(
+          R.id.ongoing_story_recycler_view,
+          3,
+          R.id.section_title_text_view
+        )
+      ).check(matches(withText(R.string.ongoing_story_last_month)))
     }
   }
 

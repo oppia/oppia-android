@@ -18,7 +18,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".home.continueplaying.ContinuePlayingActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity
