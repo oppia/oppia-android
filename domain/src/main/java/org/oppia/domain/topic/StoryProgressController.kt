@@ -88,7 +88,9 @@ class StoryProgressController @Inject constructor(
     EXPLORATION_NOT_FOUND,
     STORY_NOT_FOUND,
     TOPIC_NOT_FOUND,
-    STORY_PROGRESS_NOT_FOUND
+    STORY_PROGRESS_NOT_FOUND,
+    TOPIC_PROGRESS_NOT_FOUND,
+    PROFILE_PROGRESS_NOT_FOUND
   }
 
   private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
@@ -154,12 +156,12 @@ class StoryProgressController @Inject constructor(
 
   /** Returns entire progress of user. */
   fun getProfileProgress(profileId: ProfileId): LiveData<AsyncResult<TopicProgressDatabase>> {
-    return dataProviders.convertToLiveData(getProfileProgressDataProvider(profileId))
+    return dataProviders.convertToLiveData(retrieveProfileProgressDataProvider(profileId))
   }
 
   /** Returns topic progress on per-profile basis specified by topicId. */
   fun getTopicProgress(profileId: ProfileId, topicId: String): LiveData<AsyncResult<TopicProgress>> {
-    return dataProviders.convertToLiveData(getTopicProgressDataProvider(profileId, topicId))
+    return dataProviders.convertToLiveData(retrieveTopicProgressDataProvider(profileId, topicId))
   }
 
   /** Returns story progress on per-profile basis specified by topicId and storyId. */
@@ -168,7 +170,7 @@ class StoryProgressController @Inject constructor(
     topicId: String,
     storyId: String
   ): LiveData<AsyncResult<StoryProgress>> {
-    return dataProviders.convertToLiveData(getStoryProgressDataProvider(profileId, topicId, storyId))
+    return dataProviders.convertToLiveData(retrieveStoryProgressDataProvider(profileId, topicId, storyId))
   }
 
   /** Returns chapter progress on per-profile basis specified by topicId, storyId and explorationId. */
@@ -179,7 +181,7 @@ class StoryProgressController @Inject constructor(
     exploration: String
   ): LiveData<AsyncResult<ChapterPlayState>> {
     return dataProviders.convertToLiveData(
-      getChapterProgressDataProvider(
+      retrieveChapterProgressDataProvider(
         profileId,
         topicId,
         storyId,
@@ -188,7 +190,8 @@ class StoryProgressController @Inject constructor(
     )
   }
 
-  private fun getProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
+  /** Returns all topics progress [DataProvider] for a particular profile. */
+  internal fun retrieveProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
@@ -196,12 +199,13 @@ class StoryProgressController @Inject constructor(
       if (it.topicProgressMap.keys.isNotEmpty()) {
         AsyncResult.success(it)
       } else {
-        AsyncResult.failed(ProfileProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+        AsyncResult.success(TopicProgressDatabase.getDefaultInstance())
       }
     }
   }
 
-  private fun getTopicProgressDataProvider(profileId: ProfileId, topicId: String): DataProvider<TopicProgress> {
+  /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
+  internal fun retrieveTopicProgressDataProvider(profileId: ProfileId, topicId: String): DataProvider<TopicProgress> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
@@ -210,30 +214,32 @@ class StoryProgressController @Inject constructor(
       if (topicProgress != null) {
         AsyncResult.success(topicProgress)
       } else {
-        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
+        AsyncResult.success(TopicProgress.getDefaultInstance())
       }
     }
   }
 
-  private fun getStoryProgressDataProvider(
+  /** Returns a [StoryProgress] [DataProvider] for a specific storyId, per-profile basis. */
+  internal fun retrieveStoryProgressDataProvider(
     profileId: ProfileId,
     topicId: String,
     storyId: String
   ): DataProvider<StoryProgress> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
-      getTopicProgressDataProvider(profileId, topicId)
+      retrieveTopicProgressDataProvider(profileId, topicId)
     ) {
       val storyProgress = it.storyProgressMap[storyId]
       if (storyProgress != null) {
         AsyncResult.success(storyProgress)
       } else {
-        AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any story progress"))
+        AsyncResult.success(StoryProgress.getDefaultInstance())
       }
     }
   }
 
-  private fun getChapterProgressDataProvider(
+  /** Returns a [ChapterPlayState] [DataProvider] for a specific explorationId, per-profile basis. */
+  internal fun retrieveChapterProgressDataProvider(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -241,13 +247,13 @@ class StoryProgressController @Inject constructor(
   ): DataProvider<ChapterPlayState> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_CHAPTER_PROGRESS_PROVIDER_ID,
-      getStoryProgressDataProvider(profileId, topicId, storyId)
+      retrieveStoryProgressDataProvider(profileId, topicId, storyId)
     ) {
-      val chapterProgress = it.chapterProgressMap[explorationId]
-      if (chapterProgress != null) {
-        AsyncResult.success(chapterProgress)
+      val chapterPlayState = it.chapterProgressMap[explorationId]
+      if (chapterPlayState != null) {
+        AsyncResult.success(chapterPlayState)
       } else {
-        AsyncResult.failed(ExplorationNotFoundException("ChapterId: $explorationId does not contain any chapter progress"))
+        AsyncResult.success(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       }
     }
   }
@@ -275,6 +281,12 @@ class StoryProgressController @Inject constructor(
       )
       StoryProgressActionStatus.STORY_PROGRESS_NOT_FOUND -> AsyncResult.failed(
         StoryProgressNotFoundException("StoryProgress not found for profile $profileId")
+      )
+      StoryProgressActionStatus.TOPIC_PROGRESS_NOT_FOUND -> AsyncResult.failed(
+        TopicProgressNotFoundException("TopicProgress not found for profile $profileId")
+      )
+      StoryProgressActionStatus.PROFILE_PROGRESS_NOT_FOUND -> AsyncResult.failed(
+        ProfileProgressNotFoundException("Profile progress not found for profile $profileId")
       )
     }
   }

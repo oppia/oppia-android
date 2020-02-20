@@ -7,15 +7,18 @@ import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.ReviewCard
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
+import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
+import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
@@ -80,6 +83,11 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
+private const val TRANSFORMED_GET_TOPIC_PROVIDER_ID = "transformed_get_topic_provider_id"
+private const val TRANSFORMED_GET_STORY_PROVIDER_ID = "transformed_get_story_provider_id"
+private const val COMBINE_TOPIC_PROVIDER_ID = "combine_topic_provider_id"
+private const val COMBINE_STORY_PROVIDER_ID = "combine_story_provider_id"
+
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
 class TopicController @Inject constructor(
@@ -97,6 +105,77 @@ class TopicController @Inject constructor(
         AsyncResult.failed<Topic>(e)
       }
     )
+  }
+
+  /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
+  fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
+    val topicDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
+    }
+    val topicProgressDataProvider = storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
+
+    return dataProviders.convertToLiveData(
+      dataProviders.combine(
+        COMBINE_TOPIC_PROVIDER_ID,
+        topicDataProvider,
+        topicProgressDataProvider
+      ) { topic, topicProgress ->
+        combineTopicAndTopicProgress(topic, topicProgress)
+      }
+    )
+  }
+
+  /**
+   * Combines the specified topic and topic-progress into a new topic.
+   */
+  private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+    val topicBuilder = topic.toBuilder()
+    if (topicProgress.storyProgressMap.isNotEmpty()) {
+      topic.storyList.forEachIndexed { storyIndex, storySummary ->
+        val storyBuilder = storySummary.toBuilder()
+        if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
+          storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
+            if (topicProgress.storyProgressMap[storySummary.storyId]!!.chapterProgressMap.containsKey(chapterSummary.explorationId)) {
+              val chapterBuilder = chapterSummary.toBuilder()
+              chapterBuilder.chapterPlayState = ChapterPlayState.COMPLETED
+              storyBuilder.setChapter(chapterIndex, chapterBuilder)
+            } else {
+              if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
+                val chapterBuilder = chapterSummary.toBuilder()
+                chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+                storyBuilder.setChapter(chapterIndex, chapterBuilder)
+              } else {
+                val chapterBuilder = chapterSummary.toBuilder()
+                chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+                storyBuilder.setChapter(chapterIndex, chapterBuilder)
+              }
+            }
+          }
+          topicBuilder.setStory(storyIndex, storyBuilder.build())
+        } else {
+          if (storySummary.chapterList.isNotEmpty()) {
+            val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
+            topicBuilder.setStory(storyIndex, updatedStorySummary)
+          }
+        }
+      }
+    } else {
+      topic.storyList.forEachIndexed { index, storySummary ->
+        if (storySummary.chapterList.isNotEmpty()) {
+          val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
+          topicBuilder.setStory(index, updatedStorySummary)
+        }
+      }
+    }
+    return topicBuilder.build()
+  }
+
+  /** Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in [StorySummary]. */
+  private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
+    val chapterBuilder = storySummary.getChapter(0).toBuilder()
+    chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+    val storyBuilder = storySummary.toBuilder()
+    return storyBuilder.setChapter(0, chapterBuilder).build()
   }
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
@@ -141,6 +220,67 @@ class TopicController @Inject constructor(
         else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
       }
     )
+  }
+
+  /** Returns the [StorySummary] corresponding to the specified story ID, or a failed result if there is none. */
+  fun getStory(profileId: ProfileId, topicId: String, storyId: String): LiveData<AsyncResult<StorySummary>> {
+    val storySummary = when (storyId) {
+      TEST_STORY_ID_0 -> createTestTopic0Story0()
+      TEST_STORY_ID_1 -> createTestTopic0Story1()
+      TEST_STORY_ID_2 -> createTestTopic1Story2()
+      FRACTIONS_STORY_ID_0 -> createStoryFromJsonFile("fractions_stories.json", /* index= */ 0)
+      RATIOS_STORY_ID_0 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 0)
+      RATIOS_STORY_ID_1 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 1)
+      else -> StorySummary.getDefaultInstance()
+    }
+
+    val storyDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(storySummary)
+    }
+    val storyProgressDataProvider =
+      storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
+
+    return dataProviders.convertToLiveData(
+      dataProviders.combine(
+        COMBINE_STORY_PROVIDER_ID,
+        storyDataProvider,
+        storyProgressDataProvider
+      ) { story, storyProgress ->
+        combineStorySummaryAndStoryProgress(story, storyProgress)
+      }
+    )
+  }
+
+  /**
+   * Combines the specified story-summary and story-progress into a new topic.
+   */
+  private fun combineStorySummaryAndStoryProgress(
+    storySummary: StorySummary,
+    storyProgress: StoryProgress
+  ): StorySummary {
+    if (storyProgress.chapterProgressMap.isNotEmpty()) {
+      val storyBuilder = storySummary.toBuilder()
+      storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
+        if (storyProgress.chapterProgressMap.containsKey(chapterSummary.explorationId)) {
+          val chapterBuilder = chapterSummary.toBuilder()
+          chapterBuilder.chapterPlayState = ChapterPlayState.COMPLETED
+          storyBuilder.setChapter(chapterIndex, chapterBuilder)
+        } else {
+          if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
+            val chapterBuilder = chapterSummary.toBuilder()
+            chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+            storyBuilder.setChapter(chapterIndex, chapterBuilder)
+          } else {
+            val chapterBuilder = chapterSummary.toBuilder()
+            chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+            storyBuilder.setChapter(chapterIndex, chapterBuilder)
+          }
+        }
+      }
+      return storyBuilder.build()
+    } else {
+      return setFirstChapterAsNotStarted(storySummary)
+    }
   }
 
   /** Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there is none. */
@@ -545,7 +685,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_30)
       .setName("Prototype Exploration")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createChapterThumbnail0())
       .build()
   }
@@ -565,7 +705,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createChapterThumbnail1())
       .build()
   }
@@ -602,7 +742,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_4)
       .setName("Fifth Exploration")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createChapterThumbnail4())
       .build()
   }

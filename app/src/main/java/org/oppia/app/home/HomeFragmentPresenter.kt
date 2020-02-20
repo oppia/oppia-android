@@ -25,6 +25,16 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.UserAppHistory
 import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.StoryProgressController
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_STORY_ID_1
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -37,6 +47,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val userAppHistoryController: UserAppHistoryController,
+  private val storyProgressController: StoryProgressController,
   private val topicListController: TopicListController,
   private val logger: Logger
 ) {
@@ -94,7 +105,12 @@ class HomeFragmentPresenter @Inject constructor(
     subscribeToUserAppHistory()
     subscribeToOngoingStoryList()
     subscribeToTopicList()
+    recordDummyProgress()
     return binding.root
+  }
+
+  private fun recordDummyProgress() {
+    storyProgressController.recordCompletedChapter(profileManagementController.getCurrentProfileId(), TEST_TOPIC_ID_0, TEST_STORY_ID_1, TEST_EXPLORATION_ID_1)
   }
 
   private val profileLiveData: LiveData<Profile> by lazy {
