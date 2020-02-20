@@ -21,7 +21,7 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
 
   companion object {
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createContinuePlayingActivityIntent(context: Context): Intent {
+    fun createRecentlyPlayedActivityIntent(context: Context): Intent {
       return Intent(context, RecentlyPlayedActivity::class.java)
     }
   }

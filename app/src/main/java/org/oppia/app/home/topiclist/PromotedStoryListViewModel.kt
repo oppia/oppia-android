@@ -15,6 +15,6 @@ class PromotedStoryListViewModel(private val activity: AppCompatActivity) : Home
   }
 
   override fun routeToContinuePlaying() {
-    activity.startActivity(RecentlyPlayedActivity.createContinuePlayingActivityIntent(activity.applicationContext))
+    activity.startActivity(RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(activity.applicationContext))
   }
 }

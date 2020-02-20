@@ -26,7 +26,7 @@ import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
-import org.oppia.app.testing.ContinuePlayingFragmentTestActivity
+import org.oppia.app.testing.RecentlyPlayedFragmentTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
@@ -58,7 +58,6 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
-  fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
@@ -76,6 +75,7 @@ interface ActivityComponent {
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
+  fun inject(recentlyPlayedFragmentTestActivity: RecentlyPlayedFragmentTestActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)

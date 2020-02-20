@@ -35,7 +35,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    val viewModel = getContinuePlayModel()
+    val viewModel = getRecentlyPlayedModel()
     binding.recentlyPlayedToolbar.setNavigationOnClickListener {
       (activity as RecentlyPlayedActivity).finish()
     }
@@ -74,7 +74,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getContinuePlayModel(): RecentlyPlayedViewModel {
+  private fun getRecentlyPlayedModel(): RecentlyPlayedViewModel {
     return viewModelProvider.getForFragment(fragment, RecentlyPlayedViewModel::class.java)
   }
 
