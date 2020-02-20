@@ -8,7 +8,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
@@ -150,14 +149,12 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity_onBackPressed_showsHomeActivity() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-      onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
     }
   }
 
