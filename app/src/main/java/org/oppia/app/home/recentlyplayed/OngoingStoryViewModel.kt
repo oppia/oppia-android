@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import android.view.View
 import androidx.lifecycle.ViewModel
@@ -10,7 +10,7 @@ import org.oppia.app.model.PromotedStory
 class OngoingStoryViewModel(
   val ongoingStory: PromotedStory,
   private val ongoingStoryClickListener: OngoingStoryClickListener
-) : ContinuePlayingItemViewModel() {
+) : RecentlyPlayedItemViewModel() {
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
   }

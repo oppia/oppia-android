@@ -6,7 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.player.exploration.ExplorationActivity
@@ -58,7 +58,6 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
-  fun inject(continuePlayingActivity: ContinuePlayingActivity)
   fun inject(continuePlayingFragmentTestActivity: ContinuePlayingFragmentTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
@@ -76,6 +75,7 @@ interface ActivityComponent {
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(topicActivity: TopicActivity)

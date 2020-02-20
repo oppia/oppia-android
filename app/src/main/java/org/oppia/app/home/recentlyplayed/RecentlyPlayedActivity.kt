@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import android.content.Context
 import android.content.Intent
@@ -9,20 +9,20 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Activity for recent stories. */
-class ContinuePlayingActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
+class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
 
-  @Inject lateinit var continuePlayingActivityPresenter: ContinuePlayingActivityPresenter
+  @Inject lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    continuePlayingActivityPresenter.handleOnCreate()
+    recentlyPlayedActivityPresenter.handleOnCreate()
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ContinuePlayingActivity]. */
+    /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
     fun createContinuePlayingActivityIntent(context: Context): Intent {
-      return Intent(context, ContinuePlayingActivity::class.java)
+      return Intent(context, RecentlyPlayedActivity::class.java)
     }
   }
 

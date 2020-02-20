@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.RouteToContinuePlayingListener
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
 class PromotedStoryListViewModel(private val activity: AppCompatActivity) : HomeItemViewModel(),
@@ -15,6 +15,6 @@ class PromotedStoryListViewModel(private val activity: AppCompatActivity) : Home
   }
 
   override fun routeToContinuePlaying() {
-    activity.startActivity(ContinuePlayingActivity.createContinuePlayingActivityIntent(activity.applicationContext))
+    activity.startActivity(RecentlyPlayedActivity.createContinuePlayingActivityIntent(activity.applicationContext))
   }
 }

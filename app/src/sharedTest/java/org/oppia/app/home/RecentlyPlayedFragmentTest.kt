@@ -39,7 +39,7 @@ import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 
 /** Tests for [ContinuePlayingFragmentTestActivity]. */
 @RunWith(AndroidJUnit4::class)
-class ContinuePlayingFragmentTest {
+class RecentlyPlayedFragmentTest {
 
   @Before
   fun setUp() {
@@ -49,7 +49,7 @@ class ContinuePlayingFragmentTest {
   @Test
   fun testContinuePlayingTestActivity_clickOnToolbarNavigationButton_closeActivity() {
     ActivityScenario.launch(ContinuePlayingFragmentTestActivity::class.java).use {
-      onView(withId(R.id.continue_playing_toolbar)).perform(click())
+      onView(withId(R.id.recently_played_toolbar)).perform(click())
     }
   }
 
@@ -59,9 +59,9 @@ class ContinuePlayingFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.continue_playing_toolbar))
+          withParent(withId(R.id.recently_played_toolbar))
         )
-      ).check(matches(withText(R.string.continue_playing_activity)))
+      ).check(matches(withText(R.string.recently_played_activity)))
     }
   }
 
@@ -269,9 +269,9 @@ class ContinuePlayingFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.continue_playing_toolbar))
+          withParent(withId(R.id.recently_played_toolbar))
         )
-      ).check(matches(withText(R.string.continue_playing_activity)))
+      ).check(matches(withText(R.string.recently_played_activity)))
     }
   }
 

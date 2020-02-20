@@ -49,7 +49,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -204,7 +204,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
-      intended(hasComponent(ContinuePlayingActivity::class.java.name))
+      intended(hasComponent(RecentlyPlayedActivity::class.java.name))
     }
   }
 

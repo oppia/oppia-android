@@ -1,14 +1,13 @@
-package org.oppia.app.testing
+package org.oppia.app.home.recentlyplayed
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
 import javax.inject.Inject
 
-/** The presenter for [ContinuePlayingFragmentTestActivity]. */
+/** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
-class ContinuePlayingFragmentTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.recently_played_activity)
     if (getContinuePlayingFragment() == null) {
