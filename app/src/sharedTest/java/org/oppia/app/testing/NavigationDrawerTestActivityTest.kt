@@ -156,7 +156,7 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-      onView(isRoot()).perform(pressBack());
+      onView(isRoot()).perform(pressBack())
       onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
     }
   }
