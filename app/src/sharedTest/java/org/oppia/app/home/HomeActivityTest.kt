@@ -55,7 +55,6 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
@@ -87,7 +86,6 @@ class HomeActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
-    simulateNewAppInstance()
     profileTestHelper.initializeProfiles()
   }
 
@@ -132,8 +130,6 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-    simulateAppAlreadyOpened()
-
     launch(HomeActivity::class.java).use {
       // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
       waitForTheView(withText("Welcome back to Oppia!"))
@@ -371,19 +367,6 @@ class HomeActivityTest {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
-  private fun simulateNewAppInstance() {
-    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
-    createTestRootComponent().getUserAppHistoryController().clearUserAppHistory()
-    onIdle()
-  }
-
-  private fun simulateAppAlreadyOpened() {
-    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
-    // on the system before the activity is opened.
-    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
-    onIdle()
-  }
-
   private fun createTestRootComponent(): TestApplicationComponent {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -488,7 +471,6 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
-    fun getUserAppHistoryController(): UserAppHistoryController
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }
