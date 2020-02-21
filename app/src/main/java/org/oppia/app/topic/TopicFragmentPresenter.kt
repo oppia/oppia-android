@@ -3,6 +3,7 @@ package org.oppia.app.topic
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val activity: AppCompatActivity
 ) {
   private lateinit var tabLayout: TabLayout
   private lateinit var topicToolbar: Toolbar
@@ -50,6 +52,11 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     topicToolbar = binding.root.findViewById(R.id.topic_toolbar) as Toolbar
+
+    /*Setting on click listener and handling the navigation flow*/
+    binding.topicToolbar.setNavigationOnClickListener {
+      (activity as TopicActivity).finish()
+    }
     this.topicId = topicId
     setUpViewPager(viewPager, topicId)
     subscribeToTopicLiveData()
