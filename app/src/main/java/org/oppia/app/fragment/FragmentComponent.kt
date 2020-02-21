@@ -6,7 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.home.HomeFragment
-import org.oppia.app.home.continueplaying.ContinuePlayingFragment
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
 import org.oppia.app.mydownloads.MyDownloadsFragment
@@ -48,7 +48,6 @@ interface FragmentComponent {
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(continuePlayingFragment: ContinuePlayingFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(helpFragment: HelpFragment)
@@ -58,6 +57,7 @@ interface FragmentComponent {
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
+  fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
