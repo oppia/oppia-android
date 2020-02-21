@@ -194,7 +194,7 @@ class StoryProgressController @Inject constructor(
       if (it.topicProgressMap.keys.isNotEmpty()) {
         AsyncResult.success(it)
       } else {
-        AsyncResult.failed(ProfileProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+        AsyncResult.success(TopicProgressDatabase.getDefaultInstance())
       }
     }
   }
@@ -209,7 +209,7 @@ class StoryProgressController @Inject constructor(
       if (topicProgress != null) {
         AsyncResult.success(topicProgress)
       } else {
-        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any topic progress"))
+        AsyncResult.success(TopicProgress.getDefaultInstance())
       }
     }
   }
@@ -228,7 +228,7 @@ class StoryProgressController @Inject constructor(
       if (storyProgress != null) {
         AsyncResult.success(storyProgress)
       } else {
-        AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any story progress"))
+        AsyncResult.success(StoryProgress.getDefaultInstance())
       }
     }
   }
@@ -248,7 +248,7 @@ class StoryProgressController @Inject constructor(
       if (chapterPlayState != null) {
         AsyncResult.success(chapterPlayState)
       } else {
-        AsyncResult.failed(ExplorationNotFoundException("ChapterId: $explorationId does not contain any chapter progress"))
+        AsyncResult.success(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       }
     }
   }

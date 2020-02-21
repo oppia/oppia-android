@@ -51,8 +51,8 @@ private const val EXPLORATION_ID_1 = "DUMMY_EXPLORATION_ID_1"
 private const val EXPLORATION_ID_2 = "DUMMY_EXPLORATION_ID_2"
 private const val STORY_ID_1 = "DUMMY_STORY_ID_1"
 private const val STORY_ID_2 = "DUMMY_STORY_ID_2"
-private const val TOPIC_ID_1 = "DUMMY_TOPIC_STORY_ID_1"
-private const val TOPIC_ID_2 = "DUMMY_TOPIC_STORY_ID_2"
+private const val TOPIC_ID_1 = "DUMMY_TOPIC_ID_1"
+private const val TOPIC_ID_2 = "DUMMY_TOPIC_ID_2"
 
 /** Tests for [StoryProgressController]. */
 @RunWith(AndroidJUnit4::class)
@@ -323,8 +323,7 @@ class StoryProgressControllerTest {
 
       verifyRecordProgressSucceeded()
 
-      verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
-      assertThat(storyProgressResultCaptor.value.isSuccess()).isFalse()
+      verifyStoryProgressFailed()
     }
 
   @Test
@@ -341,8 +340,7 @@ class StoryProgressControllerTest {
 
       verifyRecordProgressSucceeded()
 
-      verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
-      assertThat(storyProgressResultCaptor.value.isSuccess()).isFalse()
+      verifyStoryProgressFailed()
     }
 
   @Test
@@ -359,8 +357,7 @@ class StoryProgressControllerTest {
 
       verifyRecordProgressSucceeded()
 
-      verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
-      assertThat(storyProgressResultCaptor.value.isSuccess()).isFalse()
+      verifyStoryProgressFailed()
     }
 
   @Test
@@ -517,7 +514,8 @@ class StoryProgressControllerTest {
 
   private fun verifyProfileProgressFailed() {
     verify(mockProfileProgressObserver, atLeastOnce()).onChanged(profileProgressResultCaptor.capture())
-    assertThat(profileProgressResultCaptor.value.isFailure()).isTrue()
+    val topicProgressDatabase = profileProgressResultCaptor.value.getOrThrow()
+    assertThat(topicProgressDatabase.topicProgressMap.size).isEqualTo(0)
   }
 
   private fun verifyProfileProgressSucceeded() {
@@ -527,12 +525,19 @@ class StoryProgressControllerTest {
 
   private fun verifyTopicProgressFailed() {
     verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
-    assertThat(topicProgressResultCaptor.value.isSuccess()).isFalse()
+    val topicProgress = topicProgressResultCaptor.value.getOrThrow()
+    assertThat(topicProgress.storyProgressMap.size).isEqualTo(0)
   }
 
   private fun verifyTopicProgressSucceeded() {
     verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
     assertThat(topicProgressResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyStoryProgressFailed(){
+    verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
+    val storyProgress = storyProgressResultCaptor.value.getOrThrow()
+    assertThat(storyProgress.chapterProgressMap.size).isEqualTo(0)
   }
 
   private fun verifyStoryProgressSucceeded() {
@@ -542,7 +547,8 @@ class StoryProgressControllerTest {
 
   private fun verifyChapterProgressFailed() {
     verify(mockChapterProgressObserver, atLeastOnce()).onChanged(chapterProgressResultCaptor.capture())
-    assertThat(chapterProgressResultCaptor.value.isSuccess()).isFalse()
+    val chapterPlayState = chapterProgressResultCaptor.value.getOrThrow()
+    assertThat(chapterPlayState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   private fun verifyChapterProgressSucceeded() {

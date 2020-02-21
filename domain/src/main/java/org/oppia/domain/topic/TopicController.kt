@@ -117,7 +117,6 @@ class TopicController @Inject constructor(
       return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
     }
     val topicProgressDataProvider = storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
-
     return dataProviders.convertToLiveData(
       dataProviders.combine(
         COMBINE_TOPIC_PROVIDER_ID,
@@ -158,7 +157,7 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [StorySummary] corresponding to the specified story ID, or a failed result if there is none. */
+  /** Returns the [StorySummary] corresponding to the specified story ID, or a default StorySummary if there is none. */
   fun getStory(profileId: ProfileId, topicId: String, storyId: String): LiveData<AsyncResult<StorySummary>> {
     val storySummary = retrieveStory(storyId)
     val storyDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
@@ -262,10 +261,12 @@ class TopicController @Inject constructor(
         val topic = retrieveTopic(topicId)
         val topicProgress = it.topicProgressMap[topicId]
         topic.storyList.forEach { storySummary ->
-          val storyProgress = topicProgress!!.storyProgressMap[storySummary.storyId]!!
-          val lastChapterSummary = storySummary.chapterList.last()
-          if (!storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-            ongoingTopicList.addTopic(topic)
+          if (topicProgress!!.storyProgressMap.containsKey(storySummary.storyId)) {
+            val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
+            val lastChapterSummary = storySummary.chapterList.last()
+            if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
+              ongoingTopicList.addTopic(topic)
+            }
           }
         }
       }
