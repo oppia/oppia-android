@@ -15,6 +15,7 @@ import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
@@ -53,6 +54,7 @@ interface ActivityComponent {
 
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
+  fun inject(administratorControlsActivity: AdministratorControlsActivity)
   fun inject(adminPinActivity: AdminPinActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
