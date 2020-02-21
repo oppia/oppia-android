@@ -6,10 +6,12 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -73,12 +75,12 @@ class AdministratorControlsActivityTest {
   @Test
   fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() {
     ActivityScenario.launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
-      Espresso.onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      Espresso.onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
-      Intents.intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      Intents.intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
-      Espresso.onView(isRoot()).perform(pressBack())
-      Espresso.onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      onView(isRoot()).perform(pressBack())
+      onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
     }
   }
 
