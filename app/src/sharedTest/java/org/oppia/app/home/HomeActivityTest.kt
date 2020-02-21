@@ -116,34 +116,6 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_firstOpen_hasWelcomeString() {
-    launch(HomeActivity::class.java).use {
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome to Oppia!")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-    launch(HomeActivity::class.java).use {
-      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-      waitForTheView(withText("Welcome back to Oppia!"))
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome back to Oppia!")))
-    }
-  }
-
-  @Test
   fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
       onView(

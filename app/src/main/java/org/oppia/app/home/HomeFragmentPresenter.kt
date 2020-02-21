@@ -41,7 +41,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
   private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
-  private lateinit var userAppHistoryViewModel: UserAppHistoryViewModel
+  private lateinit var welcomeViewModel: WelcomeViewModel
   private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
@@ -55,10 +55,10 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    userAppHistoryViewModel = UserAppHistoryViewModel()
+    welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity)
     allTopicsViewModel = AllTopicsViewModel()
-    itemList.add(userAppHistoryViewModel)
+    itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
@@ -134,8 +134,8 @@ class HomeFragmentPresenter @Inject constructor(
     return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
   }
   private fun setProfileName() {
-    if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
-      userAppHistoryViewModel.profileName = "$profileName!"
+    if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
+      welcomeViewModel.profileName = "$profileName!"
     }
   }
 
