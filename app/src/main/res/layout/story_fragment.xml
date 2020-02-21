@@ -24,7 +24,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/story_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -56,7 +56,7 @@
         app:data="@{viewModel.storyChapterLiveData}" />
 
       <View
-        android:id="@+id/toolbar_shadow_view"
+        android:id="@+id/story_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />

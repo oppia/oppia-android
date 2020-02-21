@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="OppiaTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="OppiaTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
 
-  <style name="OppiaThemeWithoutActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
@@ -19,7 +19,7 @@
   <style name="Animation" />
   <!-- Standard animations for a full-screen window or activity. -->
   <style name="Animation.Activity">
-    <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+    <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
     <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
   </style>
 
@@ -39,7 +39,7 @@
     <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
   </style>
 
-  <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+  <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
     <item name="colorPrimaryDark">@color/colorConceptToolbarHeading</item>
     <!-- Set this to true if you want Full Screen without status bar -->
@@ -90,6 +90,16 @@
     <item name="android:textColor">#56000000</item>
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">false</item>
+  </style>
+
+  <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+
+  <style name="textAllCaps">
+    <item name="android:textAllCaps">true</item>
   </style>
   <!-- TOPIC TABLAYOUT STYLE -->
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">

@@ -73,11 +73,9 @@ class QuestionAssessmentProgressControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
 
-  @Inject
-  lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+  @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
 
   @ExperimentalCoroutinesApi
   @Inject

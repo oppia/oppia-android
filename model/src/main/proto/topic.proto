@@ -32,6 +32,9 @@ message Topic {
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
+
+  // A list of subtopic contained within this topic.
+  repeated Subtopic subtopic = 8;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -163,15 +166,18 @@ message PromotedStory {
   // The name of the next chapter (exploration title) to complete.
   string next_chapter_name = 5;
 
+  // The exploration id next chapter to complete.
+  string exploration_id = 6;
+
   // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
   // reasons other than to complete it (e.g. it's recommended).
-  int32 completed_chapter_count = 6;
+  int32 completed_chapter_count = 7;
 
   // The total number of lessons this story contains.
-  int32 total_chapter_count = 7;
+  int32 total_chapter_count = 8;
 
   // The thumbnail that should be displayed for this promoted story.
-  LessonThumbnail lesson_thumbnail = 8;
+  LessonThumbnail lesson_thumbnail = 9;
 }
 
 // A homescreen summary of a topic.
@@ -222,20 +228,22 @@ enum ChapterPlayState {
   COMPLETED = 3;
 }
 
-// Represents the progress a player has made for a story.
-message StoryProgress {
-  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
-  // should be completed within the story.
-  repeated ChapterProgress chapter_progress = 1;
+// Top level proto used to store topic progress per-profile.
+message TopicProgressDatabase {
+  // Map from topic ID to TopicProgress.
+  map<string, TopicProgress> topic_progress = 1;
 }
 
-// Represents the progress a player has made on a single chapter.
-message ChapterProgress {
-  // The exploration ID of the chapter with possible progress made.
-  string exploration_id = 1;
+// Represents the topic progress.
+message TopicProgress {
+  // Map from story ID to StoryProgress.
+  map<string, StoryProgress> story_progress = 1;
+}
 
-  // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
+// Represents the story progress.
+message StoryProgress {
+  // Map from exploration ID to ChapterPlayState.
+  map<string, ChapterPlayState> chapter_progress = 1;
 }
 
 // Represents user's preference for using cellular data
@@ -245,4 +253,33 @@ message CellularDataPreference {
 
   // Preference on whether to use cellular data
   bool use_cellular_data = 2;
+}
+
+// Corresponds to a single subtopic.
+message Subtopic {
+  // The ID of the subtopic.
+  string subtopic_id = 1;
+
+  // The title of the subtopic.
+  string title = 2;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 3;
+}
+
+// Corresponds to a review card that can be displayed for a specific subtopic.
+message ReviewCard {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being reviewed.
+  SubtitledHtml page_contents = 3;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this review card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 6;
 }

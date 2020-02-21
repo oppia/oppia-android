@@ -38,8 +38,7 @@ private const val UPDATED_ASYNC_VALUE = "updated async value"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class InMemoryBlockingCacheTest {
-  @Inject
-  lateinit var cacheFactory: InMemoryBlockingCache.Factory
+  @Inject lateinit var cacheFactory: InMemoryBlockingCache.Factory
 
   @ExperimentalCoroutinesApi
   @Inject

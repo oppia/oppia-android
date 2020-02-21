@@ -1,14 +1,13 @@
 package org.oppia.domain.topic
 
 import android.os.SystemClock
-import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -32,8 +31,8 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
-import org.oppia.util.caching.AssetRepository
 import org.oppia.domain.util.JsonAssetRetriever
+import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -48,6 +47,7 @@ import javax.inject.Singleton
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
+const val SUBTOPIC_TOPIC_ID = "1"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 val TOPIC_IDS = listOf(FRACTIONS_TOPIC_ID, RATIOS_TOPIC_ID)
 val TOPIC_THUMBNAILS = mapOf(
@@ -233,29 +233,73 @@ class TopicListController @Inject constructor(
       for (storySummary in topic.storyList) {
         val storyId = storySummary.storyId
         val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-        val completedChapterCount = storyProgress.chapterProgressList.count { progress ->
-          progress.playState == ChapterPlayState.COMPLETED
+
+        val completedChapterCount = storyProgress.chapterProgressMap.values.count { playState ->
+          playState == ChapterPlayState.COMPLETED
         }
+
         if (completedChapterCount > 0) {
           // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
-          val nextChapterId = storyProgress.chapterProgressList.find { progress ->
-            progress.playState == ChapterPlayState.NOT_STARTED
-          }?.explorationId
-          val nextChapterSummary =
-            storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
-          ongoingStoryListBuilder.addRecentStory(
-            createPromotedStory(
-              storyId, topic, completedChapterCount, storyProgress.chapterProgressCount, nextChapterSummary?.name
+
+          val nextChapterId =
+            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED }
+
+          if (nextChapterId != null) {
+            val nextChapterSummary =
+              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
+            ongoingStoryListBuilder.addRecentStory(
+              createPromotedStory(
+                storyId,
+                topic,
+                completedChapterCount,
+                storyProgress.chapterProgressCount,
+                nextChapterSummary?.name,
+                nextChapterSummary?.explorationId
+              )
             )
-          )
+          }
         }
       }
+    }
+    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
+      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
     }
     return ongoingStoryListBuilder.build()
   }
 
+  private fun recommendedStoryList(): List<PromotedStory> {
+    val recommendedStories = ArrayList<PromotedStory>()
+    recommendedStories.add(
+      createPromotedStory(
+        FRACTIONS_STORY_ID_0,
+        topicController.retrieveTopic(FRACTIONS_TOPIC_ID),
+        0,
+        2,
+        "What is a Fraction?",
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    )
+
+    recommendedStories.add(
+      createPromotedStory(
+        RATIOS_STORY_ID_0,
+        topicController.retrieveTopic(RATIOS_TOPIC_ID),
+        0,
+        2,
+        "What is a Ratio?",
+        RATIOS_EXPLORATION_ID_0
+      )
+    )
+    return recommendedStories
+  }
+
   private fun createPromotedStory(
-    storyId: String, topic: Topic, completedChapterCount: Int, totalChapterCount: Int, nextChapterName: String?
+    storyId: String,
+    topic: Topic,
+    completedChapterCount: Int,
+    totalChapterCount: Int,
+    nextChapterName: String?,
+    explorationId: String?
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -266,8 +310,9 @@ class TopicListController @Inject constructor(
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setLessonThumbnail(STORY_THUMBNAILS.getValue(storyId))
-    if (nextChapterName != null) {
+    if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
+      promotedStoryBuilder.explorationId = explorationId
     }
     return promotedStoryBuilder.build()
   }
@@ -338,11 +383,7 @@ class TopicListController @Inject constructor(
   }
 
   private fun parseHtml(html: String): Spannable {
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY) as Spannable
-    } else {
-      Html.fromHtml(html) as Spannable
-    }
+    return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY) as Spannable
   }
 
   private fun replaceCustomOppiaImageTag(html: String): String {

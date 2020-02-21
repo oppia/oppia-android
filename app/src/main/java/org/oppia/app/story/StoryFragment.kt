@@ -23,8 +23,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     }
   }
 
-  @Inject
-  lateinit var storyFragmentPresenter: StoryFragmentPresenter
+  @Inject lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

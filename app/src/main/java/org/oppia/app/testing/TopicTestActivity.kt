@@ -19,8 +19,7 @@ import javax.inject.Inject
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener, RouteToConceptCardListener,
   RouteToStoryListener, RouteToExplorationListener, ConceptCardListener {
-  @Inject
-  lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -47,8 +46,8 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
     getConceptCardFragment()?.dismiss()
   }
 
-  override fun routeToExploration(explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId))
+  override fun routeToExploration(explorationId: String, topicId: String?) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
   }
 
   private fun getConceptCardFragment(): ConceptCardFragment? {

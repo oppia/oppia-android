@@ -44,10 +44,10 @@ class DataProviders @Inject constructor(
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
-        try {
-          return dataProvider.retrieveData().transform(function)
+        return try {
+          dataProvider.retrieveData().transform(function)
         } catch (t: Throwable) {
-          return AsyncResult.failed(t)
+          AsyncResult.failed(t)
         }
       }
     }
@@ -68,6 +68,57 @@ class DataProviders @Inject constructor(
 
       override suspend fun retrieveData(): AsyncResult<T2> {
         return dataProvider.retrieveData().transformAsync(function)
+      }
+    }
+  }
+
+  /**
+   * Returns a new [DataProvider] that combines two other providers by applying the specified function to produce a new
+   * value each time either data provider changes.
+   *
+   * Notifications to the original data providers will also notify subscribers to the combined data provider of
+   * changes, but not vice versa.
+   *
+   * Note that the combine function should be non-blocking, have no side effects, and be thread-safe since it may be
+   * called on different background threads at different times. It should perform no UI operations or otherwise interact
+   * with UI components.
+   */
+  fun <O, T1, T2> combine(
+    newId: Any, dataProvider1: DataProvider<T1>, dataProvider2: DataProvider<T2>, function: (T1, T2) -> O
+  ): DataProvider<O> {
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
+    return object: DataProvider<O> {
+      override fun getId(): Any {
+        return newId
+      }
+
+      override suspend fun retrieveData(): AsyncResult<O> {
+        return try {
+          dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
+        } catch (t: Throwable) {
+          AsyncResult.failed(t)
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns a transformed [DataProvider] in the same way as [combine] except the combine function can be blocking.
+   */
+  fun <O, T1, T2> combineAsync(
+    newId: Any, dataProvider1: DataProvider<T1>, dataProvider2: DataProvider<T2>,
+    function: suspend (T1, T2) -> AsyncResult<O>
+  ): DataProvider<O> {
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
+    return object: DataProvider<O> {
+      override fun getId(): Any {
+        return newId
+      }
+
+      override suspend fun retrieveData(): AsyncResult<O> {
+        return dataProvider1.retrieveData().combineWithAsync(dataProvider2.retrieveData(), function)
       }
     }
   }

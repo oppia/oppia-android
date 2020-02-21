@@ -8,10 +8,9 @@ import javax.inject.Inject
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY = "QuestionPlayerActivity.skill_id_list"
 
-/** Activity for QuestionPlayer in train mode. */
+/** Activity for QuestionPlayer in practice mode. */
 class QuestionPlayerActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+  @Inject lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -20,7 +19,7 @@ class QuestionPlayerActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#159): Use this skillList from TopicTrainFragment to fetch questions and start train mode.
+    // TODO(#159): Use this skillList from TopicPracticeFragment to fetch questions and start practice mode.
     /** Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list. */
     fun createQuestionPlayerActivityIntent(context: Context, skillIdList: ArrayList<String>): Intent {
       val intent = Intent(context, QuestionPlayerActivity::class.java)
