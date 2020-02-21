@@ -7,14 +7,14 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Test activity for recent stories. */
-class ContinuePlayingFragmentTestActivity : InjectableAppCompatActivity(),
+class RecentlyPlayedFragmentTestActivity : InjectableAppCompatActivity(),
   RouteToExplorationListener {
-  @Inject lateinit var continuePlayingFragmentTestActivityPresenter: ContinuePlayingFragmentTestActivityPresenter
+  @Inject lateinit var recentlyPlayedFragmentTestActivityPresenter: RecentlyPlayedFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    continuePlayingFragmentTestActivityPresenter.handleOnCreate()
+    recentlyPlayedFragmentTestActivityPresenter.handleOnCreate()
   }
 
   override fun routeToExploration(explorationId: String, topicId: String?) {
