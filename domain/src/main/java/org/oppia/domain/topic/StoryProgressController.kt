@@ -76,12 +76,7 @@ class StoryProgressController @Inject constructor(
   /** Indicates that the given profile id does not have any associated progress. */
   class ProfileProgressNotFoundException(msg: String) : java.lang.Exception(msg)
 
-  /**
-   * These Statuses correspond to the exceptions above such that if the deferred contains
-   * EXPLORATION_NOT_FOUND, the [ExplorationNotFoundException] will be passed to a failed AsyncResult.
-   *
-   * SUCCESS corresponds to a successful AsyncResult.
-   */
+  /** These Statuses correspond to the exceptions above such that if the deferred contains. */
   private enum class StoryProgressActionStatus {
     SUCCESS,
     EXPLORATION_ALREADY_COMPLETED,
@@ -364,7 +359,7 @@ class StoryProgressController @Inject constructor(
     )
   }
 
-  private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
+  internal fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
     //return profileDataStore
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
