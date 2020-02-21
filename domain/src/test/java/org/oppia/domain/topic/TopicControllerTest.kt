@@ -164,7 +164,7 @@ class TopicControllerTest {
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
     assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
-    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
   @Test
@@ -385,7 +385,7 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
@@ -393,7 +393,6 @@ class TopicControllerTest {
   @Test
   fun testRetrieveStory_invalidStory_returnsFailure() {
     val storyLiveData = topicController.getStory("invalid_story_id")
-
     assertThat(storyLiveData.value!!.isFailure()).isTrue()
   }
 

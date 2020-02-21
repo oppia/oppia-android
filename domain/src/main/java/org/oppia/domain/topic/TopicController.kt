@@ -133,7 +133,29 @@ class TopicController @Inject constructor(
 
   /** Returns the [StorySummary] corresponding to the specified story ID, or a failed result if there is none. */
   fun getStory(storyId: String): LiveData<AsyncResult<StorySummary>> {
-    return MutableLiveData(AsyncResult.success(retrieveStory(storyId)))
+    return MutableLiveData(
+      when (storyId) {
+        TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
+        TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
+        TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
+        FRACTIONS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "fractions_stories.json", /* index= */ 0
+          )
+        )
+        RATIOS_STORY_ID_0 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 0
+          )
+        )
+        RATIOS_STORY_ID_1 -> AsyncResult.success(
+          createStoryFromJsonFile(
+            "ratios_stories.json", /* index= */ 1
+          )
+        )
+        else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
+      }
+    )
   }
 
   /** Returns the [StorySummary] corresponding to the specified story ID, or a failed result if there is none. */
