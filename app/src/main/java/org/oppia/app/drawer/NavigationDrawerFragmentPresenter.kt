@@ -110,10 +110,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
             .setMessage(R.string.home_activity_back_dialog_message)
             .setOnCancelListener { dialog ->
+              binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
               drawerLayout.closeDrawers()
               dialog.dismiss()
             }
             .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
+              binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
               drawerLayout.closeDrawers()
               dialog.dismiss()
             }
