@@ -6,25 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-      app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/topic_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaPrimaryDark"
-        android:textSize="20sp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white" />
-
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
         style="@style/AppTabLayout"
@@ -38,8 +19,8 @@
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/AppTabTextAppearance"
-        app:tabTextColor="@color/tab_icon_color_selector" />
-    </com.google.android.material.appbar.AppBarLayout>
+        app:tabTextColor="@color/tab_icon_color_selector"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
       android:id="@+id/topic_tabs_viewpager_container"
