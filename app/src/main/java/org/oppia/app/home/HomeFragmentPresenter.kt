@@ -133,6 +133,7 @@ class HomeFragmentPresenter @Inject constructor(
     // If there's an error loading the data, assume the default.
     return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
   }
+
   private fun setProfileName() {
     if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
       welcomeViewModel.profileName = "$profileName!"
