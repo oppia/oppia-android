@@ -1,11 +1,9 @@
 package org.oppia.app.drawer
 
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -111,7 +109,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.SWITCH_PROFILE -> {
           AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
             .setMessage(R.string.home_activity_back_dialog_message)
-            .setOnCancelListener{dialog ->
+            .setOnCancelListener { dialog ->
               drawerLayout.closeDrawers()
               dialog.dismiss()
             }
