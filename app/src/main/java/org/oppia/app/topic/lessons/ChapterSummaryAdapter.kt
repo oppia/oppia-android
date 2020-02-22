@@ -43,4 +43,6 @@ class ChapterSummaryAdapter(
       }
     }
   }
+
+
 }
