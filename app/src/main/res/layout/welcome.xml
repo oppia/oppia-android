@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.UserAppHistoryViewModel" />
+      type="org.oppia.app.home.WelcomeViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,7 @@
       android:fontFamily="sans-serif"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
-      android:text="@{viewModel.isAppAlreadyOpened().get() ? @string/welcome_back_text : @string/welcome_text}"
+      android:text="@string/welcome_text"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
