@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -13,22 +13,22 @@ import javax.inject.Inject
 // TODO(#297): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-class ContinuePlayViewModel @Inject constructor(
+class RecentlyPlayedViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController
-) : ContinuePlayingItemViewModel() {
+) : RecentlyPlayedItemViewModel() {
 
-  private val itemList: MutableList<ContinuePlayingItemViewModel> = ArrayList()
+  private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
     topicListController.getOngoingStoryList()
   }
 
-  val ongoingStoryLiveData: LiveData<List<ContinuePlayingItemViewModel>>by lazy {
+  val ongoingStoryLiveData: LiveData<List<RecentlyPlayedItemViewModel>>by lazy {
     Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
   }
 
-  private fun processOngoingStoryList(ongoingStoryList: AsyncResult<OngoingStoryList>): List<ContinuePlayingItemViewModel> {
+  private fun processOngoingStoryList(ongoingStoryList: AsyncResult<OngoingStoryList>): List<RecentlyPlayedItemViewModel> {
     if (ongoingStoryList.isSuccess()) {
       if (ongoingStoryList.getOrThrow().recentStoryList.isNotEmpty()) {
         val recentSectionTitleViewModel =

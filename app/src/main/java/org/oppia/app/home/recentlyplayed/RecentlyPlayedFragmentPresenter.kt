@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.databinding.ContinuePlayingFragmentBinding
+import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.app.databinding.OngoingStoryCardBinding
 import org.oppia.app.databinding.SectionTitleBinding
 import org.oppia.app.fragment.FragmentScope
@@ -19,25 +19,25 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [ContinuePlayingFragment]. */
+/** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
-class ContinuePlayingFragmentPresenter @Inject constructor(
+class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val explorationDataController: ExplorationDataController,
-  private val viewModelProvider: ViewModelProvider<ContinuePlayViewModel>
+  private val viewModelProvider: ViewModelProvider<RecentlyPlayedViewModel>
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
-  private lateinit var binding: ContinuePlayingFragmentBinding
+  private lateinit var binding: RecentlyPlayedFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = ContinuePlayingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    val viewModel = getContinuePlayModel()
-    binding.continuePlayingToolbar.setNavigationOnClickListener {
-      (activity as ContinuePlayingActivity).finish()
+    binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val viewModel = getRecentlyPlayedModel()
+    binding.recentlyPlayedToolbar.setNavigationOnClickListener {
+      (activity as RecentlyPlayedActivity).finish()
     }
 
     binding.ongoingStoryRecyclerView.apply {
@@ -50,23 +50,23 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<ContinuePlayingItemViewModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<RecentlyPlayedItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ContinuePlayingItemViewModel, ContinuePlayingItemViewModel.ViewType> { viewModel ->
+      .newBuilder<RecentlyPlayedItemViewModel, RecentlyPlayedItemViewModel.ViewType> { viewModel ->
         when (viewModel) {
-          is SectionTitleViewModel -> ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT
-          is OngoingStoryViewModel -> ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM
+          is SectionTitleViewModel -> RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT
+          is OngoingStoryViewModel -> RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT,
+        viewType = RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT,
         inflateDataBinding = SectionTitleBinding::inflate,
         setViewModel = SectionTitleBinding::setViewModel,
         transformViewModel = { it as SectionTitleViewModel }
       )
       .registerViewDataBinder(
-        viewType = ContinuePlayingItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM,
+        viewType = RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM,
         inflateDataBinding = OngoingStoryCardBinding::inflate,
         setViewModel = OngoingStoryCardBinding::setViewModel,
         transformViewModel = { it as OngoingStoryViewModel }
@@ -74,8 +74,8 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getContinuePlayModel(): ContinuePlayViewModel {
-    return viewModelProvider.getForFragment(fragment, ContinuePlayViewModel::class.java)
+  private fun getRecentlyPlayedModel(): RecentlyPlayedViewModel {
+    return viewModelProvider.getForFragment(fragment, RecentlyPlayedViewModel::class.java)
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
@@ -87,14 +87,14 @@ class ContinuePlayingFragmentPresenter @Inject constructor(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
       when {
-        result.isPending() -> logger.d("ContinuePlayingFragment", "Loading exploration")
+        result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
         result.isFailure() -> logger.e(
-          "ContinuePlayingFragment",
+          "RecentlyPlayedFragment",
           "Failed to load exploration",
           result.getErrorOrNull()!!
         )
         else -> {
-          logger.d("ContinuePlayingFragment", "Successfully loaded exploration")
+          logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(explorationId, topicId)
           activity.finish()
         }

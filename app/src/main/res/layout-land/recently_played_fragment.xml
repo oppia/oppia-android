@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.continueplaying.ContinuePlayViewModel" />
+      type="org.oppia.app.home.recentlyplayed.RecentlyPlayedViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/continue_playing_toolbar"
+        android:id="@+id/recently_played_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -33,7 +33,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/continue_playing_activity"
+        app:title="@string/recently_played_activity"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,7 +58,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
       <View
-        android:id="@+id/continue_playing__shadow_view"
+        android:id="@+id/recently_played__shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
