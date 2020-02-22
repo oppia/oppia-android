@@ -16,16 +16,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_downloads_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaPrimaryDark"
-        android:textSize="20sp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/my_downloads"
-        app:titleTextColor="@color/white" />
-
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/my_downloads_tabs_container"
         style="@style/AppTabLayout"
