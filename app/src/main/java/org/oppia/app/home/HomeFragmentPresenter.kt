@@ -23,8 +23,6 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
-import org.oppia.app.model.UserAppHistory
-import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
@@ -37,14 +35,13 @@ class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val userAppHistoryController: UserAppHistoryController,
   private val topicListController: TopicListController,
   private val logger: Logger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
   private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
-  private lateinit var userAppHistoryViewModel: UserAppHistoryViewModel
+  private lateinit var welcomeViewModel: WelcomeViewModel
   private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
@@ -58,10 +55,10 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    userAppHistoryViewModel = UserAppHistoryViewModel()
+    welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity)
     allTopicsViewModel = AllTopicsViewModel()
-    itemList.add(userAppHistoryViewModel)
+    itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
@@ -90,9 +87,7 @@ class HomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    userAppHistoryController.markUserOpenedApp()
     subscribeToProfileLiveData()
-    subscribeToUserAppHistory()
     subscribeToOngoingStoryList()
     subscribeToTopicList()
     return binding.root
@@ -139,31 +134,9 @@ class HomeFragmentPresenter @Inject constructor(
     return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
   }
 
-  private fun subscribeToUserAppHistory() {
-    getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
-      userAppHistoryViewModel = UserAppHistoryViewModel()
-      userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
-      setProfileName()
-      itemList[0] = userAppHistoryViewModel
-      topicListAdapter.notifyItemChanged(0)
-    })
-  }
-
-  private fun getUserAppHistory(): LiveData<UserAppHistory> {
-    // If there's an error loading the data, assume the default.
-    return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
-  }
-
-  private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
-    if (appHistoryResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
-    }
-    return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
-  }
-
   private fun setProfileName() {
-    if (::userAppHistoryViewModel.isInitialized && ::profileName.isInitialized) {
-      userAppHistoryViewModel.profileName = "$profileName!"
+    if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
+      welcomeViewModel.profileName = "$profileName!"
     }
   }
 
