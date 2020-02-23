@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.home.KEY_HOME_PROFILE_ID
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 /** Activity for Administrator Controls. */
@@ -28,12 +28,12 @@ class AdministratorControlsActivity : InjectableAppCompatActivity() {
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return KEY_HOME_PROFILE_ID
+      return KEY_NAVIGATION_PROFILE_ID
     }
   }
 }

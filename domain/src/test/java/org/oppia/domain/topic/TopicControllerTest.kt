@@ -68,11 +68,9 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
 
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Inject lateinit var dataProviders: DataProviders
 
@@ -166,7 +164,7 @@ class TopicControllerTest {
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
     assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
-    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
   }
 
   @Test
@@ -387,8 +385,8 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
-    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 

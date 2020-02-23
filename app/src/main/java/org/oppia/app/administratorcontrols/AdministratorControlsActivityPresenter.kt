@@ -9,6 +9,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
+/** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
@@ -32,7 +33,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(private val act
       activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
       activity.findViewById<View>(R.id.administrator_controls_activity_drawer_layout) as DrawerLayout,
-      toolbar, R.id.nav_home
+      toolbar, 0
     )
   }
 

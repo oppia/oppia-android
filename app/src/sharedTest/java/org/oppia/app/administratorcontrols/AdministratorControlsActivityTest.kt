@@ -1,19 +1,26 @@
-package org.oppia.app.settings.administrator
+package org.oppia.app.administratorcontrols
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.rule.ActivityTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -24,87 +31,36 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.settings.profile.ProfileListActivityTest
+import org.oppia.app.testing.NavigationDrawerTestActivity
+import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-class AdministratorControlsFragmentTest {
+/** Tests for [AdministratorControlsActivity]. */
+@RunWith(AndroidJUnit4::class)
+class AdministratorControlsActivityTest {
 
-  private lateinit var activityScenario: ActivityScenario<AdministratorControlsActivity>
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<AdministratorControlsActivity> = ActivityTestRule(
-    AdministratorControlsActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
 
   @Before
+  @ExperimentalCoroutinesApi
   fun setUp() {
-    activityScenario = launchAdministratorControlsActivityIntent(0)
     Intents.init()
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndAccountSettings() {
-    launchAdministratorControlsActivityIntent(0).use {
-      onView(withId(R.id.general_text_view)).check(matches(isDisplayed()))
-      onView(withText("Edit account")).check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(ViewActions.swipeUp())
-      onView(withId(R.id.account_actions_text_view)).check(matches(isDisplayed()))
-      onView(withText("Log Out")).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayProfileSettings() {
-    launchAdministratorControlsActivityIntent(0).use {
-      onView(withId(R.id.profile_management_text_view)).check(matches(isDisplayed()))
-      onView(withText("Edit profiles")).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayAppSettings() {
-    launchAdministratorControlsActivityIntent(0).use {
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(ViewActions.swipeUp())
-      onView(withId(R.id.app_information_text_view)).check(matches(isDisplayed()))
-      onView(withText("App Version")).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
-    launchAdministratorControlsActivityIntent(0).use {
-      onView(withText("Download Permissions")).check(matches(isDisplayed()))
-      onView(withId(R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(ViewActions.swipeUp())
-      onView(withId(R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsChecked() {
-    launchAdministratorControlsActivityIntent(0).use {
-      onView(withId(R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(ViewActions.swipeUp())
-      onView(withId(R.id.auto_update_topic_switch)).check(matches(isChecked()))
-    }
-  }
-
-  private fun launchAdministratorControlsActivityIntent(profileId: Int?): ActivityScenario<AdministratorControlsActivity> {
-    val intent = AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
-    )
-    return ActivityScenario.launch(intent)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -112,9 +68,90 @@ class AdministratorControlsFragmentTest {
     Intents.release()
   }
 
+  private fun setUpTestApplicationComponent() {
+    DaggerAdministratorControlsActivityTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  @Test
+  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() {
+    ActivityScenario.launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
+      onView(isRoot()).perform(pressBack())
+      onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndAccountSettings() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.general_text_view)).check(matches(isDisplayed()))
+      onView(withText("Edit account")).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.account_actions_text_view)).check(matches(isDisplayed()))
+      onView(withText("Log Out")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_displayProfileSettings() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.profile_management_text_view)).check(matches(isDisplayed()))
+      onView(withText("Edit profiles")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_displayAppSettings() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.app_information_text_view)).check(matches(isDisplayed()))
+      onView(withText("App Version")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withText("Download Permissions")).check(matches(isDisplayed()))
+      onView(withId(R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsChecked() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
+      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.auto_update_topic_switch)).check(matches(isChecked()))
+    }
+  }
+
+  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
+    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      profileId
+    )
+  }
+
+  private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
+    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
+      ApplicationProvider.getApplicationContext(),
+      profileId
+    )
+  }
+
   @Qualifier
   annotation class TestDispatcher
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
@@ -171,6 +208,6 @@ class AdministratorControlsFragmentTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(profileListActivityTest: ProfileListActivityTest)
+    fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest)
   }
 }
