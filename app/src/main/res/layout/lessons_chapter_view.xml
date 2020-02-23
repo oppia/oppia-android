@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true: false}"
-    android:minHeight="20dp"
+    android:minHeight="48dp"
     android:orientation="horizontal"
     android:paddingStart="4dp"
     android:paddingTop="8dp"
