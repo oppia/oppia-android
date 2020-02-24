@@ -181,6 +181,15 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      onView(withText(R.string.menu_my_downloads)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
