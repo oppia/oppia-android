@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.home.KEY_HOME_PROFILE_ID
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 /** The activity for setting user preferences. */
@@ -16,7 +16,7 @@ class OptionsActivity : InjectableAppCompatActivity() {
   companion object {
     fun createOptionsActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
-      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       return intent
     }
   }
