@@ -102,6 +102,13 @@ class TopicController @Inject constructor(
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController
 ) {
+
+  /** Indicates that the given profile does not have any completed story list. */
+  class CompletedStoryListNotFoundException(msg: String) : java.lang.Exception(msg)
+
+  /** Indicates that the given profile does not have any ongoing topic list. */
+  class OngoingTopicListNotFoundException(msg: String) : java.lang.Exception(msg)
+
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
     return MutableLiveData(
@@ -223,23 +230,30 @@ class TopicController @Inject constructor(
   /** Returns the list of all completed stories in the form on [CompletedStoryList] for a specific profile. */
   fun getCompletedStoryList(profileId: ProfileId): LiveData<AsyncResult<CompletedStoryList>> {
     return dataProviders.convertToLiveData(
-      dataProviders.transform(
+      dataProviders.transformAsync(
         TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
-        storyProgressController.retrieveStoryProgressListDataProvider(profileId),
-        ::createCompletedStoryListFromProgress
-      )
+        storyProgressController.retrieveStoryProgressListDataProvider(profileId)
+      ) {
+        createCompletedStoryListFromProgress(profileId, it)
+      }
     )
   }
 
   /** Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile. */
   fun getOngoingTopicList(profileId: ProfileId): LiveData<AsyncResult<OngoingTopicList>> {
-    return dataProviders.convertToLiveData(
-      dataProviders.transform(
-        TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
-        storyProgressController.retrieveTopicProgressListDataProvider(profileId),
-        ::createOngoingTopicListFromProgress
-      )
-    )
+    val ongoingTopicListDataProvider = dataProviders.transformAsync(
+      TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+    ) {
+      val ongoingTopicList = createOngoingTopicListFromProgress(it)
+      if (ongoingTopicList.topicList.isNotEmpty()) {
+        AsyncResult.success(ongoingTopicList)
+      } else {
+        AsyncResult.failed(OngoingTopicListNotFoundException("ProfileId $profileId contain any ongoing topic list."))
+      }
+    }
+
+    return dataProviders.convertToLiveData(ongoingTopicListDataProvider)
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -248,7 +262,9 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun createOngoingTopicListFromProgress(topicProgressList: TopicProgressList): OngoingTopicList {
+  private fun createOngoingTopicListFromProgress(
+    topicProgressList: TopicProgressList
+  ): OngoingTopicList {
     val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
     topicProgressList.topicProgressList.forEach { topicProgress ->
       val topic = retrieveTopic(topicProgress.topicId)
@@ -265,7 +281,10 @@ class TopicController @Inject constructor(
     return ongoingTopicListBuilder.build()
   }
 
-  private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
+  private fun createCompletedStoryListFromProgress(
+    profileId: ProfileId,
+    storyProgressList: StoryProgressList
+  ): AsyncResult<CompletedStoryList> {
     val completedStoryListBuilder = CompletedStoryList.newBuilder()
     storyProgressList.storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
@@ -276,7 +295,11 @@ class TopicController @Inject constructor(
         completedStoryListBuilder.addStorySummary(storySummary)
       }
     }
-    return completedStoryListBuilder.build()
+    return if (completedStoryListBuilder.storySummaryList.isNotEmpty()) {
+      AsyncResult.success(completedStoryListBuilder.build())
+    } else {
+      AsyncResult.failed(CompletedStoryListNotFoundException("ProfileId $profileId contain any completed story list."))
+    }
   }
 
   /**

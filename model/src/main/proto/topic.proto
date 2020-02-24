@@ -145,13 +145,13 @@ message TopicList {
   repeated TopicSummary topic_summary = 2;
 }
 
-// Corresponds to the list of stories that have been completed.
+// Corresponds to the list of stories that have been completed across all topics.
 message CompletedStoryList {
   // List of completed stories
   repeated StorySummary story_summary = 1;
 }
 
-// Corresponds to the list of stories the player is currently playing.
+// Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;

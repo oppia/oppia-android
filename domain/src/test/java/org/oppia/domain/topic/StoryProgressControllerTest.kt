@@ -514,8 +514,7 @@ class StoryProgressControllerTest {
 
   private fun verifyProfileProgressFailed() {
     verify(mockProfileProgressObserver, atLeastOnce()).onChanged(profileProgressResultCaptor.capture())
-    val topicProgressDatabase = profileProgressResultCaptor.value.getOrThrow()
-    assertThat(topicProgressDatabase.topicProgressMap.size).isEqualTo(0)
+    assertThat(profileProgressResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun verifyProfileProgressSucceeded() {
@@ -525,8 +524,7 @@ class StoryProgressControllerTest {
 
   private fun verifyTopicProgressFailed() {
     verify(mockTopicProgressObserver, atLeastOnce()).onChanged(topicProgressResultCaptor.capture())
-    val topicProgress = topicProgressResultCaptor.value.getOrThrow()
-    assertThat(topicProgress.storyProgressMap.size).isEqualTo(0)
+    assertThat(topicProgressResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun verifyTopicProgressSucceeded() {
@@ -534,10 +532,9 @@ class StoryProgressControllerTest {
     assertThat(topicProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyStoryProgressFailed(){
+  private fun verifyStoryProgressFailed() {
     verify(mockStoryProgressObserver, atLeastOnce()).onChanged(storyProgressResultCaptor.capture())
-    val storyProgress = storyProgressResultCaptor.value.getOrThrow()
-    assertThat(storyProgress.chapterProgressMap.size).isEqualTo(0)
+    assertThat(storyProgressResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun verifyStoryProgressSucceeded() {
@@ -547,8 +544,7 @@ class StoryProgressControllerTest {
 
   private fun verifyChapterProgressFailed() {
     verify(mockChapterProgressObserver, atLeastOnce()).onChanged(chapterProgressResultCaptor.capture())
-    val chapterPlayState = chapterProgressResultCaptor.value.getOrThrow()
-    assertThat(chapterPlayState).isEqualTo(NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(chapterProgressResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun verifyChapterProgressSucceeded() {
@@ -563,7 +559,8 @@ class StoryProgressControllerTest {
       .inject(this)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
