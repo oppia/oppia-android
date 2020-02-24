@@ -9,7 +9,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
@@ -49,13 +48,12 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.home.continueplaying.ContinuePlayingActivity
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.UserAppHistoryController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
@@ -87,7 +85,6 @@ class HomeActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
-    simulateNewAppInstance()
     profileTestHelper.initializeProfiles()
   }
 
@@ -114,36 +111,6 @@ class HomeActivityTest {
           R.id.profile_name_textview
         )
       ).check(matches(withText("Sean!")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_firstOpen_hasWelcomeString() {
-    launch(HomeActivity::class.java).use {
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome to Oppia!")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_secondOpen_hasWelcomeBackString() {
-    simulateAppAlreadyOpened()
-
-    launch(HomeActivity::class.java).use {
-      // Wait until the expected text appears on the screen, and ensure it's for the welcome text view.
-      waitForTheView(withText("Welcome back to Oppia!"))
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Welcome back to Oppia!")))
     }
   }
 
@@ -200,11 +167,11 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensContinuePlayingActivity() {
+  fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
-      intended(hasComponent(ContinuePlayingActivity::class.java.name))
+      intended(hasComponent(RecentlyPlayedActivity::class.java.name))
     }
   }
 
@@ -371,19 +338,6 @@ class HomeActivityTest {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
-  private fun simulateNewAppInstance() {
-    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated app history controller.
-    createTestRootComponent().getUserAppHistoryController().clearUserAppHistory()
-    onIdle()
-  }
-
-  private fun simulateAppAlreadyOpened() {
-    // Simulate the app was already opened by creating an isolated app history controller and saving the opened status
-    // on the system before the activity is opened.
-    createTestRootComponent().getUserAppHistoryController().markUserOpenedApp()
-    onIdle()
-  }
-
   private fun createTestRootComponent(): TestApplicationComponent {
     return DaggerHomeActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -488,7 +442,6 @@ class HomeActivityTest {
 
       fun build(): TestApplicationComponent
     }
-    fun getUserAppHistoryController(): UserAppHistoryController
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
   }

@@ -14,11 +14,13 @@
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <activity
-      android:name=".home.continueplaying.ContinuePlayingActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".testing.AudioFragmentTestActivity" />
+      android:name=".administratorcontrols.AdministratorControlsActivity"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".home.HomeActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"
@@ -86,14 +88,15 @@
     <activity
       android:name=".story.testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".testing.ContentCardTestActivity" />
-    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity android:name=".testing.RecentlyPlayedFragmentTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
       android:screenOrientation="portrait"

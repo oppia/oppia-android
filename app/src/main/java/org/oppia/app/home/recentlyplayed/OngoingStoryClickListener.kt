@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import org.oppia.app.model.PromotedStory
 
