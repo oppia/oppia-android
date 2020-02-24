@@ -1,4 +1,4 @@
-package org.oppia.app.home.continueplaying
+package org.oppia.app.home.recentlyplayed
 
 import android.content.Context
 import android.os.Bundle
@@ -10,8 +10,8 @@ import org.oppia.app.model.PromotedStory
 import javax.inject.Inject
 
 /** Fragment that contains all recently played stories. */
-class ContinuePlayingFragment : InjectableFragment(), OngoingStoryClickListener {
-  @Inject lateinit var continuePlayingFragmentPresenter: ContinuePlayingFragmentPresenter
+class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
+  @Inject lateinit var recentlyPlayedFragmentPresenter: RecentlyPlayedFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -19,10 +19,10 @@ class ContinuePlayingFragment : InjectableFragment(), OngoingStoryClickListener 
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return continuePlayingFragmentPresenter.handleCreateView(inflater, container)
+    return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container)
   }
 
   override fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    continuePlayingFragmentPresenter.onOngoingStoryClicked(promotedStory)
+    recentlyPlayedFragmentPresenter.onOngoingStoryClicked(promotedStory)
   }
 }

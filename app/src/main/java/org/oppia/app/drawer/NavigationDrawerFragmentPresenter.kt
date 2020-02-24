@@ -1,6 +1,5 @@
 package org.oppia.app.drawer
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -21,7 +20,6 @@ import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.options.OptionsActivity
@@ -30,6 +28,8 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+
+const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
@@ -46,6 +46,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
+  private lateinit var navigationDrawerFooterViewModel: NavigationDrawerFooterViewModel
+  private var routeToAdministratorControlsListener = fragment as RouteToAdministratorControlsListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -53,16 +55,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(KEY_HOME_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
+    navigationDrawerFooterViewModel = NavigationDrawerFooterViewModel()
 
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
     headerBinding.viewModel = navigationDrawerHeaderViewModel
     subscribeToProfileLiveData()
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
+    binding.footerViewModel = navigationDrawerFooterViewModel
     binding.executePendingBindings()
 
     return binding.root
@@ -75,6 +79,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(fragment, Observer<Profile> {
       navigationDrawerHeaderViewModel.profileName.set(it.name)
+      navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
+      binding.administratorControlsLinearLayout.setOnClickListener {
+        routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId)
+        drawerLayout.closeDrawers()
+      }
     })
   }
 
@@ -90,7 +99,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           drawerLayout.closeDrawers()
-          val intent = Intent(fragment.activity, HomeActivity::class.java)
+          val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
         }
         NavigationDrawerItem.OPTIONS -> {
@@ -99,7 +108,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.HELP -> {
           drawerLayout.closeDrawers()
-          val intent = Intent(fragment.activity, HelpActivity::class.java)
+          val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
