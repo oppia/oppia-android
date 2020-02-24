@@ -41,7 +41,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
     val message = prefSummaryValue
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, message)
-    setResult(1, intent)
+    setResult(/* resultCode= */ REQUEST_CODE_TEXT_SIZE, intent)
     finish()
   }
 }

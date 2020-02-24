@@ -98,21 +98,17 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
-          drawerLayout.closeDrawers()
           val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
         }
         NavigationDrawerItem.OPTIONS -> {
-          drawerLayout.closeDrawers()
           fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
         }
         NavigationDrawerItem.HELP -> {
-          drawerLayout.closeDrawers()
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
-          drawerLayout.closeDrawers()
           AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
             .setMessage(R.string.home_activity_back_dialog_message)
             .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->

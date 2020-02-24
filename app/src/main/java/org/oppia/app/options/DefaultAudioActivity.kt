@@ -38,7 +38,7 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
     val message = prefSummaryValue
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
-    setResult(3, intent)
+    setResult(/* resultCode= */ REQUEST_CODE_AUDIO_LANGUAGE, intent)
     finish()
   }
 }

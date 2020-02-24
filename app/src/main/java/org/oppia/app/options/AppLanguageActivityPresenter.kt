@@ -12,7 +12,7 @@ import javax.inject.Inject
 @ActivityScope
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
-  private var prefSummaryValue: String? = null
+  private lateinit var prefSummaryValue: String
 
   fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
     val binding = DataBindingUtil.setContentView<AppLanguageActivityBinding>(activity, R.layout.app_language_activity)
@@ -27,14 +27,14 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
-      (activity as AppLanguageActivity).setResult(2, intent)
+      (activity as AppLanguageActivity).setResult(/* resultCode= */ REQUEST_CODE_APP_LANGUAGE, intent)
       activity.finish()
     }
     createAdapter()
   }
 
   private fun createAdapter() {
-    // TODO: Replace dummy list with actual language list.
+    // TODO(#669): Replace dummy list with actual language list from backend.
     val languageList = ArrayList<String>()
     languageList.add("English")
     languageList.add("French")

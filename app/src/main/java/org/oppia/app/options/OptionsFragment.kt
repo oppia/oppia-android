@@ -21,9 +21,12 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-const val KEY_MESSAGE_STORY_TEXT_SIZE = "Text Size"
-const val KEY_MESSAGE_APP_LANGUAGE = "App Language"
-const val KEY_MESSAGE_AUDIO_LANGUAGE = "Audio Language"
+const val KEY_MESSAGE_STORY_TEXT_SIZE = "TEXT_SIZE"
+const val KEY_MESSAGE_APP_LANGUAGE = "APP_LANGUAGE"
+const val KEY_MESSAGE_AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
+const val REQUEST_CODE_TEXT_SIZE = 1
+const val REQUEST_CODE_APP_LANGUAGE = 2
+const val REQUEST_CODE_AUDIO_LANGUAGE= 3
 
 class OptionsFragment @Inject constructor(
   private val activity: AppCompatActivity,
@@ -68,7 +71,7 @@ class OptionsFragment @Inject constructor(
             requireContext(),
             getString(R.string.key_story_text_size),
             textSizePref!!.summary.toString()
-          ), 1
+          ), REQUEST_CODE_TEXT_SIZE
         )
         return true
       }
@@ -83,7 +86,7 @@ class OptionsFragment @Inject constructor(
             requireContext(),
             getString(R.string.key_app_language),
             appLanguagePref!!.summary.toString()
-          ), 2
+          ), REQUEST_CODE_APP_LANGUAGE
         )
         return true
       }
@@ -98,7 +101,7 @@ class OptionsFragment @Inject constructor(
             requireContext(),
             getString(R.string.key_default_audio),
             defaultAudioPref.summary.toString()
-          ), 3
+          ), REQUEST_CODE_AUDIO_LANGUAGE
         )
         return true
       }
@@ -193,11 +196,11 @@ class OptionsFragment @Inject constructor(
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     when (requestCode) {
-      1 -> {
+      REQUEST_CODE_TEXT_SIZE -> {
         val textSize = data!!.getStringExtra(KEY_MESSAGE_STORY_TEXT_SIZE) as String
         bindPreferenceSummaryToValue(textSize, findPreference(getString(R.string.key_story_text_size)))
       }
-      2 -> {
+      REQUEST_CODE_APP_LANGUAGE -> {
         val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
         bindPreferenceSummaryToValue(appLanguage, findPreference(getString(R.string.key_app_language)))
       }

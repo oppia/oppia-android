@@ -41,7 +41,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     val message = prefSummaryValue
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
-    setResult(2, intent)
+    setResult(/* resultCode= */ REQUEST_CODE_APP_LANGUAGE, intent)
     finish()
   }
 }

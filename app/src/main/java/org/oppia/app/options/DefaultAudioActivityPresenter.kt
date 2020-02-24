@@ -28,14 +28,14 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
-      (activity as DefaultAudioActivity).setResult(3, intent)
+      (activity as DefaultAudioActivity).setResult(/* resultCode= */REQUEST_CODE_AUDIO_LANGUAGE, intent)
       activity.finish()
     }
     createAdapter()
   }
 
   private fun createAdapter() {
-    // TODO: Replace dummy list with actual language list.
+    // TODO(#669): Replace dummy list with actual language list from backend.
     val languageList = ArrayList<String>()
     languageList.add("No Audio")
     languageList.add("English")
