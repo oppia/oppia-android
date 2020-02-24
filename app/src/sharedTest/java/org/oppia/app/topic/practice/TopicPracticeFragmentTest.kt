@@ -3,17 +3,20 @@ package org.oppia.app.topic.practice
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -61,6 +64,8 @@ class TopicPracticeFragmentTest {
 
     Intents.init()
     skillIdList.add("5RM9KPfQxobH")
+    skillIdList.add("B39yK4cbHZYI")
+    skillIdList.add("UxTGIJqaHMLa")
   }
 
   @Test
@@ -73,9 +78,8 @@ class TopicPracticeFragmentTest {
         )
       ).perform(click())
       onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
-//      onView(atPosition(R.id.skill_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.subtopic_check_box))))
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box))
-        .check(matches(withId(R.id.subtopic_check_box)))
+      onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
+      onView(withId(R.id.topic_practice_start_button)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -104,6 +108,7 @@ class TopicPracticeFragmentTest {
         )
       ).perform(click())
       onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
+      onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
       onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
     }
   }
@@ -133,6 +138,7 @@ class TopicPracticeFragmentTest {
       ).perform(click())
       onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
       onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
+      onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
@@ -147,6 +153,7 @@ class TopicPracticeFragmentTest {
       )
     ).perform(click())
     onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
+    onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
     onView(withId(R.id.topic_practice_start_button)).perform(click())
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
@@ -171,6 +178,7 @@ class TopicPracticeFragmentTest {
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
+    onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
     onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
   }
 
@@ -182,6 +190,7 @@ class TopicPracticeFragmentTest {
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
     activityScenario.recreate()
+    onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
     onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
   }
 
