@@ -7,8 +7,10 @@ import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.StoryProgressList
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicProgressDatabase
+import org.oppia.app.model.TopicProgressList
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
@@ -38,6 +40,8 @@ const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 private const val CACHE_NAME = "topic_progress_database"
 
+private const val TRANSFORMED_GET_TOPIC_PROGRESS_LIST_PROVIDER_ID = "transformed_get_topic_progress_list_provider_id"
+private const val TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID = "transformed_get_story_progress_list_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID = "transformed_get_profile_progress_provider_id"
 private const val TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID = "transformed_get_topic_progress_provider_id"
 private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
@@ -107,35 +111,40 @@ class StoryProgressController @Inject constructor(
     storyId: String,
     explorationId: String
   ): LiveData<AsyncResult<Any?>> {
-    val deferred = retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val chapterPlayState = ChapterPlayState.COMPLETED
+    val deferred =
+      retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
+        val chapterPlayState = ChapterPlayState.COMPLETED
 
-      val storyProgress = if (it.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
-        val storyProgressBuilder = StoryProgress.newBuilder()
-          .putAllChapterProgress(it.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
-          .putChapterProgress(explorationId, chapterPlayState)
-        storyProgressBuilder.build()
-      } else {
-        val storyProgressBuilder = StoryProgress.newBuilder().putChapterProgress(
-          explorationId,
-          chapterPlayState
-        )
-        storyProgressBuilder.build()
+        val storyProgress =
+          if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
+            val storyProgressBuilder = StoryProgress.newBuilder()
+              .setStoryId(storyId)
+              .putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
+              .putChapterProgress(explorationId, chapterPlayState)
+            storyProgressBuilder.build()
+          } else {
+            val storyProgressBuilder = StoryProgress.newBuilder().putChapterProgress(
+              explorationId,
+              chapterPlayState
+            )
+            storyProgressBuilder.build()
+          }
+
+        val topicProgress = if (topicProgressDatabase.topicProgressMap[topicId] != null) {
+          val topicProgressBuilder =
+            TopicProgress.newBuilder()
+              .setTopicId(topicId)
+              .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
+              .putStoryProgress(storyId, storyProgress)
+          topicProgressBuilder.build()
+        } else {
+          val topicProgressBuilder = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress)
+          topicProgressBuilder.build()
+        }
+
+        val topicDatabaseBuilder = topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
+        Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
       }
-
-      val topicProgress = if (it.topicProgressMap[topicId] != null) {
-        val topicProgressBuilder =
-          TopicProgress.newBuilder().putAllStoryProgress(it.topicProgressMap[topicId]!!.storyProgressMap)
-            .putStoryProgress(storyId, storyProgress)
-        topicProgressBuilder.build()
-      } else {
-        val topicProgressBuilder = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress)
-        topicProgressBuilder.build()
-      }
-
-      val topicDatabaseBuilder = it.toBuilder().putTopicProgress(topicId, topicProgress)
-      Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
-    }
 
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
@@ -185,8 +194,42 @@ class StoryProgressController @Inject constructor(
     )
   }
 
+  /** Returns [TopicProgressList] [DataProvider] for a particular profile. */
+  internal fun retrieveTopicProgressListDataProvider(profileId: ProfileId): DataProvider<TopicProgressList> {
+    return dataProviders.transformAsync(
+      TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) { topicProgressDatabase ->
+      val topicProgressListBuilder = TopicProgressList.newBuilder()
+      topicProgressListBuilder.addAllTopicProgress(topicProgressDatabase.topicProgressMap.values)
+      if (topicProgressListBuilder.topicProgressList.isNotEmpty()) {
+        AsyncResult.success(topicProgressListBuilder.build())
+      } else {
+        AsyncResult.failed(TopicProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+      }
+    }
+  }
+
+  /** Returns [StoryProgressList] [DataProvider] for a particular profile. */
+  internal fun retrieveStoryProgressListDataProvider(profileId: ProfileId): DataProvider<StoryProgressList> {
+    return dataProviders.transformAsync(
+      TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID,
+      retrieveCacheStore(profileId)
+    ) { topicProgressDatabase ->
+      val storyProgressListBuilder = StoryProgressList.newBuilder()
+      topicProgressDatabase.topicProgressMap.values.forEach { topicProgress ->
+        storyProgressListBuilder.addAllStoryProgress(topicProgress!!.storyProgressMap!!.values.toList())
+      }
+      if (storyProgressListBuilder.storyProgressList.isNotEmpty()) {
+        AsyncResult.success(storyProgressListBuilder.build())
+      } else {
+        AsyncResult.failed(StoryProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+      }
+    }
+  }
+
   /** Returns all topics progress [DataProvider] for a particular profile. */
-  internal fun retrieveProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
+  private fun retrieveProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
@@ -194,7 +237,7 @@ class StoryProgressController @Inject constructor(
       if (it.topicProgressMap.keys.isNotEmpty()) {
         AsyncResult.success(it)
       } else {
-        AsyncResult.success(TopicProgressDatabase.getDefaultInstance())
+        AsyncResult.failed(ProfileProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
       }
     }
   }
@@ -209,7 +252,7 @@ class StoryProgressController @Inject constructor(
       if (topicProgress != null) {
         AsyncResult.success(topicProgress)
       } else {
-        AsyncResult.success(TopicProgress.getDefaultInstance())
+        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any progress"))
       }
     }
   }
@@ -228,13 +271,13 @@ class StoryProgressController @Inject constructor(
       if (storyProgress != null) {
         AsyncResult.success(storyProgress)
       } else {
-        AsyncResult.success(StoryProgress.getDefaultInstance())
+        AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any progress"))
       }
     }
   }
 
   /** Returns a [ChapterPlayState] [DataProvider] for a specific explorationId, per-profile basis. */
-  internal fun retrieveChapterProgressDataProvider(
+  private fun retrieveChapterProgressDataProvider(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -248,7 +291,7 @@ class StoryProgressController @Inject constructor(
       if (chapterPlayState != null) {
         AsyncResult.success(chapterPlayState)
       } else {
-        AsyncResult.success(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+        AsyncResult.failed(ExplorationNotFoundException("ChapterId: $explorationId does not contain any progress"))
       }
     }
   }
@@ -359,8 +402,7 @@ class StoryProgressController @Inject constructor(
     )
   }
 
-  internal fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
-    //return profileDataStore
+  private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {

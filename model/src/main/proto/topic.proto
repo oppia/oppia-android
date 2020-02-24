@@ -248,14 +248,32 @@ message TopicProgressDatabase {
 
 // Represents the topic progress.
 message TopicProgress {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
   // Map from story ID to StoryProgress.
-  map<string, StoryProgress> story_progress = 1;
+  map<string, StoryProgress> story_progress = 2;
+}
+
+// Corresponds to the list of topic progress.
+message TopicProgressList {
+  // List of topic progress
+  repeated TopicProgress topic_progress = 1;
+}
+
+// Corresponds to the list of story progress.
+message StoryProgressList {
+  // List of story progress
+  repeated StoryProgress story_progress = 1;
 }
 
 // Represents the story progress.
 message StoryProgress {
+  // The ID corresponding to the story.
+  string story_id = 1;
+
   // Map from exploration ID to ChapterPlayState.
-  map<string, ChapterPlayState> chapter_progress = 1;
+  map<string, ChapterPlayState> chapter_progress = 2;
 }
 
 // Represents user's preference for using cellular data

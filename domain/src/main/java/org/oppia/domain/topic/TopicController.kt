@@ -16,11 +16,13 @@ import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StoryProgress
+import org.oppia.app.model.StoryProgressList
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicProgress
+import org.oppia.app.model.TopicProgressList
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
@@ -121,10 +123,9 @@ class TopicController @Inject constructor(
       dataProviders.combine(
         COMBINE_TOPIC_PROVIDER_ID,
         topicDataProvider,
-        topicProgressDataProvider
-      ) { topic, topicProgress ->
-        combineTopicAndTopicProgress(topic, topicProgress)
-      }
+        topicProgressDataProvider,
+        ::combineTopicAndTopicProgress
+      )
     )
   }
 
@@ -170,10 +171,9 @@ class TopicController @Inject constructor(
       dataProviders.combine(
         COMBINE_STORY_PROVIDER_ID,
         storyDataProvider,
-        storyProgressDataProvider
-      ) { story, storyProgress ->
-        combineStorySummaryAndStoryProgress(story, storyProgress)
-      }
+        storyProgressDataProvider,
+        ::combineStorySummaryAndStoryProgress
+      )
     )
   }
 
@@ -220,58 +220,26 @@ class TopicController @Inject constructor(
     )
   }
 
+  /** Returns the list of all completed stories in the form on [CompletedStoryList] for a specific profile. */
   fun getCompletedStoryList(profileId: ProfileId): LiveData<AsyncResult<CompletedStoryList>> {
-    return dataProviders.convertToLiveData(retrieveCompletedStoryListDataProvider(profileId))
+    return dataProviders.convertToLiveData(
+      dataProviders.transform(
+        TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
+        storyProgressController.retrieveStoryProgressListDataProvider(profileId),
+        ::createCompletedStoryListFromProgress
+      )
+    )
   }
 
+  /** Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile. */
   fun getOngoingTopicList(profileId: ProfileId): LiveData<AsyncResult<OngoingTopicList>> {
-    return dataProviders.convertToLiveData(retrieveOngoingTopicListDataProvider(profileId))
-  }
-
-  private fun retrieveCompletedStoryListDataProvider(profileId: ProfileId): DataProvider<CompletedStoryList> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
-      storyProgressController.retrieveCacheStore(profileId)
-    ) {
-      val completedStoryListBuilder = CompletedStoryList.newBuilder()
-      it.topicProgressMap.keys.forEach { topicId ->
-        val topicProgress = it.topicProgressMap[topicId]
-        topicProgress!!.storyProgressMap.keys.forEach { storyId ->
-          val storyProgress = topicProgress.storyProgressMap[storyId]!!
-          val storySummary = retrieveStory(storyId)
-          val lastChapterSummary = storySummary.chapterList.last()
-          if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)
-            && storyProgress.chapterProgressMap[lastChapterSummary.explorationId] == ChapterPlayState.COMPLETED
-          ) {
-            completedStoryListBuilder.addStorySummary(storySummary)
-          }
-        }
-      }
-      AsyncResult.success(completedStoryListBuilder.build())
-    }
-  }
-
-  private fun retrieveOngoingTopicListDataProvider(profileId: ProfileId): DataProvider<OngoingTopicList> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
-      storyProgressController.retrieveCacheStore(profileId)
-    ) {
-      val ongoingTopicList = OngoingTopicList.newBuilder()
-      it.topicProgressMap.keys.forEach { topicId ->
-        val topic = retrieveTopic(topicId)
-        val topicProgress = it.topicProgressMap[topicId]
-        topic.storyList.forEach { storySummary ->
-          if (topicProgress!!.storyProgressMap.containsKey(storySummary.storyId)) {
-            val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-            val lastChapterSummary = storySummary.chapterList.last()
-            if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-              ongoingTopicList.addTopic(topic)
-            }
-          }
-        }
-      }
-      AsyncResult.success(ongoingTopicList.build())
-    }
+    return dataProviders.convertToLiveData(
+      dataProviders.transform(
+        TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
+        storyProgressController.retrieveTopicProgressListDataProvider(profileId),
+        ::createOngoingTopicListFromProgress
+      )
+    )
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -280,13 +248,44 @@ class TopicController @Inject constructor(
     }
   }
 
+  private fun createOngoingTopicListFromProgress(topicProgressList: TopicProgressList): OngoingTopicList {
+    val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
+    topicProgressList.topicProgressList.forEach { topicProgress ->
+      val topic = retrieveTopic(topicProgress.topicId)
+      topic.storyList.forEach { storySummary ->
+        if (topicProgress!!.storyProgressMap.containsKey(storySummary.storyId)) {
+          val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
+          val lastChapterSummary = storySummary.chapterList.last()
+          if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
+            ongoingTopicListBuilder.addTopic(topic)
+          }
+        }
+      }
+    }
+    return ongoingTopicListBuilder.build()
+  }
+
+  private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
+    val completedStoryListBuilder = CompletedStoryList.newBuilder()
+    storyProgressList.storyProgressList.forEach { storyProgress ->
+      val storySummary = retrieveStory(storyProgress.storyId)
+      val lastChapterSummary = storySummary.chapterList.last()
+      if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)
+        && storyProgress.chapterProgressMap[lastChapterSummary.explorationId] == ChapterPlayState.COMPLETED
+      ) {
+        completedStoryListBuilder.addStorySummary(storySummary)
+      }
+    }
+    return completedStoryListBuilder.build()
+  }
+
   /**
    * Combines the specified topic and topic-progress into a new topic.
    */
   private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
-      topic.storyList.forEachIndexed { storyIndex, storySummary ->
+      topic.storyList.forEach { storySummary ->
         val storyBuilder = storySummary.toBuilder()
         if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
           storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
@@ -306,19 +305,19 @@ class TopicController @Inject constructor(
               }
             }
           }
-          topicBuilder.setStory(storyIndex, storyBuilder.build())
+          topicBuilder.addStory(storySummary)
         } else {
           if (storySummary.chapterList.isNotEmpty()) {
             val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-            topicBuilder.setStory(storyIndex, updatedStorySummary)
+            topicBuilder.addStory(updatedStorySummary)
           }
         }
       }
     } else {
-      topic.storyList.forEachIndexed { index, storySummary ->
+      topic.storyList.forEach { storySummary ->
         if (storySummary.chapterList.isNotEmpty()) {
           val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-          topicBuilder.setStory(index, updatedStorySummary)
+          topicBuilder.addStory(updatedStorySummary)
         }
       }
     }
