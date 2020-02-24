@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.app.topic.reviewcard
 
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
@@ -19,7 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
-import org.oppia.app.testing.ReviewCardFragmentTestActivity.Companion.createReviewCardActivityIntent
+import org.oppia.app.topic.reviewcard.ReviewCardActivity.Companion.createReviewCardActivityIntent
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
 
@@ -34,7 +34,7 @@ class ReviewCardFragmentTest {
 
   @Test
   fun testReviewCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
-    launch<ReviewCardFragmentTestActivity>(
+    launch<ReviewCardActivity>(
       createReviewCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         FRACTIONS_TOPIC_ID,
@@ -52,7 +52,7 @@ class ReviewCardFragmentTest {
 
   @Test
   fun testReviewCardTestActivity_toolbarTitle_fractionSubtopicId1_checkExplanationAreDisplayedSuccessfully() {
-    launch<ReviewCardFragmentTestActivity>(
+    launch<ReviewCardActivity>(
       createReviewCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         FRACTIONS_TOPIC_ID,

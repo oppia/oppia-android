@@ -31,7 +31,6 @@ import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
-import org.oppia.app.testing.ReviewCardFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
