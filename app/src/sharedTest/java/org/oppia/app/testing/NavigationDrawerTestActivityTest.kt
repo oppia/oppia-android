@@ -41,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -185,7 +186,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_my_downloads)).perform(click())
-      onView(withText(R.string.menu_my_downloads)).check(matches(isDisplayed()))
+      intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
   }
 
