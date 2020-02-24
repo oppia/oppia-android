@@ -13,7 +13,7 @@ import org.oppia.app.databinding.PromotedStoryListBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
-import org.oppia.app.home.UserAppHistoryViewModel
+import org.oppia.app.home.WelcomeViewModel
 import org.oppia.app.recyclerview.StartSnapHelper
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
@@ -79,7 +79,7 @@ class TopicListAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_WELCOME_MESSAGE -> {
-        (holder as WelcomeViewHolder).bind(itemList[position] as UserAppHistoryViewModel)
+        (holder as WelcomeViewHolder).bind(itemList[position] as WelcomeViewModel)
       }
       VIEW_TYPE_PROMOTED_STORY_LIST -> {
         (holder as PromotedStoryListViewHolder).bind(
@@ -99,7 +99,7 @@ class TopicListAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is UserAppHistoryViewModel -> {
+      is WelcomeViewModel -> {
         VIEW_TYPE_WELCOME_MESSAGE
       }
       is AllTopicsViewModel -> {
@@ -120,8 +120,8 @@ class TopicListAdapter(
   }
 
   private class WelcomeViewHolder(val binding: WelcomeBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(userAppHistoryViewModel: UserAppHistoryViewModel) {
-      binding.viewModel = userAppHistoryViewModel
+    internal fun bind(welcomeViewModel: WelcomeViewModel) {
+      binding.viewModel = welcomeViewModel
     }
   }
 

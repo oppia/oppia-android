@@ -15,7 +15,7 @@ class ProfileActivity : InjectableAppCompatActivity() {
     fun createProfileActivity(context: Context): Intent {
       val intent = Intent(context, ProfileActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      return  intent
+      return intent
     }
   }
 

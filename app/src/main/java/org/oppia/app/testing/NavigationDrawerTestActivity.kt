@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.home.HomeActivityPresenter
-import org.oppia.app.home.KEY_HOME_PROFILE_ID
 import org.oppia.app.home.RouteToTopicListener
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       return intent
     }
   }

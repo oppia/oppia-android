@@ -203,7 +203,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val promotedStory = topicList.promotedStory
-    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
@@ -221,7 +221,7 @@ class TopicListControllerTest {
     val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
+    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(2)
   }
 
   @Test
@@ -250,7 +250,7 @@ class TopicListControllerTest {
 
     val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
     val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.completedChapterCount).isEqualTo(1)
+    assertThat(recentLesson.completedChapterCount).isEqualTo(0)
     assertThat(recentLesson.totalChapterCount).isEqualTo(2)
   }
 

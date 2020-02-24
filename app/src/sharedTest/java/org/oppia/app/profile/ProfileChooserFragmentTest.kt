@@ -29,6 +29,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.domain.profile.ProfileManagementController
@@ -133,7 +136,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
-    profileManagementController.addProfile("Sean", "", null, true, -10710042, true)
+    profileManagementController.addProfile("Sean", "", null, true, -10710042, true, StoryTextSize.SMALL_TEXT_SIZE, AppLanguage.ENGLISH_APP_LANGUAGE, AudioLanguage.NO_AUDIO)
     ActivityScenario.launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
