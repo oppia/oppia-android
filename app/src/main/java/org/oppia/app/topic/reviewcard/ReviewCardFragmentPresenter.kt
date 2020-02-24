@@ -20,7 +20,7 @@ class ReviewCardFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = ReviewCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    val viewModel = getReveiwCardViewModel()
+    val viewModel = getReviewCardViewModel()
 
     topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
     subtopicId = fragment.activity!!.intent.getStringExtra(SUBTOPIC_ID_ARGUMENT_KEY)
@@ -34,7 +34,7 @@ class ReviewCardFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getReveiwCardViewModel(): ReviewCardViewModel {
+  private fun getReviewCardViewModel(): ReviewCardViewModel {
     return viewModelProvider.getForFragment(fragment, ReviewCardViewModel::class.java)
   }
 }

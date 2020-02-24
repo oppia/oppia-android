@@ -23,7 +23,7 @@ import org.oppia.app.topic.reviewcard.ReviewCardActivity.Companion.createReviewC
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
 
-/** Tests for [ReviewCardFragmentTestActivity]. */
+/** Tests for [ReviewCardActivity]. */
 @RunWith(AndroidJUnit4::class)
 class ReviewCardFragmentTest {
 

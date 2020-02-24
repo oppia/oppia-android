@@ -42,8 +42,4 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
   override fun routeToReviewCard(topicId: String, subtopicId: String) {
     startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
-
-  companion object {
-    internal const val TAG_REVIEW_CARD_DIALOG = "REVIEW_CARD_DIALOG"
-  }
 }

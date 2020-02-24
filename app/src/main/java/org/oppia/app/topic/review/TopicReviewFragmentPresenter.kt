@@ -23,7 +23,7 @@ import javax.inject.Inject
 /** The presenter for [TopicReviewFragment]. */
 @FragmentScope
 class TopicReviewFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
+  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
