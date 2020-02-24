@@ -12,7 +12,7 @@ import javax.inject.Inject
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private lateinit var navigationDrawerFragment: NavigationDrawerFragment
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.administrator_controls_activity)
@@ -31,9 +31,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(private val act
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
       activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.setUpDrawer(
+    navigationDrawerFragment.setUpDrawer(
       activity.findViewById<View>(R.id.administrator_controls_activity_drawer_layout) as DrawerLayout,
-      toolbar, 0
+      toolbar, /* menuItemId = */ 0
     )
   }
 
