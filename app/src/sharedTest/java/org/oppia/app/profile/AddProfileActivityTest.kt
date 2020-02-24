@@ -85,10 +85,16 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_createPin_checkOpensProfileActivity() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
-      onView(allOf(withId(R.id.checkbox_pin))).perform(
-        click()
-      )
-      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))   }
+      onView(allOf(withId(R.id.checkbox_pin))).perform(click())
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPinNotVisible_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.input_pin)).check(matches(not(isDisplayed())))
+    }
   }
 
   @Test
