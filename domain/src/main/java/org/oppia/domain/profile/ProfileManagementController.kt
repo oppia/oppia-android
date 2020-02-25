@@ -31,6 +31,7 @@ import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
+private const val TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID = "transformed_was_profile_ever_added_provider_id"
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
@@ -120,6 +121,19 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.convertToLiveData(transformedDataProvider)
   }
 
+  /** Returns a boolean determining whether the profile was ever added or not. */
+  fun getWasProfileEverAdded(): LiveData<AsyncResult<Boolean>> {
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, Boolean>(
+        TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID,
+        profileDataStore
+      ) {
+        val wasProfileEverAdded = it.wasProfileEverAdded
+        AsyncResult.success(wasProfileEverAdded)
+      }
+    return dataProviders.convertToLiveData(transformedDataProvider)
+  }
+
   /**
    * Adds a new profile with the specified parameters.
    *
@@ -174,8 +188,13 @@ class ProfileManagementController @Inject constructor(
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
+      val wasProfileEverAdded = !it.wasProfileEverAdded && !isAdmin
+
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(nextProfileId, newProfileBuilder.build()).setNextProfileId(nextProfileId + 1)
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfileBuilder.build())
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
