@@ -28,6 +28,7 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
+import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -36,6 +37,7 @@ import javax.inject.Singleton
 /** Tests for [TopicReviewFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicReviewFragmentTest {
+  private val subtopicThumbnail = R.drawable.topic_fractions_01
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -86,6 +88,19 @@ class TopicReviewFragmentTest {
       onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
     }
   }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_checkTopicThumbnail_isCorrect() {
+    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use { onView(
+      allOf(
+        withText(TopicTab.getTabForPosition(3).name),
+        isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+    }
+  }
+
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
