@@ -23,6 +23,7 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.options.OptionsActivity
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -107,6 +108,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
+          fragment.activity!!.finish()
+        }
+        NavigationDrawerItem.DOWNLOADS -> {
+          val intent = MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
+          fragment.activity!!.startActivity(intent)
+          fragment.activity!!.finish()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
@@ -140,6 +147,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       }
       NavigationDrawerItem.HELP -> {
         binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
+      }
+      NavigationDrawerItem.DOWNLOADS -> {
+        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.DOWNLOADS.ordinal).isChecked = true
       }
       NavigationDrawerItem.SWITCH_PROFILE -> {
         binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = true
