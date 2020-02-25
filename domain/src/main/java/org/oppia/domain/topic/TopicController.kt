@@ -197,6 +197,12 @@ class TopicController @Inject constructor(
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
         "fractions_subtopics.json"
       )
+      FRACTIONS_SUBTOPIC_ID_2 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      FRACTIONS_SUBTOPIC_ID_3 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
       else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
     }
   }

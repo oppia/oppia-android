@@ -113,5 +113,12 @@
       android:name=".topic.TopicActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".topic.reviewcard.ReviewCardActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.ReviewCardFragmentTestActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>
