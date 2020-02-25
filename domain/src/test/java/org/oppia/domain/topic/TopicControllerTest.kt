@@ -37,6 +37,7 @@ import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
+import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.util.caching.CacheAssetsLocally
@@ -632,6 +633,22 @@ class TopicControllerTest {
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
     assertThat(reviewCardResult.getOrThrow().pageContents.html).isEqualTo("<p>Description of subtopic is here.</p>")
+  }
+
+  @Test
+  fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.subtopicList.get(0).subtopicThumbnail.thumbnailGraphic).isEqualTo(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
+  }
+
+  @Test
+  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.subtopicList.get(0).thumbnailUrl).isEmpty()
+    assertThat(topic.subtopicList.get(1).thumbnailUrl).isEmpty()
   }
 
   @Test
