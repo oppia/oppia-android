@@ -646,7 +646,7 @@ class TopicControllerTest {
   @Test
   fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() {
     val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
-    
+
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.subtopicList.get(0).thumbnailUrl).isEmpty()
     assertThat(topic.subtopicList.get(1).thumbnailUrl).isEmpty()
