@@ -219,13 +219,13 @@ class NavigationDrawerTestActivityTest {
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_cancel)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(
-        RecyclerViewMatcher.atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.home_activity_toolbar))
         )
-      ).check(matches(withText("Welcome to Oppia!")))
+      ).check(matches(withText(R.string.menu_home)))
     }
   }
 
