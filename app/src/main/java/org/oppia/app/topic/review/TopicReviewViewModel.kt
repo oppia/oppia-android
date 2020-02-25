@@ -1,9 +1,7 @@
 package org.oppia.app.topic.review
 
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import javax.inject.Inject
+import org.oppia.app.viewmodel.ObservableViewModel
 
-/** [ViewModel] for showing a list of topic review-skills. */
-@FragmentScope
-class TopicReviewViewModel @Inject constructor() : ViewModel()
+/** [ViewModel] for showing a list of subtopics. */
+abstract class TopicReviewViewModel : ObservableViewModel()

@@ -183,7 +183,7 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)).check(
+      onView(atPositionOnView(R.id.review_recycler_view, 0, R.id.subtopic_title)).check(
         matches(
           withText(
             containsString(
@@ -319,7 +319,7 @@ class TopicFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.review_skill_recycler_view, 0, R.id.skill_name)
+        atPositionOnView(R.id.review_recycler_view, 0, R.id.subtopic_title)
       ).check(matches(withText(containsString("An important skill"))))
     }
   }
