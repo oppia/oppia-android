@@ -42,7 +42,6 @@ private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed
 private const val UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID = "update_story_text_size_transformed_id"
 private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_language_transformed_id"
 private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_audio_language_transformed_id"
-private const val MARK_PROFILE_EVER_ADDED_TRANSFORMED_PROVIDER_ID = "mark_profile_ever_added_transformed_id"
 
 const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
 
