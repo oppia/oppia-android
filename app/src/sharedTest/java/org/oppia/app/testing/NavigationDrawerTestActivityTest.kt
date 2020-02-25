@@ -41,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
@@ -207,6 +208,24 @@ class NavigationDrawerTestActivityTest {
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed(){
+    launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+      onView(withText(R.string.home_activity_back_dialog_cancel)).perform(click())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.home_activity_toolbar))
+        )
+      ).check(matches(withText(R.string.menu_home)))
     }
   }
 
