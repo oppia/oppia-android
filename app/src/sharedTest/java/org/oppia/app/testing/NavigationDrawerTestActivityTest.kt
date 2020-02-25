@@ -41,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
@@ -218,6 +219,13 @@ class NavigationDrawerTestActivityTest {
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_cancel)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+      onView(
+        RecyclerViewMatcher.atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Welcome to Oppia!")))
     }
   }
 
