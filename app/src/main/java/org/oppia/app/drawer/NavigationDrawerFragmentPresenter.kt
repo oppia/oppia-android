@@ -22,8 +22,8 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
-import org.oppia.app.options.OptionsActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
