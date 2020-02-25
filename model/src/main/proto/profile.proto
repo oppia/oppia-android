@@ -10,8 +10,11 @@ message ProfileDatabase {
   // Represents the next unique ID for adding a profile.
   int32 next_profile_id = 1;
 
+  // Determines whether profile was ever added or not.
+  bool was_profile_ever_added = 2;
+
   // Mapping from unique ID to profile.
-  map<int32, Profile> profiles = 2;
+  map<int32, Profile> profiles = 3;
 }
 
 // Structure for a single profile.

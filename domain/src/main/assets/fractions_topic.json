@@ -60,31 +60,56 @@
           "B39yK4cbHZYI",
           "UxTGIJqaHMLa"
         ],
-        "id": 6,
+        "id": 5,
         "title": "The Number Line"
       },
       {
-        "skill_ids": [],
-        "id": 7,
+        "skill_ids": [
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
+        "id": 6,
         "title": "Comparing Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI"
+        ],
+        "id": 7,
+        "title": "Adding Fractions"
+      },
+      {
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 8,
         "title": "Subtracting Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "UxTGIJqaHMLa"
+        ],
         "id": 9,
         "title": "Multiplying Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 10,
         "title": "Dividing Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 11,
         "title": "General Skills"
       }
