@@ -46,6 +46,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
+  private var createPin = false
   private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
@@ -65,6 +66,9 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
+    }
+    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+      profileViewModel.createPin.set(isChecked)
     }
 
     binding.infoIcon.setOnClickListener {
