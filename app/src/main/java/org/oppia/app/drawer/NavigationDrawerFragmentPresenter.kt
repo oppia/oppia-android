@@ -171,7 +171,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
         }
-
+        
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
