@@ -3,13 +3,14 @@ package org.oppia.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -34,6 +35,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -88,49 +90,42 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndAccountSettings() {
+  fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.general_text_view)).check(matches(isDisplayed()))
-      onView(withText("Edit account")).check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
-      onView(withId(R.id.account_actions_text_view)).check(matches(isDisplayed()))
-      onView(withText("Log Out")).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayProfileSettings() {
-    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.profile_management_text_view)).check(matches(isDisplayed()))
-      onView(withText("Edit profiles")).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_loadFragment_displayAppSettings() {
-    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
-      onView(withId(R.id.app_information_text_view)).check(matches(isDisplayed()))
-      onView(withText("App Version")).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.general_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.edit_profiles_text_view)).check(matches(withText("Edit profiles")))
+      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.profile_management_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.edit_account_text_view)).check(matches(withText("Edit account")))
     }
   }
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withText("Download Permissions")).check(matches(isDisplayed()))
-      onView(withId(R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
-      onView(withId(R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.download_permissions_text_view)).check(matches(withText("Download Permissions")))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.app_information_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.app_version_text_view)).check(matches(withText("App Version")))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.account_actions_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.log_out_text_view)).check(matches(withText("Log Out")))
     }
   }
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
-      onView(withId(R.id.administrator_controls_scroll_view)).perform(swipeUp())
-      onView(withId(R.id.auto_update_topic_switch)).check(matches(isChecked()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.auto_update_topic_switch)).check(matches(isChecked()))
     }
   }
 
