@@ -41,7 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.home.HomeActivity
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -178,6 +178,15 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.help_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_help)))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withText(R.string.menu_my_downloads)).perform(click())
+      intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
   }
 
