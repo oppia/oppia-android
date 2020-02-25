@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -78,6 +79,21 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPin_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.checkbox_pin))).perform(click())
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPinNotVisible_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.input_pin)).check(matches(not(isDisplayed())))
     }
   }
 
