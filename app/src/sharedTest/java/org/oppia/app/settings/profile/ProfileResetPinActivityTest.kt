@@ -14,7 +14,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -29,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -165,6 +168,29 @@ class ProfileResetPinActivityTest {
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText("")))
     }
   }
+
+  @Test
+  fun testProfileResetPinActivity_startActivitywithAdmin_configurationLandscape_isCorrect() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use{
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_pin_main)).check(matches(isDisplayed()))
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+      onView(withId(R.id.input_confirm_pin)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivitywithUser_configurationLandscape_isCorrect() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 1, false)).use{
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_pin_main)).check(matches(isDisplayed()))
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+      onView(withId(R.id.input_confirm_pin)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isDisplayed()))
+    }
+  }
+
 
   @Qualifier
   annotation class TestDispatcher
