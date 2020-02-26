@@ -190,8 +190,6 @@ class ProfileResetPinActivityTest {
       onView(withId(R.id.profile_reset_save_button)).check(matches(isDisplayed()))
     }
   }
-
-
   @Qualifier
   annotation class TestDispatcher
 
