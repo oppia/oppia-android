@@ -87,7 +87,6 @@ class TopicPracticeFragmentTest {
     }
   }
 
-
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_isSuccessful() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
