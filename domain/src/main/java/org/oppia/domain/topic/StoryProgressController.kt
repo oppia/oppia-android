@@ -115,32 +115,22 @@ class StoryProgressController @Inject constructor(
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
         val chapterPlayState = ChapterPlayState.COMPLETED
 
-        val storyProgress =
-          if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
-            val storyProgressBuilder = StoryProgress.newBuilder()
-              .setStoryId(storyId)
-              .putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
-              .putChapterProgress(explorationId, chapterPlayState)
-            storyProgressBuilder.build()
-          } else {
-            val storyProgressBuilder = StoryProgress.newBuilder().putChapterProgress(
-              explorationId,
-              chapterPlayState
-            )
-            storyProgressBuilder.build()
-          }
-
-        val topicProgress = if (topicProgressDatabase.topicProgressMap[topicId] != null) {
-          val topicProgressBuilder =
-            TopicProgress.newBuilder()
-              .setTopicId(topicId)
-              .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
-              .putStoryProgress(storyId, storyProgress)
-          topicProgressBuilder.build()
-        } else {
-          val topicProgressBuilder = TopicProgress.newBuilder().putStoryProgress(storyId, storyProgress)
-          topicProgressBuilder.build()
+        val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)
+        if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
+          storyProgressBuilder.putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
         }
+        storyProgressBuilder.putChapterProgress(explorationId, chapterPlayState)
+        val storyProgress = storyProgressBuilder.build()
+
+        val topicProgressBuilder =
+          TopicProgress.newBuilder().setTopicId(topicId).putStoryProgress(storyId, storyProgress)
+        if (topicProgressDatabase.topicProgressMap[topicId] != null) {
+          topicProgressBuilder
+            .setTopicId(topicId)
+            .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
+        }
+        topicProgressBuilder.putStoryProgress(storyId, storyProgress)
+        val topicProgress = topicProgressBuilder.build()
 
         val topicDatabaseBuilder = topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
         Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
