@@ -164,38 +164,43 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
-    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    activityScenario.recreate()
-    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).check(matches(isChecked()))
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      click()
+    )
+    onView(isRoot()).perform(orientationLandscape())
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).check(
+      matches(isChecked())
+    )
   }
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
     onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    activityScenario.recreate()
-    onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.topic_practice_skill_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        10
+      )
+    )
     onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
   }
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
-    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    activityScenario.recreate()
-    onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
+    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      click()
+    )
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.topic_practice_skill_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        10
+      )
+    )
     onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_configurationChange_TitleisCorrect() {
+  fun testTopicPracticeFragment_loadFragment_configurationChange_titleisCorrect() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
