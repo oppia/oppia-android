@@ -27,7 +27,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
-      (activity as AppLanguageActivity).setResult(/* resultCode= */ REQUEST_CODE_APP_LANGUAGE, intent)
+      (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
       activity.finish()
     }
     createAdapter()

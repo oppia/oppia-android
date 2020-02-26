@@ -28,7 +28,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
       val message = prefSummaryValue
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
-      (activity as DefaultAudioActivity).setResult(/* resultCode= */REQUEST_CODE_AUDIO_LANGUAGE, intent)
+      (activity as DefaultAudioActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       activity.finish()
     }
     createAdapter()

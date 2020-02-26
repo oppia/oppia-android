@@ -2,6 +2,7 @@ package org.oppia.app.options
 
 import android.content.Intent
 import android.os.Bundle
+import android.preference.Preference
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -191,7 +192,7 @@ class OptionsFragment @Inject constructor(
           }
         }
       }
-      true
+      /* Boolean`= */true
     }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -209,7 +210,6 @@ class OptionsFragment @Inject constructor(
         bindPreferenceSummaryToValue(audioLanguage, findPreference(getString(R.string.key_default_audio)))
       }
     }
-
   }
 
   private fun getProfileData(): LiveData<Profile> {
