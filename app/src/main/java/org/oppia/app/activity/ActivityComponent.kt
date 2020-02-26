@@ -40,6 +40,7 @@ import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.topic.reviewcard.ReviewCardActivity
 import javax.inject.Provider
 
 /** Root subcomponent for all activities. */
@@ -85,6 +86,7 @@ interface ActivityComponent {
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
   fun inject(recentlyPlayedFragmentTestActivity: RecentlyPlayedFragmentTestActivity)
+  fun inject(reviewCardActivity: ReviewCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(storyTextSizeActivity: StoryTextSizeActivity)

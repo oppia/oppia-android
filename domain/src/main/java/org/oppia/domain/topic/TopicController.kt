@@ -15,6 +15,8 @@ import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
+import org.oppia.app.model.SubtopicThumbnail
+import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
@@ -36,6 +38,9 @@ const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val FRACTIONS_SUBTOPIC_ID_1 = "1"
+const val FRACTIONS_SUBTOPIC_ID_2 = "2"
+const val FRACTIONS_SUBTOPIC_ID_3 = "3"
+const val FRACTIONS_SUBTOPIC_ID_4 = "4"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
@@ -190,6 +195,12 @@ class TopicController @Inject constructor(
   private fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      FRACTIONS_SUBTOPIC_ID_2 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      FRACTIONS_SUBTOPIC_ID_3 -> createSubtopicFromJson(
         "fractions_subtopics.json"
       )
       else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
@@ -442,6 +453,7 @@ class TopicController @Inject constructor(
       }
       val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
         .setTitle(currentSubtopicJsonObject.optString("title"))
+        .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject.optString("id")))
         .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
     }
@@ -747,6 +759,26 @@ class TopicController @Inject constructor(
         .build()
       else -> SkillThumbnail.newBuilder()
         .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+    }
+  }
+
+  private fun createSubtopicThumbnail(subtopicId: String): SubtopicThumbnail {
+    return when (subtopicId) {
+      FRACTIONS_SUBTOPIC_ID_1 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_2 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.FRACTION_OF_A_GROUP)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_3 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.MIXED_NUMBERS)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_4 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.ADDING_FRACTIONS)
+        .build()
+      else -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.THE_NUMBER_LINE)
         .build()
     }
   }

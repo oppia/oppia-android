@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.model.SkillSummary
+import org.oppia.app.model.Subtopic
 import javax.inject.Inject
 
 /** Fragment that card for topic review. */
-class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
+class TopicReviewFragment : InjectableFragment(), ReviewSubtopicSelector {
   @Inject lateinit var topicReviewFragmentPresenter: TopicReviewFragmentPresenter
 
   override fun onAttach(context: Context) {
@@ -22,7 +22,7 @@ class TopicReviewFragment : InjectableFragment(), ReviewSkillSelector {
     return topicReviewFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onTopicReviewSummaryClicked(skillSummary: SkillSummary) {
-    topicReviewFragmentPresenter.onTopicReviewSummaryClicked(skillSummary)
+  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
+    topicReviewFragmentPresenter.onTopicReviewSummaryClicked(subtopic)
   }
 }

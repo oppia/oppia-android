@@ -28,6 +28,7 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="review_card_toolbar_title">Review Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
@@ -137,9 +138,9 @@
   <string name="admin_pin_submit">Submit</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name (required)</string>
-  <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
+  <string name="add_profile_input_name">Name*</string>
+  <string name="add_profile_input_pin">3-Digit PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
   <string name="add_profile_create_btn">Create</string>
@@ -219,6 +220,8 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
+  <string name="add_profile_required">*Required</string>
   <!-- OptionsActivity -->
   <string name="key_story_text_size">key_story_text_size</string>
   <string name="key_app_language">key_app_language</string>
