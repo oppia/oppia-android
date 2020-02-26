@@ -8,8 +8,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -71,7 +71,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
   }
@@ -79,7 +79,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
     }
   }
@@ -87,7 +87,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(TEST_TOPIC_ID).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
   }
