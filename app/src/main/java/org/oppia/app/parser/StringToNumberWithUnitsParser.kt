@@ -148,11 +148,20 @@ class StringToNumberWithUnitsParser {
     } else {
       type = "real"
     }
-
-    if (type.equals("fraction"))
-      return stringToFractionParser.getRealTimeAnswerError(rawInput).getErrorMessageFromStringRes(context)
-    else
-      return stringToNumberParser.getRealTimeAnswerError(rawInput).getErrorMessageFromStringRes(context)
+    if (value.isEmpty()) {
+      return when {
+        rawInput.startsWith(".") -> NumberWithUnitsParsingError.STARTING_WITH_FLOATING_POINT.getErrorMessageFromStringRes(context)
+        rawInput.count { it == '.' } > 1 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
+        rawInput.startsWith("/") -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
+        rawInput.count { it == '/' } > 1 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
+        rawInput.lastIndexOf('-') > 0 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
+        else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
+      }
+    } else
+      if (type.equals("fraction"))
+        return stringToFractionParser.getRealTimeAnswerError(value).getErrorMessageFromStringRes(context)
+      else
+        return stringToNumberParser.getRealTimeAnswerError(value).getErrorMessageFromStringRes(context)
   }
 
   fun getNumberWithUnitsSubmitTimeError(rawInput: String, context: Context): String? {
@@ -226,11 +235,11 @@ class StringToNumberWithUnitsParser {
       }
     }
     if (type.equals("fraction"))
-      return stringToFractionParser.getSubmitTimeError(rawInput).getErrorMessageFromStringRes(
+      return stringToFractionParser.getSubmitTimeError(value).getErrorMessageFromStringRes(
         context
       )
     else
-      return stringToNumberParser.getSubmitTimeError(rawInput).getErrorMessageFromStringRes(
+      return stringToNumberParser.getSubmitTimeError(value).getErrorMessageFromStringRes(
         context
       )
     return NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
@@ -249,12 +258,12 @@ class StringToNumberWithUnitsParser {
   /** Enum to store the errors of [NumberWithUnitsInputInteractionView]. */
   enum class NumberWithUnitsParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
-    INVALID_CURRENCY_FORMAT(error = R.string.fraction_error_invalid_chars),
-    INVALID_CURRENCY(error = R.string.fraction_error_invalid_chars),
-    INVALID_VALUE(error = R.string.fraction_error_invalid_chars),
-    INVALID_UNIT_CHARS(error = R.string.fraction_error_invalid_format),
-    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
-    NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+    INVALID_CURRENCY(error = R.string.number_with_units_error_invalid_currency),
+    INVALID_CURRENCY_FORMAT(error = R.string.number_with_units_error_invalid_currency_format),
+    INVALID_FORMAT(error = R.string.number_error_invalid_format),
+    INVALID_UNIT_CHARS(error = R.string.number_with_units_error_invalid_unit_chars),
+    INVALID_VALUE(error = R.string.number_with_units_error_invalid_value),
+    STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
