@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -40,6 +41,8 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -160,7 +163,6 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
     activityScenario.onActivity { activity ->
@@ -171,7 +173,6 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
     onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     activityScenario.onActivity { activity ->
@@ -183,7 +184,6 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
     onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
     activityScenario.onActivity { activity ->
@@ -193,6 +193,21 @@ class TopicPracticeFragmentTest {
     onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
     onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
   }
+
+  @Test
+  fun testTopicPracticeFragment_loadFragment_configurationChange_TitleisCorrect() {
+    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(2).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+    }
+  }
+}
 
   private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
     val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
