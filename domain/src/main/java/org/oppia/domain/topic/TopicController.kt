@@ -126,6 +126,7 @@ class TopicController @Inject constructor(
       return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
     }
     val topicProgressDataProvider = storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
+
     return dataProviders.convertToLiveData(
       dataProviders.combine(
         COMBINE_TOPIC_PROVIDER_ID,
@@ -308,7 +309,7 @@ class TopicController @Inject constructor(
   private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
-      topic.storyList.forEach { storySummary ->
+      topic.storyList.forEachIndexed { storyIndex, storySummary ->
         val storyBuilder = storySummary.toBuilder()
         if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
           storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
@@ -328,19 +329,19 @@ class TopicController @Inject constructor(
               }
             }
           }
-          topicBuilder.addStory(storySummary)
+          topicBuilder.setStory(storyIndex, storyBuilder.build())
         } else {
           if (storySummary.chapterList.isNotEmpty()) {
             val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-            topicBuilder.addStory(updatedStorySummary)
+            topicBuilder.setStory(storyIndex, updatedStorySummary)
           }
         }
       }
     } else {
-      topic.storyList.forEach { storySummary ->
+      topic.storyList.forEachIndexed { storyIndex, storySummary ->
         if (storySummary.chapterList.isNotEmpty()) {
           val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-          topicBuilder.addStory(updatedStorySummary)
+          topicBuilder.setStory(storyIndex, updatedStorySummary)
         }
       }
     }

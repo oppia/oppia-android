@@ -908,10 +908,7 @@ class TopicControllerTest {
       topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
       advanceUntilIdle()
 
-      verifyGetOngoingTopicListSucceeded()
-
-      val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.topicCount).isEqualTo(0)
+      verifyGetOngoingTopicListFailed()
     }
 
   @Test
@@ -962,10 +959,7 @@ class TopicControllerTest {
       topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
-      verifyGetCompletedStoryListSucceeded()
-
-      val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
+      verifyGetCompletedStoryListFailed()
     }
 
   @Test

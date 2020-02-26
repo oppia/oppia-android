@@ -122,11 +122,9 @@ class StoryProgressController @Inject constructor(
         storyProgressBuilder.putChapterProgress(explorationId, chapterPlayState)
         val storyProgress = storyProgressBuilder.build()
 
-        val topicProgressBuilder =
-          TopicProgress.newBuilder().setTopicId(topicId).putStoryProgress(storyId, storyProgress)
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
         if (topicProgressDatabase.topicProgressMap[topicId] != null) {
           topicProgressBuilder
-            .setTopicId(topicId)
             .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
         }
         topicProgressBuilder.putStoryProgress(storyId, storyProgress)
