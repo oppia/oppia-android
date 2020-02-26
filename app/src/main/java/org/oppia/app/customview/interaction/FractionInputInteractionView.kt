@@ -18,7 +18,6 @@ import org.oppia.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 //  hint="Write fraction here."
 //  inputType="date"
 //  background="@drawable/edit_text_background"
-//  maxLength="200".
 
 /** The custom EditText class for fraction input interaction view. */
 class FractionInputInteractionView @JvmOverloads constructor(

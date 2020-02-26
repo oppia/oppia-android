@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+      type="org.oppia.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel" />
   </data>
 
   <LinearLayout
@@ -22,14 +22,13 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <org.oppia.app.customview.interaction.FractionInputInteractionView
-      android:id="@+id/fraction_input_interaction_view"
+    <org.oppia.app.customview.interaction.NumberWithUnitsInputInteractionView
+      android:id="@+id/number_with_units_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
       android:digits="0123456789/- "
       android:fontFamily="sans-serif"
-      android:hint="@{viewModel.hintText}"
       android:imeOptions="actionDone"
       android:inputType="date"
       android:longClickable="false"
@@ -55,6 +54,6 @@
       android:text="@{viewModel.errorMessage.get()}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{viewModel.errorMessage.get().length()>0? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{viewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
   </LinearLayout>
 </layout>

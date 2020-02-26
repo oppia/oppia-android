@@ -12,6 +12,10 @@
       type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
 
     <variable
+      name="numberWithUnitsInputViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel" />
+
+    <variable
       name="numericInputViewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
 
@@ -71,14 +75,35 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
-      android:focusable="true"
       android:fontFamily="sans-serif"
-      android:hint="Write number with units here."
+      android:hint="@string/number_with_units_default_hint_text"
       android:imeOptions="actionNext"
       android:longClickable="false"
       android:maxLength="200"
-      android:padding="8dp"
-      android:singleLine="true" />
+      android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:singleLine="true"
+      android:text="@={numberWithUnitsInputViewModel.answerText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{numberWithUnitsInputViewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/number_with_units_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{numberWithUnitsInputViewModel.errorMessage.get()}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{numberWithUnitsInputViewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/test_number_input_interaction_view"
@@ -86,8 +111,8 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
-      android:fontFamily="sans-serif"
       android:focusable="true"
+      android:fontFamily="sans-serif"
       android:hint="Write the digit here."
       android:imeOptions="actionNext"
       android:longClickable="false"

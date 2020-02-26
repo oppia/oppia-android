@@ -13,6 +13,7 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
@@ -28,6 +29,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
+  lateinit var numberWithUnitsInputViewModel: NumberWithUnitsInputViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
     interactionAnswerErrorReceiver = this
@@ -39,7 +41,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
+    binding = DataBindingUtil.setContentView(
       this, R.layout.activity_input_interaction_view_test
     )
     fractionInteractionViewModel = FractionInteractionViewModel(
@@ -47,13 +49,21 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
       context = this,
       interactionAnswerErrorReceiver = this
     )
+    numberWithUnitsInputViewModel = NumberWithUnitsInputViewModel(
+      interaction = Interaction.getDefaultInstance(),
+      context = this,
+      interactionAnswerErrorReceiver = this
+    )
+
+    binding.fractionInteractionViewModel = fractionInteractionViewModel
+    binding.numberWithUnitsInputViewModel = numberWithUnitsInputViewModel
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
-    binding.fractionInteractionViewModel = fractionInteractionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    numberWithUnitsInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 

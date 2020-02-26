@@ -24,6 +24,7 @@ import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.NumberWithUnitsInteractionItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -49,6 +50,7 @@ import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
+import org.oppia.app.player.state.itemviewmodel.NumberWithUnitsInputViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
@@ -220,6 +222,12 @@ class StateFragmentPresenter @Inject constructor(
         inflateDataBinding = FractionInteractionItemBinding::inflate,
         setViewModel = FractionInteractionItemBinding::setViewModel,
         transformViewModel = { it as FractionInteractionViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NUMBER_WITH_UNIT_INPUT_INTERACTION,
+        inflateDataBinding = NumberWithUnitsInteractionItemBinding::inflate,
+        setViewModel = NumberWithUnitsInteractionItemBinding::setViewModel,
+        transformViewModel = { it as NumberWithUnitsInputViewModel }
       )
       .registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,

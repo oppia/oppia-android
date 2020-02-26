@@ -51,6 +51,18 @@ class InteractionViewModelModule {
 
   @Provides
   @IntoMap
+  @StringKey("NumberWithUnits")
+  fun provideNumberWithUnitsInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { _, interaction, _, interactionAnswerHandler ->
+      NumberWithUnitsInputViewModel(
+        interaction, context,
+        interactionAnswerHandler
+      )
+    }
+  }
+
+  @Provides
+  @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
     return { _, _, _, interactionAnswerHandler -> NumericInputViewModel(context, interactionAnswerHandler) }
