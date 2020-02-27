@@ -30,6 +30,7 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.reviewcard.ReviewCardFragment
 import org.oppia.app.view.ViewComponent
+import org.oppia.app.walkthrough.WalkthroughFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
@@ -58,6 +59,7 @@ interface FragmentComponent {
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
+  fun inject(walkthroughFragment: WalkthroughFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)

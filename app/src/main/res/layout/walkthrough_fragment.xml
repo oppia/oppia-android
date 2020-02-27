@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <data>
+
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.walkthrough.WalkthroughFragmentPresenter" />
+
+  </data>
+</layout>
