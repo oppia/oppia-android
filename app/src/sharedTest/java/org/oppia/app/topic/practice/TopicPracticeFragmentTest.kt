@@ -192,7 +192,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelect() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
