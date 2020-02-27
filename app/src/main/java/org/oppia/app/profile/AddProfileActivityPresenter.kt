@@ -100,8 +100,10 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+     openGalleryIntent()
+    }
+    binding.editImageFab.setOnClickListener {
+      openGalleryIntent()
     }
 
     binding.createButton.setOnClickListener {
@@ -134,6 +136,11 @@ class AddProfileActivityPresenter @Inject constructor(
           handleAddProfileResult(it, binding)
         })
     }
+  }
+
+  private fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
@@ -236,25 +243,25 @@ class AddProfileActivityPresenter @Inject constructor(
   private fun getAddProfileViewModel(): AddProfileViewModel {
     return viewModelProvider.getForActivity(activity, AddProfileViewModel::class.java)
   }
-
-  fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(KEY_NAME_INPUT_ERROR_MESSAGE, profileViewModel.nameErrorMsg.get())
-    bundle.putString(KEY_PIN_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
-    bundle.putString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
-  }
-
-  fun handleOnRestoreInstanceState(bundle: Bundle) {
-    val errorMessageName = bundle.getString(KEY_NAME_INPUT_ERROR_MESSAGE)
-    if (errorMessageName != null && errorMessageName.isNotEmpty()) {
-      profileViewModel.nameErrorMsg.set(errorMessageName)
-    }
-    val errorMessagePin = bundle.getString(KEY_PIN_INPUT_ERROR_MESSAGE)
-    if (errorMessagePin != null && errorMessagePin.isNotEmpty()) {
-      profileViewModel.pinErrorMsg.set(errorMessagePin)
-    }
-    val errorMessagePinConfirm = bundle.getString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE)
-    if (errorMessagePinConfirm != null && errorMessagePinConfirm.isNotEmpty()) {
-      profileViewModel.confirmPinErrorMsg.set(errorMessagePinConfirm)
-    }
-  }
+//
+//  fun handleOnSavedInstanceState(bundle: Bundle) {
+//    bundle.putString(KEY_NAME_INPUT_ERROR_MESSAGE, profileViewModel.nameErrorMsg.get())
+//    bundle.putString(KEY_PIN_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
+//    bundle.putString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE, profileViewModel.pinErrorMsg.get())
+//  }
+//
+//  fun handleOnRestoreInstanceState(bundle: Bundle) {
+//    val errorMessageName = bundle.getString(KEY_NAME_INPUT_ERROR_MESSAGE)
+//    if (errorMessageName != null && errorMessageName.isNotEmpty()) {
+//      profileViewModel.nameErrorMsg.set(errorMessageName)
+//    }
+//    val errorMessagePin = bundle.getString(KEY_PIN_INPUT_ERROR_MESSAGE)
+//    if (errorMessagePin != null && errorMessagePin.isNotEmpty()) {
+//      profileViewModel.pinErrorMsg.set(errorMessagePin)
+//    }
+//    val errorMessagePinConfirm = bundle.getString(KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE)
+//    if (errorMessagePinConfirm != null && errorMessagePinConfirm.isNotEmpty()) {
+//      profileViewModel.confirmPinErrorMsg.set(errorMessagePinConfirm)
+//    }
+//  }
 }
