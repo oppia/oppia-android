@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.CategoryBinding
 
-class CustomAdapter(private val context: Context, private val arrayList: ArrayList<CategoryViewModel>) :
-  RecyclerView.Adapter<CustomAdapter.CustomView>() {
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomAdapter.CustomView {
+class HomeCategoryAdapter(private val context: Context, private val arrayList: ArrayList<HomeViewModel>) :
+  RecyclerView.Adapter<HomeCategoryAdapter.CustomView>() {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeCategoryAdapter.CustomView {
     val layoutInflater = LayoutInflater.from(parent.context)
-    val categoryBinding:CategoryBinding = DataBindingUtil.inflate(layoutInflater , R.layout.help_recyclerview_single_item_layout,parent,false)
+    val categoryBinding: CategoryBinding = DataBindingUtil.inflate(layoutInflater , R.layout.help_recyclerview_single_item_layout,parent,false)
     return CustomView(categoryBinding)
   }
 
@@ -20,14 +20,14 @@ class CustomAdapter(private val context: Context, private val arrayList: ArrayLi
     return arrayList.size
   }
 
-  override fun onBindViewHolder(holder: CustomAdapter.CustomView, position: Int) {
+  override fun onBindViewHolder(holder: HomeCategoryAdapter.CustomView, position: Int) {
     val categoryViewModel = arrayList[position]
     holder.bind(categoryViewModel)
   }
 
   class CustomView(val categoryBinding: CategoryBinding):RecyclerView.ViewHolder(categoryBinding.root){
-    fun bind(categoryViewModel: CategoryViewModel){
-      this.categoryBinding.categorymodel = categoryViewModel
+    fun bind(homeViewModel: HomeViewModel){
+      this.categoryBinding.homemodel = homeViewModel
       categoryBinding.executePendingBindings()
     }
   }

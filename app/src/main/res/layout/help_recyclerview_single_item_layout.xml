@@ -5,8 +5,8 @@
 
   <data class="CategoryBinding">
     <variable
-      name="categorymodel"
-      type="org.oppia.app.help.CategoryViewModel" />
+      name="homemodel"
+      type="org.oppia.app.help.HomeViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,8 +21,9 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
       android:padding="@dimen/padding_24dp"
-      android:text="@{categorymodel.title}"
+      android:text="@{homemodel.title}"
       android:background="@color/white_70"
+      android:layout_marginTop="@dimen/dot_gap"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
