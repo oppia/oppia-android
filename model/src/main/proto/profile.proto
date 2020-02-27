@@ -14,7 +14,7 @@ message ProfileDatabase {
   bool was_profile_ever_added = 2;
 
   // Mapping from unique ID to profile.
-  map<int32, Profile> profiles = 4;
+  map<int32, Profile> profiles = 3;
 }
 
 // Structure for a admin.
