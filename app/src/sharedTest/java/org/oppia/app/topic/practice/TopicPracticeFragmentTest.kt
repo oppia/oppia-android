@@ -2,7 +2,6 @@ package org.oppia.app.topic.practice
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -32,7 +31,6 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,7 +44,6 @@ import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -190,7 +187,8 @@ class TopicPracticeFragmentTest {
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
-      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))    }
+      onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
+    }
   }
 
   @Test
@@ -205,11 +203,12 @@ class TopicPracticeFragmentTest {
       onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_practice_skill_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(10))
-      onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))    }
+      onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
+    }
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_changeorientation_titleiscorrect() {
+  fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
     launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(

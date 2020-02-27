@@ -16,9 +16,9 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:barrierDirection="right"
     android:paddingStart="48dp"
-    android:paddingEnd="48dp">
+    android:paddingEnd="48dp"
+    app:barrierDirection="right">
 
     <androidx.constraintlayout.widget.Barrier
       android:id="@+id/topic_practice_subtopic_barrier"
@@ -31,13 +31,13 @@
       android:id="@+id/subtopic_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginStart="40dp"
+      android:layout_marginTop="16dp"
       android:button="@drawable/selector_checkbox"
       android:checked="@{isChecked}"
       android:fontFamily="sans-serif"
       android:gravity="top"
-      android:layout_marginTop="16dp"
       android:paddingStart="20dp"
-      android:layout_marginStart="40dp"
       android:paddingEnd="20dp"
       android:text="@{viewModel.subtopic.title}"
       android:textColor="@color/oppiaPrimaryText"
