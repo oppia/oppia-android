@@ -1126,8 +1126,7 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
