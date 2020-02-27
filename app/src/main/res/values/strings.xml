@@ -152,7 +152,7 @@
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_required">*Required</string>
-  <string name="add_profile_create_a_3_digit_pin_optional">Create a 3-Digit PIN (Optional)</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN (Optional)</string>
   <string name="add_profile_info_icon_content_description">Add profile info icon</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
@@ -222,6 +222,4 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
-  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
-  <string name="add_profile_required">*Required</string>
 </resources>
