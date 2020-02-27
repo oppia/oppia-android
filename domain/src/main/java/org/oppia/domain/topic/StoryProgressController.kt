@@ -56,10 +56,10 @@ class StoryProgressController @Inject constructor(
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
-  /** Indicates that the given story id does not have any associated story progress. */
+  /** Indicates that the given profile id does not have any associated story progress. */
   class StoryProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
 
-  /** Indicates that the given topic id does not have any associated topic progress. */
+  /** Indicates that the given profile id does not have any associated topic progress. */
   class TopicProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /** These Statuses correspond to the exceptions above such that if the deferred contains. */
@@ -81,6 +81,12 @@ class StoryProgressController @Inject constructor(
    * Records the specified chapter completed within the context of the specified exploration, story, topic. Returns a [LiveData] that
    * provides exactly one [AsyncResult] to indicate whether this operation has succeeded. This method will never return
    * a pending result.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
+   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
+   * @return a [LiveData] that indicates the success/failure of this record progress operation.
    */
   fun recordCompletedChapter(
     profileId: ProfileId,

@@ -120,7 +120,13 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
+  /**
+   * Fetch topic along with its progress based on topicId and profileId.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs fetched.
+   * @param topicId the ID corresponding to the topic which needs to be returned.
+   * @return a [LiveData] for [Topic] combined with [TopicProgress].
+   */
   fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
     val topicDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync retrieveTopicAsync(topicId)
@@ -166,7 +172,14 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [StorySummary] corresponding to the specified story ID, or a default StorySummary if there is none. */
+  /**
+   * Fetch story along with its progress for a particular profile.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs fetched.
+   * @param topicId the ID corresponding to the topic which contains this story.
+   * @param storyId the ID corresponding to the story which needs to be returned.
+   * @return a [LiveData] for [StorySummary] combined with [StoryProgress].
+   */
   fun getStory(profileId: ProfileId, topicId: String, storyId: String): LiveData<AsyncResult<StorySummary>> {
     val storyDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync retrieveStoryAsync(storyId)
@@ -306,9 +319,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  /**
-   * Combines the specified topic and topic-progress into a new topic.
-   */
+  /** Combines the specified topic without progress and topic-progress into a topic. */
   private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
@@ -351,9 +362,7 @@ class TopicController @Inject constructor(
     return topicBuilder.build()
   }
 
-  /**
-   * Combines the specified story-summary and story-progress into a new topic.
-   */
+  /** Combines the specified story-summary without progress and story-progress into a new topic. */
   private fun combineStorySummaryAndStoryProgress(
     storySummary: StorySummary,
     storyProgress: StoryProgress
@@ -398,7 +407,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveTopicAsync(topicId: String): AsyncResult<Topic> {
+  private fun retrieveTopicAsync(topicId: String): AsyncResult<Topic> {
     return when (topicId) {
       TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
       TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
@@ -416,7 +425,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveStory(storyId: String): StorySummary {
+  private fun retrieveStory(storyId: String): StorySummary {
     return when (storyId) {
       TEST_STORY_ID_0 -> createTestTopic0Story0()
       TEST_STORY_ID_1 -> createTestTopic0Story1()
@@ -428,7 +437,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveStoryAsync(storyId: String): AsyncResult<StorySummary> {
+  private fun retrieveStoryAsync(storyId: String): AsyncResult<StorySummary> {
     return when (storyId) {
       TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
       TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())

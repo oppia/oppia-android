@@ -45,14 +45,11 @@ class StoryProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var storyProgressController: StoryProgressController
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
