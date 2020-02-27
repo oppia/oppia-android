@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.itemviewmodel
+package org.oppia.app.parser
 
 import android.content.Context
 import android.content.res.Configuration
@@ -11,10 +11,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToNumberWithUnitsParser
 
 @RunWith(AndroidJUnit4::class)
-class FractionInteractionViewModelTest {
+class StringToNumberWithUnitsParserTest {
 
   private var context: Context? = null
   @Before
