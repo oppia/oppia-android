@@ -150,11 +150,13 @@ class StringToNumberWithUnitsParser {
     }
     if (value.isEmpty()) {
       return when {
-        rawInput.startsWith(".") -> NumberWithUnitsParsingError.STARTING_WITH_FLOATING_POINT.getErrorMessageFromStringRes(context)
-        rawInput.count { it == '.' } > 1 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
-        rawInput.startsWith("/") -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
-        rawInput.count { it == '/' } > 1 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
-        rawInput.lastIndexOf('-') > 0 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
+        units.startsWith(".") -> NumberWithUnitsParsingError.STARTING_WITH_FLOATING_POINT.getErrorMessageFromStringRes(
+          context
+        )
+        units.contains(".") || units.contains("/") -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(
+          context
+        )
+        units.lastIndexOf('-') > 0 -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
         else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
       }
     } else
