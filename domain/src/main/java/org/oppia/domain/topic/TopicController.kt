@@ -536,7 +536,7 @@ class TopicController @Inject constructor(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(chapterPlayState)
+          .setChapterPlayState(ChapterPlayState.COMPLETED)
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
