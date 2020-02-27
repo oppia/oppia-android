@@ -146,8 +146,9 @@
         android:id="@+id/upload_image_button"
         android:layout_width="136dp"
         android:layout_height="136dp"
+        android:elevation="2dp"
         android:paddingBottom="8dp"
-        android:src="@drawable/ic_account"
+        android:src="@drawable/ic_default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
