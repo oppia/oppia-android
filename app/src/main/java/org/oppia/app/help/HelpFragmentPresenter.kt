@@ -20,7 +20,7 @@ class HelpFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   private var recyclerView:RecyclerView ?= null
-  private var customAdapter:HomeCategoryAdapter?=null
+  private var customAdapter:HelpCategoryAdapter?=null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup? , context : Context): View? {
     val binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -29,11 +29,12 @@ class HelpFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     recyclerView = binding.root.findViewById(R.id.help_fragment_recycler_view) as RecyclerView
-    var homeViewModel:HomeViewModel = ViewModelProviders.of(fragment).get(HomeViewModel::class.java)
-    homeViewModel.getArrayList().observe(fragment, Observer { categoryViewModels ->
-      customAdapter = HomeCategoryAdapter(context,categoryViewModels!!)
+    var helpViewModel:HelpViewModel = ViewModelProviders.of(fragment).get(HelpViewModel::class.java)
+    helpViewModel.getArrayList().observe(fragment, Observer { categoryViewModels ->
+      customAdapter = HelpCategoryAdapter(context,categoryViewModels!!)
       recyclerView!!.setLayoutManager(LinearLayoutManager(context))
       recyclerView!!.setAdapter(customAdapter)
+      
     })
     return binding.root
   }

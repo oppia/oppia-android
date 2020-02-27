@@ -5,8 +5,8 @@
 
   <data class="CategoryBinding">
     <variable
-      name="homemodel"
-      type="org.oppia.app.help.HomeViewModel" />
+      name="helpmodel"
+      type="org.oppia.app.help.HelpViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
       android:padding="@dimen/padding_24dp"
-      android:text="@{homemodel.title}"
+      android:text="@{helpmodel.title}"
       android:background="@color/white_70"
       android:layout_marginTop="@dimen/dot_gap"
       app:layout_constraintStart_toStartOf="parent"

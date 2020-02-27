@@ -19,6 +19,7 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
+import org.oppia.app.help.FAQ.FAQFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -71,4 +72,5 @@ interface FragmentComponent {
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
+  fun inject(faqFragment: FAQFragment)
 }

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.CategoryBinding
 
-class HomeCategoryAdapter(private val context: Context, private val arrayList: ArrayList<HomeViewModel>) :
-  RecyclerView.Adapter<HomeCategoryAdapter.CustomView>() {
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeCategoryAdapter.CustomView {
+class HelpCategoryAdapter(private val context: Context, private val arrayList: ArrayList<HelpViewModel>) :
+  RecyclerView.Adapter<HelpCategoryAdapter.CustomView>() {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HelpCategoryAdapter.CustomView {
     val layoutInflater = LayoutInflater.from(parent.context)
     val categoryBinding: CategoryBinding = DataBindingUtil.inflate(layoutInflater , R.layout.help_recyclerview_single_item_layout,parent,false)
     return CustomView(categoryBinding)
@@ -20,14 +20,14 @@ class HomeCategoryAdapter(private val context: Context, private val arrayList: A
     return arrayList.size
   }
 
-  override fun onBindViewHolder(holder: HomeCategoryAdapter.CustomView, position: Int) {
+  override fun onBindViewHolder(holder: HelpCategoryAdapter.CustomView, position: Int) {
     val categoryViewModel = arrayList[position]
     holder.bind(categoryViewModel)
   }
 
   class CustomView(val categoryBinding: CategoryBinding):RecyclerView.ViewHolder(categoryBinding.root){
-    fun bind(homeViewModel: HomeViewModel){
-      this.categoryBinding.homemodel = homeViewModel
+    fun bind(helpViewModel: HelpViewModel){
+      this.categoryBinding.helpmodel = helpViewModel
       categoryBinding.executePendingBindings()
     }
   }
