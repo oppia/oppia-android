@@ -1,0 +1,121 @@
+{
+  "title": "Number with units",
+  "language_code": "en",
+  "param_specs": {},
+  "param_changes": [],
+  "init_state_name": "Introduction",
+  "states": {
+    "continue": {
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {}
+        }
+      },
+      "interaction": {
+        "solution": null,
+        "hints": [],
+        "id": "EndExploration",
+        "confirmed_unclassified_answers": [],
+        "customization_args": {
+          "recommendedExplorationIds": {
+            "value": []
+          }
+        },
+        "default_outcome": null,
+        "answer_groups": []
+      },
+      "param_changes": [],
+      "classifier_model_id": null,
+      "written_translations": {
+        "translations_mapping": {
+          "content": {}
+        }
+      },
+      "content": {
+        "html": "\u003cp\u003eend\u003c/p\u003e",
+        "content_id": "content"
+      },
+      "solicit_answer_details": false
+    },
+    "Introduction": {
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_2": {}
+        }
+      },
+      "interaction": {
+        "solution": null,
+        "hints": [],
+        "id": "NumberWithUnits",
+        "confirmed_unclassified_answers": [],
+        "customization_args": {},
+        "default_outcome": {
+          "feedback": {
+            "html": "\u003cp\u003etest\u003c/p\u003e",
+            "content_id": "default_outcome"
+          },
+          "param_changes": [],
+          "refresher_exploration_id": null,
+          "dest": "Introduction",
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "answer_groups": [{
+          "rule_specs": [{
+            "inputs": {
+              "f": {
+                "fraction": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 0,
+                  "denominator": 1
+                },
+                "real": 2.0,
+                "type": "real",
+                "units": [{
+                  "unit": "km",
+                  "exponent": 1
+                }, {
+                  "unit": "hr",
+                  "exponent": -1
+                }]
+              }
+            },
+            "rule_type": "IsEqualTo"
+          }],
+          "training_data": [],
+          "outcome": {
+            "feedback": {
+              "html": "\u003cp\u003etest\u003c/p\u003e",
+              "content_id": "feedback_2"
+            },
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "dest": "continue",
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "tagged_skill_misconception_id": null
+        }]
+      },
+      "param_changes": [],
+      "classifier_model_id": null,
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_2": {}
+        }
+      },
+      "content": {
+        "html": "\u003cp\u003eTest number with units\u003c/p\u003e",
+        "content_id": "content"
+      },
+      "solicit_answer_details": false
+    }
+  },
+  "correctness_feedback_enabled": false,
+  "objective": "what does the exploration help people to do?"
+}

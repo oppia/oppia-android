@@ -466,6 +466,7 @@ class TopicController @Inject constructor(
       .setStoryId(TEST_STORY_ID_0)
       .setStoryName("First Story")
       .addChapter(createTestTopic0Story0Chapter0())
+      .addChapter(createTestTopic0Story0Chapter1())
       .build()
   }
 
@@ -473,6 +474,16 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_30)
       .setName("Prototype Exploration")
+      .setSummary("This is the prototype exploration to verify interaction functionality.")
+      .setChapterPlayState(ChapterPlayState.COMPLETED)
+      .setChapterThumbnail(createChapterThumbnail0())
+      .build()
+  }
+
+  private fun createTestTopic0Story0Chapter1(): ChapterSummary {
+    return ChapterSummary.newBuilder()
+      .setExplorationId(NUMBER_WITH_UNITS_EXPLORATION_ID_1)
+      .setName("Number With Units")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
       .setChapterPlayState(ChapterPlayState.COMPLETED)
       .setChapterThumbnail(createChapterThumbnail0())

@@ -5,6 +5,7 @@ import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.NUMBER_WITH_UNITS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
@@ -41,6 +42,7 @@ class ExplorationRetriever @Inject constructor(
       RATIOS_EXPLORATION_ID_1 -> loadExplorationFromAsset("ratios_exploration1.json")
       RATIOS_EXPLORATION_ID_2 -> loadExplorationFromAsset("ratios_exploration2.json")
       RATIOS_EXPLORATION_ID_3 -> loadExplorationFromAsset("ratios_exploration3.json")
+      NUMBER_WITH_UNITS_EXPLORATION_ID_1 -> loadExplorationFromAsset("number_with_units.json")
       else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
     }
   }
