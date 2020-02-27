@@ -31,6 +31,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.AdminSettings
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
@@ -392,6 +393,46 @@ class ProfileManagementControllerTest {
       assertThat(updateResultCaptor.value.isFailure()).isTrue()
       assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
         .contains("ProfileId 6 does not match an existing Profile")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAllowDownloadAndUpdateOnlyOnWifi_addProfiles_updateDownloadAndUpdateOnlyOnWifi_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      profileManagementController.updateAllowDownloadAndUpdateOnlyOnWifi(profileId, AdminSettings.newBuilder().setAllowDownloadAndUpdateOnlyOnWifi(true))
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().allowDownloadAndUpdateOnlyOnWifi).isEqualTo(false)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAllowAutomaticallyUpdateTopics_addProfiles_automaticallyUpdateTopics_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      profileManagementController.updateAllowAutomaticallyUpdateTopics(profileId, AdminSettings.newBuilder().setAutomaticallyUpdateTopics(true))
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().automaticallyUpdateTopics).isEqualTo(false)
     }
 
   @Test

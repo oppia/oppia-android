@@ -14,7 +14,16 @@ message ProfileDatabase {
   bool was_profile_ever_added = 2;
 
   // Mapping from unique ID to profile.
-  map<int32, Profile> profiles = 3;
+  map<int32, Profile> profiles = 4;
+}
+
+// Structure for a admin.
+message AdminSettings{
+  // Determines whether profile can download and update content only on wifi.
+  bool allow_download_and_update_only_on_wifi = 1;
+
+  // Determines whether profile can automatically update new contents of topics.
+  bool automatically_update_topics = 2;
 }
 
 // Structure for a single profile.
@@ -53,6 +62,9 @@ message Profile {
 
   // Represents user selected app-language.
   AppLanguage app_language = 12;
+
+  // Determine admins settings.
+  AdminSettings adminSettings = 13;
 }
 
 // Represents a profile avatar image.
