@@ -138,6 +138,34 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Updates whether to allow download and update only on wifi or not for admin settings.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param allowDownloadAndUpdateOnlyOnWifi New download access status for the profile being updated only on wifi.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateAllowDownloadAndUpdateOnlyOnWifi(
+    profileId: ProfileId, adminSettings: AdminSettings.Builder
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDatabaseBuilder =
+        it.toBuilder()
+          .putProfiles(profileId.internalId, profile.toBuilder().setAdminSettings(adminSettings).build())
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND_UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+
+  /**
    * Adds a new profile with the specified parameters.
    *
    * @param name Name of the new profile.
@@ -283,55 +311,55 @@ class ProfileManagementController @Inject constructor(
       })
   }
 
-  /**
-   * Updates whether to allow download and update only on wifi or not for admin settings.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param allowDownloadAndUpdateOnlyOnWifi New download access status for the profile being updated only on wifi.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  fun updateAllowDownloadAndUpdateOnlyOnWifi(
-    profileId: ProfileId, adminSettings: AdminSettings.Builder
-  ): LiveData<AsyncResult<Any?>> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-        it,
-        ProfileActionStatus.PROFILE_NOT_FOUND
-      )
-      val updatedProfile = profile.toBuilder().setAdminSettings(adminSettings).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND_UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-      })
-  }
-
-  /**
-   * Updates whether to allow automatic update of topics for admin settings.
-   *
-   * @param profileId the ID corresponding to the profile being updated.
-   * @param allowAutomaticallyUpdateOfTopics automatically update new contents of topics.
-   * @return a [LiveData] that indicates the success/failure of this update operation.
-   */
-  fun updateAllowAutomaticallyUpdateTopics(
-    profileId: ProfileId, adminSettings: AdminSettings.Builder
-  ): LiveData<AsyncResult<Any?>> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-        it,
-        ProfileActionStatus.PROFILE_NOT_FOUND
-      )
-      val updatedProfile = profile.toBuilder().setAdminSettings(adminSettings).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_AUTOMATICALLY_UPDATE_TOPICS_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-      })
-  }
+//  /**
+//   * Updates whether to allow download and update only on wifi or not for admin settings.
+//   *
+//   * @param profileId the ID corresponding to the profile being updated.
+//   * @param allowDownloadAndUpdateOnlyOnWifi New download access status for the profile being updated only on wifi.
+//   * @return a [LiveData] that indicates the success/failure of this update operation.
+//   */
+//  fun updateAllowDownloadAndUpdateOnlyOnWifi(
+//    profileId: ProfileId, adminSettings: AdminSettings.Builder
+//  ): LiveData<AsyncResult<Any?>> {
+//    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+//      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+//        it,
+//        ProfileActionStatus.PROFILE_NOT_FOUND
+//      )
+//      val updatedProfile = profile.toBuilder().setAdminSettings(adminSettings).build()
+//      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+//      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+//    }
+//    return dataProviders.convertToLiveData(
+//      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND_UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
+//        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+//      })
+//  }
+//
+//  /**
+//   * Updates whether to allow automatic update of topics for admin settings.
+//   *
+//   * @param profileId the ID corresponding to the profile being updated.
+//   * @param allowAutomaticallyUpdateOfTopics automatically update new contents of topics.
+//   * @return a [LiveData] that indicates the success/failure of this update operation.
+//   */
+//  fun updateAllowAutomaticallyUpdateTopics(
+//    profileId: ProfileId, adminSettings: AdminSettings.Builder
+//  ): LiveData<AsyncResult<Any?>> {
+//    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+//      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+//        it,
+//        ProfileActionStatus.PROFILE_NOT_FOUND
+//      )
+//      val updatedProfile = profile.toBuilder().setAdminSettings(adminSettings).build()
+//      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+//      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+//    }
+//    return dataProviders.convertToLiveData(
+//      dataProviders.createInMemoryDataProviderAsync(UPDATE_AUTOMATICALLY_UPDATE_TOPICS_TRANSFORMED_PROVIDER_ID) {
+//        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+//      })
+//  }
 
   /**
    * Updates the story text size of the profile.

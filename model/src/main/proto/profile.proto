@@ -15,6 +15,9 @@ message ProfileDatabase {
 
   // Mapping from unique ID to profile.
   map<int32, Profile> profiles = 3;
+
+  // Mapping from unique ID to profile.
+  AdminSettings adminSettings = 4;
 }
 
 // Structure for admin settings.
