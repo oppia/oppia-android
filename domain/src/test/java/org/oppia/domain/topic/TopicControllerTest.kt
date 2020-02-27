@@ -37,6 +37,7 @@ import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.Question
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
+import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.util.caching.CacheAssetsLocally
@@ -68,11 +69,9 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
 
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Inject lateinit var dataProviders: DataProviders
 
@@ -142,8 +141,10 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly(TEST_SKILL_ID_0, TEST_SKILL_ID_1,
-      TEST_SKILL_ID_1, TEST_SKILL_ID_1).inOrder()
+    assertThat(getSkillIds(topic)).containsExactly(
+      TEST_SKILL_ID_0, TEST_SKILL_ID_1,
+      TEST_SKILL_ID_1, TEST_SKILL_ID_1
+    ).inOrder()
   }
 
   @Test
@@ -164,7 +165,7 @@ class TopicControllerTest {
     val topic = topicLiveData.value!!.getOrThrow()
     assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
     assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
-    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
   }
 
   @Test
@@ -385,8 +386,8 @@ class TopicControllerTest {
     val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
 
     val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
-    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
   }
 
@@ -591,7 +592,8 @@ class TopicControllerTest {
       "Given a picture divided into unequal parts, write the fraction."
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>First, divide the picture into equal parts")
+      "<p>First, divide the picture into equal parts"
+    )
   }
 
   @Test
@@ -613,7 +615,8 @@ class TopicControllerTest {
       "Derive a ratio from a description or a picture"
     )
     assertThat(conceptCard.explanation.html).contains(
-      "<p>A ratio represents a relative relationship between two or more amounts.")
+      "<p>A ratio represents a relative relationship between two or more amounts."
+    )
   }
 
   @Test
@@ -621,6 +624,31 @@ class TopicControllerTest {
     val conceptCardLiveData = topicController.getConceptCard("invalid_skill_id")
 
     assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
+    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
+    val reviewCardResult = reviewCardLiveData.value
+    assertThat(reviewCardResult).isNotNull()
+    assertThat(reviewCardResult!!.isSuccess()).isTrue()
+    assertThat(reviewCardResult.getOrThrow().pageContents.html).isEqualTo("<p>Description of subtopic is here.</p>")
+  }
+
+  @Test
+  fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.subtopicList.get(0).subtopicThumbnail.thumbnailGraphic).isEqualTo(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
+  }
+
+  @Test
+  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() {
+    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+    val topic = topicLiveData.value!!.getOrThrow()
+    assertThat(topic.subtopicList.get(0).thumbnailUrl).isEmpty()
+    assertThat(topic.subtopicList.get(1).thumbnailUrl).isEmpty()
   }
 
   @Test

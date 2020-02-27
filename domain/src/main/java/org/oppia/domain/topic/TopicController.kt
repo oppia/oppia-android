@@ -8,11 +8,15 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.Question
+import org.oppia.app.model.ReviewCard
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Subtopic
+import org.oppia.app.model.SubtopicThumbnail
+import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
@@ -33,6 +37,10 @@ const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
+const val FRACTIONS_SUBTOPIC_ID_1 = "1"
+const val FRACTIONS_SUBTOPIC_ID_2 = "2"
+const val FRACTIONS_SUBTOPIC_ID_3 = "3"
+const val FRACTIONS_SUBTOPIC_ID_4 = "4"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
@@ -170,6 +178,33 @@ class TopicController @Inject constructor(
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
       }
     )
+  }
+
+  /** Returns the [ReviewCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
+  fun getReviewCard(topicId: String, subtopicId: String): LiveData<AsyncResult<ReviewCard>> {
+    return MutableLiveData(
+      try {
+        AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
+      } catch (e: Exception) {
+        AsyncResult.failed<ReviewCard>(e)
+      }
+    )
+  }
+
+  // TODO(#45): Expose this as a data provider, or omit if it's not needed.
+  private fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
+    return when (subtopicId) {
+      FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      FRACTIONS_SUBTOPIC_ID_2 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      FRACTIONS_SUBTOPIC_ID_3 -> createSubtopicFromJson(
+        "fractions_subtopics.json"
+      )
+      else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
+    }
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -366,10 +401,13 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  /** Utility to create a topic from its json representation. The json file is expected to have
-   * a key called 'topic' that holds the topic data. */
+  /**
+   * Creates topic from its json representation. The json file is expected to have
+   * a key called 'topic' that holds the topic data.
+   */
   private fun createTopicFromJson(topicFileName: String, skillFileName: String, storyFileName: String): Topic {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
+    val subtopicList: List<Subtopic> = createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -379,7 +417,47 @@ class TopicController @Inject constructor(
       .addAllStory(createStoriesFromJson(storyFileName))
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
+      .addAllSubtopic(subtopicList)
       .build()
+  }
+
+  /** Creates a sub-topic from its json representation. */
+  private fun createSubtopicFromJson(topicFileName: String): ReviewCard {
+    val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
+    val subtopicTitle = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getString("subtopic_title")!!
+    return ReviewCard.newBuilder()
+      .setSubtopicTitle(subtopicTitle)
+      .setPageContents(
+        SubtitledHtml.newBuilder()
+          .setHtml(subtopicData.getJSONObject("subtitled_html").getString("html"))
+          .setContentId(subtopicData.getJSONObject("subtitled_html").getString("content_id")).build()
+      )
+      .build()
+  }
+
+  /**
+   * Creates the subtopic list of a topic from its json representation. The json file is expected to have
+   * a key called 'subtopic' that contains an array of skill Ids,subtopic_id and title.
+   */
+  private fun createSubtopicListFromJsonArray(subtopicJsonArray: JSONArray?): List<Subtopic> {
+    val subtopicList = mutableListOf<Subtopic>()
+
+    for (i in 0 until subtopicJsonArray!!.length()) {
+      val skillIdList = ArrayList<String>()
+
+      val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
+
+      for (j in 0 until skillJsonArray.length()) {
+        skillIdList.add(skillJsonArray.optString(j))
+      }
+      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
+        .setTitle(currentSubtopicJsonObject.optString("title"))
+        .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject.optString("id")))
+        .addAllSkillIds(skillIdList).build()
+      subtopicList.add(subtopic)
+    }
+    return subtopicList
   }
 
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
@@ -388,8 +466,10 @@ class TopicController @Inject constructor(
     return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong).reduceRight(Long::plus)
   }
 
-  /** Utility to create the skill list of a topic from its json representation. The json file is expected to have
-   * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'. */
+  /**
+   * Creates a list of skill for topic from its json representation. The json file is expected to have
+   * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'.
+   */
   private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
     val skillList = mutableListOf<SkillSummary>()
     val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
@@ -407,8 +487,10 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  /** Utility to create the story list of a topic from its json representation. The json file is expected to have
-   * a key called 'story_list' that contains an array of story objects, each with the key 'story'. */
+  /**
+   * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
+   * a key called 'story_list' that contains an array of story objects, each with the key 'story'.
+   */
   private fun createStoriesFromJson(fileName: String): List<StorySummary> {
     val storyList = mutableListOf<StorySummary>()
     val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
@@ -418,7 +500,7 @@ class TopicController @Inject constructor(
     return storyList
   }
 
-  /** Utility to create a story of a topic given its json representation and the index of the story in json. */
+  /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
   private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
     val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
     if (storyData.length() < index) {
@@ -443,17 +525,18 @@ class TopicController @Inject constructor(
   private fun createChaptersFromJson(storyId: String, chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
     val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-    val chapterProgressMap = storyProgress.chapterProgressList.map { progress ->
-      progress.explorationId to progress
-    }.toMap()
+
+    val chapterProgressMap = storyProgress.chapterProgressMap
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
+      val chapterPlayState = chapterProgressMap[explorationId] ?: ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(chapterProgressMap.getValue(explorationId).playState)
+          .setChapterPlayState(chapterPlayState)
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
@@ -474,7 +557,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_30)
       .setName("Prototype Exploration")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
+      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createChapterThumbnail0())
       .build()
   }
@@ -494,7 +577,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
-      .setChapterPlayState(ChapterPlayState.COMPLETED)
+      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
       .setChapterThumbnail(createChapterThumbnail1())
       .build()
   }
@@ -504,7 +587,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_2)
       .setName("Third Exploration")
       .setSummary("This is the third exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_STARTED)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(createChapterThumbnail2())
       .build()
   }
@@ -676,6 +759,26 @@ class TopicController @Inject constructor(
         .build()
       else -> SkillThumbnail.newBuilder()
         .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+        .build()
+    }
+  }
+
+  private fun createSubtopicThumbnail(subtopicId: String): SubtopicThumbnail {
+    return when (subtopicId) {
+      FRACTIONS_SUBTOPIC_ID_1 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_2 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.FRACTION_OF_A_GROUP)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_3 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.MIXED_NUMBERS)
+        .build()
+      FRACTIONS_SUBTOPIC_ID_4 -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.ADDING_FRACTIONS)
+        .build()
+      else -> SubtopicThumbnail.newBuilder()
+        .setThumbnailGraphic(SubtopicThumbnailGraphic.THE_NUMBER_LINE)
         .build()
     }
   }

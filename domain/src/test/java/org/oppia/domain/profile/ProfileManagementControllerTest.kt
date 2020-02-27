@@ -31,9 +31,12 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -59,22 +62,20 @@ class ProfileManagementControllerTest {
 
   @Inject lateinit var context: Context
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
 
-  @Mock
-  lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
-  @Captor
-  lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
+  @Mock lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
+  @Captor lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
 
-  @Mock
-  lateinit var mockProfileObserver: Observer<AsyncResult<Profile>>
-  @Captor
-  lateinit var profileResultCaptor: ArgumentCaptor<AsyncResult<Profile>>
+  @Mock lateinit var mockProfileObserver: Observer<AsyncResult<Profile>>
+  @Captor lateinit var profileResultCaptor: ArgumentCaptor<AsyncResult<Profile>>
 
-  @Mock
-  lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
-  @Captor
-  lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
+  @Captor lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Mock lateinit var mockWasProfileAddedResultObserver: Observer<AsyncResult<Boolean>>
+  @Captor lateinit var wasProfileAddedResultCaptor: ArgumentCaptor<AsyncResult<Boolean>>
 
   private val PROFILES_LIST = listOf<Profile>(
     Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build(),
@@ -128,7 +129,10 @@ class ProfileManagementControllerTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
@@ -157,7 +161,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -179,7 +186,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       ).observeForever(mockUpdateResultObserver)
 
       verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -237,7 +247,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -383,6 +396,66 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testUpdateStoryTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAppLanguage_addProfiles_updateWithChineseLanguage_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE_APP_LANGUAGE)
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testUpdateAudioLanguage_addProfiles_updateWithFrenchLanguage_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      verify(mockProfileObserver, atLeastOnce()).onChanged(profileResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo(AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testDeleteProfile_addProfiles_deleteProfile_checkDeletionIsSuccessful() =
     runBlockingTest(coroutineContext) {
       addTestProfiles()
@@ -417,7 +490,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -501,6 +577,219 @@ class ProfileManagementControllerTest {
         )
     }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_checkIfProfileEverAdded() = runBlockingTest(coroutineContext) {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+    ).observeForever(mockUpdateResultObserver)
+    advanceUntilIdle()
+
+    val profileDatabase = readProfileDatabase()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileDatabase.wasProfileEverAdded).isEqualTo(false)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_getWasProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "12345",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.getWasProfileEverAdded()
+        .observeForever(mockWasProfileAddedResultObserver)
+
+      verify(mockWasProfileAddedResultObserver, atLeastOnce()).onChanged(wasProfileAddedResultCaptor.capture())
+      assertThat(wasProfileAddedResultCaptor.value.isSuccess()).isTrue()
+
+      val wasProfileEverAdded = wasProfileAddedResultCaptor.value.getOrThrow()
+      assertThat(wasProfileEverAdded).isFalse()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_checkIfProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "12345",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.addProfile(
+        name = "Rajat",
+        pin = "01234",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      val profileDatabase = readProfileDatabase()
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileDatabase.wasProfileEverAdded).isEqualTo(true)
+      assertThat(profileDatabase.profilesMap.size).isEqualTo(2)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_getWasProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "12345",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.addProfile(
+        name = "Rajat",
+        pin = "01234",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.getWasProfileEverAdded()
+        .observeForever(mockWasProfileAddedResultObserver)
+
+      verify(mockWasProfileAddedResultObserver, atLeastOnce()).onChanged(wasProfileAddedResultCaptor.capture())
+      assertThat(wasProfileAddedResultCaptor.value.isSuccess()).isTrue()
+
+      val wasProfileEverAdded = wasProfileAddedResultCaptor.value.getOrThrow()
+      assertThat(wasProfileEverAdded).isTrue()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_checkIfProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "12345",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.addProfile(
+        name = "Rajat",
+        pin = "01234",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+      profileManagementController.deleteProfile(profileId1)
+      advanceUntilIdle()
+
+      val profileDatabase = readProfileDatabase()
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileDatabase.profilesMap.size).isEqualTo(1)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_getWasProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "12345",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      profileManagementController.addProfile(
+        name = "Rajat",
+        pin = "01234",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+      profileManagementController.deleteProfile(profileId1)
+      advanceUntilIdle()
+
+      profileManagementController.getWasProfileEverAdded()
+        .observeForever(mockWasProfileAddedResultObserver)
+
+      verify(mockWasProfileAddedResultObserver, atLeastOnce()).onChanged(wasProfileAddedResultCaptor.capture())
+      assertThat(wasProfileAddedResultCaptor.value.isSuccess()).isTrue()
+
+      val wasProfileEverAdded = wasProfileAddedResultCaptor.value.getOrThrow()
+      assertThat(wasProfileEverAdded).isTrue()
+    }
+
   @ExperimentalCoroutinesApi
   private fun addTestProfiles() {
     PROFILES_LIST.forEach {
@@ -510,7 +799,10 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = it.allowDownloadAccess,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = it.storyTextSize,
+        appLanguage = it.appLanguage,
+        audioLanguage = it.audioLanguage
       )
     }
   }

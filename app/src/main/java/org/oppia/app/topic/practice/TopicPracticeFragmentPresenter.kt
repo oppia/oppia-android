@@ -5,97 +5,149 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.databinding.TopicPracticeFooterViewBinding
 import org.oppia.app.databinding.TopicPracticeFragmentBinding
+import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
+import org.oppia.app.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Topic
+import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
+import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
+import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
+import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val topicController: TopicController,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
-) : SkillSelector {
+) : SubtopicSelector {
+  private lateinit var binding: TopicPracticeFragmentBinding
+  private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSkillIdList: ArrayList<String>
+  private  var skillIdHashMap = HashMap<String,MutableList<String>>()
   private lateinit var topicId: String
+  private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
-  private lateinit var skillSelectionAdapter: SkillSelectionAdapter
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, skillList: ArrayList<String>): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    skillList: ArrayList<String>
+  ): View? {
+    val viewModel = getTopicPracticeViewModel()
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
-    selectedSkillIdList = skillList
-    val binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    viewModel.setTopicId(topicId)
 
-    skillSelectionAdapter = SkillSelectionAdapter(this)
-    binding.skillRecyclerView.isNestedScrollingEnabled = false
-    binding.skillRecyclerView.apply {
-      adapter = skillSelectionAdapter
+    selectedSkillIdList = skillList
+    binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+
+    binding.topicPracticeSkillList.apply {
+      layoutManager = linearLayoutManager
+      adapter = createRecyclerViewAdapter()
     }
-    binding.let {
-      it.viewModel = getTopicPracticeViewModel()
-      it.lifecycleOwner = fragment
+
+    binding.apply {
+      this.viewModel = viewModel
+      lifecycleOwner = fragment
     }
-    subscribeToTopicLiveData()
     return binding.root
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
-
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<TopicPracticeItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+          is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL
+          is TopicPracticeFooterViewModel -> ViewType.VIEW_TYPE_FOOTER
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_HEADER,
+        inflateDataBinding = TopicPracticeHeaderViewBinding::inflate,
+        setViewModel = TopicPracticeHeaderViewBinding::setViewModel,
+        transformViewModel = { it as TopicPracticeHeaderViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_SKILL,
+        inflateDataBinding = TopicPracticeSubtopicBinding::inflate,
+        setViewModel = this::bindSkillView,
+        transformViewModel = { it as TopicPracticeSubtopicViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_FOOTER,
+        inflateDataBinding = TopicPracticeFooterViewBinding::inflate,
+        setViewModel = this::bindFooterView,
+        transformViewModel = { it as TopicPracticeFooterViewModel }
+      )
+      .build()
   }
 
-  private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(fragment, Observer<Topic> { result ->
-      skillSelectionAdapter.setSkillList(result.skillList)
-      skillSelectionAdapter.setSelectedSkillList(selectedSkillIdList)
-    })
-  }
-
-  private fun getTopicList(): LiveData<Topic> {
-    return Transformations.map(topicResultLiveData, ::processTopicResult)
-  }
-
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      logger.e("TopicPracticeFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+  private fun bindSkillView(binding: TopicPracticeSubtopicBinding, model: TopicPracticeSubtopicViewModel) {
+    binding.viewModel = model
+    binding.isChecked = selectedSkillIdList.contains(model.subtopic.subtopicId)
+    binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
+      if (isChecked) {
+        subtopicSelected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
+      } else {
+        subtopicUnselected(model.subtopic.subtopicId, model.subtopic.skillIdsList)
+      }
     }
-    return topic.getOrDefault(Topic.getDefaultInstance())
+  }
+
+  private fun bindFooterView(binding: TopicPracticeFooterViewBinding, model: TopicPracticeFooterViewModel) {
+    topicPracticeFooterViewBinding = binding
+    binding.viewModel = model
+    binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
+    binding.topicPracticeStartButton.setOnClickListener {
+      val skillIdList = ArrayList(skillIdHashMap.values)
+      logger.d("TopicPracticeFragmentPresenter", "Skill Ids = " + skillIdList.flatten())
+      routeToQuestionPlayerListener.routeToQuestionPlayer(skillIdList.flatten() as ArrayList<String>)
+    }
   }
 
   private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
     return viewModelProvider.getForFragment(fragment, TopicPracticeViewModel::class.java)
   }
 
-  override fun skillSelected(skillId: String) {
-    if (!selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.add(skillId)
-    }
-    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
+  private enum class ViewType {
+    VIEW_TYPE_HEADER,
+    VIEW_TYPE_SKILL,
+    VIEW_TYPE_FOOTER
   }
 
-  override fun skillUnselected(skillId: String) {
-    if (selectedSkillIdList.contains(skillId)) {
-      selectedSkillIdList.remove(skillId)
+  override fun subtopicSelected(subtopicId: String, skillIdList: MutableList<String>) {
+    if (!selectedSkillIdList.contains(subtopicId)) {
+      selectedSkillIdList.add(subtopicId)
+      skillIdHashMap.put(subtopicId, skillIdList)
     }
-    getTopicPracticeViewModel().notifySelectedSkillList(selectedSkillIdList)
+
+    if (::topicPracticeFooterViewBinding.isInitialized) {
+      topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashMap.isNotEmpty()
+    }
   }
 
-  internal fun onStartButtonClicked() {
-    routeToQuestionPlayerListener.routeToQuestionPlayer(selectedSkillIdList)
+  override fun subtopicUnselected(subtopicId: String, skillIdList: MutableList<String>) {
+    if (selectedSkillIdList.contains(subtopicId)) {
+      selectedSkillIdList.remove(subtopicId)
+      skillIdHashMap.remove(subtopicId)
+    }
+    if (::topicPracticeFooterViewBinding.isInitialized) {
+      topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashMap.isNotEmpty()
+    }
   }
 }

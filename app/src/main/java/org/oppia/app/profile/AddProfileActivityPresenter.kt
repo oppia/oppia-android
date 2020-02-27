@@ -20,6 +20,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -29,6 +32,9 @@ const val GALLERY_INTENT_RESULT_CODE = 1
 const val KEY_NAME_INPUT_ERROR_MESSAGE = "NAME_INPUT_ERROR_MESSAGE"
 const val KEY_PIN_INPUT_ERROR_MESSAGE = "PIN_INPUT_ERROR_MESSAGE"
 const val KEY_PIN_CONFIRM_INPUT_ERROR_MESSAGE = "PIN_CONFIRM_INPUT_ERROR_MESSAGE"
+private val DEFAULT_STORY_TEXT_SIZE = StoryTextSize.SMALL_TEXT_SIZE
+private val DEFAULT_APP_LANGUAGE = AppLanguage.ENGLISH_APP_LANGUAGE
+private val DEFAULT_AUDIO_LANGUAGE = AudioLanguage.NO_AUDIO
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -44,6 +50,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
+  private var createPin = false
   private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
@@ -63,6 +70,9 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
+    }
+    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+      profileViewModel.createPin.set(isChecked)
     }
 
     binding.infoIcon.setOnClickListener {
@@ -115,7 +125,10 @@ class AddProfileActivityPresenter @Inject constructor(
         avatarImagePath = selectedImage,
         allowDownloadAccess = allowDownloadAccess,
         colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = DEFAULT_STORY_TEXT_SIZE,
+        appLanguage = DEFAULT_APP_LANGUAGE,
+        audioLanguage = DEFAULT_AUDIO_LANGUAGE
       )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)

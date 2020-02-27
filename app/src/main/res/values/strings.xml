@@ -5,8 +5,10 @@
   <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
-  <string name="admin_settings">Admin Settings</string>
+  <string name="menu_switch_profile">Switch Profile</string>
+  <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">>Navigation Menu Close</string>
   <string name="welcome_text">Welcome to Oppia!</string>
@@ -25,6 +27,7 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="review_card_toolbar_title">Review Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
@@ -64,7 +67,7 @@
   <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
   <string name="go_to_previous_page">Go to previous page.</string>
-  <string name="continue_playing_activity">Continue playing</string>
+  <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
   <string name="status_in_progress">In Progress</string>
@@ -76,7 +79,7 @@
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
-  <string name="fraction_error_larger_than_seven_digits">None of the numbers of the fraction should be larger than 7 digits.</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 characters (i.e.,[0-9] or "." or "-").</string>
@@ -86,7 +89,7 @@
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
-  <string name="topic_prefix">Topic:</string>
+  <string name="topic_heading">Topic: %s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -135,8 +138,8 @@
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
-  <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
+  <string name="add_profile_input_pin">3-Digit PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
   <string name="add_profile_create_btn">Create</string>
@@ -151,6 +154,17 @@
   <string name="add_profile_required">*Required</string>
   <string name="add_profile_create_a_3_digit_pin_optional">Create a 3-Digit PIN (Optional)</string>
   <string name="add_profile_info_icon_content_description">Add profile info icon</string>
+  <!-- OnboardingActivity -->
+  <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
+  <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
+  <string name="onboarding_slide_1_title">Add users to your account.</string>
+  <string name="onboarding_slide_1_description">Share the experience and create up to 10 profiles.</string>
+  <string name="onboarding_slide_2_title">Download for offline.</string>
+  <string name="onboarding_slide_2_description">Continue learning your lessons without internet connection.</string>
+  <string name="onboarding_slide_3_title">Have fun!</string>
+  <string name="onboarding_slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
+  <string name="skip">Skip</string>
+  <string name="get_started">Get Started</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
@@ -179,7 +193,7 @@
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <!-- HomeActivityBackDialog -->
-  <string name="home_activity_back_dialog_message">Exit your profile and go to the Profile Chooser?</string>
+  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- ProfileListActivity. -->
@@ -208,4 +222,6 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
+  <string name="add_profile_required">*Required</string>
 </resources>

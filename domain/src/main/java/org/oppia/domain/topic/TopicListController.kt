@@ -47,8 +47,8 @@ import javax.inject.Singleton
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
+const val SUBTOPIC_TOPIC_ID = "1"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
-const val MATTHEW_GOES_TO_THE_BAKERY_STORY_ID = "wANbh4oOClga"
 val TOPIC_IDS = listOf(FRACTIONS_TOPIC_ID, RATIOS_TOPIC_ID)
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
@@ -233,30 +233,64 @@ class TopicListController @Inject constructor(
       for (storySummary in topic.storyList) {
         val storyId = storySummary.storyId
         val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-        val completedChapterCount = storyProgress.chapterProgressList.count { progress ->
-          progress.playState == ChapterPlayState.COMPLETED
+
+        val completedChapterCount = storyProgress.chapterProgressMap.values.count { playState ->
+          playState == ChapterPlayState.COMPLETED
         }
+
         if (completedChapterCount > 0) {
           // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
-          val nextChapterId = storyProgress.chapterProgressList.find { progress ->
-            progress.playState == ChapterPlayState.NOT_STARTED
-          }?.explorationId
-          val nextChapterSummary =
-            storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
-          ongoingStoryListBuilder.addRecentStory(
-            createPromotedStory(
-              storyId,
-              topic,
-              completedChapterCount,
-              storyProgress.chapterProgressCount,
-              nextChapterSummary?.name,
-              nextChapterSummary?.explorationId
+
+          val nextChapterId =
+            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED }
+
+          if (nextChapterId != null) {
+            val nextChapterSummary =
+              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
+            ongoingStoryListBuilder.addRecentStory(
+              createPromotedStory(
+                storyId,
+                topic,
+                completedChapterCount,
+                storyProgress.chapterProgressCount,
+                nextChapterSummary?.name,
+                nextChapterSummary?.explorationId
+              )
             )
-          )
+          }
         }
       }
     }
+    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
+      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
+    }
     return ongoingStoryListBuilder.build()
+  }
+
+  private fun recommendedStoryList(): List<PromotedStory> {
+    val recommendedStories = ArrayList<PromotedStory>()
+    recommendedStories.add(
+      createPromotedStory(
+        FRACTIONS_STORY_ID_0,
+        topicController.retrieveTopic(FRACTIONS_TOPIC_ID),
+        0,
+        2,
+        "What is a Fraction?",
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    )
+
+    recommendedStories.add(
+      createPromotedStory(
+        RATIOS_STORY_ID_0,
+        topicController.retrieveTopic(RATIOS_TOPIC_ID),
+        0,
+        2,
+        "What is a Ratio?",
+        RATIOS_EXPLORATION_ID_0
+      )
+    )
+    return recommendedStories
   }
 
   private fun createPromotedStory(
