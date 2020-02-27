@@ -10,35 +10,36 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSkillSummaryViewModel" />
+      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:barrierDirection="right"
-    app:constraint_referenced_ids="button_example,text_view_status">
+    android:paddingStart="48dp"
+    android:paddingEnd="48dp"
+    app:barrierDirection="right">
 
     <androidx.constraintlayout.widget.Barrier
-      android:id="@+id/topic_practice_skill_barrier"
+      android:id="@+id/topic_practice_subtopic_barrier"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:barrierDirection="bottom"
-      app:constraint_referenced_ids="skill_check_box" />
+      app:constraint_referenced_ids="subtopic_check_box" />
 
     <CheckBox
-      android:id="@+id/skill_check_box"
+      android:id="@+id/subtopic_check_box"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginStart="40dp"
+      android:layout_marginTop="16dp"
       android:button="@drawable/selector_checkbox"
       android:checked="@{isChecked}"
       android:fontFamily="sans-serif"
       android:gravity="top"
-      android:layout_marginTop="16dp"
       android:paddingStart="20dp"
-      android:layout_marginStart="40dp"
       android:paddingEnd="20dp"
-      android:text="@{viewModel.skillSummary.description}"
+      android:text="@{viewModel.subtopic.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
