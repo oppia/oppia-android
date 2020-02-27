@@ -40,12 +40,9 @@ const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
 
 private const val CACHE_NAME = "topic_progress_database"
 
-private const val TRANSFORMED_GET_TOPIC_PROGRESS_LIST_PROVIDER_ID = "transformed_get_topic_progress_list_provider_id"
 private const val TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID = "transformed_get_story_progress_list_provider_id"
-private const val TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID = "transformed_get_profile_progress_provider_id"
 private const val TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID = "transformed_get_topic_progress_provider_id"
 private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
-private const val TRANSFORMED_GET_CHAPTER_PROGRESS_PROVIDER_ID = "transformed_get_chapter_progress_provider_id"
 private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progress_transformed_id"
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
@@ -59,37 +56,17 @@ class StoryProgressController @Inject constructor(
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
-  /** Indicates that the given exploration id is not unique. */
-  class ExplorationAlreadyCompletedException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given exploration id is not not found. */
-  class ExplorationNotFoundException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given story id is not not found. */
-  class StoryNotFoundException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given topic id is not not found. */
-  class TopicNotFoundException(msg: String) : java.lang.Exception(msg)
-
   /** Indicates that the given story id does not have any associated story progress. */
-  class StoryProgressNotFoundException(msg: String) : java.lang.Exception(msg)
+  class StoryProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /** Indicates that the given topic id does not have any associated topic progress. */
-  class TopicProgressNotFoundException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given profile id does not have any associated progress. */
-  class ProfileProgressNotFoundException(msg: String) : java.lang.Exception(msg)
+  class TopicProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /** These Statuses correspond to the exceptions above such that if the deferred contains. */
   private enum class StoryProgressActionStatus {
     SUCCESS,
-    EXPLORATION_ALREADY_COMPLETED,
-    EXPLORATION_NOT_FOUND,
-    STORY_NOT_FOUND,
-    TOPIC_NOT_FOUND,
     STORY_PROGRESS_NOT_FOUND,
-    TOPIC_PROGRESS_NOT_FOUND,
-    PROFILE_PROGRESS_NOT_FOUND
+    TOPIC_PROGRESS_NOT_FOUND
   }
 
   private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
@@ -136,50 +113,8 @@ class StoryProgressController @Inject constructor(
 
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(
-          profileId,
-          explorationId,
-          storyId,
-          topicId,
-          deferred
-        )
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, deferred)
       })
-  }
-
-  /** Returns entire progress of user. */
-  fun getProfileProgress(profileId: ProfileId): LiveData<AsyncResult<TopicProgressDatabase>> {
-    return dataProviders.convertToLiveData(retrieveProfileProgressDataProvider(profileId))
-  }
-
-  /** Returns topic progress on per-profile basis specified by topicId. */
-  fun getTopicProgress(profileId: ProfileId, topicId: String): LiveData<AsyncResult<TopicProgress>> {
-    return dataProviders.convertToLiveData(retrieveTopicProgressDataProvider(profileId, topicId))
-  }
-
-  /** Returns story progress on per-profile basis specified by topicId and storyId. */
-  fun getStoryProgress(
-    profileId: ProfileId,
-    topicId: String,
-    storyId: String
-  ): LiveData<AsyncResult<StoryProgress>> {
-    return dataProviders.convertToLiveData(retrieveStoryProgressDataProvider(profileId, topicId, storyId))
-  }
-
-  /** Returns chapter progress on per-profile basis specified by topicId, storyId and explorationId. */
-  fun getChapterProgress(
-    profileId: ProfileId,
-    topicId: String,
-    storyId: String,
-    exploration: String
-  ): LiveData<AsyncResult<ChapterPlayState>> {
-    return dataProviders.convertToLiveData(
-      retrieveChapterProgressDataProvider(
-        profileId,
-        topicId,
-        storyId,
-        exploration
-      )
-    )
   }
 
   /** Returns [TopicProgressList] [DataProvider] for a particular profile. */
@@ -193,7 +128,7 @@ class StoryProgressController @Inject constructor(
       if (topicProgressListBuilder.topicProgressList.isNotEmpty()) {
         AsyncResult.success(topicProgressListBuilder.build())
       } else {
-        AsyncResult.failed(TopicProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+        AsyncResult.failed(TopicProgressListNotFoundException("ProfileId: $profileId does not contain any topic progress"))
       }
     }
   }
@@ -211,21 +146,7 @@ class StoryProgressController @Inject constructor(
       if (storyProgressListBuilder.storyProgressList.isNotEmpty()) {
         AsyncResult.success(storyProgressListBuilder.build())
       } else {
-        AsyncResult.failed(StoryProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
-      }
-    }
-  }
-
-  /** Returns all topics progress [DataProvider] for a particular profile. */
-  private fun retrieveProfileProgressDataProvider(profileId: ProfileId): DataProvider<TopicProgressDatabase> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_PROFILE_PROGRESS_PROVIDER_ID,
-      retrieveCacheStore(profileId)
-    ) {
-      if (it.topicProgressMap.keys.isNotEmpty()) {
-        AsyncResult.success(it)
-      } else {
-        AsyncResult.failed(ProfileProgressNotFoundException("ProfileId: $profileId does not contain any progress"))
+        AsyncResult.failed(StoryProgressListNotFoundException("ProfileId: $profileId does not contain any story progress"))
       }
     }
   }
@@ -236,12 +157,7 @@ class StoryProgressController @Inject constructor(
       TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID,
       retrieveCacheStore(profileId)
     ) {
-      val topicProgress = it.topicProgressMap[topicId]
-      if (topicProgress != null) {
-        AsyncResult.success(topicProgress)
-      } else {
-        AsyncResult.failed(TopicProgressNotFoundException("TopicId: $topicId does not contain any progress"))
-      }
+      AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
     }
   }
 
@@ -255,64 +171,21 @@ class StoryProgressController @Inject constructor(
       TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID,
       retrieveTopicProgressDataProvider(profileId, topicId)
     ) {
-      val storyProgress = it.storyProgressMap[storyId]
-      if (storyProgress != null) {
-        AsyncResult.success(storyProgress)
-      } else {
-        AsyncResult.failed(StoryProgressNotFoundException("StoryId: $storyId does not contain any progress"))
-      }
-    }
-  }
-
-  /** Returns a [ChapterPlayState] [DataProvider] for a specific explorationId, per-profile basis. */
-  private fun retrieveChapterProgressDataProvider(
-    profileId: ProfileId,
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ): DataProvider<ChapterPlayState> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_CHAPTER_PROGRESS_PROVIDER_ID,
-      retrieveStoryProgressDataProvider(profileId, topicId, storyId)
-    ) {
-      val chapterPlayState = it.chapterProgressMap[explorationId]
-      if (chapterPlayState != null) {
-        AsyncResult.success(chapterPlayState)
-      } else {
-        AsyncResult.failed(ExplorationNotFoundException("ChapterId: $explorationId does not contain any progress"))
-      }
+      AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
     }
   }
 
   private suspend fun getDeferredResult(
     profileId: ProfileId?,
-    explorationId: String?,
-    storyId: String?,
-    topicId: String?,
     deferred: Deferred<StoryProgressActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
-      StoryProgressActionStatus.EXPLORATION_ALREADY_COMPLETED -> AsyncResult.failed(
-        ExplorationAlreadyCompletedException("$explorationId is already present.")
-      )
-      StoryProgressActionStatus.EXPLORATION_NOT_FOUND -> AsyncResult.failed(
-        ExplorationNotFoundException("ExplorationId $explorationId does not match an existing Exploration")
-      )
-      StoryProgressActionStatus.STORY_NOT_FOUND -> AsyncResult.failed(
-        StoryNotFoundException("StoryId $storyId does not match an existing story")
-      )
-      StoryProgressActionStatus.TOPIC_NOT_FOUND -> AsyncResult.failed(
-        TopicNotFoundException("TopicId $topicId does not match an existing topic")
-      )
       StoryProgressActionStatus.STORY_PROGRESS_NOT_FOUND -> AsyncResult.failed(
-        StoryProgressNotFoundException("StoryProgress not found for profile $profileId")
+        StoryProgressListNotFoundException("StoryProgress not found for profile $profileId")
       )
       StoryProgressActionStatus.TOPIC_PROGRESS_NOT_FOUND -> AsyncResult.failed(
-        TopicProgressNotFoundException("TopicProgress not found for profile $profileId")
-      )
-      StoryProgressActionStatus.PROFILE_PROGRESS_NOT_FOUND -> AsyncResult.failed(
-        ProfileProgressNotFoundException("Profile progress not found for profile $profileId")
+        TopicProgressListNotFoundException("TopicProgress not found for profile $profileId")
       )
     }
   }

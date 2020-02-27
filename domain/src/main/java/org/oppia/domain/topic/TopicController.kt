@@ -123,7 +123,7 @@ class TopicController @Inject constructor(
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
     val topicDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
+      return@createInMemoryDataProviderAsync retrieveTopicAsync(topicId)
     }
     val topicProgressDataProvider = storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
 
@@ -168,9 +168,8 @@ class TopicController @Inject constructor(
 
   /** Returns the [StorySummary] corresponding to the specified story ID, or a default StorySummary if there is none. */
   fun getStory(profileId: ProfileId, topicId: String, storyId: String): LiveData<AsyncResult<StorySummary>> {
-    val storySummary = retrieveStory(storyId)
     val storyDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(storySummary)
+      return@createInMemoryDataProviderAsync retrieveStoryAsync(storyId)
     }
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
@@ -246,9 +245,13 @@ class TopicController @Inject constructor(
       TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     ) {
-      val ongoingTopicList = createOngoingTopicListFromProgress(it)
-      if (ongoingTopicList.topicList.isNotEmpty()) {
-        AsyncResult.success(ongoingTopicList)
+      if (it.topicProgressList.isNotEmpty()) {
+        val ongoingTopicList = createOngoingTopicListFromProgress(it)
+        if (ongoingTopicList.topicList.isNotEmpty()) {
+          AsyncResult.success(ongoingTopicList)
+        } else {
+          AsyncResult.failed(OngoingTopicListNotFoundException("ProfileId $profileId contain any ongoing topic list."))
+        }
       } else {
         AsyncResult.failed(OngoingTopicListNotFoundException("ProfileId $profileId contain any ongoing topic list."))
       }
@@ -395,6 +398,24 @@ class TopicController @Inject constructor(
     }
   }
 
+  internal fun retrieveTopicAsync(topicId: String): AsyncResult<Topic> {
+    return when (topicId) {
+      TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
+      TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
+      FRACTIONS_TOPIC_ID -> AsyncResult.success(
+        createTopicFromJson(
+          "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
+        )
+      )
+      RATIOS_TOPIC_ID -> AsyncResult.success(
+        createTopicFromJson(
+          "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
+        )
+      )
+      else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
+    }
+  }
+
   internal fun retrieveStory(storyId: String): StorySummary {
     return when (storyId) {
       TEST_STORY_ID_0 -> createTestTopic0Story0()
@@ -404,6 +425,18 @@ class TopicController @Inject constructor(
       RATIOS_STORY_ID_0 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 0)
       RATIOS_STORY_ID_1 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 1)
       else -> StorySummary.getDefaultInstance()
+    }
+  }
+
+  internal fun retrieveStoryAsync(storyId: String): AsyncResult<StorySummary> {
+    return when (storyId) {
+      TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
+      TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
+      TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
+      FRACTIONS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("fractions_stories.json", /* index= */ 0))
+      RATIOS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("ratios_stories.json", /* index= */ 0))
+      RATIOS_STORY_ID_1 -> AsyncResult.success(createStoryFromJsonFile("ratios_stories.json", /* index= */ 1))
+      else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
     }
   }
 

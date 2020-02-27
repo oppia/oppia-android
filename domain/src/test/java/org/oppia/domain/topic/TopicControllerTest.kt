@@ -873,9 +873,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetOngoingTopicListFailed()
-
-      val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.topicCount).isEqualTo(0)
     }
 
   @Test
@@ -944,9 +941,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetCompletedStoryListFailed()
-
-      val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
     }
 
   @Test
