@@ -17,12 +17,12 @@ message ProfileDatabase {
   map<int32, Profile> profiles = 3;
 }
 
-// Structure for a admin.
+// Structure for admin settings.
 message AdminSettings{
-  // Determines whether profile can download and update content only on wifi.
+  // Determines whether to download and update content only on wifi.
   bool allow_download_and_update_only_on_wifi = 1;
 
-  // Determines whether profile can automatically update new contents of topics.
+  // Determines whether app can automatically update topics.
   bool automatically_update_topics = 2;
 }
 

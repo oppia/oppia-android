@@ -37,7 +37,7 @@ private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
 private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_download_access_transformed_id"
-private const val UPDATE_DOWNLOAD_AND__UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID = "update_download_and_update_only_on_wifi_transformed_id"
+private const val UPDATE_DOWNLOAD_AND_UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID = "update_download_and_update_only_on_wifi_transformed_id"
 private const val UPDATE_AUTOMATICALLY_UPDATE_TOPICS_TRANSFORMED_PROVIDER_ID = "update_automatically_update_topics_transformed_id"
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
 private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
@@ -284,7 +284,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the download and updates access of an admin profile only on wifi.
+   * Updates whether to allow download and update only on wifi or not for admin settings.
    *
    * @param profileId the ID corresponding to the profile being updated.
    * @param allowDownloadAndUpdateOnlyOnWifi New download access status for the profile being updated only on wifi.
@@ -303,13 +303,13 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND__UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND_UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
 
   /**
-   * Updates the automatic update settings of topics of an admin profile.
+   * Updates whether to allow automatic update of topics for admin settings.
    *
    * @param profileId the ID corresponding to the profile being updated.
    * @param allowAutomaticallyUpdateOfTopics automatically update new contents of topics.
@@ -328,7 +328,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_AND__UPDATE_ONLY_ON_WIFI_TRANSFORMED_PROVIDER_ID) {
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_AUTOMATICALLY_UPDATE_TOPICS_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
