@@ -21,6 +21,7 @@ class NumberWithUnitsInputViewModel(
   private val context: Context,
   private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
 ) : StateItemViewModel(ViewType.NUMBER_WITH_UNIT_INPUT_INTERACTION), InteractionAnswerHandler {
+
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
   var errorMessage = ObservableField<String>("")
