@@ -75,13 +75,16 @@ internal class StateDeck internal constructor(
    * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
    * operation implies that the most recently submitted answer was the correct answer to the previously current State.
    * This does NOT change the user's position in the deck, it just marks the current state as completed.
+   *
+   * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't routed to twice
    */
-  internal fun pushState(state: State) {
+  internal fun pushState(state: State, prohibitSameStateName: Boolean) {
     check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
     check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
-    // TODO(BenHenning): Reconcile this check.
-//    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+    if (prohibitSameStateName) {
+      check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+    }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new state
     // doesn't become fully realized until navigated to.
     previousStates += EphemeralState.newBuilder()

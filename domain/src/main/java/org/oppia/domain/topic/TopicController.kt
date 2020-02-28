@@ -328,7 +328,7 @@ class TopicController @Inject constructor(
       .setQuestionId(TEST_QUESTION_ID_3)
       .setQuestionState(
         stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(0)
+          "question", questionsJson?.getJSONObject(3)
         )
       )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_1))
@@ -340,7 +340,7 @@ class TopicController @Inject constructor(
       .setQuestionId(TEST_QUESTION_ID_4)
       .setQuestionState(
         stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(1)
+          "question", questionsJson?.getJSONObject(4)
         )
       )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
@@ -352,7 +352,7 @@ class TopicController @Inject constructor(
       .setQuestionId(TEST_QUESTION_ID_5)
       .setQuestionState(
         stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(2)
+          "question", questionsJson?.getJSONObject(5)
         )
       )
       .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))

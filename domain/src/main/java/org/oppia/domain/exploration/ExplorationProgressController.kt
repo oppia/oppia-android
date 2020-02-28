@@ -123,7 +123,10 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
           // Follow the answer's outcome to another part of the graph if it's different.
           if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
-            explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))
+            explorationProgress.stateDeck.pushState(
+              explorationProgress.stateGraph.getState(answerOutcome.stateName),
+              prohibitSameStateName = true
+            )
           }
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
