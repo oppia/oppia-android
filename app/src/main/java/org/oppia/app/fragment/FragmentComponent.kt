@@ -59,7 +59,6 @@ interface FragmentComponent {
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
-  fun inject(walkthroughFragment: WalkthroughFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
@@ -73,4 +72,5 @@ interface FragmentComponent {
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
+  fun inject(walkthroughFragment: WalkthroughFragment)
 }

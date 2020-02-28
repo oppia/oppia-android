@@ -15,12 +15,12 @@
     android:layout_height="match_parent">
 
     <ImageView
-
       android:clickable="true"
       android:id="@+id/back_button"
       android:layout_width="32dp"
       android:layout_height="32dp"
       android:layout_margin="16dp"
+      android:onClick="@{(v) -> presenter.prevPage()}"
       android:src="@drawable/ic_arrow_back_white_24dp"
       android:tint="@color/grey"
       app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
       android:contentDescription="@string/back_button" />
 
     <ProgressBar
-      android:id="@+id/progressBar"
+      android:id="@+id/walkthrough_progress_bar"
       android:progressDrawable="@drawable/rounded_corners_progress_bar"
       style="?android:attr/progressBarStyleHorizontal"
       android:layout_width="0dp"

@@ -18,7 +18,6 @@ class WalkthroughActivity : InjectableAppCompatActivity() {
     }
   }
 
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)

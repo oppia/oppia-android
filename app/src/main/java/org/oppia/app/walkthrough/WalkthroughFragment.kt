@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains an walkthrough of the app. */
 class WalkthroughFragment : InjectableFragment() {
-  @Inject
-  lateinit var walkthroughFragmentPresenter: WalkthroughFragmentPresenter
+  @Inject lateinit var walkthroughFragmentPresenter: WalkthroughFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -21,5 +20,4 @@ class WalkthroughFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return walkthroughFragmentPresenter.handleCreateView(inflater, container)
   }
-
 }

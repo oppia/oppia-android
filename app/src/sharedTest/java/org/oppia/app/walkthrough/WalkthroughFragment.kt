@@ -36,7 +36,7 @@ class OnboardingFragmentTest {
   fun testWalkthroughFragment_skipNextButtonIsVisible() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.next_button)).check(matches(isDisplayed()))
-      onView(withId(R.id.progressBar)).check(matches(isDisplayed()))
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(isDisplayed()))
     }
   }
   @Test
