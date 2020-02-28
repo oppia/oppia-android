@@ -15,7 +15,9 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="96dp"
+    android:paddingEnd="96dp">
 
     <Button
       android:id="@+id/topic_practice_start_button"

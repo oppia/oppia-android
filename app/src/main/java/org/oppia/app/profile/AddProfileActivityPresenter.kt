@@ -96,8 +96,10 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+     openGalleryIntent()
+    }
+    binding.editImageFab.setOnClickListener {
+      openGalleryIntent()
     }
 
     binding.createButton.setOnClickListener {
@@ -130,6 +132,11 @@ class AddProfileActivityPresenter @Inject constructor(
           handleAddProfileResult(it, binding)
         })
     }
+  }
+
+  private fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
