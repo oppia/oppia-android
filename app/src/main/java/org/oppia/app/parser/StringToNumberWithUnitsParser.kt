@@ -82,14 +82,14 @@ class StringToNumberWithUnitsParser {
       return null
     else {
 
-      var ind = indexOf(Pattern.compile("[0-9]"), rawInput)
+      ind = indexOf(Pattern.compile("[0-9]"), rawInput)
 
       units = rawInput.substring(0, ind).trim()
 
       units = units + ""
       var ind2 = indexOf(Pattern.compile("[a-zA-Z(]"), rawInput.substring(ind))
-      ind2 = rawInput.indexOf(rawInput.substring(ind).elementAt(ind2).toString(), ind)
       if (ind2 != -1) {
+        ind2 = rawInput.indexOf(rawInput.substring(ind).elementAt(ind2).toString(), ind)
         value = rawInput.substring(ind, ind2 - ind).trim()
         units += rawInput.substring(ind2).trim()
       } else {
@@ -116,7 +116,7 @@ class StringToNumberWithUnitsParser {
 
     // Start with digit when there is no currency unit.
     if (rawInput.matches("^\\-?\\d.*\$".toRegex())) {
-      var ind = indexOf(Pattern.compile("[a-zA-Z(₹$]"), rawInput)
+      ind = indexOf(Pattern.compile("[a-zA-Z(₹$]"), rawInput)
       if (ind == -1) {
         // There is value with no units.
         value = rawInput
@@ -127,13 +127,14 @@ class StringToNumberWithUnitsParser {
         units = rawInput.substring(ind).trim()
       }
     } else {
-      var ind = indexOf(Pattern.compile("[0-9]"), rawInput)
+      ind = indexOf(Pattern.compile("[0-9]"), rawInput)
       if (ind != -1) {
         units = rawInput.substring(0, ind).trim()
         units = units + ""
-        var ind2 = indexOf(Pattern.compile("[a-zA-Z(]"), rawInput.substring(ind).matches("[a-zA-Z(]".toRegex()))
+        var ind2 = indexOf(Pattern.compile("[a-zA-Z(]"), rawInput.substring(ind))
         if (ind2 != -1) {
-          value = rawInput.substring(ind, ind2 - ind).trim()
+          ind2 = rawInput.indexOf(rawInput.substring(ind).elementAt(ind2).toString(), ind)
+          value = rawInput.substring(ind, ind2).trim()
           units += rawInput.substring(ind2).trim()
         } else {
           value = rawInput.substring(ind).trim()
@@ -142,6 +143,12 @@ class StringToNumberWithUnitsParser {
       } else {
         units = rawInput
         value = ""
+      }
+    }
+    if (units != "") {
+      // Checking invalid characters in units.
+      if (units.matches("[^0-9a-zA-Z/* ^()₹$-]".toRegex())) {
+        return NumberWithUnitsParsingError.INVALID_UNIT_CHARS.getErrorMessageFromStringRes(context)
       }
     }
     if (value.contains('/')) {
@@ -155,7 +162,7 @@ class StringToNumberWithUnitsParser {
           context
         )
         units.contains("/") -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
-        units.count { it == '-' } > 1 || units.count { it == '.' } > 1 || units.count { it == '/' } > 1 -> NumberWithUnitsParsingError.INVALID_UNIT.getErrorMessageFromStringRes(
+        units.count { it == '-' } > 1 || units.count { it == '.' } > 1 -> NumberWithUnitsParsingError.INVALID_UNIT.getErrorMessageFromStringRes(
           context
         )
         else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
@@ -172,7 +179,6 @@ class StringToNumberWithUnitsParser {
     // Allow validation only when rawInput is not null or an empty string.
     // Start with digit when there is no currency unit.
     if (rawInput.matches("^\\-?\\d.*\$".toRegex())) {
-      var ind = indexOf(Pattern.compile("[a-zA-Z(₹$]"), rawInput)
       if (ind == -1) {
         // There is value with no units.
         value = rawInput;
@@ -228,7 +234,6 @@ class StringToNumberWithUnitsParser {
       if (value.matches("[a-zA-Z]".toRegex()) || value.matches("[ *^$₹()#@]/".toRegex())) {
         return NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
       }
-
 
       if (units != "") {
         // Checking invalid characters in units.
