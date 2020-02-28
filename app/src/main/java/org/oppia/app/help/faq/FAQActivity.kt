@@ -1,13 +1,13 @@
-package org.oppia.app.help.FAQ
+package org.oppia.app.help.faq
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** The FAQ page activity for placement of different FAQs. */
 class FAQActivity : InjectableAppCompatActivity() {
 
   @Inject

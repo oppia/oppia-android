@@ -13,7 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.help.FAQ.FAQActivity
+import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 
 @RunWith(AndroidJUnit4::class)

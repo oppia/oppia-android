@@ -1,4 +1,4 @@
-package org.oppia.app.help.FAQ
+package org.oppia.app.help.faq
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R

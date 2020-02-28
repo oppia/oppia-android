@@ -1,4 +1,4 @@
-package org.oppia.app.help.FAQ
+package org.oppia.app.help.faq
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that contains FAQ in the app. */
 class FAQFragment : InjectableFragment() {
-  @Inject
-  lateinit var faqFragmentPresenter: FAQFragmentPresenter
+  @Inject lateinit var faqFragmentPresenter: FAQFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

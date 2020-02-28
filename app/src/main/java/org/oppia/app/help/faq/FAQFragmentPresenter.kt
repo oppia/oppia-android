@@ -1,4 +1,4 @@
-package org.oppia.app.help.FAQ
+package org.oppia.app.help.faq
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import org.oppia.app.databinding.FaqFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import javax.inject.Inject
 
+/** The presenter for [FAQFragment]. */
 @FragmentScope
 class FAQFragmentPresenter @Inject constructor(
   private val fragment: Fragment
