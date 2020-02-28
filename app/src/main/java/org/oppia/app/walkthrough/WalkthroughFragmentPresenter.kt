@@ -27,4 +27,9 @@ class WalkthroughFragmentPresenter @Inject constructor(
 
     return binding.root
   }
+
+  fun nextPage() {
+    binding.progressBar.progress = 1
+  }
+
 }
