@@ -73,7 +73,6 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(activity, Observer<Profile> {
-      logger.e("OptionsFragment", "Failed to retrieve profile" +it.storyTextSize)
       storyTextSize = it.storyTextSize
       appLanguage = it.appLanguage
       audioLanguage = it.audioLanguage
