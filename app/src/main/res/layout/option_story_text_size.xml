@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.options.OptionsStoryTextViewViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/story_text_size_label_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:paddingLeft="16dp"
+      android:paddingTop="20dp"
+      android:paddingRight="16dp"
+      android:paddingBottom="20dp"
+      android:text="Story Text Size"
+      android:textColor="@color/colorPrimary"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toTopOf="@id/story_text_size_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/story_text_size_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:paddingLeft="16dp"
+      android:paddingTop="20dp"
+      android:paddingRight="16dp"
+      android:paddingBottom="20dp"
+      android:text="@{viewModel.storyTextSize}"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/story_text_size_label_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

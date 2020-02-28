@@ -2,7 +2,6 @@ package org.oppia.app.options
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.Preference
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

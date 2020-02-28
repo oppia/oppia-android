@@ -26,7 +26,7 @@ class OptionsActivityPresenter @Inject constructor(
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.options_fragment_placeholder,
-        OptionsFragment(activity, profileManagementController, logger)
+        OptionFragment()
       ).commitNow()
     }
   }
@@ -43,7 +43,7 @@ class OptionsActivityPresenter @Inject constructor(
     )
   }
 
-  private fun getOptionFragment(): OptionsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionsFragment?
+  private fun getOptionFragment(): OptionFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionFragment?
   }
 }
