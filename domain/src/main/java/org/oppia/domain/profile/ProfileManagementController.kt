@@ -145,7 +145,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns device settings for the app. */
-  fun getDeviceDettings(): LiveData<AsyncResult<DeviceSettings>> {
+  fun getDeviceSettings(): LiveData<AsyncResult<DeviceSettings>> {
     val transformedDataProvider =
       dataProviders.transformAsync<ProfileDatabase, DeviceSettings>(
         TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID,
@@ -315,7 +315,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the download/update on wifi only permission.
+   * Updates the automatically update topics permission.
    *
    * @param profileId the ID corresponding to the profile being updated.
    * @param automaticallyUpdateTopics automatically update topic permission.

@@ -775,7 +775,7 @@ class ProfileManagementControllerTest {
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
-      profileManagementController.getDeviceDettings().observeForever(mockDeviceSettingsObserver)
+      profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
       advanceUntilIdle()
       verifyGetDeviceSettingsSucceeded()
 
@@ -810,7 +810,7 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
 
-      profileManagementController.getDeviceDettings().observeForever(mockDeviceSettingsObserver)
+      profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
       advanceUntilIdle()
 
       verifyGetDeviceSettingsSucceeded()
@@ -846,7 +846,7 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
 
-      profileManagementController.getDeviceDettings().observeForever(mockDeviceSettingsObserver)
+      profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
       advanceUntilIdle()
 
       verify(mockDeviceSettingsObserver, atLeastOnce()).onChanged(deviceSettingsResultCaptor.capture())
@@ -889,7 +889,7 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
       verifyUpdateSucceeded()
 
-      profileManagementController.getDeviceDettings().observeForever(mockDeviceSettingsObserver)
+      profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
       advanceUntilIdle()
       verifyGetDeviceSettingsSucceeded()
 
