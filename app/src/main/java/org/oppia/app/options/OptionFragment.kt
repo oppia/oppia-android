@@ -9,6 +9,13 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+const val KEY_MESSAGE_STORY_TEXT_SIZE = "TEXT_SIZE"
+const val KEY_MESSAGE_APP_LANGUAGE = "APP_LANGUAGE"
+const val KEY_MESSAGE_AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
+const val REQUEST_CODE_TEXT_SIZE = 1
+const val REQUEST_CODE_APP_LANGUAGE = 2
+const val REQUEST_CODE_AUDIO_LANGUAGE= 3
+
 /** Fragment that contains an introduction to the app. */
 class OptionFragment : InjectableFragment() {
   @Inject lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
@@ -20,5 +27,17 @@ class OptionFragment : InjectableFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return optionsFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  fun updateStoryTextSize(textSize: String) {
+    optionsFragmentPresenter.updateStoryTextSize(textSize)
+  }
+
+  fun updateAppLanguage(appLanguage: String) {
+    optionsFragmentPresenter.updateAppLanguage(appLanguage)
+  }
+
+  fun updateAudioLanguage(audioLanguage: String) {
+    optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
   }
 }

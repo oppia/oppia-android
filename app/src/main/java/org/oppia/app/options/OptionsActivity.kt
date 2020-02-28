@@ -3,6 +3,7 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
@@ -26,5 +27,24 @@ class OptionsActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     optionActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_options)
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    Log.d("result","***************"+data)
+    when (requestCode) {
+      REQUEST_CODE_TEXT_SIZE -> {
+        val textSize = data!!.getStringExtra(KEY_MESSAGE_STORY_TEXT_SIZE) as String
+        optionActivityPresenter.updateStoryTextSize(textSize)
+      }
+      REQUEST_CODE_APP_LANGUAGE -> {
+        val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
+        optionActivityPresenter.updateAppLanguage(appLanguage)
+      }
+      else -> {
+        val audioLanguage = data!!.getStringExtra(KEY_MESSAGE_AUDIO_LANGUAGE) as String
+        optionActivityPresenter.updateAudioLanguage(audioLanguage)
+      }
+    }
   }
 }

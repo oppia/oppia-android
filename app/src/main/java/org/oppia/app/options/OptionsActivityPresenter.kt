@@ -7,16 +7,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
-import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [OptionsActivity]. */
 @ActivityScope
 class OptionsActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val logger: Logger,
-  private val profileManagementController: ProfileManagementController
+  private val activity: AppCompatActivity
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
@@ -45,5 +41,17 @@ class OptionsActivityPresenter @Inject constructor(
 
   private fun getOptionFragment(): OptionFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionFragment?
+  }
+
+  fun updateStoryTextSize(textSize: String) {
+     getOptionFragment()?.updateStoryTextSize(textSize)
+  }
+
+  fun updateAppLanguage(appLanguage: String) {
+    getOptionFragment()?.updateAppLanguage(appLanguage)
+  }
+
+  fun updateAudioLanguage(audioLanguage: String) {
+    getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 }
