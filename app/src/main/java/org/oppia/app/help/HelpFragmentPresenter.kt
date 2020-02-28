@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,8 +18,10 @@ import javax.inject.Inject
 /** The presenter for [HelpFragment]. */
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
+  activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
+  private val helpItemListener = activity as HelpItemListener
   private var recyclerView:RecyclerView ?= null
   private var customAdapter:HelpCategoryAdapter?=null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup? , context : Context): View? {
@@ -34,7 +37,6 @@ class HelpFragmentPresenter @Inject constructor(
       customAdapter = HelpCategoryAdapter(context,categoryViewModels!!)
       recyclerView!!.setLayoutManager(LinearLayoutManager(context))
       recyclerView!!.setAdapter(customAdapter)
-      
     })
     return binding.root
   }

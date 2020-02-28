@@ -6,10 +6,11 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.help.FAQ.FAQActivity
 import javax.inject.Inject
 
 /** The help page activity for users FAQ and feedbacks. */
-class HelpActivity : InjectableAppCompatActivity() {
+class HelpActivity : InjectableAppCompatActivity(), HelpItemListener {
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
@@ -30,5 +31,10 @@ class HelpActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun onItemClicked(title: String) {
+    val intent = FAQActivity.createFAQActivityIntent(this)
+    startActivity(intent)
   }
 }

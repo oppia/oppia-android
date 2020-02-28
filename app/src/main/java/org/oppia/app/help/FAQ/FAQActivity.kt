@@ -21,7 +21,7 @@ class FAQActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    fun createFAQActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createFAQActivityIntent(context: Context): Intent {
       val intent = Intent(context, FAQActivity::class.java)
       return intent
     }
