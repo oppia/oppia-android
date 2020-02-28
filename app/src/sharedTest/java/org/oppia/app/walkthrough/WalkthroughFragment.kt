@@ -9,21 +9,22 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.utility.ProgressMatcher.withProgress
+import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
 
 /** Tests for [WalkthroughFragment]. */
 @RunWith(AndroidJUnit4::class)
 class OnboardingFragmentTest {
 
   @Test
-  fun testWalkthroughFragment_skipNextButtonIsVisible() {
+  fun testWalkthroughFragment_checkSkipButton_skipNextButton_progressBar_IsVisible() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.next_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.back_button)).check(matches(isDisplayed()))
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(isDisplayed()))
     }
   }
   @Test
-  fun testWalkthroughFragment_increaseProgress() {
+  fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
@@ -31,7 +32,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testWalkthroughFragment_increaseAndDecreaseProgress() {
+  fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
