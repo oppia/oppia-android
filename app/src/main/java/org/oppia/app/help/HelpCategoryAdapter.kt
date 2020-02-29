@@ -9,6 +9,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.CategoryBinding
 import org.oppia.app.help.faq.FAQActivity
 
+/** The adapter to set up the recycler view in the [HelpFragment] */
 class HelpCategoryAdapter(private val context: Context, private val arrayList: ArrayList<HelpViewModel>) :
   RecyclerView.Adapter<HelpCategoryAdapter.CustomView>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HelpCategoryAdapter.CustomView {
