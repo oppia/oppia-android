@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough.welcome
+package org.oppia.app.walkthrough.end
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-class WalkthroughWelcomeFragment : InjectableFragment() {
+class WalkthroughFinalFragment : InjectableFragment() {
   @Inject
-  lateinit var walkthroughWelcomeFragmentPresenter: WalkthroughWelcomeFragmentPresenter
+  lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -18,7 +18,7 @@ class WalkthroughWelcomeFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return walkthroughWelcomeFragmentPresenter.handleCreateView(inflater, container)
+    return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container)
   }
 
 }

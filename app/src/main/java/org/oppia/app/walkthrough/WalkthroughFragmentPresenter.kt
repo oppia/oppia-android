@@ -19,7 +19,6 @@ class WalkthroughFragmentPresenter @Inject constructor(
   private var currentProgress: Int = 0
   private lateinit var viewPager: ViewPager2
 
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = WalkthroughFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -40,7 +39,15 @@ class WalkthroughFragmentPresenter @Inject constructor(
     viewPager.apply {
       this.adapter = adapter
       isUserInputEnabled = false
+
     }
+    viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+      override fun onPageSelected(position: Int) {
+        super.onPageSelected(position)
+        binding.walkthroughProgressBar.progress = position
+      }
+
+    })
   }
 
   fun nextPage() {
