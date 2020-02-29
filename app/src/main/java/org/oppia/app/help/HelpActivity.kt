@@ -6,7 +6,6 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.help.faq.FAQActivity
 import javax.inject.Inject
 
 /** The help page activity for users faq and feedbacks. */
