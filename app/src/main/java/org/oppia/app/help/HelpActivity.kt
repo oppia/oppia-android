@@ -10,9 +10,8 @@ import org.oppia.app.help.faq.FAQActivity
 import javax.inject.Inject
 
 /** The help page activity for users faq and feedbacks. */
-class HelpActivity : InjectableAppCompatActivity(), HelpItemListener {
-  @Inject
-  lateinit var helpActivityPresenter: HelpActivityPresenter
+class HelpActivity : InjectableAppCompatActivity() {
+  @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -33,8 +32,4 @@ class HelpActivity : InjectableAppCompatActivity(), HelpItemListener {
     }
   }
 
-  override fun onItemClicked(title: String) {
-    val intent = FAQActivity.createFAQActivityIntent(this)
-    startActivity(intent)
-  }
 }

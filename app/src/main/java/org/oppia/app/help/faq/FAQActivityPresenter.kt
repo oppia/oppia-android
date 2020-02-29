@@ -11,7 +11,7 @@ class FAQActivityPresenter @Inject constructor(private val activity: AppCompatAc
   fun handleOnCreate() {
     activity.setContentView(R.layout.faq_activity)
     activity.supportFragmentManager.beginTransaction().add(
-      R.id.help_fragment_placeholder,
+      R.id.faq_fragment_placeholder,
       FAQFragment()
     ).commitNow()
   }

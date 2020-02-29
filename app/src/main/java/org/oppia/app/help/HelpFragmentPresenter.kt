@@ -21,7 +21,6 @@ class HelpFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
-  private val helpItemListener = activity as HelpItemListener
   private var recyclerView:RecyclerView ?= null
   private var customAdapter:HelpCategoryAdapter?=null
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup? , context : Context): View? {

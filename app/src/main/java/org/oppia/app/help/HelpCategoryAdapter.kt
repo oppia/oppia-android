@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.CategoryBinding
+import org.oppia.app.help.faq.FAQActivity
 
 class HelpCategoryAdapter(private val context: Context, private val arrayList: ArrayList<HelpViewModel>) :
   RecyclerView.Adapter<HelpCategoryAdapter.CustomView>() {
@@ -23,6 +24,12 @@ class HelpCategoryAdapter(private val context: Context, private val arrayList: A
   override fun onBindViewHolder(holder: HelpCategoryAdapter.CustomView, position: Int) {
     val categoryViewModel = arrayList[position]
     holder.bind(categoryViewModel)
+    holder.itemView.setOnClickListener {
+      if(position == 0){
+        val intent = FAQActivity.createFAQActivityIntent(context)
+        context.startActivity(intent)
+      }
+    }
   }
 
   class CustomView(val categoryBinding: CategoryBinding):RecyclerView.ViewHolder(categoryBinding.root){
