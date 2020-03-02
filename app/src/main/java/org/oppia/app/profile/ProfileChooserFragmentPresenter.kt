@@ -1,13 +1,18 @@
 package org.oppia.app.profile
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -18,6 +23,7 @@ import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -59,9 +65,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
+  private val profileLiveData : LiveData<AsyncResult<Boolean>> by lazy {
+    getProfileEverCreated()
+  }
+  private var profileLayoutMode : RecyclerView.LayoutManager? = null
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+
+    subscribetoProfileEverCreated()
     val binding =
       ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
@@ -71,6 +83,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
+      layoutManager = profileLayoutMode
     }
     return binding.root
   }
@@ -138,4 +151,22 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       }
     }
   }
+  private fun getProfileEverCreated(): LiveData<AsyncResult<Boolean>> {
+    return profileManagementController.getWasProfileEverAdded()
+  }
+
+  private fun subscribetoProfileEverCreated(){
+    profileLiveData.observe(fragment, Observer<AsyncResult<Boolean>>{
+      if(it == AsyncResult.success(true)){
+        profileLayoutMode = GridLayoutManager(activity.applicationContext,2)
+      }
+      else if(it == AsyncResult.success(false)){
+        profileLayoutMode = LinearLayoutManager(activity.applicationContext)
+      }
+      else{
+        Log.d("Logger","Null")
+      }
+    })
+  }
+
 }
