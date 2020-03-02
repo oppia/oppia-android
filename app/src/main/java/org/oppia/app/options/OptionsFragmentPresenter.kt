@@ -53,6 +53,7 @@ class OptionsFragmentPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     subscribeToProfileLiveData()
+    getOptionControlsItemViewModel.setProfileId(profileId)
 
     val viewModel = getOptionControlsItemViewModel()
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
