@@ -24,4 +24,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     }
     return binding.root
   }
+
+  fun changePage() {
+
+  }
 }

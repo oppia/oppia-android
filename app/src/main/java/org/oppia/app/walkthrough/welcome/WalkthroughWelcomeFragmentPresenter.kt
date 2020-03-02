@@ -16,12 +16,17 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = WalkthroughWelcomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      WalkthroughWelcomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     binding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
     }
     return binding.root
+  }
+
+  fun changePage() {
+
   }
 }

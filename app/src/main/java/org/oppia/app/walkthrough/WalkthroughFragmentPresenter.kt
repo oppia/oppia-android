@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import org.oppia.app.R
 import org.oppia.app.databinding.WalkthroughFragmentBinding
@@ -14,9 +16,9 @@ import javax.inject.Inject
 @FragmentScope
 class WalkthroughFragmentPresenter @Inject constructor(
   private val fragment: Fragment
-) {
+)  {
   private lateinit var binding: WalkthroughFragmentBinding
-  private var currentProgress: Int = 0
+  private var currentProgress = MutableLiveData<Int>(0)
   private lateinit var viewPager: ViewPager
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -39,21 +41,17 @@ class WalkthroughFragmentPresenter @Inject constructor(
 
     }
 
-    viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-      override fun onPageScrollStateChanged(state: Int) {}
-
-      override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-      override fun onPageSelected(position: Int) {
-        currentProgress = position + 1
-        binding.walkthroughProgressBar.progress = currentProgress
-      }
+    currentProgress.observe(fragment.viewLifecycleOwner, Observer {
+      binding.walkthroughProgressBar.progress = it
     })
+
   }
 
   fun prevPage() {
-    if (currentProgress > 0) {
-      binding.walkthroughProgressBar.progress = --currentProgress
+    currentProgress.value?.let { progress ->
+      if (progress > 0) {
+        currentProgress.value = progress - 1
+      }
     }
   }
 }
