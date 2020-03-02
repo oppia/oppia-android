@@ -38,6 +38,8 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
+  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+
   private fun getStateFragment(): StateFragment? {
     return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }

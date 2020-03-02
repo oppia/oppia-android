@@ -10,6 +10,7 @@ import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
@@ -17,7 +18,8 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topi
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener, ConceptCardListener {
+
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
   private var topicId: String? = null
@@ -82,5 +84,9 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
 
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onKeyboardAction(actionCode)
+  }
+
+  override fun dismissConceptCard() {
+    explorationActivityPresenter.dismissConceptCard()
   }
 }

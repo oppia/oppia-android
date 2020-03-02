@@ -56,4 +56,6 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
+
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 }

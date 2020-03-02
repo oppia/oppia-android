@@ -60,6 +60,7 @@ import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -71,11 +72,12 @@ import javax.inject.Inject
 
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  @ExplorationHtmlParserEntityType private val entityType: String,
+  @ExplorationHtmlParserEntityType private val htmlParserEntityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
@@ -85,13 +87,16 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener, HtmlParser.CustomOppiaTagActionListener {
 
   private var feedbackId: String? = null
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private val htmlParser: HtmlParser by lazy {
+    htmlParserFactory.create(htmlParserEntityType, explorationId, true, customOppiaTagActionListener = this)
+  }
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -179,10 +184,11 @@ class StateFragmentPresenter @Inject constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
-              .parseOppiaHtml(
-                (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
-              )
+            htmlParser.parseOppiaHtml(
+              (viewModel as ContentViewModel).htmlContent.toString(),
+              binding.contentTextView,
+              supportsLinks = true
+            )
         }
       )
       .registerViewBinder(
@@ -197,10 +203,11 @@ class StateFragmentPresenter @Inject constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
-              .parseOppiaHtml(
-                (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
-              )
+            htmlParser.parseOppiaHtml(
+              (viewModel as FeedbackViewModel).htmlContent.toString(),
+              binding.feedbackTextView,
+              supportsLinks = true
+            )
         }
       )
       .registerViewDataBinder(
@@ -245,7 +252,6 @@ class StateFragmentPresenter @Inject constructor(
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
               )
@@ -621,6 +627,16 @@ class StateFragmentPresenter @Inject constructor(
       stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
+    }
+  }
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+  }
+
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
     }
   }
 }

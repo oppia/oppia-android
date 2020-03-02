@@ -28,4 +28,6 @@ class ExplorationFragment : InjectableFragment() {
   fun setAudioBarVisibility(isVisible: Boolean) = explorationFragmentPresenter.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
+
+  fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
 }

@@ -57,7 +57,11 @@ class HtmlParser private constructor(
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
 
-    val htmlSpannable = CustomHtmlContentHandler.fromHtml(htmlContent,imageGetter, mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)) as Spannable
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(
+      htmlContent,
+      imageGetter,
+      mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)
+    ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
@@ -97,7 +101,7 @@ class HtmlParser private constructor(
   // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
   private class ConceptCardTagHandler(
     private val customOppiaTagActionListener: CustomOppiaTagActionListener?
-  ): CustomHtmlContentHandler.CustomTagHandler {
+  ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(attributes: org.xml.sax.Attributes, openIndex: Int, closeIndex: Int, output: Editable) {
       val skillId = attributes.getValue("skill-id")
       output.setSpan(object : ClickableSpan() {
@@ -118,7 +122,12 @@ class HtmlParser private constructor(
   }
 
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
-    fun create(entityType: String, entityId: String, imageCenterAlign: Boolean, customOppiaTagActionListener: CustomOppiaTagActionListener? = null): HtmlParser {
+    fun create(
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean,
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+    ): HtmlParser {
       return HtmlParser(urlImageParserFactory, entityType, entityId, imageCenterAlign, customOppiaTagActionListener)
     }
   }
