@@ -36,19 +36,23 @@
       },
       {
         "skill_ids": [
-          "5RM9KPfQxobH",
-          "B39yK4cbHZYI"
-        ],
-        "id": 3,
-        "title": "Equivalent Fractions"
-      },
-      {
-        "skill_ids": [
           "B39yK4cbHZYI",
           "UxTGIJqaHMLa"
         ],
-        "id": 4,
+        "id": 3,
         "title": "Mixed Numbers"
+      },{
+        "skill_ids": [],
+        "id": 4,
+        "title": "Adding Fractions"
+      },
+      {
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI"
+        ],
+        "id": 5,
+        "title": "Equivalent Fractions"
       },
       {
         "skill_ids": [
@@ -60,32 +64,52 @@
         "title": "The Number Line"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 6,
         "title": "Comparing Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI"
+        ],
         "id": 7,
         "title": "Adding Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 8,
         "title": "Subtracting Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "UxTGIJqaHMLa"
+        ],
         "id": 9,
         "title": "Multiplying Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 10,
         "title": "Dividing Fractions"
       },
       {
-        "skill_ids": [],
+        "skill_ids": [
+          "5RM9KPfQxobH",
+          "B39yK4cbHZYI",
+          "UxTGIJqaHMLa"
+        ],
         "id": 11,
         "title": "General Skills"
       }

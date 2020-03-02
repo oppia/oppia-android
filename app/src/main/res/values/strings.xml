@@ -5,6 +5,7 @@
   <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
@@ -26,6 +27,7 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="review_card_toolbar_title">Review Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
@@ -77,7 +79,7 @@
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
-  <string name="fraction_error_larger_than_seven_digits">None of the numbers of the fraction should be larger than 7 digits.</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 characters (i.e.,[0-9] or "." or "-").</string>
@@ -135,9 +137,9 @@
   <string name="admin_pin_submit">Submit</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name (required)</string>
-  <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
+  <string name="add_profile_input_name">Name*</string>
+  <string name="add_profile_input_pin">3-Digit PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
   <string name="add_profile_create_btn">Create</string>
@@ -217,4 +219,8 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
+  <string name="add_profile_required">*Required</string>
+  <string name="back_button">Back Button</string>
+  <string name="next">Next</string>
 </resources>
