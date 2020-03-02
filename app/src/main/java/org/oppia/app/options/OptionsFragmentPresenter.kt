@@ -5,9 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.OptionAppLanguageBinding
@@ -18,13 +15,11 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
@@ -48,14 +43,15 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OptionsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val viewModel = getOptionControlsItemViewModel()
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-    subscribeToProfileLiveData()
-    getOptionControlsItemViewModel.setProfileId(profileId)
+    logger.d("options internalProfileId","=="+internalProfileId)
+    logger.d("options fragment","=="+profileId)
+    viewModel.setProfileId(profileId)
 
-    val viewModel = getOptionControlsItemViewModel()
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
     binding.optionsList.apply {
       adapter = optionsRecyclerViewAdapter
@@ -68,24 +64,24 @@ class OptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
-  }
+//  private fun getProfileData(): LiveData<Profile> {
+//    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+//  }
+//
+//  private fun subscribeToProfileLiveData() {
+//    getProfileData().observe(activity, Observer<Profile> {
+//      storyTextSize = it.storyTextSize
+//      appLanguage = it.appLanguage
+//      audioLanguage = it.audioLanguage
+//    })
+//  }
 
-  private fun subscribeToProfileLiveData() {
-    getProfileData().observe(activity, Observer<Profile> {
-      storyTextSize = it.storyTextSize
-      appLanguage = it.appLanguage
-      audioLanguage = it.audioLanguage
-    })
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
-    }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
-  }
+//  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+//    if (profileResult.isFailure()) {
+//      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+//    }
+//    return profileResult.getOrDefault(Profile.getDefaultInstance())
+//  }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
     logger.e("adapter", "Failed to retrieve profile" +storyTextSize)

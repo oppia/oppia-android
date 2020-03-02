@@ -17,7 +17,7 @@
     android:overScrollMode="never"
     android:paddingBottom="80dp"
     android:scrollbars="none"
-    app:data="@{viewModel.processOptionsList()}"
+    app:data="@{viewModel.optionListLiveData}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
