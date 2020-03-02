@@ -26,9 +26,10 @@
       android:name=".help.HelpActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".help.faq.FAQActivity"
+    <activity
+      android:name=".help.faq.FAQActivity"
       android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar"></activity>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"

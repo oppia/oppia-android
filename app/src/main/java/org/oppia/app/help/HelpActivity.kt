@@ -30,5 +30,4 @@ class HelpActivity : InjectableAppCompatActivity() {
       return KEY_NAVIGATION_PROFILE_ID
     }
   }
-
 }

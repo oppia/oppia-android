@@ -1,6 +1,5 @@
 package org.oppia.app.help
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +17,12 @@ import javax.inject.Inject
 /** The presenter for [HelpFragment]. */
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
   private var recyclerView:RecyclerView ?= null
   private var helpCategoryAdapter:HelpCategoryAdapter?=null
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup? , context : Context): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup? ): View? {
     val binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
@@ -33,8 +32,8 @@ class HelpFragmentPresenter @Inject constructor(
     recyclerView = binding.root.findViewById(R.id.help_fragment_recycler_view) as RecyclerView
     var helpViewModel:HelpViewModel = ViewModelProviders.of(fragment).get(HelpViewModel::class.java)
     helpViewModel.getArrayList().observe(fragment, Observer { helpViewModels ->
-      helpCategoryAdapter = HelpCategoryAdapter(context,helpViewModels!!)
-      recyclerView!!.setLayoutManager(LinearLayoutManager(context))
+      helpCategoryAdapter = HelpCategoryAdapter(activity,helpViewModels!!)
+      recyclerView!!.setLayoutManager(LinearLayoutManager(activity))
       recyclerView!!.setAdapter(helpCategoryAdapter)
     })
     return binding.root

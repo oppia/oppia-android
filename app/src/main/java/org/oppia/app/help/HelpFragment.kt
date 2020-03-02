@@ -11,15 +11,13 @@ import javax.inject.Inject
 /** Fragment that contains help in the app. */
 class HelpFragment : InjectableFragment() {
   @Inject lateinit var helpFragmentPresenter: HelpFragmentPresenter
-  private var contextAttached : Context ?= null
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
-    contextAttached = context
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return helpFragmentPresenter.handleCreateView(inflater, container , contextAttached!!)
+    return helpFragmentPresenter.handleCreateView(inflater, container)
   }
 }
