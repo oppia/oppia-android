@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:profile="http://schemas.android.com/tools">
 
-  <data class="CategoryBinding">
+  <data class="HelpBinding">
     <variable
       name="helpmodel"
       type="org.oppia.app.help.HelpViewModel" />

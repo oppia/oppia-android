@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.CategoryBinding
+import org.oppia.app.databinding.HelpBinding
 import org.oppia.app.help.faq.FAQActivity
 
 /** The adapter to set up the recycler view in the [HelpFragment] */
@@ -14,8 +14,8 @@ class HelpCategoryAdapter(private val context: Context, private val arrayList: A
   RecyclerView.Adapter<HelpCategoryAdapter.CustomView>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HelpCategoryAdapter.CustomView {
     val layoutInflater = LayoutInflater.from(parent.context)
-    val categoryBinding: CategoryBinding = DataBindingUtil.inflate(layoutInflater , R.layout.help_recyclerview_single_item_layout,parent,false)
-    return CustomView(categoryBinding)
+    val helpBinding: HelpBinding = DataBindingUtil.inflate(layoutInflater , R.layout.help_recyclerview_single_item_layout,parent,false)
+    return CustomView(helpBinding)
   }
 
   override fun getItemCount(): Int {
@@ -33,10 +33,10 @@ class HelpCategoryAdapter(private val context: Context, private val arrayList: A
     }
   }
 
-  class CustomView(val categoryBinding: CategoryBinding):RecyclerView.ViewHolder(categoryBinding.root){
+  class CustomView(val helpBinding: HelpBinding):RecyclerView.ViewHolder(helpBinding.root){
     fun bind(helpViewModel: HelpViewModel){
-      this.categoryBinding.helpmodel = helpViewModel
-      categoryBinding.executePendingBindings()
+      this.helpBinding.helpmodel = helpViewModel
+      helpBinding.executePendingBindings()
     }
   }
 }
