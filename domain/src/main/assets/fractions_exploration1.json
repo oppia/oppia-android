@@ -1928,7 +1928,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_3",
-                "html": "<p>That's not correct -- it looks like you've forgotten what the numerator and denominator represent. Take a look at the short <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">refresher lesson</oppia-concept-card-link> to refresh your memory if you need to.</p>"
+                "html": "<p>That's not correct -- it looks like you've forgotten what the numerator and denominator represent. Take a look at the short <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to refresh your memory if you need to.</p>"
               },
               "dest": "Matthew gets conned",
               "refresher_exploration_id": null,
@@ -1956,7 +1956,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_10",
-                "html": "<p>That's not correct -- it looks like you've forgotten what the numerator and denominator represent. Take a look at the short <oppia-concept-card-link skill-id=\"UxTGIJqaHMLa\">refresher lesson</oppia-concept-card-link> to refresh your memory if you need to.</p>"
+                "html": "<p>That's not correct -- it looks like you've forgotten what the numerator and denominator represent. Take a look at the short <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to refresh your memory if you need to.</p>"
               },
               "dest": "Matthew gets conned",
               "refresher_exploration_id": null,

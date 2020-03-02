@@ -97,7 +97,7 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = localCurrentTrackedCustomTag
-        customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output.length, output)
+        customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output)
       }
     }
   }
@@ -112,10 +112,9 @@ class CustomHtmlContentHandler private constructor(
      *
      * @param attributes The tag's attributes
      * @param openIndex The index in the output [Editable] at which this tag begins
-     * @param closeIndex The index in the output [Editable] at which this tag ends
      * @param output The destination [Editable] to which spans can be added
      */
-    fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable)
+    fun handleTag(attributes: Attributes, openIndex: Int, output: Editable)
   }
 
   companion object {
