@@ -21,7 +21,7 @@ import javax.inject.Inject
 class OptionControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val logger: Logger
-) : ViewModel() {
+) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
 
@@ -35,14 +35,15 @@ class OptionControlsViewModel @Inject constructor(
 //    return itemViewModelList
 //  }
 
+
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
   }
 
-  private val profileLiveData: LiveData<Profile> by lazy { getOptionsList() }
+  private val profileLiveData: LiveData<Profile> by lazy { getProfileData() }
 
-  private fun getOptionsList(): LiveData<Profile> {
-    return Transformations.map(profileResultLiveData, ::processTopicResult)
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(profileResultLiveData, ::processProfileResult)
   }
 
   val optionListLiveData: LiveData<ObservableList<OptionsItemViewModel>> by lazy {
@@ -50,14 +51,14 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   fun setProfileId(profileId: ProfileId) {
-    this.profileId = profileId
+   this.profileId = profileId
   }
 
-  private fun processTopicResult(topic: AsyncResult<Profile>): Profile {
-    if (topic.isFailure()) {
-      logger.e("TopicPracticeFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+  private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
+    if (profile.isFailure()) {
+      logger.e("OptionsFragment", "Failed to retrieve topic", profile.getErrorOrNull()!!)
     }
-    return topic.getOrDefault(Profile.getDefaultInstance())
+    return profile.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun processProfileList(profile: Profile): ObservableList<OptionsItemViewModel> {
@@ -72,6 +73,8 @@ class OptionControlsViewModel @Inject constructor(
     optionsStoryTextViewViewModel.storyTextSize = getStoryTextSize(profile.storyTextSize)
     optionsAppLanguageViewModel.appLanguage = getAppLanguage(profile.appLanguage)
     optionAudioViewViewModel.audioLanguage = getAudioLanguage(profile.audioLanguage)
+
+    logger.e("OptionsFragment", "story text size"+ getStoryTextSize(profile.storyTextSize))
 
     itemViewModelList.add(optionsStoryTextViewViewModel as OptionsItemViewModel)
 

@@ -23,7 +23,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [OptionFragment]. */
+/** The presenter for [OptionsFragment]. */
 @FragmentScope
 class OptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -84,8 +84,6 @@ class OptionsFragmentPresenter @Inject constructor(
 //  }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
-    logger.e("adapter", "Failed to retrieve profile" +storyTextSize)
-
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
