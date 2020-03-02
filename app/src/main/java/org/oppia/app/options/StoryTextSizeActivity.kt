@@ -12,7 +12,8 @@ private const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE = "STORY_TEXT_SIZ
 /** The activity to change the Text size of the Story content in the app. */
 class StoryTextSizeActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var storyTextSizeActivityPresenter: StoryTextSizeActivityPresenter
+  @Inject
+  lateinit var storyTextSizeActivityPresenter: StoryTextSizeActivityPresenter
   private lateinit var prefKey: String
   private lateinit var prefSummaryValue: String
 
@@ -28,7 +29,8 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
     /** Returns a new [Intent] to route to [StoryTextSizeActivity]. */
     fun createStoryTextSizeActivityIntent(
       context: Context,
-      prefKey: String, summaryValue: String
+      prefKey: String,
+      summaryValue: String
     ): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
       intent.putExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE, prefKey)

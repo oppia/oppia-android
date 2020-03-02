@@ -26,7 +26,11 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to route to [DefaultAudioActivity]. */
-    fun createDefaultAudioActivityIntent(context: Context, prefKey: String, summaryValue: String): Intent {
+    fun createDefaultAudioActivityIntent(
+      context: Context,
+      prefKey: String,
+      summaryValue: String
+    ): Intent {
       val intent = Intent(context, DefaultAudioActivity::class.java)
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefKey)
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)

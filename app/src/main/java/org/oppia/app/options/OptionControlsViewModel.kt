@@ -35,12 +35,12 @@ class OptionControlsViewModel @Inject constructor(
     return Transformations.map(profileResultLiveData, ::processProfileResult)
   }
 
-  val optionListLiveData: LiveData<ObservableList<OptionsItemViewModel>> by lazy {
+  val optionListLiveData: LiveData<List<OptionsItemViewModel>> by lazy {
     Transformations.map(profileLiveData, ::processProfileList)
   }
 
   fun setProfileId(profileId: ProfileId) {
-   this.profileId = profileId
+    this.profileId = profileId
   }
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
@@ -50,7 +50,9 @@ class OptionControlsViewModel @Inject constructor(
     return profile.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private fun processProfileList(profile: Profile): ObservableList<OptionsItemViewModel> {
+  private fun processProfileList(profile: Profile): List<OptionsItemViewModel> {
+
+    itemViewModelList.clear()
 
     val optionsStoryTextViewViewModel =
       OptionsStoryTextViewViewModel()
@@ -62,8 +64,6 @@ class OptionControlsViewModel @Inject constructor(
     optionsStoryTextViewViewModel.storyTextSize = getStoryTextSize(profile.storyTextSize)
     optionsAppLanguageViewModel.appLanguage = getAppLanguage(profile.appLanguage)
     optionAudioViewViewModel.audioLanguage = getAudioLanguage(profile.audioLanguage)
-
-    logger.e("OptionsFragment", "story text size"+ getStoryTextSize(profile.storyTextSize))
 
     itemViewModelList.add(optionsStoryTextViewViewModel as OptionsItemViewModel)
 

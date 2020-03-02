@@ -1,6 +1,5 @@
 package org.oppia.app.options
 
-
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +13,7 @@ const val KEY_MESSAGE_APP_LANGUAGE = "APP_LANGUAGE"
 const val KEY_MESSAGE_AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
 const val REQUEST_CODE_TEXT_SIZE = 1
 const val REQUEST_CODE_APP_LANGUAGE = 2
-const val REQUEST_CODE_AUDIO_LANGUAGE= 3
+const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {

@@ -35,7 +35,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
         binding.storyTextSizeSeekBar.progress = 0
         binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
       }
-     getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
+      getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
         binding.storyTextSizeSeekBar.progress = 5
         binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.MEDIUM_TEXT_SIZE)
       }

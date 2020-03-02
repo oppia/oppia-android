@@ -20,7 +20,6 @@ import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [OptionsFragment]. */
@@ -29,8 +28,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
-  private val logger: Logger
+  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>
 ) {
   private lateinit var binding: OptionsFragmentBinding
 
@@ -47,9 +45,6 @@ class OptionsFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
-    logger.d("options internalProfileId","=="+internalProfileId)
-    logger.d("options fragment","=="+profileId)
     viewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
@@ -97,13 +92,12 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindStoryTextSize(binding: OptionStoryTextSizeBinding, model: OptionsStoryTextViewViewModel) {
     binding.viewModel = model
-    model.storyTextSize = getStoryTextSize(storyTextSize)
     binding.storyTextSizeTextView.setOnClickListener {
       activity.startActivityForResult(
         StoryTextSizeActivity.createStoryTextSizeActivityIntent(
           activity,
           activity.getString(R.string.key_story_text_size),
-          getStoryTextSize(storyTextSize)
+          model.storyTextSize
         ), REQUEST_CODE_TEXT_SIZE
       )
     }
@@ -111,13 +105,12 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindAppLanguage(binding: OptionAppLanguageBinding, model: OptionsAppLanguageViewModel) {
     binding.viewModel = model
-    model.appLanguage = getAppLanguage(appLanguage)
     binding.appLanguageTextView.setOnClickListener {
       activity.startActivityForResult(
         AppLanguageActivity.createAppLanguageActivityIntent(
           activity,
           activity.getString(R.string.key_app_language),
-          getAppLanguage(appLanguage)
+          model.appLanguage
         ), REQUEST_CODE_APP_LANGUAGE
       )
     }
@@ -125,13 +118,12 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindAudioLanguage(binding: OptionAudioLanguageBinding, model: OptionsAudioLanguageViewModel) {
     binding.viewModel = model
-    model.audioLanguage = getAudioLanguage(audioLanguage)
     binding.audioLanguageTextView.setOnClickListener {
       activity.startActivityForResult(
         DefaultAudioActivity.createDefaultAudioActivityIntent(
           activity,
           activity.getString(R.string.key_default_audio),
-          getAudioLanguage(audioLanguage)
+          model.audioLanguage
         ), REQUEST_CODE_AUDIO_LANGUAGE
       )
     }
@@ -149,19 +141,19 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateStoryTextSize(textSize: String) {
     when (textSize) {
-      getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
       }
-      getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
         storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE
       }
-      getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
         storyTextSize = StoryTextSize.LARGE_TEXT_SIZE
       }
-      getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
         storyTextSize = StoryTextSize.EXTRA_LARGE_TEXT_SIZE
       }
@@ -171,28 +163,28 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateAppLanguage(language: String) {
     when (language) {
-      getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.ENGLISH_APP_LANGUAGE
         )
         appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
       }
-      getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.HINDI_APP_LANGUAGE
         )
         appLanguage = AppLanguage.HINDI_APP_LANGUAGE
       }
-      getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.CHINESE_APP_LANGUAGE
         )
         appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
       }
-      getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.FRENCH_APP_LANGUAGE
@@ -206,35 +198,35 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateAudioLanguage(language: String) {
     when (language) {
-      getAudioLanguage(AudioLanguage.NO_AUDIO) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.NO_AUDIO) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.NO_AUDIO
         )
         audioLanguage = AudioLanguage.NO_AUDIO
       }
-      getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         )
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       }
-      getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.HINDI_AUDIO_LANGUAGE
         )
         audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
       }
-      getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.CHINESE_AUDIO_LANGUAGE
         )
         audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
       }
-      getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.FRENCH_AUDIO_LANGUAGE
@@ -244,36 +236,6 @@ class OptionsFragmentPresenter @Inject constructor(
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
-  }
-
-  fun getStoryTextSize(storyTextSize: StoryTextSize): String {
-    return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
-      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
-      else -> "Extra Large"
-    }
-  }
-
-  fun getAppLanguage(appLanguage: AppLanguage): String {
-    return when (appLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> "English"
-      AppLanguage.HINDI_APP_LANGUAGE -> "Hindi"
-      AppLanguage.FRENCH_APP_LANGUAGE -> "French"
-      AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
-      else -> "English"
-    }
-  }
-
-  fun getAudioLanguage(audioLanguage: AudioLanguage): String {
-    return when (audioLanguage) {
-      AudioLanguage.NO_AUDIO -> "No Audio"
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "English"
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "Chinese"
-      else -> "No Audio"
-    }
   }
 }
 
