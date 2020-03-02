@@ -51,8 +51,8 @@
     <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:windowSoftInputMode="adjustResize" />
+      android:windowSoftInputMode="adjustResize"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -116,8 +116,7 @@
       android:name=".topic.reviewcard.ReviewCardActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".testing.ReviewCardFragmentTestActivity"
+    <activity android:name=".testing.ReviewCardFragmentTestActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
