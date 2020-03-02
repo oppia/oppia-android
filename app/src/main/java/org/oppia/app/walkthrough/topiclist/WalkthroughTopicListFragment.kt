@@ -9,8 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 class WalkthroughTopicListFragment : InjectableFragment() {
-  @Inject
-  lateinit var walkthroughTopicListFragmentPresenter: WalkthroughTopicListFragmentPresenter
+  @Inject lateinit var walkthroughTopicListFragmentPresenter: WalkthroughTopicListFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -20,5 +19,4 @@ class WalkthroughTopicListFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return walkthroughTopicListFragmentPresenter.handleCreateView(inflater, container)
   }
-
 }

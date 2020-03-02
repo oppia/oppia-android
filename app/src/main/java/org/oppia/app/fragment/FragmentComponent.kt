@@ -79,7 +79,4 @@ interface FragmentComponent {
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
-
-
-
 }

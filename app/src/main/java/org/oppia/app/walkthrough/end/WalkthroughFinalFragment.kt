@@ -9,8 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 class WalkthroughFinalFragment : InjectableFragment() {
-  @Inject
-  lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
+  @Inject lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -20,5 +19,4 @@ class WalkthroughFinalFragment : InjectableFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container)
   }
-
 }

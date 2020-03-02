@@ -22,7 +22,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.presenter = this
     }
-
     return binding.root
   }
 }
