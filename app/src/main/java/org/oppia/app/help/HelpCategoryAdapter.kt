@@ -26,9 +26,11 @@ class HelpCategoryAdapter(private val context: Context, private val arrayList: A
     val categoryViewModel = arrayList[position]
     holder.bind(categoryViewModel)
     holder.itemView.setOnClickListener {
-      if(position == 0){
-        val intent = FAQActivity.createFAQActivityIntent(context)
-        context.startActivity(intent)
+      when(HelpItems.getHelpItemForPosition(position)){
+          HelpItems.FAQ -> {
+            val intent = FAQActivity.createFAQActivityIntent(context)
+            context.startActivity(intent)
+          }
       }
     }
   }
