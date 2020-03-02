@@ -64,25 +64,6 @@ class OptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-//  private fun getProfileData(): LiveData<Profile> {
-//    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
-//  }
-//
-//  private fun subscribeToProfileLiveData() {
-//    getProfileData().observe(activity, Observer<Profile> {
-//      storyTextSize = it.storyTextSize
-//      appLanguage = it.appLanguage
-//      audioLanguage = it.audioLanguage
-//    })
-//  }
-
-//  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-//    if (profileResult.isFailure()) {
-//      logger.e("OptionsFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
-//    }
-//    return profileResult.getOrDefault(Profile.getDefaultInstance())
-//  }
-
   private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->

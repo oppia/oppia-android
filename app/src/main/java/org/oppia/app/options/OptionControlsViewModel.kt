@@ -25,17 +25,6 @@ class OptionControlsViewModel @Inject constructor(
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
 
-//  fun processOptionsList(): ObservableList<OptionsItemViewModel> {
-//    itemViewModelList.add(OptionsStoryTextViewViewModel())
-//
-//    itemViewModelList.add(OptionsAppLanguageViewModel())
-//
-//    itemViewModelList.add(OptionsAudioLanguageViewModel())
-//
-//    return itemViewModelList
-//  }
-
-
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
   }
@@ -56,7 +45,7 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
-      logger.e("OptionsFragment", "Failed to retrieve topic", profile.getErrorOrNull()!!)
+      logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
     }
     return profile.getOrDefault(Profile.getDefaultInstance())
   }
