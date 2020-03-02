@@ -18,7 +18,8 @@ const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topi
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener, AudioButtonListener, ConceptCardListener {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
+  AudioButtonListener, ConceptCardListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var explorationId: String
@@ -37,7 +38,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     fun createExplorationActivityIntent(context: Context, explorationId: String, topicId: String?): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      if(topicId!=null) {
+      if (topicId != null) {
         intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       }
       return intent
