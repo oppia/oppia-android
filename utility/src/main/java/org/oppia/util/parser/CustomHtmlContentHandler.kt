@@ -16,7 +16,7 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>
-): ContentHandler, Html.TagHandler {
+) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private var currentTrackedCustomTag: TrackedCustomTag? = null
@@ -103,7 +103,7 @@ class CustomHtmlContentHandler private constructor(
   }
 
   private data class TrackedTag(val tag: String, val attributes: Attributes)
-  private data class TrackedCustomTag(val tag: String, val attributes: Attributes, val openTagIndex: Int)
+  data class TrackedCustomTag(val tag: String, val attributes: Attributes, val openTagIndex: Int)
 
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {

@@ -4,16 +4,23 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ClickableSpan
+import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -27,6 +34,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -104,7 +115,7 @@ class HtmlParserTest {
           " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
           "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
           "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
-          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003eTake a look at the short refresher lesson to refresh your memory if you need to.",
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -121,7 +132,7 @@ class HtmlParserTest {
           "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
           " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
           "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-          "red cherries in the pineapple slices?\u003c/p\u003e",
+          "red cherries in the pineapple slices?\u003c/p\u003eTake a look at the short refresher lesson to refresh your memory if you need to.",
       textView
     )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
@@ -151,14 +162,89 @@ class HtmlParserTest {
     assertThat(bulletSpan1).isNotNull()
   }
 
+  @Test
+  fun testHtmlContent_customSpan_oppiaInteractionSkillReview_skillReviewTextIsShownCorrectly() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    htmlParser.parseOppiaHtml(
+      "<p>Take a look at the short <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to refresh your memory if you need to.</p>",
+      textView,
+      supportsLinks = true
+    )
+    onView(withId(R.id.test_html_content_text_view)).check(matches(withSubstring("short refresher lesson to")))
+  }
+
+  @Test
+  fun testHtmlContent_customSpan_clickOnOppiaInteractionSkillReview_clickableSpanIsAdded() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlResult = htmlParser.parseOppiaHtml(
+      "<p>Take a look at the short <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to refresh your memory if you need to.</p>",
+      textView,
+      supportsLinks = true
+    )
+
+    val skillReviewSpans = htmlResult.getSpans<ClickableSpan>(0, htmlResult.length, ClickableSpan::class.java)
+    assertThat(skillReviewSpans.size.toLong()).isEqualTo(1)
+
+    onView(withId(R.id.test_html_content_text_view)).perform(clickClickableSpan("refresher lesson"))
+    onView(
+      allOf(
+        instanceOf(TextView::class.java),
+        withParent(withId(R.id.concept_card_toolbar))
+      )
+    ).check(matches(withText(R.string.concept_card_toolbar_title)))
+  }
+
+  // Reference: https://stackoverflow.com/a/40524247
+  /** Custom function to click on a substring in spannable string. */
+  private fun clickClickableSpan(textToClick: CharSequence): ViewAction {
+    return object : ViewAction {
+      override fun getConstraints(): Matcher<View> {
+        return Matchers.instanceOf(TextView::class.java)
+      }
+
+      override fun getDescription(): String {
+        return "clicking on a ClickableSpan"
+      }
+
+      override fun perform(uiController: UiController, view: View) {
+        val textView = view as TextView
+        val spannableString = textView.text as SpannableString
+        if (spannableString.isEmpty()) {
+          throw NoMatchingViewException.Builder()
+            .includeViewHierarchy(true)
+            .withRootView(textView)
+            .build()
+        }
+
+        val spans = spannableString.getSpans(0, spannableString.length, ClickableSpan::class.java)
+        if (spans.isNotEmpty()) {
+          var spanCandidate: ClickableSpan
+          for (span in spans) {
+            spanCandidate = span
+            val start = spannableString.getSpanStart(spanCandidate)
+            val end = spannableString.getSpanEnd(spanCandidate)
+            val sequence = spannableString.subSequence(start, end)
+            if (textToClick.toString() == sequence.toString()) {
+              span.onClick(textView)
+              return
+            }
+          }
+        }
+
+        throw NoMatchingViewException.Builder()
+          .includeViewHierarchy(true)
+          .withRootView(textView)
+          .build()
+      }
+    }
+  }
+
   class FakeImageLoader : ImageLoader {
     override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
 
     }
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier annotation class TestDispatcher

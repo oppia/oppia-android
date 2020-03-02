@@ -20,7 +20,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   /**
    * Sets up data binding and toolbar.
-   * Host activity must inherit ConceptCardListener to dismissConceptCard this fragment.
+   * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
     val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

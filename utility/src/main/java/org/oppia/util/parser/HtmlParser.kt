@@ -99,7 +99,7 @@ class HtmlParser private constructor(
   }
 
   // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
-  private class ConceptCardTagHandler(
+  class ConceptCardTagHandler(
     private val customOppiaTagActionListener: CustomOppiaTagActionListener?
   ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(attributes: org.xml.sax.Attributes, openIndex: Int, output: Editable) {
