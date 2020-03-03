@@ -134,8 +134,12 @@ class StoryProgressController @Inject constructor(
       retrieveCacheStore(profileId)
     ) { topicProgressDatabase ->
       val storyProgressListBuilder = StoryProgressList.newBuilder()
-      topicProgressDatabase.topicProgressMap.values.forEach { topicProgress ->
-        storyProgressListBuilder.addAllStoryProgress(topicProgress!!.storyProgressMap!!.values.toList())
+      val transformedStoryProgressList =
+        topicProgressDatabase.topicProgressMap.values.map { topicProgress -> topicProgress!!.storyProgressMap!!.values }
+      transformedStoryProgressList.map { storyProgressList ->
+        storyProgressListBuilder.addAllStoryProgress(
+          storyProgressList
+        )
       }
       AsyncResult.success(storyProgressListBuilder.build())
     }
