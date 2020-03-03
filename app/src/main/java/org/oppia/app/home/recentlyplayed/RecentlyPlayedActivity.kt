@@ -8,6 +8,8 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
+private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "INTERNAL_PROFILE_ID"
+
 /** Activity for recent stories. */
 class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
 
@@ -16,17 +18,28 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    recentlyPlayedActivityPresenter.handleOnCreate()
+    val internalProfileId = intent.getIntExtra(KEY_INTERNAL_PROFILE_ID_ARGUMENT, -1)
+    recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createRecentlyPlayedActivityIntent(context: Context): Intent {
-      return Intent(context, RecentlyPlayedActivity::class.java)
+    fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
+      val intent = Intent(context, RecentlyPlayedActivity::class.java)
+      intent.putExtra(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId)
+      return intent
     }
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 }

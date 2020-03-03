@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.app.databinding.OngoingStoryCardBinding
+import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.app.databinding.SectionTitleBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
@@ -31,14 +31,18 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
+  private var internalProfileId: Int = -1
+
   private lateinit var binding: RecentlyPlayedFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
     binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getRecentlyPlayedModel()
     binding.recentlyPlayedToolbar.setNavigationOnClickListener {
       (activity as RecentlyPlayedActivity).finish()
     }
+
+    this.internalProfileId = internalProfileId
 
     binding.ongoingStoryRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -79,10 +83,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    playExploration(promotedStory.explorationId, promotedStory.topicId)
+    playExploration(promotedStory.topicId, promotedStory.storyId, promotedStory.explorationId)
   }
 
-  private fun playExploration(explorationId: String, topicId: String) {
+  private fun playExploration(topicId: String, storyId: String, explorationId: String) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -95,7 +99,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         )
         else -> {
           logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId, topicId)
+          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId)
           activity.finish()
         }
       }

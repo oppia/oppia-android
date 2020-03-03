@@ -6,6 +6,8 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.story.testing.INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA
+import org.oppia.app.story.testing.TOPIC_ID_TEST_INTENT_EXTRA
 import javax.inject.Inject
 
 /** Activity for stories. */
@@ -15,23 +17,31 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA)) {
+    val internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
+    val topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
+      "Expected extra topic ID to be included for StoryActivity."
+    }
+    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID)) {
       "Expected extra story ID to be included for StoryActivity."
     }
-    storyActivityPresenter.handleOnCreate(storyId)
+    storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId))
   }
 
   companion object {
-    const val STORY_ACTIVITY_INTENT_EXTRA = "StoryActivity.story_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID = "StoryActivity.internal_profile_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID = "StoryActivity.topic_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID = "StoryActivity.story_id"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story ID. */
-    fun createStoryActivityIntent(context: Context, storyId: String): Intent {
+    fun createStoryActivityIntent(context: Context, internalProfileId: Int, topicId: String, storyId: String): Intent {
       val intent = Intent(context, StoryActivity::class.java)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA, storyId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID, topicId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, storyId)
       return intent
     }
   }

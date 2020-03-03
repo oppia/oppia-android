@@ -32,13 +32,13 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: Logger
 ) {
   private lateinit var explorationToolbar: Toolbar
-  private var topicId: String? = null
+  private lateinit var topicId: String
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(explorationId: String, topicId: String?) {
+  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -58,6 +58,9 @@ class ExplorationActivityPresenter @Inject constructor(
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
+      args.putInt(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
@@ -93,12 +96,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          if (topicId != null) {
-            val intent = Intent(activity, TopicActivity::class.java)
-            intent.putExtra(TopicActivity.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-            intent.addFlags(FLAG_ACTIVITY_REORDER_TO_FRONT)
-            activity.startActivity(intent)
-          }
+          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, topicId))
           (activity as ExplorationActivity).finish()
         }
       }

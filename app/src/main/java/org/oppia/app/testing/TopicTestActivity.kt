@@ -31,12 +31,12 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
 
-  override fun routeToStory(storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
+  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId))
   }
 
   override fun routeToReviewCard(topicId: String, subtopicId: String) {

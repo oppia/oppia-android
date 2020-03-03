@@ -36,6 +36,7 @@ import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -63,12 +64,16 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
@@ -81,6 +86,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
+  private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
@@ -88,6 +94,9 @@ class StateFragmentPresenter @Inject constructor(
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private var feedbackId: String? = null
+  private lateinit var profileId: ProfileId
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -113,6 +122,10 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -431,8 +444,7 @@ class StateFragmentPresenter @Inject constructor(
 
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
-    explorationDataController.stopPlayingExploration()
-    activity.finish()
+    markChapterAsCompleted()
   }
 
   override fun onSubmitButtonClicked() {
@@ -622,5 +634,20 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
+  }
+
+  private fun markChapterAsCompleted() {
+    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId)
+      .observe(fragment, Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d("StateFragment", "Saving progress")
+          result.isFailure() -> logger.e("StateFragment", "Failed to save progress", result.getErrorOrNull()!!)
+          else -> {
+            logger.d("StateFragment", "Successfully saved progress")
+            explorationDataController.stopPlayingExploration()
+            activity.finish()
+          }
+        }
+      })
   }
 }

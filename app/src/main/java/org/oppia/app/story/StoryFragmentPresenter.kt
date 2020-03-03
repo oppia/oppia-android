@@ -34,9 +34,11 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int, topicId: String, storyId: String): View? {
     val viewModel = getStoryViewModel()
     binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
@@ -60,8 +62,8 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleSelectExploration(explorationId: String) {
-    routeToExplorationListener.routeToExploration(explorationId, /* topicId= */ null)
+  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {

@@ -35,16 +35,16 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
 
-  override fun routeToStory(storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
+  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
   override fun routeToReviewCard(topicId: String, subtopicId: String) {
     startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId))
   }
 
   companion object {
@@ -55,6 +55,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     fun createTopicActivityIntent(context: Context, topicId: String): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
       return intent
     }
 
