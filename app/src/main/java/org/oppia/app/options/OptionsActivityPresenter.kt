@@ -44,7 +44,7 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   fun updateStoryTextSize(textSize: String) {
-     getOptionFragment()?.updateStoryTextSize(textSize)
+    getOptionFragment()?.updateStoryTextSize(textSize)
   }
 
   fun updateAppLanguage(appLanguage: String) {

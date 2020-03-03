@@ -30,7 +30,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
     fun createStoryTextSizeActivityIntent(
       context: Context,
       prefKey: String,
-      summaryValue: String
+      summaryValue: String?
     ): Intent {
       val intent = Intent(context, StoryTextSizeActivity::class.java)
       intent.putExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE, prefKey)

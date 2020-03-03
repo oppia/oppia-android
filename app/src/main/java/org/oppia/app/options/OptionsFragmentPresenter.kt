@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import org.oppia.app.databinding.OptionAppLanguageBinding
 import org.oppia.app.databinding.OptionAudioLanguageBinding
 import org.oppia.app.databinding.OptionStoryTextSizeBinding
@@ -21,6 +20,10 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
+
+const val STORY_TEXT_SIZE = "STORY_TEXT_SIZE"
+const val APP_LANGUAGE = "APP_LANGUAGE"
+const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
 
 /** The presenter for [OptionsFragment]. */
 @FragmentScope
@@ -96,8 +99,8 @@ class OptionsFragmentPresenter @Inject constructor(
       activity.startActivityForResult(
         StoryTextSizeActivity.createStoryTextSizeActivityIntent(
           activity,
-          activity.getString(R.string.key_story_text_size),
-          model.storyTextSize
+          STORY_TEXT_SIZE,
+          model.storyTextSize.get()
         ), REQUEST_CODE_TEXT_SIZE
       )
     }
@@ -109,8 +112,8 @@ class OptionsFragmentPresenter @Inject constructor(
       activity.startActivityForResult(
         AppLanguageActivity.createAppLanguageActivityIntent(
           activity,
-          activity.getString(R.string.key_app_language),
-          model.appLanguage
+          APP_LANGUAGE,
+          model.appLanguage.get()
         ), REQUEST_CODE_APP_LANGUAGE
       )
     }
@@ -122,8 +125,8 @@ class OptionsFragmentPresenter @Inject constructor(
       activity.startActivityForResult(
         DefaultAudioActivity.createDefaultAudioActivityIntent(
           activity,
-          activity.getString(R.string.key_default_audio),
-          model.audioLanguage
+          AUDIO_LANGUAGE,
+          model.audioLanguage.get()
         ), REQUEST_CODE_AUDIO_LANGUAGE
       )
     }

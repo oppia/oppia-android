@@ -1,7 +1,12 @@
 package org.oppia.app.options
 
-/** Audio Language settings view model for the recycler view in [OptionsFragment]. */
-class OptionsAudioLanguageViewModel : OptionsItemViewModel() {
-  var audioLanguage: String = ""
-}
+import androidx.databinding.ObservableField
 
+/** Audio language settings view model for the recycler view in [OptionsFragment]. */
+class OptionsAudioLanguageViewModel : OptionsItemViewModel() {
+  val audioLanguage = ObservableField<String>("")
+
+  fun setAudioLanguage(audioLanguageValue: String) {
+    audioLanguage.set(audioLanguageValue)
+  }
+}

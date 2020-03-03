@@ -29,7 +29,7 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
     fun createDefaultAudioActivityIntent(
       context: Context,
       prefKey: String,
-      summaryValue: String
+      summaryValue: String?
     ): Intent {
       val intent = Intent(context, DefaultAudioActivity::class.java)
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, prefKey)

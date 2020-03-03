@@ -386,7 +386,6 @@ class ProfileManagementController @Inject constructor(
         it,
         ProfileActionStatus.PROFILE_NOT_FOUND
       )
-      logger.d("text size","======="+storyTextSize)
       val updatedProfile = profile.toBuilder().setStoryTextSize(storyTextSize).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)

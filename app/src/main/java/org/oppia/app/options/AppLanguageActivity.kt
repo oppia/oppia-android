@@ -28,7 +28,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     fun createAppLanguageActivityIntent(
       context: Context,
       prefKey: String,
-      summaryValue: String
+      summaryValue: String?
     ): Intent {
       val intent = Intent(context, AppLanguageActivity::class.java)
       intent.putExtra(KEY_APP_LANGUAGE_PREFERENCE_TITLE, prefKey)

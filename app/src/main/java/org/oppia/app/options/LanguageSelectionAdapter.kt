@@ -51,7 +51,7 @@ class LanguageSelectionAdapter(private val prefKey: String) :
       binding.languageRadioButton.isChecked = position == indexOfPreviouslySelectedValue
 
       binding.radioContainer.setOnClickListener {
-        if (prefKey == binding.radioContainer.context.getString(R.string.key_app_language)) {
+        if (prefKey == APP_LANGUAGE) {
           val intent = Intent()
           intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, language)
           (binding.radioContainer.context as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
