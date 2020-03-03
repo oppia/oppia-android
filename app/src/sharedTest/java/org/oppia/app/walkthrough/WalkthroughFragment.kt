@@ -17,9 +17,9 @@ import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
 class OnboardingFragmentTest {
 
   @Test
-  fun testWalkthroughFragment_checkSkipButton_skipNextButton_progressBar_IsVisible() {
+  fun testWalkthroughFragment_checkViewPgaer_skipNextButton_progressBar_IsVisible() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.next_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.walkthrough_view_pager)).check(matches(isDisplayed()))
       onView(withId(R.id.back_button)).check(matches(isDisplayed()))
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(isDisplayed()))
     }
@@ -28,7 +28,6 @@ class OnboardingFragmentTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
     }
   }
@@ -36,7 +35,6 @@ class OnboardingFragmentTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
       onView(withId(R.id.back_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(0)))

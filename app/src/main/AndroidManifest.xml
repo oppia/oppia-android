@@ -72,10 +72,7 @@
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
@@ -120,6 +117,11 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".walkthrough.WalkthroughActivity"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
   </application>
 </manifest>

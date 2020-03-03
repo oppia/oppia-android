@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.walkthrough.WalkthroughPageChangeListener
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
@@ -26,6 +27,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
+    (fragment.requireActivity() as? WalkthroughPageChangeListener)?.pageNumber(2)
 
   }
 }
