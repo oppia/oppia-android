@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -65,26 +64,24 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
-  private val profileLiveData : LiveData<AsyncResult<Boolean>> by lazy {
+  private val profileLiveData: LiveData<AsyncResult<Boolean>> by lazy {
     getProfileEverCreated()
   }
-  private var profileLayoutMode : RecyclerView.LayoutManager? = null
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-
-    subscribetoProfileEverCreated()
     val binding =
       ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
+
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
-      layoutManager = profileLayoutMode
     }
+    subscribetoProfileEverCreated(binding)
     return binding.root
   }
 
@@ -124,7 +121,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
-            activity.startActivity((HomeActivity.createHomeActivity(activity, model.profile.id.internalId)))
+            activity.startActivity(
+              (HomeActivity.createHomeActivity(
+                activity,
+                model.profile.id.internalId
+              ))
+            )
           }
         })
       } else {
@@ -142,31 +144,37 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+          AdminPinActivity.createAdminPinActivityIntent(
+            activity,
+            chooserViewModel.adminProfileId.internalId,
+            selectUniqueRandomColor()
+          )
         )
       } else {
         activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
+          AdminAuthActivity.createAdminAuthActivityIntent(
+            activity,
+            chooserViewModel.adminPin,
+            selectUniqueRandomColor()
+          )
         )
       }
     }
   }
+
   private fun getProfileEverCreated(): LiveData<AsyncResult<Boolean>> {
     return profileManagementController.getWasProfileEverAdded()
   }
 
-  private fun subscribetoProfileEverCreated(){
-    profileLiveData.observe(fragment, Observer<AsyncResult<Boolean>>{
-      if(it == AsyncResult.success(true)){
-        profileLayoutMode = GridLayoutManager(activity.applicationContext,2)
-      }
-      else if(it == AsyncResult.success(false)){
-        profileLayoutMode = LinearLayoutManager(activity.applicationContext)
-      }
-      else{
-        Log.d("Logger","Null")
+  private fun subscribetoProfileEverCreated(binding: ProfileChooserFragmentBinding) {
+    profileLiveData.observe(fragment, Observer<AsyncResult<Boolean>> {
+      when (it) {
+        AsyncResult.success(true) -> binding.profileRecyclerView.layoutManager =
+          GridLayoutManager(activity.applicationContext, 2)
+        AsyncResult.success(false) -> binding.profileRecyclerView.layoutManager =
+          LinearLayoutManager(activity.applicationContext)
+        null -> Log.d("Logger", "Null")
       }
     })
   }
-
 }
