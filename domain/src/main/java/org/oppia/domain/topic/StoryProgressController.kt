@@ -135,12 +135,8 @@ class StoryProgressController @Inject constructor(
     ) { topicProgressDatabase ->
       val storyProgressListBuilder = StoryProgressList.newBuilder()
       val transformedStoryProgressList =
-        topicProgressDatabase.topicProgressMap.values.map { topicProgress -> topicProgress!!.storyProgressMap!!.values }
-      transformedStoryProgressList.map { storyProgressList ->
-        storyProgressListBuilder.addAllStoryProgress(
-          storyProgressList
-        )
-      }
+        topicProgressDatabase.topicProgressMap.values.map { topicProgress -> topicProgress!!.storyProgressMap!!.values.toList() }
+      storyProgressListBuilder.addAllStoryProgress(transformedStoryProgressList.flatten())
       AsyncResult.success(storyProgressListBuilder.build())
     }
   }

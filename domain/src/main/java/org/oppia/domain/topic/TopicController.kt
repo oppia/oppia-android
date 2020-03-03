@@ -727,7 +727,7 @@ class TopicController @Inject constructor(
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
-      val chapterPlayState = chapterProgressMap[explorationId] ?: ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+      val chapterPlayState = chapterProgressMap[explorationId] ?: ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
 
       chapterList.add(
         ChapterSummary.newBuilder()
@@ -754,7 +754,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_30)
       .setName("Prototype Exploration")
       .setSummary("This is the prototype exploration to verify interaction functionality.")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
       .setChapterThumbnail(createChapterThumbnail0())
       .build()
   }
@@ -774,7 +774,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_1)
       .setName("Second Exploration")
       .setSummary("This is the second exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
       .setChapterThumbnail(createChapterThumbnail1())
       .build()
   }
@@ -784,7 +784,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_2)
       .setName("Third Exploration")
       .setSummary("This is the third exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
       .setChapterThumbnail(createChapterThumbnail2())
       .build()
   }
@@ -794,7 +794,7 @@ class TopicController @Inject constructor(
       .setExplorationId(TEST_EXPLORATION_ID_3)
       .setName("Fourth Exploration")
       .setSummary("This is the fourth exploration summary")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
       .setChapterThumbnail(createChapterThumbnail3())
       .build()
   }
@@ -811,7 +811,7 @@ class TopicController @Inject constructor(
     return ChapterSummary.newBuilder()
       .setExplorationId(TEST_EXPLORATION_ID_4)
       .setName("Fifth Exploration")
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
       .setChapterThumbnail(createChapterThumbnail4())
       .build()
   }
