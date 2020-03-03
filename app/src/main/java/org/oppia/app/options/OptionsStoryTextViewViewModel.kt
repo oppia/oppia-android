@@ -10,4 +10,3 @@ class OptionsStoryTextViewViewModel : OptionsItemViewModel() {
     storyTextSize.set(storyTextSizeValue)
   }
 }
-
