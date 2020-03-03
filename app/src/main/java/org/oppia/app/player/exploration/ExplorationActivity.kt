@@ -21,8 +21,7 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
   AudioButtonListener {
-  @Inject
-  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -43,14 +42,14 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     fun createExplorationActivityIntent(
       context: Context,
       profileId: Int,
-      storyId: String,
       topicId: String,
+      storyId: String,
       explorationId: String
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       return intent
     }

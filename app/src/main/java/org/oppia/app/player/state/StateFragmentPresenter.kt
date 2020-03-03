@@ -444,7 +444,8 @@ class StateFragmentPresenter @Inject constructor(
 
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
-    markChapterAsCompleted()
+    explorationDataController.stopPlayingExploration()
+    activity.finish()
   }
 
   override fun onSubmitButtonClicked() {
@@ -634,20 +635,5 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
-  }
-
-  private fun markChapterAsCompleted() {
-    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId)
-      .observe(fragment, Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> logger.d("StateFragment", "Saving progress")
-          result.isFailure() -> logger.e("StateFragment", "Failed to save progress", result.getErrorOrNull()!!)
-          else -> {
-            logger.d("StateFragment", "Successfully saved progress")
-            explorationDataController.stopPlayingExploration()
-            activity.finish()
-          }
-        }
-      })
   }
 }
