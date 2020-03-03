@@ -35,7 +35,6 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = AdministratorControlsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    val viewModel = getAdministratorControlsItemViewModel()
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     binding.administratorControlsList.apply {
