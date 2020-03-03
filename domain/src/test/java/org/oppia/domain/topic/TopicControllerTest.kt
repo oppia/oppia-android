@@ -889,7 +889,10 @@ class TopicControllerTest {
       topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
       advanceUntilIdle()
 
-      verifyGetOngoingTopicListFailed()
+      verifyGetOngoingTopicListSucceeded()
+
+      val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.topicCount).isEqualTo(0)
     }
 
   @Test
@@ -922,7 +925,10 @@ class TopicControllerTest {
       topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
       advanceUntilIdle()
 
-      verifyGetOngoingTopicListFailed()
+      verifyGetOngoingTopicListSucceeded()
+
+      val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.topicCount).isEqualTo(0)
     }
 
   @Test
@@ -957,7 +963,9 @@ class TopicControllerTest {
       topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
-      verifyGetCompletedStoryListFailed()
+      verifyGetCompletedStoryListSucceeded()
+      val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
     }
 
   @Test
@@ -970,7 +978,9 @@ class TopicControllerTest {
       topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
-      verifyGetCompletedStoryListFailed()
+      verifyGetCompletedStoryListSucceeded()
+      val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
     }
 
   @Test
@@ -991,6 +1001,28 @@ class TopicControllerTest {
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
       assertThat(completedStoryList.storySummaryCount).isEqualTo(1)
       assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testCompletedStoryList_finishEntireStory_checkChapters_allAreCompleted() =
+    runBlockingTest(coroutineContext) {
+      markFractionsStory0Chapter0AsCompleted()
+      advanceUntilIdle()
+
+      markFractionsStory0Chapter1AsCompleted()
+      advanceUntilIdle()
+
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStorySucceeded()
+
+      val storySummary = storySummaryResultCaptor.value.getOrThrow()
+      assertThat(storySummary.chapterCount).isEqualTo(2)
+      assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
+      assertThat(storySummary.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     }
 
   @Test
@@ -1116,19 +1148,9 @@ class TopicControllerTest {
     assertThat(ongoingTopicListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyGetOngoingTopicListFailed() {
-    verify(mockOngoingTopicListObserver, atLeastOnce()).onChanged(ongoingTopicListResultCaptor.capture())
-    assertThat(ongoingTopicListResultCaptor.value.isFailure()).isTrue()
-  }
-
   private fun verifyGetCompletedStoryListSucceeded() {
     verify(mockCompletedStoryListObserver, atLeastOnce()).onChanged(completedStoryListResultCaptor.capture())
     assertThat(completedStoryListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyGetCompletedStoryListFailed() {
-    verify(mockCompletedStoryListObserver, atLeastOnce()).onChanged(completedStoryListResultCaptor.capture())
-    assertThat(completedStoryListResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun getStoryIds(topic: Topic): List<String> {

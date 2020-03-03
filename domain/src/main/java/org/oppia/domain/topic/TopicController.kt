@@ -96,8 +96,8 @@ private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID = "transformed_g
 private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID = "transformed_get_ongoing_topics_provider_id"
 private const val TRANSFORMED_GET_TOPIC_PROVIDER_ID = "transformed_get_topic_provider_id"
 private const val TRANSFORMED_GET_STORY_PROVIDER_ID = "transformed_get_story_provider_id"
-private const val COMBINE_TOPIC_PROVIDER_ID = "combine_topic_provider_id"
-private const val COMBINE_STORY_PROVIDER_ID = "combine_story_provider_id"
+private const val COMBINED_TOPIC_PROVIDER_ID = "combined_topic_provider_id"
+private const val COMBINED_STORY_PROVIDER_ID = "combined_story_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -107,12 +107,6 @@ class TopicController @Inject constructor(
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController
 ) {
-
-  /** Indicates that the given profile does not have any completed story list. */
-  class CompletedStoryListNotFoundException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given profile does not have any ongoing topic list. */
-  class OngoingTopicListNotFoundException(msg: String) : java.lang.Exception(msg)
 
   /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
   fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
@@ -126,7 +120,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Fetch topic along with its progress based on topicId and profileId.
+   * Fetches a topic given a profile ID and a topic ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which needs to be returned.
@@ -134,13 +128,13 @@ class TopicController @Inject constructor(
    */
   fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
     val topicDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync retrieveTopicAsync(topicId)
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
     }
     val topicProgressDataProvider = storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
 
     return dataProviders.convertToLiveData(
       dataProviders.combine(
-        COMBINE_TOPIC_PROVIDER_ID,
+        COMBINED_TOPIC_PROVIDER_ID,
         topicDataProvider,
         topicProgressDataProvider,
         ::combineTopicAndTopicProgress
@@ -178,7 +172,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Fetch story along with its progress for a particular profile.
+   * Fetches a story given a profile ID, a topic ID and story ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which contains this story.
@@ -187,14 +181,14 @@ class TopicController @Inject constructor(
    */
   fun getStory(profileId: ProfileId, topicId: String, storyId: String): LiveData<AsyncResult<StorySummary>> {
     val storyDataProvider = dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync retrieveStoryAsync(storyId)
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(storyId))
     }
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
 
     return dataProviders.convertToLiveData(
       dataProviders.combine(
-        COMBINE_STORY_PROVIDER_ID,
+        COMBINED_STORY_PROVIDER_ID,
         storyDataProvider,
         storyProgressDataProvider,
         ::combineStorySummaryAndStoryProgress
@@ -252,7 +246,8 @@ class TopicController @Inject constructor(
         TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
         storyProgressController.retrieveStoryProgressListDataProvider(profileId)
       ) {
-        createCompletedStoryListFromProgress(profileId, it)
+        val completedStoryList = createCompletedStoryListFromProgress(it)
+        AsyncResult.success(completedStoryList)
       }
     )
   }
@@ -263,16 +258,8 @@ class TopicController @Inject constructor(
       TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID,
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
     ) {
-      if (it.topicProgressList.isNotEmpty()) {
-        val ongoingTopicList = createOngoingTopicListFromProgress(it)
-        if (ongoingTopicList.topicList.isNotEmpty()) {
-          AsyncResult.success(ongoingTopicList)
-        } else {
-          AsyncResult.failed(OngoingTopicListNotFoundException("ProfileId $profileId contain any ongoing topic list."))
-        }
-      } else {
-        AsyncResult.failed(OngoingTopicListNotFoundException("ProfileId $profileId contain any ongoing topic list."))
-      }
+      val ongoingTopicList = createOngoingTopicListFromProgress(it)
+      AsyncResult.success(ongoingTopicList)
     }
 
     return dataProviders.convertToLiveData(ongoingTopicListDataProvider)
@@ -303,10 +290,7 @@ class TopicController @Inject constructor(
     return ongoingTopicListBuilder.build()
   }
 
-  private fun createCompletedStoryListFromProgress(
-    profileId: ProfileId,
-    storyProgressList: StoryProgressList
-  ): AsyncResult<CompletedStoryList> {
+  private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
     val completedStoryListBuilder = CompletedStoryList.newBuilder()
     storyProgressList.storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
@@ -317,11 +301,7 @@ class TopicController @Inject constructor(
         completedStoryListBuilder.addStorySummary(storySummary)
       }
     }
-    return if (completedStoryListBuilder.storySummaryList.isNotEmpty()) {
-      AsyncResult.success(completedStoryListBuilder.build())
-    } else {
-      AsyncResult.failed(CompletedStoryListNotFoundException("ProfileId $profileId contain any completed story list."))
-    }
+    return completedStoryListBuilder.build()
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
@@ -329,39 +309,17 @@ class TopicController @Inject constructor(
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
-        val storyBuilder = storySummary.toBuilder()
-        if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-          storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
-            if (topicProgress.storyProgressMap[storySummary.storyId]!!.chapterProgressMap.containsKey(chapterSummary.explorationId)) {
-              val chapterBuilder = chapterSummary.toBuilder()
-              chapterBuilder.chapterPlayState = ChapterPlayState.COMPLETED
-              storyBuilder.setChapter(chapterIndex, chapterBuilder)
-            } else {
-              if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
-                val chapterBuilder = chapterSummary.toBuilder()
-                chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
-                storyBuilder.setChapter(chapterIndex, chapterBuilder)
-              } else {
-                val chapterBuilder = chapterSummary.toBuilder()
-                chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-                storyBuilder.setChapter(chapterIndex, chapterBuilder)
-              }
-            }
-          }
-          topicBuilder.setStory(storyIndex, storyBuilder.build())
+        val updatedStorySummary = if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
+          combineStorySummaryAndStoryProgress(storySummary, topicProgress.storyProgressMap[storySummary.storyId]!!)
         } else {
-          if (storySummary.chapterList.isNotEmpty()) {
-            val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-            topicBuilder.setStory(storyIndex, updatedStorySummary)
-          }
+          setFirstChapterAsNotStarted(storySummary)
         }
+        topicBuilder.setStory(storyIndex, updatedStorySummary)
       }
     } else {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
-        if (storySummary.chapterList.isNotEmpty()) {
-          val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-          topicBuilder.setStory(storyIndex, updatedStorySummary)
-        }
+        val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
+        topicBuilder.setStory(storyIndex, updatedStorySummary)
       }
     }
     return topicBuilder.build()
@@ -412,24 +370,6 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun retrieveTopicAsync(topicId: String): AsyncResult<Topic> {
-    return when (topicId) {
-      TEST_TOPIC_ID_0 -> AsyncResult.success(createTestTopic0())
-      TEST_TOPIC_ID_1 -> AsyncResult.success(createTestTopic1())
-      FRACTIONS_TOPIC_ID -> AsyncResult.success(
-        createTopicFromJson(
-          "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
-        )
-      )
-      RATIOS_TOPIC_ID -> AsyncResult.success(
-        createTopicFromJson(
-          "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
-        )
-      )
-      else -> AsyncResult.failed(IllegalArgumentException("Invalid topic ID: $topicId"))
-    }
-  }
-
   private fun retrieveStory(storyId: String): StorySummary {
     return when (storyId) {
       TEST_STORY_ID_0 -> createTestTopic0Story0()
@@ -438,19 +378,7 @@ class TopicController @Inject constructor(
       FRACTIONS_STORY_ID_0 -> createStoryFromJsonFile("fractions_stories.json", /* index= */ 0)
       RATIOS_STORY_ID_0 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 0)
       RATIOS_STORY_ID_1 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 1)
-      else -> StorySummary.getDefaultInstance()
-    }
-  }
-
-  private fun retrieveStoryAsync(storyId: String): AsyncResult<StorySummary> {
-    return when (storyId) {
-      TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
-      TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
-      TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
-      FRACTIONS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("fractions_stories.json", /* index= */ 0))
-      RATIOS_STORY_ID_0 -> AsyncResult.success(createStoryFromJsonFile("ratios_stories.json", /* index= */ 0))
-      RATIOS_STORY_ID_1 -> AsyncResult.success(createStoryFromJsonFile("ratios_stories.json", /* index= */ 1))
-      else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
+      else -> throw IllegalArgumentException("Invalid story ID: $storyId")
     }
   }
 
@@ -545,10 +473,14 @@ class TopicController @Inject constructor(
 
   /** Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in [StorySummary]. */
   private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
-    val chapterBuilder = storySummary.getChapter(0).toBuilder()
-    chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
-    val storyBuilder = storySummary.toBuilder()
-    return storyBuilder.setChapter(0, chapterBuilder).build()
+    return if (storySummary.chapterList.isNotEmpty()) {
+      val chapterBuilder = storySummary.getChapter(0).toBuilder()
+      chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+      val storyBuilder = storySummary.toBuilder()
+      storyBuilder.setChapter(0, chapterBuilder).build()
+    } else {
+      storySummary
+    }
   }
 
   private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {

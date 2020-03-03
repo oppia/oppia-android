@@ -56,17 +56,9 @@ class StoryProgressController @Inject constructor(
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.
 
-  /** Indicates that the given profile id does not have any associated story progress. */
-  class StoryProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
-
-  /** Indicates that the given profile id does not have any associated topic progress. */
-  class TopicProgressListNotFoundException(msg: String) : java.lang.Exception(msg)
-
   /** These Statuses correspond to the exceptions above such that if the deferred contains. */
   private enum class StoryProgressActionStatus {
-    SUCCESS,
-    STORY_PROGRESS_NOT_FOUND,
-    TOPIC_PROGRESS_NOT_FOUND
+    SUCCESS
   }
 
   private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
@@ -131,11 +123,7 @@ class StoryProgressController @Inject constructor(
     ) { topicProgressDatabase ->
       val topicProgressListBuilder = TopicProgressList.newBuilder()
       topicProgressListBuilder.addAllTopicProgress(topicProgressDatabase.topicProgressMap.values)
-      if (topicProgressListBuilder.topicProgressList.isNotEmpty()) {
-        AsyncResult.success(topicProgressListBuilder.build())
-      } else {
-        AsyncResult.failed(TopicProgressListNotFoundException("ProfileId: $profileId does not contain any topic progress"))
-      }
+      AsyncResult.success(topicProgressListBuilder.build())
     }
   }
 
@@ -149,11 +137,7 @@ class StoryProgressController @Inject constructor(
       topicProgressDatabase.topicProgressMap.values.forEach { topicProgress ->
         storyProgressListBuilder.addAllStoryProgress(topicProgress!!.storyProgressMap!!.values.toList())
       }
-      if (storyProgressListBuilder.storyProgressList.isNotEmpty()) {
-        AsyncResult.success(storyProgressListBuilder.build())
-      } else {
-        AsyncResult.failed(StoryProgressListNotFoundException("ProfileId: $profileId does not contain any story progress"))
-      }
+      AsyncResult.success(storyProgressListBuilder.build())
     }
   }
 
@@ -187,12 +171,6 @@ class StoryProgressController @Inject constructor(
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
-      StoryProgressActionStatus.STORY_PROGRESS_NOT_FOUND -> AsyncResult.failed(
-        StoryProgressListNotFoundException("StoryProgress not found for profile $profileId")
-      )
-      StoryProgressActionStatus.TOPIC_PROGRESS_NOT_FOUND -> AsyncResult.failed(
-        TopicProgressListNotFoundException("TopicProgress not found for profile $profileId")
-      )
     }
   }
 
