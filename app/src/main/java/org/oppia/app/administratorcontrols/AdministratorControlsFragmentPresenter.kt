@@ -6,14 +6,20 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsApplicationSettingsViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
-import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralProfileViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.app.databinding.AdministratorControlsAccountActionsViewBinding
+import org.oppia.app.databinding.AdministratorControlsAppInformationViewBinding
 import org.oppia.app.databinding.AdministratorControlsApplicationSettingsViewBinding
 import org.oppia.app.databinding.AdministratorControlsDownloadPermissionsViewBinding
 import org.oppia.app.databinding.AdministratorControlsFragmentBinding
 import org.oppia.app.databinding.AdministratorControlsGeneralProfileViewBinding
+import org.oppia.app.databinding.AdministratorControlsGeneralViewBinding
+import org.oppia.app.databinding.AdministratorControlsProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -50,17 +56,25 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is AdministratorControlsGeneralProfileViewModel -> ViewType.VIEW_TYPE_GENERAL_PROFILE
+          is AdministratorControlsGeneralViewModel -> ViewType.VIEW_TYPE_GENERAL
+          is AdministratorControlsProfileViewModel -> ViewType.VIEW_TYPE_PROFILE
           is AdministratorControlsDownloadPermissionsViewModel -> ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
-          is AdministratorControlsApplicationSettingsViewModel -> ViewType.VIEW_TYPE_APPLICATION_SETTINGS
+          is AdministratorControlsAppInformationViewModel -> ViewType.VIEW_TYPE_APP_INFORMATION
+          is AdministratorControlsAccountActionsViewModel -> ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_GENERAL_PROFILE,
-        inflateDataBinding = AdministratorControlsGeneralProfileViewBinding::inflate,
-        setViewModel = AdministratorControlsGeneralProfileViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsGeneralProfileViewModel }
+        viewType = ViewType.VIEW_TYPE_GENERAL,
+        inflateDataBinding = AdministratorControlsGeneralViewBinding::inflate,
+        setViewModel = AdministratorControlsGeneralViewBinding::setViewModel,
+        transformViewModel = { it as AdministratorControlsGeneralViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_PROFILE,
+        inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
+        setViewModel = AdministratorControlsProfileViewBinding::setViewModel,
+        transformViewModel = { it as AdministratorControlsProfileViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS,
@@ -69,10 +83,16 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         transformViewModel = { it as AdministratorControlsDownloadPermissionsViewModel }
       )
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_APPLICATION_SETTINGS,
-        inflateDataBinding = AdministratorControlsApplicationSettingsViewBinding::inflate,
-        setViewModel = AdministratorControlsApplicationSettingsViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsApplicationSettingsViewModel }
+        viewType = ViewType.VIEW_TYPE_APP_INFORMATION,
+        inflateDataBinding = AdministratorControlsAppInformationViewBinding::inflate,
+        setViewModel = AdministratorControlsAppInformationViewBinding::setViewModel,
+        transformViewModel = { it as AdministratorControlsAppInformationViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_ACCOUNT_ACTIONS,
+        inflateDataBinding = AdministratorControlsAccountActionsViewBinding::inflate,
+        setViewModel = AdministratorControlsAccountActionsViewBinding::setViewModel,
+        transformViewModel = { it as AdministratorControlsAccountActionsViewModel }
       )
       .build()
   }
@@ -82,8 +102,10 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_GENERAL_PROFILE,
+    VIEW_TYPE_GENERAL,
+    VIEW_TYPE_PROFILE,
     VIEW_TYPE_DOWNLOAD_PERMISSIONS,
-    VIEW_TYPE_APPLICATION_SETTINGS
+    VIEW_TYPE_APP_INFORMATION,
+    VIEW_TYPE_ACCOUNT_ACTIONS
   }
 }

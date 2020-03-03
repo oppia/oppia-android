@@ -6,48 +6,12 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralProfileViewModel" />
+      type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <TextView
-      android:id="@+id/general_text_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/mid_grey_30"
-      android:fontFamily="sans-serif-medium"
-      android:paddingLeft="16dp"
-      android:paddingTop="20dp"
-      android:paddingRight="16dp"
-      android:paddingBottom="20dp"
-      android:text="@string/administrator_controls_general_label"
-      android:textColor="@color/colorPrimary"
-      android:textSize="14sp"
-      app:layout_constraintBottom_toTopOf="@id/edit_account_text_view"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-      android:id="@+id/edit_account_text_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/white"
-      android:fontFamily="sans-serif"
-      android:paddingLeft="16dp"
-      android:paddingTop="20dp"
-      android:paddingRight="16dp"
-      android:paddingBottom="20dp"
-      android:text="@string/administrator_controls_edit_account"
-      android:textColor="@color/oppiaPrimaryTextDark"
-      android:textSize="16sp"
-      app:layout_constraintBottom_toTopOf="@id/profile_management_text_view"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/general_text_view" />
 
     <TextView
       android:id="@+id/profile_management_text_view"
@@ -65,7 +29,7 @@
       app:layout_constraintBottom_toTopOf="@id/edit_profiles_text_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/edit_account_text_view" />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
       android:id="@+id/edit_profiles_text_view"
