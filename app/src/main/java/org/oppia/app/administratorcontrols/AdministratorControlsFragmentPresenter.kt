@@ -14,10 +14,8 @@ import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.Ad
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.app.databinding.AdministratorControlsAccountActionsViewBinding
 import org.oppia.app.databinding.AdministratorControlsAppInformationViewBinding
-import org.oppia.app.databinding.AdministratorControlsApplicationSettingsViewBinding
 import org.oppia.app.databinding.AdministratorControlsDownloadPermissionsViewBinding
 import org.oppia.app.databinding.AdministratorControlsFragmentBinding
-import org.oppia.app.databinding.AdministratorControlsGeneralProfileViewBinding
 import org.oppia.app.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.app.databinding.AdministratorControlsProfileViewBinding
 import org.oppia.app.fragment.FragmentScope

@@ -1,24 +1,26 @@
 package org.oppia.app.topic.info
 
-import android.content.pm.ActivityInfo
 import android.text.SpannedString
 import android.text.style.StyleSpan
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.hamcrest.Matchers.containsString
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
@@ -67,14 +69,26 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use { scenario ->
-      scenario.onActivity {  activity ->
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-      }
-
+    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
+    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
+    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
   }
 
