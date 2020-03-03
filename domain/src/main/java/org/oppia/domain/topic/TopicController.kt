@@ -239,7 +239,7 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the list of all completed stories in the form on [CompletedStoryList] for a specific profile. */
+  /** Returns the list of all completed stories in the form of [CompletedStoryList] for a specific profile. */
   fun getCompletedStoryList(profileId: ProfileId): LiveData<AsyncResult<CompletedStoryList>> {
     return dataProviders.convertToLiveData(
       dataProviders.transformAsync(
