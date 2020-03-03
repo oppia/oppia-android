@@ -77,23 +77,23 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
+  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
+  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
+
+  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
+  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+
   @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
   @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
   @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
-
   @Mock lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
   @Captor lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
 
-  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
-
-  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
+  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
   @Inject lateinit var dataProviders: DataProviders
 
