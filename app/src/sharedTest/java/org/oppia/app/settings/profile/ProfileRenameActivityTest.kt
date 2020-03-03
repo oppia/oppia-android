@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -28,6 +29,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -70,6 +72,17 @@ class ProfileRenameActivityTest {
     ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
+      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
+    }
+  }
+
+  @Test
+  fun testProfileRenameActivity_inputNewName_clickSave_configurationChange_checkNameIsSaved() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
       intended(hasComponent(ProfileEditActivity::class.java.name))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
     }
