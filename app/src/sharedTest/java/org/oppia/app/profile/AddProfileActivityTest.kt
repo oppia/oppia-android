@@ -13,10 +13,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -34,7 +34,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -286,6 +286,16 @@ class AddProfileActivityTest {
       onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
     }
   }
+
+  @Test
+  fun testAddProfileActivity_inputName_clickSave_configurationChange_checkNameIsPreserved() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("James")))
+    }
+  }
+
   @Test
   fun testAddProfileActivity_configurationChanged_inputTextIsPreserved() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
@@ -295,8 +305,7 @@ class AddProfileActivityTest {
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
         .perform(typeText("123"), closeSoftKeyboard())
-      onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
         matches(
           withText("123")
