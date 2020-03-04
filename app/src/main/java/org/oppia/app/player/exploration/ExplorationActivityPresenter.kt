@@ -1,7 +1,5 @@
 package org.oppia.app.player.exploration
 
-import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +12,8 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -32,6 +30,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: Logger
 ) {
   private lateinit var explorationToolbar: Toolbar
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
 
   private val exploreViewModel by lazy {
@@ -53,15 +52,16 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
+    this.internalProfileId = internalProfileId
     this.topicId = topicId
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putInt(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -96,7 +96,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, topicId))
+          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
           (activity as ExplorationActivity).finish()
         }
       }

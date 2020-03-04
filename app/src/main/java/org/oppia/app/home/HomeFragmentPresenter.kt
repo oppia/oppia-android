@@ -147,7 +147,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
       it.recentStoryList.take(3).forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(activity)
+        val recentStory = PromotedStoryViewModel(activity, internalProfileId)
         recentStory.setPromotedStory(promotedStory)
         promotedStoryList.add(recentStory)
       }
@@ -161,6 +161,6 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(topicSummary.topicId)
+    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
   }
 }

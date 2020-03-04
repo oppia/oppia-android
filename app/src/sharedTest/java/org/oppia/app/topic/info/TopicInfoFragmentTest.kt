@@ -34,24 +34,25 @@ private const val TOPIC_DESCRIPTION =
 @RunWith(AndroidJUnit4::class)
 class TopicInfoFragmentTest {
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+  private val internalProfileId = 0
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).check(matches(withText(containsString(TOPIC_DESCRIPTION))))
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_hasRichText() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use { scenario ->
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use { scenario ->
       scenario.onActivity { activity ->
         val descriptionTextView: TextView = activity.findViewById(R.id.topic_description_text_view)
         val descriptionText = descriptionTextView.text as SpannedString
@@ -63,14 +64,14 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
@@ -78,7 +79,7 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
     }
@@ -86,14 +87,14 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
-    launchTopicActivityIntent(TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
   }
 
-  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
-    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
   }
 }

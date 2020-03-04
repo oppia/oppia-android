@@ -11,20 +11,25 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.app.topic.reviewcard.ReviewCardActivity
 import javax.inject.Inject
 
-const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
+private const val TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY = "TopicActivity.internal_profile_id"
+private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
+private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
   RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener {
 
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private var storyId: String? = null
-  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject
+  lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicId = checkNotNull(intent?.getStringExtra(org.oppia.app.topic.TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+    internalProfileId = intent?.getIntExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)!!
+    topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
@@ -44,24 +49,48 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId))
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 
   companion object {
-    internal const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-    internal const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
+
+    fun getProfileIdKey(): String {
+      return TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY
+    }
+
+    fun getTopicIdKey(): String {
+      return TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+    }
+
+    fun getStoryIdKey(): String {
+      return TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY
+    }
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
-    fun createTopicActivityIntent(context: Context, topicId: String): Intent {
+    fun createTopicActivityIntent(context: Context, internalProfileId: Int, topicId: String): Intent {
       val intent = Intent(context, TopicActivity::class.java)
+      intent.putExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
       return intent
     }
 
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
-    fun createTopicPlayStoryActivityIntent(context: Context, topicId: String, storyId: String): Intent {
+    fun createTopicPlayStoryActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String
+    ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
+      intent.putExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       return intent
