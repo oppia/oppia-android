@@ -9,7 +9,7 @@
     </data>
 
   <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/options_list"
+    android:id="@+id/options_recyclerview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mid_grey_30"

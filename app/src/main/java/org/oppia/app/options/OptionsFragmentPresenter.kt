@@ -51,7 +51,7 @@ class OptionsFragmentPresenter @Inject constructor(
     viewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
-    binding.optionsList.apply {
+    binding.optionsRecyclerview.apply {
       adapter = optionsRecyclerViewAdapter
     }
     recyclerViewAdapter = optionsRecyclerViewAdapter

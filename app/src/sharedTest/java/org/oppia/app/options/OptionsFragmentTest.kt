@@ -36,6 +36,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -98,13 +99,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
     }
   }
@@ -112,13 +109,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
     }
   }
@@ -126,13 +119,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
     }
   }
@@ -140,13 +129,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            2,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -160,13 +145,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            2,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -180,13 +161,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            3,
-            click()
-          )
-        )
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).perform(
+        click()
+      )
 
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
@@ -201,14 +178,9 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(withId(androidx.preference.R.id.recycler_view))
-        .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            3,
-            click()
-          )
-        )
-
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).perform(
+        click()
+      )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
