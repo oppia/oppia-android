@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.HelpBinding
-import org.oppia.app.help.faq.FAQActivity
+import org.oppia.app.databinding.HelpItemBinding
 
 /** The adapter to set up the recycler view in the [HelpFragment] */
 class HelpCategoryAdapter(
@@ -15,19 +14,19 @@ class HelpCategoryAdapter(
   private val arrayList: ArrayList<HelpViewModel>
 ) :
   RecyclerView.Adapter<HelpCategoryAdapter.HelpItemView>() {
-  private lateinit var helpBinding: HelpBinding
+  private lateinit var helpItemBinding: HelpItemBinding
   override fun onCreateViewHolder(
     parent: ViewGroup,
     viewType: Int
   ): HelpCategoryAdapter.HelpItemView {
     val layoutInflater = LayoutInflater.from(parent.context)
-    helpBinding = DataBindingUtil.inflate(
+    helpItemBinding = DataBindingUtil.inflate(
       layoutInflater,
       R.layout.help_recyclerview_single_item_layout,
       parent,
       false
     )
-    return HelpItemView(helpBinding)
+    return HelpItemView(helpItemBinding)
   }
 
   override fun getItemCount(): Int {
@@ -37,20 +36,12 @@ class HelpCategoryAdapter(
   override fun onBindViewHolder(holder: HelpCategoryAdapter.HelpItemView, position: Int) {
     val helpCategoryViewModel = arrayList[position]
     holder.bind(helpCategoryViewModel)
-    holder.itemView.setOnClickListener {
-      when (HelpItems.getHelpItemForPosition(position)) {
-        HelpItems.FAQ -> {
-          val intent = FAQActivity.createFAQActivityIntent(context)
-          context.startActivity(intent)
-        }
-      }
-    }
   }
 
-  class HelpItemView(val helpBinding: HelpBinding) : RecyclerView.ViewHolder(helpBinding.root) {
+  class HelpItemView(val helpItemBinding: HelpItemBinding) : RecyclerView.ViewHolder(helpItemBinding.root) {
     fun bind(helpViewModel: HelpViewModel) {
-      this.helpBinding.helpmodel = helpViewModel
-      helpBinding.executePendingBindings()
+      this.helpItemBinding.helpmodel = helpViewModel
+      helpItemBinding.executePendingBindings()
     }
   }
 }

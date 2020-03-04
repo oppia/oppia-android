@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:profile="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data class="HelpBinding">
+  <data class="HelpItemBinding">
     <variable
       name="helpmodel"
       type="org.oppia.app.help.HelpViewModel" />
@@ -11,21 +10,23 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{() -> helpmodel.onHelpItemClick(helpmodel.title)}">
 
     <TextView
       android:id="@+id/recycler_item_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dot_gap"
+      android:background="@color/white_70"
       android:fontFamily="sans-serif"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="20sp"
       android:padding="@dimen/padding_24dp"
       android:text="@{helpmodel.title}"
-      android:background="@color/white_70"
-      android:layout_marginTop="@dimen/dot_gap"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="20sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

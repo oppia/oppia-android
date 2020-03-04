@@ -47,9 +47,9 @@ class HelpFragmentPresenter @Inject constructor(
   private fun getRecyclerViewItemList(): ArrayList<HelpViewModel> {
     for (dir in HelpItems.values()) {
       if (dir.equals(HelpItems.FAQ)) {
-        val category1 = fragment.getString(R.string.frequently_asked_questions_FAQ)
-        val helpViewModel1: HelpViewModel = HelpViewModel(category1)
-        arrayList!!.add(helpViewModel1)
+        val category = fragment.getString(R.string.frequently_asked_questions_FAQ)
+        val helpViewModel: HelpViewModel = HelpViewModel(category, activity)
+        arrayList!!.add(helpViewModel)
       }
     }
     return arrayList
