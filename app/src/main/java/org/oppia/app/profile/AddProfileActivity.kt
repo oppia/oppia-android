@@ -19,9 +19,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   companion object {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
       val intent = Intent(context, AddProfileActivity::class.java)
-      intent.putExtra(KEY_NAME_INPUT, intent.getStringExtra(KEY_NAME_INPUT))
-      intent.putExtra(KEY_PIN_INPUT, intent.getStringExtra(KEY_PIN_INPUT))
-      intent.putExtra(KEY_PIN_CONFIRM_INPUT, intent.getStringExtra(KEY_PIN_CONFIRM_INPUT))
+//      intent.putExtra(KEY_NAME_INPUT, intent.getStringExtra(KEY_NAME_INPUT))
+//      intent.putExtra(KEY_PIN_INPUT, intent.getStringExtra(KEY_PIN_INPUT))
+//      intent.putExtra(KEY_PIN_CONFIRM_INPUT, intent.getStringExtra(KEY_PIN_CONFIRM_INPUT))
       return intent
     }
   }
@@ -44,15 +44,5 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    addProfileFragmentPresenter.handleOnSavedInstanceState(outState)
-    super.onSaveInstanceState(outState)
-  }
-
-  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    super.onRestoreInstanceState(savedInstanceState)
-    addProfileFragmentPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
   }
 }

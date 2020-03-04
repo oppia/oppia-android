@@ -23,8 +23,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="54dp"
-      android:paddingEnd="164dp"
       android:paddingStart="164dp"
+      android:paddingEnd="164dp"
       android:paddingBottom="164dp">
 
       <Button
@@ -149,8 +149,9 @@
         android:id="@+id/upload_image_button"
         android:layout_width="136dp"
         android:layout_height="136dp"
+        app:civ_circle_background_color="@color/grey"
         android:paddingBottom="8dp"
-        android:src="@drawable/ic_upload_photo"
+        android:src="@drawable/ic_default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -164,6 +165,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/required_heading"
         profile:error="@{viewModel.nameErrorMsg}" />
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit_image_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/upload_image_button"
+        app:layout_constraintEnd_toEndOf="@+id/upload_image_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
