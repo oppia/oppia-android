@@ -80,14 +80,6 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_configurationChange_checkSaveIsDisabled() {
-    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_name)).check(matches(not(isEnabled())))
-    }
-  }
-
-  @Test
   fun testProfileRenameActivity_inputNewName_configurationChange_checkSaveIsEnabled() {
     ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
@@ -101,7 +93,7 @@ class ProfileRenameActivityTest {
     ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
+      onView(withId(R.id.input_name)).check(matches(withText("James")))
     }
   }
 
