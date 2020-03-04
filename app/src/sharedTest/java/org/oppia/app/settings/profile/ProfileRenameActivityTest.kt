@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -24,6 +25,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -78,12 +80,27 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_inputNewName_clickSave_configurationChange_checkNameIsSaved() {
+  fun testProfileRenameActivity_configurationChange_checkSaveIsDisabled() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_edit_name)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testProfileRenameActivity_inputNewName_configurationChange_checkSaveIsEnabled() {
     ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testProfileRenameActivity_inputNewName_configurationChange_inputTextExists() {
+    ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
     }
   }
