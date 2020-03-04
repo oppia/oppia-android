@@ -24,7 +24,8 @@ class ExplorationFragmentPresenter @Inject constructor(
       checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
       val storyId = fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
       checkNotNull(storyId) { "StateFragment must be created with an story ID" }
-      val explorationId = fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
+      val explorationId =
+        fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
       checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
       val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
       fragment.childFragmentManager.beginTransaction().add(

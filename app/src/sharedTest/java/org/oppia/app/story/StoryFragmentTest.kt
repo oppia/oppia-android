@@ -2,7 +2,6 @@ package org.oppia.app.story
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -115,7 +114,12 @@ class StoryFragmentTest {
   }
 
   private fun createTestActivityIntent(internalProfileId: Int, topicId: String, storyId: String): Intent {
-    return StoryFragmentTestActivity.createTestActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId)
+    return StoryFragmentTestActivity.createTestActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
+    )
   }
 
   private fun getResources(): Resources {

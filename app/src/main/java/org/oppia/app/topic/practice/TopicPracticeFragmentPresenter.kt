@@ -34,7 +34,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSkillIdList: ArrayList<String>
-  private  var skillIdHashMap = HashMap<String,MutableList<String>>()
+  private var skillIdHashMap = HashMap<String, MutableList<String>>()
   private lateinit var topicId: String
   private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener

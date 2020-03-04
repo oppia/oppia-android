@@ -316,6 +316,10 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+    return TopicActivity.createTopicActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId
+    )
   }
 }

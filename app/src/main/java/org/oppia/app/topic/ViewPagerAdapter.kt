@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
-import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.practice.TopicPracticeFragment
+import org.oppia.app.topic.review.TopicReviewFragment
 
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
 class ViewPagerAdapter(

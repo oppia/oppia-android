@@ -77,10 +77,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
 
   private val internalProfileId: Int = 1
 

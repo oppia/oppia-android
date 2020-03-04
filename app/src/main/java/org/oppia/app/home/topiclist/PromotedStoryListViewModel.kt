@@ -7,7 +7,11 @@ import org.oppia.app.home.RouteToRecentlyPlayedListener
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
-class PromotedStoryListViewModel(private val activity: AppCompatActivity, private val internalProfileId: Int) : HomeItemViewModel(),
+class PromotedStoryListViewModel(
+  private val activity: AppCompatActivity,
+  private val internalProfileId: Int
+) :
+  HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
 
   fun clickOnViewAll() {
@@ -15,6 +19,11 @@ class PromotedStoryListViewModel(private val activity: AppCompatActivity, privat
   }
 
   override fun routeToRecentlyPlayed() {
-    activity.startActivity(RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(activity.applicationContext, internalProfileId))
+    activity.startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        activity.applicationContext,
+        internalProfileId
+      )
+    )
   }
 }

@@ -34,7 +34,13 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int, topicId: String, storyId: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): View? {
     val viewModel = getStoryViewModel()
     binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setInternalProfileId(internalProfileId)

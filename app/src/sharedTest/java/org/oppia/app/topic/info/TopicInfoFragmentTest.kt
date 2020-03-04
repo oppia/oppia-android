@@ -94,7 +94,8 @@ class TopicInfoFragmentTest {
   }
 
   private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
-    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+    val intent =
+      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
   }
 }

@@ -28,11 +28,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<RecentlyPlayedViewModel>
 ) {
-
   private val routeToExplorationListener = activity as RouteToExplorationListener
-
   private var internalProfileId: Int = -1
-
   private lateinit var binding: RecentlyPlayedFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {

@@ -6,8 +6,6 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.story.testing.INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA
-import org.oppia.app.story.testing.TOPIC_ID_TEST_INTENT_EXTRA
 import javax.inject.Inject
 
 /** Activity for stories. */
@@ -28,7 +26,15 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   }
 
   override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId))
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 
   companion object {

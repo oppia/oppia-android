@@ -13,8 +13,7 @@ const val STORY_ID_TEST_INTENT_EXTRA = "StoryFragmentTestActivity.story_id"
 
 /** Test activity used for story fragment. */
 class StoryFragmentTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject
-  lateinit var storyFragmentTestActivityPresenter: StoryFragmentTestActivityPresenter
+  @Inject lateinit var storyFragmentTestActivityPresenter: StoryFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
