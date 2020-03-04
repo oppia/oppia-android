@@ -23,11 +23,11 @@
       android:name=".home.recentlyplayed.RecentlyPlayedActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.HelpActivity"
+      android:name=".help.faq.FAQActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.faq.FAQActivity"
+      android:name=".help.HelpActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
