@@ -12,6 +12,7 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
@@ -53,9 +54,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
-    internalProfileId = checkNotNull(fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY)) {
-      "Expected profile ID to be included in arguments for TopicLessonsFragment."
-    }
+    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
@@ -73,7 +72,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
   }
 
   private fun subscribeToTopicLiveData() {

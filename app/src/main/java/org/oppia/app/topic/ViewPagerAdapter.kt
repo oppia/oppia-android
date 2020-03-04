@@ -12,6 +12,7 @@ import org.oppia.app.topic.practice.TopicPracticeFragment
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [TopicFragment]. */
 class ViewPagerAdapter(
   fragmentManager: FragmentManager,
+  private val internalProfileId: Int,
   private val topicId: String,
   private val storyId: String
 ) :
@@ -20,6 +21,7 @@ class ViewPagerAdapter(
   override fun getItem(position: Int): Fragment {
     val args = Bundle()
     args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
     when (TopicTab.getTabForPosition(position)) {
       TopicTab.INFO -> {
         val topicInfoTab = TopicInfoFragment()
@@ -28,6 +30,7 @@ class ViewPagerAdapter(
       }
       TopicTab.LESSONS -> {
         val topicPlayTab = TopicLessonsFragment()
+
         if (storyId.isNotEmpty())
           args.putString(STORY_ID_ARGUMENT_KEY, storyId)
         topicPlayTab.arguments = args

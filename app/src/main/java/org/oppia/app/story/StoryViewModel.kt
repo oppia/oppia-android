@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -33,7 +34,7 @@ class StoryViewModel @Inject constructor(
   private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
-    topicController.getStory(storyId)
+    topicController.getStory(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId, storyId)
   }
 
   private val storyLiveData: LiveData<StorySummary> by lazy {

@@ -25,7 +25,7 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicActivityPresenter.handleOnCreate(topicId = TEST_TOPIC_ID_0, storyId = TEST_STORY_ID_1)
+    topicActivityPresenter.handleOnCreate(internalProfileId = 0, topicId = TEST_TOPIC_ID_0, storyId = TEST_STORY_ID_1)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
