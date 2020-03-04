@@ -129,6 +129,12 @@ message Classroom {
   int64 last_update_time_ms = 2;
 }
 
+// Corresponds to the list of topics that are currently being played and are not fully finished.
+message OngoingTopicList {
+  // All topics that are currently being played and have not finished.
+  repeated Topic topic = 1;
+}
+
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
   // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
@@ -139,7 +145,13 @@ message TopicList {
   repeated TopicSummary topic_summary = 2;
 }
 
-// Corresponds to the list of stories the player is currently playing.
+// Corresponds to the list of stories that have been completed across all topics.
+message CompletedStoryList {
+  // List of completed stories
+  repeated StorySummary story_summary = 1;
+}
+
+// Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
@@ -236,14 +248,32 @@ message TopicProgressDatabase {
 
 // Represents the topic progress.
 message TopicProgress {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
   // Map from story ID to StoryProgress.
-  map<string, StoryProgress> story_progress = 1;
+  map<string, StoryProgress> story_progress = 2;
+}
+
+// Corresponds to the list of topic progress.
+message TopicProgressList {
+  // List of topic progress
+  repeated TopicProgress topic_progress = 1;
+}
+
+// Corresponds to the list of story progress.
+message StoryProgressList {
+  // List of story progress
+  repeated StoryProgress story_progress = 1;
 }
 
 // Represents the story progress.
 message StoryProgress {
+  // The ID corresponding to the story.
+  string story_id = 1;
+
   // Map from exploration ID to ChapterPlayState.
-  map<string, ChapterPlayState> chapter_progress = 1;
+  map<string, ChapterPlayState> chapter_progress = 2;
 }
 
 // Represents user's preference for using cellular data
