@@ -2,16 +2,9 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.view.View
-import android.widget.HorizontalScrollView
-import android.widget.ScrollView
-import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ScrollToAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -21,12 +14,9 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,9 +27,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.anyOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -298,17 +286,18 @@ class AddProfileActivityTest {
       onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
     }
   }
-
   @Test
   fun testAddProfileActivity_configurationChanged_inputTextIsPreserved() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.checkbox_pin)).perform(click())
-      onView(allOf(withId(R.id.input),isCompletelyDisplayed(), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
+        .perform(typeText("123"), closeSoftKeyboard())
+      onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
       onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(customScrollTo)
-      onView(allOf(withId(R.id.input),isCompletelyDisplayed(),isDescendantOfA(withId(R.id.input_pin)))).check(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
         matches(
           withText("123")
         )
@@ -316,28 +305,6 @@ class AddProfileActivityTest {
     }
   }
 
-  var customScrollTo: ViewAction = object : ViewAction {
-
-    override fun getConstraints(): Matcher<View> {
-      return allOf(
-        withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), isDescendantOfA(
-          anyOf(
-            isAssignableFrom(ScrollView::class.java),
-            isAssignableFrom(HorizontalScrollView::class.java),
-            isAssignableFrom(NestedScrollView::class.java)
-          )
-        )
-      )
-    }
-
-    override fun getDescription(): String? {
-      return null
-    }
-
-    override fun perform(uiController: UiController, view: View) {
-      ScrollToAction().perform(uiController, view)
-    }
-  }
   @Qualifier
   annotation class TestDispatcher
 
