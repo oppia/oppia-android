@@ -4,7 +4,7 @@
 
   <data class="HelpItemBinding">
     <variable
-      name="helpmodel"
+      name="viewmodel"
       type="org.oppia.app.help.HelpViewModel" />
   </data>
 
@@ -13,7 +13,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:onClick="@{() -> helpmodel.onHelpItemClick(helpmodel.title)}">
+    android:onClick="@{() -> viewmodel.onHelpItemClick(viewmodel.title)}">
 
     <TextView
       android:id="@+id/recycler_item_text_view"
@@ -23,7 +23,7 @@
       android:background="@color/white_70"
       android:fontFamily="sans-serif"
       android:padding="@dimen/padding_24dp"
-      android:text="@{helpmodel.title}"
+      android:text="@{viewmodel.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
       app:layout_constraintStart_toStartOf="parent"

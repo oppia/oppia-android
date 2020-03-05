@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 /** [ObservableViewModel] for the recycler view of HelpActivity. */
 class HelpViewModel @Inject constructor() : ObservableViewModel(), HelpNavigator {
-  private var title = ""
+  public var title = ""
   private lateinit var activity: AppCompatActivity
 
   constructor(category: String , activity: AppCompatActivity) : this() {

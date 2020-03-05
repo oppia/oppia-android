@@ -22,7 +22,7 @@ class HelpCategoryAdapter(
     val layoutInflater = LayoutInflater.from(parent.context)
     helpItemBinding = DataBindingUtil.inflate(
       layoutInflater,
-      R.layout.help_recyclerview_single_item_layout,
+      R.layout.help_item,
       parent,
       false
     )
@@ -40,7 +40,7 @@ class HelpCategoryAdapter(
 
   class HelpItemView(val helpItemBinding: HelpItemBinding) : RecyclerView.ViewHolder(helpItemBinding.root) {
     fun bind(helpViewModel: HelpViewModel) {
-      this.helpItemBinding.helpmodel = helpViewModel
+      this.helpItemBinding.viewmodel = helpViewModel
       helpItemBinding.executePendingBindings()
     }
   }
