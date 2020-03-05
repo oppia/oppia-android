@@ -14,7 +14,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:onClick="@{() -> viewmodel.onHelpItemClick(viewmodel.title)}">
+    android:onClick="@{() -> viewmodel.onHelpItemClick()}">
 
     <TextView
       android:id="@+id/recycler_item_text_view"
