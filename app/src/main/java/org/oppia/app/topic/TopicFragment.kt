@@ -14,14 +14,19 @@ class TopicFragment : InjectableFragment() {
   @Inject lateinit var topicFragmentPresenter: TopicFragmentPresenter
 
   lateinit var topicId: String
+  lateinit var titleListener: ToolbarTitleListener
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
+  fun addTitleListener(titleListener: ToolbarTitleListener) {
+    this.titleListener = titleListener
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
-    return topicFragmentPresenter.handleCreateView(inflater, container, topicId)
+    return topicFragmentPresenter.handleCreateView(inflater, container, topicId, titleListener)
   }
 }

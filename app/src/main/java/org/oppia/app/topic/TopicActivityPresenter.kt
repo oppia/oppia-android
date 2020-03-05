@@ -16,7 +16,7 @@ const val STORY_ID_ARGUMENT_KEY = "story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
-class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity): ToolbarTitleListener {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
   fun handleOnCreate(topicId: String, storyId: String?) {
@@ -29,6 +29,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       }
+      topicFragment.addTitleListener(this)
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
@@ -39,7 +40,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
 
   private fun setUpNavigationDrawer() {
     val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
-    toolbar.title = activity.getString(R.string.topic_prefix) + " "
+    toolbar.title = activity.getString(R.string.topic_prefix, " ")
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
@@ -52,5 +53,10 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
 
   private fun getTopicFragment(): TopicFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment?
+  }
+
+  override fun onTitleFetchComplete(title: String) {
+    val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
+    toolbar.title = activity.getString(R.string.topic_prefix, title)
   }
 }
