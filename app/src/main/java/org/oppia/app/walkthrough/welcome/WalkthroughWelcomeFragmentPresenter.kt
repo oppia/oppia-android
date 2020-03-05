@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.walkthrough.WalkthroughPageChangeListener
+import org.oppia.app.walkthrough.WalkthroughPages
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
@@ -31,6 +32,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
-    routeToNextPage.pageNumber(2)
+    routeToNextPage.changeTo(WalkthroughPages.WELCOME.value)
   }
 }

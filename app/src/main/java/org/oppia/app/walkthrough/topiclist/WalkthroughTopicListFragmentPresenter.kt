@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.walkthrough.WalkthroughPageChangeListener
+import org.oppia.app.walkthrough.WalkthroughPages
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
@@ -30,6 +31,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
-    routeToNextPage.pageNumber(3)
+    routeToNextPage.changeTo(WalkthroughPages.TOPICLIST.value)
   }
 }

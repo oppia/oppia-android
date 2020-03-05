@@ -24,7 +24,7 @@ class WalkthroughActivity : InjectableAppCompatActivity(),WalkthroughPageChangeL
     walkthroughActivityPresenter.handleOnCreate()
   }
 
-  override fun pageNumber(pageNo: Int) {
+  override fun changeTo(pageNo: Int) {
     walkthroughActivityPresenter.changePage(pageNo)
   }
 }
