@@ -1,7 +1,6 @@
 package org.oppia.app.drawer
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.ViewModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 

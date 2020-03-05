@@ -78,6 +78,7 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="search">Search</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
@@ -225,4 +226,19 @@
   <string name="add_profile_required">*Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_general_label">General</string>
+  <string name="administrator_controls_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_app_information_label">App Information</string>
+  <string name="administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_account_actions_label">Account Actions</string>
+  <string name="administrator_controls_log_out">Log Out</string>
+
 </resources>

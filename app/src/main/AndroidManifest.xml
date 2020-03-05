@@ -15,7 +15,8 @@
     android:theme="@style/OppiaTheme">
     <activity
       android:name=".administratorcontrols.AdministratorControlsActivity"
-      android:screenOrientation="portrait" />
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -67,8 +68,7 @@
       android:name=".settings.profile.ProfileListActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".settings.profile.ProfileRenameActivity"
-      android:screenOrientation="portrait" />
+      android:name=".settings.profile.ProfileRenameActivity" />
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
