@@ -93,7 +93,7 @@ class ProfileRenameActivityTest {
     ActivityScenario.launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.input_name)).check(matches(withText("James")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("James")))
     }
   }
 
