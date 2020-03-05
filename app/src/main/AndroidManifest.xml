@@ -120,10 +120,6 @@
       android:name=".topic.reviewcard.ReviewCardActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".testing.ReviewCardFragmentTestActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".walkthrough.WalkthroughActivity"
       android:screenOrientation="portrait" />
   </application>
