@@ -25,6 +25,5 @@
         app:title="@string/frequently_asked_questions"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
