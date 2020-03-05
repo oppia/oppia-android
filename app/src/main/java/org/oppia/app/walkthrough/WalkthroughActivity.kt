@@ -7,7 +7,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
-class WalkthroughActivity : InjectableAppCompatActivity() {
+class WalkthroughActivity : InjectableAppCompatActivity(),WalkthroughPageChangeListener {
   @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
   companion object {
@@ -22,5 +22,9 @@ class WalkthroughActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     walkthroughActivityPresenter.handleOnCreate()
+  }
+
+  override fun pageNumber(pageNo: Int) {
+    walkthroughActivityPresenter.changePage(pageNo)
   }
 }

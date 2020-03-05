@@ -3,6 +3,7 @@ package org.oppia.app.walkthrough.topiclist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -12,9 +13,11 @@ import javax.inject.Inject
 /** The presenter for [WalkthroughTopicListFragment]. */
 @FragmentScope
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
+  private val routeToNextPage = activity as WalkthroughPageChangeListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -27,7 +30,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
-    (fragment.requireActivity() as? WalkthroughPageChangeListener)?.pageNumber(2)
-
+    routeToNextPage.pageNumber(3)
   }
 }

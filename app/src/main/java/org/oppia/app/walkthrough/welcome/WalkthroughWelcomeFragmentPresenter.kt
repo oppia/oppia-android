@@ -3,19 +3,21 @@ package org.oppia.app.walkthrough.welcome
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.topic.conceptcard.ConceptCardListener
 import org.oppia.app.walkthrough.WalkthroughPageChangeListener
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
 @FragmentScope
 class WalkthroughWelcomeFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
+  private val routeToNextPage = activity as WalkthroughPageChangeListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding =
@@ -29,6 +31,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
-    (fragment.requireActivity() as? WalkthroughPageChangeListener)?.pageNumber(1)
+    routeToNextPage.pageNumber(2)
   }
 }
