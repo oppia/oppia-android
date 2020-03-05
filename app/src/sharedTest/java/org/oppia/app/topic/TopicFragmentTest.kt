@@ -51,7 +51,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_toolbar))))
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_activity_toolbar))))
         .check(matches(withText("Topic: First Test Topic")))
     }
   }
