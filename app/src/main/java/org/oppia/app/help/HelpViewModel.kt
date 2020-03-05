@@ -6,14 +6,14 @@ import java.text.FieldPosition
 import javax.inject.Inject
 
 /** [ObservableViewModel] for the recycler view of HelpActivity. */
-class HelpViewModel @Inject constructor() : ObservableViewModel(), HelpNavigator {
+class HelpViewModel @Inject constructor(
+  private var activity: AppCompatActivity
+) : ObservableViewModel(), HelpNavigator {
   public var title = ""
   public var position: Int = -1
-  private lateinit var activity: AppCompatActivity
 
-  constructor(category: String, position: Int, activity: AppCompatActivity) : this() {
+  constructor(category: String, position: Int, activity: AppCompatActivity) : this(activity) {
     this.title = category
-    this.activity = activity
     this.position = position
   }
 
