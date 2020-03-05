@@ -224,7 +224,7 @@
   <string name="add_profile_required">*Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
-  <!-- AdministratorControlsFragment. -->
+  <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_general_label">General</string>
   <string name="administrator_controls_edit_account">Edit account</string>
   <string name="administrator_controls_profile_management_label">Profile Management</string>

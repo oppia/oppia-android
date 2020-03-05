@@ -91,39 +91,39 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.general_text_view)).check(matches(isDisplayed()))
-      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.edit_profiles_text_view)).check(matches(withText("Edit profiles")))
-      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.profile_management_text_view)).check(matches(isDisplayed()))
-      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.edit_account_text_view)).check(matches(withText("Edit account")))
+      onView(atPositionOnView(R.id.administrator_controls_list, 0, R.id.edit_account_text_view)).check(matches(withText(context.resources.getString(R.string.administrator_controls_edit_account))))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.profile_management_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.edit_profiles_text_view)).check(matches(withText(context.resources.getString(R.string.administrator_controls_edit_profiles))))
     }
   }
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.download_permissions_text_view)).check(matches(withText("Download Permissions")))
-      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
-      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.download_permissions_text_view)).check(matches(withText(context.resources.getString(R.string.administrator_controls_download_permissions_label))))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_constraint_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.auto_update_topic_constraint_layout)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.app_information_text_view)).check(matches(isDisplayed()))
-      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.app_version_text_view)).check(matches(withText("App Version")))
-      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.account_actions_text_view)).check(matches(isDisplayed()))
-      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.log_out_text_view)).check(matches(withText("Log Out")))
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(atPositionOnView(R.id.administrator_controls_list, 3, R.id.app_information_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 3, R.id.app_version_text_view)).check(matches(withText("App Version")))
+      onView(atPositionOnView(R.id.administrator_controls_list, 4, R.id.account_actions_text_view)).check(matches(isDisplayed()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 4, R.id.log_out_text_view)).check(matches(withText("Log Out")))
     }
   }
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsChecked() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
-      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.administrator_controls_list, 1, R.id.auto_update_topic_switch)).check(matches(isChecked()))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_switch)).check(matches(not(isChecked())))
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.auto_update_topic_switch)).check(matches(isChecked()))
     }
   }
 
