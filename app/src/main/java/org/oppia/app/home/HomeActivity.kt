@@ -6,11 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
-
-const val KEY_HOME_PROFILE_ID = "KEY_HOME_PROFILE_ID"
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
@@ -19,7 +18,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, HomeActivity::class.java)
-      intent.putExtra(KEY_HOME_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
       return intent
     }
   }

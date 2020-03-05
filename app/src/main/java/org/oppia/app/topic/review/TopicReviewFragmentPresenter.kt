@@ -11,9 +11,9 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.TopicReviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.SkillSummary
+import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.RouteToConceptCardListener
+import org.oppia.app.topic.RouteToReviewCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -27,20 +27,21 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
-) : ReviewSkillSelector {
+) : ReviewSubtopicSelector {
   private lateinit var topicId: String
-  private val routeToReviewListener = activity as RouteToConceptCardListener
+  private val routeToReviewListener = activity as RouteToReviewCardListener
 
-  private lateinit var reviewSkillSelectionAdapter: ReviewSkillSelectionAdapter
+  private lateinit var reviewAdapter: ReviewSubtopicAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    reviewSkillSelectionAdapter = ReviewSkillSelectionAdapter(this)
-    binding.reviewSkillRecyclerView.apply {
-      adapter = reviewSkillSelectionAdapter
+    reviewAdapter = ReviewSubtopicAdapter(this)
+
+    binding.reviewRecyclerView.apply {
+      adapter = reviewAdapter
       // https://stackoverflow.com/a/50075019/3689782
       layoutManager = GridLayoutManager(context, /* spanCount= */ 2)
     }
@@ -51,8 +52,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked(skillSummary: SkillSummary) {
-    routeToReviewListener.routeToConceptCard(skillSummary.skillId)
+  override fun onTopicReviewSummaryClicked( subtopic: Subtopic) {
+    routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
@@ -63,7 +64,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
-      reviewSkillSelectionAdapter.setSkillList(result.skillList)
+      reviewAdapter.setReviewList(result.subtopicList)
     })
   }
 

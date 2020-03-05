@@ -27,7 +27,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.CellularDataPreference
-import org.oppia.domain.UserAppHistoryController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -41,7 +40,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 
-/** Tests for [UserAppHistoryController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class CellularAudioDialogControllerTest {

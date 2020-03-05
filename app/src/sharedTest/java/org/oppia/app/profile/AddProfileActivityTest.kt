@@ -1,7 +1,14 @@
 package org.oppia.app.profile
 
+import android.app.Activity.RESULT_OK
 import android.app.Application
+import android.app.Instrumentation.ActivityResult
+import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -12,9 +19,13 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -25,6 +36,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -78,6 +90,21 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPin_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.checkbox_pin))).perform(click())
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPinNotVisible_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.input_pin)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -267,6 +294,47 @@ class AddProfileActivityTest {
         .perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
     }
+  }
+
+  @Test
+  fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.upload_image_button)).perform(click())
+      intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_imageSelectEdit_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.edit_image_fab)).perform(click())
+      intended(expectedIntent)
+    }
+  }
+
+  private fun createGalleryPickActivityResultStub(): ActivityResult {
+    val resources: Resources = context.resources
+    val imageUri = Uri.parse(
+      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+          resources.getResourcePackageName(R.mipmap.ic_launcher) + '/' +
+          resources.getResourceTypeName(R.mipmap.ic_launcher) + '/' +
+          resources.getResourceEntryName(R.mipmap.ic_launcher)
+    )
+    val resultIntent = Intent()
+    resultIntent.setData(imageUri)
+    return ActivityResult(RESULT_OK, resultIntent)
   }
 
   @Qualifier

@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
@@ -31,9 +32,12 @@ import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
+private const val TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID = "transformed_was_profile_ever_added_provider_id"
+private const val TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID = "transformed_device_settings_provider_id"
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
+private const val UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID = "update_device_settings_transformed_id"
 private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_download_access_transformed_id"
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
 private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
@@ -74,6 +78,12 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the given profileId is not associated with an existing profile. */
   class ProfileNotFoundException(msg: String) : Exception(msg)
 
+  /** Indicates that the given profileId is not associated with an admin. */
+  class ProfileNotAdminException(msg: String) : Exception(msg)
+
+  /** Indicates that the there is not device settings currently. */
+  class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
+
   /**
    * These Statuses correspond to the exceptions above such that if the deferred contains
    * PROFILE_NOT_FOUND, the [ProfileNotFoundException] will be passed to a failed AsyncResult.
@@ -86,7 +96,8 @@ class ProfileManagementController @Inject constructor(
     FAILED_TO_STORE_IMAGE,
     FAILED_TO_GENERATE_GRAVATAR,
     FAILED_TO_DELETE_DIR,
-    PROFILE_NOT_FOUND
+    PROFILE_NOT_FOUND,
+    PROFILE_NOT_ADMIN
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -115,6 +126,36 @@ class ProfileManagementController @Inject constructor(
           AsyncResult.success(profile)
         } else {
           AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId.internalId} does not match an existing Profile"))
+        }
+      }
+    return dataProviders.convertToLiveData(transformedDataProvider)
+  }
+
+  /** Returns a boolean determining whether the profile was ever added or not. */
+  fun getWasProfileEverAdded(): LiveData<AsyncResult<Boolean>> {
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, Boolean>(
+        TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID,
+        profileDataStore
+      ) {
+        val wasProfileEverAdded = it.wasProfileEverAdded
+        AsyncResult.success(wasProfileEverAdded)
+      }
+    return dataProviders.convertToLiveData(transformedDataProvider)
+  }
+
+  /** Returns device settings for the app. */
+  fun getDeviceSettings(): LiveData<AsyncResult<DeviceSettings>> {
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, DeviceSettings>(
+        TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID,
+        profileDataStore
+      ) {
+        val deviceSettings = it.deviceSettings
+        if (deviceSettings != null) {
+          AsyncResult.success(deviceSettings)
+        } else {
+          AsyncResult.failed(DeviceSettingsNotFoundException("Device Settings not found."))
         }
       }
     return dataProviders.convertToLiveData(transformedDataProvider)
@@ -174,8 +215,13 @@ class ProfileManagementController @Inject constructor(
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
+      val wasProfileEverAdded = !it.wasProfileEverAdded && !isAdmin
+
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(nextProfileId, newProfileBuilder.build()).setNextProfileId(nextProfileId + 1)
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfileBuilder.build())
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
@@ -232,6 +278,70 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(UPDATE_PIN_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the download/update on wifi only permission.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param downloadAndUpdateOnWifiOnly download and update permission on wifi only.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateWifiPermissionDeviceSettings(
+    profileId: ProfileId,
+    downloadAndUpdateOnWifiOnly: Boolean
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDatabaseBuilder = it.toBuilder()
+      if (profile.isAdmin) {
+        val deviceSettingsBuilder = it.deviceSettings.toBuilder()
+        deviceSettingsBuilder.allowDownloadAndUpdateOnlyOnWifi = downloadAndUpdateOnWifiOnly
+        profileDatabaseBuilder.deviceSettings = deviceSettingsBuilder.build()
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      } else {
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.PROFILE_NOT_ADMIN)
+      }
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the automatically update topics permission.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param automaticallyUpdateTopics automatically update topic permission.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateTopicAutomaticallyPermissionDeviceSettings(
+    profileId: ProfileId,
+    automaticallyUpdateTopics: Boolean
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDatabaseBuilder = it.toBuilder()
+      if (profile.isAdmin) {
+        val deviceSettingsBuilder = it.deviceSettings.toBuilder()
+        deviceSettingsBuilder.automaticallyUpdateTopics = automaticallyUpdateTopics
+        profileDatabaseBuilder.deviceSettings = deviceSettingsBuilder.build()
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      } else {
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.PROFILE_NOT_ADMIN)
+      }
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
@@ -413,6 +523,7 @@ class ProfileManagementController @Inject constructor(
       ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR -> AsyncResult.failed(FailedToGenerateGravatarException("Failed to generate a gravatar url"))
       ProfileActionStatus.FAILED_TO_DELETE_DIR -> AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId?.internalId}"))
       ProfileActionStatus.PROFILE_NOT_FOUND -> AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId?.internalId} does not match an existing Profile"))
+      ProfileActionStatus.PROFILE_NOT_ADMIN -> AsyncResult.failed(ProfileNotAdminException("ProfileId ${profileId?.internalId} does not match an existing admin"))
     }
   }
 
