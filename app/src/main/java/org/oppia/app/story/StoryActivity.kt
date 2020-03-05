@@ -42,7 +42,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     const val STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID = "StoryActivity.topic_id"
     const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID = "StoryActivity.story_id"
 
-    /** Returns a new [Intent] to route to [StoryActivity] for a specified story ID. */
+    /** Returns a new [Intent] to route to [StoryActivity] for a specified story. */
     fun createStoryActivityIntent(context: Context, internalProfileId: Int, topicId: String, storyId: String): Intent {
       val intent = Intent(context, StoryActivity::class.java)
       intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)

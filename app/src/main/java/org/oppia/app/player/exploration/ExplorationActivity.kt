@@ -34,7 +34,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration ID. */
+    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
     internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
