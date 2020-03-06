@@ -33,6 +33,10 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     createAdapter()
   }
 
+  fun getLanguageSelected(): String{
+    return languageSelectionAdapter.getSelectedLanguage()
+  }
+
   private fun createAdapter() {
     // TODO(#669): Replace dummy list with actual language list from backend.
     val languageList = ArrayList<String>()

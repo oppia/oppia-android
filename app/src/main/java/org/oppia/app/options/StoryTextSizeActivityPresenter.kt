@@ -86,6 +86,10 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     })
   }
 
+  fun geSelectedStoryTextSize(): String{
+    return fontSize
+  }
+
   fun getStoryTextSizeInFloat(storyTextSize: StoryTextSize): Float {
     return when (storyTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE -> 16f

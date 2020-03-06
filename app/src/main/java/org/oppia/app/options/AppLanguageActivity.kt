@@ -38,7 +38,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   }
 
   override fun onBackPressed() {
-    val message = prefSummaryValue
+    val message = appLanguageActivityPresenter.getLanguageSelected()
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
     setResult(REQUEST_CODE_APP_LANGUAGE, intent)

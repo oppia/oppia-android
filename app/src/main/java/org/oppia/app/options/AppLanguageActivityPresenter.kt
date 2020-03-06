@@ -32,6 +32,10 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     createAdapter()
   }
 
+  fun getLanguageSelected(): String{
+    return languageSelectionAdapter.getSelectedLanguage()
+  }
+
   private fun createAdapter() {
     // TODO(#669): Replace dummy list with actual language list from backend.
     val languageList = ArrayList<String>()
@@ -42,4 +46,5 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     languageSelectionAdapter.setLanguageList(languageList)
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
+
 }

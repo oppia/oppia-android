@@ -106,7 +106,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.OPTIONS -> {
           fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
-          fragment.activity!!.finish()
+          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
