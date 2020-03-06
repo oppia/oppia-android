@@ -50,7 +50,7 @@ import javax.inject.Singleton
 class TopicPracticeFragmentTest {
 
   private var skillIdList = ArrayList<String>()
-
+  private val internalProfileId = 0
   private lateinit var activityScenario: ActivityScenario<TopicActivity>
 
   @get:Rule
@@ -60,7 +60,7 @@ class TopicPracticeFragmentTest {
 
   @Before
   fun setUp() {
-    activityScenario = launchTopicActivityIntent(FRACTIONS_TOPIC_ID)
+    activityScenario = launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
 
     Intents.init()
     skillIdList.add("5RM9KPfQxobH")
@@ -70,7 +70,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_displaySubtopics_startButtonIsInactive() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -90,7 +90,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_isSuccessful() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -108,7 +108,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_startButtonIsActive() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -129,7 +129,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectSubtopics_isSuccessful() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -147,7 +147,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -171,7 +171,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID)
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     onView(
       allOf(
         withText(TopicTab.getTabForPosition(2).name),
@@ -193,7 +193,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -212,7 +212,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_startButtonRemainsInactive() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -237,7 +237,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -259,7 +259,7 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -272,9 +272,9 @@ class TopicPracticeFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
   }
 

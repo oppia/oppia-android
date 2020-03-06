@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
@@ -41,6 +42,8 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -55,6 +58,8 @@ class ExplorationActivityTest {
   @Inject
   lateinit var context: Context
 
+  private val internalProfileId: Int = 0
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -68,7 +73,7 @@ class ExplorationActivityTest {
   }
 
   private fun getApplicationDependencies(id: String) {
-    ActivityScenario.launch(ExplorationInjectionActivity::class.java).use {
+    launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
@@ -86,7 +91,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
     getApplicationDependencies(TEST_EXPLORATION_ID_30)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_30)).use {
       onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
         .check(matches(withText("Prototype Exploration")))
     }
@@ -96,7 +101,7 @@ class ExplorationActivityTest {
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     getApplicationDependencies(TEST_EXPLORATION_ID_30)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(TEST_EXPLORATION_ID_30)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_30)).use {
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
@@ -106,7 +111,7 @@ class ExplorationActivityTest {
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_dialog_offline_message))).check(matches(isDisplayed()))
     }
@@ -117,7 +122,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
     }
@@ -128,7 +133,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
 
@@ -143,7 +148,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
 
@@ -158,7 +163,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
@@ -176,7 +181,7 @@ class ExplorationActivityTest {
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(matches(isDisplayed()))
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
@@ -195,7 +200,7 @@ class ExplorationActivityTest {
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
 
@@ -210,7 +215,7 @@ class ExplorationActivityTest {
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() {
     getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
 
@@ -228,7 +233,7 @@ class ExplorationActivityTest {
   fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(RATIOS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0)).use {
       // Clicks continue until we reach the first interaction.
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.continue_button)).perform(click())
@@ -248,14 +253,14 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)).use {
       onView(withId(R.id.exploration_fragment_placeholder)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
-    ActivityScenario.launch<ExplorationActivity>(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0)).use {
+    launch<ExplorationActivity>(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)).use {
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -264,7 +269,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
-    explorationActivityTestRule.launchActivity(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0))
+    explorationActivityTestRule.launchActivity(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0))
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog()).perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
@@ -274,15 +279,15 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
-    explorationActivityTestRule.launchActivity(createExplorationActivityIntent(FRACTIONS_EXPLORATION_ID_0))
+    explorationActivityTestRule.launchActivity(createExplorationActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0))
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog()).perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
-  private fun createExplorationActivityIntent(explorationId: String): Intent {
+  private fun createExplorationActivityIntent(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
-      ApplicationProvider.getApplicationContext(), explorationId, /* topicId= */  null
+      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId, explorationId
     )
   }
 
