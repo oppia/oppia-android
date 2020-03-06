@@ -21,6 +21,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
@@ -52,8 +53,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -132,13 +135,23 @@ class OptionsFragmentTest {
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).perform(
         click()
       )
-      onView(withId(R.id.language_recycler_view))
+      onView(atPositionOnView(R.id.language_recycler_view, 1,R.id.language_radio_button)).perform(
+        click()
+      )
+      onView(withId(R.id.app_language_toolbar))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
+          click()
         )
+
+//      val resultData = Intent()
+//      val language = "French"
+//      resultData.putExtra(KEY_MESSAGE_APP_LANGUAGE, language)
+//      val result = Instrumentation.ActivityResult(REQUEST_CODE_APP_LANGUAGE, resultData)
+//      intending(toPackage("org.oppia.app.options")).respondWith(result)
+      launch<OptionsActivity>(createOptionActivityIntent(0))
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
+        matches(withText("French"))
+      )
     }
   }
 
