@@ -30,7 +30,7 @@ class HelpCategoryAdapter(
     return arrayList.size
   }
 
-  override fun onBindViewHolder(holder: HelpCategoryAdapter.HelpItemView, position: Int) {
+  override fun onBindViewHolder(holder: HelpItemView, position: Int) {
     holder.bind(arrayList[position], position, activity)
   }
 

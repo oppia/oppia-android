@@ -5,11 +5,15 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions.open
+import androidx.test.espresso.contrib.DrawerActions.close
+import androidx.test.espresso.contrib.DrawerMatchers
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,7 +25,6 @@ import org.oppia.app.R
 import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.testing.NavigationDrawerTestActivity
 
 @RunWith(AndroidJUnit4::class)
 class HelpFragmentTest {
@@ -31,10 +34,8 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openNavigationDrawer_selectHelpMenuInNavigationDrawer_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
+  fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+    launch(HelpActivity::class.java).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -55,12 +56,31 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectFAQ_showFAQActivitySuccessfully() {
-    launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
-      onView(withText(R.string.menu_help)).perform(click())
+  fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
+    launch(HelpActivity::class.java).use {
       onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
-      intended(hasComponent(FAQActivity::class.java.getName()))
+      intended(hasComponent(FAQActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
+    launch(HelpActivity::class.java).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(ViewMatchers.isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.help_fragment_placeholder))
+        .check(matches(ViewMatchers.isCompletelyDisplayed()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() {
+    launch(HelpActivity::class.java).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
 
