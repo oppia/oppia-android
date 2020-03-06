@@ -7,9 +7,9 @@ import javax.inject.Inject
 class StoryProgressTestHelper @Inject constructor(private val storyProgressController: StoryProgressController) {
 
   /** Creates a partial story progress for a particular profile. */
-  fun markPartialStoryProgressForFractions(internalProfileId: Int) {
+  fun markPartialStoryProgressForFractions(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -17,9 +17,9 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Creates a partial topic progress for a particular profile. */
-  fun markPartialTopicProgressForFractions(internalProfileId: Int) {
+  fun markPartialTopicProgressForFractions(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
@@ -27,16 +27,16 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks full story progress for a particular profile. */
-  fun markFullStoryProgressForFractions(internalProfileId: Int) {
+  fun markFullStoryProgressForFractions(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
     )
 
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1
@@ -44,16 +44,16 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks full topic progress for a particular profile. */
-  fun markFullTopicProgressForFractions(internalProfileId: Int) {
+  fun markFullTopicProgressForFractions(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0
     )
 
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1
@@ -61,16 +61,16 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks one story progress full in ratios exploration for a particular profile. */
-  fun markFullStoryPartialTopicProgressForRatios(internalProfileId: Int) {
+  fun markFullStoryPartialTopicProgressForRatios(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0
     )
 
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1
@@ -78,19 +78,19 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks two partial story progress in ratios exploration for a particular profile. */
-  fun markTwoPartialStoryProgressForRatios(internalProfileId: Int) {
+  fun markTwoPartialStoryProgressForRatios(profileId: ProfileId) {
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0
     )
 
     storyProgressController.recordCompletedChapter(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
-      RATIOS_EXPLORATION_ID_0
+      RATIOS_EXPLORATION_ID_2
     )
   }
 }
