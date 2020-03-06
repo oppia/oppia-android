@@ -53,10 +53,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
