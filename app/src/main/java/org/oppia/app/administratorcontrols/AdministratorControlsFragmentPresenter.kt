@@ -1,10 +1,14 @@
 package org.oppia.app.administratorcontrols
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
@@ -18,23 +22,41 @@ import org.oppia.app.databinding.AdministratorControlsDownloadPermissionsViewBin
 import org.oppia.app.databinding.AdministratorControlsFragmentBinding
 import org.oppia.app.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.app.databinding.AdministratorControlsProfileViewBinding
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.DeviceSettings
+import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment, private val viewModelProvider: ViewModelProvider<AdministratorControlsViewModel>
+  private val fragment: Fragment,
+  private val logger: Logger,
+  private val profileManagementController: ProfileManagementController,
+  private val viewModelProvider: ViewModelProvider<AdministratorControlsViewModel>
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+  private lateinit var administratorControlsDownloadPermissionsViewModel: AdministratorControlsDownloadPermissionsViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = AdministratorControlsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
+    val viewModel = getAdministratorControlsViewModel()
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    viewModel.setProfileId(profileId)
+
+    administratorControlsDownloadPermissionsViewModel = AdministratorControlsDownloadPermissionsViewModel(fragment, logger, profileManagementController, profileId)
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     binding.administratorControlsList.apply {
@@ -43,10 +65,32 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     }
 
     binding.apply {
-      this.viewModel = getAdministratorControlsItemViewModel()
+      this.viewModel = viewModel
       this.lifecycleOwner = fragment
     }
+
+    subscribeToDeviceSettingsLiveData()
     return binding.root
+  }
+
+  private fun getDeviceSettingsLiveData(): LiveData<DeviceSettings> {
+    return Transformations.map(profileManagementController.getDeviceSettings(), ::processGetDeviceSettingsResult)
+  }
+
+  private fun subscribeToDeviceSettingsLiveData() {
+    getDeviceSettingsLiveData().observe(fragment, Observer<DeviceSettings> {
+      Log.d("Akash", "subscribeToDeviceSettingsLiveData: ${it.automaticallyUpdateTopics}")
+      Log.d("Akash", "subscribeToDeviceSettingsLiveData: ${it.allowDownloadAndUpdateOnlyOnWifi}")
+      administratorControlsDownloadPermissionsViewModel.isTopicAutoUpdatePermission.set(it.automaticallyUpdateTopics)
+      administratorControlsDownloadPermissionsViewModel.isTopicWifiUpdatePermission.set(it.allowDownloadAndUpdateOnlyOnWifi)
+    })
+  }
+
+  private fun processGetDeviceSettingsResult(deviceSettingsResult: AsyncResult<DeviceSettings>): DeviceSettings {
+    if (deviceSettingsResult.isFailure()) {
+      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
+    }
+    return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<AdministratorControlsItemViewModel> {
@@ -94,7 +138,11 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getAdministratorControlsItemViewModel(): AdministratorControlsViewModel {
+  private fun getAdministratorControlsDownloadPermissionsViewModel(): AdministratorControlsDownloadPermissionsViewModel {
+    return AdministratorControlsDownloadPermissionsViewModel(fragment, logger, profileManagementController, userProfileId = profileId)
+  }
+
+  private fun getAdministratorControlsViewModel(): AdministratorControlsViewModel {
     return viewModelProvider.getForFragment(fragment, AdministratorControlsViewModel::class.java)
   }
 

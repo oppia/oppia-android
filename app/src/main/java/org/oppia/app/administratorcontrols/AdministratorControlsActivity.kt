@@ -7,10 +7,11 @@ import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
 /** Activity for Administrator Controls. */
-class AdministratorControlsActivity : InjectableAppCompatActivity() {
+class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProfileListListener {
   @Inject lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,5 +36,10 @@ class AdministratorControlsActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun routeToProfileList() {
+    val intent = Intent(this, ProfileListActivity::class.java)
+    startActivity(intent)
   }
 }
