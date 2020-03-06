@@ -212,7 +212,7 @@ class StringToNumberWithUnitsParser {
           unitsWithMultiplier.put(unitList[ind], multiplier)
           // If previous element was division then we need to invert
           // multiplier.
-          if (unitList[ind - 1] == "/") {
+          if (ind > 0 && unitList[ind - 1] == "/") {
             multiplier = -multiplier
           }
         }
