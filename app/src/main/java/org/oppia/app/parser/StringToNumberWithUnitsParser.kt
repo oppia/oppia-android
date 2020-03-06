@@ -114,7 +114,6 @@ class StringToNumberWithUnitsParser {
     return NumberWithUnits.getDefaultInstance()
   }
 
-
   private interface IUnitsDict {
     // TODO(#7165): Replace "ArrayList<String>" with the exact type. This has been kept as
     // "ArrayList<String>" because "units" is a list with varying element types. An exact
@@ -142,12 +141,12 @@ class StringToNumberWithUnitsParser {
       for (i in 0 until this.units.size) {
         var d = this.units[i]
         if (d.exponent == 1) {
-          unit += d.unit + " ";
+          unit += d.unit + " "
         } else {
-          unit += d.unit + "^" + d.exponent.toString() + " ";
+          unit += d.unit + "^" + d.exponent.toString() + " "
         }
       }
-      return unit.trim();
+      return unit.trim()
     }
   }
 
@@ -165,7 +164,7 @@ class StringToNumberWithUnitsParser {
         if ("*/()# ".contains(units[i]) && unit !== "per") {
           if (unit.length > 0) {
             if (unitList.size > 0 && this.isunit(unitList.removeAt(unitList.lastIndex))) {
-              unitList.add("*");
+              unitList.add("*")
             }
             unitList.add(unit)
             unit = ""
@@ -174,10 +173,10 @@ class StringToNumberWithUnitsParser {
             unitList.add(units[i].toString())
           }
         } else if (units[i].toString() == " " && unit == "per") {
-          unitList.add("/");
+          unitList.add("/")
           unit = ""
         } else {
-          unit += units[i];
+          unit += units[i]
         }
       }
       return unitList
@@ -193,7 +192,7 @@ class StringToNumberWithUnitsParser {
 
       for (ind in 0 until unitList.size) {
         if (unitList[ind] == "/") {
-          multiplier = -multiplier;
+          multiplier = -multiplier
         } else if (unitList[ind] == "(") {
           if (unitList[ind - 1] == "/") {
             // If previous element was division then we need to inverse
@@ -214,7 +213,7 @@ class StringToNumberWithUnitsParser {
           // If previous element was division then we need to invert
           // multiplier.
           if (unitList[ind - 1] == "/") {
-            multiplier = -multiplier;
+            multiplier = -multiplier
           }
         }
       }
@@ -276,23 +275,22 @@ class StringToNumberWithUnitsParser {
       )
     }
 
-   fun createCurrencyUnits()
-    {
+    fun createCurrencyUnits() {
       var keys = CURRENCY_UNITS.keys
-      for ( i in 0 until  keys.size) {
-      if (CURRENCY_UNITS[keys.elementAt(i)]!!.baseUnit == null) {
-        // Base unit (like: rupees, dollar etc.).
-        createUnit(CURRENCY_UNITS[keys.elementAt(i)]!!.name, {
-          aliases: CURRENCY_UNITS[keys.elementAt(i)]!!.aliases
-        });
-      } else {
-        // Sub unit (like: paise, cents etc.).
-        createUnit(CURRENCY_UNITS[keys.elementAt(i)].name, {
-          definition: CURRENCY_UNITS[keys.elementAt(i)].base_unit,
-          aliases: CURRENCY_UNITS[keys.elementAt(i)].aliases
-        });
+      for (i in 0 until keys.size) {
+//      if (CURRENCY_UNITS[keys.elementAt(i)]!!.baseUnit == null) {
+//        // Base unit (like: rupees, dollar etc.).
+//        createUnit(CURRENCY_UNITS[keys.elementAt(i)]!!.name, {
+//          aliases: CURRENCY_UNITS[keys.elementAt(i)]!!.aliases
+//        })
+//      } else {
+//        // Sub unit (like: paise, cents etc.).
+//        createUnit(CURRENCY_UNITS[keys.elementAt(i)].name, {
+//          definition: CURRENCY_UNITS[keys.elementAt(i)].base_unit,
+//          aliases: CURRENCY_UNITS[keys.elementAt(i)].aliases
+//        })
+//      }
       }
-    }
     }
 
     // TODO(#7165): Replace "ArrayList<String>" with the exact type. This has been kept as
@@ -301,7 +299,7 @@ class StringToNumberWithUnitsParser {
     fun toMathjsCompatibleString(unitsString: String): String {
       var units = unitsString
       // Makes the units compatible with the math.js allowed format.
-      units = units.replace("per", "/");
+      units = units.replace("per", "/")
 
       // Special symbols need to be replaced as math.js doesn"t support custom
       // units starting with special symbols. Also, it doesn"t allow units
@@ -334,11 +332,12 @@ class StringToNumberWithUnitsParser {
       var units = unitsString
       try {
         this.createCurrencyUnits()
-      } catch (e:Exception) {}
+      } catch (e: Exception) {
+      }
 
       var compatibleUnits = this.toMathjsCompatibleString(units)
 
-      return Units(this.fromStringToList(units));
+      return Units(this.fromStringToList(units))
     }
   }
 
@@ -392,7 +391,9 @@ class StringToNumberWithUnitsParser {
           context
         )
         units.contains("/") -> NumberWithUnitsParsingError.INVALID_FORMAT.getErrorMessageFromStringRes(context)
-        units.count { it == '-' } > 1 || units.count { it == '.' } > 1-> NumberWithUnitsParsingError.INVALID_UNIT.getErrorMessageFromStringRes(context)
+        units.count { it == '-' } > 1 || units.count { it == '.' } > 1 -> NumberWithUnitsParsingError.INVALID_UNIT.getErrorMessageFromStringRes(
+          context
+        )
         else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
       }
     } else
@@ -409,7 +410,7 @@ class StringToNumberWithUnitsParser {
     if (rawInput.matches("^\\-?\\d.*\$".toRegex())) {
       if (ind == -1) {
         // There is value with no units.
-        value = rawInput;
+        value = rawInput
         units = ""
       } else {
         ind -= 1
