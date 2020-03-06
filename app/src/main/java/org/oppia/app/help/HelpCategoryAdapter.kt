@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.HelpItemBinding
 
-/** The adapter to set up the recycler view in the [HelpFragment] */
+/** The Recycler View adapter in the [HelpFragment]. */
 class HelpCategoryAdapter(
   private val activity: AppCompatActivity,
   private val arrayList: ArrayList<HelpViewModel>
