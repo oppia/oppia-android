@@ -18,9 +18,6 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".completedstorylist.CompletedStoryListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
       android:name=".home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -36,6 +33,9 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".onboarding.OnboardingActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".ongoingtopiclist.OngoingTopicListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"

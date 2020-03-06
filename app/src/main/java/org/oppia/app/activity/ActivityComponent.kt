@@ -16,7 +16,7 @@ import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
@@ -61,7 +61,6 @@ interface ActivityComponent {
   fun inject(adminPinActivity: AdminPinActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
-  fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
@@ -73,6 +72,7 @@ interface ActivityComponent {
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
+  fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)

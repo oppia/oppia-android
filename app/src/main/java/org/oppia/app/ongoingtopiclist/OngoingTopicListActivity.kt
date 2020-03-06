@@ -1,4 +1,4 @@
-package org.oppia.app.completedstorylist
+package org.oppia.app.ongoingtopiclist
 
 import android.content.Context
 import android.content.Intent
@@ -7,22 +7,22 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity for completed stories. */
-class CompletedStoryListActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var completedStoryListActivityPresenter: CompletedStoryListActivityPresenter
+class OngoingTopicListActivity : InjectableAppCompatActivity() {
+  @Inject lateinit var ongoingTopicListActivityPresenter: OngoingTopicListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val internalProfileId: Int = intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
-    completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
+    ongoingTopicListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
-    internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY = "CompletedStoryListActivity.profile_id"
+    internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY = "OngoingTopicListActivity.profile_id"
 
-    /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified story ID. */
+    /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified story ID. */
     fun createStoryActivityIntent(context: Context, storyId: String): Intent {
-      val intent = Intent(context, CompletedStoryListActivity::class.java)
+      val intent = Intent(context, OngoingTopicListActivity::class.java)
       intent.putExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, storyId)
       return intent
     }

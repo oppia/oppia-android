@@ -1,4 +1,4 @@
-package org.oppia.app.completedstorylist
+package org.oppia.app.ongoingtopiclist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,34 +6,33 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.databinding.CompletedStoryListFragmentBinding
+import org.oppia.app.databinding.OngoingTopicListFragmentBinding
 import org.oppia.app.databinding.StoryChapterViewBinding
-import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presenter for [StoryFragment]. */
-class CompletedStoryListFragmentPresenter @Inject constructor(
+/** The presenter for [OngoingTopicListFragment]. */
+class OngoingTopicListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<CompletedStoryListViewModel>
+  private val viewModelProvider: ViewModelProvider<OngoingTopicListViewModel>
 ) {
 
-  private lateinit var binding: CompletedStoryListFragmentBinding
+  private lateinit var binding: OngoingTopicListFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
-    val viewModel = getCompletedStoryListViewModel()
-    binding = CompletedStoryListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val viewModel = getOngoingTopicListViewModel()
+    binding = OngoingTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setProfileId(internalProfileId)
 
-    binding.completedStoryListToolbar.setNavigationOnClickListener {
-      (activity as CompletedStoryListActivity).finish()
+    binding.ongoingTopicListToolbar.setNavigationOnClickListener {
+      (activity as OngoingTopicListActivity).finish()
     }
 
-    binding.completedStoryList.apply {
+    binding.ongoingTopicList.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = createRecyclerViewAdapter()
     }
@@ -51,12 +50,12 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_COMPLETED_STORY
+          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_ONGOING_TOPIC
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_COMPLETED_STORY,
+        viewType = ViewType.VIEW_TYPE_ONGOING_TOPIC,
         inflateDataBinding = StoryChapterViewBinding::inflate,
         setViewModel = StoryChapterViewBinding::setViewModel,
         transformViewModel = { it as StoryChapterSummaryViewModel }
@@ -64,11 +63,11 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getCompletedStoryListViewModel(): CompletedStoryListViewModel {
-    return viewModelProvider.getForFragment(fragment, CompletedStoryListViewModel::class.java)
+  private fun getOngoingTopicListViewModel(): OngoingTopicListViewModel {
+    return viewModelProvider.getForFragment(fragment, OngoingTopicListViewModel::class.java)
   }
 
   private enum class ViewType {
-    VIEW_TYPE_COMPLETED_STORY
+    VIEW_TYPE_ONGOING_TOPIC
   }
 }

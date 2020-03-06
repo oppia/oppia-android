@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.completedstorylist.CompletedStoryItemViewModel" />
+      type="org.oppia.app.ongoingtopiclist.OngoingTopicItemViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
