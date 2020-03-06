@@ -16,7 +16,6 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
 
   fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
     val binding = DataBindingUtil.setContentView<AppLanguageActivityBinding>(activity, R.layout.app_language_activity)
-
     this.prefSummaryValue = prefSummaryValue
     languageSelectionAdapter = LanguageSelectionAdapter(prefKey)
     binding.languageRecyclerView.apply {

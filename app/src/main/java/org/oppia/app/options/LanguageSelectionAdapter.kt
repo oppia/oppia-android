@@ -16,8 +16,8 @@ class LanguageSelectionAdapter(private val prefKey: String) :
 
   private var prefSummaryValue: String? = null
   private var languageList: List<String> = ArrayList()
-  private lateinit var selectedLanguage:String
-  private  var selectedPosition:Int = -1
+  private lateinit var selectedLanguage: String
+  private var selectedPosition: Int = -1
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
     val languageListItemBinding = DataBindingUtil.inflate<LanguageItemsBinding>(
       LayoutInflater.from(parent.context),
@@ -45,7 +45,7 @@ class LanguageSelectionAdapter(private val prefKey: String) :
     this.prefSummaryValue = prefSummaryValue
   }
 
-  fun getSelectedLanguage(): String{
+  fun getSelectedLanguage(): String {
     selectedLanguage = languageList.get(selectedPosition)
     return selectedLanguage
   }
