@@ -6,13 +6,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
-import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -67,11 +67,11 @@ class HelpFragmentTest {
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
     launch(HelpActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(ViewMatchers.isCompletelyDisplayed())
+        matches(isCompletelyDisplayed())
       ).perform(click())
       onView(withId(R.id.help_fragment_placeholder))
-        .check(matches(ViewMatchers.isCompletelyDisplayed()))
-      onView(withId(R.id.help_activity_drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+        .check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
