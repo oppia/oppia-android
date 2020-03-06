@@ -49,7 +49,6 @@ class OptionsFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    Log.d("profileId","==="+internalProfileId)
     viewModel.setProfileId(profileId)
 
     val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
@@ -115,8 +114,7 @@ class OptionsFragmentPresenter @Inject constructor(
         AppLanguageActivity.createAppLanguageActivityIntent(
           activity,
           APP_LANGUAGE,
-          model.appLanguage.get(),
-          internalProfileId
+          model.appLanguage.get()
         ), REQUEST_CODE_APP_LANGUAGE
       )
     }

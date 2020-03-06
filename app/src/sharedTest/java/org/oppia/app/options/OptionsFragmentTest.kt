@@ -106,6 +106,10 @@ class OptionsFragmentTest {
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Large"))
+      )
     }
   }
 
@@ -116,6 +120,9 @@ class OptionsFragmentTest {
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Medium")))
     }
   }
 
@@ -126,6 +133,9 @@ class OptionsFragmentTest {
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Extra Large")))
     }
   }
 
@@ -138,17 +148,7 @@ class OptionsFragmentTest {
       onView(atPositionOnView(R.id.language_recycler_view, 1,R.id.language_radio_button)).perform(
         click()
       )
-      onView(withId(R.id.app_language_toolbar))
-        .perform(
-          click()
-        )
-
-//      val resultData = Intent()
-//      val language = "French"
-//      resultData.putExtra(KEY_MESSAGE_APP_LANGUAGE, language)
-//      val result = Instrumentation.ActivityResult(REQUEST_CODE_APP_LANGUAGE, resultData)
-//      intending(toPackage("org.oppia.app.options")).respondWith(result)
-      launch<OptionsActivity>(createOptionActivityIntent(0))
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
         matches(withText("French"))
       )
@@ -168,6 +168,10 @@ class OptionsFragmentTest {
             click()
           )
         )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
+        matches(withText("Hindi"))
+      )
     }
   }
 
@@ -185,6 +189,10 @@ class OptionsFragmentTest {
             click()
           )
         )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
+        matches(withText("English"))
+      )
     }
   }
 
@@ -201,6 +209,9 @@ class OptionsFragmentTest {
             click()
           )
         )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
+        matches(withText("Chinese")))
     }
   }
 
