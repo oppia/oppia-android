@@ -1,6 +1,5 @@
 package org.oppia.app.options
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -17,7 +16,8 @@ class LanguageSelectionAdapter(private val prefKey: String) :
 
   private var prefSummaryValue: String? = null
   private var languageList: List<String> = ArrayList()
-
+  private lateinit var selectedLanguage:String
+  private  var selectedPosition:Int = -1
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
     val languageListItemBinding = DataBindingUtil.inflate<LanguageItemsBinding>(
       LayoutInflater.from(parent.context),
@@ -41,26 +41,26 @@ class LanguageSelectionAdapter(private val prefKey: String) :
   }
 
   fun setDefaultLanguageSelected(prefSummaryValue: String?) {
+    selectedPosition = languageList.indexOf(prefSummaryValue)
     this.prefSummaryValue = prefSummaryValue
+  }
+
+  fun getSelectedLanguage(): String{
+    selectedLanguage = languageList.get(selectedPosition)
+    return selectedLanguage
   }
 
   inner class LanguageViewHolder(val binding: LanguageItemsBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(language: String, position: Int) {
       binding.setVariable(BR.languageString, language)
-      val indexOfPreviouslySelectedValue: Int = languageList.indexOf(prefSummaryValue)
-      binding.languageRadioButton.isChecked = position == indexOfPreviouslySelectedValue
-
+      binding.languageRadioButton.isChecked = position == selectedPosition
       binding.radioContainer.setOnClickListener {
         if (prefKey == APP_LANGUAGE) {
-          val intent = Intent()
-          intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, language)
-          (binding.radioContainer.context as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
-          (binding.radioContainer.context as AppLanguageActivity).finish()
+          selectedPosition = adapterPosition
+          notifyDataSetChanged()
         } else {
-          val intent = Intent()
-          intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, language)
-          (binding.radioContainer.context as DefaultAudioActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-          (binding.radioContainer.context as DefaultAudioActivity).finish()
+          selectedPosition = adapterPosition
+          notifyDataSetChanged()
         }
       }
     }

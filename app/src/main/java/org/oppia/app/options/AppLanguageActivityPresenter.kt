@@ -24,7 +24,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     }
 
     binding.appLanguageToolbar.setNavigationOnClickListener {
-      val message = prefSummaryValue
+      val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
       (activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)

@@ -25,7 +25,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
     }
 
     binding.audioLanguageToolbar.setNavigationOnClickListener {
-      val message = prefSummaryValue
+      val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
       (activity as DefaultAudioActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
