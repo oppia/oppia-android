@@ -20,23 +20,22 @@ class HelpFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HelpViewModel>
 ) {
-  private var recyclerView: RecyclerView? = null
   private var helpCategoryAdapter: HelpCategoryAdapter? = null
-  var arrayList = ArrayList<HelpViewModel>()
-  private lateinit var binding: HelpFragmentBinding
+  private val arrayList = ArrayList<HelpViewModel>()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
-    // data-bound view models.
-    binding.let {
-      it.lifecycleOwner = fragment
+    val binding: HelpFragmentBinding =
+      HelpFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
+    binding.lifecycleOwner = fragment
+    getHelpModel()
+    binding.helpFragmentRecyclerView.apply {
+      adapter = HelpCategoryAdapter(getRecyclerViewItemList())
+      layoutManager = LinearLayoutManager(activity)
     }
-    recyclerView = binding.root.findViewById(R.id.help_fragment_recycler_view) as? RecyclerView
-    val viewModel = getHelpModel()
-    helpCategoryAdapter = HelpCategoryAdapter(activity, getRecyclerViewItemList())
-    recyclerView!!.setLayoutManager(LinearLayoutManager(activity))
-    recyclerView!!.setAdapter(helpCategoryAdapter)
     return binding.root
   }
 
@@ -45,11 +44,11 @@ class HelpFragmentPresenter @Inject constructor(
   }
 
   private fun getRecyclerViewItemList(): ArrayList<HelpViewModel> {
-    for (dir in HelpItems.values()) {
-      if (dir.equals(HelpItems.FAQ)) {
+    for (item in HelpItems.values()) {
+      if (item == HelpItems.FAQ) {
         val category1 = fragment.getString(R.string.frequently_asked_questions_FAQ)
-        val helpViewModel: HelpViewModel = HelpViewModel(category1, 0, activity)
-        arrayList!!.add(helpViewModel)
+        val helpViewModel = HelpViewModel(category1, 0, activity)
+        arrayList.add(helpViewModel)
       }
     }
     return arrayList

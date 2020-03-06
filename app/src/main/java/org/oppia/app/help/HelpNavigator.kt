@@ -1,6 +1,6 @@
 package org.oppia.app.help
 
-/** Listener for when an item in HelpActivity Recycler View should navigate to its corresponding activity. */
+/** Listener for item click in [HelpActivity]. */
 interface HelpNavigator {
   fun onItemClick(position: Int)
 }

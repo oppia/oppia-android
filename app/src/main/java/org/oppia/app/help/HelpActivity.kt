@@ -9,8 +9,8 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.help.faq.FAQActivity
 import javax.inject.Inject
 
-/** The help page activity for users faq and feedbacks. */
-class HelpActivity : InjectableAppCompatActivity(), RoutetoFAQ {
+/** The help page activity for FAQs and feedback. */
+class HelpActivity : InjectableAppCompatActivity(), RoutetoFAQListener {
   @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {

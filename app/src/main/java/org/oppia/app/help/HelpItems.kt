@@ -1,6 +1,6 @@
 package org.oppia.app.help
 
-/** Enum class containing the items for the Recycler view of Help Activity */
+/** Enum class containing the items for the Recycler view of [HelpActivity]. */
 enum class HelpItems(private var position: Int) {
   FAQ(position = 0);
 

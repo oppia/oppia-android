@@ -10,13 +10,12 @@ import javax.inject.Inject
 /** The FAQ page activity for placement of different FAQs. */
 class FAQActivity : InjectableAppCompatActivity() {
 
-  @Inject
-  lateinit var FAQActivityPresenter: FAQActivityPresenter
+  @Inject lateinit var faqActivityPresenter: FAQActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    FAQActivityPresenter.handleOnCreate()
+    faqActivityPresenter.handleOnCreate()
     title = getString(R.string.frequently_asked_questions)
   }
 

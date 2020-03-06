@@ -17,9 +17,7 @@ class FAQFragmentPresenter @Inject constructor(
     val binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
-    binding.let {
-      it.lifecycleOwner = fragment
-    }
+    binding.lifecycleOwner = fragment
     return binding.root
   }
 }
