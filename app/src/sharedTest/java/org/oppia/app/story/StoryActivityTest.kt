@@ -20,14 +20,17 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.player.exploration.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_1
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 
 /** Tests for [StoryActivity]. */
 @RunWith(AndroidJUnit4::class)
 class StoryActivityTest {
+
+  private val internalProfileId = 0
+
   @Before
   fun setUp() {
     Intents.init()
@@ -40,7 +43,7 @@ class StoryActivityTest {
 
   @Test
   fun clickOnStory_intentsToExplorationActivity() {
-    launch<StoryActivity>(createStoryActivityIntent(TEST_STORY_ID_1)).use {
+    launch<StoryActivity>(createStoryActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_1)).use {
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -55,14 +58,19 @@ class StoryActivityTest {
 
       intended(
         allOf(
-          hasExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, TEST_EXPLORATION_ID_1),
+          hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, TEST_EXPLORATION_ID_1),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
     }
   }
 
-  private fun createStoryActivityIntent(storyId: String): Intent {
-    return StoryActivity.createStoryActivityIntent(ApplicationProvider.getApplicationContext(), storyId)
+  private fun createStoryActivityIntent(internalProfileId: Int, topicId: String, storyId: String): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
+    )
   }
 }

@@ -36,6 +36,7 @@ import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -69,6 +70,9 @@ import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
@@ -88,6 +92,9 @@ class StateFragmentPresenter @Inject constructor(
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private var feedbackId: String? = null
+  private lateinit var profileId: ProfileId
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -113,6 +120,10 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
