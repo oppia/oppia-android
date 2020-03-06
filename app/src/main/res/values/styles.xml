@@ -80,6 +80,10 @@
     <item name="android:clickable">true</item>
   </style>
 
+  <style name="SwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorControlActivated">@color/colorPrimary</item>
+  </style>
+
   <style name="TabLayout" parent="Widget.Design.TabLayout">
     <item name="tabTextAppearance">@style/TabLayoutTextAppearance</item>
   </style>
