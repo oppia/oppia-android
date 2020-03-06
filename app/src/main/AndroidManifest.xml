@@ -18,6 +18,9 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".completedstorylist.CompletedStoryListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
