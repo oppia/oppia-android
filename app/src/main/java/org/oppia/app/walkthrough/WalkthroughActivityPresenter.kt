@@ -1,12 +1,11 @@
 package org.oppia.app.walkthrough
 
-import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.WalkthroughActivityBinding
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
@@ -14,54 +13,70 @@ import javax.inject.Inject
 
 /** The presenter for [WalkthroughActivity]. */
 @ActivityScope
-class WalkthroughActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private var currentProgress = MutableLiveData(0)
+class WalkthroughActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
+) {
+  private lateinit var binding: WalkthroughActivityBinding
 
   fun handleOnCreate() {
-    activity.setContentView(R.layout.walkthrough_activity)
+    binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
+
+    binding.apply {
+      viewModel = getWalkthroughViewModel()
+      presenter = this@WalkthroughActivityPresenter
+      lifecycleOwner = activity
+    }
     if (getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
         WalkthroughWelcomeFragment()
       ).commitNow().also {
-        currentProgress.value = 1
+        getWalkthroughViewModel().currentProgress.set(1)
       }
     }
+  }
 
-    currentProgress.observe(activity, Observer {
-      activity.findViewById<ProgressBar>(R.id.walkthrough_progress_bar).progress = it
-    })
-
-    activity.findViewById<ImageView>(R.id.back_button).setOnClickListener {
-      currentProgress.value?.let { progress ->
-        if (progress > 1) {
-          currentProgress.value = progress - 1
-        } else {
-          activity.onBackPressed()
-        }
-      }
+  fun prevPage(pageNo: Int) {
+    if (pageNo == 1)
+      activity.onBackPressed()
+    else {
+      changePage(pageNo - 2)
     }
+  }
+
+  private fun getWalkthroughViewModel(): WalkthroughViewModel {
+    return viewModelProvider.getForActivity(activity, WalkthroughViewModel::class.java)
   }
 
   private fun getWalkthroughWelcomeFragment(): WalkthroughWelcomeFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughWelcomeFragment?
   }
+
   fun changePage(pageNo: Int) {
     when (pageNo) {
-      2 -> {
+      WalkthroughPages.WELCOME.value -> {
+        activity.supportFragmentManager.beginTransaction().replace(
+          R.id.walkthrough_fragment_placeholder,
+          WalkthroughWelcomeFragment()
+        ).commitNow().also {
+          getWalkthroughViewModel().currentProgress.set(1)
+        }
+      }
+      WalkthroughPages.TOPICLIST.value -> {
         activity.supportFragmentManager.beginTransaction().replace(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughTopicListFragment()
         ).commitNow().also {
-          currentProgress.value = 2
+          getWalkthroughViewModel().currentProgress.set(2)
         }
       }
-      3 -> {
+      WalkthroughPages.FINAL.value -> {
         activity.supportFragmentManager.beginTransaction().replace(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughFinalFragment()
         ).commitNow().also {
-          currentProgress.value = 3
+          getWalkthroughViewModel().currentProgress.set(3)
         }
       }
     }

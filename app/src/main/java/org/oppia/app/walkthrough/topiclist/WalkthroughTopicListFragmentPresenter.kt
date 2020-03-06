@@ -31,6 +31,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   fun changePage() {
-    routeToNextPage.changeTo(WalkthroughPages.TOPICLIST.value)
+    routeToNextPage.changeTo(WalkthroughPages.FINAL.value)
   }
 }
