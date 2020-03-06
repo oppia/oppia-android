@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.oppia.app.viewmodel.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.HelpFragmentBinding
@@ -16,8 +15,7 @@ import javax.inject.Inject
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HelpViewModel>
+  private val fragment: Fragment
 ) {
   private val arrayList = ArrayList<HelpViewModel>()
 
@@ -29,16 +27,11 @@ class HelpFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     binding.lifecycleOwner = fragment
-    getHelpModel()
     binding.helpFragmentRecyclerView.apply {
       adapter = HelpCategoryAdapter(activity, getRecyclerViewItemList())
       layoutManager = LinearLayoutManager(activity)
     }
     return binding.root
-  }
-
-  private fun getHelpModel(): HelpViewModel {
-    return viewModelProvider.getForFragment(fragment, HelpViewModel::class.java)
   }
 
   private fun getRecyclerViewItemList(): ArrayList<HelpViewModel> {
