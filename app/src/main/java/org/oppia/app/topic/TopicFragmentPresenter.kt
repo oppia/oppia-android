@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -28,6 +29,7 @@ class TopicFragmentPresenter @Inject constructor(
 ) {
   private lateinit var tabLayout: TabLayout
   private lateinit var topicToolbar: Toolbar
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   lateinit var storyId: String
   private lateinit var viewPager: ViewPager
@@ -42,6 +44,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
+    internalProfileId: Int,
     topicId: String
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -50,6 +53,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     topicToolbar = binding.root.findViewById(R.id.topic_toolbar) as Toolbar
+    this.internalProfileId = internalProfileId
     this.topicId = topicId
     setUpViewPager(viewPager, topicId)
     subscribeToTopicLiveData()
@@ -61,7 +65,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
-    val adapter = ViewPagerAdapter(fragment.childFragmentManager, topicId, storyId)
+    val adapter = ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
@@ -82,7 +86,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId = topicId)
+    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId = topicId)
   }
 
   private fun getTopic(): LiveData<Topic> {

@@ -18,12 +18,18 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   companion object {
     /**
      * Creates a new instance of a StateFragment.
-     * @param explorationId used by StateFragment.
+     * @param internalProfileId used by StateFragment to mark progress.
+     * @param topicId used by StateFragment to mark progress.
+     * @param storyId used by StateFragment to mark progress.
+     * @param explorationId used by StateFragment to mark progress and manage exploration.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(explorationId: String): StateFragment {
+    fun newInstance(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
+      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       stateFragment.arguments = args
       return stateFragment

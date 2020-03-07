@@ -12,8 +12,10 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
@@ -38,6 +40,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
 
@@ -51,6 +54,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener
   ): View? {
+    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
@@ -68,7 +72,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
   }
 
   private fun subscribeToTopicLiveData() {
@@ -112,14 +116,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectStorySummary(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(storySummary.storyId)
+    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 
-  override fun selectChapterSummary(chapterSummary: ChapterSummary) {
-    playExploration(chapterSummary.explorationId, topicId)
+  override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
+    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId)
   }
 
-  private fun playExploration(explorationId: String, topicId: String) {
+  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -128,13 +132,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d("TopicLessonsFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(explorationId, topicId)
+          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId)
         }
       }
     })
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(storySummary.storyId)
+    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 }

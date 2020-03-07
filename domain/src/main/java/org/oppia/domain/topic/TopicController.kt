@@ -271,23 +271,34 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun createOngoingTopicListFromProgress(
-    topicProgressList: TopicProgressList
-  ): OngoingTopicList {
+  private fun createOngoingTopicListFromProgress(topicProgressList: TopicProgressList): OngoingTopicList {
     val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
     topicProgressList.topicProgressList.forEach { topicProgress ->
       val topic = retrieveTopic(topicProgress.topicId)
-      topic.storyList.forEach { storySummary ->
-        if (topicProgress!!.storyProgressMap.containsKey(storySummary.storyId)) {
-          val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-          val lastChapterSummary = storySummary.chapterList.last()
-          if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
+      if (topicProgress.storyProgressCount != 0) {
+        if (topic.storyCount != topicProgress!!.storyProgressCount) {
+          ongoingTopicListBuilder.addTopic(topic)
+        } else {
+          if (!checkIfTopicIsFullyCompleted(topic, topicProgress)) {
             ongoingTopicListBuilder.addTopic(topic)
           }
         }
       }
     }
     return ongoingTopicListBuilder.build()
+  }
+
+  private fun checkIfTopicIsFullyCompleted(topic: Topic, topicProgress: TopicProgress): Boolean {
+    topic.storyList.forEach { storySummary ->
+      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
+        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
+        val lastChapterSummary = storySummary.chapterList.last()
+        if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
+          return false
+        }
+      }
+    }
+    return true
   }
 
   private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
@@ -900,7 +911,8 @@ class TopicController @Inject constructor(
       )
       .putRecordedVoiceover(
         TEST_SKILL_CONTENT_ID_0, VoiceoverMapping.newBuilder().putVoiceoverMapping(
-          "es", Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3").setFileSizeBytes(456).build()
+          "es",
+          Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3").setFileSizeBytes(456).build()
         ).build()
       )
       .putRecordedVoiceover(

@@ -109,7 +109,8 @@ class StorySummaryAdapter(
       )
       binding.topicPlayStoryDashedLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, /* paint= */ null)
       val chapterList = storySummaryViewModel.storySummary.chapterList
-      binding.chapterRecyclerView.adapter = ChapterSummaryAdapter(chapterList, chapterSummarySelector)
+      binding.chapterRecyclerView.adapter =
+        ChapterSummaryAdapter(storySummaryViewModel.storySummary.storyId, chapterList, chapterSummarySelector)
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex

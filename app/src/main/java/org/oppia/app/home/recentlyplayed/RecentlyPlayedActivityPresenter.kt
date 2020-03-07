@@ -8,12 +8,12 @@ import javax.inject.Inject
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(internalProfileId: Int) {
     activity.setContentView(R.layout.recently_played_activity)
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
-        RecentlyPlayedFragment()
+        RecentlyPlayedFragment.newInstance(internalProfileId)
       ).commitNow()
     }
   }

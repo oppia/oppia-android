@@ -24,19 +24,27 @@ class TopicTestActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicActivityPresenter.handleOnCreate(topicId = TEST_TOPIC_ID_0, storyId = "")
+    topicActivityPresenter.handleOnCreate(internalProfileId = 0, topicId = TEST_TOPIC_ID_0, storyId = "")
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
   }
 
-  override fun routeToStory(storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, storyId))
+  override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 
   override fun routeToReviewCard(topicId: String, subtopicId: String) {
