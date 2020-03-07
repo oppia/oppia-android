@@ -3,7 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <variable
       name="viewModel"
       type="org.oppia.app.topic.info.TopicInfoViewModel" />
@@ -26,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
-        app:layout_constraintDimensionRatio="8:5"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/thumbnail_gradient"
-        app:layout_constraintDimensionRatio="8:5"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,10 +43,12 @@
       <TextView
         android:id="@+id/topic_name_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="24sp"
@@ -59,11 +60,13 @@
       <TextView
         android:id="@+id/story_count_text_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
@@ -79,13 +82,16 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
+        android:maxLines="8"
+        android:ellipsize="end"
         android:gravity="start"
         android:text="@{viewModel.topicDescription}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view"
+        />
 
       <ImageView
         android:id="@+id/download_status_image_view"
