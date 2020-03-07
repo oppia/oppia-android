@@ -7,7 +7,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
-class WalkthroughActivity : InjectableAppCompatActivity(),WalkthroughPageChangeListener {
+class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
   @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
   companion object {

@@ -7,18 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.walkthrough.WalkthroughPageChangeListener
+import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
 @FragmentScope
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
+  activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
-  private val routeToNextPage = activity as WalkthroughPageChangeListener
+  private val routeToNextPage = activity as WalkthroughFragmentChangeListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

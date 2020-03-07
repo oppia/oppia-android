@@ -4,6 +4,6 @@ import androidx.databinding.ObservableField
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-class WalkthroughViewModel @Inject constructor(): ObservableViewModel() {
+class WalkthroughViewModel @Inject constructor() : ObservableViewModel() {
   var currentProgress = ObservableField(0)
 }
