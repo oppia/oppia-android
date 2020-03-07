@@ -20,6 +20,7 @@ import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -56,6 +57,7 @@ interface FragmentComponent {
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
+  fun inject(faqFragment: FAQFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)

@@ -17,6 +17,7 @@ import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
@@ -67,6 +68,7 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
+  fun inject(faqActivity: FAQActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
