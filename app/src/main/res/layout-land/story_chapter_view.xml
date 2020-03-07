@@ -18,10 +18,10 @@
     <com.google.android.material.card.MaterialCardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
+      android:layout_marginStart="76dp"
       android:layout_marginTop="16dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="72dp"
+      android:layout_marginBottom="8dp"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
@@ -101,7 +101,10 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_margin="16dp"
+      android:layout_marginStart="76dp"
+      android:layout_marginEnd="72dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginBottom="8dp"
       android:background="@color/chapterCardShadow"
       android:padding="8dp"
       android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
