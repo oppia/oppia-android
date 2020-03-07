@@ -79,16 +79,14 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 
   private fun subscribeToDeviceSettingsLiveData() {
     getDeviceSettingsLiveData().observe(fragment, Observer<DeviceSettings> {
-      Log.d("Akash", "subscribeToDeviceSettingsLiveData: ${it.automaticallyUpdateTopics}")
-      Log.d("Akash", "subscribeToDeviceSettingsLiveData: ${it.allowDownloadAndUpdateOnlyOnWifi}")
-      administratorControlsDownloadPermissionsViewModel.isTopicAutoUpdatePermission.set(it.automaticallyUpdateTopics)
-      administratorControlsDownloadPermissionsViewModel.isTopicWifiUpdatePermission.set(it.allowDownloadAndUpdateOnlyOnWifi)
+      administratorControlsDownloadPermissionsViewModel.setTopicAutoUpdatePermission(it.automaticallyUpdateTopics)
+      administratorControlsDownloadPermissionsViewModel.setTopicWifiUpdatePermission(it.allowDownloadAndUpdateOnlyOnWifi)
     })
   }
 
   private fun processGetDeviceSettingsResult(deviceSettingsResult: AsyncResult<DeviceSettings>): DeviceSettings {
     if (deviceSettingsResult.isFailure()) {
-      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
+      logger.e("AdministratorControlsFragmentPresenter", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
     }
     return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }

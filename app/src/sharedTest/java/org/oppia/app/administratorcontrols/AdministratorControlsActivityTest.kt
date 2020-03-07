@@ -36,6 +36,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -181,9 +182,19 @@ class AdministratorControlsActivityTest {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.auto_update_topic_switch)).check(
         matches(
-          isChecked()
+          not(
+            isChecked()
+          )
         )
       )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_clickAppVersion_checkOpensAppVersionActivity() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
 
