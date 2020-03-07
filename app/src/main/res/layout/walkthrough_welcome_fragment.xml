@@ -16,6 +16,7 @@
     <Button
       style="@style/StateButtonActive"
       android:text="@string/next"
+      android:id="@+id/walkthrough_welcome_next_btn"
       android:onClick="@{(v) -> presenter.changePage()}"
       android:layout_marginBottom="32dp"
       android:layout_width="wrap_content"
