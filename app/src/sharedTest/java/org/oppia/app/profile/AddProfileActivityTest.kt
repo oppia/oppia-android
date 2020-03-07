@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,6 +45,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -326,6 +328,23 @@ class AddProfileActivityTest {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.edit_image_fab)).perform(click())
       intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_landscapeMode_checkViewsVisibility(){
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.upload_image_button)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.required_heading)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.input_name)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.info_icon)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(withId(R.id.input_pin)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.input_confirm_pin)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.allow_download_container)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.create_button)).perform(scrollTo()).check(matches(isDisplayed()))
     }
   }
 
