@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data class="FAQItemBinding">
+
+    <variable
+      name="viewmodel"
+      type="org.oppia.app.help.faq.FAQViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/recycler_item_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dot_gap"
+      android:background="@color/white_70"
+      android:fontFamily="sans-serif"
+      android:padding="@dimen/padding_24dp"
+      android:text="@{viewmodel.title}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="20sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
