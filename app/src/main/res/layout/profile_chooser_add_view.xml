@@ -2,29 +2,81 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="24dp"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-      android:id="@+id/profile_add_button"
-      android:layout_width="72dp"
-      android:layout_height="72dp"
-      android:layout_marginBottom="12dp"
-      android:src="@drawable/ic_add_profile"
-      app:civ_border_color="@color/avatarBorder"
-      app:civ_border_width="1dp" />
-
-    <TextView
-      android:id="@+id/add_profile_text"
-      android:layout_width="wrap_content"
+    <LinearLayout
+      android:id="@+id/profile_chooser_add_view"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:fontFamily="sans-serif-medium"
-      android:text="@string/profile_chooser_add"
-      android:textColor="@color/white"
-      android:textSize="14sp" />
-  </LinearLayout>
+      android:layout_marginBottom="24dp"
+      android:gravity="center_horizontal"
+      android:orientation="vertical">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_add_button"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_add_profile"
+        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_width="1dp" />
+
+      <TextView
+        android:id="@+id/add_profile_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/profile_chooser_add"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/profile_chooser_add_view_first_time"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="60dp"
+      android:layout_marginBottom="24dp"
+      android:gravity="center_horizontal"
+      android:orientation="horizontal"
+      android:visibility="visible">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_add_button_first_time"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_add_profile"
+        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_width="1dp" />
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/add_profile_text_first_time_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-medium"
+          android:text="@string/profile_chooser_multiple_profiles"
+          android:textColor="@color/white"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/add_profile_text_first_time_desc"
+          android:layout_width="160dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+          android:fontFamily="sans-serif-medium"
+          android:text="@string/profile_chooser_multiple_profile_description"
+          android:textColor="@color/white"
+          android:textSize="11sp" />
+      </LinearLayout>
+    </LinearLayout>
+  </RelativeLayout>
 </layout>

@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
@@ -67,6 +68,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val profileLiveData: LiveData<AsyncResult<Boolean>> by lazy {
     getProfileEverCreated()
   }
+  private val decoration: DividerItemDecoration? =
+    DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+  private var whichViewAdd: Boolean = true
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -76,12 +80,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
-
+    subscribetoProfileEverCreated(binding)
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
-    subscribetoProfileEverCreated(binding)
     return binding.root
   }
 
@@ -117,6 +120,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
+    when (whichViewAdd) {
+      true -> binding.profileButton.visibility = View.VISIBLE
+      false -> {
+        binding.profileButtonFirstTime.visibility = View.VISIBLE
+        binding.profileButton.visibility = View.GONE
+      }
+    }
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
@@ -141,6 +151,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
+    when (whichViewAdd) {
+      true -> binding.profileChooserAddView.visibility = View.VISIBLE
+      false -> {
+        binding.profileChooserAddViewFirstTime.visibility = View.VISIBLE
+        binding.profileChooserAddView.visibility = View.GONE
+      }
+    }
+
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
@@ -160,19 +178,38 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       }
     }
+
   }
 
   private fun getProfileEverCreated(): LiveData<AsyncResult<Boolean>> {
     return profileManagementController.getWasProfileEverAdded()
   }
 
-  private fun subscribetoProfileEverCreated(binding: ProfileChooserFragmentBinding) {
+  private fun subscribetoProfileEverCreated(
+    binding: ProfileChooserFragmentBinding
+  ) {
     profileLiveData.observe(fragment, Observer<AsyncResult<Boolean>> {
       when (it) {
-        AsyncResult.success(true) -> binding.profileRecyclerView.layoutManager =
-          GridLayoutManager(activity.applicationContext, 2)
-        AsyncResult.success(false) -> binding.profileRecyclerView.layoutManager =
-          LinearLayoutManager(activity.applicationContext)
+        AsyncResult.success(true) -> {
+          binding.profileRecyclerView.layoutManager =
+            GridLayoutManager(activity.applicationContext, 2)
+          whichViewAdd = true
+        }
+
+        AsyncResult.success(false) -> {
+          binding.profileRecyclerView.layoutManager =
+            LinearLayoutManager(activity.applicationContext)
+          whichViewAdd = false
+          decoration?.setDrawable(
+            ContextCompat.getDrawable(
+              activity.applicationContext,
+              R.drawable.profile_recyclerview_item_decor
+            )!!
+          )
+          if (decoration != null) {
+            binding.profileRecyclerView.addItemDecoration(decoration)
+          }
+        }
         null -> Log.d("Logger", "Null")
       }
     })

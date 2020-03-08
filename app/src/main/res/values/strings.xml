@@ -122,6 +122,8 @@
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
+  <string name="profile_chooser_multiple_profiles">Set up Multiple Profiles</string>
+  <string name="profile_chooser_multiple_profile_description">Add up to 10 users to your account. Perfect for families and classrooms!</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
