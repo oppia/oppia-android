@@ -23,5 +23,6 @@ class FAQActivityPresenter @Inject constructor(private val activity: AppCompatAc
     val toolbar = activity.findViewById<View>(R.id.faq_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true);
   }
 }
