@@ -34,9 +34,11 @@ class FAQFragmentPresenter @Inject constructor(
   }
 
   private fun getRecyclerViewItemList(): ArrayList<FAQViewModel> {
-    val category1 = fragment.getString(R.string.frequently_asked_questions_FAQ)
-    val faqViewModel = FAQViewModel(category1)
-    arrayList.add(faqViewModel)
+    val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
+    for (question in questions) {
+      val faqViewModel = FAQViewModel(question)
+      arrayList.add(faqViewModel)
+    }
     return arrayList
   }
 }
