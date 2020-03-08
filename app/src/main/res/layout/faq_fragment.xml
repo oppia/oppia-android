@@ -14,6 +14,19 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
+      <TextView
+        android:id="@+id/featured_questions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingTop="@dimen/padding_24dp"
+        android:paddingStart="@dimen/padding_24dp"
+        android:paddingEnd="@dimen/padding_24dp"
+        android:text="@string/featured_questions"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/faq_fragment_recycler_view"
         android:layout_width="match_parent"
