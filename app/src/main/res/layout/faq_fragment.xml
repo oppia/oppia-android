@@ -14,23 +14,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/faq_app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-
-        <androidx.appcompat.widget.Toolbar
-          android:id="@+id/faq_toolbar"
-          android:layout_width="match_parent"
-          android:layout_height="?attr/actionBarSize"
-          android:background="@color/oppiaPrimaryDark"
-          android:textSize="20sp"
-          app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-          app:title="@string/frequently_asked_questions"
-          app:titleTextColor="@color/white" />
-      </com.google.android.material.appbar.AppBarLayout>
-
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/faq_fragment_recycler_view"
         android:layout_width="match_parent"
