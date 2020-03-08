@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <!-- FAQ Questions Array -->
   <string-array name="faq_questions">
     <item>@string/faq_question_1</item>
     <item>@string/faq_question_2</item>

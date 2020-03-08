@@ -22,4 +22,3 @@
       tools:context=".help.faq.FAQActivity" />
   </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
-
