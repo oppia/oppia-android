@@ -33,7 +33,7 @@
         android:layout_marginEnd="32dp"
         android:text="@string/add_profile_create_btn"
         android:textAllCaps="true"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
         app:layout_constraintTop_toBottomOf="@+id/pin_container" />
 
       <CheckBox
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="@string/add_profile_create_a_3_digit_pin"
-        app:layout_constraintStart_toStartOf="@+id/start_guideline"
+        app:layout_constraintStart_toEndOf="@+id/start_guideline"
         app:layout_constraintTop_toBottomOf="@+id/input_name" />
 
       <ImageView
@@ -52,8 +52,8 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="32dp"
         android:src="@drawable/ic_info_icon"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_pin" />
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/input_name" />
 
       <TextView
         android:id="@+id/required_heading"
@@ -62,8 +62,8 @@
         android:layout_marginStart="28dp"
         android:text="@string/add_profile_required"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/start_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+        app:layout_constraintStart_toEndOf="@+id/start_guideline"
         app:layout_constraintTop_toBottomOf="@+id/upload_image_button" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,8 +71,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="@{viewModel.createPin ? View.VISIBLE : View.GONE}"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/start_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+        app:layout_constraintStart_toEndOf="@+id/start_guideline"
         app:layout_constraintTop_toBottomOf="@+id/checkbox_pin">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,7 +153,7 @@
         app:layout_constraintGuide_percent="0.2" />
 
       <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+        android:id="@+id/end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -176,8 +176,8 @@
         android:paddingBottom="8dp"
         android:src="@drawable/ic_default_avatar"
         app:civ_circle_background_color="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+        app:layout_constraintStart_toEndOf="@+id/start_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
       <org.oppia.app.profile.ProfileInputView
@@ -185,8 +185,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:label="@string/add_profile_input_name"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/start_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+        app:layout_constraintStart_toEndOf="@+id/start_guideline"
         app:layout_constraintTop_toBottomOf="@+id/required_heading"
         profile:error="@{viewModel.nameErrorMsg}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
