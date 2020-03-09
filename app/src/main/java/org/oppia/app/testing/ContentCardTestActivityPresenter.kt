@@ -10,10 +10,16 @@ import org.oppia.app.player.state.StateFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_7
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+private const val INTERNAL_PROFILE_ID = 0
+private const val TOPIC_ID = TEST_TOPIC_ID_0
+private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID_1 = TEST_EXPLORATION_ID_5
 private const val EXPLORATION_ID_2 = TEST_EXPLORATION_ID_7
 
@@ -45,7 +51,7 @@ class ContentCardTestActivityPresenter @Inject constructor(
             logger.d("ContentCardTest", "Successfully loaded exploration")
 
             if (getStateFragment() == null) {
-              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_1)
+              val stateFragment = StateFragment.newInstance(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID_1)
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.state_fragment_placeholder,
                 stateFragment
@@ -72,7 +78,7 @@ class ContentCardTestActivityPresenter @Inject constructor(
             logger.d("ContentCardTest", "Successfully loaded exploration")
 
             if (getStateFragment() == null) {
-              val stateFragment = StateFragment.newInstance(EXPLORATION_ID_2)
+              val stateFragment = StateFragment.newInstance(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID_2)
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.state_fragment_placeholder,
                 stateFragment

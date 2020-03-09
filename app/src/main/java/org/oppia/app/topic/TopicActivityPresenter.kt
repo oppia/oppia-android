@@ -18,6 +18,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
+const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 const val STORY_ID_ARGUMENT_KEY = "story_id"
 
@@ -31,7 +32,7 @@ class TopicActivityPresenter @Inject constructor(
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   lateinit var topicId: String
 
-  fun handleOnCreate(topicId: String, storyId: String?) {
+  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
     this.topicId = topicId
     activity.setContentView(R.layout.topic_activity)
     subscribeToTopicLiveData()
@@ -39,6 +40,7 @@ class TopicActivityPresenter @Inject constructor(
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
       if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)

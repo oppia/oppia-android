@@ -18,14 +18,18 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".home.HomeActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
+      android:name=".help.faq.FAQActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"
       android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.HomeActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".mydownloads.MyDownloadsActivity"
@@ -111,6 +115,7 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.TopicActivity"
+      android:launchMode="singleInstance"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.reviewcard.ReviewCardActivity"

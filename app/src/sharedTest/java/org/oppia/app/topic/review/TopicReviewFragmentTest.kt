@@ -38,6 +38,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicReviewFragmentTest {
   private val subtopicThumbnail = R.drawable.topic_fractions_01
+  private val internalProfileId = 0
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -46,7 +47,7 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_displayReviewTopics_isSuccessful() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -63,6 +64,7 @@ class TopicReviewFragmentTest {
     topicActivityTestRule.launchActivity(
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
+        internalProfileId,
         FRACTIONS_TOPIC_ID
       )
     )
@@ -77,7 +79,7 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -91,12 +93,13 @@ class TopicReviewFragmentTest {
 
   @Test
   fun testTopicReviewFragment_loadFragment_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use { onView(
-      allOf(
-        withText(TopicTab.getTabForPosition(3).name),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
-    ).perform(click())
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
@@ -104,7 +107,7 @@ class TopicReviewFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
-    launchTopicActivityIntent(FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -120,8 +123,9 @@ class TopicReviewFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
-    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+    val intent =
+      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
   }
 

@@ -8,10 +8,15 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+private const val INTERNAL_PROFILE_ID = 0
+private const val TOPIC_ID = TEST_TOPIC_ID_0
+private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
 private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
 
@@ -43,7 +48,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
         result.isFailure() -> logger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(EXPLORATION_ID, null)
+          routeToExplorationListener.routeToExploration(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID)
         }
       }
     })

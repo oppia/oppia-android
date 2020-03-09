@@ -58,10 +58,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AddProfileActivityTest {
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -115,6 +113,7 @@ class AddProfileActivityTest {
         typeText("test"),
         closeSoftKeyboard()
       )
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -207,6 +206,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputShortPin_clickCreate_checkPinLengthError() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12"), closeSoftKeyboard()
       )
@@ -223,6 +223,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12"), closeSoftKeyboard()
       )
@@ -237,6 +238,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputWrongConfirmPin_checkConfirmWrongError() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -256,6 +258,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -277,6 +280,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputPin_checkAllowDownloadNotClickable() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -287,6 +291,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -337,8 +342,7 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   @Module
   class TestModule {
