@@ -86,7 +86,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     })
   }
 
-  fun geSelectedStoryTextSize(): String{
+  fun geSelectedStoryTextSize(): String {
     return fontSize
   }
 
