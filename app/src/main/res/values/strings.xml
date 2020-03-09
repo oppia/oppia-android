@@ -2,7 +2,7 @@
 <resources>
   <string name="app_name">Oppia</string>
   <string name="nav_header_title">Sean</string>
-  <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
+  <string name="nav_header_subtitle">%s Stories Completed | %s Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
@@ -250,4 +250,5 @@
   <string name="audio_language">Audio Language</string>
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
+  <string name="profile">Profile</string>
 </resources>

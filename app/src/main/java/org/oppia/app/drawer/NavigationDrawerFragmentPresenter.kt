@@ -20,12 +20,16 @@ import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.CompletedStoryList
+import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -38,7 +42,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val topicController: TopicController,
+  private val logger: Logger,
+  private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
+  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -46,8 +53,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var binding: DrawerFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
-  private lateinit var navigationDrawerFooterViewModel: NavigationDrawerFooterViewModel
 
   private var routeToAdministratorControlsListener = fragment as RouteToAdministratorControlsListener
 
@@ -60,15 +65,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-    navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
-    navigationDrawerFooterViewModel = NavigationDrawerFooterViewModel()
-
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    headerBinding.viewModel = navigationDrawerHeaderViewModel
+    headerBinding.viewModel = getHeaderViewModel()
     subscribeToProfileLiveData()
+    subscribeToCompletedStoryListLiveData()
+    subscribeToOngoingTopicListLiveData()
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
-    binding.footerViewModel = navigationDrawerFooterViewModel
+    binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
 
     return binding.root
@@ -80,8 +84,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(fragment, Observer<Profile> {
-      navigationDrawerHeaderViewModel.profileName.set(it.name)
-      navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
+      getHeaderViewModel().profile.set(it)
+      getFooterViewModel().isAdmin.set(it.isAdmin)
       binding.administratorControlsLinearLayout.setOnClickListener {
         routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId)
         drawerLayout.closeDrawers()
@@ -96,6 +100,48 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
+  private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
+    return Transformations.map(topicController.getCompletedStoryList(profileId), ::processGetCompletedStoryListResult)
+  }
+
+  private fun subscribeToCompletedStoryListLiveData() {
+    getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
+      getHeaderViewModel().completedStoryCount.set(it.storySummaryCount)
+    })
+  }
+
+  private fun processGetCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+    if (completedStoryListResult.isFailure()) {
+      logger.e(
+        "NavigationDrawerFragmentPresenter",
+        "Failed to retrieve completed story list",
+        completedStoryListResult.getErrorOrNull()!!
+      )
+    }
+    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
+  }
+
+  private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
+    return Transformations.map(topicController.getOngoingTopicList(profileId), ::processGetOngoingTopicListResult)
+  }
+
+  private fun subscribeToOngoingTopicListLiveData() {
+    getOngoingTopicListCount().observe(fragment, Observer<OngoingTopicList> {
+      getHeaderViewModel().ongoingTopicCount.set(it.topicCount)
+    })
+  }
+
+  private fun processGetOngoingTopicListResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
+    if (ongoingTopicListResult.isFailure()) {
+      logger.e(
+        "NavigationDrawerFragmentPresenter",
+        "Failed to retrieve ongoing topic list",
+        ongoingTopicListResult.getErrorOrNull()!!
+      )
+    }
+    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
+  }
+
   private fun openActivityByMenuItemId(menuItemId: Int) {
     if (previousMenuItemId != menuItemId && menuItemId != 0) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
@@ -105,7 +151,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           fragment.activity!!.finish()
         }
         NavigationDrawerItem.OPTIONS -> {
-          fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
+          fragment.activity!!.startActivity(
+            OptionsActivity.createOptionsActivity(
+              fragment.requireContext(),
+              internalProfileId
+            )
+          )
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
@@ -194,5 +245,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
     openActivityByMenuItemId(menuItem.itemId)
     return true
+  }
+
+  private fun getHeaderViewModel(): NavigationDrawerHeaderViewModel {
+    return headerViewModelProvider.getForFragment(fragment, NavigationDrawerHeaderViewModel::class.java)
+  }
+
+  private fun getFooterViewModel(): NavigationDrawerFooterViewModel {
+    return footerViewModelProvider.getForFragment(fragment, NavigationDrawerFooterViewModel::class.java)
   }
 }
