@@ -39,6 +39,22 @@
       android:name=".onboarding.OnboardingActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".options.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.OptionsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.StoryTextSizeActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".player.exploration.ExplorationActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
