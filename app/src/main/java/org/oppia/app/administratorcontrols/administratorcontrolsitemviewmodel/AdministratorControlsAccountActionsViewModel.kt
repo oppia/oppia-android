@@ -9,7 +9,7 @@ import org.oppia.app.profile.ProfileActivity
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAccountActionsViewModel(
   private val fragment: Fragment
-  ) : AdministratorControlsItemViewModel() {
+) : AdministratorControlsItemViewModel() {
 
   fun onLogOutClicked() {
     AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
@@ -18,7 +18,7 @@ class AdministratorControlsAccountActionsViewModel(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        // TODO: Please change ProfileActivity to LoginActivity once it is added.
+        // TODO(#762): Replace ProfileActivity to LoginActivity once it is added.
         val intent = Intent(fragment.activity, ProfileActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         fragment.activity!!.startActivity(intent);

@@ -17,7 +17,8 @@
       android:name=".administratorcontrols.AdministratorControlsActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".administratorcontrols.appversion.AppVersionActivity"
+    <activity
+      android:name=".administratorcontrols.appversion.AppVersionActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity

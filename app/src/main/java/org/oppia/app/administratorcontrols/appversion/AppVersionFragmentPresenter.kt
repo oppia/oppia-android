@@ -3,7 +3,6 @@ package org.oppia.app.administratorcontrols.appversion
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.AppVersionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -16,7 +15,6 @@ class AppVersionFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<AppVersionViewModel>
 ) {
-  private lateinit var appVersionToolbar: Toolbar
   private lateinit var binding: AppVersionFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {

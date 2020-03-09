@@ -22,10 +22,8 @@ class AppVersionActivityPresenter @Inject constructor(private val activity: AppC
 
   private fun setToolbar() {
     val appVersionToolbar: Toolbar = activity.findViewById(R.id.app_version_toolbar) as Toolbar
-    appVersionToolbar.title = activity.resources.getString(R.string.administrator_controls_app_version)
     activity.setSupportActionBar(appVersionToolbar)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
   }
 
   private fun getAppVersionFragment(): AppVersionFragment? {

@@ -12,15 +12,16 @@ import javax.inject.Inject
 /** [ViewModel] for [AppVersionFragment]*/
 @FragmentScope
 class AppVersionViewModel @Inject constructor(
-  private val fragment: Fragment
+  fragment: Fragment
 ) : ObservableViewModel() {
 
   val versionName = ObservableField<String>(BuildConfig.VERSION_NAME)
 
   private val lastUpdateDateTime =
-    fragment.activity!!.packageManager.getPackageInfo(fragment.activity!!.packageName, 0).lastUpdateTime
+    fragment.activity!!.packageManager.getPackageInfo(fragment.activity!!.packageName, /* flags= */ 0).lastUpdateTime
   val lastUpdateDate = ObservableField<String>(getDateTime(lastUpdateDateTime))
 
+  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
   private fun getDateTime(l: Long): String? {
     return try {
       val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.US)

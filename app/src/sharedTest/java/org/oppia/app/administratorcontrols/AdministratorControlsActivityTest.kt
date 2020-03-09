@@ -55,8 +55,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AdministratorControlsActivityTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -191,7 +193,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickLogoutButton_displaysLogOutDialog() {
+  fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
@@ -201,9 +203,9 @@ class AdministratorControlsActivityTest {
     }
   }
 
-  // TODO: Please change ProfileActivity to LoginActivity once it is added.
+  // TODO(#762): Replace ProfileActivity to LoginActivity once it is added.
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickOkButtonInLogoutDialog_checkOpensProfileActivity() {
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_checkOpensProfileActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
@@ -214,7 +216,18 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickAppVersion_checkOpensAppVersionActivity() {
+  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_checkDialodDismissed() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
+      onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickAppVersion_checkOpensAppVersionActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(withId(R.id.app_version_text_view)).perform(click())

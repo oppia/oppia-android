@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
@@ -27,6 +28,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
@@ -37,10 +39,13 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [AppVersionActivity]. */
+@RunWith(AndroidJUnit4::class)
 class AppVersionActivityTest {
 
   private lateinit var activityScenario: ActivityScenario<AppVersionActivity>
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
   private lateinit var lastUpdateDate: String
 
   @get:Rule
@@ -54,9 +59,8 @@ class AppVersionActivityTest {
     setUpTestApplicationComponent()
     activityScenario = launchAppVersionActivityIntent()
 
-     val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
-     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
-
+    val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, /* flags= */0).lastUpdateTime
+    lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
   private fun setUpTestApplicationComponent() {
@@ -69,23 +73,32 @@ class AppVersionActivityTest {
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
     launchAppVersionActivityIntent().use {
-      onView(withText(String.format(context.resources.getString(R.string.app_version_name), BuildConfig.VERSION_NAME))).check(matches(isDisplayed()))
-      onView(withText(String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate))).check(matches(isDisplayed()))
-//      onView(withText("App Version ${BuildConfig.VERSION_NAME}")).check(matches(isDisplayed()))
+      onView(
+        withText(
+          String.format(
+            context.resources.getString(R.string.app_version_name),
+            BuildConfig.VERSION_NAME
+          )
+        )
+      ).check(matches(isDisplayed()))
+      onView(withText(String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate))).check(
+        matches(isDisplayed())
+      )
     }
   }
 
- @Test
+  @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
-   ActivityScenario.launch<AdministratorControlsActivity>(launchAdministratorControlsActivityIntent(0)).use {
-     onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
-     onView(withText(R.string.administrator_controls_app_version)).perform(click())
-     Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
-     onView(isRoot()).perform(pressBack())
-     onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
+    ActivityScenario.launch<AdministratorControlsActivity>(launchAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(withText(R.string.administrator_controls_app_version)).perform(click())
+      Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
+      onView(isRoot()).perform(pressBack())
+      onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
     }
   }
 
+  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
   private fun getDateTime(l: Long): String? {
     return try {
       val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.US)
@@ -95,13 +108,13 @@ class AppVersionActivityTest {
       e.toString()
     }
   }
+
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
     return ActivityScenario.launch(intent)
   }
-
 
   private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
