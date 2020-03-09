@@ -20,11 +20,11 @@ class ProfileProgressActivity : InjectableAppCompatActivity() {
 
   companion object {
 
-    internal const val PROFILE_PROGRESS_PROFILE_IF_KEY = "ProfileProgressActivity.internal_profile_id"
+    internal const val PROFILE_PROGRESS_PROFILE_ID_KEY = "ProfileProgressActivity.internal_profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, ProfileProgressActivity::class.java)
-      intent.putExtra(PROFILE_PROGRESS_PROFILE_IF_KEY, internalProfileId)
+      intent.putExtra(PROFILE_PROGRESS_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
   }
