@@ -34,7 +34,6 @@ class OptionsFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>
 ) {
   private lateinit var binding: OptionsFragmentBinding
-
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
@@ -95,41 +94,14 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindStoryTextSize(binding: OptionStoryTextSizeBinding, model: OptionsStoryTextViewViewModel) {
     binding.viewModel = model
-    binding.storyTextSizeTextView.setOnClickListener {
-      activity.startActivityForResult(
-        StoryTextSizeActivity.createStoryTextSizeActivityIntent(
-          activity,
-          STORY_TEXT_SIZE,
-          model.storyTextSize.get()
-        ), REQUEST_CODE_TEXT_SIZE
-      )
-    }
   }
 
   private fun bindAppLanguage(binding: OptionAppLanguageBinding, model: OptionsAppLanguageViewModel) {
     binding.viewModel = model
-    binding.appLanguageTextView.setOnClickListener {
-      activity.startActivityForResult(
-        AppLanguageActivity.createAppLanguageActivityIntent(
-          activity,
-          APP_LANGUAGE,
-          model.appLanguage.get()
-        ), REQUEST_CODE_APP_LANGUAGE
-      )
-    }
   }
 
   private fun bindAudioLanguage(binding: OptionAudioLanguageBinding, model: OptionsAudioLanguageViewModel) {
     binding.viewModel = model
-    binding.audioLanguageTextView.setOnClickListener {
-      activity.startActivityForResult(
-        DefaultAudioActivity.createDefaultAudioActivityIntent(
-          activity,
-          AUDIO_LANGUAGE,
-          model.audioLanguage.get()
-        ), REQUEST_CODE_AUDIO_LANGUAGE
-      )
-    }
   }
 
   private fun getOptionControlsItemViewModel(): OptionControlsViewModel {

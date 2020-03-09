@@ -10,8 +10,10 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/story_text_size_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:onClick="@{(v) -> viewModel.onStoryTextSizeClicked()}"
     android:background="@color/white">
 
     <TextView

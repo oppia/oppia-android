@@ -100,7 +100,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
@@ -114,7 +114,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
@@ -127,7 +127,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
@@ -140,7 +140,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
         click()
       )
       onView(atPositionOnView(R.id.language_recycler_view, 1,R.id.language_radio_button)).perform(
@@ -156,7 +156,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
         click()
       )
       onView(withId(R.id.language_recycler_view))
@@ -176,7 +176,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
 
@@ -197,7 +197,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).perform(
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
       onView(withId(R.id.audio_language_recycler_view))

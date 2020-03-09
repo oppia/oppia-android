@@ -1,5 +1,6 @@
 package org.oppia.app.options
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -19,11 +20,15 @@ import javax.inject.Inject
 /** [ViewModel] for [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
+  activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val logger: Logger
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
+  private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
+  private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
+  private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -55,11 +60,11 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.clear()
 
     val optionsStoryTextViewViewModel =
-      OptionsStoryTextViewViewModel()
+      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel()
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel()
+      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
 
     optionsStoryTextViewViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
