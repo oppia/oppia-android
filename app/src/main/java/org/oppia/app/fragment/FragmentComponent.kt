@@ -11,6 +11,7 @@ import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
 import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
+import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
@@ -63,6 +64,7 @@ interface FragmentComponent {
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
+  fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
