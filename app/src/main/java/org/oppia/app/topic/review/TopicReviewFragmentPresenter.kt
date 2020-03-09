@@ -15,6 +15,9 @@ import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToReviewCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.app.topic.practice.TopicPracticeViewModel
+import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewCardViewModel
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -26,7 +29,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val viewModelProvider: ViewModelProvider<TopicReviewCardViewModel>
 ) : ReviewSubtopicSelector {
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToReviewCardListener
@@ -37,6 +41,9 @@ class TopicReviewFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
+    val viewModel = getTopicReviewViewModel()
+    viewModel.setTopicId(topicId)
+    
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     reviewAdapter = ReviewSubtopicAdapter(this)
 
@@ -56,26 +63,13 @@ class TopicReviewFragmentPresenter @Inject constructor(
     routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
-
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+  private fun getTopicReviewViewModel(): TopicReviewCardViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicReviewCardViewModel::class.java)
   }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
       reviewAdapter.setReviewList(result.subtopicList)
     })
-  }
-
-  private fun getTopicList(): LiveData<Topic> {
-    return Transformations.map(topicResultLiveData, ::processTopicResult)
-  }
-
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      logger.e("TopicReviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
-    }
-    return topic.getOrDefault(Topic.getDefaultInstance())
   }
 }
