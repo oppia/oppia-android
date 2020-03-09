@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginEnd="72dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppiaPrimaryText"
