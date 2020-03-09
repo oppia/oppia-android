@@ -70,8 +70,8 @@
     <activity
       android:name=".settings.profile.ProfileRenameActivity" />
     <activity
-      android:name=".settings.profile.ProfileResetPinActivity"
-      android:screenOrientation="portrait" />
+      android:name=".settings.profile.ProfileResetPinActivity">
+    </activity>
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
