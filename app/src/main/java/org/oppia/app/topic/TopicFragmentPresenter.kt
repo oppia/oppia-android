@@ -37,13 +37,11 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_practice_icon_24dp,
       R.drawable.ic_review_icon_24dp
     )
-  private lateinit var titleListener: ToolbarTitleListener
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    topicId: String,
-    titleListener: ToolbarTitleListener
+    topicId: String
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
@@ -51,9 +49,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.topicId = topicId
-    this.titleListener = titleListener
     setUpViewPager(viewPager, topicId)
-    subscribeToTopicLiveData()
     return binding.root
   }
 
@@ -73,28 +69,4 @@ class TopicFragmentPresenter @Inject constructor(
       setCurrentTab(TopicTab.LESSONS)
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
-
-  private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(fragment, Observer<Topic> { result ->
-      val topicName = result.name
-      titleListener.onTitleFetchComplete(topicName)
-      // topicToolbar.title = fragment.getString(R.string.topic_prefix) + " " + topicName
-    })
-  }
-
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId = topicId)
-  }
-
-  private fun getTopic(): LiveData<Topic> {
-    return Transformations.map(topicResultLiveData, ::processTopicResult)
-  }
-
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      logger.e("TopicFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
-    }
-    return topic.getOrDefault(Topic.getDefaultInstance())
-  }
 }

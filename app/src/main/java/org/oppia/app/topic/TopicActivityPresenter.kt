@@ -5,9 +5,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
+import org.oppia.app.model.Topic
+import org.oppia.domain.topic.TopicController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
@@ -16,11 +23,18 @@ const val STORY_ID_ARGUMENT_KEY = "story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
-class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity): ToolbarTitleListener {
+class TopicActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val logger: Logger,
+  private val topicController: TopicController
+) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
+  lateinit var topicId: String
 
   fun handleOnCreate(topicId: String, storyId: String?) {
+    this.topicId = topicId
     activity.setContentView(R.layout.topic_activity)
+    subscribeToTopicLiveData()
     setUpNavigationDrawer()
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
@@ -29,13 +43,37 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
       if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       }
-      topicFragment.addTitleListener(this)
       topicFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_fragment_placeholder,
         topicFragment, TOPIC_FRAGMENT_TAG
       ).commitNow()
     }
+  }
+
+  private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
+
+  private fun subscribeToTopicLiveData() {
+    topicLiveData.observe(activity, Observer<Topic> { result ->
+      val topicName = result.name
+      val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
+      toolbar.title = activity.getString(R.string.topic_prefix, topicName)
+    })
+  }
+
+  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+    topicController.getTopic(topicId = topicId)
+  }
+
+  private fun getTopic(): LiveData<Topic> {
+    return Transformations.map(topicResultLiveData, ::processTopicResult)
+  }
+
+  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
+    if (topic.isFailure()) {
+      logger.e("TopicFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+    }
+    return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
   private fun setUpNavigationDrawer() {
@@ -53,10 +91,5 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
 
   private fun getTopicFragment(): TopicFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment?
-  }
-
-  override fun onTitleFetchComplete(title: String) {
-    val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
-    toolbar.title = activity.getString(R.string.topic_prefix, title)
   }
 }
