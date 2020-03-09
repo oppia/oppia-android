@@ -4,20 +4,27 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
-      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/faq_fragment_recycler_view"
+      <TextView
+        android:id="@+id/featured_questions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingStart="@dimen/padding_24dp"
+        android:paddingTop="@dimen/padding_24dp"
+        android:paddingEnd="@dimen/padding_24dp"
+        android:text="@string/featured_questions"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="20sp"
+        android:textStyle="bold" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
