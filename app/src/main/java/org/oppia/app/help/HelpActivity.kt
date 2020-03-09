@@ -6,12 +6,12 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.help.faq.FAQActivity
 import javax.inject.Inject
 
-/** The help page activity for users FAQ and feedbacks. */
-class HelpActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var helpActivityPresenter: HelpActivityPresenter
+/** The help page activity for FAQs and feedback. */
+class HelpActivity : InjectableAppCompatActivity(), RoutetoFAQListener {
+  @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,5 +30,10 @@ class HelpActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun onRouteToFAQ() {
+    val intent = FAQActivity.createFAQActivityIntent(this)
+    startActivity(intent)
   }
 }

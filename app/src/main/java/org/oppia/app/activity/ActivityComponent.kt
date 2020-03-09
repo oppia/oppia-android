@@ -3,13 +3,12 @@ package org.oppia.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.onboarding.OnboardingActivity
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
@@ -20,6 +19,8 @@ import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
@@ -31,11 +32,11 @@ import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
+import org.oppia.app.testing.RecentlyPlayedFragmentTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
-import org.oppia.app.testing.RecentlyPlayedFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
@@ -71,6 +72,7 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
+  fun inject(faqActivity: FAQActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
