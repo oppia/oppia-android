@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
 class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
-  @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
+  @Inject
+  lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
   companion object {
     fun createWalkthroughActivity(context: Context): Intent {
@@ -24,7 +25,11 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.handleOnCreate()
   }
 
-  override fun changeTo(pageNo: Int) {
+  override fun walkthroughPage(pageNo: Int) {
     walkthroughActivityPresenter.changePage(pageNo)
+  }
+
+  override fun onBackPressed() {
+    walkthroughActivityPresenter.handleSystemBack()
   }
 }

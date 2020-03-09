@@ -37,9 +37,9 @@ class WalkthroughActivityPresenter @Inject constructor(
     }
   }
 
-  fun prevPage(pageNo: Int) {
+  fun previousPage(pageNo: Int) {
     if (pageNo == 1)
-      activity.onBackPressed()
+      activity.finish()
     else {
       changePage(pageNo - 2)
     }
@@ -63,7 +63,7 @@ class WalkthroughActivityPresenter @Inject constructor(
           getWalkthroughViewModel().currentProgress.set(1)
         }
       }
-      WalkthroughPages.TOPICLIST.value -> {
+      WalkthroughPages.TOPIC_LIST.value -> {
         activity.supportFragmentManager.beginTransaction().replace(
           R.id.walkthrough_fragment_placeholder,
           WalkthroughTopicListFragment()
@@ -80,5 +80,9 @@ class WalkthroughActivityPresenter @Inject constructor(
         }
       }
     }
+  }
+
+  fun handleSystemBack() {
+    previousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
   }
 }

@@ -2,6 +2,7 @@ package org.oppia.app.walkthrough
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -30,6 +31,16 @@ class WalkthroughActivityTest {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_btn)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+    }
+  }
+
+  @Test
+  fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() {
+    ActivityScenario.launch(WalkthroughActivity::class.java).use {
+      onView(withId(R.id.walkthrough_welcome_next_btn)).perform(click())
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+      pressBack()
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
     }
   }
 

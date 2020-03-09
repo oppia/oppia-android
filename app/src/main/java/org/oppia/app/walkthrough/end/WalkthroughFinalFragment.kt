@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** The final slide for [WalkthroughActivity]. */
 class WalkthroughFinalFragment : InjectableFragment() {
   @Inject lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
 
