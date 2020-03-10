@@ -13,10 +13,12 @@ class FAQActivityPresenter @Inject constructor(private val activity: AppCompatAc
   fun handleOnCreate() {
     activity.setContentView(R.layout.faq_activity)
     setUpToolbar()
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.faq_fragment_placeholder,
-      FAQFragment()
-    ).commitNow()
+    if (getFAQFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.faq_fragment_placeholder,
+        FAQFragment()
+      ).commitNow()
+    }
   }
 
   private fun setUpToolbar() {
@@ -24,5 +26,9 @@ class FAQActivityPresenter @Inject constructor(private val activity: AppCompatAc
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+  }
+
+  private fun getFAQFragment(): FAQFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.faq_fragment_placeholder) as FAQFragment?
   }
 }
