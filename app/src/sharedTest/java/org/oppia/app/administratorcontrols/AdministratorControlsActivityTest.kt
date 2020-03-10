@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -39,6 +40,7 @@ import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -184,9 +186,42 @@ class AdministratorControlsActivityTest {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.auto_update_topic_switch)).check(
         matches(
+          not(
+            isChecked()
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() {
+    ActivityScenario.launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_switch)).check(
+        matches(
+          isNotChecked()
+        )
+      )
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_switch)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_switch)).check(
+        matches(
           isChecked()
         )
       )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_loadFragment_clickAppVersion_checkOpensAppVersionActivity() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
 

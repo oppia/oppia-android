@@ -188,6 +188,30 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
+    } else {
+      // For showing navigation drawer in AdministratorControlsActivity
+
+      this.drawerLayout = drawerLayout
+      drawerToggle = object : ActionBarDrawerToggle(
+        fragment.activity,
+        drawerLayout,
+        toolbar,
+        R.string.drawer_open_content_description,
+        R.string.drawer_close_content_description
+      ) {
+        override fun onDrawerOpened(drawerView: View) {
+          super.onDrawerOpened(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+
+        override fun onDrawerClosed(drawerView: View) {
+          super.onDrawerClosed(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+      }
+      drawerLayout.setDrawerListener(drawerToggle)
+      /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
+      drawerLayout.post { drawerToggle.syncState() }
     }
   }
 
