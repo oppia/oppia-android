@@ -25,8 +25,8 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.handleOnCreate()
   }
 
-  override fun walkthroughPage(pageNo: Int) {
-    walkthroughActivityPresenter.changePage(pageNo)
+  override fun currentPage(walkthroughPage: Int) {
+    walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
   override fun onBackPressed() {
