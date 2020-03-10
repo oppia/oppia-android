@@ -14,9 +14,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -168,10 +168,11 @@ class ProfileResetPinActivityTest {
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText("")))
     }
   }
+
   @Test
   fun testProfileResetPinActivity_startActivitywithAdmin_configurationLandscape_isCorrect() {
     ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use{
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_pin_main)).check(matches(isDisplayed()))
       onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
       onView(withId(R.id.input_confirm_pin)).check(matches(isDisplayed()))
