@@ -200,18 +200,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           binding.profileRecyclerView.layoutManager =
             LinearLayoutManager(activity.applicationContext)
           whichViewAdd = false
-          decoration?.setDrawable(
-            ContextCompat.getDrawable(
-              activity.applicationContext,
-              R.drawable.profile_recyclerview_item_decor
-            )!!
-          )
-          if (decoration != null) {
-            binding.profileRecyclerView.addItemDecoration(decoration)
-          }
         }
         null -> Log.d("Logger", "Null")
       }
     })
   }
 }
+

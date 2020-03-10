@@ -57,58 +57,64 @@
     </LinearLayout>
 
     <LinearLayout
-      android:id="@+id/profile_button_first_time"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="24dp"
-      android:layout_marginRight="24dp"
-      android:layout_marginBottom="60dp"
-      android:gravity="center_horizontal"
-      android:orientation="horizontal">
-
-      <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_avatar_img_first_time"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginBottom="8dp"
-        app:civ_border_color="@color/avatarBorder"
-        app:civ_border_width="1dp"
-        profile:src="@{viewModel.profile.avatar}" />
+      android:orientation="vertical">
 
       <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/profile_button_first_time"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginRight="60dp"
-        android:orientation="vertical">
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="60dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
-        <TextView
-          android:id="@+id/profile_name_text_first_time"
+        <de.hdodenhof.circleimageview.CircleImageView
+          android:id="@+id/profile_avatar_img_first_time"
+          android:layout_width="72dp"
+          android:layout_height="72dp"
+          android:layout_marginBottom="8dp"
+          app:civ_border_color="@color/avatarBorder"
+          app:civ_border_width="1dp"
+          profile:src="@{viewModel.profile.avatar}" />
+
+        <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-medium"
-          android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white"
-          android:textSize="14sp" />
+          android:layout_marginLeft="20dp"
+          android:layout_marginTop="18dp"
+          android:layout_marginRight="60dp"
+          android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/profile_is_admin_text_first_time"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="2dp"
-          android:fontFamily="sans-serif-light"
-          android:text="@string/profile_chooser_admin"
-          android:textColor="@color/white"
-          android:textSize="12sp"
-          android:textStyle="italic"
-          android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+          <TextView
+            android:id="@+id/profile_name_text_first_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@{viewModel.profile.name}"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+          <TextView
+            android:id="@+id/profile_is_admin_text_first_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/profile_chooser_admin"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
       </LinearLayout>
-    </LinearLayout>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:src="@drawable/profile_recyclerview_item_decor" />
+      <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="@drawable/profile_recyclerview_item_decor" />
+    </LinearLayout>
   </RelativeLayout>
 </layout>
