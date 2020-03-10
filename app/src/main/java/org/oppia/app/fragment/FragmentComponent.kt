@@ -20,6 +20,7 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
+import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
@@ -51,6 +52,7 @@ interface FragmentComponent {
 
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
+  fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
