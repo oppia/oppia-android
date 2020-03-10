@@ -9,8 +9,8 @@ import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.Ad
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
-import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
@@ -31,7 +31,6 @@ class AdministratorControlsViewModel @Inject constructor(
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private lateinit var userProfileId: ProfileId
 
-
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(profileManagementController.getDeviceSettings(), ::processGetDeviceSettingsResult)
   }
@@ -47,15 +46,15 @@ class AdministratorControlsViewModel @Inject constructor(
     return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }
 
-  private fun processAdministratorControlsList(deviceSettings: DeviceSettings): List<AdministratorControlsItemViewModel>{
+  private fun processAdministratorControlsList(deviceSettings: DeviceSettings): List<AdministratorControlsItemViewModel> {
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsGeneralViewModel()
     )
     itemViewModelList.add(AdministratorControlsProfileViewModel(routeToProfileListListener))
     itemViewModelList.add(AdministratorControlsDownloadPermissionsViewModel(fragment, logger, profileManagementController,
       userProfileId, deviceSettings))
-    itemViewModelList.add(AdministratorControlsAppInformationViewModel())
-    itemViewModelList.add(AdministratorControlsAccountActionsViewModel())
+    itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
+    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(fragment))
 
     return itemViewModelList
   }

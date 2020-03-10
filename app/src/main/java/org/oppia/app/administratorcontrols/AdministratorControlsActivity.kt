@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
 /** Activity for Administrator Controls. */
-class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProfileListListener {
+class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProfileListListener, RouteToAppVersionListener {
   @Inject lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +25,10 @@ class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProf
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.menu_administrator_controls_activity, menu)
     return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun routeToAppVersion() {
+    startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
   }
 
   companion object {
@@ -39,7 +44,6 @@ class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProf
   }
 
   override fun routeToProfileList() {
-    val intent = ProfileListActivity.createProfileListActivityIntent(this)
-    startActivity(intent)
+    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 }

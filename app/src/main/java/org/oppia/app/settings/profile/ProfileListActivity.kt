@@ -22,7 +22,7 @@ class ProfileListActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ProfileListActivity] for a specified story. */
+    /** Returns a new [Intent] to route to [ProfileListActivity]. */
     fun createProfileListActivityIntent(context: Context): Intent {
       return Intent(context, ProfileListActivity::class.java)
     }

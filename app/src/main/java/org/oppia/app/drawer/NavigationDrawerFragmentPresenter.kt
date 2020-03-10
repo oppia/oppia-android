@@ -23,6 +23,7 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -103,6 +104,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
         }
+        NavigationDrawerItem.OPTIONS -> {
+          fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
+          drawerLayout.closeDrawers()
+        }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
@@ -147,6 +152,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
+        }
+        NavigationDrawerItem.OPTIONS -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.OPTIONS.ordinal).isChecked = true
         }
         NavigationDrawerItem.HELP -> {
           binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
