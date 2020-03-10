@@ -18,6 +18,13 @@ import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
 class WalkthroughActivityTest {
 
   @Test
+  fun testWalkthroughFragment_defaultProgress_worksCorrectly() {
+    ActivityScenario.launch(WalkthroughActivity::class.java).use {
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
+    }
+  }
+
+  @Test
   fun testWalkthroughFragment_checkFrameLayout_backButton_progressBar_IsVisible() {
     ActivityScenario.launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_fragment_placeholder)).check(matches(isDisplayed()))
