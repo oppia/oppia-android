@@ -9,13 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.FaqFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [FAQFragment]. */
 @FragmentScope
 class FAQFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<FAQViewModel>
 ) {
   private val arrayList = ArrayList<FAQViewModel>()
 
@@ -23,7 +25,7 @@ class FAQFragmentPresenter @Inject constructor(
     val binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
     binding.lifecycleOwner = fragment
     binding.faqFragmentRecyclerView.apply {
-      adapter = FAQCategoryAdapter(getRecyclerViewItemList())
+      adapter = FAQCategoryAdapter(getRecyclerViewItemList(), activity)
       layoutManager = LinearLayoutManager(activity)
     }
     return binding.root
@@ -36,5 +38,9 @@ class FAQFragmentPresenter @Inject constructor(
       arrayList.add(faqViewModel)
     }
     return arrayList
+  }
+
+  private fun getFAQViewModel(): FAQViewModel {
+    return viewModelProvider.getForActivity(activity, FAQViewModel::class.java)
   }
 }
