@@ -32,6 +32,7 @@
         android:textStyle="bold" />
 
       <View
+        android:id="@+id/recycler_item_divider_view"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
         android:layout_marginStart="24dp"
