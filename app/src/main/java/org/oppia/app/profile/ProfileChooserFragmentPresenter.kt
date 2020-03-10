@@ -121,7 +121,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     when (whichViewAdd) {
-      true -> binding.profileButton.visibility = View.VISIBLE
+      true -> {
+        binding.profileButton.visibility = View.VISIBLE
+        binding.profileButtonFirstTime.visibility = View.GONE
+      }
       false -> {
         binding.profileButtonFirstTime.visibility = View.VISIBLE
         binding.profileButton.visibility = View.GONE
@@ -152,7 +155,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
     when (whichViewAdd) {
-      true -> binding.profileChooserAddView.visibility = View.VISIBLE
+      true -> {
+        binding.profileChooserAddView.visibility = View.VISIBLE
+        binding.profileChooserAddViewFirstTime.visibility = View.GONE
+      }
+
       false -> {
         binding.profileChooserAddViewFirstTime.visibility = View.VISIBLE
         binding.profileChooserAddView.visibility = View.GONE

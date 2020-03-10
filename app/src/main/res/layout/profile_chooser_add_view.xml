@@ -40,8 +40,7 @@
       android:layout_marginTop="60dp"
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
-      android:orientation="horizontal"
-      android:visibility="visible">
+      android:orientation="horizontal">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button_first_time"
