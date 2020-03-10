@@ -19,7 +19,7 @@ class FAQCategoryAdapter(
   }
 
   override fun getItemCount(): Int {
-    return arrayList.size
+    return arrayList.size + 1
   }
 
   class HeaderViewHolder(@NonNull itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -31,8 +31,8 @@ class FAQCategoryAdapter(
       position: Int,
       arrayListSize: Int
     ) {
-      this.faqItemBinding.viewmodel = faqViewModel
-      if (position == arrayListSize - 1) {
+      this.faqItemBinding.viewModel = faqViewModel
+      if (position == arrayListSize ) {
         faqViewModel.showDivider.set(false)
       } else {
         faqViewModel.showDivider.set(true)
@@ -72,7 +72,7 @@ class FAQCategoryAdapter(
     if (getItemViewType(position) == FAQItemViewType.VIEW_TYPE_HEADER.ordinal) {
       (holder as HeaderViewHolder)
     } else {
-      (holder as FAQItemView).bind(arrayList[position], position, arrayList.size)
+      (holder as FAQItemView).bind(arrayList[position - 1], position, arrayList.size)
     }
   }
 }

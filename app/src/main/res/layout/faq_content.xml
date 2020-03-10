@@ -5,7 +5,7 @@
   <data class="FAQItemBinding">
     <import type="android.view.View" />
     <variable
-      name="viewmodel"
+      name="viewModel"
       type="org.oppia.app.help.faq.FAQViewModel" />
   </data>
 
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:padding="@dimen/padding_24dp"
-        android:text="@{viewmodel.title}"
+        android:text="@{viewModel.title}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -37,7 +37,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:background="@color/black"
-        android:visibility="@{viewmodel.showDivider ? View.VISIBLE : View.GONE}" />
+        android:visibility="@{viewModel.showDivider ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
