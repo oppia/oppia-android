@@ -51,10 +51,8 @@
         android:requiresFadingEdge="vertical"
         android:scrollbars="none"
         app:data="@{viewModel.profiles}"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_select_text"
-        app:spanCount="2" />
+        app:layout_constraintTop_toBottomOf="@id/profile_select_text" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.core.widget.NestedScrollView>
 </layout>
