@@ -37,11 +37,11 @@ class WalkthroughActivityPresenter @Inject constructor(
     }
   }
 
-  fun previousPage(pageNo: Int) {
-    if (pageNo == 1)
+  fun previousPage(currentProgress: Int) {
+    if (currentProgress == 1)
       activity.finish()
     else {
-      changePage(pageNo - 2)
+      changePage(currentProgress - 2)
     }
   }
 
@@ -53,8 +53,8 @@ class WalkthroughActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughWelcomeFragment?
   }
 
-  fun changePage(pageNo: Int) {
-    when (pageNo) {
+  fun changePage(pageNumber: Int) {
+    when (pageNumber) {
       WalkthroughPages.WELCOME.value -> {
         activity.supportFragmentManager.beginTransaction().replace(
           R.id.walkthrough_fragment_placeholder,
