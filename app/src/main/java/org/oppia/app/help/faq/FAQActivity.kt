@@ -30,9 +30,4 @@ class FAQActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
-
-  override fun onSupportNavigateUp(): Boolean {
-    onBackPressed()
-    return true
-  }
 }

@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.FAQItemBinding
 
 /** The Recycler View adapter in the [FAQFragment]. */
 class FAQCategoryAdapter(
-  private val arrayList: ArrayList<FAQViewModel>,
-  private val activity: AppCompatActivity
+  private val arrayList: ArrayList<FAQViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private enum class FAQItemViewType {
@@ -28,7 +26,10 @@ class FAQCategoryAdapter(
 
   class FAQItemView(private val faqItemBinding: FAQItemBinding) :
     RecyclerView.ViewHolder(faqItemBinding.root) {
-    fun bind(faqViewModel: FAQViewModel, position: Int, activity: AppCompatActivity, arrayListSize: Int
+    fun bind(
+      faqViewModel: FAQViewModel,
+      position: Int,
+      arrayListSize: Int
     ) {
       this.faqItemBinding.viewmodel = faqViewModel
       if (position == arrayListSize - 1) {
@@ -71,7 +72,7 @@ class FAQCategoryAdapter(
     if (getItemViewType(position) == FAQItemViewType.VIEW_TYPE_HEADER.ordinal) {
       (holder as HeaderViewHolder)
     } else {
-      (holder as FAQItemView).bind(arrayList[position], position, activity, arrayList.size)
+      (holder as FAQItemView).bind(arrayList[position], position, arrayList.size)
     }
   }
 }
