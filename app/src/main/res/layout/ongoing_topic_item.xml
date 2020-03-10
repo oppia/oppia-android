@@ -6,6 +6,8 @@
 
     <import type="android.view.View" />
 
+    <import type="org.oppia.app.model.Topic" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.ongoingtopiclist.OngoingTopicItemViewModel" />
@@ -26,15 +28,17 @@
       android:layout_height="wrap_content">
 
       <ImageView
-        android:id="@+id/lesson_thumbnail"
+        android:id="@+id/topic_thumbnail"
         android:layout_width="80dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerInside"
+        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundedRectDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}" />
 
       <LinearLayout
         android:layout_width="0dp"
@@ -47,21 +51,22 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/lesson_thumbnail"
+        app:layout_constraintStart_toEndOf="@id/topic_thumbnail"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-          android:id="@+id/chapter_name_text_view"
+          android:id="@+id/topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
-          android:maxLines="1"
+          android:maxLines="2"
+          android:text="@{viewModel.topic.name}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="18sp" />
 
         <TextView
-          android:id="@+id/story_name_text_view"
+          android:id="@+id/story_count_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
@@ -69,19 +74,9 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:maxLines="1"
+          android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
-
-        <TextView
-          android:id="@+id/topic_name_text_view"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:fontFamily="sans-serif-light"
-          android:maxLines="1"
-          android:textAllCaps="true"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

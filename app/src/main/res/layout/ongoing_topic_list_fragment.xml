@@ -33,7 +33,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/stories_completed"
+        app:title="@string/topics_in_progress"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,7 +53,7 @@
         android:overScrollMode="never"
         android:paddingBottom="@dimen/bottom_white_space"
         android:scrollbars="none"
-        app:data="@{viewModel.ongoingTopicListLiveData}" />
+        app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
       <View
         android:id="@+id/ongoing_topic_list_shadow_view"

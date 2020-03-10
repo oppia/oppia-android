@@ -24,12 +24,12 @@ class OngoingTopicListViewModel @Inject constructor(
     topicController.getOngoingTopicList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
   }
 
-  private val storyLiveData: LiveData<OngoingTopicList> by lazy {
+  private val ongoingTopicListLiveData: LiveData<OngoingTopicList> by lazy {
     Transformations.map(ongoingTopicListResultLiveData, ::processOngoingTopicResult)
   }
 
-  val ongoingTopicListLiveData: LiveData<List<OngoingTopicItemViewModel>> by lazy {
-    Transformations.map(storyLiveData, ::processOngoingTopicList)
+  val ongoingTopicListViewModelLiveData: LiveData<List<OngoingTopicItemViewModel>> by lazy {
+    Transformations.map(ongoingTopicListLiveData, ::processOngoingTopicList)
   }
 
   fun setProfileId(internalProfileId: Int) {
@@ -38,7 +38,7 @@ class OngoingTopicListViewModel @Inject constructor(
 
   private fun processOngoingTopicResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e("OngoingTopicListFragment", "Failed to retrieve Story: ", ongoingTopicListResult.getErrorOrNull()!!)
+      logger.e("OngoingTopicListFragment", "Failed to retrieve OngoingTopicList: ", ongoingTopicListResult.getErrorOrNull()!!)
     }
 
     return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
