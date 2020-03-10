@@ -17,7 +17,6 @@ class FAQActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     faqActivityPresenter.handleOnCreate()
-    title = getString(R.string.FAQs)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
