@@ -26,7 +26,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -45,10 +44,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.customviewmatchers.ConstraintMatcher
-import org.oppia.app.customviewmatchers.ConstraintMatcher.Companion.PARENT
-import org.oppia.app.customviewmatchers.ConstraintMatcher.Constraint.*
-import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -334,53 +329,7 @@ class AddProfileActivityTest {
     }
   }
 
-  @Test
-  fun testAddProfileActivity_landscapeMode_checkViewsConstraints(){
-    ActivityScenario.launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      onView(withId(R.id.upload_image_button))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(StartToEnd,R.id.start_guideline)))
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToTop,PARENT)))
-
-      onView(withId(R.id.required_heading))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(StartToEnd,R.id.start_guideline)))
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.upload_image_button)))
-
-      onView(withId(R.id.input_name))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(StartToEnd,R.id.start_guideline)))
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.required_heading)))
-
-      onView(withId(R.id.info_icon))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.input_name)))
-
-      onView(withId(R.id.checkbox_pin))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(StartToEnd,R.id.start_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.input_name)))
-        .perform(click())
-
-      onView(withId(R.id.pin_container))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(StartToEnd,R.id.start_guideline)))
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.checkbox_pin)))
-
-      onView(withId(R.id.create_button))
-        .perform(scrollTo())
-        .check(matches(ConstraintMatcher(EndToStart,R.id.end_guideline)))
-        .check(matches(ConstraintMatcher(TopToBottom,R.id.pin_container)))
-
-    }
-  }
 
   private fun createGalleryPickActivityResultStub(): ActivityResult {
     val resources: Resources = context.resources
