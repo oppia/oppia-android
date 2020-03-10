@@ -13,8 +13,10 @@ class FAQCategoryAdapter(
   private val arrayList: ArrayList<FAQViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  private val header = 1
-  private val content = 2
+  private enum class FAQItemViewType {
+    VIEW_TYPE_HEADER,
+    VIEW_TYPE_CONTENT
+  }
 
   override fun getItemCount(): Int {
     return arrayList.size
@@ -32,14 +34,14 @@ class FAQCategoryAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return if (position == 0) {
-      header
+      FAQItemViewType.VIEW_TYPE_HEADER.ordinal
     } else {
-      content
+      FAQItemViewType.VIEW_TYPE_CONTENT.ordinal
     }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-    return if (viewType == header) {
+    return if (viewType == FAQItemViewType.VIEW_TYPE_HEADER.ordinal) {
       val view: View = LayoutInflater.from(parent.context).inflate(
         R.layout.faq_item_header,
         parent,
@@ -58,7 +60,7 @@ class FAQCategoryAdapter(
   }
 
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-    if (getItemViewType(position) == header) {
+    if (getItemViewType(position) == FAQItemViewType.VIEW_TYPE_HEADER.ordinal) {
       (holder as HeaderViewHolder)
     } else {
       (holder as FAQItemView).bind(arrayList[position])
