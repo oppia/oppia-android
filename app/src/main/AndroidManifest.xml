@@ -18,14 +18,22 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".home.HomeActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:name=".administratorcontrols.appversion.AppVersionActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity
-      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
+      android:name=".help.faq.FAQActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"
       android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.HomeActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".mydownloads.MyDownloadsActivity"
@@ -36,6 +44,23 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".ongoingtopiclist.OngoingTopicListActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.OptionsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.StoryTextSizeActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"

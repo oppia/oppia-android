@@ -11,6 +11,7 @@ import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
 import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
+import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
@@ -20,6 +21,8 @@ import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
+import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -50,17 +53,20 @@ interface FragmentComponent {
 
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
+  fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
+  fun inject(faqFragment: FAQFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
+  fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)

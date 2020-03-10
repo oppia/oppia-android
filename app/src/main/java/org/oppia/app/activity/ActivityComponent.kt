@@ -9,6 +9,10 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.AppLanguageActivity
+import org.oppia.app.options.DefaultAudioActivity
+import org.oppia.app.options.OptionsActivity
+import org.oppia.app.options.StoryTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
@@ -17,6 +21,8 @@ import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.settings.profile.ProfileRenameActivity
@@ -59,13 +65,17 @@ interface ActivityComponent {
   fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(administratorControlsActivity: AdministratorControlsActivity)
   fun inject(adminPinActivity: AdminPinActivity)
+  fun inject(appLanguageActivity: AppLanguageActivity)
+  fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(contentCardTestActivity: ContentCardTestActivity)
+  fun inject(defaultAudioActivity: DefaultAudioActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
+  fun inject(faqActivity: FAQActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
@@ -73,6 +83,7 @@ interface ActivityComponent {
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
+  fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
@@ -85,6 +96,7 @@ interface ActivityComponent {
   fun inject(reviewCardActivity: ReviewCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(storyTextSizeActivity: StoryTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
