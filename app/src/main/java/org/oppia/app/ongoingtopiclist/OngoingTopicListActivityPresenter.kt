@@ -7,9 +7,11 @@ import javax.inject.Inject
 
 /** The presenter for [OngoingTopicListActivity]. */
 @ActivityScope
-class OngoingTopicListActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class OngoingTopicListActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity
+) {
   fun handleOnCreate(internalProfileId: Int) {
-    activity.setContentView(R.layout.story_activity)
+    activity.setContentView(R.layout.ongoing_topic_list_activity)
     if (getOngoingTopicListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.ongoing_topic_list_fragment_placeholder,
@@ -19,6 +21,6 @@ class OngoingTopicListActivityPresenter @Inject constructor(private val activity
   }
 
   private fun getOngoingTopicListFragment(): OngoingTopicListFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.story_fragment_placeholder) as OngoingTopicListFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.ongoing_topic_list_fragment_placeholder) as OngoingTopicListFragment?
   }
 }

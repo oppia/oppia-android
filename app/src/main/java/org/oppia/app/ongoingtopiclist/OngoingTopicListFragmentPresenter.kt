@@ -6,11 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.databinding.OngoingTopicItemBinding
 import org.oppia.app.databinding.OngoingTopicListFragmentBinding
-import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
@@ -46,28 +44,17 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_ONGOING_TOPIC
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_ONGOING_TOPIC,
-        inflateDataBinding = StoryChapterViewBinding::inflate,
-        setViewModel = StoryChapterViewBinding::setViewModel,
-        transformViewModel = { it as StoryChapterSummaryViewModel }
+  private fun createRecyclerViewAdapter(): BindableAdapter<OngoingTopicItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<OngoingTopicItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = OngoingTopicItemBinding::inflate,
+        setViewModel = OngoingTopicItemBinding::setViewModel
       )
       .build()
   }
 
   private fun getOngoingTopicListViewModel(): OngoingTopicListViewModel {
     return viewModelProvider.getForFragment(fragment, OngoingTopicListViewModel::class.java)
-  }
-
-  private enum class ViewType {
-    VIEW_TYPE_ONGOING_TOPIC
   }
 }
