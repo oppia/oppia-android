@@ -31,6 +31,10 @@ class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProf
     startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
   }
 
+  override fun routeToProfileList() {
+    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
+  }
+
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
@@ -41,9 +45,5 @@ class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProf
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
-  }
-
-  override fun routeToProfileList() {
-    startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 }
