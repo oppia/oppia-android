@@ -12,13 +12,13 @@ import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -26,7 +26,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.BuildConfig
@@ -43,23 +42,15 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AppVersionActivityTest {
 
-  private lateinit var activityScenario: ActivityScenario<AppVersionActivity>
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
   private lateinit var lastUpdateDate: String
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    activityScenario = launchAppVersionActivityIntent()
 
-    val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, /* flags= */0).lastUpdateTime
+    val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, /* flags= */ 0).lastUpdateTime
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
@@ -92,7 +83,7 @@ class AppVersionActivityTest {
     ActivityScenario.launch<AdministratorControlsActivity>(launchAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
-      Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
+      intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
     }

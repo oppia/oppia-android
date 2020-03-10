@@ -205,7 +205,7 @@ class AdministratorControlsActivityTest {
 
   // TODO(#762): Replace ProfileActivity to LoginActivity once it is added.
   @Test
-  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_checkOpensProfileActivity() {
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
@@ -216,7 +216,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_checkDialodDismissed() {
+  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogDismissed() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
@@ -227,7 +227,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickAppVersion_checkOpensAppVersionActivity() {
+  fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
       onView(withId(R.id.app_version_text_view)).perform(click())

@@ -242,7 +242,7 @@
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
-  <string name="log_out_dialog_okay_button">OK</string>
+  <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
   <string name="app_version_name">App Version %s</string>

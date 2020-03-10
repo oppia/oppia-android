@@ -21,7 +21,7 @@ class AdministratorControlsAccountActionsViewModel(
         // TODO(#762): Replace ProfileActivity to LoginActivity once it is added.
         val intent = Intent(fragment.activity, ProfileActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        fragment.activity!!.startActivity(intent);
+        fragment.activity!!.startActivity(intent)
         fragment.activity!!.finish()
       }.create().show()
   }
