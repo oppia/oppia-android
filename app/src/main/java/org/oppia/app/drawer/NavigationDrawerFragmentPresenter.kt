@@ -49,10 +49,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
-  private var previousMenuItemId: Int? = null
   private lateinit var binding: DrawerFragmentBinding
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
+  private var previousMenuItemId: Int? = null
+  private var internalProfileId: Int = -1
 
   private var routeToAdministratorControlsListener = fragment as RouteToAdministratorControlsListener
 
@@ -95,7 +95,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("NavigationDrawerFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
@@ -113,7 +113,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun processGetCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
       logger.e(
-        "NavigationDrawerFragmentPresenter",
+        "NavigationDrawerFragment",
         "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
       )
@@ -134,7 +134,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun processGetOngoingTopicListResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
       logger.e(
-        "NavigationDrawerFragmentPresenter",
+        "NavigationDrawerFragment",
         "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!
       )

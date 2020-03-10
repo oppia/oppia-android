@@ -10,6 +10,20 @@ import javax.inject.Inject
 
 /** Fragment that displays profile progress in the app. */
 class ProfileProgressFragment : InjectableFragment() {
+  companion object {
+    /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
+
+    internal const val PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY = "ProfileProgressFragment.internal_profile_id"
+
+    fun newInstance(internalProfileId: Int): ProfileProgressFragment {
+      val profileProgressFragment = ProfileProgressFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY, internalProfileId)
+      profileProgressFragment.arguments = args
+      return profileProgressFragment
+    }
+  }
+
   @Inject lateinit var profileProgressFragmentPresenter: ProfileProgressFragmentPresenter
 
   override fun onAttach(context: Context) {
@@ -17,7 +31,9 @@ class ProfileProgressFragment : InjectableFragment() {
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return profileProgressFragmentPresenter.handleCreateView(inflater, container)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, ProfileProgressFragment: Bundle?): View? {
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
+    val internalProfileId = args.getInt(PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY, -1)
+    return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 }

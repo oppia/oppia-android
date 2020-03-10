@@ -77,7 +77,11 @@ class NavigationDrawerTestActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build()
+    )
   }
 
   @After
@@ -118,7 +122,7 @@ class NavigationDrawerTestActivityTest {
       ).perform(click())
       onView(withId(R.id.header_linear_layout)).perform(click())
       intended(hasComponent(ProfileProgressActivity::class.java.name))
-      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_PROFILE_ID_KEY, internalProfileId))
+      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
     }
   }
 
