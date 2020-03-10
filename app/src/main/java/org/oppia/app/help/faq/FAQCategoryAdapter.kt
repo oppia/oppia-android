@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.FAQItemBinding
+import org.oppia.app.databinding.FaqContentBinding
 
 /** The Recycler View adapter in the [FAQFragment]. */
 class FAQCategoryAdapter(
@@ -24,20 +24,20 @@ class FAQCategoryAdapter(
 
   class HeaderViewHolder(@NonNull itemView: View) : RecyclerView.ViewHolder(itemView)
 
-  class FAQItemView(private val faqItemBinding: FAQItemBinding) :
-    RecyclerView.ViewHolder(faqItemBinding.root) {
+  class FAQContentView(private val faqContentBinding: FaqContentBinding) :
+    RecyclerView.ViewHolder(faqContentBinding.root) {
     fun bind(
       faqViewModel: FAQViewModel,
       position: Int,
       arrayListSize: Int
     ) {
-      this.faqItemBinding.viewModel = faqViewModel
-      if (position == arrayListSize ) {
+      this.faqContentBinding.viewModel = faqViewModel
+      if (position == arrayListSize) {
         faqViewModel.showDivider.set(false)
       } else {
         faqViewModel.showDivider.set(true)
       }
-      faqItemBinding.executePendingBindings()
+      faqContentBinding.executePendingBindings()
     }
   }
 
@@ -59,12 +59,12 @@ class FAQCategoryAdapter(
       HeaderViewHolder(view)
     } else {
       val layoutInflater = LayoutInflater.from(parent.context)
-      val faqItemBinding = FAQItemBinding.inflate(
+      val faqContentBinding = FaqContentBinding.inflate(
         layoutInflater,
         parent,
         /* attachToParent= */ false
       )
-      FAQItemView(faqItemBinding)
+      FAQContentView(faqContentBinding)
     }
   }
 
@@ -72,7 +72,7 @@ class FAQCategoryAdapter(
     if (getItemViewType(position) == FAQItemViewType.VIEW_TYPE_HEADER.ordinal) {
       (holder as HeaderViewHolder)
     } else {
-      (holder as FAQItemView).bind(arrayList[position - 1], position, arrayList.size)
+      (holder as FAQContentView).bind(arrayList[position - 1], position, arrayList.size)
     }
   }
 }
