@@ -109,7 +109,7 @@
       android:name=".story.StoryActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".story.testing.StoryFragmentTestActivity"
+      android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
