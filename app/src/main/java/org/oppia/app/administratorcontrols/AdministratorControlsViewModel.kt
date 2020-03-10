@@ -42,12 +42,12 @@ class AdministratorControlsViewModel @Inject constructor(
 
   private fun processGetDeviceSettingsResult(deviceSettingsResult: AsyncResult<DeviceSettings>): DeviceSettings {
     if (deviceSettingsResult.isFailure()) {
-      logger.e("AdministratorControlsFragmentPresenter", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
+      logger.e("AdministratorControlsFragment", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
     }
     return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }
 
-  fun processAdministratorControlsList(deviceSettings: DeviceSettings): List<AdministratorControlsItemViewModel>{
+  private fun processAdministratorControlsList(deviceSettings: DeviceSettings): List<AdministratorControlsItemViewModel>{
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsGeneralViewModel()
     )

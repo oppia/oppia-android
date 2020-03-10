@@ -39,7 +39,7 @@ class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProf
   }
 
   override fun routeToProfileList() {
-    val intent = Intent(this, ProfileListActivity::class.java)
+    val intent = ProfileListActivity.createProfileListActivityIntent(this)
     startActivity(intent)
   }
 }

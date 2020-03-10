@@ -14,7 +14,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
-  private val deviceSettings: DeviceSettings
+  deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
 
   var isTopicWifiUpdatePermission = ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
@@ -23,7 +23,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {
     profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked).observe(fragment, Observer {
       if (it.isFailure()) {
-        logger.e("AdministratorControlsDownloadPermissionsViewModel", "Failed to update topic update on wifi permission", it.getErrorOrNull()!!)
+        logger.e("AdministratorControlsFragment", "Failed to update topic update on wifi permission", it.getErrorOrNull()!!)
       }
     })
   }
@@ -31,7 +31,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   fun onTopicAutoUpdatePermissionChanged(checked: Boolean) {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(userProfileId, checked).observe(fragment, Observer {
       if (it.isFailure()) {
-        logger.e("AdministratorControlsDownloadPermissionsViewModel", "Failed to update topic auto update permission", it.getErrorOrNull()!!)
+        logger.e("AdministratorControlsFragment", "Failed to update topic auto update permission", it.getErrorOrNull()!!)
       }
     })
   }
