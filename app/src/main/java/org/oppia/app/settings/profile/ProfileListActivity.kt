@@ -1,5 +1,7 @@
 package org.oppia.app.settings.profile
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
@@ -17,5 +19,12 @@ class ProfileListActivity : InjectableAppCompatActivity() {
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
+  }
+
+  companion object {
+    /** Returns a new [Intent] to route to [ProfileListActivity]. */
+    fun createProfileListActivityIntent(context: Context): Intent {
+      return Intent(context, ProfileListActivity::class.java)
+    }
   }
 }
