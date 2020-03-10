@@ -20,11 +20,7 @@ class FAQFragmentPresenter @Inject constructor(
   private val arrayList = ArrayList<FAQViewModel>()
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = FaqFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    val binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
     binding.lifecycleOwner = fragment
     binding.faqFragmentRecyclerView.apply {
       adapter = FAQCategoryAdapter(getRecyclerViewItemList())

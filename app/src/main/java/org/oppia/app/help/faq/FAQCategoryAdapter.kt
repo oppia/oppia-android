@@ -32,9 +32,9 @@ class FAQCategoryAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return if (position == 0) {
-      header;
+      header
     } else {
-      content;
+      content
     }
   }
 
@@ -43,7 +43,7 @@ class FAQCategoryAdapter(
       val view: View = LayoutInflater.from(parent.context).inflate(
         R.layout.faq_item_header,
         parent,
-        /* attachToParent= */false
+        /* attachToParent= */ false
       )
       HeaderViewHolder(view)
     } else {
@@ -65,4 +65,3 @@ class FAQCategoryAdapter(
     }
   }
 }
-
