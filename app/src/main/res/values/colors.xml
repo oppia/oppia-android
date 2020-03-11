@@ -26,7 +26,7 @@
   <color name="oppiaStrokeBlack">#CC333333</color>
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
-  <color name="oppiaDisabledButtonBackground">#61999999</color>
+  <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
@@ -52,6 +52,7 @@
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="submitButtonInactive">#61999999</color>
+  <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="editTextError">#AB0517</color>
