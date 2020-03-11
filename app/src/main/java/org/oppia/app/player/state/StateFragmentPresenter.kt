@@ -307,7 +307,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
-    
+
     val scrollToTop =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
