@@ -11,6 +11,7 @@ import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
@@ -73,10 +74,13 @@ class StateRetriever @Inject constructor(
         )
       )
       .addAllHint(
-        createHintsAndSolutionsFromJson(
+        createListOfHintsFromJson(
           interactionJson.getJSONArray("hints")
         )
       )
+      .setSolution(createSolutionFromJson(
+        getJsonObject(interactionJson, "solution")
+      ))
       .build()
   }
 
@@ -103,8 +107,8 @@ class StateRetriever @Inject constructor(
     return answerGroups
   }
 
-  // Creates the list of hints and solution objects from JSON
-  private fun createHintsAndSolutionsFromJson(
+  // Creates the list of hints objects from JSON
+  private fun createListOfHintsFromJson(
     hintsJson: JSONArray?
   ): MutableList<Hint> {
     val hints = mutableListOf<Hint>()
@@ -113,7 +117,7 @@ class StateRetriever @Inject constructor(
     }
     for (i in 0 until hintsJson.length()) {
       hints.add(
-        createHintFromJson(
+        createSingleHintFromJson(
           hintsJson.getJSONObject(i)
         )
       )
@@ -122,7 +126,7 @@ class StateRetriever @Inject constructor(
   }
 
   // Creates an hint object from JSON
-  private fun createHintFromJson(hintJson: JSONObject?): Hint {
+  private fun createSingleHintFromJson(hintJson: JSONObject?): Hint {
     if (hintJson == null) {
       return Hint.getDefaultInstance()
     }
@@ -162,6 +166,22 @@ class StateRetriever @Inject constructor(
       .setDestStateName(outcomeJson.getString("dest"))
       .setFeedback(createFeedbackSubtitledHtml(outcomeJson))
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
+      .build()
+  }
+
+  // Creates an outcome object from JSON
+  private fun createSolutionFromJson(solutionJson: JSONObject?): Solution {
+    if (solutionJson == null) {
+      return Solution.getDefaultInstance()
+    }
+    return Solution.newBuilder()
+      .setCorrectAnswer(solutionJson.getString("correct_answer"))
+      .setExplanation(SubtitledHtml.newBuilder().setHtml(
+        solutionJson.getJSONObject("explanation")?.getString("html")
+      ).setContentId(
+        solutionJson.getJSONObject("explanation")?.optString("content_id")
+      ))
+      .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
       .build()
   }
 

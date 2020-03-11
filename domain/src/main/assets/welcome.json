@@ -565,7 +565,14 @@
           }
         ],
         "id": "TextInput",
-        "solution": null
+        "solution": {
+          "correct_answer": 3,
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>The denominator of a fraction is the second number in the fraction. (It counts the total number of pieces in the whole.)</p>\n\n<p>So, for 2/3, the denominator is <strong>3</strong>.</p>"
+          },
+          "answer_is_exclusive": true
+        }
       },
       "param_changes": []
     }

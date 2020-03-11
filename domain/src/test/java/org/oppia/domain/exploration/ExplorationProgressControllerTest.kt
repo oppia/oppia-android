@@ -32,7 +32,6 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
@@ -745,6 +744,38 @@ class ExplorationProgressControllerTest {
     assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
     val hintAndSolution = currentState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hint1 = currentState.state.interaction.getHint(0)
+    assertThat(hint1.hintContent.html).contains("Start by finding the denominator")
+    val hint2 = currentState.state.interaction.getHint(1)
+    assertThat(hint2.hintContent.html).contains("Next, find the numerator by counting the number of selected parts.")
+    val hint3 = currentState.state.interaction.getHint(2)
+    assertThat(hint3.hintContent.html).contains("Always be careful about what you're counting. The question will have clues!")
+
+    val solution = currentState.state.interaction.solution
+    assertThat(solution.correctAnswer).isEqualTo("3")
+    assertThat(solution.explanation.html).contains("The denominator of a fraction is the second number in the fraction.")
   }
 
   @Test
