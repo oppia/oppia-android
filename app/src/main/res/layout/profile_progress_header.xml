@@ -80,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="5"
+            android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
             android:textSize="24sp" />
 
           <TextView
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="5"
+            android:text="@{Integer.toString(viewModel.completedStoryCount)}"
             android:textSize="24sp" />
 
           <TextView

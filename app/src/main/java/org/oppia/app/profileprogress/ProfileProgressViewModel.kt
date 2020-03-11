@@ -7,10 +7,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -22,11 +25,13 @@ class ProfileProgressViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
+  private val topicController: TopicController,
   private val topicListController: TopicListController,
   private val logger: Logger
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity)
 
@@ -35,18 +40,18 @@ class ProfileProgressViewModel @Inject constructor(
   )
 
   fun setProfileId(internalProfileId: Int) {
+
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.internalProfileId = internalProfileId
 
     subscribeToProfileLiveData()
+    subscribeToCompletedStoryListLiveData()
+    subscribeToOngoingTopicListLiveData()
   }
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(
-        ProfileId.newBuilder().setInternalId(
-          internalProfileId
-        ).build()
-      ), ::processGetProfileResult
+      profileManagementController.getProfile(profileId), ::processGetProfileResult
     )
   }
 
@@ -92,5 +97,47 @@ class ProfileProgressViewModel @Inject constructor(
       RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
     })
     return itemViewModelList
+  }
+
+  private fun subscribeToCompletedStoryListLiveData() {
+    getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
+      headerViewModel.setCompletedStoryCount(it.storySummaryCount)
+    })
+  }
+
+  private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
+    return Transformations.map(topicController.getCompletedStoryList(profileId), ::processGetCompletedStoryListResult)
+  }
+
+  private fun processGetCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+    if (completedStoryListResult.isFailure()) {
+      logger.e(
+        "ProfileProgressFragment",
+        "Failed to retrieve completed story list",
+        completedStoryListResult.getErrorOrNull()!!
+      )
+    }
+    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
+  }
+
+  private fun subscribeToOngoingTopicListLiveData() {
+    getOngoingTopicListCount().observe(fragment, Observer<OngoingTopicList> {
+      headerViewModel.setOngoingTopicCount(it.topicCount)
+    })
+  }
+
+  private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
+    return Transformations.map(topicController.getOngoingTopicList(profileId), ::processGetOngoingTopicListResult)
+  }
+
+  private fun processGetOngoingTopicListResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
+    if (ongoingTopicListResult.isFailure()) {
+      logger.e(
+        "ProfileProgressFragment",
+        "Failed to retrieve ongoing topic list",
+        ongoingTopicListResult.getErrorOrNull()!!
+      )
+    }
+    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 }
