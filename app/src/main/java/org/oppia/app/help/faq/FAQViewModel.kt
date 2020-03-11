@@ -1,10 +1,9 @@
 package org.oppia.app.help.faq
 
 import androidx.databinding.ObservableField
-import org.oppia.app.viewmodel.ObservableViewModel
 
-/** [ObservableViewModel] for the recycler view of FAQActivity. */
-class FAQViewModel(val title: String) : ObservableViewModel() {
+/** Content view model for the recycler view in [FAQFragment]. */
+class FAQViewModel(val title: String) : FAQItemViewModel() {
 
   /** Used to control visibility of divider. */
   var showDivider = ObservableField(true)
