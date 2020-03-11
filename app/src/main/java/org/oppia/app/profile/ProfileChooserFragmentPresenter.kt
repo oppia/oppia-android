@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
@@ -65,11 +65,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
-  private val profileLiveData: LiveData<AsyncResult<Boolean>> by lazy {
+  private val wasProfileEverCreatedLiveData: LiveData<Boolean> by lazy {
     getProfileEverCreated()
   }
-  private val decoration: DividerItemDecoration? =
-    DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
   private var whichViewAdd: Boolean = true
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
@@ -120,16 +118,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
-    when (whichViewAdd) {
-      true -> {
-        binding.profileButton.visibility = View.VISIBLE
-        binding.profileButtonFirstTime.visibility = View.GONE
-      }
-      false -> {
-        binding.profileButtonFirstTime.visibility = View.VISIBLE
-        binding.profileButton.visibility = View.GONE
-      }
-    }
+
+    chooserViewModel.profileViewVisibility(binding, whichViewAdd)
+
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
@@ -154,17 +145,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
-    when (whichViewAdd) {
-      true -> {
-        binding.profileChooserAddView.visibility = View.VISIBLE
-        binding.profileChooserAddViewFirstTime.visibility = View.GONE
-      }
 
-      false -> {
-        binding.profileChooserAddViewFirstTime.visibility = View.VISIBLE
-        binding.profileChooserAddView.visibility = View.GONE
-      }
-    }
+    chooserViewModel.addViewVisibility(binding, whichViewAdd)
 
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
@@ -188,29 +170,40 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   }
 
-  private fun getProfileEverCreated(): LiveData<AsyncResult<Boolean>> {
-    return profileManagementController.getWasProfileEverAdded()
+  private fun getProfileEverCreated(): LiveData<Boolean> {
+    return Transformations.map(
+      profileManagementController.getWasProfileEverAdded(),
+      ::processProfileEverCreated
+    )
   }
 
   private fun subscribetoProfileEverCreated(
     binding: ProfileChooserFragmentBinding
   ) {
-    profileLiveData.observe(fragment, Observer<AsyncResult<Boolean>> {
+    wasProfileEverCreatedLiveData.observe(fragment, Observer<Boolean> {
       when (it) {
-        AsyncResult.success(true) -> {
+        true -> {
           binding.profileRecyclerView.layoutManager =
             GridLayoutManager(activity.applicationContext, 2)
           whichViewAdd = true
         }
 
-        AsyncResult.success(false) -> {
+        false -> {
           binding.profileRecyclerView.layoutManager =
             LinearLayoutManager(activity.applicationContext)
           whichViewAdd = false
         }
-        null -> Log.d("Logger", "Null")
+
       }
     })
   }
+
+  private fun processProfileEverCreated(boolean: AsyncResult<Boolean>): Boolean {
+    if (boolean.isFailure()) {
+      Log.e("TopicFragment", "Failed to retrieve topic", boolean.getErrorOrNull()!!)
+    }
+    return boolean.getOrDefault(equals(true))
+  }
+
 }
 
