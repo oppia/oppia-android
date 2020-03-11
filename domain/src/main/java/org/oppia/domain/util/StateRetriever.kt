@@ -4,6 +4,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Fraction
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberUnit
@@ -71,6 +72,11 @@ class StateRetriever @Inject constructor(
           getJsonObject(interactionJson, "customization_args")
         )
       )
+      .addAllHint(
+        createHintsAndSolutionsFromJson(
+          interactionJson.getJSONArray("hints")
+        )
+      )
       .build()
   }
 
@@ -95,6 +101,40 @@ class StateRetriever @Inject constructor(
       )
     }
     return answerGroups
+  }
+
+  // Creates the list of hints and solution objects from JSON
+  private fun createHintsAndSolutionsFromJson(
+    hintsJson: JSONArray?
+  ): MutableList<Hint> {
+    val hints = mutableListOf<Hint>()
+    if (hintsJson == null) {
+      return hints
+    }
+    for (i in 0 until hintsJson.length()) {
+      hints.add(
+        createHintFromJson(
+          hintsJson.getJSONObject(i)
+        )
+      )
+    }
+    return hints
+  }
+
+  // Creates an hint object from JSON
+  private fun createHintFromJson(hintJson: JSONObject?): Hint {
+    if (hintJson == null) {
+      return Hint.getDefaultInstance()
+    }
+    return Hint.newBuilder()
+      .setHintContent(
+        SubtitledHtml.newBuilder().setHtml(
+          hintJson.getJSONObject("hint_content")?.getString("html")
+        ).setContentId(
+          hintJson.getJSONObject("hint_content")?.optString("content_id")
+        )
+        )
+      .build()
   }
 
   // Creates a single answer group object from JSON

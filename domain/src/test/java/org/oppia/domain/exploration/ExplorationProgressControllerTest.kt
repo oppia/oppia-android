@@ -32,6 +32,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
@@ -42,6 +43,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.util.toAnswerString
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -100,6 +102,9 @@ class ExplorationProgressControllerTest {
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
+  @Mock
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
@@ -108,6 +113,9 @@ class ExplorationProgressControllerTest {
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+
+  @Captor
+  lateinit var asyncHintCaptor: ArgumentCaptor<AsyncResult<Hint>>
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -718,6 +726,32 @@ class ExplorationProgressControllerTest {
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
+  }
+
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(coroutineContext) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(FRACTIONS_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
+    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+    val hintAndSolution = currentState.pendingState.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("When you divide something into ")
+
   }
 
   @Test
