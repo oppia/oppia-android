@@ -17,10 +17,12 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   fun handleOnCreate() {
     activity.setContentView(R.layout.help_activity)
     setUpNavigationDrawer()
-    activity.supportFragmentManager.beginTransaction().replace(
-      R.id.help_fragment_placeholder,
-      HelpFragment()
-    ).commitNow()
+    if (getHelpFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.help_fragment_placeholder,
+        HelpFragment()
+      ).commitNow()
+    }
   }
 
   private fun setUpNavigationDrawer() {
@@ -33,5 +35,9 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_help
     )
+  }
+
+  private fun getHelpFragment(): HelpFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.help_fragment_placeholder) as HelpFragment?
   }
 }
