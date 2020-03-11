@@ -23,14 +23,12 @@ import javax.inject.Inject
 /** The presenter for [TopicFragment]. */
 @FragmentScope
 class TopicFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val logger: Logger,
-  private val topicController: TopicController
+  private val fragment: Fragment
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  lateinit var storyId: String
+  private lateinit var storyId: String
   private lateinit var viewPager: ViewPager
   private val tabIcons =
     intArrayOf(

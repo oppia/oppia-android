@@ -30,7 +30,7 @@ class TopicActivityPresenter @Inject constructor(
   private val topicController: TopicController
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
-  lateinit var topicId: String
+  private lateinit var topicId: String
 
   fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
     this.topicId = topicId
@@ -80,7 +80,6 @@ class TopicActivityPresenter @Inject constructor(
 
   private fun setUpNavigationDrawer() {
     val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
-    toolbar.title = activity.getString(R.string.topic_prefix, " ")
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
