@@ -12,7 +12,7 @@ import javax.inject.Inject
 /** The presenter for [HelpActivity]. */
 @ActivityScope
 class HelpActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private lateinit var navigationDrawerFragment: NavigationDrawerFragment
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.help_activity)
@@ -31,7 +31,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
       activity.supportFragmentManager.findFragmentById(R.id.help_activity_fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.setUpDrawer(
+    navigationDrawerFragment.setUpDrawer(
       activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_help
     )

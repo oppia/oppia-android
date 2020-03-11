@@ -12,19 +12,13 @@ import javax.inject.Inject
 /** The presenter for [FAQActivity]. */
 @ActivityScope
 class FAQActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<FAQActivityViewModel>
+  private val activity: AppCompatActivity
 ) {
   private lateinit var faqActivityToolbar: Toolbar
-
-  private val faqActivityViewModel by lazy {
-    getFAQActivityViewModel()
-  }
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<FaqActivityBinding>(activity, R.layout.faq_activity)
     binding.apply {
-      viewModel = faqActivityViewModel
       lifecycleOwner = activity
     }
 
@@ -44,9 +38,5 @@ class FAQActivityPresenter @Inject constructor(
 
   private fun getFAQFragment(): FAQFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.faq_fragment_placeholder) as FAQFragment?
-  }
-
-  private fun getFAQActivityViewModel(): FAQActivityViewModel {
-    return viewModelProvider.getForActivity(activity, FAQActivityViewModel::class.java)
   }
 }
