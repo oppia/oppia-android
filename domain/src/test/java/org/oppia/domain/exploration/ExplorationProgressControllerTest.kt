@@ -101,9 +101,6 @@ class ExplorationProgressControllerTest {
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
-  @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
-
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
@@ -112,9 +109,6 @@ class ExplorationProgressControllerTest {
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
-
-  @Captor
-  lateinit var asyncHintCaptor: ArgumentCaptor<AsyncResult<Hint>>
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -726,9 +720,7 @@ class ExplorationProgressControllerTest {
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
   }
-
-
-
+  
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
