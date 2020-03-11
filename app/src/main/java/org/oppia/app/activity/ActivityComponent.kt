@@ -29,7 +29,7 @@ import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
 import org.oppia.app.splash.SplashActivity
 import org.oppia.app.story.StoryActivity
-import org.oppia.app.story.testing.StoryFragmentTestActivity
+import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
