@@ -15,6 +15,23 @@ class StringToFractionParser {
   private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
   private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
+  fun fractionToString(fraction: Fraction): String {
+    var fractionString = ""
+    if (fraction.numerator !== 0) {
+      fractionString += fraction.numerator.toString() + "/" + fraction.denominator
+    }
+    if (fraction.wholeNumber !== 0) {
+      fractionString = fraction.wholeNumber.toString() + " " + fractionString
+      // If the fractional part was empty then there will be a trailing
+      // whitespace.
+      fractionString = fractionString.trim()
+    }
+    if (fraction.isNegative && fractionString !== "") {
+      fractionString = "-" + fractionString
+    }
+    return if (fractionString == "") "0" else fractionString
+  }
+
   /**
    * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
    * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by this method is guaranteed

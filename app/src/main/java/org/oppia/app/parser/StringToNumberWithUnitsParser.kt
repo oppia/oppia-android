@@ -17,7 +17,6 @@ import java.util.regex.Pattern
  * reference https://github.com/oppia/oppia/blob/develop/core/templates/dev/head/domain/objects/NumberWithUnitsObjectFactory.ts#L220.
  */
 class StringToNumberWithUnitsParser {
-
   private lateinit var value: String
   private lateinit var units: String
   private lateinit var rawInput: String
@@ -69,11 +68,12 @@ class StringToNumberWithUnitsParser {
       type = "real"
       real = Double.parseDouble(value)
     }
+    var unitsObj = UnitsObjectFactory().fromRawInputString(units)
     if (type.equals("fraction"))
-      return NumberWithUnits.newBuilder().setFraction(fractionObj).addUnit(NumberUnit.newBuilder().setUnit(units))
+      return NumberWithUnits.newBuilder().setFraction(fractionObj).addAllUnit(unitsObj.units.asIterable())
         .build()
     else
-      return NumberWithUnits.newBuilder().setReal(real).addUnit(NumberUnit.newBuilder().setUnit(units)).build()
+      return NumberWithUnits.newBuilder().setReal(real).addAllUnit(unitsObj.units.asIterable()).build()
     return NumberWithUnits.getDefaultInstance()
   }
 
@@ -107,10 +107,10 @@ class StringToNumberWithUnitsParser {
     }
     var unitsObj = UnitsObjectFactory().fromRawInputString(units)
     if (type.equals("fraction"))
-      return NumberWithUnits.newBuilder().setFraction(fractionObj).addUnit(NumberUnit.newBuilder().setUnit(units))
+      return NumberWithUnits.newBuilder().setFraction(fractionObj).addAllUnit(unitsObj.units.asIterable())
         .build()
     else
-      return NumberWithUnits.newBuilder().setReal(real).addUnit(NumberUnit.newBuilder().setUnit(units)).build()
+      return NumberWithUnits.newBuilder().setReal(real).addAllUnit(unitsObj.units.asIterable()).build()
     return NumberWithUnits.getDefaultInstance()
   }
 
@@ -121,7 +121,7 @@ class StringToNumberWithUnitsParser {
     var units: ArrayList<String>
   }
 
-  private class Units {
+  class Units {
     // TODO(#7165): Replace "ArrayList<String>" with the exact type. This has been kept as
     // "ArrayList<String>" because "units" is a list with varying element types. An exact
     // type needs to be found for it.
@@ -131,7 +131,7 @@ class StringToNumberWithUnitsParser {
       this.units = unitsList
     }
 
-    fun toDict(): IUnitsDict {
+    private fun toDict(): IUnitsDict {
       units = this.units
       return units as IUnitsDict
     }
@@ -150,7 +150,7 @@ class StringToNumberWithUnitsParser {
     }
   }
 
-  private class UnitsObjectFactory {
+  class UnitsObjectFactory {
     fun isunit(unit: String): Boolean {
       return !("/*() ".contains(unit))
     }
@@ -159,11 +159,11 @@ class StringToNumberWithUnitsParser {
       var units = unitsString
       units += "#"
       var unitList: ArrayList<String> = ArrayList()
-      var unit = " "
+      var unit = ""
       for (i in 0 until units.length) {
-        if ("*/()# ".contains(units[i]) && unit !== "per") {
+        if ("*/()# ".contains(units[i]) && unit != "per") {
           if (unit.length > 0) {
-            if (unitList.size > 0 && this.isunit(unitList.removeAt(unitList.lastIndex))) {
+            if (unitList.size > 0 && this.isunit(unitList.last())) {
               unitList.add("*")
             }
             unitList.add(unit)
@@ -185,9 +185,9 @@ class StringToNumberWithUnitsParser {
     // TODO(#7165): Replace "ArrayList<String>" with the exact type. This has been kept as
     // "ArrayList<String>" because the return type is a list with varying element types. An
     // exact type needs to be found for it.
-    fun unitWithMultiplier(unitList: ArrayList<String>): MutableMap<String, Int> {
+    fun unitWithMultiplier(unitList: ArrayList<String>): LinkedHashMap<String, Int> {
       var multiplier = 1
-      var unitsWithMultiplier: MutableMap<String, Int> = HashMap()
+      var unitsWithMultiplier: LinkedHashMap<String, Int> = LinkedHashMap()
       var parenthesisStack: MutableMap<String, Int> = HashMap()
 
       for (ind in 0 until unitList.size) {
@@ -206,10 +206,12 @@ class StringToNumberWithUnitsParser {
           }
         } else if (unitList[ind] == ")") {
           var elem = parenthesisStack.values.last()
-          parenthesisStack.remove(parenthesisStack.keys.last())
           multiplier = elem * multiplier
         } else if (this.isunit(unitList[ind])) {
-          unitsWithMultiplier.put(unitList[ind], multiplier)
+          if ((unitsWithMultiplier).containsKey(unitList[ind])) {// this additional check and extra code is because hashmap does not support multiple keys
+            unitsWithMultiplier.put(unitList[ind], unitsWithMultiplier.getValue(unitList[ind]) + multiplier)
+          } else
+            unitsWithMultiplier.put(unitList[ind], multiplier)
           // If previous element was division then we need to invert
           // multiplier.
           if (ind > 0 && unitList[ind - 1] == "/") {
@@ -236,8 +238,9 @@ class StringToNumberWithUnitsParser {
     // "ArrayList<String>" because "unitsWithMultiplier" is a dict with varying element types.
     // An exact type needs to be found for it, Once that is found the return type
     // can also be typed.
-    fun unitToList(unitsWithMultiplier: MutableMap<String, Int>): ArrayList<NumberUnit> {
-      var unitDict: MutableMap<String, Int> = HashMap()
+    //5 kg / kg^2 K mol / (N m s^2) K s
+    fun unitToList(unitsWithMultiplier: LinkedHashMap<String, Int>): ArrayList<NumberUnit> {
+      var unitDict: LinkedHashMap<String, Int> = LinkedHashMap()
       for ((key, value) in unitsWithMultiplier) {
         var unit = key
         var multiplier = value
@@ -245,16 +248,16 @@ class StringToNumberWithUnitsParser {
         var s: String
         var power: Int
         if (ind > -1) {
-          s = unit.substring(0, ind)
+          s = unit.substring(0, ind).trim()
           power = parseInt(unit.substring(ind + 1))
         } else {
-          s = unit
+          s = unit.trim()
           power = 1
         }
-        if (!(s in unitDict)) {
-          unitDict.put(s, 0)
+        if (!(unitDict).containsKey(s)) {
+          unitDict.set(s, 0)
         }
-        unitDict.set(s, multiplier * power)
+        unitDict.put(s, (unitDict.getValue(s) + (multiplier * power)))
       }
       return this.convertUnitDictToList(unitDict)
     }
@@ -491,7 +494,35 @@ class StringToNumberWithUnitsParser {
     numberWithUnitsString = numberWithUnitsString.trim()
     return numberWithUnitsString
   }
+ fun numberWithUnitsToString(type: String,numberWithUnits: NumberWithUnits): String {
+    lateinit var  numberWithUnitsString: String
+    // The NumberWithUnits class is allowed to have 4 properties namely
+    // type, real, fraction and units. Hence, we cannot inject
+    // UnitsObjectFactory, since that'll lead to creation of 5th property
+    // which isn't allowed. Refer objects.py L#956.
+    var unitsString: String = Units(ArrayList(numberWithUnits.unitList.toList())).unitToString()
+    if (unitsString.contains("$")) {
+      unitsString = unitsString.replace("$", "")
+      numberWithUnitsString += "$" + " "
+    }
+    if (unitsString.contains("Rs")) {
+      unitsString = unitsString.replace("Rs", "")
+      numberWithUnitsString += "Rs" + " "
+    }
+    if (unitsString.contains("₹")) {
+      unitsString = unitsString.replace("₹", "")
+      numberWithUnitsString += "₹" + " "
+    }
 
+    if (type == "real") {
+      numberWithUnitsString += numberWithUnits.real.toString()+" "
+    } else if (type == "fraction") {
+      numberWithUnitsString += numberWithUnits.fraction.toString() + " "
+    }
+    numberWithUnitsString += unitsString.trim()
+    numberWithUnitsString = numberWithUnitsString.trim()
+    return numberWithUnitsString
+  }
   /** Enum to store the errors of [NumberWithUnitsInputInteractionView]. */
   enum class NumberWithUnitsParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
