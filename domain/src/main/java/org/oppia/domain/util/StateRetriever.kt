@@ -169,7 +169,7 @@ class StateRetriever @Inject constructor(
       .build()
   }
 
-  // Creates an outcome object from JSON
+  // Creates a solution object from JSON
   private fun createSolutionFromJson(solutionJson: JSONObject?): Solution {
     if (solutionJson == null) {
       return Solution.getDefaultInstance()
