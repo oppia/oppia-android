@@ -43,7 +43,6 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.util.toAnswerString
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -729,11 +728,14 @@ class ExplorationProgressControllerTest {
   }
 
 
+
   @Test
   @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
+    coroutineContext
+  ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(FRACTIONS_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_5)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
@@ -749,9 +751,8 @@ class ExplorationProgressControllerTest {
     val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
     assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
     assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
-    val hintAndSolution = currentState.pendingState.getHint(0)
-    assertThat(hintAndSolution.hintContent.html).contains("When you divide something into ")
-
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
   }
 
   @Test

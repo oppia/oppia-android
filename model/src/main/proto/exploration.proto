@@ -175,8 +175,6 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
-
-  repeated Hint hint = 2;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.
