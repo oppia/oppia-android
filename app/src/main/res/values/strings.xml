@@ -257,4 +257,6 @@
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
+  <string name="topics_in_progress">Topics In Progress</string>
+  <string name="stories_completed">Stories Completed</string>
 </resources>
