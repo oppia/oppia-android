@@ -19,8 +19,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".administratorcontrols.appversion.AppVersionActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar"/>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.FAQActivity"
       android:screenOrientation="portrait"
@@ -87,8 +86,7 @@
     <activity
       android:name=".settings.profile.ProfileListActivity"
       android:screenOrientation="portrait" />
-    <activity
-      android:name=".settings.profile.ProfileRenameActivity" />
+    <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
@@ -141,7 +139,8 @@
       android:name=".topic.reviewcard.ReviewCardActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".walkthrough.WalkthroughActivity"
+    <activity
+      android:name=".walkthrough.WalkthroughActivity"
       android:screenOrientation="portrait" />
   </application>
 </manifest>

@@ -45,8 +45,8 @@
       android:background="@color/white"
       android:fontFamily="sans-serif"
       android:gravity="center_vertical"
-      android:paddingStart="16dp"
-      android:paddingEnd="212dp"
+      android:paddingStart="36dp"
+      android:paddingEnd="472dp"
       android:text="@{@string/app_version_name(viewModel.versionName)}"
       android:textColor="@color/oppiaPrimaryTextDark"
       android:textSize="16sp" />
@@ -63,7 +63,7 @@
         android:id="@+id/app_info_image_view"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="28dp"
         android:src="@drawable/ic_info_icon_gray_24dp" />
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="36dp"
         android:fontFamily="sans-serif"
         android:text="@{@string/app_last_update_date(viewModel.lastUpdateDate)}"
         android:textColor="@color/oppiaSecondaryText"
