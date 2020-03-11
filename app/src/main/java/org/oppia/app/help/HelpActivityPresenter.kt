@@ -17,7 +17,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   fun handleOnCreate() {
     activity.setContentView(R.layout.help_activity)
     setUpNavigationDrawer()
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.help_fragment_placeholder,
       HelpFragment()
     ).commitNow()
