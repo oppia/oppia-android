@@ -27,17 +27,4 @@
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
 
-  <dimen name="title_text">20sp</dimen>
-  <dimen name="subtitle_text">16sp</dimen>
-  <dimen name="submit_button_text">14sp</dimen>
-  <dimen name="margin_start_end">28dp</dimen>
-  <dimen name="margin_land_start_end">72dp</dimen>
-  <dimen name="heading_margin_top">40dp</dimen>
-  <dimen name="subtitle_margin_top">12dp</dimen>
-  <dimen name="input_margin_top">16dp</dimen>
-  <dimen name="submit_margin_top_bottom">36dp</dimen>
-  <dimen name="submit_button_padding">20dp</dimen>
-  <dimen name="min_height">48dp</dimen>
-  <dimen name="toolbar_shadow_height">6dp</dimen>
-  <dimen name="toolbar_title">20sp</dimen>
 </resources>
