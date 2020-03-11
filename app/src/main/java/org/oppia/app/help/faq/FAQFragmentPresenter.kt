@@ -25,7 +25,7 @@ class FAQFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {
-  private val arrayList = ArrayList<FAQViewModel>()
+  private val arrayList = ArrayList<FAQContentViewModel>()
   private lateinit var binding: FaqFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
@@ -47,7 +47,7 @@ class FAQFragmentPresenter @Inject constructor(
       .newBuilder<FAQItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is FAQHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is FAQViewModel -> ViewType.VIEW_TYPE_CONTENT
+          is FAQContentViewModel -> ViewType.VIEW_TYPE_CONTENT
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -61,8 +61,9 @@ class FAQFragmentPresenter @Inject constructor(
         viewType = ViewType.VIEW_TYPE_CONTENT,
         inflateDataBinding = FaqContentBinding::inflate,
         setViewModel = FaqContentBinding::setViewModel,
-        transformViewModel = { it as FAQViewModel }
+        transformViewModel = { it as FAQContentViewModel }
       )
+
       .build()
   }
 
@@ -71,10 +72,10 @@ class FAQFragmentPresenter @Inject constructor(
     VIEW_TYPE_CONTENT
   }
 
-  private fun getRecyclerViewItemList(): ArrayList<FAQViewModel> {
+  private fun getRecyclerViewItemList(): ArrayList<FAQContentViewModel> {
     val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
     for (question in questions) {
-      val faqViewModel = FAQViewModel(question)
+      val faqViewModel = FAQContentViewModel(question)
       arrayList.add(faqViewModel)
     }
     return arrayList

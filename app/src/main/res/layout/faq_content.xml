@@ -6,7 +6,7 @@
     <import type="android.view.View" />
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.FAQViewModel" />
+      type="org.oppia.app.help.faq.FAQContentViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

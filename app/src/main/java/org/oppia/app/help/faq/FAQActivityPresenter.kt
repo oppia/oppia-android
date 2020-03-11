@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.FaqActivityBinding
-import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [FAQActivity]. */
