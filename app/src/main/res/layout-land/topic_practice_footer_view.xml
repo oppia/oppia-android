@@ -15,9 +15,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="96dp"
-    android:paddingEnd="96dp">
+    android:layout_height="wrap_content">
 
     <Button
       android:id="@+id/topic_practice_start_button"
@@ -25,6 +23,7 @@
       android:layout_width="160dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="36dp"
+      android:layout_marginBottom="108dp"
       android:background="@{isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
       android:clickable="@{isSubmitButtonActive}"
       android:fontFamily="sans-serif-medium"
