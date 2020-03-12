@@ -3,14 +3,21 @@ package org.oppia.app.profileprogress
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -18,12 +25,20 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.app.model.ProfileId
+import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -39,12 +54,20 @@ import javax.inject.Singleton
 class ProfileProgressFragmentTest {
 
   @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  private val internalProfileId = 0
+
+  private lateinit var profileId: ProfileId
 
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   @After
@@ -59,11 +82,6 @@ class ProfileProgressFragmentTest {
       .inject(this)
   }
 
-  @get:Rule
-  var optionActivityTestRule: ActivityTestRule<ProfileProgressActivity> = ActivityTestRule(
-    ProfileProgressActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {
     return ProfileProgressActivity.createProfileProgressActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -75,6 +93,200 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_name_text_view
+        )
+      ).check(matches(withText("Sean")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.ongoing_topics_count
+        )
+      ).check(matches(withText("0")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.ongoing_topics_count
+        )
+      ).check(matches(withText("2")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.ongoing_topics_description_text_view
+        )
+      ).check(matches(withText(R.string.topic_in_progress)))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.ongoing_topics_description_text_view
+        )
+      ).check(matches(withText(R.string.topics_in_progress)))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_count
+        )
+      ).check(matches(withText("0")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() {
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_count
+        )
+      ).check(matches(withText("2")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_description_text_view
+        )
+      ).check(matches(withText(R.string.story_completed)))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_description_text_view
+        )
+      ).check(matches(withText(R.string.stories_completed)))
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewItem1_chapterNameIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)).check(
+        matches(
+          withText(
+            containsString("What is a Fraction?")
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1,
+          R.id.story_name_text_view
+        )
+      ).check(matches(withText(Matchers.containsString("Matthew Goes to the Bakery"))))
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1,
+          R.id.topic_name_text_view
+        )
+      ).check(matches(withText(Matchers.containsString("FRACTIONS"))))
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).perform(click())
+      intended(hasComponent(RecentlyPlayedActivity::class.java.name))
+      intended(hasExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId))
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).perform(click())
+      intended(hasComponent(OngoingTopicListActivity::class.java.name))
+      intended(hasExtra(OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivity_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).perform(click())
+      intended(hasComponent(CompletedStoryListActivity::class.java.name))
+      intended(hasExtra(CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
     }
   }
 

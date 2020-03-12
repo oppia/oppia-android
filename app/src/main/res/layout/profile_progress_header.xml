@@ -63,6 +63,7 @@
       app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view">
 
       <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ongoing_topics_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -84,6 +85,7 @@
             android:textSize="24sp" />
 
           <TextView
+            android:id="@+id/ongoing_topics_description_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -93,6 +95,7 @@
       </com.google.android.material.card.MaterialCardView>
 
       <com.google.android.material.card.MaterialCardView
+        android:id="@+id/completed_stories_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -114,10 +117,11 @@
             android:textSize="24sp" />
 
           <TextView
+            android:id="@+id/completed_stories_description_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@{viewModel.ongoingTopicCount > 1 ? @string/stories_completed : @string/story_completed}"
+            android:text="@{viewModel.completedStoryCount > 1 ? @string/stories_completed : @string/story_completed}"
             android:textSize="14sp" />
         </LinearLayout>
       </com.google.android.material.card.MaterialCardView>
