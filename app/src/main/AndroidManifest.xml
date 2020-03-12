@@ -19,7 +19,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".administratorcontrols.appversion.AppVersionActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".completedstorylist.CompletedStoryListActivity"
