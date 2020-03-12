@@ -14,8 +14,8 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity) : ProfileProgr
   private val routeToRecentlyPlayedActivity = activity as RouteToRecentlyPlayedListener
 
   val profile = ObservableField<Profile>(Profile.getDefaultInstance())
-  val ongoingTopicCount = ObservableField<Int>(0)
-  val completedStoryCount = ObservableField<Int>(0)
+  val ongoingTopicCount = ObservableField(0)
+  val completedStoryCount = ObservableField(0)
 
   fun setProfile(currentProfile: Profile) {
     profile.set(currentProfile)

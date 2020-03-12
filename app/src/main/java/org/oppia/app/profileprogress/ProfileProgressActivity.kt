@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.app.home.RouteToRecentlyPlayedListener
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
@@ -28,7 +29,7 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
   }
 
   override fun routeToCompletedStory() {
-    //TODO(#736): Route to [CompletedStoryListActivity] once it is created.
+    startActivity(CompletedStoryListActivity.createCompletedStoryListActivityIntent(this, internalProfileId))
   }
 
   override fun routeToOngoingTopic() {
