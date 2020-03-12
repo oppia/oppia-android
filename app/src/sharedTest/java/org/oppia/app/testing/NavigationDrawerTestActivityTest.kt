@@ -127,13 +127,14 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProgressProgressSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
       val progressString: String = getResources().getString(R.string.nav_header_subtitle, 1, 1)
       onView(withId(R.id.profile_progress_text_view)).check(matches(withText(progressString)))
+      onView(withId(R.id.profile_progress_text_view)).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
     }
   }
 

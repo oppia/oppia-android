@@ -26,7 +26,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -245,7 +244,7 @@ class ProfileProgressFragmentTest {
           1,
           R.id.story_name_text_view
         )
-      ).check(matches(withText(Matchers.containsString("Matthew Goes to the Bakery"))))
+      ).check(matches(withText(containsString("Matthew Goes to the Bakery"))))
     }
   }
 
@@ -259,7 +258,7 @@ class ProfileProgressFragmentTest {
           1,
           R.id.topic_name_text_view
         )
-      ).check(matches(withText(Matchers.containsString("FRACTIONS"))))
+      ).check(matches(withText(containsString("FRACTIONS"))))
     }
   }
 
