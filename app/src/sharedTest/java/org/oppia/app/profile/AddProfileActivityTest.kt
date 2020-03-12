@@ -329,8 +329,6 @@ class AddProfileActivityTest {
     }
   }
 
-
-
   private fun createGalleryPickActivityResultStub(): ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
