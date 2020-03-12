@@ -38,6 +38,6 @@
       android:layout_gravity="start"
       app:layout="@layout/drawer_fragment"
       tools:layout="@layout/drawer_fragment" />
-    <!-- TODO(#771): Support landscape mode. -->
   </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
+  <!-- TODO(#771): Support landscape mode. -->
