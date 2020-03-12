@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -26,6 +27,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -52,7 +54,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileProgressFragmentTest {
 
-  @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
@@ -272,7 +273,35 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).check(
+        matches(
+          not(
+            isClickable()
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).check(
+        matches(
+          not(
+            isClickable()
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).perform(click())
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
@@ -281,7 +310,9 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).perform(click())
       intended(hasComponent(CompletedStoryListActivity::class.java.name))

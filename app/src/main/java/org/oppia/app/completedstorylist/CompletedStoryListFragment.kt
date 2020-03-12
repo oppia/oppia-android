@@ -12,8 +12,8 @@ import javax.inject.Inject
 class CompletedStoryListFragment : InjectableFragment() {
   companion object {
     internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY = "CompletedStoryListFragment.profile_id"
-    /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
 
+    /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
       val completedStoryListFragment = CompletedStoryListFragment()
       val args = Bundle()
