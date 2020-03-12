@@ -23,6 +23,7 @@ import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -103,6 +104,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
         }
+        NavigationDrawerItem.OPTIONS -> {
+          fragment.activity!!.startActivity(OptionsActivity.createOptionsActivity(fragment.requireContext(), internalProfileId))
+          drawerLayout.closeDrawers()
+        }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
@@ -148,6 +153,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.HOME -> {
           binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
         }
+        NavigationDrawerItem.OPTIONS -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.OPTIONS.ordinal).isChecked = true
+        }
         NavigationDrawerItem.HELP -> {
           binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
         }
@@ -160,6 +168,30 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       }
       this.drawerLayout = drawerLayout
       previousMenuItemId = menuItemId
+      drawerToggle = object : ActionBarDrawerToggle(
+        fragment.activity,
+        drawerLayout,
+        toolbar,
+        R.string.drawer_open_content_description,
+        R.string.drawer_close_content_description
+      ) {
+        override fun onDrawerOpened(drawerView: View) {
+          super.onDrawerOpened(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+
+        override fun onDrawerClosed(drawerView: View) {
+          super.onDrawerClosed(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+      }
+      drawerLayout.setDrawerListener(drawerToggle)
+      /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
+      drawerLayout.post { drawerToggle.syncState() }
+    } else {
+      // For showing navigation drawer in AdministratorControlsActivity
+
+      this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
         drawerLayout,

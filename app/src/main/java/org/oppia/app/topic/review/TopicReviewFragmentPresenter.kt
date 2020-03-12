@@ -11,8 +11,10 @@ import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.TopicReviewFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
+import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToReviewCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
@@ -28,12 +30,14 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController
 ) : ReviewSubtopicSelector {
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToReviewCardListener
 
   private lateinit var reviewAdapter: ReviewSubtopicAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
@@ -52,14 +56,14 @@ class TopicReviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked( subtopic: Subtopic) {
+  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
     routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
   }
 
   private fun subscribeToTopicLiveData() {

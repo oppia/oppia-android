@@ -18,14 +18,21 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".administratorcontrols.appversion.AppVersionActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
+    <activity
+      android:name=".help.faq.FAQActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.HelpActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".home.recentlyplayed.RecentlyPlayedActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".help.HelpActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".mydownloads.MyDownloadsActivity"
@@ -33,6 +40,22 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".onboarding.OnboardingActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.OptionsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.StoryTextSizeActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
@@ -85,7 +108,7 @@
       android:name=".story.StoryActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".story.testing.StoryFragmentTestActivity"
+      android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
@@ -111,6 +134,7 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.TopicActivity"
+      android:launchMode="singleInstance"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.reviewcard.ReviewCardActivity"

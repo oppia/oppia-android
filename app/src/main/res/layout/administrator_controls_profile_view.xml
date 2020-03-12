@@ -41,6 +41,7 @@
       android:paddingTop="20dp"
       android:paddingRight="16dp"
       android:paddingBottom="20dp"
+      android:onClick="@{(v) -> viewModel.onEditProfilesClicked()}"
       android:text="@string/administrator_controls_edit_profiles"
       android:textColor="@color/oppiaPrimaryTextDark"
       android:textSize="16sp"

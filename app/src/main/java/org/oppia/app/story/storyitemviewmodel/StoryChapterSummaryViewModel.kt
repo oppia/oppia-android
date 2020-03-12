@@ -19,6 +19,9 @@ class StoryChapterSummaryViewModel(
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger,
+  val internalProfileId: Int,
+  val topicId: String,
+  val storyId: String,
   val chapterSummary: ChapterSummary
 ) : StoryItemViewModel() {
   val explorationId: String = chapterSummary.explorationId
@@ -36,7 +39,7 @@ class StoryChapterSummaryViewModel(
         result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
-          explorationSelectionListener.selectExploration(explorationId)
+          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId)
         }
       }
     })

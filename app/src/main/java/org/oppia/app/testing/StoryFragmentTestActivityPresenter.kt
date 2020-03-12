@@ -1,11 +1,9 @@
-package org.oppia.app.story.testing
+package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.story.StoryFragment
-import org.oppia.domain.topic.TEST_STORY_ID_1
 import javax.inject.Inject
 
 /** The presenter for [StoryFragmentTestActivity]. */
@@ -16,12 +14,16 @@ class StoryFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.story_fragment_test_activity)
     if (getStoryFragment() == null) {
+      val internalProfileId = activity.intent.getIntExtra(INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA, -1)
+      val topicId = checkNotNull(activity.intent.getStringExtra(TOPIC_ID_TEST_INTENT_EXTRA)) {
+        "Expected non-null topic ID to be passed in using extra key: $TOPIC_ID_TEST_INTENT_EXTRA"
+      }
       val storyId = checkNotNull(activity.intent.getStringExtra(STORY_ID_TEST_INTENT_EXTRA)) {
         "Expected non-null story ID to be passed in using extra key: $STORY_ID_TEST_INTENT_EXTRA"
       }
       activity.supportFragmentManager.beginTransaction().add(
         R.id.story_fragment_placeholder,
-        StoryFragment.newInstance(storyId)
+        StoryFragment.newInstance(internalProfileId, topicId, storyId)
       ).commitNow()
     }
   }
