@@ -11,10 +11,9 @@ import javax.inject.Inject
 /** Fragment that displays profile progress in the app. */
 class ProfileProgressFragment : InjectableFragment() {
   companion object {
-    /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
-
     internal const val PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY = "ProfileProgressFragment.internal_profile_id"
 
+    /** Returns a new [ProfileProgressFragment] to display the progress for a specified profile ID. */
     fun newInstance(internalProfileId: Int): ProfileProgressFragment {
       val profileProgressFragment = ProfileProgressFragment()
       val args = Bundle()

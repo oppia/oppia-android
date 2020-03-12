@@ -19,7 +19,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The ViewModel for header in [ProfileProgressFragment]. */
+/** The [ViewModel] for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressViewModel @Inject constructor(
   activity: AppCompatActivity,
@@ -40,7 +40,6 @@ class ProfileProgressViewModel @Inject constructor(
   )
 
   fun setProfileId(internalProfileId: Int) {
-
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.internalProfileId = internalProfileId
 
@@ -73,18 +72,18 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
-    Transformations.map(ongoingStoryListResultLiveData, ::processOngoingTopicResult)
+    Transformations.map(ongoingStoryListResultLiveData, ::processOngoingStoryResult)
   }
 
   val ongoingStoryListViewModelLiveData: LiveData<List<ProfileProgressItemViewModel>> by lazy {
     Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList)
   }
 
-  private fun processOngoingTopicResult(ongoingStoryListResult: AsyncResult<OngoingStoryList>): OngoingStoryList {
+  private fun processOngoingStoryResult(ongoingStoryListResult: AsyncResult<OngoingStoryList>): OngoingStoryList {
     if (ongoingStoryListResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",
-        "Failed to retrieve OngoingStoryList: ",
+        "Failed to retrieve ongoing story list: ",
         ongoingStoryListResult.getErrorOrNull()!!
       )
     }
