@@ -22,7 +22,7 @@ fun <T : Any> bindToRecyclerViewAdapterWithLiveData(recyclerView: RecyclerView, 
  * Android's data binding framework and should not be used directly. For reference:
  * https://android.jlelse.eu/1bd08b4796b4.
  */
-@BindingAdapter("data")
+@BindingAdapter("list")
 fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(recyclerView: RecyclerView, itemList: List<T>) {
   bindToRecyclerViewAdapter(recyclerView, itemList)
 }
