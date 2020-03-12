@@ -13,9 +13,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="32dp"
-    android:layout_marginLeft="96dp"
+    android:layout_marginStart="96dp"
     android:paddingBottom="24dp"
-    android:layout_marginRight="96dp">
+    android:layout_marginEnd="96dp">
 
     <TextView
       android:id="@+id/master_skills_text_view"

@@ -17,8 +17,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    android:layout_marginRight="96dp"
-    android:layout_marginLeft="104dp"
+    android:layout_marginEnd="96dp"
+    android:layout_marginStart="104dp"
     app:barrierDirection="right">
 
     <androidx.constraintlayout.widget.Barrier
@@ -39,7 +39,7 @@
       android:text="@{viewModel.subtopic.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:drawableLeft="@android:color/transparent"
+      android:drawableStart="@android:color/transparent"
       android:drawablePadding="20dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

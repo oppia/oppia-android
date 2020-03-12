@@ -10,9 +10,9 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="32dp"
+    android:layout_marginStart="32dp"
     android:layout_marginTop="32dp"
-    android:layout_marginRight="24dp"
+    android:layout_marginEnd="24dp"
     android:paddingBottom="24dp">
 
     <TextView
@@ -23,7 +23,7 @@
       android:text="@string/topic_practice_master_these_skills"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
-      android:layout_marginRight="88dp"
+      android:layout_marginEnd="88dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
