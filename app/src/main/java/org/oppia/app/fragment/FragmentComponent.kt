@@ -20,6 +20,7 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
+import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
@@ -65,6 +66,7 @@ interface FragmentComponent {
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
+  fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)

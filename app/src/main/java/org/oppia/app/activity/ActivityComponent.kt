@@ -20,6 +20,7 @@ import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
@@ -82,6 +83,7 @@ interface ActivityComponent {
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
+  fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
