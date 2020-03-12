@@ -31,6 +31,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.text.SimpleDateFormat
@@ -62,8 +63,9 @@ class AppVersionActivityTest {
   }
 
   @Test
-  fun testAppVersionActivity_loadFragment_displaysAppVersion() {
+  fun testAppVersionActivity_configurationChanged_loadFragment_displaysAppVersion() {
     launchAppVersionActivityIntent().use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         withText(
           String.format(
