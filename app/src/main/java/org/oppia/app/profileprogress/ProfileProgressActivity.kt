@@ -4,18 +4,36 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.app.home.RouteToRecentlyPlayedListener
+import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
-class ProfileProgressActivity : InjectableAppCompatActivity() {
+class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedStoryListListener,
+  RouteToOngoingTopicListListener, RouteToRecentlyPlayedListener {
 
   @Inject lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
+  private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
+    internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
+  }
+
+  override fun routeToRecentlyPlayed() {
+    startActivity(RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(this, internalProfileId))
+  }
+
+  override fun routeToCompletedStory() {
+    startActivity(CompletedStoryListActivity.createCompletedStoryListActivityIntent(this, internalProfileId))
+  }
+
+  override fun routeToOngoingTopic() {
+    startActivity(OngoingTopicListActivity.createOngoingTopicListActivityIntent(this, internalProfileId))
   }
 
   companion object {

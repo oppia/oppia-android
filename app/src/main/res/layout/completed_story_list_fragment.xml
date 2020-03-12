@@ -2,20 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="org.oppia.app.profileprogress.ProfileProgressViewModel" />
-  </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/profile_progress_app_bar_layout"
-      android:layout_width="match_parent"
+      android:id="@+id/completed_story_list_app_bar_layout"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +17,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/profile_progress_toolbar"
+        android:id="@+id/completed_story_list_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -32,7 +26,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/profile"
+        app:title="@string/stories_completed"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -42,20 +36,10 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_progress_app_bar_layout">
-
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profile_progress_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
-        android:scrollbars="none"
-        app:data="@{viewModel.ongoingStoryListViewModelLiveData}" />
+      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout">
 
       <View
-        android:id="@+id/profile_progress_shadow_view"
+        android:id="@+id/completed_story_list_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
