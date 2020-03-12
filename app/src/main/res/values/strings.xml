@@ -124,8 +124,9 @@
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <!-- AdminAuthActivity -->
+  <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
-  <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_sub">Enter the Administrator’s PIN to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <string name="admin_auth_submit">Submit</string>

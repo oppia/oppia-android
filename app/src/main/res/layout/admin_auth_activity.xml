@@ -35,7 +35,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
-        app:title="@string/add_profile_title"
+        app:title="@string/admin_auth_toolbar"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
