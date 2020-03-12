@@ -63,7 +63,7 @@ class AppVersionActivityTest {
   }
 
   @Test
-  fun testAppVersionActivity_configurationChanged_loadFragment_displaysAppVersion() {
+  fun testAppVersionActivity_configurationChange_displaysAppVersion() {
     launchAppVersionActivityIntent().use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -78,6 +78,38 @@ class AppVersionActivityTest {
         matches(isDisplayed())
       )
     }
+  }
+
+  @Test
+  fun testAppVersionActivity_configurationChange_AppVersionIsDisplayedCorrectly(){
+    onView(isRoot()).perform(orientationLandscape())
+    onView(
+      withId(
+        R.id.app_version_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(
+            context.resources.getString(R.string.app_version_name), BuildConfig.VERSION_NAME
+          )
+        )
+      )
+    )
+    onView(
+      withId(
+        R.id.app_last_update_date_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(
+            context.resources.getString(R.string.app_last_update_date), lastUpdateDate
+          )
+        )
+      )
+    )
+
   }
 
   @Test
