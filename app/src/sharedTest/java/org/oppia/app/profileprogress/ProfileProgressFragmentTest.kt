@@ -59,11 +59,6 @@ class ProfileProgressFragmentTest {
       .inject(this)
   }
 
-  @get:Rule
-  var optionActivityTestRule: ActivityTestRule<ProfileProgressActivity> = ActivityTestRule(
-    ProfileProgressActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {
     return ProfileProgressActivity.createProfileProgressActivityIntent(
       ApplicationProvider.getApplicationContext(),

@@ -25,7 +25,6 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <de.hdodenhof.circleimageview.CircleImageView
-      android:id="@+id/profile_list_image"
       android:layout_width="72dp"
       android:layout_height="72dp"
       android:paddingTop="8dp"
@@ -50,7 +49,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:text="@{String.format(@string/nav_header_subtitle, viewModel.completedStoryCount, viewModel.ongoingTopicCount)}"
+      android:text="@{@plurals/completed_story_count(viewModel.completedStoryCount, viewModel.completedStoryCount).concat(@string/bar_separator).concat(@plurals/ongoing_topic_count(viewModel.ongoingTopicCount, viewModel.ongoingTopicCount))}"
       android:textColor="@color/white"
       android:textSize="14sp" />
   </LinearLayout>
