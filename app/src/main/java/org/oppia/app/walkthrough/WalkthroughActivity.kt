@@ -1,7 +1,5 @@
 package org.oppia.app.walkthrough
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
