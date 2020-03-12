@@ -23,6 +23,7 @@ import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.help.faq.FAQFragment
+import org.oppia.app.profileprogress.ProfileProgressFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -68,6 +69,7 @@ interface FragmentComponent {
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)

@@ -86,6 +86,10 @@
       android:name=".profile.ProfileActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".profileprogress.ProfileProgressActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".settings.profile.ProfileEditActivity"
       android:screenOrientation="portrait" />
     <activity
