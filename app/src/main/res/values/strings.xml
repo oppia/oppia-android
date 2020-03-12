@@ -137,6 +137,7 @@
       %d Topics in Progress
     </item>
   </plurals>
+  <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
@@ -274,5 +275,4 @@
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
-  <string name="bar_separator">\u0020|\u0020</string>
 </resources>
