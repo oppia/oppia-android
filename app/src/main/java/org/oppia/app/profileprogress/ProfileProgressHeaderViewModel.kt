@@ -7,7 +7,7 @@ import org.oppia.app.model.Profile
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class ProfileProgressHeaderViewModel(activity: AppCompatActivity) : ProfileProgressItemViewModel() {
-  // TODO(#777): Edit image and shown full screen image popup.
+  // TODO(#777): Click on ImageView to show a popup which can either edit the image or view image in full screen.
 
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener
   private val routeToOngoingTopicListListener = activity as RouteToOngoingTopicListListener

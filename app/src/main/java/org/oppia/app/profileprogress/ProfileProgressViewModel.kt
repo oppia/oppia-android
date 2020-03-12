@@ -87,7 +87,6 @@ class ProfileProgressViewModel @Inject constructor(
         ongoingStoryListResult.getErrorOrNull()!!
       )
     }
-
     return ongoingStoryListResult.getOrDefault(OngoingStoryList.getDefaultInstance())
   }
 
