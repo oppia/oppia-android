@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:overScrollMode="never"
-    android:paddingBottom="172dp"
+    android:layout_marginTop="12dp"
     android:scrollbars="none"
     app:data="@{viewModel.topicPracticeSkillLiveData}"
     app:layout_constraintBottom_toBottomOf="parent"
