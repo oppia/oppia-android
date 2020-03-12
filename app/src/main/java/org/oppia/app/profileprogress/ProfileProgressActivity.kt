@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToRecentlyPlayedListener
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
@@ -31,7 +32,7 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
   }
 
   override fun routeToOngoingTopic() {
-    //TODO(#736): Route to [OngoingTopicListActivity] once it is created.
+    startActivity(OngoingTopicListActivity.createOngoingTopicListActivityIntent(this, internalProfileId))
   }
 
   companion object {

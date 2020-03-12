@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@string/topics_in_progress"
+            android:text="@{viewModel.ongoingTopicCount > 1 ? @string/topics_in_progress : @string/topic_in_progress}"
             android:textSize="14sp" />
         </LinearLayout>
       </com.google.android.material.card.MaterialCardView>
@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="@string/stories_completed"
+            android:text="@{viewModel.ongoingTopicCount > 1 ? @string/stories_completed : @string/story_completed}"
             android:textSize="14sp" />
         </LinearLayout>
       </com.google.android.material.card.MaterialCardView>
