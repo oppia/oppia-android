@@ -18,7 +18,19 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".administratorcontrols.appversion.AppVersionActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".completedstorylist.CompletedStoryListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.FAQActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.HelpActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".home.HomeActivity"
@@ -27,15 +39,31 @@
       android:name=".home.recentlyplayed.RecentlyPlayedActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.HelpActivity"
-      android:screenOrientation="portrait"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
       android:name=".mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".onboarding.OnboardingActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".ongoingtopiclist.OngoingTopicListActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.AppLanguageActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.OptionsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.StoryTextSizeActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
@@ -66,8 +94,7 @@
     <activity
       android:name=".settings.profile.ProfileListActivity"
       android:screenOrientation="portrait" />
-    <activity
-      android:name=".settings.profile.ProfileRenameActivity" />
+    <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
       android:screenOrientation="portrait" />
@@ -88,7 +115,7 @@
       android:name=".story.StoryActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".story.testing.StoryFragmentTestActivity"
+      android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
@@ -120,7 +147,8 @@
       android:name=".topic.reviewcard.ReviewCardActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".walkthrough.WalkthroughActivity"
+    <activity
+      android:name=".walkthrough.WalkthroughActivity"
       android:screenOrientation="portrait" />
   </application>
 </manifest>
