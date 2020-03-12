@@ -8,16 +8,7 @@ import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
 class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
-  @Inject
-  lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
-
-  companion object {
-    fun createWalkthroughActivity(context: Context): Intent {
-      val intent = Intent(context, WalkthroughActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      return intent
-    }
-  }
+  @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
