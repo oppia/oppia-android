@@ -133,7 +133,7 @@ class OngoingTopicListActivityTest {
   }
 
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
-    return OngoingTopicListActivity.creatOngoingTopicListActivityIntent(
+    return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId
     )

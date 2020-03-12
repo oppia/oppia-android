@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment for displaying ongoing topics. */
+/** Fragment for displaying [OngoingTopicListActivity]. */
 class OngoingTopicListFragment : InjectableFragment() {
 
   companion object {
     internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY = "OngoingTopicListFragment.profile_id"
+
     /** Returns a new [OngoingTopicListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): OngoingTopicListFragment {
       val ongoingTopicListFragment = OngoingTopicListFragment()

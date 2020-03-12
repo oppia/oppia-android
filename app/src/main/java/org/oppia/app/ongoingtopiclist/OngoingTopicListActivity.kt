@@ -21,7 +21,7 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
     internal const val ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY = "OngoingTopicListActivity.profile_id"
 
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
-    fun creatOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, OngoingTopicListActivity::class.java)
       intent.putExtra(ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
       return intent

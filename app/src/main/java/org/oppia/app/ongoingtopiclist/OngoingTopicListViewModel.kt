@@ -40,7 +40,6 @@ class OngoingTopicListViewModel @Inject constructor(
     if (ongoingTopicListResult.isFailure()) {
       logger.e("OngoingTopicListFragment", "Failed to retrieve OngoingTopicList: ", ongoingTopicListResult.getErrorOrNull()!!)
     }
-
     return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
