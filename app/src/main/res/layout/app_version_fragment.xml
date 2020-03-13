@@ -20,10 +20,11 @@
       <TextView
         android:id="@+id/app_version_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:background="@color/white"
         android:fontFamily="sans-serif"
-        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
         android:text="@{@string/app_version_name(viewModel.versionName)}"
         android:textColor="@color/oppiaPrimaryTextDark"
         android:textSize="16sp"
