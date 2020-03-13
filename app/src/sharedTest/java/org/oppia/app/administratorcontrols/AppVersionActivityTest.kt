@@ -80,7 +80,7 @@ class AppVersionActivityTest {
   }
 
   @Test
-  fun testAppVersionActivity_configurationChange_AppVersionIsDisplayedCorrectly(){
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly(){
     onView(isRoot()).perform(orientationLandscape())
     onView(
       withId(
@@ -104,7 +104,6 @@ class AppVersionActivityTest {
         )
       )
     )
-
   }
 
   @Test
