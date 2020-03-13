@@ -19,7 +19,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".administratorcontrols.appversion.AppVersionActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".completedstorylist.CompletedStoryListActivity"
@@ -152,6 +151,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>
