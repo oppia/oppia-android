@@ -240,5 +240,5 @@
   <string name="administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
-
+  <string name="hints_toolbar_title">Hints</string>
 </resources>

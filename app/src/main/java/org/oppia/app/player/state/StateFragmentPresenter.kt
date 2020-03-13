@@ -59,6 +59,7 @@ import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.C
 import org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -75,6 +76,7 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUME
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_HINTS_AND_SOLUTION_FRAGMENT = "HINTS_AND_SOLUTION"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -90,6 +92,8 @@ class StateFragmentPresenter @Inject constructor(
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
+
+  private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
   private var feedbackId: String? = null
   private lateinit var profileId: ProfileId
@@ -140,6 +144,10 @@ class StateFragmentPresenter @Inject constructor(
     if (getAudioFragment() == null) {
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
+    }
+
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener{
+      routeToHintsAndSolutionListener.routeToHintsAndSolution("")
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
@@ -308,6 +316,8 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
 
+    if(ephemeralState.state.interaction.hintList.size!=0)
+    logger.e("StateFragment", "Hints===="+ephemeralState.state.name+" ==== " +ephemeralState.state.interaction.getHint(0).hintContent.html)
     val scrollToTop =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 

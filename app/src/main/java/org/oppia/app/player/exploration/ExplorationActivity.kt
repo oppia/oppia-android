@@ -7,16 +7,20 @@ import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
 import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
+private const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener {
+  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener {
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -97,4 +101,20 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun onEditorAction(actionCode: Int) {
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }
+
+  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
+  }
+
+  override fun routeToHintsAndSolution(skillId: String) {
+    if (getHintsAndSolution() == null) {
+      val hintsAndSolutionFragment: HintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(skillId)
+      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+    }
+  }
+
+  override fun dismiss() {
+    getHintsAndSolution()?.dismiss()
+  }
+
 }

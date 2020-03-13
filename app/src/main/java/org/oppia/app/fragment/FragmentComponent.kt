@@ -3,23 +3,24 @@ package org.oppia.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
+import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
-import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
 import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
+import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
-import org.oppia.app.administratorcontrols.AdministratorControlsFragment
-import org.oppia.app.help.faq.FAQFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -57,6 +58,7 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(faqFragment: FAQFragment)
   fun inject(helpFragment: HelpFragment)
+  fun inject(hintsAndSolutionFragment: HintsAndSolutionFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
