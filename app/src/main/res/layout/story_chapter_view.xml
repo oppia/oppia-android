@@ -61,6 +61,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
+          android:minHeight="140dp"
           android:padding="8dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +95,7 @@
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:maxLines="4"
+            android:maxLines="3"
             android:text="@{viewModel.summary}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
@@ -116,7 +117,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

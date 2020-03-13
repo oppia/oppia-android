@@ -39,6 +39,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
+          android:minHeight="116dp"
           android:padding="8dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +55,7 @@
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            android:maxLines="2"
+            android:maxLines="1"
             android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
@@ -94,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
