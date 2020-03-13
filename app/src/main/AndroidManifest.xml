@@ -152,6 +152,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>
