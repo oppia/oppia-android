@@ -18,7 +18,9 @@ import org.oppia.app.databinding.AdministratorControlsDownloadPermissionsViewBin
 import org.oppia.app.databinding.AdministratorControlsFragmentBinding
 import org.oppia.app.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.app.databinding.AdministratorControlsProfileViewBinding
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -27,13 +29,21 @@ import javax.inject.Inject
 @FragmentScope
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment, private val viewModelProvider: ViewModelProvider<AdministratorControlsViewModel>
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<AdministratorControlsViewModel>
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = AdministratorControlsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+    val viewModel = getAdministratorControlsViewModel()
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -43,9 +53,10 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     }
 
     binding.apply {
-      this.viewModel = getAdministratorControlsItemViewModel()
+      this.viewModel = viewModel
       this.lifecycleOwner = fragment
     }
+
     return binding.root
   }
 
@@ -94,7 +105,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getAdministratorControlsItemViewModel(): AdministratorControlsViewModel {
+  private fun getAdministratorControlsViewModel(): AdministratorControlsViewModel {
     return viewModelProvider.getForFragment(fragment, AdministratorControlsViewModel::class.java)
   }
 
