@@ -13,6 +13,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:background="@color/profileEditBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,25 +21,20 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
-      android:paddingBottom="52dp"
+      android:clipToPadding="false"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
-
-      <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_edit_image"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/profile_edit_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/profile_edit_image"
         app:layout_constraintTop_toTopOf="@id/profile_edit_image">
 
@@ -47,9 +43,10 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/black"
-          android:textSize="24sp"
-          android:textStyle="bold"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="20sp"
+          android:maxLines="1"
+          android:fontFamily="sans-serif-medium"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,77 +54,95 @@
           android:id="@+id/profile_edit_created"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="18sp"
+          android:textSize="16sp"
+          android:maxLines="1"
+          android:fontFamily="sans-serif"
           profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
       </LinearLayout>
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_edit_image"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        profile:src="@{viewModel.profile.avatar}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+      android:id="@+id/linearLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
+      android:clipToPadding="false"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_edit_main">
-
       <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/grey" />
-
       <Button
         android:id="@+id/profile_rename_button"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="48dp"
         android:background="@color/white"
         android:gravity="start|center_vertical"
-        android:paddingStart="28dp"
+        android:paddingStart="16dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/oppiaPrimaryText"
+        android:fontFamily="sans-serif"
         android:text="@string/profile_edit_rename"
         android:textAllCaps="false"
         android:textSize="16sp" />
-
       <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/grey" />
-
       <Button
         android:id="@+id/profile_reset_button"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="48dp"
+        android:fontFamily="sans-serif"
         android:background="@color/white"
+        android:textColor="@color/oppiaPrimaryText"
         android:gravity="start|center_vertical"
-        android:paddingStart="28dp"
+        android:paddingStart="16dp"
+        style="?android:attr/borderlessButtonStyle"
         android:text="@string/profile_edit_reset"
         android:textAllCaps="false"
-        android:textSize="16sp" />
-
+        android:textSize="16dp" />
       <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/grey" />
-
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}">
-
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/profile_edit_allow_download_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@color/white"
-          android:paddingStart="28dp"
-          android:paddingTop="16dp"
-          android:paddingEnd="28dp"
-          android:paddingBottom="16dp">
+          android:paddingStart="16dp"
+          android:paddingTop="12dp"
+          android:paddingEnd="16dp"
+          android:paddingBottom="12dp">
 
           <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="28dp"
+            android:layout_marginEnd="24dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/profile_edit_allow_download_switch"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -136,28 +151,32 @@
               android:id="@+id/profile_edit_allow_download_heading"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:fontFamily="sans-serif"
               android:text="@string/profile_edit_allow_download_heading"
-              android:textColor="@color/black"
-              android:textSize="16sp" />
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="16dp" />
 
             <TextView
               android:id="@+id/profile_edit_allow_download_sub"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@string/profile_edit_allow_download_sub" />
+              android:fontFamily="sans-serif"
+              android:text="@string/profile_edit_allow_download_sub"
+              android:textSize="14sp" />
           </LinearLayout>
 
           <Switch
             android:id="@+id/profile_edit_allow_download_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
         <View
           android:layout_width="match_parent"
-          android:layout_height="2dp"
+          android:layout_height="1dp"
           android:background="@color/grey" />
       </LinearLayout>
     </LinearLayout>
@@ -165,31 +184,36 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="20dp"
+      android:layout_marginBottom="12dp"
       android:orientation="vertical"
+      android:clipToPadding="false"
       android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
-      app:layout_constraintBottom_toBottomOf="parent">
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+      app:layout_constraintVertical_bias="1.0">
 
       <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/grey" />
-
       <Button
         android:id="@+id/profile_delete_button"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="48dp"
         android:background="@color/white"
+        android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
-        android:paddingStart="28dp"
+        android:paddingStart="16dp"
+        style="?android:attr/borderlessButtonStyle"
         android:text="@string/profile_edit_delete"
         android:textAllCaps="false"
         android:textColor="@color/red"
         android:textSize="16sp" />
-
       <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="@color/grey" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
