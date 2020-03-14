@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that displays profile progress in the app. */
-class ProfileProgressFragment : InjectableFragment() {
+class ProfileProgressFragment : InjectableFragment(),ProfilePictureDialogInterface {
   companion object {
     internal const val PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY = "ProfileProgressFragment.internal_profile_id"
 
@@ -34,5 +34,13 @@ class ProfileProgressFragment : InjectableFragment() {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
     val internalProfileId = args.getInt(PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY, -1)
     return profileProgressFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+  }
+
+  override fun showProfilePicture() {
+    //TODO - Needs to be implemented
+  }
+
+  override fun showGalleryForProfilePicture() {
+    //TODO - Needs to be implemented
   }
 }

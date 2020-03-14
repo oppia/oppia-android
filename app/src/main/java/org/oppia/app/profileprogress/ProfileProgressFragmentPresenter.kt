@@ -14,6 +14,8 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
+private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG"
+
 /** The presenter for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
@@ -69,6 +71,15 @@ class ProfileProgressFragmentPresenter @Inject constructor(
         transformViewModel = { it as RecentlyPlayedStorySummaryViewModel }
       )
       .build()
+  }
+
+  fun showPictureEditDialog() {
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_PROFILE_PICTURE_EDIT_DIALOG)
+    if (previousFragment != null) {
+      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = ProfilePictureEditDialogFragment.newInstance()
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_PICTURE_EDIT_DIALOG)
   }
 
   private fun getProfileProgressViewModel(): ProfileProgressViewModel {

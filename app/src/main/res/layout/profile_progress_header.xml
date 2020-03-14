@@ -6,6 +6,10 @@
   <data>
 
     <variable
+      name="presenter"
+      type="org.oppia.app.profileprogress.ProfileProgressFragmentPresenter" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.profileprogress.ProfileProgressHeaderViewModel" />
   </data>
@@ -26,6 +30,9 @@
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_edit_image"
         android:layout_width="96dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> presenter.showPictureEditDialog()}"
         android:layout_height="96dp"
         profile:src="@{viewModel.profile.avatar}" />
 
@@ -36,6 +43,7 @@
         android:src="@drawable/ic_edit_18"
         app:backgroundTint="@color/white"
         app:fabCustomSize="24dp"
+        android:onClick="@{() -> presenter.showPictureEditDialog()}"
         app:tint="@color/colorPrimary" />
     </FrameLayout>
 
