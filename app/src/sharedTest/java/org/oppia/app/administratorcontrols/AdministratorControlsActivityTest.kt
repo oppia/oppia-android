@@ -185,8 +185,7 @@ class AdministratorControlsActivityTest {
           .perform(click())
         onView(isRoot()).perform(pressBack())
         onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-        onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-          .perform(click())
+        onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
         onView(atPositionOnView(R.id.administrator_controls_list, 2, R.id.topic_update_on_wifi_switch))
           .check(matches(isChecked()))
       }
