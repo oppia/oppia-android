@@ -19,6 +19,11 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/profile_edit_main">
 
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
       <Button
         android:id="@+id/profile_rename_button"
         style="?android:attr/borderlessButtonStyle"
@@ -32,6 +37,11 @@
         android:textAllCaps="false"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
 
       <Button
         android:id="@+id/profile_reset_button"
@@ -106,22 +116,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/grey" />
       </LinearLayout>
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
     </LinearLayout>
 
     <LinearLayout
@@ -137,6 +137,11 @@
       app:layout_constraintTop_toBottomOf="@+id/linearLayout"
       app:layout_constraintVertical_bias="1.0">
 
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+
       <Button
         android:id="@+id/profile_delete_button"
         style="?android:attr/borderlessButtonStyle"
@@ -150,11 +155,6 @@
         android:textAllCaps="false"
         android:textColor="@color/red"
         android:textSize="16sp" />
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
 
       <View
         android:layout_width="match_parent"
