@@ -63,16 +63,16 @@
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16dp" />
 
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/grey" />
+
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
           android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}">
-
-          <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey" />
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile_edit_allow_download_container"
