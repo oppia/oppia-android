@@ -94,7 +94,6 @@ class ProfileEditActivityTest {
     }
   }
 
-
   @Test
   fun testProfileEditActivity_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 1)).use {
@@ -176,7 +175,6 @@ class ProfileEditActivityTest {
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
-
 
   @Test
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() {
