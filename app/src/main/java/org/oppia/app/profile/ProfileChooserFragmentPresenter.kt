@@ -129,13 +129,25 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor(), AdminAuthEnum.PROFILE_ADD_PROFILE.value)
         )
       } else {
         activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
+          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, -1,  selectUniqueRandomColor(), AdminAuthEnum.PROFILE_ADD_PROFILE.value)
         )
       }
+    }
+  }
+
+  fun routeToAdminPin() {
+    if (chooserViewModel.adminPin.isEmpty()) {
+      activity.startActivity(
+        AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor(), AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value)
+      )
+    } else {
+      activity.startActivity(
+        AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor(), AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value)
+      )
     }
   }
 }

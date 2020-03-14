@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.databinding.AdminAuthActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -36,6 +37,9 @@ class AdminAuthActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = authViewModel
     }
+
+    setTitleAndSubTitle(binding)
+
     binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
@@ -53,13 +57,39 @@ class AdminAuthActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
-        activity.startActivity(
-          AddProfileActivity.createAddProfileActivityIntent(
-            context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
-          )
-        )
+        when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+            activity.startActivity(
+              AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_PROFILE_ID, -1)
+              )
+            )
+          }
+          AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
+            activity.startActivity(
+              AddProfileActivity.createAddProfileActivityIntent(
+                context, activity.intent.getIntExtra(KEY_ADMIN_AUTH_COLOR_RGB, -10710042)
+              )
+            )
+          }
+        }
       } else {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
+      }
+    }
+  }
+
+  private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
+    when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
+      AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+        binding?.adminAuthToolbar?.title = context.resources.getString(R.string.administrator_controls)
+        binding?.headingText?.text = context.resources.getString(R.string.admin_auth_heading)
+        binding?.subText?.text = context.resources.getString(R.string.admin_auth_admin_controls_sub)
+      }
+      AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
+        binding?.adminAuthToolbar?.title = context.resources.getString(R.string.add_profile_title)
+        binding?.headingText?.text = context.resources.getString(R.string.admin_auth_heading)
+        binding?.subText?.text = context.resources.getString(R.string.admin_auth_sub)
       }
     }
   }
