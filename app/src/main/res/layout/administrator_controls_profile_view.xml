@@ -20,7 +20,7 @@
       android:background="@color/mid_grey_30"
       android:fontFamily="sans-serif-medium"
       android:paddingLeft="16dp"
-      android:paddingTop="20dp"
+      android:paddingTop="28dp"
       android:paddingRight="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_profile_management_label"
