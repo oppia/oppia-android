@@ -19,6 +19,7 @@ import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -38,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -191,6 +193,48 @@ class OptionsFragmentTest {
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
         matches(withText("English"))
       )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_clickDefaultAudioLanguage_configurationChange_changeDefaultAudioLanguageToEnglishSuccessfully() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
+        click()
+      )
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            1,
+            click()
+          )
+        )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+    @Test
+  fun testOptionFragment_clickDefaultAudioLanguage_configurationChange_changeDefaultAudioLanguageToChineseSuccessfully() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            4,
+            click()
+          )
+        )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
+        matches(withText("Chinese")))
     }
   }
 
