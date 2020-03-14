@@ -21,7 +21,6 @@ import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import java.io.Console
 import javax.inject.Inject
 
 /** The presenter for [TopicReviewFragment]. */
