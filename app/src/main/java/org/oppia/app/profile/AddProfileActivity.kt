@@ -40,4 +40,8 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     super.onActivityResult(requestCode, resultCode, data)
     addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
   }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    //Should be override and left empty in order to manually save state
+  }
 }

@@ -13,6 +13,11 @@ class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
   val confirmPinErrorMsg = ObservableField("")
   val nameErrorMsg = ObservableField("")
   val createPin = ObservableField(false)
+  var savedName = ""
+  var savedPin = ""
+  var savedConfirmPin = ""
+  var savedScrollPosition = 0
+  var savedDownloadSwitch = false
 
   fun clearAllErrorMessages() {
     pinErrorMsg.set("")

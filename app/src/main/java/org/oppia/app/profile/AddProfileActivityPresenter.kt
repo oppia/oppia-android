@@ -66,6 +66,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
+      profileViewModel.savedDownloadSwitch = isChecked
     }
     binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
@@ -79,6 +80,17 @@ class AddProfileActivityPresenter @Inject constructor(
 
     addTextChangedListeners(binding)
     addButtonListeners(binding)
+
+    binding.inputName.setInput(profileViewModel.savedName)
+    binding.inputPin.setInput(profileViewModel.savedPin)
+    binding.inputConfirmPin.setInput(profileViewModel.savedConfirmPin)
+    binding.checkboxPin.isChecked = profileViewModel.createPin.get() ?: false
+    binding.allowDownloadSwitch.isChecked = profileViewModel.savedDownloadSwitch
+    binding.scroll.post {
+      binding.scroll.requestFocus()
+      binding.scroll.smoothScrollTo(0,profileViewModel.savedScrollPosition)
+    }
+    addScrollListener(binding)
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -194,6 +206,7 @@ class AddProfileActivityPresenter @Inject constructor(
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
         profileViewModel.pinErrorMsg.set("")
+        profileViewModel.savedPin = it.toString()
         inputtedPin = pin.isNotEmpty()
         setValidPin()
       }
@@ -202,6 +215,7 @@ class AddProfileActivityPresenter @Inject constructor(
     addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
       confirmPin?.let {
         profileViewModel.confirmPinErrorMsg.set("")
+        profileViewModel.savedConfirmPin = it.toString()
         inputtedConfirmPin = confirmPin.isNotEmpty()
         setValidPin()
       }
@@ -210,6 +224,7 @@ class AddProfileActivityPresenter @Inject constructor(
     addTextChangedListener(binding.inputName) { name ->
       name?.let {
         profileViewModel.nameErrorMsg.set("")
+        profileViewModel.savedName = it.toString()
       }
     }
   }
@@ -226,6 +241,12 @@ class AddProfileActivityPresenter @Inject constructor(
       override fun afterTextChanged(p0: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
+  }
+
+  private fun addScrollListener(binding: AddProfileActivityBinding){
+    binding.scroll.viewTreeObserver.addOnScrollChangedListener {
+      profileViewModel.savedScrollPosition = binding.scroll.scrollY
+    }
   }
 
   private fun showInfoDialog() {
