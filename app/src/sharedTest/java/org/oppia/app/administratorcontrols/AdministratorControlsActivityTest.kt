@@ -3,7 +3,6 @@ package org.oppia.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -25,7 +24,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -36,7 +34,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -45,6 +42,8 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -64,10 +63,6 @@ class AdministratorControlsActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
   @Inject
   lateinit var context: Context
-
-  @get:Rule
-  var mActivityTestRule: ActivityTestRule<AdministratorControlsActivity> =
-    ActivityTestRule<AdministratorControlsActivity>(AdministratorControlsActivity::class.java)
 
   @Before
   @ExperimentalCoroutinesApi
@@ -286,113 +281,110 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsChecked_onRotate_checkIfSwitchIsChecked() {
-    mActivityTestRule.launchActivity(
+  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() {
+    ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     )
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+    onView(withId(R.id.administrator_controls_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        2
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
-        )
-      ).check(
-        matches(
-          not(
-            isChecked()
-          )
-        )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.topic_update_on_wifi_switch
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
-        )
-      ).check(
-        matches(
-          not(
-            isChecked()
-          )
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
-        )
-      ).perform(click())
-      mActivityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-      Thread.sleep(2000);
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
-        )
-      ).check(
-        matches(
+    ).check(
+      matches(
+        not(
           isChecked()
         )
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
-        )
-      ).check(
-        matches(
-          not(
-            isChecked()
-          )
-        )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.auto_update_topic_switch
       )
-      mActivityTestRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-      Thread.sleep(2000);
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
-      )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
-        )
-      ).check(
-        matches(
+    ).check(
+      matches(
+        not(
           isChecked()
         )
       )
-      onView(
-        atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
-        )
-      ).check(
-        matches(
-          not(
-            isChecked()
-          )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.topic_update_on_wifi_switch
+      )
+    ).perform(click())
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.administrator_controls_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        2
+      )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.topic_update_on_wifi_switch
+      )
+    ).check(
+      matches(
+        isChecked()
+      )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.auto_update_topic_switch
+      )
+    ).check(
+      matches(
+        not(
+          isChecked()
         )
       )
-
+    )
+    onView(isRoot()).perform(orientationPortrait())
+    onView(withId(R.id.administrator_controls_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        2
+      )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.topic_update_on_wifi_switch
+      )
+    ).check(
+      matches(
+        isChecked()
+      )
+    )
+    onView(
+      atPositionOnView(
+        R.id.administrator_controls_list,
+        2,
+        R.id.auto_update_topic_switch
+      )
+    ).check(
+      matches(
+        not(
+          isChecked()
+        )
+      )
+    )
   }
 
   @Test
