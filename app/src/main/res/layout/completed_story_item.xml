@@ -31,10 +31,12 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerInside"
+        android:src="@{viewModel.completedStory.lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundedRectDrawableWithColor="@{viewModel.completedStory.lessonThumbnail.backgroundColorRgb}" />
 
       <LinearLayout
         android:layout_width="0dp"
@@ -51,24 +53,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-          android:id="@+id/chapter_name_text_view"
+          android:id="@+id/completed_story_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:fontFamily="sans-serif-medium"
-          android:maxLines="1"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="18sp" />
-
-        <TextView
-          android:id="@+id/story_name_text_view"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
           android:layout_marginBottom="4dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
-          android:maxLines="1"
+          android:text="@{viewModel.completedStory.storyName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
 
@@ -78,7 +69,7 @@
           android:layout_height="wrap_content"
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
-          android:maxLines="1"
+          android:text="@{viewModel.completedStory.topicName}"
           android:textAllCaps="true"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp" />

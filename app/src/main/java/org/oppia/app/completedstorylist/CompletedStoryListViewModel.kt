@@ -29,7 +29,7 @@ class CompletedStoryListViewModel @Inject constructor(
   }
 
   val completedStoryListLiveData: LiveData<List<CompletedStoryItemViewModel>> by lazy {
-    Transformations.map(storyLiveData, ::processStoryChapterList)
+    Transformations.map(storyLiveData, ::processCompletedStoryList)
   }
 
   fun setProfileId(internalProfileId: Int) {
@@ -44,10 +44,10 @@ class CompletedStoryListViewModel @Inject constructor(
     return storyResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
-  private fun processStoryChapterList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
+  private fun processCompletedStoryList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
-    itemViewModelList.addAll(completedStoryList.storySummaryList.map { storySummary ->
-      CompletedStoryItemViewModel(storySummary)
+    itemViewModelList.addAll(completedStoryList.completedStoryList.map { completedStory ->
+      CompletedStoryItemViewModel(completedStory)
     })
     return itemViewModelList
   }
