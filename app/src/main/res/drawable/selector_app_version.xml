@@ -16,7 +16,7 @@
           <solid android:color="@color/oppiaTextShadow" />
         </shape>
       </item>
-      <item android:bottom="2dp" android:right="0dp">
+      <item android:bottom="1dp" android:right="0dp">
         <shape>
           <solid android:color="@color/white" />
         </shape>
