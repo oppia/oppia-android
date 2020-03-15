@@ -68,7 +68,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val wasProfileEverCreatedLiveData: LiveData<Boolean> by lazy {
     getProfileEverCreated()
   }
-  private var whichViewAdd: Boolean = true
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -78,7 +77,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
-    subscribetoProfileEverCreated(binding)
+    subscribeToProfileEverCreated(binding)
+
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -119,8 +119,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
 
-    chooserViewModel.profileViewVisibility(binding, whichViewAdd)
-
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
@@ -146,8 +144,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
 
-    chooserViewModel.addViewVisibility(binding, whichViewAdd)
-
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
@@ -167,43 +163,42 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       }
     }
-
   }
 
   private fun getProfileEverCreated(): LiveData<Boolean> {
     return Transformations.map(
       profileManagementController.getWasProfileEverAdded(),
-      ::processProfileEverCreated
+      ::wasProfileEverCreated
     )
   }
 
-  private fun subscribetoProfileEverCreated(
+  private fun subscribeToProfileEverCreated(
     binding: ProfileChooserFragmentBinding
   ) {
     wasProfileEverCreatedLiveData.observe(fragment, Observer<Boolean> {
       when (it) {
         true -> {
+          chooserViewModel.wasProfileEverCreated.set(true)
           binding.profileRecyclerView.layoutManager =
             GridLayoutManager(activity.applicationContext, 2)
-          whichViewAdd = true
         }
-
         false -> {
+          chooserViewModel.wasProfileEverCreated.set(false)
           binding.profileRecyclerView.layoutManager =
             LinearLayoutManager(activity.applicationContext)
-          whichViewAdd = false
         }
-
       }
     })
   }
 
-  private fun processProfileEverCreated(boolean: AsyncResult<Boolean>): Boolean {
+  private fun wasProfileEverCreated(boolean: AsyncResult<Boolean>): Boolean {
     if (boolean.isFailure()) {
-      Log.e("TopicFragment", "Failed to retrieve topic", boolean.getErrorOrNull()!!)
+      Log.e(
+        "ProfileChooserFragment",
+        "Failed to retrieve wasProfileEverCreated",
+        boolean.getErrorOrNull()!!
+      )
     }
     return boolean.getOrDefault(equals(true))
   }
-
 }
-

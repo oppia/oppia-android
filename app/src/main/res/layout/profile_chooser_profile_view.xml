@@ -10,6 +10,10 @@
     <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserUiModel" />
+
+    <variable
+      name="profileViewModel"
+      type="org.oppia.app.profile.ProfileChooserViewModel" />
   </data>
 
   <RelativeLayout
@@ -23,7 +27,7 @@
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      android:visibility="gone">
+      android:visibility="@{profileViewModel.wasProfileEverCreated ? View.VISIBLE : View.GONE}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"
@@ -60,7 +64,8 @@
       android:id="@+id/profile_button_first_time"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:visibility="@{profileViewModel.wasProfileEverCreated ? View.GONE : View.VISIBLE}">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -69,9 +74,11 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="60dp"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="@{profileViewModel.wasProfileEverCreated ? View.GONE : View.VISIBLE}">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+
+      <de.hdodenhof.circleimageview.CircleImageView
           android:id="@+id/profile_avatar_img_first_time"
           android:layout_width="72dp"
           android:layout_height="72dp"
@@ -114,7 +121,8 @@
       <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:src="@drawable/profile_recyclerview_item_decor" />
+        android:src="@drawable/profile_recyclerview_item_decor"
+        android:visibility="@{profileViewModel.wasProfileEverCreated ? View.GONE : View.VISIBLE}"/>
     </LinearLayout>
   </RelativeLayout>
 </layout>

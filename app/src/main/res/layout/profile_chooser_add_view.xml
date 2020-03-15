@@ -2,6 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.ProfileChooserViewModel" />
+  </data>
+
   <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -12,7 +21,9 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:visibility="@{viewModel.wasProfileEverCreated ? View.VISIBLE : View.GONE}">
+
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"
@@ -21,7 +32,8 @@
         android:layout_marginBottom="12dp"
         android:src="@drawable/ic_add_profile"
         app:civ_border_color="@color/avatarBorder"
-        app:civ_border_width="1dp" />
+        app:civ_border_width="1dp"
+        android:visibility="@{viewModel.wasProfileEverCreated ? View.VISIBLE : View.GONE}"/>
 
       <TextView
         android:id="@+id/add_profile_text"
@@ -40,7 +52,8 @@
       android:layout_marginTop="60dp"
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
-      android:orientation="horizontal">
+      android:orientation="horizontal"
+      android:visibility="@{viewModel.wasProfileEverCreated ? View.GONE : View.VISIBLE}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button_first_time"

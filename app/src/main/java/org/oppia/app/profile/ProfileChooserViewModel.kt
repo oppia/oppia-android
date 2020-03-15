@@ -1,10 +1,8 @@
 package org.oppia.app.profile
 
-import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.databinding.ProfileChooserAddViewBinding
-import org.oppia.app.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
@@ -31,6 +29,7 @@ class ProfileChooserViewModel @Inject constructor(
   lateinit var adminProfileId: ProfileId
 
   val usedColors = mutableListOf<Int>()
+  var wasProfileEverCreated = ObservableBoolean()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserUiModel> {
@@ -68,36 +67,4 @@ class ProfileChooserViewModel @Inject constructor(
 
     return sortedProfileList
   }
-
-  fun addViewVisibility(binding: ProfileChooserAddViewBinding, boolean: Boolean) {
-    when (boolean) {
-      false -> {
-        binding.profileChooserAddViewFirstTime.visibility = View.VISIBLE
-        binding.profileChooserAddView.visibility = View.GONE
-      }
-      true -> {
-        binding.profileChooserAddView.visibility = View.VISIBLE
-        binding.profileChooserAddViewFirstTime.visibility = View.GONE
-      }
-
-    }
-
-  }
-
-  fun profileViewVisibility(binding: ProfileChooserProfileViewBinding, boolean: Boolean) {
-    when (boolean) {
-      false -> {
-        binding.profileButton.visibility = View.GONE
-        binding.profileButtonFirstTime.visibility = View.VISIBLE
-      }
-      true -> {
-        binding.profileButtonFirstTime.visibility = View.GONE
-        binding.profileButton.visibility = View.VISIBLE
-
-      }
-
-    }
-
-  }
-
 }
