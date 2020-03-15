@@ -26,6 +26,10 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
       intent.putExtra(KEY_ADMIN_AUTH_ENUM, adminPinEnum)
       return intent
     }
+
+    fun getIntentKey(): String {
+      return KEY_ADMIN_AUTH_ENUM
+    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

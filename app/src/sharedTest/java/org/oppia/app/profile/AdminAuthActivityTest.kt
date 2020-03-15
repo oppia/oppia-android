@@ -31,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -72,7 +73,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        1
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -85,12 +88,34 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_inputCorrectPassword_opensAddAdministratorControlsActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        0,
+        -10710042,
+        0
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_button)).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        0
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -119,7 +144,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        0
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -141,7 +168,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        0
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -159,7 +188,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        0
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -181,7 +212,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        0,
+        -10710042,
+        0
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
