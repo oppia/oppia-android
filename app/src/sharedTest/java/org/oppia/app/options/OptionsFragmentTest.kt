@@ -197,9 +197,8 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_configurationChange_changeDefaultAudioLanguageToEnglishSuccessfully() {
+  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected{
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
@@ -212,19 +211,20 @@ class OptionsFragmentTest {
           )
         )
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
         matches(withText("English"))
       )
     }
   }
 
-    @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_configurationChange_changeDefaultAudioLanguageToChineseSuccessfully() {
+  @Test
+  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToChinese_changeConfiguration_checkChineseLanguageIsSelected{
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
+
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
           RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -233,8 +233,10 @@ class OptionsFragmentTest {
           )
         )
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
-        matches(withText("Chinese")))
+        matches(withText("Chinese"))
+      )
     }
   }
 
