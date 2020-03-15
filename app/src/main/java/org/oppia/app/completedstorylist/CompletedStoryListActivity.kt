@@ -20,10 +20,10 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
   companion object {
     internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY = "CompletedStoryListActivity.profile_id"
 
-    /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified story ID. */
-    fun createStoryActivityIntent(context: Context, storyId: String): Intent {
+    /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
+    fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, CompletedStoryListActivity::class.java)
-      intent.putExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, storyId)
+      intent.putExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
   }

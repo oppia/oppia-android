@@ -24,6 +24,7 @@ import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
+import org.oppia.app.profileprogress.ProfileProgressFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.topic.TopicFragment
@@ -35,7 +36,9 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.review.TopicReviewFragment
 import org.oppia.app.topic.reviewcard.ReviewCardFragment
 import org.oppia.app.view.ViewComponent
-import org.oppia.app.walkthrough.WalkthroughFragment
+import org.oppia.app.walkthrough.end.WalkthroughFinalFragment
+import org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragment
+import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
@@ -70,6 +73,7 @@ interface FragmentComponent {
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
@@ -82,5 +86,7 @@ interface FragmentComponent {
   fun inject(topicReviewFragment: TopicReviewFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
-  fun inject(walkthroughFragment: WalkthroughFragment)
+  fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
+  fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
+  fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
 }

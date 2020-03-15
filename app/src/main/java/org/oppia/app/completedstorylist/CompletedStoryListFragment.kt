@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY = "CompletedStoryListFragment.profile_id"
-
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
   companion object {
+    internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY = "CompletedStoryListFragment.profile_id"
+
     /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
       val completedStoryListFragment = CompletedStoryListFragment()
@@ -37,7 +37,6 @@ class CompletedStoryListFragment : InjectableFragment() {
   ): View? {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to CompletedStoryListFragment" }
     val internalProfileId = args.getInt(COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, -1)
-
     return completedStoryListFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 }

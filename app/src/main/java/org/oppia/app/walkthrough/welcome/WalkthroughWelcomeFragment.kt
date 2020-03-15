@@ -1,4 +1,4 @@
-package org.oppia.app.walkthrough
+package org.oppia.app.walkthrough.welcome
 
 import android.content.Context
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains an walkthrough of the app. */
-class WalkthroughFragment : InjectableFragment() {
-  @Inject lateinit var walkthroughFragmentPresenter: WalkthroughFragmentPresenter
+/** The first slide for [WalkthroughActivity]. */
+class WalkthroughWelcomeFragment : InjectableFragment() {
+  @Inject lateinit var walkthroughWelcomeFragmentPresenter: WalkthroughWelcomeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class WalkthroughFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return walkthroughFragmentPresenter.handleCreateView(inflater, container)
+    return walkthroughWelcomeFragmentPresenter.handleCreateView(inflater, container)
   }
 }

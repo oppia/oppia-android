@@ -6,16 +6,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.databinding.CompletedStoryItemBinding
 import org.oppia.app.databinding.CompletedStoryListFragmentBinding
-import org.oppia.app.databinding.StoryChapterViewBinding
-import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
-import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presenter for [StoryFragment]. */
+/** The presenter for [CompletedStoryListFragment]. */
 class CompletedStoryListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
@@ -47,28 +44,17 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_COMPLETED_STORY
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_COMPLETED_STORY,
-        inflateDataBinding = StoryChapterViewBinding::inflate,
-        setViewModel = StoryChapterViewBinding::setViewModel,
-        transformViewModel = { it as StoryChapterSummaryViewModel }
+  private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<CompletedStoryItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = CompletedStoryItemBinding::inflate,
+        setViewModel = CompletedStoryItemBinding::setViewModel
       )
       .build()
   }
 
   private fun getCompletedStoryListViewModel(): CompletedStoryListViewModel {
     return viewModelProvider.getForFragment(fragment, CompletedStoryListViewModel::class.java)
-  }
-
-  private enum class ViewType {
-    VIEW_TYPE_COMPLETED_STORY
   }
 }
