@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.FAQHeaderViewModel" />
+      type="org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

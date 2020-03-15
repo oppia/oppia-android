@@ -16,6 +16,9 @@ import org.oppia.app.databinding.FaqContentBinding
 import org.oppia.app.databinding.FaqFragmentBinding
 import org.oppia.app.databinding.FaqItemHeaderBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel
+import org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel
+import org.oppia.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
@@ -75,7 +78,8 @@ class FAQFragmentPresenter @Inject constructor(
   private fun getRecyclerViewItemList(): ArrayList<FAQContentViewModel> {
     val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
     for (question in questions) {
-      val faqViewModel = FAQContentViewModel(question)
+      val faqViewModel =
+        FAQContentViewModel(question)
       arrayList.add(faqViewModel)
     }
     return arrayList

@@ -1,4 +1,4 @@
-package org.oppia.app.help.faq
+package org.oppia.app.help.faq.faqItemViewModel
 
 import org.oppia.app.viewmodel.ObservableViewModel
 
