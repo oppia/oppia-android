@@ -722,6 +722,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(storyId)
       .setStoryName(storyData.getString("title"))
+      .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
       .addAllChapter(
         createChaptersFromJson(
           storyId, storyData.getJSONObject("story_contents").getJSONArray("nodes")
@@ -756,6 +757,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_0)
       .setStoryName("First Story")
+      .setStoryThumbnail(createStoryThumbnail0())
       .addChapter(createTestTopic0Story0Chapter0())
       .build()
   }
@@ -774,6 +776,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_1)
       .setStoryName("Second Story")
+      .setStoryThumbnail(createStoryThumbnail1())
       .addChapter(createTestTopic0Story1Chapter0())
       .addChapter(createTestTopic0Story1Chapter1())
       .addChapter(createTestTopic0Story1Chapter2())
@@ -814,6 +817,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_2)
       .setStoryName("Other Interesting Story")
+      .setStoryThumbnail(createStoryThumbnail1())
       .addChapter(createTestTopic1Story2Chapter0())
       .build()
   }
