@@ -6,6 +6,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.CompletedStory
 import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.OngoingTopicList
@@ -244,10 +245,23 @@ class TopicController @Inject constructor(
     return dataProviders.convertToLiveData(
       dataProviders.transformAsync(
         TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
-        storyProgressController.retrieveStoryProgressListDataProvider(profileId)
+        storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       ) {
-        val completedStoryList = createCompletedStoryListFromProgress(it)
-        AsyncResult.success(completedStoryList)
+        val completedStoryListBuilder = CompletedStoryList.newBuilder()
+        it.topicProgressList.forEach { topicProgress ->
+          val topicName = retrieveTopic(topicProgress.topicId).name
+          val storyProgressListBuilder = StoryProgressList.newBuilder()
+          val transformedStoryProgressList = topicProgress.storyProgressMap.values.toList()
+          storyProgressListBuilder.addAllStoryProgress(transformedStoryProgressList)
+
+          completedStoryListBuilder.addAllCompletedStory(
+            createCompletedStoryListFromProgress(
+              topicName,
+              storyProgressListBuilder.build()
+            )
+          )
+        }
+        AsyncResult.success(completedStoryListBuilder.build())
       }
     )
   }
@@ -301,18 +315,26 @@ class TopicController @Inject constructor(
     return true
   }
 
-  private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
-    val completedStoryListBuilder = CompletedStoryList.newBuilder()
+  private fun createCompletedStoryListFromProgress(
+    topicName: String,
+    storyProgressList: StoryProgressList
+  ): List<CompletedStory> {
+    val completedStoryList = ArrayList<CompletedStory>()
     storyProgressList.storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)
         && storyProgress.chapterProgressMap[lastChapterSummary.explorationId] == ChapterPlayState.COMPLETED
       ) {
-        completedStoryListBuilder.addStorySummary(storySummary)
+        val completedStoryBuilder = CompletedStory.newBuilder()
+          .setStoryId(storySummary.storyId)
+          .setStoryName(storySummary.storyName)
+          .setTopicName(topicName)
+          .setLessonThumbnail(storySummary.storyThumbnail)
+        completedStoryList.add(completedStoryBuilder.build())
       }
     }
-    return completedStoryListBuilder.build()
+    return completedStoryList
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */

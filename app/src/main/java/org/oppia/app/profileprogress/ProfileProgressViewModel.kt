@@ -99,7 +99,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun subscribeToCompletedStoryListLiveData() {
     getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
-      headerViewModel.setCompletedStoryCount(it.storySummaryCount)
+      headerViewModel.setCompletedStoryCount(it.completedStoryCount)
     })
   }
 
