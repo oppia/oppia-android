@@ -965,7 +965,7 @@ class TopicControllerTest {
 
       verifyGetCompletedStoryListSucceeded()
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
+      assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
     }
 
   @Test
@@ -980,7 +980,7 @@ class TopicControllerTest {
 
       verifyGetCompletedStoryListSucceeded()
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(0)
+      assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
     }
 
   @Test
@@ -999,8 +999,8 @@ class TopicControllerTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(1)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     }
 
   @Test
@@ -1044,8 +1044,8 @@ class TopicControllerTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(1)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
     }
 
   @Test
@@ -1070,9 +1070,9 @@ class TopicControllerTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryCount).isEqualTo(2)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-      assertThat(completedStoryList.storySummaryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
     }
 
   private fun setUpTestApplicationComponent() {

@@ -17,7 +17,6 @@ import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.StoryProgressList
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
@@ -25,7 +24,6 @@ import org.oppia.app.model.SubtopicThumbnail
 import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicProgress
-import org.oppia.app.model.TopicProgressList
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
@@ -248,16 +246,16 @@ class TopicController @Inject constructor(
         storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       ) {
         val completedStoryListBuilder = CompletedStoryList.newBuilder()
-        it.topicProgressList.forEach { topicProgress ->
+        it.forEach { topicProgress ->
           val topicName = retrieveTopic(topicProgress.topicId).name
-          val storyProgressListBuilder = StoryProgressList.newBuilder()
+          val storyProgressList = mutableListOf<StoryProgress>()
           val transformedStoryProgressList = topicProgress.storyProgressMap.values.toList()
-          storyProgressListBuilder.addAllStoryProgress(transformedStoryProgressList)
+          storyProgressList.addAll(transformedStoryProgressList)
 
           completedStoryListBuilder.addAllCompletedStory(
             createCompletedStoryListFromProgress(
               topicName,
-              storyProgressListBuilder.build()
+              storyProgressList
             )
           )
         }
@@ -285,12 +283,12 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun createOngoingTopicListFromProgress(topicProgressList: TopicProgressList): OngoingTopicList {
+  private fun createOngoingTopicListFromProgress(topicProgressList: List<TopicProgress>): OngoingTopicList {
     val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
-    topicProgressList.topicProgressList.forEach { topicProgress ->
+    topicProgressList.forEach { topicProgress ->
       val topic = retrieveTopic(topicProgress.topicId)
       if (topicProgress.storyProgressCount != 0) {
-        if (topic.storyCount != topicProgress!!.storyProgressCount) {
+        if (topic.storyCount != topicProgress.storyProgressCount) {
           ongoingTopicListBuilder.addTopic(topic)
         } else {
           if (!checkIfTopicIsFullyCompleted(topic, topicProgress)) {
@@ -317,10 +315,10 @@ class TopicController @Inject constructor(
 
   private fun createCompletedStoryListFromProgress(
     topicName: String,
-    storyProgressList: StoryProgressList
+    storyProgressList: List<StoryProgress>
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    storyProgressList.storyProgressList.forEach { storyProgress ->
+    storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)

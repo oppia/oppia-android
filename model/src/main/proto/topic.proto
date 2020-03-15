@@ -273,18 +273,6 @@ message TopicProgress {
   map<string, StoryProgress> story_progress = 2;
 }
 
-// Corresponds to the list of topic progress.
-message TopicProgressList {
-  // List of topic progress
-  repeated TopicProgress topic_progress = 1;
-}
-
-// Corresponds to the list of story progress.
-message StoryProgressList {
-  // List of story progress
-  repeated StoryProgress story_progress = 1;
-}
-
 // Represents the story progress.
 message StoryProgress {
   // The ID corresponding to the story.
