@@ -27,7 +27,7 @@
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
   <color name="oppiaDisabledButtonBackground">#61999999</color>
-  <color name="oppiaTextShadow">#0000001F</color>
+  <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
