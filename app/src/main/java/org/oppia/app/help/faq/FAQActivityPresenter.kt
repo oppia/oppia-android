@@ -20,6 +20,9 @@ class FAQActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
     }
+    binding.faqActivityToolbar.setNavigationOnClickListener {
+      (activity as FAQActivity).finish()
+    }
 
     faqActivityToolbar = binding.faqActivityToolbar
     activity.setSupportActionBar(faqActivityToolbar)
