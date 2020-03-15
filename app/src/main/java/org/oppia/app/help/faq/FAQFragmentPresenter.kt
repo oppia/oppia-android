@@ -37,7 +37,9 @@ class FAQFragmentPresenter @Inject constructor(
     val viewModel = getFAQViewModel()
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     linearSmoothScroller = createSmoothScroller()
+
     binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
+
     binding.faqFragmentRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = createRecyclerViewAdapter()
