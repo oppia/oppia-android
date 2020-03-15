@@ -23,20 +23,16 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
     val viewModel = getCompletedStoryListViewModel()
-    binding = CompletedStoryListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setProfileId(internalProfileId)
 
+    binding = CompletedStoryListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.completedStoryListToolbar.setNavigationOnClickListener {
       (activity as CompletedStoryListActivity).finish()
     }
-
     binding.completedStoryList.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = createRecyclerViewAdapter()
     }
-
-    // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
-    // data-bound view models.
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = viewModel

@@ -20,28 +20,31 @@ class CompletedStoryListViewModel @Inject constructor(
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
 
-  private val storyResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
+  private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
     topicController.getCompletedStoryList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
   }
 
-  private val storyLiveData: LiveData<CompletedStoryList> by lazy {
-    Transformations.map(storyResultLiveData, ::processStoryResult)
+  private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
+    Transformations.map(completedStoryListResultLiveData, ::processCompletedStoryListResult)
   }
 
   val completedStoryListLiveData: LiveData<List<CompletedStoryItemViewModel>> by lazy {
-    Transformations.map(storyLiveData, ::processCompletedStoryList)
+    Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
   }
 
   fun setProfileId(internalProfileId: Int) {
     this.internalProfileId = internalProfileId
   }
 
-  private fun processStoryResult(storyResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
-    if (storyResult.isFailure()) {
-      logger.e("CompletedStoryListFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
+  private fun processCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+    if (completedStoryListResult.isFailure()) {
+      logger.e(
+        "CompletedStoryListFragment",
+        "Failed to retrieve CompletedStory list: ",
+        completedStoryListResult.getErrorOrNull()!!
+      )
     }
-
-    return storyResult.getOrDefault(CompletedStoryList.getDefaultInstance())
+    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
   private fun processCompletedStoryList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
