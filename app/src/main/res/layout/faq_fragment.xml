@@ -25,7 +25,7 @@
         android:id="@+id/faq_fragment_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:data="@{viewModel.faqItemList}" />
+        app:list="@{viewModel.faqItemList}" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
