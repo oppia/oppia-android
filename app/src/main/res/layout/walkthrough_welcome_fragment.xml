@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragmentPresenter" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+      style="@style/StateButtonActive"
+      android:text="@string/next"
+      android:id="@+id/walkthrough_welcome_next_btn"
+      android:onClick="@{(v) -> presenter.changePage()}"
+      android:layout_marginBottom="32dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
