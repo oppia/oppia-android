@@ -25,6 +25,11 @@ class FAQViewModel @Inject constructor(
     val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
     for (question in questions) {
       val faqContentViewModel = FAQContentViewModel(question)
+      if (questions[questions.size - 1] == question) {
+        faqContentViewModel.showDivider.set(false)
+      } else {
+        faqContentViewModel.showDivider.set(true)
+      }
       arrayList.add(faqContentViewModel)
     }
     return arrayList
