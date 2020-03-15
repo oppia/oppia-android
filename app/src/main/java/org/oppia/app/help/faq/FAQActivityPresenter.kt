@@ -20,15 +20,16 @@ class FAQActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
     }
-    binding.faqActivityToolbar.setNavigationOnClickListener {
-      (activity as FAQActivity).finish()
-    }
 
     faqActivityToolbar = binding.faqActivityToolbar
     activity.setSupportActionBar(faqActivityToolbar)
     activity.supportActionBar!!.title = activity.getString(R.string.FAQs)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+    binding.faqActivityToolbar.setNavigationOnClickListener {
+      (activity as FAQActivity).finish()
+    }
 
     if (getFAQFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
