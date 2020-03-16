@@ -3,7 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:profile="http://schemas.android.com/tools">
-
   <data>
 
     <variable
@@ -19,8 +18,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-
-      android:id="@+id/walkthrough_welcome_image_view"
+      android:id="@+id/profile_picture_image_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
       profile:src="@{viewModel.profileAvatar}"

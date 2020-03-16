@@ -6,16 +6,16 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** Activity to display profile picture. */
 class ProfilePictureActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var profilePictureActivityPresenter: ProfilePictureActivityPresenter
-  private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_PICTURE_ACTIVITY_PROFILE_ID_KEY, -1)
+    val internalProfileId = intent.getIntExtra(PROFILE_PICTURE_ACTIVITY_PROFILE_ID_KEY, -1)
     profilePictureActivityPresenter.handleOnCreate(internalProfileId)
   }
 
@@ -29,5 +29,4 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
       return intent
     }
   }
-
 }

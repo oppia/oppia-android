@@ -23,11 +23,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
@@ -137,7 +133,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
 
@@ -157,8 +153,8 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(ViewMatchers.isDisplayed()))
-      onView(withId(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
       intended(expectedIntent)
     }
   }
