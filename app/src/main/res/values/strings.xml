@@ -2,9 +2,10 @@
 <resources>
   <string name="app_name">Oppia</string>
   <string name="nav_header_title">Sean</string>
-  <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_options">Options</string>
+  <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="administrator_controls">Administrator Controls</string>
@@ -26,6 +27,7 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="review_card_toolbar_title">Review Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
@@ -42,6 +44,8 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
+  <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Question (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
@@ -74,10 +78,11 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="search">Search</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
-  <string name="fraction_error_larger_than_seven_digits">None of the numbers of the fraction should be larger than 7 digits.</string>
+  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 characters (i.e.,[0-9] or "." or "-").</string>
@@ -87,7 +92,7 @@
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
-  <string name="topic_prefix">Topic:</string>
+  <string name="topic_heading">Topic: %s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -116,6 +121,23 @@
       %d Lessons
     </item>
   </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">
+      1 Story Completed
+    </item>
+    <item quantity="other">
+      %d Stories Completed
+    </item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">
+      1 Topic in Progress
+    </item>
+    <item quantity="other">
+      %d Topics in Progress
+    </item>
+  </plurals>
+  <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
@@ -135,9 +157,9 @@
   <string name="admin_pin_submit">Submit</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name (required)</string>
-  <string name="add_profile_input_pin">3-Digit PIN (optional)</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN</string>
+  <string name="add_profile_input_name">Name*</string>
+  <string name="add_profile_input_pin">3-Digit PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
   <string name="add_profile_create_btn">Create</string>
@@ -217,4 +239,42 @@
   <string name="profile_reset_pin_admin_confirm_label">Confirm 5-Digit PIN</string>
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
+  <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
+  <string name="add_profile_required">*Required</string>
+  <string name="back_button">Back Button</string>
+  <string name="next">Next</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_general_label">General</string>
+  <string name="administrator_controls_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_app_information_label">App Information</string>
+  <string name="administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_account_actions_label">Account Actions</string>
+  <string name="administrator_controls_log_out">Log Out</string>
+  <string name="log_out_dialog_cancel_button">Cancel</string>
+  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
+  <!-- AppVersionFragment -->
+  <string name="app_version_name">App Version %s</string>
+  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <!-- OptionsActivity -->
+  <string name="title_story_text_size">Story Text Size</string>
+  <string name="title_app_language">App Language</string>
+  <string name="title_default_audio">Default Audio Language</string>
+  <string name="story_text_will_look_like_this">Story text will look like this</string>
+  <string name="constant_string_for_text_size">A</string>
+  <string name="audio_language">Audio Language</string>
+  <string name="app_language">App Language</string>
+  <string name="story_text_size">Story Text Size</string>
+  <string name="profile">Profile</string>
+  <string name="topics_in_progress">Topics in Progress</string>
+  <string name="topic_in_progress">Topic in Progress</string>
+  <string name="stories_completed">Stories Completed</string>
+  <string name="story_completed">Story Completed</string>
 </resources>

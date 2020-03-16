@@ -17,7 +17,15 @@ class RecentlyPlayedFragmentTestActivity : InjectableAppCompatActivity(),
     recentlyPlayedFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 }

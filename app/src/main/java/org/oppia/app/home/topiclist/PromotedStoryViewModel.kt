@@ -12,7 +12,11 @@ import org.oppia.app.viewmodel.ObservableViewModel
 // TODO(#283): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-class PromotedStoryViewModel(private val activity: AppCompatActivity) : ObservableViewModel(),
+class PromotedStoryViewModel(
+  private val activity: AppCompatActivity,
+  private val internalProfileId: Int
+) :
+  ObservableViewModel(),
   RouteToTopicPlayStoryListener {
 
   /**
@@ -27,13 +31,18 @@ class PromotedStoryViewModel(private val activity: AppCompatActivity) : Observab
   }
 
   fun clickOnStoryTile() {
-    routeToTopicPlayStory(promotedStoryObservable.get()!!.topicId, promotedStoryObservable.get()!!.storyId)
+    routeToTopicPlayStory(
+      internalProfileId,
+      promotedStoryObservable.get()!!.topicId,
+      promotedStoryObservable.get()!!.storyId
+    )
   }
 
-  override fun routeToTopicPlayStory(topicId: String, storyId: String) {
+  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
     activity.startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         activity.applicationContext,
+        internalProfileId,
         topicId,
         storyId
       )
