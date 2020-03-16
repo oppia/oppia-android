@@ -290,4 +290,5 @@
   <string name="story_completed">Story Completed</string>
   <!-- WalkthroughActivity -->
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
+  <string name="welcome">"Welcome "</string>
 </resources>
