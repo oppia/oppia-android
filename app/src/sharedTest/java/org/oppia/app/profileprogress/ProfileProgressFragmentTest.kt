@@ -62,14 +62,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileProgressFragmentTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var context: Context
 
   private val internalProfileId = 0
 
@@ -329,20 +324,9 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.view_all_text_view
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
-      intended(
-        hasExtra(
-          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-          internalProfileId
-        )
-      )
+      intended(hasExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId))
     }
   }
 
@@ -362,13 +346,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
-        )
-      ).check(
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).check(
         matches(
           not(
             isClickable()
@@ -383,20 +361,9 @@ class ProfileProgressFragmentTest {
     storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_container
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).perform(click())
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      intended(
-        hasExtra(
-          OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY,
-          internalProfileId
-        )
-      )
+      intended(hasExtra(OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
     }
   }
 
@@ -405,25 +372,13 @@ class ProfileProgressFragmentTest {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
     storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).perform(click())
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
-      intended(
-        hasExtra(
-          CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY,
-          internalProfileId
-        )
-      )
+      intended(hasExtra(CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   @Module
   class TestModule {
