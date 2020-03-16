@@ -36,7 +36,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = WalkthroughWelcomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -79,7 +78,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      walkthroughWelcomeViewModel.profileName.set(activity.getString(R.string.welcome) + profileName + "!")
+      walkthroughWelcomeViewModel.profileName.set(activity.getString(R.string.welcome,profileName))
     }
   }
 

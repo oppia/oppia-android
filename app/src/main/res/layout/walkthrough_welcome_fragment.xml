@@ -58,7 +58,7 @@
       android:src="@drawable/ic_onboarding_0" />
 
     <Button
-      android:id="@+id/walkthrough_welcome_next_btn"
+      android:id="@+id/walkthrough_welcome_next_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="0dp"
