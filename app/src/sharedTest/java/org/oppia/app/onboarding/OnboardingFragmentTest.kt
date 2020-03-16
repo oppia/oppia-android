@@ -9,9 +9,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ViewPagerActions.scrollToPage
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withAlpha
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -429,6 +431,47 @@ class OnboardingFragmentTest {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(3))
       onView(withId(R.id.onboarding_slide_view_pager)).perform(swipeLeft())
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_3_title)))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_slide0Title_changeOrientation_titleIsCorrect() {
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_0_title)))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_moveToSlide1_changeOrientation_titleIsCorrect() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPage(1))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.slide_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.onboarding_slide_1_title)))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.skip_text_view)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.slide_title_text_view),

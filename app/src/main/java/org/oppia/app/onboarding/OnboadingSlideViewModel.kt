@@ -1,6 +1,8 @@
 package org.oppia.app.onboarding
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.app.R
@@ -14,6 +16,7 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
   val contentDescription = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
   val title = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
   val description = ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_description))
+  private val orientation = Resources.getSystem().configuration.orientation
 
   init {
     initializingSlide(viewPagerSlide)
@@ -22,25 +25,41 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
   private fun initializingSlide(viewPagerSlide: ViewPagerSlide) {
     when (viewPagerSlide) {
       ViewPagerSlide.SLIDE_0 -> {
-        slideImage.set(R.drawable.ic_onboarding_0)
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          slideImage.set(R.drawable.ic_landscape_onboarding_0)
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+          slideImage.set(R.drawable.ic_onboarding_0)
+        }
         contentDescription.set(context.resources.getString(R.string.onboarding_slide_0_title))
         title.set(context.resources.getString(R.string.onboarding_slide_0_title))
         description.set(context.resources.getString(R.string.onboarding_slide_0_description))
       }
       ViewPagerSlide.SLIDE_1 -> {
-        slideImage.set(R.drawable.ic_onboarding_1)
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+          slideImage.set(R.drawable.ic_landscape_onboarding_1)
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+          slideImage.set(R.drawable.ic_onboarding_1)
+        }
         contentDescription.set(context.resources.getString(R.string.onboarding_slide_1_title))
         title.set(context.resources.getString(R.string.onboarding_slide_1_title))
         description.set(context.resources.getString(R.string.onboarding_slide_1_description))
       }
       ViewPagerSlide.SLIDE_2 -> {
-        slideImage.set(R.drawable.ic_onboarding_2)
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+          slideImage.set(R.drawable.ic_landscape_onboarding_2)
+        } else if(orientation == Configuration.ORIENTATION_PORTRAIT){
+          slideImage.set(R.drawable.ic_onboarding_2)
+        }
         contentDescription.set(context.resources.getString(R.string.onboarding_slide_2_title))
         title.set(context.resources.getString(R.string.onboarding_slide_2_title))
         description.set(context.resources.getString(R.string.onboarding_slide_2_description))
       }
       ViewPagerSlide.SLIDE_3 -> {
-        slideImage.set(R.drawable.ic_onboarding_3)
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+          slideImage.set(R.drawable.ic_landscape_onboarding_3)
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
+          slideImage.set(R.drawable.ic_onboarding_3)
+        }
         contentDescription.set(context.resources.getString(R.string.onboarding_slide_3_title))
         title.set(context.resources.getString(R.string.onboarding_slide_3_title))
         description.set(context.resources.getString(R.string.onboarding_slide_3_description))
