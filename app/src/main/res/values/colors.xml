@@ -21,6 +21,7 @@
   <color name="oppiaBrown">#C55F45</color>
   <color name="oppiaLightBrown">#E76F51</color>
   <color name="oppiaBackground">#F2F2F2</color>
+  <color name="oppiaGreyBackground">#E5E5E5</color>
   <color name="oppiaStrokeBlue">#4D395FD0</color>
   <color name="oppiaSolidBlue">#4DA5D3EC</color>
   <color name="oppiaStrokeBlack">#CC333333</color>
