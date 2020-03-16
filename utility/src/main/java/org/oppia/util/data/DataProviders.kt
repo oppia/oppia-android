@@ -8,7 +8,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.oppia.util.threading.BackgroundDispatcher
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -175,118 +179,114 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * A version of [LiveData] which can be notified to execute a specified coroutine if there is a pending update.
+   * A version of [LiveData] which automatically pipes data from a specified [DataProvider] to LiveData observers in a
+   * thread-safe and lifecycle-safe way.
    *
-   * This [LiveData] also reports the pending, succeeding, and failing state of the [AsyncResult]. Note that it will
-   * immediately execute the specified async function upon initialization, so it's recommended to only initialize this
-   * object upon when its result is actually needed to avoid kicking off many async tasks with results that may never be
-   * used.
+   * This class will immediately retrieve the latest state of its input [DataProvider] at the first occurrence of an
+   * observer, but not before then. It guarantees that all active observers (including new ones) will receive an
+   * eventually consistent state of the data provider. It also will not deliver the same value more than once in a row
+   * to avoid over-alerting observers of changes.
    */
   private class NotifiableAsyncLiveData<T>(
     private val dispatcher: CoroutineDispatcher,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val dataProvider: DataProvider<T>
-  ) : MediatorLiveData<AsyncResult<T>>() {
-    private val coroutineLiveDataLock = ReentrantLock()
-    @GuardedBy("coroutineLiveDataLock") private var pendingCoroutineLiveData: LiveData<AsyncResult<T>>? = null
-    @GuardedBy("coroutineLiveDataLock") private var cachedValue: AsyncResult<T>? = null
-
-    // This field is only access on the main thread, so no additional locking is necessary.
-    private var dataProviderSubscriber: ObserveAsyncChange? = null
-
-    init {
-      // Schedule to retrieve data from the provider immediately.
-      enqueueAsyncFunctionAsLiveData()
-    }
-
-    override fun onActive() {
-      if (dataProviderSubscriber == null) {
-        val subscriber: ObserveAsyncChange = {
-          notifyUpdate()
-        }
-        asyncDataSubscriptionManager.subscribe(dataProvider.getId(), subscriber)
-        dataProviderSubscriber = subscriber
-      }
-      super.onActive()
-    }
-
-    override fun onInactive() {
-      super.onInactive()
-      dataProviderSubscriber?.let {
-        asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), it)
-        dataProviderSubscriber = null
-      }
-      dequeuePendingCoroutineLiveData()
-    }
-
-    /**
-     * Notifies this live data that it should re-run its asynchronous function and propagate any results.
-     *
-     * Note that if an existing operation is pending, it may complete but its results will not be propagated in favor
-     * of the run started by this call. Note also that regardless of the current [AsyncResult] value of this live data,
-     * the new value will overwrite it (e.g. it's possible to go from a failed to success state or vice versa).
-     *
-     * This needs to be run on the main thread due to [LiveData] limitations.
-     */
-    private fun notifyUpdate() {
-      dequeuePendingCoroutineLiveData()
-      enqueueAsyncFunctionAsLiveData()
-    }
-
-    /**
-     * Enqueues the async function, but execution is based on whether this [LiveData] is active. See [MediatorLiveData]
-     * docs for context.
-     */
-    private fun enqueueAsyncFunctionAsLiveData() {
-      val coroutineLiveData = CoroutineLiveData(dispatcher) {
-        dataProvider.retrieveData()
-      }
-      coroutineLiveDataLock.withLock {
-        pendingCoroutineLiveData = coroutineLiveData
-        addSource(coroutineLiveData) { computedValue ->
-          // Only notify LiveData subscriptions if the value is actually different.
-          if (cachedValue != computedValue) {
-            value = computedValue
-            cachedValue = value
-          }
-        }
-      }
-    }
-
-    private fun dequeuePendingCoroutineLiveData() {
-      coroutineLiveDataLock.withLock {
-        pendingCoroutineLiveData?.let {
-          removeSource(it) // This can trigger onInactive() situations for long-standing operations, leading to them being cancelled.
-          pendingCoroutineLiveData = null
-        }
-      }
-    }
-  }
-
-  // TODO(#72): Replace this with AndroidX's CoroutineLiveData once the corresponding LiveData suspend job bug is fixed
-  //  and available.
-  /** A [LiveData] whose value is derived from a suspended function. */
-  private class CoroutineLiveData<T>(
-    private val dispatcher: CoroutineDispatcher,
-    private val function: suspend () -> T
-  ) : MutableLiveData<T>() {
-    private var runningJob: Job? = null
+  ): LiveData<AsyncResult<T>>() {
+    private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
+    private val isActive = AtomicBoolean(false)
+    private val runningJob = AtomicReference<Job?>(null)
+    private var cache: AsyncResult<T>? = null // only accessed on the main thread
 
     override fun onActive() {
       super.onActive()
-      if (runningJob == null) {
+      // Subscribe the ID immediately in case there's a value in the data provider already ready.
+      asyncDataSubscriptionManager.subscribe(dataProvider.getId(), asyncSubscriber)
+      isActive.set(true)
+
+      // If there's no currently cached value or soon-to-be cached value, kick-off a data retrieval so that new
+      // observers can receive the most up-to-date value.
+      if (runningJob.get() == null) {
         val scope = CoroutineScope(dispatcher)
-        runningJob = scope.launch {
-          postValue(function())
-          runningJob = null
+        val job = scope.launch {
+          handleDataProviderUpdate()
         }
+        // Note that this can race against handleDataProviderUpdate() clearing the job, but in either outcome the
+        // behavior should still be correct via eventual consistency.
+        runningJob.set(job)
       }
     }
 
     override fun onInactive() {
       super.onInactive()
-      runningJob?.cancel() // This can cancel downstream operations that may want to complete side effects.
-      runningJob = null
+      // Stop watching for updates immediately, then cancel any existing operations.
+      asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), asyncSubscriber)
+      isActive.set(false)
+      // This can cancel downstream operations that may want to complete side effects.
+      runningJob.getAndSet(null)?.cancel()
+    }
+
+    override fun setValue(value: AsyncResult<T>?) {
+      // TODO(BenHenning): Fetch the in-memory cache from the data provider (once possible) to get the latest snapshot
+      // rather than incorrectly ignoring the value being passed to setValue().
+//      val (propagateValue, newValue) = coroutineLiveDataLock.withLock {
+//        val isNewValue = cache != pendingCache
+
+        // Indicate that this live data now has a cached value.
+//        cache = pendingCache
+
+//        return@withLock Pair(isNewValue, pendingCache)
+//      }
+
+      // Only propagate the value if it's changed.
+//      if (propagateValue) {
+//        super.setValue(newValue)
+//      }
+
+      checkNotNull(value) { "Null values should not be posted to coroutine LiveDatas." }
+      val currentCache = cache // This is safe because cache can only be changed on the main thread.
+      if (currentCache != null) {
+        if (value.isNewerThanOrSameAgeAs(currentCache) && currentCache != value) {
+          // Only propagate the value if it's changed and is newer since it's possible for subscription callbacks to
+          // happen out-of-order.
+          cache = value
+          super.setValue(value)
+        }
+      } else {
+        cache = value
+        super.setValue(value)
+      }
+    }
+
+    private suspend fun handleDataProviderUpdate() {
+      // This doesn't guarantee that retrieveData() is only called when the live data is active (e.g. it can become
+      // inactive right after the value is posted & before it's dispatched), but it does guarantee that it won't be
+      // called when the live data is currently inactive.
+//      if (isActive.get()) {
+//        coroutineLiveDataLock.withLock {
+          // Save the latest call to retrieveData() as the source of truth in case calls into retrieveData() trigger a
+          // loop (e.g. due to a deferred quickly executing and notifying provider changes) where the loop may be executed
+          // out of order (though this is generally expected to only happen in tests due to differing dispatcher behavior
+          // from prod).
+//          val newPendingValue = dataProvider.retrieveData()
+//          pendingCache = newPendingValue
+//          super.postValue(newPendingValue)
+//          runningJob.set(null) // Erase any pending jobs since the live data will soon be up-to-date.
+//        }
+//      }
+
+      fetchFromDataProvider()?.let {
+        super.postValue(it)
+        runningJob.set(null)
+      }
+    }
+
+    private suspend fun fetchFromDataProvider(): AsyncResult<T>? {
+      return if (isActive.get()) {
+        // Although it's possible for the live data to become inactive after this point, this follows the expected
+        // contract of the data provider (it may have its data fetched and not delivered), and it guarantees eventual
+        // consistency since the class still caches the results in case a new observer is added later.
+        dataProvider.retrieveData()
+      } else null
     }
   }
 }
