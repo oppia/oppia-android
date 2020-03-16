@@ -138,22 +138,6 @@ class OngoingTopicListActivityTest {
     }
   }
 
-///////////////////////////////////////Test Case for Landscape Mode////////////////////////////////////////
-
-  @Test
-  fun testTopicPracticeFragment_loadFragment_changeOrientation_textIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.ongoing_topic_list)).perform(
-        ViewActions.click())
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
-      onView(withId(R.id.story_count_text_view)).check(matches(withText(R.string.story_count_text_view)))
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.story_count_text_view)))
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
     return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
