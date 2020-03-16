@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
 import javax.inject.Inject
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @FragmentScope
 class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val walkthroughWelcomeViewModelProvider: ViewModelProvider<WalkthroughWelcomeViewModel>
 ) {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -26,11 +28,16 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
+      it.viewModel = getWelcomeWalkthroughViewModel()
     }
     return binding.root
   }
 
   fun changePage() {
     routeToNextPage.currentPage(WalkthroughPages.TOPIC_LIST.value)
+  }
+
+  private fun getWelcomeWalkthroughViewModel(): WalkthroughWelcomeViewModel {
+    return walkthroughWelcomeViewModelProvider.getForFragment(fragment, WalkthroughWelcomeViewModel::class.java)
   }
 }
