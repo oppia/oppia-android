@@ -30,18 +30,14 @@ class FAQFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<FAQViewModel>
 ) {
   private lateinit var binding: FaqFragmentBinding
-  private lateinit var linearLayoutManager: LinearLayoutManager
-  private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getFAQViewModel()
-    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
-    linearSmoothScroller = createSmoothScroller()
 
     binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
 
     binding.faqFragmentRecyclerView.apply {
-      layoutManager = linearLayoutManager
+      layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = createRecyclerViewAdapter()
     }
 
@@ -83,31 +79,5 @@ class FAQFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_CONTENT
-  }
-
-  private fun createSmoothScroller(): RecyclerView.SmoothScroller {
-    val milliSecondsPerInch = 100f
-
-    return object : LinearSmoothScroller(activity) {
-      override fun getVerticalSnapPreference(): Int {
-        return SNAP_TO_START
-      }
-
-      override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-        return milliSecondsPerInch / displayMetrics!!.densityDpi
-      }
-
-      override fun calculateDyToMakeVisible(view: View, snapPreference: Int): Int {
-        return super.calculateDyToMakeVisible(view, snapPreference) + dipToPixels(48)
-      }
-    }
-  }
-
-  private fun dipToPixels(dipValue: Int): Int {
-    return TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      dipValue.toFloat(),
-      Resources.getSystem().displayMetrics
-    ).toInt()
   }
 }

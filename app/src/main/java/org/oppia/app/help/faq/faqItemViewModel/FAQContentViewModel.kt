@@ -6,5 +6,5 @@ import androidx.databinding.ObservableField
 class FAQContentViewModel(val title: String) : FAQItemViewModel() {
 
   /** Used to control visibility of divider. */
-  var showDivider = ObservableField(true)
+  val showDivider = ObservableField(true)
 }

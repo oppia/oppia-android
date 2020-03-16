@@ -19,7 +19,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher
 @RunWith(AndroidJUnit4::class)
 class FAQFragmentTest {
 
-  var itemCount: Int = 9
+  private val itemCount: Int = 9
 
   @Test
   fun openFAQActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
@@ -33,7 +33,7 @@ class FAQFragmentTest {
         RecyclerViewMatcher.atPositionOnView(
           R.id.faq_fragment_recycler_view,
           0,
-          R.id.recycler_item_text_view
+          R.id.faq_question_text_view
         )
       ).check(
         matches(
@@ -55,7 +55,7 @@ class FAQFragmentTest {
         RecyclerViewMatcher.atPositionOnView(
           R.id.faq_fragment_recycler_view,
           itemCount - 1,
-          R.id.recycler_item_divider_view
+          R.id.faq_question_text_view
         )
       ).check(
         matches(

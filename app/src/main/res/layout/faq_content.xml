@@ -21,7 +21,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <TextView
-        android:id="@+id/recycler_item_text_view"
+        android:id="@+id/faq_question_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
