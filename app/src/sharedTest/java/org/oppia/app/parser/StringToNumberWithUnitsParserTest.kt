@@ -20,7 +20,7 @@ import org.oppia.app.parser.StringToNumberWithUnitsParser.UnitsObjectFactory
 @RunWith(AndroidJUnit4::class)
 class StringToNumberWithUnitsParserTest {
 
-  private var context: Context? = null
+  lateinit var context: Context
   lateinit var nwuof: StringToNumberWithUnitsParser
   lateinit var uof: UnitsObjectFactory
 
@@ -50,8 +50,29 @@ class StringToNumberWithUnitsParserTest {
     return NumberUnit.newBuilder().setExponent(exponent).setUnit(unit).build()
   }
 
+  fun numberWithUnits(
+    real: Double?,
+    fraction: Fraction?,
+    units: String
+  ): NumberWithUnits {
+    if (real != null)
+      return newBuilder().setReal(real).addAllUnit(uof.fromRawInputString(units).units.asIterable()).build()
+    else
+      return newBuilder().setFraction(fraction).addAllUnit(uof.fromRawInputString(units).units.asIterable()).build()
+  }
+
+  fun fraction(
+    isNegative: Boolean,
+    wholeNumber: Int,
+    numerator: Int,
+    denominator: Int
+  ): Fraction {
+    return Fraction.newBuilder().setIsNegative(isNegative)
+      .setWholeNumber(wholeNumber).setNumerator(numerator).setDenominator(denominator).build()
+  }
+
   @Test
-  fun testNumberWithUnitsInputInteractionView_withUnitText_hasCorrectListOfNumberUnitsfromString() {
+  fun testFromStringToListFunction_hasCorrectListOfNumberUnitsfromString() {
     assertThat(uof.fromStringToList("kg / kg^2 K mol / (N m s^2) K s")).isEqualTo(
       listOf(
         numberUnit(exponent = -1, unit = "kg"), numberUnit(exponent = 2, unit = "K"),
@@ -76,7 +97,7 @@ class StringToNumberWithUnitsParserTest {
   }
 
   @Test
-  fun testNumberWithUnitsInputInteractionView_withUnitText_hasCorrectConvertedUnitsFromListToStringFormat() {
+  fun testUnitsWithArrayList_hasCorrectConvertedUnitsFromListToStringFormat() {
     assertThat(
       StringToNumberWithUnitsParser.Units(
         arrayListOf(
@@ -100,7 +121,7 @@ class StringToNumberWithUnitsParserTest {
   }
 
   @Test
-  fun testNumberWithUnitsInputInteractionView_withUnitText_hasCorrectConvertedUnitsFromListToLexicalFormat() {
+  fun testStringToLexical_hasCorrectConvertedUnitsFromListToLexicalFormat() {
     assertThat(uof.stringToLexical("kg per kg^2 K mol / (N m s^2) K s")).isEqualTo(
       arrayListOf(
         "kg", "/", "kg^2", "*", "K", "*", "mol", "/", "(", "N", "*", "m", "*",
@@ -121,52 +142,30 @@ class StringToNumberWithUnitsParserTest {
     )
   }
 
-  fun numberWithUnits(
-    real: Double?,
-    fraction: Fraction?,
-    units: String
-  ): NumberWithUnits {
-    if (real != null)
-      return newBuilder().setReal(real).addAllUnit(uof.fromRawInputString(units).units.asIterable()).build()
-    else
-      return newBuilder().setFraction(fraction).addAllUnit(uof.fromRawInputString(units).units.asIterable()).build()
-  }
-
-  fun fraction(
-    isNegative: Boolean,
-    wholeNumber: Int,
-    numerator: Int,
-    denominator: Int
-  ): Fraction {
-    return Fraction.newBuilder().setIsNegative(isNegative)
-      .setWholeNumber(wholeNumber).setNumerator(numerator).setNumerator(denominator).build()
-  }
-
   @Test
-  fun testNumberWithUnitsInputInteractionView_withUnitText_hasCorrectConvertedStringFormatFromNumberWithUnits() {
-//    assertThat(
-//      StringToNumberWithUnitsParser().numberWithUnitsToString(
-//        "real",
-//        numberWithUnits(
-//          2.02, null, "m / s^2"
-//        )
-//      )
-//    ).isEqualTo("2.02 m s^-2")
-//
-//
-//    assertThat(
-//      StringToNumberWithUnitsParser().numberWithUnitsToString(
-//        "real",
-//        numberWithUnits(2.02, null, "Rs")
-//      )
-//    ).isEqualTo("Rs 2.02")
-//
-//    assertThat(
-//      StringToNumberWithUnitsParser().numberWithUnitsToString(
-//        "real",
-//        numberWithUnits(2.0, null, "")
-//      )
-//    ).isEqualTo("2.0")
+  fun testNumberWithUnitsToStringFunction_hasCorrectConvertedStringFormatFromNumberWithUnits() {
+    assertThat(
+      StringToNumberWithUnitsParser().numberWithUnitsToString(
+        "real",
+        numberWithUnits(
+          2.02, null, "m / s^2"
+        )
+      )
+    ).isEqualTo("2.02 m s^-2")
+
+    assertThat(
+      StringToNumberWithUnitsParser().numberWithUnitsToString(
+        "real",
+        numberWithUnits(2.02, null, "Rs")
+      )
+    ).isEqualTo("Rs 2.02")
+
+    assertThat(
+      StringToNumberWithUnitsParser().numberWithUnitsToString(
+        "real",
+        numberWithUnits(2.0, null, "")
+      )
+    ).isEqualTo("2.0")
 
     assertThat(
       StringToNumberWithUnitsParser().numberWithUnitsToString(
@@ -176,133 +175,128 @@ class StringToNumberWithUnitsParserTest {
         )
       )
     ).isEqualTo("-4/3 m s^-2")
-//    assertThat(
-//      StringToNumberWithUnitsParser().numberWithUnitsToString(
-//        "fraction", numberWithUnits(
-//          null,
-//          fraction(false, 0, 4, 3), "$ per hour"
-//        )
-//      )
-//    ).isEqualTo("$ 4/3 hour^-1")
-//    assertThat(
-//      StringToNumberWithUnitsParser().numberWithUnitsToString(
-//        "real",
-//        numberWithUnits(
-//          40.0, null, "Rs per hour"
-//        )
-//      ).toString(
-//      )
-//    ).isEqualTo("Rs 40 hour^-1")
+    assertThat(
+      StringToNumberWithUnitsParser().numberWithUnitsToString(
+        "fraction", numberWithUnits(
+          null,
+          fraction(false, 0, 4, 3), "$ per hour"
+        )
+      )
+    ).isEqualTo("$ 4/3 hour^-1")
+    assertThat(
+      StringToNumberWithUnitsParser().numberWithUnitsToString(
+        "real",
+        numberWithUnits(
+          40.0, null, "Rs per hour"
+        )
+      ).toString(
+      )
+    ).isEqualTo("Rs 40.0 hour^-1")
   }
 
-//  it('should convert number with units object to a string', () =>
-//  {
-//    expect(
-//      new NumberWithUnits ('real', 2.02, new Fraction (false, 0, 0, 1
-//    ), uof.fromRawInputString('m / s^2')).toString()).toBe('2.02 m s^-2');
-//    expect(
-//      new NumberWithUnits ('real', 2.02, new Fraction (false, 0, 0, 1
-//    ), uof.fromRawInputString('Rs')).toString()).toBe('Rs 2.02');
-//    expect(
-//      new NumberWithUnits ('real', 2, new Fraction (false, 0, 0, 1
-//    ), uof.fromRawInputString('')).toString()).toBe('2');
-//    expect(
-//      new NumberWithUnits ('fraction', 0, new Fraction (true, 0, 4, 3
-//    ), uof.fromRawInputString('m / s^2')).toString()).toBe('-4/3 m s^-2');
-//    expect(
-//      new NumberWithUnits ('fraction', 0, new Fraction (
-//          false, 0, 4, 3
-//    ), uof.fromRawInputString('$ per hour')).toString(
-//    )).toBe('$ 4/3 hour^-1');
-//    expect(
-//      new NumberWithUnits ('real', 40, new Fraction (
-//          false, 0, 0, 1
-//    ), uof.fromRawInputString('Rs per hour')).toString(
-//    )).toBe('Rs 40 hour^-1');
-//  });
-//
-//  it('should parse valid units strings', () =>
-//  {
-//    expect(uof.fromRawInputString('kg per (K mol^-2)')).toEqual(
-//      new Units (uof.fromStringToList('kg / (K mol^-2)'))
-//    );
-//    expect(uof.fromRawInputString('kg / (K mol^-2) N / m^2')).toEqual(
-//      new Units (uof.fromStringToList('kg / (K mol^-2) N / m^2'))
-//    );
-//  });
-//
-//  it('should parse valid number with units strings', () =>
-//  {
-//    expect(nwuof.fromRawInputString('2.02 kg / m^3')).toEqual(
-//      new NumberWithUnits ('real', 2.02, new Fraction (
-//          false, 0, 0, 1
-//    ), uof.fromRawInputString('kg / m^3')));
-//    expect(nwuof.fromRawInputString('2 / 3 kg / m^3')).toEqual(
-//      new NumberWithUnits ('fraction', 0, new Fraction (
-//          false, 0, 2, 3
-//    ), uof.fromRawInputString('kg / m^3')));
-//    expect(nwuof.fromRawInputString('2')).toEqual(
-//      new NumberWithUnits ('real', 2, new Fraction (
-//          false, 0, 0, 1
-//    ), uof.fromRawInputString('')));
-//    expect(nwuof.fromRawInputString('2 / 3')).toEqual(
-//      new NumberWithUnits ('fraction', 0, new Fraction (
-//          false, 0, 2, 3
-//    ), uof.fromRawInputString('')));
-//    expect(nwuof.fromRawInputString('$ 2.02')).toEqual(
-//      new NumberWithUnits ('real', 2.02, new Fraction (
-//          false, 0, 0, 1
-//    ), uof.fromRawInputString('$')));
-//    expect(nwuof.fromRawInputString('Rs 2 / 3 per hour')).toEqual(
-//      new NumberWithUnits ('fraction', 0, new Fraction (
-//          false, 0, 2, 3
-//    ), uof.fromRawInputString('Rs / hour')));
-//  });
-//
-//  it('should throw errors for invalid number with units', () =>
-//  {
-//    expect(() => {
-//      nwuof.fromRawInputString('3* kg');
-//    }).toThrow(new Error(errors.INVALID_VALUE));
-//    expect(() => {
-//      nwuof.fromRawInputString('$ 3*');
-//    }).toThrow(new Error(errors.INVALID_VALUE));
-//    expect(() => {
-//      nwuof.fromRawInputString('Rs 3^');
-//    }).toThrow(new Error(errors.INVALID_VALUE));
-//    expect(() => {
-//      nwuof.fromRawInputString('3# m/s');
-//    }).toThrow(new Error(errors.INVALID_VALUE));
-//    expect(() => {
-//      nwuof.fromRawInputString('3 $');
+  fun testFromRawInputStringFunction_hasCorrectParsedUnitsString() {
+    assertThat(uof.fromRawInputString("kg per (K mol^-2)").units)
+      .isEqualTo(StringToNumberWithUnitsParser.Units(UnitsObjectFactory().fromStringToList("kg / (K mol^-2)")).units)
+    assertThat(uof.fromRawInputString("kg per (K mol^-2)").units)
+      .isEqualTo(StringToNumberWithUnitsParser.Units(UnitsObjectFactory().fromStringToList("kg / (K mol^-2)")).units)
+    assertThat(uof.fromRawInputString("kg / (K mol^-2) N / m^2").units)
+      .isEqualTo(StringToNumberWithUnitsParser.Units(UnitsObjectFactory().fromStringToList("kg / (K mol^-2) N / m^2")).units)
+  }
+
+  fun testParseNumberWithUnitsFunction_hasCorrectConvertedNumberWithUnitsFromString() {
+    assertThat(nwuof.parseNumberWithUnits("2.02 kg / m^3")).isEqualTo(
+      numberWithUnits(2.02, null, "kg / m^3")
+    )
+
+    assertThat(nwuof.parseNumberWithUnits("2 / 3 kg / m^3")).isEqualTo(
+      numberWithUnits(
+        null, fraction(
+          false, 0, 2, 3
+        ), "kg / m^3"
+      )
+    )
+    assertThat(nwuof.parseNumberWithUnits("2.0")).isEqualTo(
+      numberWithUnits(2.0, null, "")
+    )
+    assertThat(nwuof.parseNumberWithUnits("2 / 3")).isEqualTo(
+      numberWithUnits(
+        null, fraction(
+          false, 0, 2, 3
+        ), ""
+      )
+    )
+    assertThat(nwuof.parseNumberWithUnits("$ 2.02")).isEqualTo(
+      numberWithUnits(
+        2.02, fraction(
+          false, 0, 0, 1
+        ), "$"
+      )
+    )
+    assertThat(nwuof.parseNumberWithUnits("Rs 2 / 3 per hour")).isEqualTo(
+      numberWithUnits(
+        null, fraction(
+          false, 0, 2, 3
+        ), "Rs / hour"
+      )
+    )
+  }
+
+  @Test
+  fun testFractionInputInteractionView_withInputtedDividerMoreThanOnce_errorIsDisplayedForInvalidValues() {
+//    assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsRealTimeError("3* kg",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsRealTimeError("$ 3*",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsRealTimeError("Rs 3^",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsRealTimeError("3* kg",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("Rs5",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("$",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("kg 2 s^2",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("2 m/s#",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_UNIT_CHARS.getErrorMessageFromStringRes(context)
+//    )
+//assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("@ 2",context)).isEqualTo(
+//      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
+//    )
+assertThat(StringToNumberWithUnitsParser().getNumberWithUnitsSubmitTimeError("2 / 3 kg&^-2",context)).isEqualTo(
+      StringToNumberWithUnitsParser.NumberWithUnitsParsingError.INVALID_UNIT_CHARS.getErrorMessageFromStringRes(context)
+    )
+
+
+//      nwuof.fromRawInputString("Rs5");
 //    }).toThrow(new Error(errors.INVALID_CURRENCY_FORMAT));
 //    expect(() => {
-//      nwuof.fromRawInputString('Rs5');
+//      nwuof.fromRawInputString("Rs5");
 //    }).toThrow(new Error(errors.INVALID_CURRENCY));
 //    expect(() => {
-//      nwuof.fromRawInputString('$');
+//      nwuof.fromRawInputString("$");
 //    }).toThrow(new Error(errors.INVALID_CURRENCY));
 //    expect(() => {
-//      nwuof.fromRawInputString('kg 2 s^2');
+//      nwuof.fromRawInputString("kg 2 s^2");
 //    }).toThrow(new Error(errors.INVALID_CURRENCY));
 //    expect(() => {
-//      nwuof.fromRawInputString('2 m/s#');
+//      nwuof.fromRawInputString("2 m/s#");
 //    }).toThrow(new Error(errors.INVALID_UNIT_CHARS));
 //    expect(() => {
-//      nwuof.fromRawInputString('@ 2');
+//      nwuof.fromRawInputString("@ 2");
 //    }).toThrow(new Error(errors.INVALID_CURRENCY));
 //    expect(() => {
-//      nwuof.fromRawInputString('2 / 3 kg&^-2');
+//      nwuof.fromRawInputString("2 / 3 kg&^-2");
 //    }).toThrow(new Error(errors.INVALID_UNIT_CHARS));
-//    expect(() => {
-//      nwuof.fromRawInputString('2 m**2');
-//    }).toThrow(new Error('SyntaxError: Unexpected "*" in "m**2" at index 2'));
-//    expect(() => {
-//      nwuof.fromRawInputString('2 kg / m^(2)');
-//    }).toThrow(new Error('SyntaxError: In "kg / m^(2)", "^" must be '+
-//    'followed by a floating-point number'));
-//  });
-//});
+
+  }
 
   @Test
   fun testNumberWithUnitsInputInteractionView_withNoText_hasCorrectPendingAnswerType() {

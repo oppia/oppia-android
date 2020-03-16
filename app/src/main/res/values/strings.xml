@@ -80,7 +80,7 @@
   <string name="fraction_error_larger_than_seven_digits">None of the numbers of the fraction should be larger than 7 digits.</string>
   <string name="number_with_units_error_invalid_currency">Please enter a valid currency (e.g., $5 or Rs 5).</string>
   <string name="number_with_units_error_invalid_currency_format">Please write currency units at the beginning.</string>
-  <string name="number_with_units_error_invalid_value">Please ensure that value is either a fraction or a number.</string>
+  <string name="number_with_units_error_invalid_value">Please enter a valid value.</string>
   <string name="number_with_units_error_invalid_unit_chars">Please ensure that unit only contains numbers, alphabets, (, ), *, ^,/, -.</string>
   <string name="number_with_units_error_invalid_unit">Please enter a valid unit.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>

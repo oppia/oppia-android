@@ -400,10 +400,23 @@ class StringToNumberWithUnitsParser {
         else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
       }
     } else
-      if (type.equals("fraction"))
-        return stringToFractionParser.getRealTimeAnswerError(value).getErrorMessageFromStringRes(context)
-      else
-        return stringToNumberParser.getRealTimeAnswerError(value).getErrorMessageFromStringRes(context)
+      if (type.equals("fraction")) {
+        return when (stringToFractionParser.getRealTimeAnswerError(value)) {
+          StringToFractionParser.FractionParsingError.INVALID_FORMAT, StringToFractionParser.FractionParsingError.INVALID_CHARS,
+          StringToFractionParser.FractionParsingError.NUMBER_TOO_LONG ->
+            NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+          else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
+        }
+      } else
+        return when (stringToNumberParser.getRealTimeAnswerError(value)) {
+          StringToNumberParser.NumericInputParsingError.INVALID_FORMAT, StringToNumberParser.NumericInputParsingError.NUMBER_TOO_LONG -> NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(
+            context
+          )
+          StringToNumberParser.NumericInputParsingError.STARTING_WITH_FLOATING_POINT -> StringToNumberParser.NumericInputParsingError.STARTING_WITH_FLOATING_POINT.getErrorMessageFromStringRes(
+            context
+          )
+          else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
+        }
   }
 
   fun getNumberWithUnitsSubmitTimeError(rawInput: String, context: Context): String? {
@@ -411,6 +424,7 @@ class StringToNumberWithUnitsParser {
     // Allow validation only when rawInput is not null or an empty string.
     // Start with digit when there is no currency unit.
     if (rawInput.matches("^\\-?\\d.*\$".toRegex())) {
+      ind = indexOf(Pattern.compile("[a-zA-Z(₹$]"), rawInput)
       if (ind == -1) {
         // There is value with no units.
         value = rawInput
@@ -443,7 +457,7 @@ class StringToNumberWithUnitsParser {
       if (startsWithCorrectCurrencyUnit == false) {
         return NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
       }
-
+      ind = indexOf(Pattern.compile("[0-9]"), rawInput)
       if (ind == -1) {
         return NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
       }
@@ -460,7 +474,7 @@ class StringToNumberWithUnitsParser {
       }
       if (startsWithCorrectCurrencyUnit == false) {
         return NumberWithUnitsParsingError.INVALID_CURRENCY.getErrorMessageFromStringRes(context)
-      }
+      }}
 
       // Checking invalid characters in value.
       if (value.matches("[a-zA-Z]".toRegex()) || value.matches("[ *^$₹()#@]/".toRegex())) {
@@ -473,15 +487,28 @@ class StringToNumberWithUnitsParser {
           return NumberWithUnitsParsingError.INVALID_UNIT_CHARS.getErrorMessageFromStringRes(context)
         }
       }
+
+    if (value.contains("/")) {
+      type = "fraction"
+    } else {
+      type = "real"
     }
     if (type.equals("fraction"))
-      return stringToFractionParser.getSubmitTimeError(value).getErrorMessageFromStringRes(
-        context
-      )
+      return when (stringToFractionParser.getSubmitTimeError(value)) {
+        StringToFractionParser.FractionParsingError.INVALID_FORMAT, StringToFractionParser.FractionParsingError.INVALID_CHARS,
+        StringToFractionParser.FractionParsingError.NUMBER_TOO_LONG ->
+          NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(context)
+        StringToFractionParser.FractionParsingError.DIVISION_BY_ZERO ->
+          StringToFractionParser.FractionParsingError.DIVISION_BY_ZERO.getErrorMessageFromStringRes(context)
+        else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
+      }
     else
-      return stringToNumberParser.getSubmitTimeError(value).getErrorMessageFromStringRes(
-        context
-      )
+      return when (stringToNumberParser.getSubmitTimeError(value)) {
+        StringToNumberParser.NumericInputParsingError.INVALID_FORMAT, StringToNumberParser.NumericInputParsingError.NUMBER_TOO_LONG -> NumberWithUnitsParsingError.INVALID_VALUE.getErrorMessageFromStringRes(
+          context
+        )
+        else -> NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
+      }
     return NumberWithUnitsParsingError.VALID.getErrorMessageFromStringRes(context)
   }
 
@@ -494,8 +521,9 @@ class StringToNumberWithUnitsParser {
     numberWithUnitsString = numberWithUnitsString.trim()
     return numberWithUnitsString
   }
- fun numberWithUnitsToString(type: String,numberWithUnits: NumberWithUnits): String {
-    lateinit var  numberWithUnitsString: String
+
+  fun numberWithUnitsToString(type: String, numberWithUnits: NumberWithUnits): String {
+    var numberWithUnitsString: String = ""
     // The NumberWithUnits class is allowed to have 4 properties namely
     // type, real, fraction and units. Hence, we cannot inject
     // UnitsObjectFactory, since that'll lead to creation of 5th property
@@ -515,14 +543,15 @@ class StringToNumberWithUnitsParser {
     }
 
     if (type == "real") {
-      numberWithUnitsString += numberWithUnits.real.toString()+" "
+      numberWithUnitsString += numberWithUnits.real.toString() + " "
     } else if (type == "fraction") {
-      numberWithUnitsString += numberWithUnits.fraction.toString() + " "
+      numberWithUnitsString += StringToFractionParser().fractionToString(numberWithUnits.fraction) + " "
     }
     numberWithUnitsString += unitsString.trim()
     numberWithUnitsString = numberWithUnitsString.trim()
     return numberWithUnitsString
   }
+
   /** Enum to store the errors of [NumberWithUnitsInputInteractionView]. */
   enum class NumberWithUnitsParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
