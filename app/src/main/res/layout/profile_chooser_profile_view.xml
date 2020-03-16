@@ -34,13 +34,12 @@
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
-      android:maxWidth="116dp"
       android:textColor="@color/white"
       android:textSize="14sp" />
 
     <TextView
       android:id="@+id/profile_is_admin_text"
-      android:layout_width="116dp"
+      android:layout_width="112dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="2dp"
       android:gravity="center"
