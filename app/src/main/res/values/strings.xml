@@ -33,6 +33,7 @@
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
+  <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
@@ -275,4 +276,5 @@
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
+  <string name="story_count_text_view">2 Stories</string>
 </resources>
