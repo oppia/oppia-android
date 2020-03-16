@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.WalkthroughWelcomeFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.WalkthroughActivity
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
@@ -40,7 +40,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = WalkthroughWelcomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_PROFILE_ID_KEY, -1)
+    internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
@@ -79,7 +79,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      walkthroughWelcomeViewModel.profileName = "Welcome $profileName!"
+      walkthroughWelcomeViewModel.profileName.set(activity.getString(R.string.welcome) + profileName + "!")
     }
   }
 
