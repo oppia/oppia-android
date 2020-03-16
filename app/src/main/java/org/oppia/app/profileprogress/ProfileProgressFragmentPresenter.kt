@@ -14,7 +14,6 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-
 /** The presenter for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(

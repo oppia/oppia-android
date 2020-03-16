@@ -28,9 +28,11 @@ class ProfilePictureEditDialogFragment : DialogFragment() {
     val viewProfilePicture = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_view_picture)
     val chooseFromGallery = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_change_picture)
 
-    viewProfilePicture.setOnClickListener {}
-    chooseFromGallery.setOnClickListener {}
+    val profilePictureEditDialogInterface: ProfilePictureDialogInterface = activity as ProfilePictureDialogInterface
 
+    viewProfilePicture.setOnClickListener { profilePictureEditDialogInterface.showProfilePicture() }
+
+    chooseFromGallery.setOnClickListener { profilePictureEditDialogInterface.showGalleryForProfilePicture() }
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.profile_progress_edit_dialog_title)
       .setView(view)

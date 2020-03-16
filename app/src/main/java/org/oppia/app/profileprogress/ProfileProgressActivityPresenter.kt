@@ -1,8 +1,11 @@
 package org.oppia.app.profileprogress
 
+import android.content.Intent
+import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.profile.GALLERY_INTENT_RESULT_CODE
 import javax.inject.Inject
 
 private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG"
@@ -31,5 +34,10 @@ class ProfileProgressActivityPresenter @Inject constructor(private val activity:
     }
     val dialogFragment = ProfilePictureEditDialogFragment.newInstance()
     dialogFragment.showNow(activity.supportFragmentManager, TAG_PROFILE_PICTURE_EDIT_DIALOG)
+  }
+
+  fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 }
