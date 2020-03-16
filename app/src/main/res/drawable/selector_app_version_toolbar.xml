@@ -4,7 +4,7 @@
     <layer-list>
       <item android:left="1dp" android:top="3dp">
         <shape>
-          <solid android:color="@color/white" />
+          <solid android:color="@color/oppiaPrimaryDark" />
         </shape>
       </item>
     </layer-list>
@@ -13,12 +13,12 @@
     <layer-list>
       <item android:left="0dp" android:top="0dp">
         <shape>
-          <solid android:color="@color/oppiaTextShadow" />
+          <solid android:color="@color/oppiaAppVersionToolbarShadow" />
         </shape>
       </item>
-      <item android:bottom="1dp" android:right="0dp">
+      <item android:bottom="4dp" android:right="0dp">
         <shape>
-          <solid android:color="@color/white" />
+          <solid android:color="@color/oppiaPrimaryDark" />
         </shape>
       </item>
     </layer-list>
