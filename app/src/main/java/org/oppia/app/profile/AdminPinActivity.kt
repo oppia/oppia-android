@@ -12,11 +12,7 @@ const val KEY_ADMIN_PIN_PROFILE_ID = "ADMIN_PIN_PROFILE_ID"
 const val KEY_ADMIN_PIN_COLOR_RGB = "ADMIN_PIN_COLOR_RGB"
 
 /** Activity that sets the admin's PIN. */
-class AdminPinActivity : InjectableAppCompatActivity() {
-  @Inject
-  lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
-  private var input_Pin: String = ""
-  private var input_Confirm_Pin: String = ""
+class AdminPinActivity : InjectableAppCompatActivity() { @Inject lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
   private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
@@ -35,11 +31,6 @@ class AdminPinActivity : InjectableAppCompatActivity() {
     sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
     adminPinActivityPresenter.handleOnCreate(savedInstanceState,sharedPreferences)
   }
-
-  /*override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    adminPinActivityPresenter.handleOnSavedInstanceState(outState)
-  }*/
 
   override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
     super.onRestoreInstanceState(savedInstanceState)
