@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-
-  <data>
-    <variable
-      name="viewModel"
-      type="org.oppia.app.story.StoryViewModel" />
-  </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -15,7 +8,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
+      android:id="@+id/completed_story_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,7 +17,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/story_toolbar"
+        android:id="@+id/completed_story_list_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -33,7 +26,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@{viewModel.storyNameLiveData}"
+        app:title="@string/stories_completed"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,25 +38,11 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout">
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/story_chapter_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingBottom="60dp"
-        android:scrollbars="none"
-        app:data="@{viewModel.storyChapterLiveData}"
-        tools:listitem="@layout/story_chapter_view" />
-
       <View
-        android:id="@+id/story_shadow_view"
+        android:id="@+id/completed_story_list_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
-
     </FrameLayout>
-
   </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

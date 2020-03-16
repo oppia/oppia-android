@@ -31,6 +31,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.text.SimpleDateFormat
@@ -76,6 +77,33 @@ class AppVersionActivityTest {
         matches(isDisplayed())
       )
     }
+  }
+
+  @Test
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly(){
+    onView(isRoot()).perform(orientationLandscape())
+    onView(
+      withId(
+        R.id.app_version_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(context.resources.getString(R.string.app_version_name), BuildConfig.VERSION_NAME)
+        )
+      )
+    )
+    onView(
+      withId(
+        R.id.app_last_update_date_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate)
+        )
+      )
+    )
   }
 
   @Test

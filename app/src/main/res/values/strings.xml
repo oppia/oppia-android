@@ -257,8 +257,6 @@
   <string name="administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
-  <string name="stories_completed">Stories Completed</string>
-  <string name="topics_in_progress">Topics in Progress</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
   <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
@@ -275,4 +273,8 @@
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
+  <string name="topics_in_progress">Topics in Progress</string>
+  <string name="topic_in_progress">Topic in Progress</string>
+  <string name="stories_completed">Stories Completed</string>
+  <string name="story_completed">Story Completed</string>
 </resources>
