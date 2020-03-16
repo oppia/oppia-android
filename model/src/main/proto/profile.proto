@@ -10,8 +10,23 @@ message ProfileDatabase {
   // Represents the next unique ID for adding a profile.
   int32 next_profile_id = 1;
 
+  // Determines whether profile was ever added or not.
+  bool was_profile_ever_added = 2;
+
+  // Represents device settings for the app.
+  DeviceSettings device_settings = 3;
+
   // Mapping from unique ID to profile.
-  map<int32, Profile> profiles = 2;
+  map<int32, Profile> profiles = 4;
+}
+
+// Structure for device settings.
+message DeviceSettings{
+  // Determines whether to download and update content only on wifi.
+  bool allow_download_and_update_only_on_wifi = 1;
+
+  // Determines whether app can automatically update topics.
+  bool automatically_update_topics = 2;
 }
 
 // Structure for a single profile.
@@ -108,4 +123,3 @@ enum AudioLanguage {
   FRENCH_AUDIO_LANGUAGE = 3;
   CHINESE_AUDIO_LANGUAGE =  4;
 }
-

@@ -46,6 +46,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
+  private var createPin = false
   private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
@@ -65,6 +66,9 @@ class AddProfileActivityPresenter @Inject constructor(
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
+    }
+    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+      profileViewModel.createPin.set(isChecked)
     }
 
     binding.infoIcon.setOnClickListener {
@@ -92,8 +96,10 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+     openGalleryIntent()
+    }
+    binding.editImageFab.setOnClickListener {
+      openGalleryIntent()
     }
 
     binding.createButton.setOnClickListener {
@@ -126,6 +132,11 @@ class AddProfileActivityPresenter @Inject constructor(
           handleAddProfileResult(it, binding)
         })
     }
+  }
+
+  private fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
