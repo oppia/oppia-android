@@ -1,6 +1,8 @@
 package org.oppia.app.player.state.listener
 
-/** Listener for when an [TopicActivity] should route to a [ConceptCardFragment]. */
+import org.oppia.app.model.State
+
+/** Listener for when an [ExplorationActivity] should route to a [HintsAndSolution]. */
 interface RouteToHintsAndSolutionListener {
-  fun routeToHintsAndSolution(skillId: String)
+  fun routeToHintsAndSolution(newState: State, explorationId: String)
 }

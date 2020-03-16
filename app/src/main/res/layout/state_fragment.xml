@@ -59,6 +59,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/hints_background"
+      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
       android:layout_gravity="bottom|left">
 
       <ImageView

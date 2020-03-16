@@ -43,8 +43,10 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
@@ -76,7 +78,7 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUME
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
-private const val TAG_HINTS_AND_SOLUTION_FRAGMENT = "HINTS_AND_SOLUTION"
+private const val TAG_HINTS_AND_SOLUTION = "HINTS_AND_SOLUTION"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -95,6 +97,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
+  private lateinit var currentState: State
   private var feedbackId: String? = null
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -147,7 +150,8 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener{
-      routeToHintsAndSolutionListener.routeToHintsAndSolution("")
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId)
+
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
@@ -316,12 +320,24 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
 
-    if(ephemeralState.state.interaction.hintList.size!=0)
-    logger.e("StateFragment", "Hints===="+ephemeralState.state.name+" ==== " +ephemeralState.state.interaction.getHint(0).hintContent.html)
+    if(ephemeralState.state.interaction.hintList.size!=0) {
+      logger.e(
+        "StateFragment",
+        "Hints====" + ephemeralState.state.interaction.hintList.size + " ==== " + ephemeralState.state.interaction.getHint(0).hintContent.html
+      )
+
+      viewModel.setHintBulbVisibility(true)
+    }else{
+      viewModel.setHintBulbVisibility(false)
+    }
+
+    currentState = ephemeralState.state
+
     val scrollToTop =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
     currentStateName = ephemeralState.state.name
+
 
     showOrHideAudioByState(ephemeralState.state)
 
@@ -643,5 +659,9 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
+  }
+
+  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
+    return fragment.childFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
   }
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="isListExpanded"
+      type="Boolean" />
+
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.hintsandsolution.SolutionViewModel" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/story_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="20dp"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/hints_and_solution_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:fontFamily="sans-serif-medium"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp"
+          android:text="@{viewModel.title}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+          android:id="@+id/expand_list_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginBottom="8dp"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.966"
+          app:layout_constraintStart_toEndOf="@+id/hints_and_solution_title"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintVertical_bias="0.0">
+
+          <ImageView
+            android:id="@+id/chapter_list_drop_down_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@{@string/show_hide_chapter_list(viewModel.solutionSummary)}"
+            android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+        </FrameLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <LinearLayout
+        android:id="@+id/chapter_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteLight"
+        android:orientation="vertical"
+        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+        <View
+          android:id="@+id/topic_play_story_dashed_line_view"
+          android:layout_width="match_parent"
+          android:layout_height="2dp"
+          android:layout_gravity="center_horizontal"
+          android:background="@color/divider" />
+
+        <TextView
+          android:id="@+id/solution_correct_answer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:fontFamily="sans-serif-medium"
+          android:text="@{viewModel.correctAnswer}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp" />
+        <TextView
+          android:id="@+id/solution_summary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:fontFamily="sans-serif-medium"
+          android:text="@{viewModel.solutionSummary}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp" />
+
+      </LinearLayout>
+    </LinearLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>
