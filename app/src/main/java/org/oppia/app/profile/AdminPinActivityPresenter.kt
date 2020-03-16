@@ -35,7 +35,7 @@ class AdminPinActivityPresenter @Inject constructor(
   private var input_Pin: String = ""
   private var input_Confirm_Pin: String = ""
   private lateinit var sharedPreferences: SharedPreferences
-  private var mCount:Int=0
+  //private var mCount:Int=0
 
 
   /** Binds ViewModel and sets up text and button listeners. */
@@ -59,7 +59,7 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.inputConfirmPin.input.setText(input_Confirm_Pin)*/
 
     //binding.inputPin.input.setText("LOL")
-    mCount = savedInstanceState?.getInt("mCount", 0) ?: 0
+    /*mCount = savedInstanceState?.getInt("mCount", 0) ?: 0
     if (mCount % 2 === 1) {
       // 1st, 3rd, 5th, etc. rotations. Explicitly execute the bindings and let the framework
       // restore from the saved instance state.
@@ -73,7 +73,7 @@ class AdminPinActivityPresenter @Inject constructor(
         viewModel = adminViewModel
       }
     }
-    mCount++
+    mCount++*/
 
     /*if (savedInstanceState != null) {
 
@@ -87,9 +87,6 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       binding.executePendingBindings()
     }*/
-
-
-    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_pin_description)
 
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
