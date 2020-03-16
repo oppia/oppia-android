@@ -305,11 +305,11 @@ class TopicListController @Inject constructor(
     val promotedStoryBuilder = PromotedStory.newBuilder()
       .setStoryId(storyId)
       .setStoryName(storySummary.storyName)
+      .setLessonThumbnail(storySummary.storyThumbnail)
       .setTopicId(topic.topicId)
       .setTopicName(topic.name)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
-      .setLessonThumbnail(STORY_THUMBNAILS.getValue(storyId))
     if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
       promotedStoryBuilder.explorationId = explorationId
