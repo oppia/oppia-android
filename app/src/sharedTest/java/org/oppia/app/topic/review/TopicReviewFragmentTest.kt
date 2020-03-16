@@ -187,8 +187,6 @@ class TopicReviewFragmentTest {
     }
   }
 
-
-
   private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
