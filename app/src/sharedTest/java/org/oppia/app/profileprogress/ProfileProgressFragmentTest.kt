@@ -1,8 +1,14 @@
 package org.oppia.app.profileprogress
 
+import android.app.Activity.RESULT_OK
 import android.app.Application
+import android.app.Instrumentation
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -12,7 +18,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -27,8 +36,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -55,8 +66,14 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileProgressFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId = 0
 
@@ -122,6 +139,41 @@ class ProfileProgressFragmentTest {
       ).perform(click())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(ViewMatchers.isDisplayed()))
     }
+  }
+
+  @Test
+  fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(ViewMatchers.isDisplayed()))
+      onView(withId(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
+      intended(expectedIntent)
+    }
+  }
+
+  private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
+    val resources: Resources = context.resources
+    val imageUri = Uri.parse(
+      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+          resources.getResourcePackageName(R.mipmap.ic_launcher) + '/' +
+          resources.getResourceTypeName(R.mipmap.ic_launcher) + '/' +
+          resources.getResourceEntryName(R.mipmap.ic_launcher)
+    )
+    val resultIntent = Intent()
+    resultIntent.setData(imageUri)
+    return Instrumentation.ActivityResult(RESULT_OK, resultIntent)
   }
 
   @Test
@@ -281,9 +333,20 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.view_all_text_view
+        )
+      ).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
-      intended(hasExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId))
+      intended(
+        hasExtra(
+          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 
@@ -303,7 +366,13 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_container
+        )
+      ).check(
         matches(
           not(
             isClickable()
@@ -318,9 +387,20 @@ class ProfileProgressFragmentTest {
     storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.ongoing_topics_container
+        )
+      ).perform(click())
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
-      intended(hasExtra(OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
+      intended(
+        hasExtra(
+          OngoingTopicListActivity.ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 
@@ -329,13 +409,25 @@ class ProfileProgressFragmentTest {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
     storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.completed_stories_container
+        )
+      ).perform(click())
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
-      intended(hasExtra(CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
+      intended(
+        hasExtra(
+          CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
