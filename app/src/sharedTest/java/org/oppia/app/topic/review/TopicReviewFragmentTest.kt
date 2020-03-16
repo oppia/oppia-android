@@ -20,7 +20,6 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.allOf
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +32,7 @@ import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 
 /** Tests for [TopicReviewFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -105,7 +105,19 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testTopicReviewFragment_loadFragment_checkSpanCoun_isTwo() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(withId(R.id.review_recycler_view)).check(hasItemCount(2))
+    }
+  }
+
+  @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
@@ -122,6 +134,60 @@ class TopicReviewFragmentTest {
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      it.recreate()
+      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+    }
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_configurationChange_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      it.recreate()
+      onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
+      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+    }
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      it.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      it.recreate()
+      onView(withId(R.id.review_recycler_view)).check(hasItemCount(3))
+    }
+  }
+
+
 
   private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
     val intent =

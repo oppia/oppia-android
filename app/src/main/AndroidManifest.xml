@@ -140,13 +140,15 @@
       android:name=".testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".topic.questionplayer.QuestionPlayerActivity" />
+      android:name=".topic.questionplayer.QuestionPlayerActivity"
+      android:screenOrientation="portrait" />
     <activity
       android:name=".topic.TopicActivity"
       android:launchMode="singleInstance"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.reviewcard.ReviewCardActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
