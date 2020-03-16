@@ -51,7 +51,7 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
   }
 
   override fun showProfilePicture() {
-    //TODO("Need to create an Full Screen Activity to display Profile Picture")
+    startActivity(ProfilePictureActivity.createProfilePictureActivityIntent(this, internalProfileId))
   }
 
   override fun showGalleryForProfilePicture() {
