@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -106,6 +107,20 @@ class ProfileProgressFragmentTest {
           R.id.profile_name_text_view
         )
       ).check(matches(withText("Sean")))
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_openProfilePictureEditDialog() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(ViewMatchers.isDisplayed()))
     }
   }
 
