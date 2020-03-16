@@ -72,7 +72,8 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".profile.AdminPinActivity"
-      android:screenOrientation="portrait" />
+      android:exported="true"
+      android:configChanges="keyboardHidden|screenSize"/>
     <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"

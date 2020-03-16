@@ -2,7 +2,10 @@ package org.oppia.app.profile
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.preference.PreferenceManager
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -11,9 +14,13 @@ const val KEY_ADMIN_PIN_COLOR_RGB = "ADMIN_PIN_COLOR_RGB"
 
 /** Activity that sets the admin's PIN. */
 class AdminPinActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
+  @Inject
+  lateinit var adminPinActivityPresenter: AdminPinActivityPresenter
+  private var input_Pin: String = ""
+  private var input_Confirm_Pin: String = ""
+  private lateinit var sharedPreferences: SharedPreferences
 
-  companion object {
+    companion object {
     fun createAdminPinActivityIntent(context: Context, profileId: Int, colorRgb: Int): Intent {
       val intent = Intent(context, AdminPinActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
@@ -26,8 +33,24 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    adminPinActivityPresenter.handleOnCreate()
+    sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
+
+    adminPinActivityPresenter.handleOnCreate(savedInstanceState,sharedPreferences)
   }
+
+  /*override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    adminPinActivityPresenter.handleOnSavedInstanceState(outState)
+  }*/
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+
+    super.onRestoreInstanceState(savedInstanceState)
+    adminPinActivityPresenter.handleOnRestoreInstanceState(savedInstanceState)
+
+  }
+
+
 
   override fun onSupportNavigateUp(): Boolean {
     finish()
