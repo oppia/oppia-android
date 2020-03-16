@@ -68,8 +68,11 @@ message StorySummary {
   // The name of the story.
   string story_name = 2;
 
+  // The thumbnail corresponding to this story.
+  LessonThumbnail story_thumbnail = 3;
+
   // A list of summarized chapters/explorations that can be played within the story.
-  repeated ChapterSummary chapter = 3;
+  repeated ChapterSummary chapter = 4;
 }
 
 // A summary of a chapter/exploration that can be played.
@@ -148,7 +151,22 @@ message TopicList {
 // Corresponds to the list of stories that have been completed across all topics.
 message CompletedStoryList {
   // List of completed stories
-  repeated StorySummary story_summary = 1;
+  repeated CompletedStory completed_story = 1;
+}
+
+// The summary of a story that has been completed for a profile.
+message CompletedStory {
+  // The ID of the story being completed.
+  string story_id = 1;
+
+  // The name of the story being completed.
+  string story_name = 2;
+
+  // The name of the topic this story is part of.
+  string topic_name = 3;
+
+  // The thumbnail that should be displayed for this completed story.
+  LessonThumbnail lesson_thumbnail = 4;
 }
 
 // Corresponds to the list of stories the player is currently playing across all topics.
@@ -253,18 +271,6 @@ message TopicProgress {
 
   // Map from story ID to StoryProgress.
   map<string, StoryProgress> story_progress = 2;
-}
-
-// Corresponds to the list of topic progress.
-message TopicProgressList {
-  // List of topic progress
-  repeated TopicProgress topic_progress = 1;
-}
-
-// Corresponds to the list of story progress.
-message StoryProgressList {
-  // List of story progress
-  repeated StoryProgress story_progress = 1;
 }
 
 // Represents the story progress.
