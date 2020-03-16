@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -69,16 +70,12 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
-  fun testCompletedStoryList_checkItem0_titleIsCorrect() {
+  fun testCompletedStoryList_checkItem0_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.completed_story_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.topic_name_text_view)).check(
+      onView(withId(R.id.completed_story_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.completed_story_lesson_thumbnail)).check(
         matches(
-          withText(containsString("Ratios and Proportional Reasoning"))
+          withContentDescription(containsString("Matthew Goes to the Bakery"))
         )
       )
     }
@@ -101,14 +98,14 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
-  fun testCompletedStoryList_checkItem1_titleIsCorrect() {
+  fun testCompletedStoryList_checkItem0_titleIsCorrect() {
     launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.topic_name_text_view)).check(
+      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.completed_story_topic_name_text_view)).check(
         matches(
           withText(containsString("Fractions"))
         )
@@ -127,6 +124,38 @@ class CompletedStoryListActivityTest {
       onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_name_text_view)).check(
         matches(
           withText(containsString("Ratios: Part 1"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testCompletedStoryList_checkItem1_storyThumbnailDescriptionIsCorrect() {
+    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_lesson_thumbnail)).check(
+        matches(
+          withContentDescription(containsString("Ratios: Part 1"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testCompletedStoryList_checkItem1_titleIsCorrect() {
+    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_topic_name_text_view)).check(
+        matches(
+          withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
     }
