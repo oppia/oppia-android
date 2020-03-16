@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
@@ -34,7 +33,6 @@ class AdminPinActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
-
     adminPinActivityPresenter.handleOnCreate(savedInstanceState,sharedPreferences)
   }
 
@@ -44,13 +42,9 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   }*/
 
   override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-
     super.onRestoreInstanceState(savedInstanceState)
     adminPinActivityPresenter.handleOnRestoreInstanceState(savedInstanceState)
-
   }
-
-
 
   override fun onSupportNavigateUp(): Boolean {
     finish()

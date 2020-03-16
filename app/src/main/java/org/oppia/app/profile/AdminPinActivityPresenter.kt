@@ -3,7 +3,6 @@ package org.oppia.app.profile
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -17,7 +16,6 @@ import org.oppia.app.databinding.AdminPinActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import java.util.prefs.PreferenceChangeEvent
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -37,20 +35,18 @@ class AdminPinActivityPresenter @Inject constructor(
   private lateinit var sharedPreferences: SharedPreferences
   //private var mCount:Int=0
 
-
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate(savedInstanceState: Bundle?,sharedPreferences: SharedPreferences) {
     activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
-    val binding =
-      DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
+    val binding = DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
-    /*binding.apply {
+    binding.apply {
       lifecycleOwner = activity
       viewModel = adminViewModel
-    }*/
+    }
     this.sharedPreferences=sharedPreferences
 
 
@@ -58,7 +54,7 @@ class AdminPinActivityPresenter @Inject constructor(
     Log.i("binding input pin",input_Pin)
     binding.inputConfirmPin.input.setText(input_Confirm_Pin)*/
 
-    //binding.inputPin.input.setText("LOL")
+    //binding.inputPin.input.setText("default Value")
     /*mCount = savedInstanceState?.getInt("mCount", 0) ?: 0
     if (mCount % 2 === 1) {
       // 1st, 3rd, 5th, etc. rotations. Explicitly execute the bindings and let the framework
@@ -164,12 +160,10 @@ class AdminPinActivityPresenter @Inject constructor(
         }
       })
     }
-
-
   }
 
   fun handleOnSavedInstanceState(bundle: Bundle) {
-    Log.i("LOL","LOL")
+    Log.i("test","test")
     /*val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
     binding.apply {
@@ -198,7 +192,6 @@ class AdminPinActivityPresenter @Inject constructor(
   fun handleOnRestoreInstanceState(bundle: Bundle?) {
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
-    binding.executePendingBindings()
 
     binding.apply {
       lifecycleOwner = activity
@@ -206,10 +199,10 @@ class AdminPinActivityPresenter @Inject constructor(
     }
     /*input_Pin=bundle?.getString("InputPin")?:""
     input_Confirm_Pin=bundle?.getString("InputConfirmPin")?:""*/
-    input_Pin=sharedPreferences.getString("InputPin","LOL")
-    input_Confirm_Pin=sharedPreferences.getString("InputConfirmPin","LOL")
+    input_Pin=sharedPreferences.getString("InputPin","default value")
+    input_Confirm_Pin=sharedPreferences.getString("InputConfirmPin","default value")
 
-    binding.inputPin.input.setText(sharedPreferences.getString("InputPin","LOL"))
+    binding.inputPin.input.setText(sharedPreferences.getString("InputPin","default value"))
     binding.inputConfirmPin.input.setText(input_Confirm_Pin)
 
     //binding.inputPin.input.setText(bundle?.getString("InputPin"))
@@ -227,10 +220,7 @@ class AdminPinActivityPresenter @Inject constructor(
     }*/
   }
 
-  private fun addTextChangedListener(
-    profileInputView: ProfileInputView,
-    onTextChanged: (CharSequence?) -> Unit
-  ) {
+  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
     profileInputView.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         onTextChanged(p0)

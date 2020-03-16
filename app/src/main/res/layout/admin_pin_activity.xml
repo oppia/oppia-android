@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:label="@string/admin_pin_new_pin"
-
+        app:isPasswordInput="true"
         app:inputLength="5"
         profile:error="@{viewModel.pinErrorMsg}"/>
       <org.oppia.app.profile.ProfileInputView
@@ -62,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:label="@string/admin_pin_new_confirm"
-
+        app:isPasswordInput="true"
         app:inputLength="5"
         profile:error="@{viewModel.confirmPinErrorMsg}"/>
       <Button
