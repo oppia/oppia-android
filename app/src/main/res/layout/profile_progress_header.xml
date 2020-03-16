@@ -6,10 +6,6 @@
   <data>
 
     <variable
-      name="presenter"
-      type="org.oppia.app.profileprogress.ProfileProgressFragmentPresenter" />
-
-    <variable
       name="viewModel"
       type="org.oppia.app.profileprogress.ProfileProgressHeaderViewModel" />
   </data>
@@ -32,7 +28,7 @@
         android:layout_width="96dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> presenter.showPictureEditDialog()}"
+        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
         android:layout_height="96dp"
         profile:src="@{viewModel.profile.avatar}" />
 
@@ -43,7 +39,7 @@
         android:src="@drawable/ic_edit_18"
         app:backgroundTint="@color/white"
         app:fabCustomSize="24dp"
-        android:onClick="@{() -> presenter.showPictureEditDialog()}"
+        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
         app:tint="@color/colorPrimary" />
     </FrameLayout>
 

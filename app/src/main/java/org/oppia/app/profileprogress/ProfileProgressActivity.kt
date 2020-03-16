@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedStoryListListener,
-  RouteToOngoingTopicListListener, RouteToRecentlyPlayedListener {
+  RouteToOngoingTopicListListener, RouteToRecentlyPlayedListener,ProfilePictureClickListener {
 
   @Inject lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
@@ -44,5 +44,9 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
       intent.putExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
+  }
+
+  override fun onProfilePictureClicked() {
+    profileProgressActivityPresenter.showPictureEditDialog()
   }
 }

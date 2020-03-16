@@ -10,9 +10,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 
-/**
- * DialogFragment that gives option to either view the profile picture or change the current profile picture.
- */
+/** [DialogFragment] that gives option to either view the profile picture or change the current profile picture. */
 class ProfilePictureEditDialogFragment : DialogFragment() {
   companion object {
     /**
@@ -30,11 +28,9 @@ class ProfilePictureEditDialogFragment : DialogFragment() {
     val viewProfilePicture = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_view_picture)
     val chooseFromGallery = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_change_picture)
 
-    val profilePictureEditDialogInterface: ProfilePictureDialogInterface = parentFragment as ProfileProgressFragment
+    viewProfilePicture.setOnClickListener {}
+    chooseFromGallery.setOnClickListener {}
 
-    viewProfilePicture.setOnClickListener { profilePictureEditDialogInterface.showProfilePicture() }
-
-    chooseFromGallery.setOnClickListener { profilePictureEditDialogInterface.showGalleryForProfilePicture() }
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.profile_progress_edit_dialog_title)
       .setView(view)
