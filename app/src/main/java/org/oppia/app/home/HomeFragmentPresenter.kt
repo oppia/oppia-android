@@ -146,7 +146,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
+    topicListController.getOngoingStoryList(profileId)
   }
 
   private fun subscribeToOngoingStoryList() {

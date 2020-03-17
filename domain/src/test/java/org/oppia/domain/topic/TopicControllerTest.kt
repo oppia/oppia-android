@@ -54,6 +54,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -66,8 +67,10 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
-  @Inject lateinit var storyProgressController: StoryProgressController
-  @Inject lateinit var topicController: TopicController
+  @Inject
+  lateinit var storyProgressController: StoryProgressController
+  @Inject
+  lateinit var topicController: TopicController
 
   @Rule
   @JvmField
@@ -77,25 +80,38 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
+  @Mock
+  lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
+  @Captor
+  lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
-  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+  @Mock
+  lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
+  @Captor
+  lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
 
-  @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
-  @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  @Mock
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  @Captor
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
-  @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-  @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock
+  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
+  @Captor
+  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  @Mock lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
-  @Captor lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+  @Mock
+  lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
+  @Captor
+  lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
 
-  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
+  @Mock
+  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
+  @Captor
+  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
-  @Inject lateinit var dataProviders: DataProviders
+  @Inject
+  lateinit var dataProviders: DataProviders
 
   @Inject
   @field:TestDispatcher
@@ -103,6 +119,8 @@ class TopicControllerTest {
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
+
+  private val currentTimestamp = Date().time
 
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
@@ -1087,7 +1105,8 @@ class TopicControllerTest {
       profileId1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0
+      FRACTIONS_EXPLORATION_ID_0,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1096,7 +1115,8 @@ class TopicControllerTest {
       profileId1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1
+      FRACTIONS_EXPLORATION_ID_1,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1105,7 +1125,8 @@ class TopicControllerTest {
       profileId1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
+      RATIOS_EXPLORATION_ID_0,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1114,7 +1135,8 @@ class TopicControllerTest {
       profileId1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1
+      RATIOS_EXPLORATION_ID_1,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1165,7 +1187,8 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

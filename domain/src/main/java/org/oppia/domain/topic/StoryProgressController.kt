@@ -13,7 +13,6 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -69,19 +68,21 @@ class StoryProgressController @Inject constructor(
    * @param topicId the ID corresponding to the topic for which progress needs to be stored.
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
    * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
+   * @param completionTimestamp the timestamp at the exploration was finished.
    * @return a [LiveData] that indicates the success/failure of this record progress operation.
    */
   fun recordCompletedChapter(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    completionTimestamp: Long
   ): LiveData<AsyncResult<Any?>> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
         val chapterProgress = ChapterProgress.newBuilder()
           .setChapterPlayState(ChapterPlayState.COMPLETED)
-          .setLastPlayedTimestamp(Date().time)
+          .setLastPlayedTimestamp(completionTimestamp)
           .build()
 
         val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)
@@ -118,32 +119,38 @@ class StoryProgressController @Inject constructor(
    * @param topicId the ID corresponding to the topic for which progress needs to be stored.
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
    * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it has not been [ChapterPlayState.COMPLETED] already.
+   * @param lastPlayedTimestamp the timestamp at which the exploration was last played.
    * @return a [LiveData] that indicates the success/failure of this record progress operation.
    */
   fun recordRecentlyPlayedChapter(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    lastPlayedTimestamp: Long
   ): LiveData<AsyncResult<Any?>> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
         val previousChapterProgress =
           topicProgressDatabase
             .topicProgressMap[topicId]?.storyProgressMap?.get(storyId)?.chapterProgressMap?.get(explorationId)
-        val chapterProgressBuilder = ChapterProgress.newBuilder()
-        val currentTimestamp = Date().time
+
+        val chapterProgressBuilder = if (previousChapterProgress != null) {
+          previousChapterProgress.toBuilder()
+        } else {
+          ChapterProgress.newBuilder()
+            .setChapterPlayState(ChapterPlayState.STARTED_NOT_COMPLETED)
+            .setExplorationId(explorationId)
+        }
         if (previousChapterProgress != null) {
-          chapterProgressBuilder.chapterPlayState = previousChapterProgress.chapterPlayState
           chapterProgressBuilder.lastPlayedTimestamp =
-            if (previousChapterProgress.lastPlayedTimestamp < currentTimestamp && previousChapterProgress.chapterPlayState != ChapterPlayState.COMPLETED) {
-              currentTimestamp
+            if (previousChapterProgress.lastPlayedTimestamp < lastPlayedTimestamp && previousChapterProgress.chapterPlayState != ChapterPlayState.COMPLETED) {
+              lastPlayedTimestamp
             } else {
               previousChapterProgress.lastPlayedTimestamp
             }
         } else {
-          chapterProgressBuilder.chapterPlayState = ChapterPlayState.STARTED_NOT_COMPLETED
-          chapterProgressBuilder.lastPlayedTimestamp = currentTimestamp
+          chapterProgressBuilder.lastPlayedTimestamp = lastPlayedTimestamp
         }
 
         val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)

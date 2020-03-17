@@ -315,18 +315,20 @@ class TopicController @Inject constructor(
       return true
     }
 
+    if (topic.storyCount != topicProgress.storyProgressCount && topicProgress.storyProgressMap.isNotEmpty()) {
+      return true
+    }
+
     topic.storyList.forEach { storySummary ->
       if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
         val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
         val lastChapterSummary = storySummary.chapterList.last()
         if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-          return false
-        } else if (storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState == ChapterPlayState.COMPLETED) {
-          return false
+          return true
         }
       }
     }
-    return true
+    return false
   }
 
   private fun createCompletedStoryListFromProgress(
@@ -521,10 +523,17 @@ class TopicController @Inject constructor(
   /** Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in [StorySummary]. */
   private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
     return if (storySummary.chapterList.isNotEmpty()) {
-      val chapterBuilder = storySummary.getChapter(0).toBuilder()
-      chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
       val storyBuilder = storySummary.toBuilder()
-      storyBuilder.setChapter(0, chapterBuilder).build()
+      storySummary.chapterList.forEachIndexed { index, chapterSummary ->
+        val chapterBuilder = chapterSummary.toBuilder()
+        chapterBuilder.chapterPlayState = if (index != 0) {
+          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+        } else {
+          ChapterPlayState.NOT_STARTED
+        }
+        storyBuilder.setChapter(index, chapterBuilder)
+      }
+      storyBuilder.build()
     } else {
       storySummary
     }

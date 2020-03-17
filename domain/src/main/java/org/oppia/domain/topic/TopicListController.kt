@@ -44,9 +44,14 @@ import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
+
+private const val ONE_WEEK_IN_DAYS = 7
+private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
@@ -156,14 +161,6 @@ class TopicListController @Inject constructor(
   /**
    * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen. The total number of
    * promoted stories should correspond to the ongoing story count within the [TopicList] returned by [getTopicList].
-   */
-  fun getOngoingStoryList(): LiveData<AsyncResult<OngoingStoryList>> {
-    return MutableLiveData(AsyncResult.success(createOngoingStoryList()))
-  }
-
-  /**
-   * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen. The total number of
-   * promoted stories should correspond to the ongoing story count within the [TopicList] returned by [getTopicList].
    *
    * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be fetched.
    * @return a [LiveData] for a [OngoingStoryList].
@@ -187,10 +184,6 @@ class TopicListController @Inject constructor(
       .addTopicSummary(createTopicSummary1())
       .addTopicSummary(createFractionsTopicSummary())
       .addTopicSummary(createRatiosTopicSummary())
-    val ongoingStoryList = createOngoingStoryList()
-    if (ongoingStoryList.recentStoryList.isNotEmpty()) {
-      topicListBuilder.promotedStory = ongoingStoryList.recentStoryList.first()
-    }
     return topicListBuilder.build()
   }
 
@@ -251,48 +244,6 @@ class TopicListController @Inject constructor(
       .build()
   }
 
-  private fun createOngoingStoryList(): OngoingStoryList {
-    // TODO(#21): Thoroughly test the construction of this list based on lesson progress.
-    val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
-//    for (topicId in TOPIC_IDS) {
-//      val topic = topicController.retrieveTopic(topicId)
-//      for (storySummary in topic.storyList) {
-//        val storyId = storySummary.storyId
-//        val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
-//
-//        val completedChapterCount = storyProgress.chapterProgressMap.values.count { chapterProgress ->
-//          chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED
-//        }
-//
-//        if (completedChapterCount > 0) {
-//          // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
-//
-//          val nextChapterId =
-//            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId]!!.chapterPlayState == ChapterPlayState.NOT_STARTED }
-//
-//          if (nextChapterId != null) {
-//            val nextChapterSummary =
-//              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
-//            ongoingStoryListBuilder.addRecentStory(
-//              createPromotedStory(
-//                storyId,
-//                topic,
-//                completedChapterCount,
-//                storyProgress.chapterProgressCount,
-//                nextChapterSummary?.name,
-//                nextChapterSummary?.explorationId
-//              )
-//            )
-//          }
-//        }
-//      }
-//    }
-    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
-      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
-    }
-    return ongoingStoryListBuilder.build()
-  }
-
   private fun createOngoingStoryListFromProgress(topicProgressList: List<TopicProgress>): OngoingStoryList {
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
     topicProgressList.forEach { topicProgress ->
@@ -302,27 +253,51 @@ class TopicListController @Inject constructor(
         val story = topicController.retrieveStory(storyId)
 
         val completedChapterProgressList =
-          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }.sortedByDescending { chapterProgress ->  chapterProgress.lastPlayedTimestamp}
 
         val startedChapterProgressList =
-          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }.sortedByDescending { chapterProgress ->  chapterProgress.lastPlayedTimestamp}
 
-        val nextChapterSummary: ChapterSummary? = when {
-          startedChapterProgressList.isNotEmpty() -> story.chapterList.find { chapterSummary ->
+        if (startedChapterProgressList.isNotEmpty()) {
+          startedChapterProgressList.forEach { chapterProgress ->
+            val recentlyPlayerChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
+              chapterProgress.explorationId == chapterSummary.explorationId
+            }
+            if (recentlyPlayerChapterSummary != null) {
+              val numberOfDaysPassed = (Date().time - chapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+              val promotedStory = createPromotedStory(
+                storyId,
+                topic,
+                completedChapterProgressList.size,
+                storyProgress.chapterProgressCount,
+                recentlyPlayerChapterSummary.name,
+                recentlyPlayerChapterSummary.explorationId
+              )
+              if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+                ongoingStoryListBuilder.addRecentStory(promotedStory)
+              } else {
+                ongoingStoryListBuilder.addOlderStory(promotedStory)
+              }
+            }
+          }
+        } else if (completedChapterProgressList.isNotEmpty()) {
+          val nextChapterSummary = story.chapterList.find { chapterSummary ->
             !storyProgress.chapterProgressMap.containsKey(
               chapterSummary.explorationId
             )
           }
-          completedChapterProgressList.isNotEmpty() -> story.chapterList.find { chapterSummary ->
-            !storyProgress.chapterProgressMap.containsKey(
-              chapterSummary.explorationId
-            )
-          }
-          else -> null
-        }
-        if (nextChapterSummary != null) {
-          ongoingStoryListBuilder.addRecentStory(
-            createPromotedStory(
+          if (nextChapterSummary != null) {
+            val lastFinishedChapter = story.chapterList.reversed().find { chapterSummary ->
+              storyProgress.chapterProgressMap[chapterSummary.explorationId]?.chapterPlayState == ChapterPlayState.COMPLETED
+            }
+
+            val numberOfDaysPassed: Long = if (lastFinishedChapter != null) {
+              (Date().time - storyProgress.chapterProgressMap[lastFinishedChapter.explorationId]!!.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            } else {
+              0
+            }
+
+            val promotedStory = createPromotedStory(
               storyId,
               topic,
               completedChapterProgressList.size,
@@ -330,7 +305,13 @@ class TopicListController @Inject constructor(
               nextChapterSummary.name,
               nextChapterSummary.explorationId
             )
-          )
+
+            if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+              ongoingStoryListBuilder.addRecentStory(promotedStory)
+            } else {
+              ongoingStoryListBuilder.addRecentStory(promotedStory)
+            }
+          }
         }
       }
     }

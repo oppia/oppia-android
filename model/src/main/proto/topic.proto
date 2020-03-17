@@ -140,9 +140,6 @@ message OngoingTopicList {
 
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
-  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
-  // recommended story if no other stories are in progress.
-  PromotedStory promoted_story = 1;
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
@@ -287,8 +284,8 @@ message StoryProgress {
 
 // Represents the chapter progress.
 message ChapterProgress {
-  // The ID corresponding to the chapter.
-  string chapter_id = 1;
+  // The ID corresponding to the exploration.
+  string exploration_id = 1;
 
   // The playability state of chapter.
   ChapterPlayState chapter_play_state = 2;
