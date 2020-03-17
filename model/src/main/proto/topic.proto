@@ -254,8 +254,11 @@ enum ChapterPlayState {
   // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
+  // The chapter has been started but not completed by the player.
+  STARTED_NOT_COMPLETED = 3;
+
   // The chapter has been completed by the player.
-  COMPLETED = 3;
+  COMPLETED = 4;
 }
 
 // Top level proto used to store topic progress per-profile.
@@ -279,7 +282,19 @@ message StoryProgress {
   string story_id = 1;
 
   // Map from exploration ID to ChapterPlayState.
-  map<string, ChapterPlayState> chapter_progress = 2;
+  map<string, ChapterProgress> chapter_progress = 2;
+}
+
+// Represents the chapter progress.
+message ChapterProgress {
+  // The ID corresponding to the chapter.
+  string chapter_id = 1;
+
+  // The playability state of chapter.
+  ChapterPlayState chapter_play_state = 2;
+
+  // Timestamp to record last time the exploration was played in ms.
+  int64 last_played_timestamp = 3;
 }
 
 // Represents user's preference for using cellular data

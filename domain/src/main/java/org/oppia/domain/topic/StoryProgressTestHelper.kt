@@ -93,4 +93,64 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
       RATIOS_EXPLORATION_ID_2
     )
   }
+
+  /** Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile */
+  fun markRecentlyPlayedForFractionsExploration0(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+  }
+
+  /** Marks exploration [FRACTIONS_EXPLORATION_ID_1] as recently played for a particular profile */
+  fun markRecentlyPlayedForFractionsExploration1(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1
+    )
+  }
+
+  /** Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile */
+  fun markRecentlyPlayedForRatiosExploration0(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0
+    )
+  }
+
+  /** Marks exploration [RATIOS_EXPLORATION_ID_1] as recently played for a particular profile */
+  fun markRecentlyPlayedForRatiosExploration1(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1
+    )
+  }
+
+  /** Marks exploration [RATIOS_EXPLORATION_ID_2] as recently played for a particular profile */
+  fun markRecentlyPlayedForRatiosExploration2(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_2
+    )
+  }
+
+  /** Marks exploration [RATIOS_EXPLORATION_ID_3] as recently played for a particular profile */
+  fun markRecentlyPlayedForRatiosExploration3(profileId: ProfileId) {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_3
+    )
+  }
 }

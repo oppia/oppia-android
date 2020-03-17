@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
@@ -20,6 +21,7 @@ import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
@@ -27,6 +29,7 @@ import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
+import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
@@ -35,6 +38,7 @@ import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
@@ -49,7 +53,6 @@ const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = "1"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
-val TOPIC_IDS = listOf(FRACTIONS_TOPIC_ID, RATIOS_TOPIC_ID)
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
   RATIOS_TOPIC_ID to createTopicThumbnail1()
@@ -77,11 +80,14 @@ private const val REPLACE_IMG_TAG = "img"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
+private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID = "transformed_get_ongoing_story_list_provider_id"
+
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
 /** Controller for retrieving the list of topics available to the learner to play. */
 @Singleton
 class TopicListController @Inject constructor(
+  private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
   private val storyProgressController: StoryProgressController,
@@ -155,6 +161,26 @@ class TopicListController @Inject constructor(
     return MutableLiveData(AsyncResult.success(createOngoingStoryList()))
   }
 
+  /**
+   * Returns the list of ongoing [PromotedStory]s that can be viewed via a link on the homescreen. The total number of
+   * promoted stories should correspond to the ongoing story count within the [TopicList] returned by [getTopicList].
+   *
+   * @param profileId the ID corresponding to the profile for which [PromotedStory] needs to be fetched.
+   * @return a [LiveData] for a [OngoingStoryList].
+   */
+
+  fun getOngoingStoryList(profileId: ProfileId): LiveData<AsyncResult<OngoingStoryList>> {
+    val ongoingStoryListDataProvider = dataProviders.transformAsync(
+      TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID,
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+    ) {
+      val ongoingStoryList = createOngoingStoryListFromProgress(it)
+      AsyncResult.success(ongoingStoryList)
+    }
+
+    return dataProviders.convertToLiveData(ongoingStoryListDataProvider)
+  }
+
   private fun createTopicList(): TopicList {
     val topicListBuilder = TopicList.newBuilder()
       .addTopicSummary(createTopicSummary0())
@@ -162,7 +188,7 @@ class TopicListController @Inject constructor(
       .addTopicSummary(createFractionsTopicSummary())
       .addTopicSummary(createRatiosTopicSummary())
     val ongoingStoryList = createOngoingStoryList()
-    if (ongoingStoryList.recentStoryCount > 0) {
+    if (ongoingStoryList.recentStoryList.isNotEmpty()) {
       topicListBuilder.promotedStory = ongoingStoryList.recentStoryList.first()
     }
     return topicListBuilder.build()
@@ -228,36 +254,83 @@ class TopicListController @Inject constructor(
   private fun createOngoingStoryList(): OngoingStoryList {
     // TODO(#21): Thoroughly test the construction of this list based on lesson progress.
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
-    for (topicId in TOPIC_IDS) {
-      val topic = topicController.retrieveTopic(topicId)
-      for (storySummary in topic.storyList) {
-        val storyId = storySummary.storyId
-        val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
+//    for (topicId in TOPIC_IDS) {
+//      val topic = topicController.retrieveTopic(topicId)
+//      for (storySummary in topic.storyList) {
+//        val storyId = storySummary.storyId
+//        val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
+//
+//        val completedChapterCount = storyProgress.chapterProgressMap.values.count { chapterProgress ->
+//          chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED
+//        }
+//
+//        if (completedChapterCount > 0) {
+//          // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
+//
+//          val nextChapterId =
+//            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId]!!.chapterPlayState == ChapterPlayState.NOT_STARTED }
+//
+//          if (nextChapterId != null) {
+//            val nextChapterSummary =
+//              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
+//            ongoingStoryListBuilder.addRecentStory(
+//              createPromotedStory(
+//                storyId,
+//                topic,
+//                completedChapterCount,
+//                storyProgress.chapterProgressCount,
+//                nextChapterSummary?.name,
+//                nextChapterSummary?.explorationId
+//              )
+//            )
+//          }
+//        }
+//      }
+//    }
+    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
+      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
+    }
+    return ongoingStoryListBuilder.build()
+  }
 
-        val completedChapterCount = storyProgress.chapterProgressMap.values.count { playState ->
-          playState == ChapterPlayState.COMPLETED
-        }
+  private fun createOngoingStoryListFromProgress(topicProgressList: List<TopicProgress>): OngoingStoryList {
+    val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
+    topicProgressList.forEach { topicProgress ->
+      val topic = topicController.retrieveTopic(topicProgress.topicId)
+      topicProgress.storyProgressMap.values.forEach { storyProgress ->
+        val storyId = storyProgress.storyId
+        val story = topicController.retrieveStory(storyId)
 
-        if (completedChapterCount > 0) {
-          // TODO(#21): Track when a lesson was completed to determine to which list its story should be added.
+        val completedChapterProgressList =
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }
 
-          val nextChapterId =
-            storyProgress.chapterProgressMap.keys.find { chapterId -> storyProgress.chapterProgressMap[chapterId] == ChapterPlayState.NOT_STARTED }
+        val startedChapterProgressList =
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }
 
-          if (nextChapterId != null) {
-            val nextChapterSummary =
-              storySummary.chapterList.find { chapterSummary -> chapterSummary.explorationId == nextChapterId }
-            ongoingStoryListBuilder.addRecentStory(
-              createPromotedStory(
-                storyId,
-                topic,
-                completedChapterCount,
-                storyProgress.chapterProgressCount,
-                nextChapterSummary?.name,
-                nextChapterSummary?.explorationId
-              )
+        val nextChapterSummary: ChapterSummary? = when {
+          startedChapterProgressList.isNotEmpty() -> story.chapterList.find { chapterSummary ->
+            !storyProgress.chapterProgressMap.containsKey(
+              chapterSummary.explorationId
             )
           }
+          completedChapterProgressList.isNotEmpty() -> story.chapterList.find { chapterSummary ->
+            !storyProgress.chapterProgressMap.containsKey(
+              chapterSummary.explorationId
+            )
+          }
+          else -> null
+        }
+        if (nextChapterSummary != null) {
+          ongoingStoryListBuilder.addRecentStory(
+            createPromotedStory(
+              storyId,
+              topic,
+              completedChapterProgressList.size,
+              storyProgress.chapterProgressCount,
+              nextChapterSummary.name,
+              nextChapterSummary.explorationId
+            )
+          )
         }
       }
     }
