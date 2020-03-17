@@ -64,19 +64,14 @@ class TopicListControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var topicListController: TopicListController
+  @Inject lateinit var topicListController: TopicListController
 
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var storyProgressController: StoryProgressController
 
-  @Mock
-  lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
-  @Captor
-  lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+  @Mock lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+  @Captor lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
 
   @Inject
   @field:TestDispatcher
@@ -612,8 +607,7 @@ class TopicListControllerTest {
     return Date().time - NINE_DAYS_IN_MS
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

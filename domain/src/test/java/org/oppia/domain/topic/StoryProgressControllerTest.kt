@@ -61,19 +61,14 @@ class StoryProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var storyProgressController: StoryProgressController
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
-  @Mock
-  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-  @Captor
-  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
+  @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   private lateinit var profileId: ProfileId
 
@@ -148,8 +143,7 @@ class StoryProgressControllerTest {
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

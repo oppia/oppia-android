@@ -67,10 +67,9 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
-  @Inject
-  lateinit var topicController: TopicController
+
+  @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var topicController: TopicController
 
   @Rule
   @JvmField
@@ -80,42 +79,28 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Mock
-  lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-  @Captor
-  lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
+  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
+  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
-  @Mock
-  lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-  @Captor
-  lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
+  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
 
-  @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
+  @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
-  @Mock
-  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-  @Captor
-  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
+  @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  @Mock
-  lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
-  @Captor
-  lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+  @Mock lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
+  @Captor lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
 
-  @Mock
-  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-  @Captor
-  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
+  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
+  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
+
+  @Inject lateinit var dataProviders: DataProviders
 
   @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
+  @field:TestDispatcher lateinit var testDispatcher: CoroutineDispatcher
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
@@ -1187,8 +1172,7 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

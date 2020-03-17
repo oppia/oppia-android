@@ -63,42 +63,28 @@ class StoryProgressTestHelperTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
-  @Inject
-  lateinit var topicController: TopicController
+  @Inject lateinit var topicController: TopicController
 
-  @Inject
-  lateinit var topicListController: TopicListController
+  @Inject lateinit var topicListController: TopicListController
 
-  @Mock
-  lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-  @Captor
-  lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
+  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
+  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
-  @Mock
-  lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
-  @Captor
-  lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+  @Mock lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+  @Captor lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
 
-  @Mock
-  lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-  @Captor
-  lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
+  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
 
-  @Mock
-  lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
-  @Captor
-  lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+  @Mock lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
+  @Captor lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
 
-  @Mock
-  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-  @Captor
-  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
+  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
+  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
   @Inject
   @field:TestDispatcher
@@ -723,8 +709,7 @@ class StoryProgressTestHelperTest {
     assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
