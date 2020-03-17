@@ -43,10 +43,8 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
-import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
@@ -64,6 +62,7 @@ import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -92,8 +91,9 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
@@ -320,16 +320,6 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
 
-    if(ephemeralState.state.interaction.hintList.size!=0) {
-      logger.e(
-        "StateFragment",
-        "Hints====" + ephemeralState.state.interaction.hintList.size + " ==== " + ephemeralState.state.interaction.getHint(0).hintContent.html
-      )
-
-      viewModel.setHintBulbVisibility(true)
-    }else{
-      viewModel.setHintBulbVisibility(false)
-    }
 
     currentState = ephemeralState.state
 
@@ -347,6 +337,22 @@ class StateFragmentPresenter @Inject constructor(
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
+      if (ephemeralState.pendingState.wrongAnswerList.size>2){
+
+        if(ephemeralState.state.interaction.hintList.size!=0) {
+
+          logger.e(
+            "StateFragment",
+            "Hints====" + ephemeralState.pendingState.wrongAnswerList.size + " ==== " + ephemeralState.state.interaction.getHint(0).hintContent.html
+          )
+          lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+            viewModel.setHintBulbVisibility(true)
+          })
+        }else{
+          viewModel.setHintBulbVisibility(false)
+        }
+
+      }
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
@@ -659,9 +665,5 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
-  }
-
-  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
-    return fragment.childFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
   }
 }
