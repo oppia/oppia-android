@@ -2,7 +2,6 @@ package org.oppia.app.player.state.hintsandsolution
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import javax.inject.Inject
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions */
-class HintsAndSolutionFragment : InjectableDialogFragment(),HintsAndSolutionUiManager, ExpandedHintListIndexListener {
+class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
@@ -53,11 +52,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(),HintsAndSolutionUiMa
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  override fun setStateAndExplorationId(newState: State, explorationId: String) {
-    Log.e(
-      "HintsSolutionFragment",
-      "Hints====" + newState.name + " ==== " + newState.interaction.getHint(0).hintContent.html
-    )
+  fun setStateAndExplorationId(newState: State, explorationId: String) {
     currentState = newState
   }
 

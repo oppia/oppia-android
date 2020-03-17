@@ -24,16 +24,17 @@ class HintsAndSolutionViewModel @Inject constructor(
     this.solution = solution
   }
 
-  fun processHintList(): MutableList<HintsAndSolutionItemViewModel> {
+  fun processHintList(): List<HintsAndSolutionItemViewModel> {
 
+    itemList.clear()
     val hintsAndSolutionViewModel =
       HintsAndSolutionViewModel()
     val solutionViewModel =
       SolutionViewModel()
 
     for (index in 0 until  hintList.size) {
-      hintsAndSolutionViewModel.title = hintList[index].hintContent.contentId
-      hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList[index].hintContent.html
+      hintsAndSolutionViewModel.title = hintList.get(index).hintContent.contentId
+      hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList.get(index).hintContent.html
       itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
     }
     if (solution.hasExplanation()) {

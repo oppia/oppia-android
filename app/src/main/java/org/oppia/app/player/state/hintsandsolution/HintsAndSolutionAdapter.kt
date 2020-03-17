@@ -13,7 +13,7 @@ private const val VIEW_TYPE_SOLUTION_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [HintsAndSolutionFragment]. */
 class HintsAndSolutionAdapter(
-  private val itemList: MutableList<HintsAndSolutionItemViewModel>,
+  private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
   private var currentExpandedHintListIndex: Int?
 ) :
@@ -78,11 +78,11 @@ class HintsAndSolutionAdapter(
   inner class HintsAndSolutionSummaryViewHolder(private val binding: HintsAndSolutionSummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(hintsAndSolutionViewModel: HintsAndSolutionViewModel, position: Int) {
-      var isChapterListVisible = false
+      var isHintListVisible = false
       if (currentExpandedHintListIndex != null) {
-        isChapterListVisible = currentExpandedHintListIndex!! == position
+        isHintListVisible = currentExpandedHintListIndex!! == position
       }
-      binding.isListExpanded = isChapterListVisible
+      binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsAndSolutionViewModel
 
       binding.root.setOnClickListener {
@@ -111,11 +111,11 @@ class HintsAndSolutionAdapter(
   inner class SolutionSummaryViewHolder(private val binding: SolutionSummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(solutionViewModel: SolutionViewModel, position: Int) {
-      var isChapterListVisible = false
+      var isHintListVisible = false
       if (currentExpandedHintListIndex != null) {
-        isChapterListVisible = currentExpandedHintListIndex!! == position
+        isHintListVisible = currentExpandedHintListIndex!! == position
       }
-      binding.isListExpanded = isChapterListVisible
+      binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
 
       binding.root.setOnClickListener {

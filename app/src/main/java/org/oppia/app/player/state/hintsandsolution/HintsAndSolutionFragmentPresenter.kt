@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,11 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     viewModel.setHintsList(currentState.interaction.hintList)
     viewModel.setSolution(currentState.interaction.solution)
 
+    Log.e(
+      "Hints view model",
+      "Hints====" +viewModel.processHintList()
+
+    )
     val hintsAndSolutionAdapter =
       HintsAndSolutionAdapter(
         viewModel.processHintList(),
