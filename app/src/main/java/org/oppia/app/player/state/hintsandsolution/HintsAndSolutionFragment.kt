@@ -13,7 +13,7 @@ import javax.inject.Inject
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
+class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface, RevealHintListener {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
@@ -73,5 +73,9 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
 
   override fun revealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
+  }
+
+  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    hintsAndSolutionFragmentPresenter.handleRevealHint(saveUserChoice, hintIndex)
   }
 }

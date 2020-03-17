@@ -45,6 +45,7 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.hintsandsolution.RevealHintListener
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
@@ -93,7 +94,10 @@ class StateFragmentPresenter @Inject constructor(
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-  ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener, RevealHintListener {
+  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+//    currentState.interaction.hintList[hintIndex].hintIsRevealed = saveUserChoice
+  }
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
@@ -149,7 +153,7 @@ class StateFragmentPresenter @Inject constructor(
         .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
     }
 
-    binding.hintsAndSolutionFragmentContainer.setOnClickListener{
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId)
 
     }
@@ -337,22 +341,20 @@ class StateFragmentPresenter @Inject constructor(
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
-      if (ephemeralState.pendingState.wrongAnswerList.size>2){
 
-        if(ephemeralState.state.interaction.hintList.size!=0) {
-
-          logger.e(
-            "StateFragment",
-            "Hints====" + ephemeralState.pendingState.wrongAnswerList.size + " ==== " + ephemeralState.state.interaction.getHint(0).hintContent.html
-          )
+      // Check if user submits wrong answers more then twice
+      if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
+        // Check if hints are available for this state
+        if (ephemeralState.state.interaction.hintList.size != 0) {
+          // Start a timer for 3 secs and then display hint
           lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
             viewModel.setHintBulbVisibility(true)
           })
-        }else{
+        } else {
           viewModel.setHintBulbVisibility(false)
         }
-
       }
+
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)

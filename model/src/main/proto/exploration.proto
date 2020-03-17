@@ -110,12 +110,14 @@ message Solution {
   bool answer_is_exclusive = 2;
   string correct_answer = 3;
   SubtitledHtml explanation = 4;
+  bool solution_is_revealed = 5;
 }
 
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
   SubtitledHtml hint_content = 1;
+  bool hint_is_revealed = 2;
 }
 
 // Structure for a single outcome
