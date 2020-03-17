@@ -9,6 +9,9 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
+import android.content.pm.ActivityInfo
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import androidx.test.espresso.action.CoordinatesProvider
 import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
@@ -88,6 +91,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -100,6 +104,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
@@ -114,6 +119,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
@@ -127,6 +133,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
       )
@@ -140,6 +147,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
         click()
       )
@@ -156,6 +164,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
         click()
       )
@@ -176,6 +185,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
@@ -197,6 +207,7 @@ class OptionsFragmentTest {
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_laguage_item_layout)).perform(
         click()
       )
