@@ -314,7 +314,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean) {
+    stateIsTerminal: Boolean
+  ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
