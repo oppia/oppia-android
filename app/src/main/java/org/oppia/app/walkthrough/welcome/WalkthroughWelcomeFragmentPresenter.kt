@@ -41,7 +41,6 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
     walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
 
     binding.let {
@@ -49,8 +48,8 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = walkthroughWelcomeViewModel
     }
-    subscribeToProfileLiveData()
 
+    subscribeToProfileLiveData()
     return binding.root
   }
 
