@@ -29,6 +29,7 @@ import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -60,6 +61,8 @@ class HomeFragmentPresenter @Inject constructor(
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
+    storyProgressTestHelper.markPartialStoryProgressForFractions(profileId, false)
+
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
     allTopicsViewModel = AllTopicsViewModel()
@@ -67,9 +70,6 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
-
-    storyProgressTestHelper.markRecentlyPlayedForFractionsExploration0(profileId)
-    storyProgressTestHelper.markRecentlyPlayedForRatiosExploration2(profileId)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {

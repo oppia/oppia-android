@@ -81,6 +81,7 @@ class StoryProgressController @Inject constructor(
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
         val chapterProgress = ChapterProgress.newBuilder()
+          .setExplorationId(explorationId)
           .setChapterPlayState(ChapterPlayState.COMPLETED)
           .setLastPlayedTimestamp(completionTimestamp)
           .build()

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
@@ -44,7 +45,7 @@ import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -253,10 +254,14 @@ class TopicListController @Inject constructor(
         val story = topicController.retrieveStory(storyId)
 
         val completedChapterProgressList =
-          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }.sortedByDescending { chapterProgress ->  chapterProgress.lastPlayedTimestamp}
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }
+            .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+
+        val lastCompletedChapterProgress: ChapterProgress? = completedChapterProgressList.firstOrNull()
 
         val startedChapterProgressList =
-          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }.sortedByDescending { chapterProgress ->  chapterProgress.lastPlayedTimestamp}
+          storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }
+            .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
 
         if (startedChapterProgressList.isNotEmpty()) {
           startedChapterProgressList.forEach { chapterProgress ->
@@ -269,7 +274,7 @@ class TopicListController @Inject constructor(
                 storyId,
                 topic,
                 completedChapterProgressList.size,
-                storyProgress.chapterProgressCount,
+                story.chapterCount,
                 recentlyPlayerChapterSummary.name,
                 recentlyPlayerChapterSummary.explorationId
               )
@@ -280,36 +285,26 @@ class TopicListController @Inject constructor(
               }
             }
           }
-        } else if (completedChapterProgressList.isNotEmpty()) {
-          val nextChapterSummary = story.chapterList.find { chapterSummary ->
-            !storyProgress.chapterProgressMap.containsKey(
-              chapterSummary.explorationId
-            )
+        } else if (lastCompletedChapterProgress != null && lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId) {
+          val lastChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
+            lastCompletedChapterProgress.explorationId == chapterSummary.explorationId
           }
+          val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
+          val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
           if (nextChapterSummary != null) {
-            val lastFinishedChapter = story.chapterList.reversed().find { chapterSummary ->
-              storyProgress.chapterProgressMap[chapterSummary.explorationId]?.chapterPlayState == ChapterPlayState.COMPLETED
-            }
-
-            val numberOfDaysPassed: Long = if (lastFinishedChapter != null) {
-              (Date().time - storyProgress.chapterProgressMap[lastFinishedChapter.explorationId]!!.lastPlayedTimestamp) / ONE_DAY_IN_MS
-            } else {
-              0
-            }
-
+            val numberOfDaysPassed = (Date().time - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
             val promotedStory = createPromotedStory(
               storyId,
               topic,
               completedChapterProgressList.size,
-              storyProgress.chapterProgressCount,
+              story.chapterCount,
               nextChapterSummary.name,
               nextChapterSummary.explorationId
             )
-
             if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
               ongoingStoryListBuilder.addRecentStory(promotedStory)
             } else {
-              ongoingStoryListBuilder.addRecentStory(promotedStory)
+              ongoingStoryListBuilder.addOlderStory(promotedStory)
             }
           }
         }
