@@ -350,8 +350,6 @@ class StateFragmentPresenter @Inject constructor(
           lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
             viewModel.setHintBulbVisibility(true)
           })
-        } else {
-          viewModel.setHintBulbVisibility(false)
         }
       }
 
@@ -413,6 +411,7 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
+        viewModel.setHintBulbVisibility(false)
         moveToNextState()
       } else {
         if (result.labelledAsCorrectAnswer) {
@@ -427,6 +426,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCongratulationMessageOnCorrectAnswer() {
+    viewModel.setHintBulbVisibility(false)
     binding.congratulationTextview.setVisibility(View.VISIBLE)
 
     val fadeIn = AlphaAnimation(0f, 1f)
