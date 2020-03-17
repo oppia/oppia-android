@@ -44,7 +44,7 @@
         android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/hints_and_solution_title"
+          android:id="@+id/solution_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
@@ -54,10 +54,27 @@
           android:fontFamily="sans-serif-medium"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
-          android:text="@{viewModel.title}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+          android:id="@+id/reveal_solution_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_marginEnd="8dp"
+          android:background="@drawable/reveal_solution_brown_background"
+          android:padding="4dp"
+          android:text="@string/reveal_solution"
+          android:textColor="@color/white"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          android:visibility="@{viewModel.isSolutionRevealed? View.GONE : View.VISIBLE}"
+          app:layout_constraintTop_toBottomOf="@+id/solution_title" />
 
         <FrameLayout
           android:id="@+id/expand_list_icon"
@@ -72,8 +89,9 @@
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintHorizontal_bias="0.966"
-          app:layout_constraintStart_toEndOf="@+id/hints_and_solution_title"
+          app:layout_constraintStart_toEndOf="@+id/solution_title"
           app:layout_constraintTop_toTopOf="parent"
+          android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
           app:layout_constraintVertical_bias="0.0">
 
           <ImageView
@@ -81,25 +99,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@{@string/show_hide_chapter_list(viewModel.solutionSummary)}"
+            android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
             android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
         </FrameLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <LinearLayout
-        android:id="@+id/chapter_list_container"
+        android:id="@+id/solution_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/whiteLight"
         android:orientation="vertical"
+        android:padding="8dp"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
-
-        <View
-          android:id="@+id/topic_play_story_dashed_line_view"
-          android:layout_width="match_parent"
-          android:layout_height="2dp"
-          android:layout_gravity="center_horizontal"
-          android:background="@color/divider" />
 
         <TextView
           android:id="@+id/solution_correct_answer"
@@ -109,14 +121,15 @@
           android:fontFamily="sans-serif-medium"
           android:text="@{viewModel.correctAnswer}"
           android:textColor="@color/oppiaPrimaryText"
+          android:layout_margin="4dp"
           android:textSize="14sp" />
         <TextView
           android:id="@+id/solution_summary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
+          android:layout_margin="4dp"
           android:fontFamily="sans-serif-medium"
-          android:text="@{viewModel.solutionSummary}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp" />
 

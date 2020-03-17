@@ -278,4 +278,10 @@
   <string name="stories_completed">Stories Completed</string>
   <string name="story_completed">Story Completed</string>
   <string name="hints_toolbar_title">Hints</string>
+  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_hint">Reveal Hint</string>
+  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
+  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="reveal">Reveal</string>
 </resources>

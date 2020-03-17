@@ -13,7 +13,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.hintsandsolution.HintsAndSolutionViewModel" />
+      type="org.oppia.app.player.state.hintsandsolution.HintsViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView

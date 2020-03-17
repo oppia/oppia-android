@@ -2,20 +2,27 @@ package org.oppia.app.player.state.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.HintsAndSolutionSummaryBinding
+import org.oppia.app.databinding.HintsSummaryBinding
 import org.oppia.app.databinding.SolutionSummaryBinding
+import org.oppia.util.parser.HtmlParser
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
+private const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [HintsAndSolutionFragment]. */
 class HintsAndSolutionAdapter(
+  private val fragment: Fragment,
   private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
-  private var currentExpandedHintListIndex: Int?
+  private var currentExpandedHintListIndex: Int?,
+  private var explorationId: String,
+  private var htmlParserFactory: HtmlParser.Factory,
+  private var entityType: String
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,7 +32,7 @@ class HintsAndSolutionAdapter(
       VIEW_TYPE_HINT_ITEM -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          HintsAndSolutionSummaryBinding.inflate(
+          HintsSummaryBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -49,7 +56,7 @@ class HintsAndSolutionAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_HINT_ITEM -> {
-        (holder as HintsAndSolutionSummaryViewHolder).bind(itemList[i] as HintsAndSolutionViewModel, i)
+        (holder as HintsAndSolutionSummaryViewHolder).bind(itemList[i] as HintsViewModel, i)
       }
       VIEW_TYPE_SOLUTION_ITEM -> {
         (holder as SolutionSummaryViewHolder).bind(itemList[i] as SolutionViewModel, i)
@@ -60,7 +67,7 @@ class HintsAndSolutionAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is HintsAndSolutionViewModel -> {
+      is HintsViewModel -> {
         VIEW_TYPE_HINT_ITEM
       }
       is SolutionViewModel -> {
@@ -74,10 +81,9 @@ class HintsAndSolutionAdapter(
     return itemList.size
   }
 
-
-  inner class HintsAndSolutionSummaryViewHolder(private val binding: HintsAndSolutionSummaryBinding) :
+  inner class HintsAndSolutionSummaryViewHolder(private val binding: HintsSummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(hintsAndSolutionViewModel: HintsAndSolutionViewModel, position: Int) {
+    internal fun bind(hintsAndSolutionViewModel: HintsViewModel, position: Int) {
       var isHintListVisible = false
       if (currentExpandedHintListIndex != null) {
         isHintListVisible = currentExpandedHintListIndex!! == position
@@ -85,6 +91,34 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsAndSolutionViewModel
 
+      binding.hintTitle?.text = hintsAndSolutionViewModel.title.replace("_", " ").capitalize()
+      binding.hintsAndSolutionSummary.text =
+        htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+          .parseOppiaHtml(
+            hintsAndSolutionViewModel.hintsAndSolutionSummary, binding.hintsAndSolutionSummary
+          )
+
+      binding.revealHintButton?.setOnClickListener {
+        hintsAndSolutionViewModel.isHintRevealed = true
+        val previousIndex: Int? = currentExpandedHintListIndex
+        currentExpandedHintListIndex =
+          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+            null
+          } else {
+            position
+          }
+        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+        if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          notifyItemChanged(currentExpandedHintListIndex!!)
+        } else {
+          if (previousIndex != null) {
+            notifyItemChanged(previousIndex)
+          }
+          if (currentExpandedHintListIndex != null) {
+            notifyItemChanged(currentExpandedHintListIndex!!)
+          }
+        }
+      }
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedHintListIndex
         currentExpandedHintListIndex =
@@ -118,6 +152,16 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
 
+      binding.solutionTitle.text = solutionViewModel.title.capitalize()
+      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+        .parseOppiaHtml(
+          solutionViewModel.solutionSummary, binding.solutionSummary
+        )
+
+      binding.revealSolutionButton.setOnClickListener {
+        showRevealSolutionDialogFragment()
+      }
+
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedHintListIndex
         currentExpandedHintListIndex =
@@ -138,6 +182,23 @@ class HintsAndSolutionAdapter(
           }
         }
       }
+    }
+  }
+
+  private fun showRevealSolutionDialogFragment() {
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
+    if (previousFragment != null) {
+      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = RevealSolutionDialogFragment.newInstance()
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_REVEAL_SOLUTION_DIALOG)
+  }
+
+  fun setRevealSolution(saveUserChoice: Boolean) {
+    if (itemList.get(itemList.size - 1) is SolutionViewModel) {
+      val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
+      solutionViewModel.isSolutionRevealed = saveUserChoice
+      notifyItemChanged(itemList.size - 1)
     }
   }
 }

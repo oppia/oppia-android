@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,23 +9,29 @@ import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** Presenter for [HintsAndSolutionFragment], sets up bindings from ViewModel */
 @FragmentScope
 class HintsAndSolutionFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HintsAndSolutionViewModel>
+  private val viewModelProvider: ViewModelProvider<HintsViewModel>,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @ExplorationHtmlParserEntityType private val entityType: String
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
+  private lateinit var hintsAndSolutionAdapter: HintsAndSolutionAdapter
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?,
                        currentState: State,
+                       explorationId: String,
                        currentExpandedHintListIndex: Int?,
                        expandedHintListIndexListener: ExpandedHintListIndexListener): View? {
     val binding = HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -47,17 +52,17 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
     viewModel.setHintsList(currentState.interaction.hintList)
     viewModel.setSolution(currentState.interaction.solution)
+    viewModel.setExplorationId(explorationId)
 
-    Log.e(
-      "Hints view model",
-      "Hints====" +viewModel.processHintList()
-
-    )
-    val hintsAndSolutionAdapter =
+     hintsAndSolutionAdapter =
       HintsAndSolutionAdapter(
+        fragment,
         viewModel.processHintList(),
         expandedHintListIndexListener,
-        currentExpandedHintListIndex
+        currentExpandedHintListIndex,
+        explorationId,
+        htmlParserFactory,
+        entityType
       )
     binding.hintsAndSolutionRecyclerView.apply {
       adapter = hintsAndSolutionAdapter
@@ -68,7 +73,11 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getHintsAndSolutionViewModel(): HintsAndSolutionViewModel {
-    return viewModelProvider.getForFragment(fragment, HintsAndSolutionViewModel::class.java)
+  private fun getHintsAndSolutionViewModel(): HintsViewModel {
+    return viewModelProvider.getForFragment(fragment, HintsViewModel::class.java)
+  }
+
+  fun handleRevealSolution(saveUserChoice: Boolean) {
+    hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
   }
 }

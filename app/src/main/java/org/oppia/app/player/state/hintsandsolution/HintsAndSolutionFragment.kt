@@ -13,11 +13,12 @@ import javax.inject.Inject
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener {
+class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
   private lateinit var currentState: State
+  private lateinit var explorationId: String
 
   private var currentExpandedHintListIndex: Int? = null
 
@@ -42,6 +43,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
       inflater,
       container,
       currentState,
+      explorationId,
       currentExpandedHintListIndex,
       this as ExpandedHintListIndexListener
     )
@@ -54,6 +56,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
 
   fun setStateAndExplorationId(newState: State, explorationId: String) {
     currentState = newState
+    this.explorationId = explorationId
   }
 
 
@@ -68,7 +71,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     currentExpandedHintListIndex = index
   }
 
-//  override fun selectStorySummary(storySummary: StorySummary) {
-//    hintsAndSolutionFragmentPresenter.storySummaryClicked(storySummary)
-//  }
+  override fun revealSolution(saveUserChoice: Boolean) {
+    hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
+  }
 }

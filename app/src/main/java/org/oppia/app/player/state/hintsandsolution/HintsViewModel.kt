@@ -8,13 +8,15 @@ import javax.inject.Inject
 
 /** [ViewModel] for concept card, providing rich text and worked examples */
 @FragmentScope
-class HintsAndSolutionViewModel @Inject constructor(
+class HintsViewModel @Inject constructor(
 ) : HintsAndSolutionItemViewModel() {
 
   var title: String = ""
   var hintsAndSolutionSummary: String = ""
+  var isHintRevealed: Boolean = false
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
+  private lateinit var explorationId: String
   private val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
   fun setHintsList(hintList: List<Hint>) {
     this.hintList = hintList
@@ -25,24 +27,26 @@ class HintsAndSolutionViewModel @Inject constructor(
   }
 
   fun processHintList(): List<HintsAndSolutionItemViewModel> {
-
     itemList.clear()
-    val hintsAndSolutionViewModel =
-      HintsAndSolutionViewModel()
-    val solutionViewModel =
-      SolutionViewModel()
-
     for (index in 0 until  hintList.size) {
-      hintsAndSolutionViewModel.title = hintList.get(index).hintContent.contentId
-      hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList.get(index).hintContent.html
+      val hintsAndSolutionViewModel = HintsViewModel()
+      hintsAndSolutionViewModel.title = hintList[index].hintContent.contentId
+      hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList[index].hintContent.html
+      hintsAndSolutionViewModel.isHintRevealed = false
       itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
     }
     if (solution.hasExplanation()) {
+      val solutionViewModel = SolutionViewModel()
       solutionViewModel.title = solution.explanation.contentId
       solutionViewModel.correctAnswer = solution.correctAnswer
       solutionViewModel.solutionSummary = solution.explanation.html
-      itemList.add(solutionViewModel as SolutionViewModel)
+      solutionViewModel.isSolutionRevealed = false
+      itemList.add(solutionViewModel)
     }
     return itemList
+  }
+
+  fun setExplorationId(explorationId: String) {
+      this.explorationId = explorationId
   }
 }

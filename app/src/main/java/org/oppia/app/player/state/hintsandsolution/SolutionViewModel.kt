@@ -7,4 +7,5 @@ class SolutionViewModel : HintsAndSolutionItemViewModel(){
   var solutionSummary: String = ""
   var correctAnswer: String = ""
   var title: String = ""
+  var isSolutionRevealed: Boolean = false
 }
