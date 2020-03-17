@@ -24,12 +24,10 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -37,7 +35,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val storyProgressTestHelper: StoryProgressTestHelper,
   private val topicListController: TopicListController,
   private val logger: Logger
 ) {
@@ -60,8 +57,6 @@ class HomeFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
-    storyProgressTestHelper.markPartialStoryProgressForFractions(profileId, false)
 
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)

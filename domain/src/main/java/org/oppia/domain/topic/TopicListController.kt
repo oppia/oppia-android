@@ -263,26 +263,25 @@ class TopicListController @Inject constructor(
           storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }
             .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
 
-        if (startedChapterProgressList.isNotEmpty()) {
-          startedChapterProgressList.forEach { chapterProgress ->
-            val recentlyPlayerChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
-              chapterProgress.explorationId == chapterSummary.explorationId
-            }
-            if (recentlyPlayerChapterSummary != null) {
-              val numberOfDaysPassed = (Date().time - chapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
-              val promotedStory = createPromotedStory(
-                storyId,
-                topic,
-                completedChapterProgressList.size,
-                story.chapterCount,
-                recentlyPlayerChapterSummary.name,
-                recentlyPlayerChapterSummary.explorationId
-              )
-              if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
-                ongoingStoryListBuilder.addRecentStory(promotedStory)
-              } else {
-                ongoingStoryListBuilder.addOlderStory(promotedStory)
-              }
+        val recentlyPlayerChapterProgress: ChapterProgress? = startedChapterProgressList.firstOrNull()
+        if (recentlyPlayerChapterProgress != null) {
+          val recentlyPlayerChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
+            recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
+          }
+          if (recentlyPlayerChapterSummary != null) {
+            val numberOfDaysPassed = (Date().time - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            val promotedStory = createPromotedStory(
+              storyId,
+              topic,
+              completedChapterProgressList.size,
+              story.chapterCount,
+              recentlyPlayerChapterSummary.name,
+              recentlyPlayerChapterSummary.explorationId
+            )
+            if (numberOfDaysPassed < ONE_WEEK_IN_DAYS) {
+              ongoingStoryListBuilder.addRecentStory(promotedStory)
+            } else {
+              ongoingStoryListBuilder.addOlderStory(promotedStory)
             }
           }
         } else if (lastCompletedChapterProgress != null && lastCompletedChapterProgress.explorationId != story.chapterList.last().explorationId) {
