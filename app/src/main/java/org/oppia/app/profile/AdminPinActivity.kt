@@ -26,7 +26,7 @@ class AdminPinActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)  
-    adminPinActivityPresenter.handleOnCreate(savedInstanceState)
+    adminPinActivityPresenter.handleOnCreate()
   }
   
   override fun onSupportNavigateUp(): Boolean {
