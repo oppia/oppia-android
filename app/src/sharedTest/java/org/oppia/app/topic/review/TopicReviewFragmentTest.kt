@@ -8,8 +8,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,6 +35,8 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicReviewFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -120,16 +124,13 @@ class TopicReviewFragmentTest {
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      it.recreate()
       onView(atPosition(R.id.review_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
@@ -138,51 +139,28 @@ class TopicReviewFragmentTest {
   @Test
   fun testTopicReviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      it.recreate()
-      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
-    }
-  }
 
-  @Test
-  fun testTopicReviewFragment_loadFragment_configurationChange_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          withText(TopicTab.getTabForPosition(3).name),
-          isDescendantOfA(withId(R.id.topic_tabs_container))
-        )
-      ).perform(click())
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      it.recreate()
-      onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
-      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
 
   @Test
   fun testTopicReviewFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      it.recreate()
       onView(withId(R.id.review_recycler_view)).check(hasItemCount(3))
     }
   }
