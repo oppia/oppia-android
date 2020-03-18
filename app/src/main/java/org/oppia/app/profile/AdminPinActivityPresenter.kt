@@ -49,34 +49,19 @@ class AdminPinActivityPresenter @Inject constructor(
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
         adminViewModel.pinErrorMsg.set("")
+        adminViewModel.savedPin=it.toString()
       }
     }
 
     addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
       confirmPin?.let {
         adminViewModel.confirmPinErrorMsg.set("")
+        adminViewModel.savedConfirmPin=it.toString()
       }
     }
 
-    binding.inputPin.addTextChangedListener(object :TextWatcher{
-      override fun afterTextChanged(p0: Editable?) {
-        sharedPreferences.edit().putString("InputPin", p0.toString().trim()).apply();
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
-
-    binding.inputConfirmPin.addTextChangedListener(object : TextWatcher {
-      override fun afterTextChanged(p0: Editable?) {
-        sharedPreferences.edit().putString("InputConfirmPin", p0.toString()).apply();
-        binding.submitButton.isEnabled =
-          (p0.toString().trim().length == 5 && binding.inputPin.getInput().length == 5)
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
+    binding.inputPin.setInput(adminViewModel.savedPin)
+    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin)
 
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()
@@ -108,18 +93,6 @@ class AdminPinActivityPresenter @Inject constructor(
         }
       })
     }
-  }
-
-  fun handleOnRestoreInstanceState(bundle: Bundle?) {
-    val binding = DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
-    binding.apply {
-      lifecycleOwner = activity
-      viewModel = adminViewModel
-    }
-
-    binding.inputPin.input.setText(sharedPreferences.getString("InputPin","default value"))
-    binding.inputConfirmPin.input.setText(sharedPreferences.getString("InputConfirmPin","default value"))
-
   }
 
   private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {

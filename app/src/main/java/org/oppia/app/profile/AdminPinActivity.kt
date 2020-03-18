@@ -32,12 +32,7 @@ class AdminPinActivity : InjectableAppCompatActivity() {
     sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this)
     adminPinActivityPresenter.handleOnCreate(savedInstanceState,sharedPreferences)
   }
-
-  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    super.onRestoreInstanceState(savedInstanceState)
-    adminPinActivityPresenter.handleOnRestoreInstanceState(savedInstanceState)
-  }
-
+  
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
