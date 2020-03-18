@@ -11,7 +11,7 @@ import org.oppia.util.caching.AssetRepository
 /** Custom [AppGlideModule] to enable loading images from [AssetRepository] via Glide. */
 @GlideModule
 class RepositoryGlideModule : AppGlideModule() {
-  override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-    registry.prepend(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
-  }
+    override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
+        registry.prepend(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
+    }
 }

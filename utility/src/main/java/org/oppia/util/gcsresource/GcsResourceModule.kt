@@ -7,10 +7,10 @@ import javax.inject.Singleton
 /** Provides the default name of the GCS Resource bucket */
 @Module
 class GcsResourceModule {
-  @Provides
-  @DefaultResource
-  @Singleton
-  fun provideDefaultGcsResource(): String {
-    return "oppiaserver-resources"
-  }
+    @Provides
+    @DefaultResource
+    @Singleton
+    fun provideDefaultGcsResource(): String {
+        return "oppiaserver-resources"
+    }
 }

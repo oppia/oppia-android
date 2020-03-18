@@ -9,25 +9,25 @@ import javax.inject.Singleton
 /** Provides logging-based dependencies. */
 @Module
 class LoggerModule {
-  @Provides
-  @EnableConsoleLog
-  @Singleton
-  fun provideEnableConsoleLog(): Boolean {
-    return true
-  }
+    @Provides
+    @EnableConsoleLog
+    @Singleton
+    fun provideEnableConsoleLog(): Boolean {
+        return true
+    }
 
-  @Provides
-  @EnableFileLog
-  @Singleton
-  fun provideEnableFileLog(): Boolean {
-    return true
-  }
+    @Provides
+    @EnableFileLog
+    @Singleton
+    fun provideEnableFileLog(): Boolean {
+        return true
+    }
 
-  @Provides
-  @GlobalLogLevel
-  @Singleton
-  fun provideGlobalLogLevel(): LogLevel {
-    // By default, log everything.
-    return LogLevel.VERBOSE
-  }
+    @Provides
+    @GlobalLogLevel
+    @Singleton
+    fun provideGlobalLogLevel(): LogLevel {
+        // By default, log everything.
+        return LogLevel.VERBOSE
+    }
 }

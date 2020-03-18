@@ -28,104 +28,104 @@ class UrlImageParser private constructor(
     private val imageCenterAlign: Boolean,
     private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
-  /**
-   * This method is called when the HTML parser encounters an <img> tag.
-   * @param urlString : urlString argument is the string from the "src" attribute.
-   * @return Drawable : Drawable representation of the image.
-   */
-  override fun getDrawable(urlString: String): Drawable {
-    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
-    val urlDrawable = UrlDrawable()
-    val target = BitmapTarget(urlDrawable)
-    imageLoader.load(
-      gcsPrefix + gcsResource + imageUrl,
-      target
-    )
-    return urlDrawable
-  }
-
-  private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
-    override fun onLoadCleared(placeholder: Drawable?) {
-      // No resources to clear.
+    /**
+     * This method is called when the HTML parser encounters an <img> tag.
+     * @param urlString : urlString argument is the string from the "src" attribute.
+     * @return Drawable : Drawable representation of the image.
+     */
+    override fun getDrawable(urlString: String): Drawable {
+        val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+        val urlDrawable = UrlDrawable()
+        val target = BitmapTarget(urlDrawable)
+        imageLoader.load(
+            gcsPrefix + gcsResource + imageUrl,
+            target
+        )
+        return urlDrawable
     }
 
-    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      val drawable = BitmapDrawable(context.resources, resource)
-      htmlContentTextView.post {
-        htmlContentTextView.width {
-          val drawableHeight = drawable.intrinsicHeight
-          val drawableWidth = drawable.intrinsicWidth
-          val initialDrawableMargin = if (imageCenterAlign) {
-            calculateInitialMargin(it, drawableWidth)
-          } else {
+    private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
+        override fun onLoadCleared(placeholder: Drawable?) {
+            // No resources to clear.
+        }
+
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            val drawable = BitmapDrawable(context.resources, resource)
+            htmlContentTextView.post {
+                htmlContentTextView.width {
+                    val drawableHeight = drawable.intrinsicHeight
+                    val drawableWidth = drawable.intrinsicWidth
+                    val initialDrawableMargin = if (imageCenterAlign) {
+                        calculateInitialMargin(it, drawableWidth)
+                    } else {
+                        0
+                    }
+                    val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+                    drawable.bounds = rect
+                    urlDrawable.bounds = rect
+                    urlDrawable.drawable = drawable
+                    htmlContentTextView.text = htmlContentTextView.text
+                    htmlContentTextView.invalidate()
+                }
+            }
+        }
+    }
+
+    class UrlDrawable : BitmapDrawable() {
+        var drawable: Drawable? = null
+        override fun draw(canvas: Canvas) {
+            val currentDrawable = drawable
+            currentDrawable?.draw(canvas)
+        }
+    }
+
+    private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Int): Int {
+        val margin = (availableAreaWidth - drawableWidth) / 2
+        return if (margin > 0) {
+            margin
+        } else {
             0
-          }
-          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
-          drawable.bounds = rect
-          urlDrawable.bounds = rect
-          urlDrawable.drawable = drawable
-          htmlContentTextView.text = htmlContentTextView.text
-          htmlContentTextView.invalidate()
         }
-      }
     }
-  }
 
-  class UrlDrawable : BitmapDrawable() {
-    var drawable: Drawable? = null
-    override fun draw(canvas: Canvas) {
-      val currentDrawable = drawable
-      currentDrawable?.draw(canvas)
-    }
-  }
-
-  private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Int): Int {
-    val margin = (availableAreaWidth - drawableWidth) / 2
-    return if (margin > 0) {
-      margin
-    } else {
-      0
-    }
-  }
-
-  // Reference: https://stackoverflow.com/a/51865494
-  private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
-    if (width == 0) {
-      viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-          viewTreeObserver.removeOnGlobalLayoutListener(this)
-          computeWidthOnGlobalLayout(width)
+    // Reference: https://stackoverflow.com/a/51865494
+    private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
+        if (width == 0) {
+            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    computeWidthOnGlobalLayout(width)
+                }
+            })
+        } else {
+            computeWidthOnGlobalLayout(width)
         }
-      })
-    } else {
-      computeWidthOnGlobalLayout(width)
     }
-  }
 
-  class Factory @Inject constructor(
-      private val context: Context,
-      @DefaultGcsPrefix private val gcsPrefix: String,
-      @DefaultGcsResource private val gcsResource: String,
-      @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-      private val imageLoader: ImageLoader
-  ) {
-    fun create(
-        htmlContentTextView: TextView,
-        entityType: String,
-        entityId: String,
-        imageCenterAlign: Boolean
-    ): UrlImageParser {
-      return UrlImageParser(
-        context,
-        gcsPrefix,
-        gcsResource,
-        imageDownloadUrlTemplate,
-        htmlContentTextView,
-        entityType,
-        entityId,
-        imageCenterAlign,
-        imageLoader
-      )
+    class Factory @Inject constructor(
+        private val context: Context,
+        @DefaultGcsPrefix private val gcsPrefix: String,
+        @DefaultGcsResource private val gcsResource: String,
+        @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+        private val imageLoader: ImageLoader
+    ) {
+        fun create(
+            htmlContentTextView: TextView,
+            entityType: String,
+            entityId: String,
+            imageCenterAlign: Boolean
+        ): UrlImageParser {
+            return UrlImageParser(
+                context,
+                gcsPrefix,
+                gcsResource,
+                imageDownloadUrlTemplate,
+                htmlContentTextView,
+                entityType,
+                entityId,
+                imageCenterAlign,
+                imageLoader
+            )
+        }
     }
-  }
 }

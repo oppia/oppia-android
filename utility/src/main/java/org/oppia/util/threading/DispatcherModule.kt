@@ -13,17 +13,17 @@ import kotlinx.coroutines.asCoroutineDispatcher
  */
 @Module
 class DispatcherModule {
-  @Provides
-  @BackgroundDispatcher
-  @Singleton
-  fun provideBackgroundDispatcher(): CoroutineDispatcher {
-    return Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
-  }
+    @Provides
+    @BackgroundDispatcher
+    @Singleton
+    fun provideBackgroundDispatcher(): CoroutineDispatcher {
+        return Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
+    }
 
-  @Provides
-  @BlockingDispatcher
-  @Singleton
-  fun provideBlockingDispatcher(): CoroutineDispatcher {
-    return Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  }
+    @Provides
+    @BlockingDispatcher
+    @Singleton
+    fun provideBlockingDispatcher(): CoroutineDispatcher {
+        return Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    }
 }

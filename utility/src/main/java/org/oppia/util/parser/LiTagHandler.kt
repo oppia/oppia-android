@@ -13,25 +13,25 @@ import org.xml.sax.XMLReader
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
 class LiTagHandler : Html.TagHandler {
-  /**
-   * Helper marker class. Based on [Html.fromHtml] implementation.
-   */
-  class Bullet
+    /**
+     * Helper marker class. Based on [Html.fromHtml] implementation.
+     */
+    class Bullet
 
-  override fun handleTag(opening: Boolean, tag: String, output: Editable, xmlReader: XMLReader) {
-    if (tag == "li" && opening) {
-      output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-    }
-    if (tag == "li" && !opening) {
-      output.append("<br>")
-      val lastMark = output.getSpans(0, output.length, Bullet::class.java).lastOrNull()
-      lastMark?.let {
-        val start = output.getSpanStart(it)
-        output.removeSpan(it)
-        if (start != output.length) {
-          output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+    override fun handleTag(opening: Boolean, tag: String, output: Editable, xmlReader: XMLReader) {
+        if (tag == "li" && opening) {
+            output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         }
-      }
+        if (tag == "li" && !opening) {
+            output.append("<br>")
+            val lastMark = output.getSpans(0, output.length, Bullet::class.java).lastOrNull()
+            lastMark?.let {
+                val start = output.getSpanStart(it)
+                output.removeSpan(it)
+                if (start != output.length) {
+                    output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                }
+            }
+        }
     }
-  }
 }

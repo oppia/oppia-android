@@ -14,17 +14,17 @@ class GlideImageLoader @Inject constructor(
     @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
     private val assetRepository: AssetRepository
 ) : ImageLoader {
-  override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
-    val model: Any = if (cacheAssetsLocally) {
-      object : ImageAssetFetcher {
-        override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
+    override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
+        val model: Any = if (cacheAssetsLocally) {
+            object : ImageAssetFetcher {
+                override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
 
-        override fun getImageIdentifier(): String = imageUrl
-      }
-    } else imageUrl
-    Glide.with(context)
-      .asBitmap()
-      .load(model)
-      .into(target)
-  }
+                override fun getImageIdentifier(): String = imageUrl
+            }
+        } else imageUrl
+        Glide.with(context)
+            .asBitmap()
+            .load(model)
+            .into(target)
+    }
 }

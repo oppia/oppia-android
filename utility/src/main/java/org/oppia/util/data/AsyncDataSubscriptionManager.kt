@@ -22,59 +22,59 @@ internal typealias ObserveAsyncChange = suspend () -> Unit
 class AsyncDataSubscriptionManager @Inject constructor(
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
-  private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
-  private val associatedIds = ConcurrentQueueMap<Any, Any>()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundDispatcher)
+    private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
+    private val associatedIds = ConcurrentQueueMap<Any, Any>()
+    private val backgroundCoroutineScope = CoroutineScope(backgroundDispatcher)
 
-  /** Subscribes the specified callback function to the specified [DataProvider] ID. */
-  internal fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
-    subscriptionMap.enqueue(id, observeChange)
-  }
-
-  /** Unsubscribes the specified callback function from the specified [DataProvider] ID. */
-  internal fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
-    // TODO(#91): Determine a way to safely fully remove the queue once it's empty. This may require a custom data
-    //  structure or external locking for proper thread safety (e.g. to handle the case where multiple
-    //  subscribes/notifies happen shortly after the queue is removed).
-    return subscriptionMap.dequeue(id, observeChange)
-  }
-
-  /**
-   * Creates an association such that change notifications via [notifyChange] to the parent ID will also notify
-   * observers of the child ID.
-   */
-  internal fun associateIds(childId: Any, parentId: Any) {
-    // TODO(#6): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
-    //  make this impossible in practice unless data provider users try to use the same key for multiple inter-dependent
-    //  data providers.
-    // TODO(#6): Find a way to determine parent-child ID associations during subscription time to avoid needing to store
-    //  long-lived references to IDs prior to subscriptions.
-    associatedIds.enqueue(parentId, childId)
-  }
-
-  /**
-   * Notifies all subscribers of the specified [DataProvider] id that the provider has been changed and should be
-   * re-queried for its latest state.
-   */
-  suspend fun notifyChange(id: Any) {
-    // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData
-    // expects.
-    // TODO(#90): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid any
-    //  load on the UI thread until the final data value is ready for delivery.
-    val scope = CoroutineScope(Dispatchers.Main)
-    scope.launch {
-      subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
+    /** Subscribes the specified callback function to the specified [DataProvider] ID. */
+    internal fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
+        subscriptionMap.enqueue(id, observeChange)
     }
 
-    // Also notify all children observing this parent.
-    associatedIds.getQueue(id).forEach { childId -> notifyChange(childId) }
-  }
+    /** Unsubscribes the specified callback function from the specified [DataProvider] ID. */
+    internal fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
+        // TODO(#91): Determine a way to safely fully remove the queue once it's empty. This may require a custom data
+        //  structure or external locking for proper thread safety (e.g. to handle the case where multiple
+        //  subscribes/notifies happen shortly after the queue is removed).
+        return subscriptionMap.dequeue(id, observeChange)
+    }
 
-  /**
-   * Same as [notifyChange] except this may be called on the main thread since it will notify changes on a background
-   * thread.
-   */
-  fun notifyChangeAsync(id: Any) {
-    backgroundCoroutineScope.launch { notifyChange(id) }
-  }
+    /**
+     * Creates an association such that change notifications via [notifyChange] to the parent ID will also notify
+     * observers of the child ID.
+     */
+    internal fun associateIds(childId: Any, parentId: Any) {
+        // TODO(#6): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
+        //  make this impossible in practice unless data provider users try to use the same key for multiple inter-dependent
+        //  data providers.
+        // TODO(#6): Find a way to determine parent-child ID associations during subscription time to avoid needing to store
+        //  long-lived references to IDs prior to subscriptions.
+        associatedIds.enqueue(parentId, childId)
+    }
+
+    /**
+     * Notifies all subscribers of the specified [DataProvider] id that the provider has been changed and should be
+     * re-queried for its latest state.
+     */
+    suspend fun notifyChange(id: Any) {
+        // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData
+        // expects.
+        // TODO(#90): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid any
+        //  load on the UI thread until the final data value is ready for delivery.
+        val scope = CoroutineScope(Dispatchers.Main)
+        scope.launch {
+            subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
+        }
+
+        // Also notify all children observing this parent.
+        associatedIds.getQueue(id).forEach { childId -> notifyChange(childId) }
+    }
+
+    /**
+     * Same as [notifyChange] except this may be called on the main thread since it will notify changes on a background
+     * thread.
+     */
+    fun notifyChangeAsync(id: Any) {
+        backgroundCoroutineScope.launch { notifyChange(id) }
+    }
 }
