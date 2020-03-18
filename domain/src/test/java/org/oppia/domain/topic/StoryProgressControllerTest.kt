@@ -42,7 +42,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton

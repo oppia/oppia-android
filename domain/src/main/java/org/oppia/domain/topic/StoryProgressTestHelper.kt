@@ -1,7 +1,7 @@
 package org.oppia.domain.topic
 
 import org.oppia.app.model.ProfileId
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 private const val EIGHT_DAYS_IN_MS = 8 * 24 * 60 * 60 * 1000
