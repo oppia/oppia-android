@@ -153,7 +153,6 @@ class StoryProgressController @Inject constructor(
         } else {
           chapterProgressBuilder.lastPlayedTimestamp = lastPlayedTimestamp
         }
-
         val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)
         if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
           storyProgressBuilder.putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)

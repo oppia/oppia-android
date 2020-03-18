@@ -108,7 +108,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
+  fun testHomeActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
