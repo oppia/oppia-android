@@ -204,7 +204,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             1,
             click()
           )
@@ -224,7 +224,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             4,
             click()
           )
@@ -244,7 +244,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             3,
             click()
           )
