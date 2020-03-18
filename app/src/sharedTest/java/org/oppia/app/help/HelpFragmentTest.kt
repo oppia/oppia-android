@@ -39,20 +39,12 @@ class HelpFragmentTest {
   fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
     launch(HelpActivity::class.java).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(
-          R.id.help_fragment_recycler_view,
-          0,
-          R.id.recycler_item_text_view
-        )
+        atPositionOnView(R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view)
       ).check(
-        matches(
-          withText(R.string.frequently_asked_questions_FAQ)
-        )
+        matches(withText(R.string.frequently_asked_questions_FAQ))
       )
     }
   }
@@ -62,21 +54,13 @@ class HelpFragmentTest {
     launch(HelpActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
         atPositionOnView(
-          R.id.help_fragment_recycler_view,
-          0,
-          R.id.recycler_item_text_view
+          R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view
         )
-      ).check(
-        matches(
-          withText(R.string.frequently_asked_questions_FAQ)
-        )
-      )
+      ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
     }
   }
 
