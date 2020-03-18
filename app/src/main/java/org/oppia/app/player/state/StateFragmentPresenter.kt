@@ -35,6 +35,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
@@ -45,7 +46,6 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.hintsandsolution.RevealHintListener
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
@@ -94,10 +94,7 @@ class StateFragmentPresenter @Inject constructor(
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener, RevealHintListener {
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-//    currentState.interaction.hintList[hintIndex].hintIsRevealed = saveUserChoice
-  }
+) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
@@ -299,6 +296,11 @@ class StateFragmentPresenter @Inject constructor(
     handleSubmitAnswer(answer)
   }
 
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    logger.e("StateFragment", " revealed = "+ saveUserChoice)
+    subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+  }
+
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
@@ -332,7 +334,6 @@ class StateFragmentPresenter @Inject constructor(
 
     currentStateName = ephemeralState.state.name
 
-
     showOrHideAudioByState(ephemeralState.state)
 
     previousAnswerViewModels.clear() // But retain whether the list is currently open.
@@ -346,6 +347,8 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
+          logger.e("StateFragment", "Failed to retrieve ephemeral state"+ currentState.interaction.getHint(0).hintIsRevealed)
+
           // Start a timer for 3 secs and then display hint
           lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
             viewModel.setHintBulbVisibility(true)
@@ -406,6 +409,27 @@ class StateFragmentPresenter @Inject constructor(
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
+  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getHintIsRevealed(hintResultLiveData)
+    hintLiveData.observe(fragment, Observer<Hint> { result ->
+      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+      if (result.hintIsRevealed) {
+        logger.e("StateFragment", "hint revealed true = "+ result.hintIsRevealed)
+        subscribeToCurrentState()
+        logger.e("StateFragment", "currentstate = "+ currentState.interaction.getHint(0).hintIsRevealed)
+
+
+      } else {
+        logger.e("StateFragment", "hint revealed false = "+ result.hintIsRevealed)
+
+      }
+    })
+  }
+  /**
+   * This function listens to the result of submitAnswer.
+   * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
   private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
@@ -450,6 +474,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToAnswerOutcome. */
+  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processHint)
+  }
+
+  /** Helper for subscribeToAnswerOutcome. */
   private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
@@ -464,6 +493,18 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
+  }
+
+  /** Helper for subscribeToAnswerOutcome. */
+  private fun processHint(ephemeralStateResult: AsyncResult<Hint>): Hint {
+    if (ephemeralStateResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
+    }
+    return ephemeralStateResult.getOrDefault(Hint.getDefaultInstance())
   }
 
   private fun showOrHideAudioByState(state: State) {

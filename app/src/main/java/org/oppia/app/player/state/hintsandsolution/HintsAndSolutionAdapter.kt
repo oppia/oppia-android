@@ -26,8 +26,6 @@ class HintsAndSolutionAdapter(
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  val revealHintListener: RevealHintListener = fragment as HintsAndSolutionFragment
-
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
       // TODO(#216): Generalize this binding to make adding future items easier.
@@ -102,7 +100,7 @@ class HintsAndSolutionAdapter(
 
       binding.revealHintButton?.setOnClickListener {
         hintsAndSolutionViewModel.isHintRevealed = true
-        revealHintListener.revealHint(true, position)
+        (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
         val previousIndex: Int? = currentExpandedHintListIndex
         currentExpandedHintListIndex =
           if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
