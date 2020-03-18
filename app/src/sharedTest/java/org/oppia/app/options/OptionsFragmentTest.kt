@@ -19,6 +19,7 @@ import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -38,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -112,6 +114,21 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Large"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
@@ -125,6 +142,21 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Medium"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
@@ -134,6 +166,21 @@ class OptionsFragmentTest {
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
         matches(withText("Extra Large")))
+    }
+  }
+
+  @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Extra Large"))
+      )
     }
   }
 
