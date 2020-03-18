@@ -7,10 +7,8 @@ import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.StoryProgressList
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicProgressDatabase
-import org.oppia.app.model.TopicProgressList
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
@@ -115,29 +113,15 @@ class StoryProgressController @Inject constructor(
       })
   }
 
-  /** Returns [TopicProgressList] [DataProvider] for a particular profile. */
-  internal fun retrieveTopicProgressListDataProvider(profileId: ProfileId): DataProvider<TopicProgressList> {
+  /** Returns list of [TopicProgress] [DataProvider] for a particular profile. */
+  internal fun retrieveTopicProgressListDataProvider(profileId: ProfileId): DataProvider<List<TopicProgress>> {
     return dataProviders.transformAsync(
       TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID,
       retrieveCacheStore(profileId)
     ) { topicProgressDatabase ->
-      val topicProgressListBuilder = TopicProgressList.newBuilder()
-      topicProgressListBuilder.addAllTopicProgress(topicProgressDatabase.topicProgressMap.values)
-      AsyncResult.success(topicProgressListBuilder.build())
-    }
-  }
-
-  /** Returns [StoryProgressList] [DataProvider] for a particular profile. */
-  internal fun retrieveStoryProgressListDataProvider(profileId: ProfileId): DataProvider<StoryProgressList> {
-    return dataProviders.transformAsync(
-      TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID,
-      retrieveCacheStore(profileId)
-    ) { topicProgressDatabase ->
-      val storyProgressListBuilder = StoryProgressList.newBuilder()
-      val transformedStoryProgressList =
-        topicProgressDatabase.topicProgressMap.values.map { topicProgress -> topicProgress!!.storyProgressMap!!.values.toList() }
-      storyProgressListBuilder.addAllStoryProgress(transformedStoryProgressList.flatten())
-      AsyncResult.success(storyProgressListBuilder.build())
+      val topicProgressList = mutableListOf<TopicProgress>()
+      topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
+      AsyncResult.success(topicProgressList.toList())
     }
   }
 

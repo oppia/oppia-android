@@ -106,7 +106,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToCompletedStoryListLiveData() {
     getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
-      getHeaderViewModel().completedStoryCount.set(it.storySummaryCount)
+      getHeaderViewModel().completedStoryCount.set(it.completedStoryCount)
     })
   }
 

@@ -45,6 +45,8 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
+  <string name="FAQs">FAQs</string>
+  <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Question (FAQs)</string>
   <string name="info">Info</string>
@@ -172,6 +174,15 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <!-- FAQ Questions -->
+  <string name="faq_question_1">How can I create a new profile?</string>
+  <string name="faq_question_2">How can I delete a profile?</string>
+  <string name="faq_question_3">How can I change my email/phone number?</string>
+  <string name="faq_question_4">Who is an Administrator?</string>
+  <string name="faq_question_5">Why is the Exploration player not loading?</string>
+  <string name="faq_question_6">Why is my audio not playing?</string>
+  <string name="faq_question_7">How do I download a Topic?</string>
+  <string name="faq_question_8">I can\'t find my question here. What now?</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -227,6 +238,11 @@
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfileProgressActivity -->
+  <string name="profile_progress_edit_dialog_title">Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
+  <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
   <!-- ProfileRenameActivity. -->
   <string name="profile_rename_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
@@ -258,8 +274,6 @@
   <string name="administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_label">Account Actions</string>
   <string name="administrator_controls_log_out">Log Out</string>
-  <string name="stories_completed">Stories Completed</string>
-  <string name="topics_in_progress">Topics in Progress</string>
   <string name="log_out_dialog_cancel_button">Cancel</string>
   <string name="log_out_dialog_okay_button">Ok</string>
   <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
@@ -277,4 +291,12 @@
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
+
+  <string name="topics_in_progress">Topics in Progress</string>
+  <string name="topic_in_progress">Topic in Progress</string>
+  <string name="stories_completed">Stories Completed</string>
+  <string name="story_completed">Story Completed</string>
+  <!-- WalkthroughActivity -->
+  <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
+  <string name="welcome">"Welcome %s!"</string>
 </resources>
