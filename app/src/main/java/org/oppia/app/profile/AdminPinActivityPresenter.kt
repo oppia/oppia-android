@@ -1,15 +1,11 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.profile_input_view.view.*
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AdminPinActivityBinding
@@ -30,10 +26,8 @@ class AdminPinActivityPresenter @Inject constructor(
     getAdminPinViewModel()
   }
 
-  private lateinit var sharedPreferences: SharedPreferences
-
   /** Binds ViewModel and sets up text and button listeners. */
-  fun handleOnCreate(savedInstanceState: Bundle?,sharedPreferences: SharedPreferences) {
+  fun handleOnCreate() {
     activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
@@ -44,7 +38,7 @@ class AdminPinActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = adminViewModel
     }
-    this.sharedPreferences=sharedPreferences
+
 
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {

@@ -31,7 +31,8 @@
       android:padding="8dp"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="14sp"
-      android:textStyle="italic" />
+      android:textStyle="italic"
+      android:saveEnabled="false"/>
 
     <TextView
       android:id="@+id/error_text"
