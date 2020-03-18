@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -28,6 +30,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -44,7 +47,8 @@ import javax.inject.Singleton
 class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
-  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
   fun setUp() {
@@ -132,6 +136,18 @@ class OngoingTopicListActivityTest {
     }
   }
 
+  @Test
+  fun testTopicPracticeFragment_loadFragment_changeOrientation_textIsCorrect() {
+    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.ongoing_topic_list)).perform(
+        ViewActions.click()
+      )
+      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
+    }
+  }
+
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
     return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -139,7 +155,8 @@ class OngoingTopicListActivityTest {
     )
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
