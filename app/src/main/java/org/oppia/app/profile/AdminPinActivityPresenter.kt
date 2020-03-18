@@ -29,11 +29,9 @@ class AdminPinActivityPresenter @Inject constructor(
   private val adminViewModel by lazy {
     getAdminPinViewModel()
   }
-
-  private lateinit var sharedPreferences: SharedPreferences
-
+  
   /** Binds ViewModel and sets up text and button listeners. */
-  fun handleOnCreate(savedInstanceState: Bundle?,sharedPreferences: SharedPreferences) {
+  fun handleOnCreate() {
     activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
@@ -43,8 +41,7 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
       viewModel = adminViewModel
-    }
-    this.sharedPreferences=sharedPreferences
+    }    
 
     addTextChangedListener(binding.inputPin) { pin ->
       pin?.let {
