@@ -1,15 +1,11 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.profile_input_view.view.*
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AdminPinActivityBinding
