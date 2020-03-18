@@ -3,6 +3,7 @@ package org.oppia.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.CorrectAnswer
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
@@ -175,7 +176,7 @@ class StateRetriever @Inject constructor(
       return Solution.getDefaultInstance()
     }
     return Solution.newBuilder()
-      .setCorrectAnswer(solutionJson.getString("correct_answer"))
+      .setCorrectAnswer(createCorrectAnswer(solutionJson.getJSONObject("correct_answer")))
       .setExplanation(SubtitledHtml.newBuilder().setHtml(
         solutionJson.getJSONObject("explanation")?.getString("html")
       ).setContentId(
@@ -183,6 +184,20 @@ class StateRetriever @Inject constructor(
       ))
       .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
       .build()
+  }
+
+  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
+    val correctAnswerObject = containerObject.optJSONObject("correct_answer")
+    return if (correctAnswerObject != null) {
+      CorrectAnswer.newBuilder()
+        .setNumerator(correctAnswerObject.getInt("numerator"))
+        .setDenominator(correctAnswerObject.getInt("denominator"))
+        .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
+        .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
+        .build()
+    } else {
+      CorrectAnswer.newBuilder().setCorrectAnswer(containerObject.getString("correct_answer")).build()
+    }
   }
 
   // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are

@@ -108,11 +108,23 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
-  string correct_answer = 3;
+
+  CorrectAnswer correct_answer = 3;
+
   SubtitledHtml explanation = 4;
+
   bool solution_is_revealed = 5;
 }
 
+// Structure for a Correct answer in Solution
+// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+message CorrectAnswer {
+  int32 denominator = 1;
+  int32 numerator = 2;
+  int32 wholeNumber = 3;
+  bool isNegative = 4;
+  string correct_answer = 5;
+}
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
