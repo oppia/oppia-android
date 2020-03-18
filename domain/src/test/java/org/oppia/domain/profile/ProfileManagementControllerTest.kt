@@ -314,6 +314,24 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testUpdateName_addProfiles_updateProfileAvatar_checkUpdateIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      addTestProfiles()
+      advanceUntilIdle()
+
+      val profileId = ProfileId.newBuilder().setInternalId(2).build()
+      profileManagementController.updateProfileAvatar(profileId, /* avatarImagePath = */ null, colorRgb = -10710042)
+        .observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+      profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+
+      verifyUpdateSucceeded()
+      verifyGetProfileSucceeded()
+      assertThat(profileResultCaptor.value.getOrThrow().avatar.avatarColorRgb).isEqualTo(-10710042)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testUpdatePin_addProfiles_updatePin_checkUpdateIsSuccessful() =
     runBlockingTest(coroutineContext) {
       addTestProfiles()

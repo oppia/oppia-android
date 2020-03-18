@@ -18,7 +18,7 @@
     android:overScrollMode="never"
     android:paddingBottom="80dp"
     android:scrollbars="none"
-    app:data="@{viewModel.processAdministratorControlsList()}"
+    app:data="@{viewModel.administratorControlsLiveData}"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"

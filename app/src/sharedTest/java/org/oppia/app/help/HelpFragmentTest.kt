@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -25,6 +26,7 @@ import org.oppia.app.R
 import org.oppia.app.help.faq.FAQActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 @RunWith(AndroidJUnit4::class)
 class HelpFragmentTest {
@@ -36,6 +38,29 @@ class HelpFragmentTest {
   @Test
   fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
     launch(HelpActivity::class.java).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.help_fragment_recycler_view,
+          0,
+          R.id.recycler_item_text_view
+        )
+      ).check(
+        matches(
+          withText(R.string.frequently_asked_questions_FAQ)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+    launch(HelpActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0

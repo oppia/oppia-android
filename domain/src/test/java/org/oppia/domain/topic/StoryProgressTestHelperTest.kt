@@ -185,7 +185,7 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(0)
     }
 
   @Test
@@ -259,7 +259,7 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(0)
     }
 
   @Test
@@ -332,8 +332,8 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(1)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(1)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     }
 
   @Test
@@ -406,8 +406,8 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(1)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(1)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     }
 
   @Test
@@ -484,8 +484,8 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(1)
-      assertThat(completedStoryList.storySummaryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(1)
+      assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
     }
 
   @Test
@@ -561,7 +561,7 @@ class StoryProgressTestHelperTest {
       verifyGetCompletedStoryListSucceeded()
 
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
-      assertThat(completedStoryList.storySummaryList.size).isEqualTo(0)
+      assertThat(completedStoryList.completedStoryList.size).isEqualTo(0)
     }
 
   private fun verifyGetTopicSucceeded() {
