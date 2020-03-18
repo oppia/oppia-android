@@ -15,10 +15,10 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
-  private val urlImageParserFactory: UrlImageParser.Factory,
-  private val entityType: String,
-  private val entityId: String,
-  private val imageCenterAlign: Boolean
+    private val urlImageParserFactory: UrlImageParser.Factory,
+    private val entityType: String,
+    private val entityId: String,
+    private val imageCenterAlign: Boolean
 ) {
 
   /**

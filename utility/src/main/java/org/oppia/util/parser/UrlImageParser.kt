@@ -18,15 +18,15 @@ import javax.inject.Inject
 
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
-  private val context: Context,
-  @DefaultGcsPrefix private val gcsPrefix: String,
-  @DefaultGcsResource private val gcsResource: String,
-  @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-  private val htmlContentTextView: TextView,
-  private val entityType: String,
-  private val entityId: String,
-  private val imageCenterAlign: Boolean,
-  private val imageLoader: ImageLoader
+    private val context: Context,
+    @DefaultGcsPrefix private val gcsPrefix: String,
+    @DefaultGcsResource private val gcsResource: String,
+    @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+    private val htmlContentTextView: TextView,
+    private val entityType: String,
+    private val entityId: String,
+    private val imageCenterAlign: Boolean,
+    private val imageLoader: ImageLoader
 ) : Html.ImageGetter {
   /**
    * This method is called when the HTML parser encounters an <img> tag.
@@ -103,17 +103,17 @@ class UrlImageParser private constructor(
   }
 
   class Factory @Inject constructor(
-    private val context: Context,
-    @DefaultGcsPrefix private val gcsPrefix: String,
-    @DefaultGcsResource private val gcsResource: String,
-    @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-    private val imageLoader: ImageLoader
+      private val context: Context,
+      @DefaultGcsPrefix private val gcsPrefix: String,
+      @DefaultGcsResource private val gcsResource: String,
+      @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+      private val imageLoader: ImageLoader
   ) {
     fun create(
-      htmlContentTextView: TextView,
-      entityType: String,
-      entityId: String,
-      imageCenterAlign: Boolean
+        htmlContentTextView: TextView,
+        entityType: String,
+        entityId: String,
+        imageCenterAlign: Boolean
     ): UrlImageParser {
       return UrlImageParser(
         context,

@@ -1,5 +1,7 @@
 package org.oppia.util.data
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,8 +11,6 @@ import org.oppia.util.threading.ConcurrentQueueMap
 import org.oppia.util.threading.dequeue
 import org.oppia.util.threading.enqueue
 import org.oppia.util.threading.getQueue
-import javax.inject.Inject
-import javax.inject.Singleton
 
 internal typealias ObserveAsyncChange = suspend () -> Unit
 
@@ -20,7 +20,7 @@ internal typealias ObserveAsyncChange = suspend () -> Unit
  */
 @Singleton
 class AsyncDataSubscriptionManager @Inject constructor(
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) {
   private val subscriptionMap = ConcurrentQueueMap<Any, ObserveAsyncChange>()
   private val associatedIds = ConcurrentQueueMap<Any, Any>()
