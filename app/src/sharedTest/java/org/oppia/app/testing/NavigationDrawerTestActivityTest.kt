@@ -116,18 +116,6 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
-      onView(withId(R.id.header_linear_layout)).perform(click())
-      intended(hasComponent(ProfileProgressActivity::class.java.name))
-      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
-    }
-  }
-
-  @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
