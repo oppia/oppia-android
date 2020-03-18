@@ -80,7 +80,8 @@ class NavigationDrawerTestActivityTest {
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
-      ).build()
+      ).build(),
+      timestampOlderThanAWeek = false
     )
   }
 

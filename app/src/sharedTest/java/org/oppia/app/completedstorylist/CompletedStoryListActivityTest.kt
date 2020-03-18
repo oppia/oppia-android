@@ -53,8 +53,8 @@ class CompletedStoryListActivityTest {
     setUpTestApplicationComponent()
 
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryProgressForFractions(profileId)
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
+    storyProfileTestHelper.markFullStoryProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
   }
 
   @After
