@@ -61,5 +61,12 @@
         app:layout_constraintStart_toEndOf="@id/app_info_image_view"
         app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:id="@+id/app_version_shadow_view"
+      android:layout_width="match_parent"
+      android:layout_height="4dp"
+      android:layout_gravity="top"
+      android:background="@drawable/toolbar_drop_shadow" />
   </FrameLayout>
 </layout>
