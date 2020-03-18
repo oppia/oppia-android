@@ -7,11 +7,10 @@ import org.oppia.app.model.Profile
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class ProfileProgressHeaderViewModel(activity: AppCompatActivity) : ProfileProgressItemViewModel() {
-  // TODO(#777): Click on ImageView to show a popup which can either edit the image or view image in full screen.
-
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener
   private val routeToOngoingTopicListListener = activity as RouteToOngoingTopicListListener
   private val routeToRecentlyPlayedActivity = activity as RouteToRecentlyPlayedListener
+  private val profilePictureEditListener = activity as ProfilePictureClickListener
 
   val profile = ObservableField<Profile>(Profile.getDefaultInstance())
   val ongoingTopicCount = ObservableField(0)
@@ -39,5 +38,9 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity) : ProfileProgr
 
   fun clickOnViewAll() {
     routeToRecentlyPlayedActivity.routeToRecentlyPlayed()
+  }
+
+  fun clickOnProfilePicture() {
+    profilePictureEditListener.onProfilePictureClicked()
   }
 }
