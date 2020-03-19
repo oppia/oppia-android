@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
  * This is used to compute the number of columns based on the predicted size of the recycler view (which should be the
  * width of the parent given the match_parents) divided by the expected column size.
  * Initially set spanCount to 1, will be changed automatically later.
- * For reference https://github.com/pushpalroy/talkie/blob/master/app/src/main/java/com/pushpal/talkie/model/util/GridAutoFitLayoutManager.java.
+ * For reference
+ * https://stackoverflow.com/a/30256880/538284
+ * https://stackoverflow.com/a/42241730/538284
+ * https://stackoverflow.com/a/38082715/538284
  */
 class GridAutoFitLayoutManager(
   private val context: Context,
