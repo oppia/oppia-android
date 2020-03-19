@@ -10,6 +10,7 @@ import org.oppia.app.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.databinding.WalkthroughTopicSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.TopicSummary
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
@@ -44,6 +45,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
           /* number of spaces this item should occupy = */ 2
         } else {
           /* number of spaces this item should occupy = */ 1
+
         }
       }
     }
@@ -93,7 +95,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     VIEW_TYPE_TOPIC
   }
 
-  fun changePage() {
-    routeToNextPage.currentPage(WalkthroughPages.FINAL.value)
+  fun changePage(topicSummary: TopicSummary) {
+    routeToNextPage.pageWithTopicId(WalkthroughPages.FINAL.value,topicSummary.topicId)
   }
 }

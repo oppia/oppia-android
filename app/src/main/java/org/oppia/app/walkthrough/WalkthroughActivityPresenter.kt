@@ -17,6 +17,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
 ) {
+  lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
   fun handleOnCreate() {
@@ -74,7 +75,7 @@ class WalkthroughActivityPresenter @Inject constructor(
       WalkthroughPages.FINAL.value -> {
         activity.supportFragmentManager.beginTransaction().replace(
           R.id.walkthrough_fragment_placeholder,
-          WalkthroughFinalFragment()
+          WalkthroughFinalFragment.newInstance(topicId)
         ).commitNow().also {
           getWalkthroughViewModel().currentProgress.set(3)
         }

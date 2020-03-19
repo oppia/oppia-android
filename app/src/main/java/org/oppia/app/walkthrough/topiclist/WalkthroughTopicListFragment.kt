@@ -24,6 +24,6 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
   }
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    walkthroughTopicListFragmentPresenter.changePage()
+    walkthroughTopicListFragmentPresenter.changePage(topicSummary)
   }
 }
