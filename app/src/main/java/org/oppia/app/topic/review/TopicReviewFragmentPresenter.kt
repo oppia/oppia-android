@@ -1,5 +1,6 @@
 package org.oppia.app.topic.review
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
     binding.reviewRecyclerView.apply {
       adapter = reviewAdapter
       // https://stackoverflow.com/a/50075019/3689782
-      layoutManager = GridLayoutManager(context, /* spanCount= */ 2)
+      val spanCount = if( fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE )  3 else  2
+      layoutManager = GridLayoutManager(context,spanCount)
     }
     binding.let {
       it.lifecycleOwner = fragment
