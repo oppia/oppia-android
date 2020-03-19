@@ -119,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/profile_edit_allow_download_sub"
+                android:textColor="#61000000"
                 android:textSize="14sp" />
             </LinearLayout>
 
