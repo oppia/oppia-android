@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -32,9 +33,12 @@ class TopicActivityPresenter @Inject constructor(
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var topicId: String
 
+  private lateinit var profileId: ProfileId
+
   fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
     this.topicId = topicId
     activity.setContentView(R.layout.topic_activity)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     subscribeToTopicLiveData()
     setUpNavigationDrawer()
     if (getTopicFragment() == null) {
@@ -64,7 +68,7 @@ class TopicActivityPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId = topicId)
+    topicController.getTopic(profileId, topicId = topicId)
   }
 
   private fun getTopic(): LiveData<Topic> {

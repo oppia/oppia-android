@@ -3,19 +3,16 @@ package org.oppia.app.topic
 import android.app.Application
 import android.content.Context
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.contrib.DrawerActions.open
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -26,17 +23,13 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.Matchers
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.help.HelpActivity
+import org.oppia.app.help.HelpFragment
+import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -53,6 +46,14 @@ class TopicActivityTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_activity_toolbar))))
         .check(matches(withText("Topic: Fractions")))
+    }
+  }
+
+  @Test
+  fun testTopicActivity_clickNavigationDrawerIcon_navigationDrawerOpensSuccessfully() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withId(R.id.topic_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.topic_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
