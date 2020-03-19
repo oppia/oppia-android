@@ -7,11 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -140,11 +139,26 @@ class OngoingTopicListActivityTest {
   fun testTopicPracticeFragment_loadFragment_changeOrientation_textIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
       onView(withId(R.id.ongoing_topic_list)).perform(
-        ViewActions.click()
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
       )
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(R.string.topic_name_text_view)))
+      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("Ratios"))
+        )
+      )
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.ongoing_topic_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+        matches(
+          withText(containsString("Ratios"))
+        )
+      )
     }
   }
 
