@@ -62,6 +62,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
       .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+          is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
