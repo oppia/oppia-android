@@ -68,7 +68,7 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
+    topicListController.getOngoingStoryList(profileId)
   }
 
   private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {

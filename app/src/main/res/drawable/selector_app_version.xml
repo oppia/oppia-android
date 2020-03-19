@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true">
+    <layer-list>
+      <item android:left="1dp" android:top="3dp">
+        <shape>
+          <solid android:color="@color/white" />
+        </shape>
+      </item>
+    </layer-list>
+  </item>
+  <item>
+    <layer-list>
+      <item android:left="0dp" android:top="0dp">
+        <shape>
+          <solid android:color="@color/oppiaTextShadow" />
+        </shape>
+      </item>
+      <item android:bottom="1dp" android:right="0dp">
+        <shape>
+          <solid android:color="@color/white" />
+        </shape>
+      </item>
+    </layer-list>
+  </item>
+</selector>
