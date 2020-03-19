@@ -13,6 +13,9 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
+import org.oppia.app.walkthrough.WalkthroughPages
+import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
+import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughTopicListFragment]. */
@@ -88,5 +91,9 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_TOPIC
+  }
+
+  fun changePage() {
+    routeToNextPage.currentPage(WalkthroughPages.FINAL.value)
   }
 }

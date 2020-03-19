@@ -1,9 +1,11 @@
-package org.oppia.app.walkthrough.topiclist
+package org.oppia.app.walkthrough.topiclist.topiclistviewmodel
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
+import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.model.TopicSummary
+import org.oppia.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
 
 // TODO(#206): Remove the color darkening computation and properly set up the topic thumbnails.
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
@@ -16,7 +18,8 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** [ViewModel] corresponding to topic summaries in [WalkthroughTopicListFragment] RecyclerView.. */
 class WalkthroughTopicSummaryViewModel(
-  val topicSummary: TopicSummary
+  val topicSummary: TopicSummary,
+  private val topicSummaryClickListener: TopicSummaryClickListener
 ) : WalkthroughTopicItemViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
@@ -29,6 +32,7 @@ class WalkthroughTopicSummaryViewModel(
 
   /** Callback from data-binding for when the summary tile is clicked. */
   fun clickOnSummaryTile() {
+    topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
   @ColorInt
