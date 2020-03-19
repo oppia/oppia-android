@@ -50,10 +50,11 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_clickNavigationDrawerIcon_navigationDrawerOpensSuccessfully() {
+  fun testTopicActivity_openNavigationDrawer_checkHomeText() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_activity_drawer_layout)).perform(open())
       onView(withId(R.id.topic_activity_drawer_layout)).check(matches(isOpen()))
+      onView(withText(R.string.menu_home)).check(matches(withText(R.string.menu_home)))
     }
   }
 
