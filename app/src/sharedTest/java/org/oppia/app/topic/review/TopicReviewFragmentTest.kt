@@ -2,13 +2,11 @@ package org.oppia.app.topic.review
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -35,7 +33,6 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.app.utility.OrientationChangeAction
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicReviewFragment]. */
@@ -146,7 +143,6 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-
       onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
