@@ -36,7 +36,7 @@ class ProfileInputView @JvmOverloads constructor(
     @JvmStatic
     @BindingAdapter("profile:error")
     fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String?) {
-      var errMessage:String=errorMessage?:""
+      var errMessage: String = errorMessage ?: ""
       if (errMessage.isEmpty()) {
         profileInputView.clearErrorText()
       } else {
