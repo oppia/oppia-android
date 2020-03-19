@@ -17,7 +17,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.recyclerview.GridAutoFitLayoutManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -71,7 +70,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
-    initAdapter()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -88,12 +86,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun getProfileChooserViewModel(): ProfileChooserViewModel {
     return viewModelProvider.getForFragment(fragment, ProfileChooserViewModel::class.java)
-  }
-
-  private fun initAdapter() {
-    // Assume cell width of 400px
-    binding.profileRecyclerView.layoutManager = GridAutoFitLayoutManager(activity.applicationContext, columnWidth = 400)
-    binding.profileRecyclerView.setHasFixedSize(true)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
