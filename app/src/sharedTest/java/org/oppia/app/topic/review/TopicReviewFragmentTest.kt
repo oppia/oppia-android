@@ -2,7 +2,6 @@ package org.oppia.app.topic.review
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -10,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -20,7 +20,6 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.allOf
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +32,8 @@ import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicReviewFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -105,8 +106,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
+  fun testTopicReviewFragment_loadFragment_checkSpanCoun_isTwo() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -114,12 +114,50 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      it.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
-      it.recreate()
+      onView(withId(R.id.review_recycler_view)).check(hasItemCount(2))
+    }
+  }
+
+  @Test
+  fun testTopicPracticeFragment_loadFragment_configurationChange_reviewSubtopicsAreDisplayed() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
       onView(atPosition(R.id.review_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
+    }
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+    }
+  }
+
+  @Test
+  fun testTopicReviewFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(3).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(withId(R.id.review_recycler_view)).check(hasItemCount(3))
     }
   }
 

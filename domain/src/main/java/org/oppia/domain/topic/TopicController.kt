@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.CompletedStory
 import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.OngoingTopicList
@@ -16,7 +18,6 @@ import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StoryProgress
-import org.oppia.app.model.StoryProgressList
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
@@ -24,7 +25,6 @@ import org.oppia.app.model.SubtopicThumbnail
 import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicProgress
-import org.oppia.app.model.TopicProgressList
 import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
@@ -244,10 +244,23 @@ class TopicController @Inject constructor(
     return dataProviders.convertToLiveData(
       dataProviders.transformAsync(
         TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID,
-        storyProgressController.retrieveStoryProgressListDataProvider(profileId)
+        storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       ) {
-        val completedStoryList = createCompletedStoryListFromProgress(it)
-        AsyncResult.success(completedStoryList)
+        val completedStoryListBuilder = CompletedStoryList.newBuilder()
+        it.forEach { topicProgress ->
+          val topicName = retrieveTopic(topicProgress.topicId).name
+          val storyProgressList = mutableListOf<StoryProgress>()
+          val transformedStoryProgressList = topicProgress.storyProgressMap.values.toList()
+          storyProgressList.addAll(transformedStoryProgressList)
+
+          completedStoryListBuilder.addAllCompletedStory(
+            createCompletedStoryListFromProgress(
+              topicName,
+              storyProgressList
+            )
+          )
+        }
+        AsyncResult.success(completedStoryListBuilder.build())
       }
     )
   }
@@ -271,48 +284,73 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun createOngoingTopicListFromProgress(topicProgressList: TopicProgressList): OngoingTopicList {
+  private fun createOngoingTopicListFromProgress(topicProgressList: List<TopicProgress>): OngoingTopicList {
     val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
-    topicProgressList.topicProgressList.forEach { topicProgress ->
+    topicProgressList.forEach { topicProgress ->
       val topic = retrieveTopic(topicProgress.topicId)
       if (topicProgress.storyProgressCount != 0) {
-        if (topic.storyCount != topicProgress!!.storyProgressCount) {
+        if (checkIfTopicIsOngoing(topic, topicProgress)) {
           ongoingTopicListBuilder.addTopic(topic)
-        } else {
-          if (!checkIfTopicIsFullyCompleted(topic, topicProgress)) {
-            ongoingTopicListBuilder.addTopic(topic)
-          }
         }
       }
     }
     return ongoingTopicListBuilder.build()
   }
 
-  private fun checkIfTopicIsFullyCompleted(topic: Topic, topicProgress: TopicProgress): Boolean {
+  private fun checkIfTopicIsOngoing(topic: Topic, topicProgress: TopicProgress): Boolean {
+    val completedChapterProgressList = ArrayList<ChapterProgress>()
+    val startedChapterProgressList = ArrayList<ChapterProgress>()
+    topicProgress.storyProgressMap.values.toList().forEach { storyProgress ->
+      completedChapterProgressList.addAll(storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED })
+      startedChapterProgressList.addAll(storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED })
+    }
+
+    // If there is no completed chapter, it cannot be an ongoing-topic.
+    if (completedChapterProgressList.isEmpty()) {
+      return false
+    }
+
+    // If there is atleast 1 completed chapter and 1 not-completed chapter, it is definitely an ongoing-topic.
+    if (startedChapterProgressList.isNotEmpty()) {
+      return true
+    }
+
+    if (topic.storyCount != topicProgress.storyProgressCount && topicProgress.storyProgressMap.isNotEmpty()) {
+      return true
+    }
+
     topic.storyList.forEach { storySummary ->
       if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
         val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
         val lastChapterSummary = storySummary.chapterList.last()
         if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-          return false
+          return true
         }
       }
     }
-    return true
+    return false
   }
 
-  private fun createCompletedStoryListFromProgress(storyProgressList: StoryProgressList): CompletedStoryList {
-    val completedStoryListBuilder = CompletedStoryList.newBuilder()
-    storyProgressList.storyProgressList.forEach { storyProgress ->
+  private fun createCompletedStoryListFromProgress(
+    topicName: String,
+    storyProgressList: List<StoryProgress>
+  ): List<CompletedStory> {
+    val completedStoryList = ArrayList<CompletedStory>()
+    storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)
-        && storyProgress.chapterProgressMap[lastChapterSummary.explorationId] == ChapterPlayState.COMPLETED
+        && storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState == ChapterPlayState.COMPLETED
       ) {
-        completedStoryListBuilder.addStorySummary(storySummary)
+        val completedStoryBuilder = CompletedStory.newBuilder()
+          .setStoryId(storySummary.storyId)
+          .setStoryName(storySummary.storyName)
+          .setTopicName(topicName)
+          .setLessonThumbnail(storySummary.storyThumbnail)
+        completedStoryList.add(completedStoryBuilder.build())
       }
     }
-    return completedStoryListBuilder.build()
+    return completedStoryList
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
@@ -381,7 +419,7 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun retrieveStory(storyId: String): StorySummary {
+  internal fun retrieveStory(storyId: String): StorySummary {
     return when (storyId) {
       TEST_STORY_ID_0 -> createTestTopic0Story0()
       TEST_STORY_ID_1 -> createTestTopic0Story1()
@@ -485,10 +523,17 @@ class TopicController @Inject constructor(
   /** Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in [StorySummary]. */
   private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
     return if (storySummary.chapterList.isNotEmpty()) {
-      val chapterBuilder = storySummary.getChapter(0).toBuilder()
-      chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
       val storyBuilder = storySummary.toBuilder()
-      storyBuilder.setChapter(0, chapterBuilder).build()
+      storySummary.chapterList.forEachIndexed { index, chapterSummary ->
+        val chapterBuilder = chapterSummary.toBuilder()
+        chapterBuilder.chapterPlayState = if (index != 0) {
+          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+        } else {
+          ChapterPlayState.NOT_STARTED
+        }
+        storyBuilder.setChapter(index, chapterBuilder)
+      }
+      storyBuilder.build()
     } else {
       storySummary
     }
@@ -722,29 +767,22 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(storyId)
       .setStoryName(storyData.getString("title"))
-      .addAllChapter(
-        createChaptersFromJson(
-          storyId, storyData.getJSONObject("story_contents").getJSONArray("nodes")
-        )
-      )
+      .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
+      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
       .build()
   }
 
-  private fun createChaptersFromJson(storyId: String, chapterData: JSONArray): List<ChapterSummary> {
+  private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
-    val storyProgress = storyProgressController.retrieveStoryProgress(storyId)
 
-    val chapterProgressMap = storyProgress.chapterProgressMap
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getString("exploration_id")
-      val chapterPlayState = chapterProgressMap[explorationId] ?: ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
-
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
-          .setChapterPlayState(chapterPlayState)
+          .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
@@ -756,6 +794,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_0)
       .setStoryName("First Story")
+      .setStoryThumbnail(createStoryThumbnail0())
       .addChapter(createTestTopic0Story0Chapter0())
       .build()
   }
@@ -774,6 +813,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_1)
       .setStoryName("Second Story")
+      .setStoryThumbnail(createStoryThumbnail1())
       .addChapter(createTestTopic0Story1Chapter0())
       .addChapter(createTestTopic0Story1Chapter1())
       .addChapter(createTestTopic0Story1Chapter2())
@@ -814,6 +854,7 @@ class TopicController @Inject constructor(
     return StorySummary.newBuilder()
       .setStoryId(TEST_STORY_ID_2)
       .setStoryName("Other Interesting Story")
+      .setStoryThumbnail(createStoryThumbnail1())
       .addChapter(createTestTopic1Story2Chapter0())
       .build()
   }
