@@ -162,24 +162,21 @@ class ExplorationProgressController @Inject constructor(
         check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-
-        // Notify observers that the submitted answer is currently pending.
-        explorationProgress.advancePlayStageTo(PlayStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-
         lateinit var hint: Hint
         try {
-          hint = explorationProgress.stateGraph.computeHintForResult(state, hintIsRevealed, hintIndex)
           explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
-          // Follow the answer's outcome to another part of the graph if it's different.
-          explorationProgress.stateDeck.pushUpdateHintState(explorationProgress.stateGraph.getState(state.name))
-        } finally {
-          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
-          // submitting answer' situation. This can specifically happen if answer classification throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
-        }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+          hint = explorationProgress.stateGraph.computeHintForResult(explorationProgress.stateDeck.getCurrentEphemeralState().state, hintIsRevealed, hintIndex)
+
+          asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+          // Follow the answer's outcome to another part of the graph if it's different.
+//          explorationProgress.stateDeck.pushUpdateHintState(explorationProgress.stateGraph.getState(state.name))
+
+//            Log.d("StateFragment", "controller = "+ explorationProgress.stateDeck.getCurrentEphemeralState().state.interaction.hintList[0].hintIsRevealed)
+
+        } finally {
+
+        }
 
         return MutableLiveData(AsyncResult.success(hint))
       }
@@ -532,25 +529,6 @@ class ExplorationProgressController @Inject constructor(
     }
 
     /**
-     * Pushes a new State onto the deck. This cannot happen if the learner isn't at the most recent State, if the
-     * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
-     * operation implies that the most recently submitted answer was the correct answer to the previously current State.
-     * This does NOT change the user's position in the deck, it just marks the current state as completed.
-     */
-    internal fun pushUpdateHintState(state: State) {
-      // state doesn't become fully realized until navigated to.
-      previousStates += EphemeralState.newBuilder()
-        .setState(pendingTopState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllHint(hintList))
-        .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
-        .build()
-      currentDialogInteractions.clear()
-      hintList.clear()
-      pendingTopState = state
-    }
-
-    /**
      * Submits an answer & feedback dialog the learner experience in the current State. This fails if the user is not at
      * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
      * terminal interaction).
@@ -575,7 +553,7 @@ class ExplorationProgressController @Inject constructor(
       return EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions))
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
         .build()
     }
 
