@@ -126,6 +126,21 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Large"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
@@ -146,6 +161,21 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Medium"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
@@ -158,6 +188,21 @@ class OptionsFragmentTest {
         click()
       )
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Extra Large"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected(){
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
+      onView(isRoot()).perform(orientationLandscape())
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
         matches(withText("Extra Large"))
