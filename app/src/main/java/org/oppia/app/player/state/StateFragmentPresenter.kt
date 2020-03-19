@@ -151,8 +151,8 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
+      viewModel.setHintOpenedAndUnRevealedVisibility(true)
       routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId)
-
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
@@ -351,6 +351,7 @@ class StateFragmentPresenter @Inject constructor(
 
           // Start a timer for 3 secs and then display hint
           lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+            viewModel.setHintOpenedAndUnRevealedVisibility(true)
             viewModel.setHintBulbVisibility(true)
           })
         }
@@ -412,14 +413,13 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
     hintLiveData.observe(fragment, Observer<Hint> { result ->
-      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+      // If the hint was revealed remove dot and radar.
       if (result.hintIsRevealed) {
         logger.e("StateFragment", "hint revealed true = "+ result.hintIsRevealed)
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
         subscribeToCurrentState()
-        logger.e("StateFragment", "currentstate = "+ currentState.interaction.getHint(0).hintIsRevealed)
-
-
       } else {
+
         logger.e("StateFragment", "hint revealed false = "+ result.hintIsRevealed)
 
       }

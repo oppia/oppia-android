@@ -176,7 +176,7 @@ class StateRetriever @Inject constructor(
       return Solution.getDefaultInstance()
     }
     return Solution.newBuilder()
-      .setCorrectAnswer(createCorrectAnswer(solutionJson.getJSONObject("correct_answer")))
+      .setCorrectAnswer(createCorrectAnswer(solutionJson))
       .setExplanation(SubtitledHtml.newBuilder().setHtml(
         solutionJson.getJSONObject("explanation")?.getString("html")
       ).setContentId(
