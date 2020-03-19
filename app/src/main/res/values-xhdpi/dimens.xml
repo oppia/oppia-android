@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="profilechooser_span">4</integer>
+  <integer name="profilechooser_span">5</integer>
 </resources>
