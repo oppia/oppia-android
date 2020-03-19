@@ -26,8 +26,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -52,6 +54,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
@@ -102,6 +105,18 @@ class HomeActivityTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  @Test
+  fun testHomeActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.nav_header_profile_name)).perform(click())
+      intended(hasComponent(ProfileProgressActivity::class.java.name))
+      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
+    }
   }
 
   @Test

@@ -27,6 +27,7 @@
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
   <color name="oppiaDisabledButtonBackground">#33999999</color>
+  <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
@@ -48,9 +49,11 @@
   <color name="profileChooserBackground">#212121</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="profileEditBackground">#E5E5E5</color>
+  <color name="appVersionBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
+  <color name="defaultAudioActivityRadioButton">#00A89F</color>
   <color name="submitButtonInactive">#61999999</color>
   <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>

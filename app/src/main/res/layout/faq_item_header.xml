@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <TextView
+        android:id="@+id/faq_question_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingStart="@dimen/padding_24dp"
+        android:paddingTop="@dimen/padding_24dp"
+        android:paddingEnd="@dimen/padding_24dp"
+        android:text="@string/featured_questions"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
