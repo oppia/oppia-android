@@ -91,7 +91,12 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun processOngoingStoryList(ongoingStoryList: OngoingStoryList): List<ProfileProgressItemViewModel> {
-    itemViewModelList.addAll(ongoingStoryList.recentStoryList.subList(0, 2).map { story ->
+    val itemList = if (ongoingStoryList.recentStoryList.size > 3) {
+      ongoingStoryList.recentStoryList.subList(0, 2)
+    } else {
+      ongoingStoryList.recentStoryList
+    }
+    itemViewModelList.addAll(itemList.map { story ->
       RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
     })
     return itemViewModelList
