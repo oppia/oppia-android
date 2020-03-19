@@ -13,8 +13,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -106,6 +108,53 @@ class ProfileListActivityTest {
   fun testProfileListActivity_initializeProfile_clickProfile_checkOpensProfileEditActivity() {
     profileTestHelper.initializeProfiles()
     ActivityScenario.launch(ProfileListActivity::class.java).use {
+      onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
+      intended(hasComponent(ProfileEditActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testProfileListActivity_initializeProfiles_changeOrientation_checkProfilesAreShown() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(ProfileListActivity::class.java).use {
+      onView(isRoot()).perform((orientationLandscape()))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(matches(withText("Sean")))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)).check(matches(withText(context.getString(R.string.profile_chooser_admin))))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(matches(withText("Ben")))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileListActivity_addManyProfiles_changeOrientation_checkProfilesAreSorted() {
+    profileTestHelper.initializeProfiles()
+    profileTestHelper.addMoreProfiles(5)
+    ActivityScenario.launch(ProfileListActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(matches(withText("Sean")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(matches(withText("A")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 2, R.id.profile_list_name)).check(matches(withText("B")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 3, R.id.profile_list_name)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 4, R.id.profile_list_name)).check(matches(withText("C")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(5))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 5, R.id.profile_list_name)).check(matches(withText("D")))
+      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(6))
+      onView(RecyclerViewMatcher.atPositionOnView(R.id.profile_list_recycler_view, 6, R.id.profile_list_name)).check(matches(withText("E")))
+    }
+  }
+
+  @Test
+  fun testProfileListActivity_initializeProfile_changeOrientation_clickProfile_checkOpensProfileEditActivity() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(ProfileListActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
