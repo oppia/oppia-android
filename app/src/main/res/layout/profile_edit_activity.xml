@@ -37,11 +37,13 @@
         android:id="@+id/profile_rename_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
+        android:minHeight="48dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/profile_edit_rename"
         android:textAllCaps="false"
         android:textColor="@color/oppiaPrimaryText"
@@ -56,15 +58,17 @@
         android:id="@+id/profile_reset_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
+        android:minHeight="48dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/profile_edit_reset"
         android:textAllCaps="false"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
       <View
         android:layout_width="match_parent"
@@ -105,7 +109,7 @@
               android:fontFamily="sans-serif"
               android:text="@string/profile_edit_allow_download_heading"
               android:textColor="@color/oppiaPrimaryText"
-              android:textSize="16dp" />
+              android:textSize="16sp" />
 
             <TextView
               android:id="@+id/profile_edit_allow_download_sub"
@@ -113,7 +117,7 @@
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
               android:text="@string/profile_edit_allow_download_sub"
-              android:textColor="#61000000"
+              android:textColor="@color/light_grey"
               android:textSize="14sp" />
           </LinearLayout>
 
@@ -156,11 +160,13 @@
         android:id="@+id/profile_delete_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
+        android:minHeight="48dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/profile_edit_delete"
         android:textAllCaps="false"
         android:textColor="@color/red"
