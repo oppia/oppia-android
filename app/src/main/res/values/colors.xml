@@ -59,6 +59,7 @@
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="editTextError">#AB0517</color>
   <color name="editTextHint">#80333333</color>
+  <color name="light_grey">#61000000</color>
   <color name="mid_grey">#ff333333</color>
   <color name="mid_grey_05">#0D000000</color>
   <color name="mid_grey_03">#03000000</color>

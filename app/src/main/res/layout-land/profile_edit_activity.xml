@@ -43,11 +43,13 @@
           android:id="@+id/profile_rename_button"
           style="?android:attr/borderlessButtonStyle"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/white"
           android:fontFamily="sans-serif"
           android:gravity="start|center_vertical"
+          android:minHeight="48dp"
           android:paddingStart="36dp"
+          android:paddingEnd="36dp"
           android:text="@string/profile_edit_rename"
           android:textAllCaps="false"
           android:textColor="@color/oppiaPrimaryText"
@@ -62,15 +64,17 @@
           android:id="@+id/profile_reset_button"
           style="?android:attr/borderlessButtonStyle"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/white"
           android:fontFamily="sans-serif"
           android:gravity="start|center_vertical"
+          android:minHeight="48dp"
           android:paddingStart="36dp"
+          android:paddingEnd="36dp"
           android:text="@string/profile_edit_reset"
           android:textAllCaps="false"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16dp" />
+          android:textSize="16sp" />
 
         <View
           android:layout_width="match_parent"
@@ -111,7 +115,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/profile_edit_allow_download_heading"
                 android:textColor="@color/oppiaPrimaryText"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
               <TextView
                 android:id="@+id/profile_edit_allow_download_sub"
@@ -119,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/profile_edit_allow_download_sub"
+                android:textColor="@color/light_grey"
                 android:textSize="14sp" />
             </LinearLayout>
 
@@ -142,8 +147,8 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="108dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
@@ -162,11 +167,13 @@
           android:id="@+id/profile_delete_button"
           style="?android:attr/borderlessButtonStyle"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="wrap_content"
           android:background="@color/white"
           android:fontFamily="sans-serif"
           android:gravity="start|center_vertical"
+          android:minHeight="48dp"
           android:paddingStart="36dp"
+          android:paddingEnd="36dp"
           android:text="@string/profile_edit_delete"
           android:textAllCaps="false"
           android:textColor="@color/red"
@@ -205,7 +212,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:maxLines="1"
             android:text="@{viewModel.profile.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
@@ -217,7 +223,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:maxLines="1"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
@@ -230,6 +235,8 @@
           android:layout_marginStart="72dp"
           android:layout_marginTop="32dp"
           android:layout_marginBottom="36dp"
+          android:elevation="2dp"
+          android:translationZ="4dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
