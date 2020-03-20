@@ -14,10 +14,10 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
   private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
   private lateinit var prefSummaryValue: String
 
-  fun handleOnCreate(prefKey: String, prefSummaryValue: String) {
+  fun handleOnCreate(prefKey: String, prefSummaryValue: String,savedAdapter : LanguageSelectionAdapter? = null) {
     val binding = DataBindingUtil.setContentView<AppLanguageActivityBinding>(activity, R.layout.app_language_activity)
     this.prefSummaryValue = prefSummaryValue
-    languageSelectionAdapter = LanguageSelectionAdapter(prefKey)
+    languageSelectionAdapter = savedAdapter ?: LanguageSelectionAdapter(prefKey)
     binding.languageRecyclerView.apply {
       adapter = languageSelectionAdapter
     }
@@ -45,6 +45,10 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     languageList.add("Chinese")
     languageSelectionAdapter.setLanguageList(languageList)
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
+  }
+
+  fun getLanguageSelectionAdapter(): LanguageSelectionAdapter{
+    return languageSelectionAdapter
   }
 
 }
