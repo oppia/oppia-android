@@ -20,9 +20,9 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     prefKey = intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_TITLE)
-    prefSummaryValue = if(savedInstanceState == null){
+    prefSummaryValue = if (savedInstanceState == null) {
       intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
-    }else{
+    } else {
       savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
     }
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
