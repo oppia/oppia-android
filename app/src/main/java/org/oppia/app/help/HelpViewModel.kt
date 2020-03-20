@@ -1,9 +1,6 @@
 package org.oppia.app.help
 
 import androidx.lifecycle.ViewModel
-import org.oppia.app.fragment.FragmentScope
-import javax.inject.Inject
 
-/** [ViewModel] for [HelpFragment]. */
-@FragmentScope
-class HelpViewModel @Inject constructor() : ViewModel()
+/** [ViewModel] for the recycler view of HelpActivity. */
+class HelpViewModel(val title: String) : ViewModel()

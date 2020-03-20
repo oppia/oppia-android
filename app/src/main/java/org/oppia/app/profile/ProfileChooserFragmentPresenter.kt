@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,7 +112,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
-            activity.startActivity(Intent(fragment.context, HomeActivity::class.java))
+            activity.startActivity((HomeActivity.createHomeActivity(activity, model.profile.id.internalId)))
           }
         })
       } else {

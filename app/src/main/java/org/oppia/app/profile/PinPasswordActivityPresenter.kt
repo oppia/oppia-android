@@ -51,6 +51,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
 
+    binding.inputPin.requestFocus()
     binding.inputPin.addTextChangedListener(object: TextWatcher {
       var wrong = false
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
@@ -64,7 +65,7 @@ class PinPasswordActivityPresenter @Inject constructor(
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
                 if (it.isSuccess()) {
-                  activity.startActivity(Intent(activity, HomeActivity::class.java))
+                  activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
                 }
               })
             } else {

@@ -12,6 +12,7 @@
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
   <color name="oppiaPrimaryText30">#4D333333</color>
+  <color name="oppiaPrimaryTextDark">#DE000000</color>
   <color name="oppiaPrimaryDark">#00645C</color>
   <color name="oppiaSecondaryText">#666666</color>
   <color name="oppiaLightGreen">#F0FFFF</color>
@@ -26,8 +27,10 @@
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
   <color name="oppiaDisabledButtonBackground">#61999999</color>
+  <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
+  <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
@@ -47,14 +50,20 @@
   <color name="profileChooserGreyTextColor">#999999</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="profileEditBackground">#E5E5E5</color>
+  <color name="appVersionBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
-  <color name="submitButtonInactive">#61000000</color>
+  <color name="defaultAudioActivityRadioButton">#00A89F</color>
+  <color name="submitButtonInactive">#61999999</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="edit_text_hint">#80333333</color>
+  <color name="editTextError">#AB0517</color>
+  <color name="editTextHint">#80333333</color>
   <color name="mid_grey">#ff333333</color>
+  <color name="mid_grey_05">#0D000000</color>
+  <color name="mid_grey_03">#03000000</color>
+  <color name="mid_grey_30">#0D000000</color>
   <color name="blue_shade">#395FD0</color>
   <color name="blue_shade_80">#80395FD0</color>
   <color name="blue_shade_60">#60395FD0</color>
@@ -65,6 +74,7 @@
   <color name="grey_shade_20">#D6D6D6</color>
   <color name="grey_shade_30">#5CBABABA</color>
   <color name="grey_shade_40">#0000003D</color>
+  <color name="grey_shade_29">#4A000000</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
   <color name="chapterCardShadow">#AAFFFFFF</color>
@@ -78,6 +88,9 @@
   <color name="green_shade_40">#6644A85A</color>
   <color name="green_shade_10">#1A44A85A</color>
   <color name="light_green">#D9F3E7</color>
+  <!-- ONBOARDING FLOW -->
+  <color name="onboardingDotActive">#333333</color>
+  <color name="onboardingDotInactive">#4D333333</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="avatar_background_1">#E65C5C</color>
   <color name="avatar_background_2">#E6935C</color>

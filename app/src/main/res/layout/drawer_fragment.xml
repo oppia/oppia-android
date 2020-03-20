@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <import type="android.view.View" />
+    <variable
+      name="footerViewModel"
+      type="org.oppia.app.drawer.NavigationDrawerFooterViewModel" />
+  </data>
+  <com.google.android.material.navigation.NavigationView
+    android:id="@+id/fragment_drawer_nav_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    app:itemBackground="@android:color/transparent"
+    app:itemIconTint="@color/drawer_item"
+    app:itemTextColor="@color/drawer_item"
+    app:menu="@menu/navigation_drawer_menu">
+
+    <LinearLayout
+      android:id="@+id/administrator_controls_linear_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:orientation="horizontal"
+      android:padding="16dp"
+      android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
+
+      <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_admin_settings_icon_brown_24dp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/administrator_controls"
+        android:textColor="@color/highlightedNavMenuItem"
+        android:textSize="14sp" />
+    </LinearLayout>
+  </com.google.android.material.navigation.NavigationView>
+</layout>

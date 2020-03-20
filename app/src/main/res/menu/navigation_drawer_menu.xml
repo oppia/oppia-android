@@ -8,8 +8,20 @@
       android:icon="@drawable/ic_home_icon_grey_24dp"
       android:title="@string/menu_home" />
     <item
+      android:id="@+id/nav_options"
+      android:icon="@drawable/ic_options_icon_grey_24dp"
+      android:title="@string/menu_options" />
+    <item
       android:id="@+id/nav_help"
       android:icon="@drawable/ic_help_grey_icon_24dp"
       android:title="@string/menu_help" />
+    <item
+      android:id="@+id/nav_my_downloads"
+      android:icon="@drawable/ic_folder_open_24dp"
+      android:title="@string/menu_my_downloads" />
+    <item
+      android:id="@+id/nav_switch_profile"
+      android:icon="@drawable/ic_profile_exit"
+      android:title="@string/menu_switch_profile" />
   </group>
 </menu>
