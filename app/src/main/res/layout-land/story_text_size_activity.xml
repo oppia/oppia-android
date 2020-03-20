@@ -45,14 +45,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="12dp">
 
         <TextView
           android:id="@+id/preview_textview"
           android:layout_width="match_parent"
-          android:layout_height="116dp"
+          android:layout_height="wrap_content"
+          android:minHeight="116dp"
           android:fontFamily="sans-serif"
           android:gravity="center"
+          android:paddingStart="84dp"
+          android:paddingEnd="84dp"
+          android:paddingTop="48dp"
+          android:paddingBottom="48dp"
+          android:textSize="16sp"
+          android:textColor="@color/oppiaPrimaryText"
           android:text="@string/story_text_will_look_like_this" />
 
         <View
@@ -64,7 +72,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@color/white"
-          android:orientation="horizontal">
+          android:orientation="horizontal"
+          android:minHeight="84dp">
 
           <TextView
             android:id="@+id/story_text_size_small_textview"
@@ -73,9 +82,11 @@
             android:layout_marginStart="168dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
+            android:layout_marginEnd="460dp"
             android:gravity="center"
             android:text="@string/constant_string_for_text_size"
             android:textSize="16sp"
+            android:textColor="@color/oppiaPrimaryText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -83,11 +94,13 @@
           <SeekBar
             android:id="@+id/story_text_size_seekBar"
             android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:layout_marginStart="192dp"
-            android:layout_marginTop="36dp"
+            android:layout_height="wrap_content"
+            android:minHeight="12dp"
+            android:layout_marginStart="196dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="204dp"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="40dp"
+            android:thumbTint="@color/storyEditTextSeekbarThumb"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/story_text_size_big_textview"
             app:layout_constraintStart_toEndOf="@+id/story_text_size_small_textview"
@@ -97,13 +110,15 @@
             android:id="@+id/story_text_size_big_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="168dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="452dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/constant_string_for_text_size"
             android:textSize="28sp"
+            android:textColor="@color/oppiaPrimaryText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -83,6 +83,7 @@
   <color name="chapterCardGreyBorder">#666666</color>
   <color name="chapterCardGreenBorder">#019489</color>
   <color name="divider">#61000000</color>
+  <color name="storyEditTextSeekbarThumb">#009688</color>
   <color name="toolbarDropShadow">#3D000000</color>
   <color name="green_shade">#44A85A</color>
   <color name="green_shade_80">#CC44A85A</color>

@@ -41,16 +41,25 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
           android:id="@+id/preview_textview"
           android:layout_width="match_parent"
-          android:layout_height="200dp"
+          android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="@string/story_text_will_look_like_this" />
+          android:minHeight="196dp"
+          android:paddingStart="74dp"
+          android:paddingTop="83dp"
+          android:paddingEnd="94dp"
+          android:paddingBottom="83dp"
+          android:text="@string/story_text_will_look_like_this"
+          android:textAlignment="center"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
 
         <View
           android:layout_width="match_parent"
@@ -61,6 +70,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@color/white"
+          android:minHeight="132dp"
           android:orientation="horizontal">
 
           <TextView
@@ -68,10 +78,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="316dp"
             android:layout_marginBottom="60dp"
             android:gravity="center"
             android:text="@string/constant_string_for_text_size"
+            android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,11 +92,13 @@
           <SeekBar
             android:id="@+id/story_text_size_seekBar"
             android:layout_width="match_parent"
-            android:layout_height="27dp"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="44dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="wrap_content"
+            android:minHeight="12dp"
+            android:thumbTint="@color/storyEditTextSeekbarThumb"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/story_text_size_big_textview"
             app:layout_constraintStart_toEndOf="@+id/story_text_size_small_textview"
@@ -94,12 +108,14 @@
             android:id="@+id/story_text_size_big_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginStart="312dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="52dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/constant_string_for_text_size"
+            android:textColor="@color/oppiaPrimaryText"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
