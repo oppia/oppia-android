@@ -45,7 +45,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
           /* number of spaces this item should occupy = */ 2
         } else {
           /* number of spaces this item should occupy = */ 1
-
         }
       }
     }
