@@ -45,7 +45,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     val binding = TopicRevisionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     revisionAdapter = RevisionSubtopicAdapter(this)
 
-    binding.reviewRecyclerView.apply {
+    binding.revisionRecyclerView.apply {
       adapter = revisionAdapter
       // https://stackoverflow.com/a/50075019/3689782
       val spanCount = if( fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE )  3 else  2
@@ -58,7 +58,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
+  override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
     routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 

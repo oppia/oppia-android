@@ -4,5 +4,5 @@ import org.oppia.app.model.Subtopic
 
 /** Listener for when a subtopic is selected for review. */
 interface RevisionSubtopicSelector {
-  fun onTopicReviewSummaryClicked(subtopic: Subtopic)
+  fun onTopicRevisionSummaryClicked(subtopic: Subtopic)
 }

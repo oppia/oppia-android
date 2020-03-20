@@ -22,7 +22,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     return topicReviewFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
-    topicReviewFragmentPresenter.onTopicReviewSummaryClicked(subtopic)
+  override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
+    topicReviewFragmentPresenter.onTopicRevisionSummaryClicked(subtopic)
   }
 }

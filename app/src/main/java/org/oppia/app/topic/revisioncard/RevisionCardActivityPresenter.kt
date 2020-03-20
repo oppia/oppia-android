@@ -12,13 +12,13 @@ class RevisionCardActivityPresenter @Inject constructor(private val activity: Ap
     activity.setContentView(R.layout.revision_card_activity)
     if (getReviewCardFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.review_card_fragment_placeholder,
+        R.id.revision_card_fragment_placeholder,
         RevisionCardFragment()
       ).commitNow()
     }
   }
 
   private fun getReviewCardFragment(): RevisionCardFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.review_card_fragment_placeholder) as RevisionCardFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment?
   }
 }

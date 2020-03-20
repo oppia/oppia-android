@@ -55,7 +55,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -75,7 +75,7 @@ class TopicRevisionFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
+    onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
   }
 
   @Test
@@ -87,8 +87,8 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
-      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
     }
   }
 
@@ -101,7 +101,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
 
@@ -114,7 +114,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(hasItemCount(2))
+      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(2))
     }
   }
 
@@ -128,7 +128,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
@@ -143,7 +143,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
 
@@ -157,7 +157,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(hasItemCount(3))
+      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(3))
     }
   }
 

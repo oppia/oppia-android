@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.TopicReviewSummaryViewBinding
+import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.model.Subtopic
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
@@ -17,9 +17,9 @@ class RevisionSubtopicAdapter(private val revisionSelector: RevisionSubtopicSele
   private var subtopicList: List<Subtopic> = ArrayList()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtopicViewHolder {
-    val reviewListItemBinding = DataBindingUtil.inflate<TopicReviewSummaryViewBinding>(
+    val reviewListItemBinding = DataBindingUtil.inflate<TopicRevisionSummaryViewBinding>(
       LayoutInflater.from(parent.context),
-      R.layout.topic_review_summary_view, parent,
+      R.layout.topic_revision_summary_view, parent,
       /* attachToRoot= */ false
     )
     return SubtopicViewHolder(reviewListItemBinding)
@@ -38,11 +38,11 @@ class RevisionSubtopicAdapter(private val revisionSelector: RevisionSubtopicSele
     notifyDataSetChanged()
   }
 
-  inner class SubtopicViewHolder(val binding: TopicReviewSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class SubtopicViewHolder(val binding: TopicRevisionSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(subtopic: Subtopic) {
       binding.setVariable(BR.subtopic, subtopic)
       binding.root.setOnClickListener {
-        revisionSelector.onTopicReviewSummaryClicked(subtopic)
+        revisionSelector.onTopicRevisionSummaryClicked(subtopic)
       }
     }
   }

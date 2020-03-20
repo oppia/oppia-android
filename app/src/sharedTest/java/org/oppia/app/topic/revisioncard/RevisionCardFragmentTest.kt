@@ -44,7 +44,7 @@ class RevisionCardFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.review_card_toolbar))
+          withParent(withId(R.id.revision_card_toolbar))
         )
       ).check(matches(withText("What is Fraction?")))
     }
@@ -59,8 +59,8 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
-      onView(withId(R.id.review_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(not(containsRichText())))
     }
   }
 

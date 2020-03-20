@@ -10,16 +10,16 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.ReviewCardHtmlParserEntityType
+import org.oppia.util.parser.RevisionCardHtmlParserEntityType
 import javax.inject.Inject
 
-/** [ViewModel] for Review card, providing rich text and worked examples */
+/** [ViewModel] for Revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  @ReviewCardHtmlParserEntityType private val entityType: String
+  @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
   private lateinit var subtopicId: String
@@ -48,11 +48,11 @@ class RevisionCardViewModel @Inject constructor(
 
   private fun processExplanationResult(revisionCardResult: AsyncResult<RevisionCard>): CharSequence {
     if (revisionCardResult.isFailure()) {
-      logger.e("RevisionCardFragment", "Failed to retrieve Review Card", revisionCardResult.getErrorOrNull()!!)
+      logger.e("RevisionCardFragment", "Failed to retrieve Revision Card", revisionCardResult.getErrorOrNull()!!)
     }
-    val reviewCard = revisionCardResult.getOrDefault(RevisionCard.getDefaultInstance())
-    subtopicTitle = reviewCard.subtopicTitle
+    val revisionCard = revisionCardResult.getOrDefault(RevisionCard.getDefaultInstance())
+    subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
-      .parseOppiaHtml(reviewCard.pageContents.html, binding.reviewCardExplanationText)
+      .parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }

@@ -41,7 +41,7 @@ class ViewPagerAdapter(
         topicPracticeTab.arguments = args
         return topicPracticeTab
       }
-      TopicTab.REVIEW -> {
+      TopicTab.REVISION -> {
         val topicReviewTab = TopicRevisionFragment()
         topicReviewTab.arguments = args
         return topicReviewTab
