@@ -140,23 +140,23 @@ class OngoingTopicListActivityTest {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
+          0
         )
       )
       onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Ratios"))
+          withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
+          0
         )
       )
       onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Ratios"))
+          withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
     }

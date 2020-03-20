@@ -24,6 +24,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -36,6 +37,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
+  private val storyProgressTestHelper: StoryProgressTestHelper,
   private val logger: Logger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
@@ -65,6 +67,9 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -98,7 +103,10 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   private fun subscribeToProfileLiveData() {
@@ -122,7 +130,8 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
       for (topicSummary in result.topicSummaryList) {
-        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+        val topicSummaryViewModel =
+          TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemList.add(topicSummaryViewModel)
       }
       topicListAdapter.notifyDataSetChanged()
@@ -157,7 +166,11 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+      it.getOrDefault(
+        OngoingStoryList.getDefaultInstance()
+      )
+    }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
