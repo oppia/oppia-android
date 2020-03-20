@@ -32,7 +32,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -127,12 +132,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.profile_name_text_view
-        )
-      ).check(matches(withText("Sean")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
+      ).check(
+        matches(withText("Sean"))
+      )
     }
   }
 
@@ -142,12 +145,10 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("Sean"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.profile_name_text_view
-        )
-      ).check(matches(withText("Sean")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
+      ).check(
+        matches(withText("Sean"))
+      )
     }
   }
 
@@ -155,13 +156,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_openProfilePictureEditDialog() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.profile_edit_image
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_edit_image)).perform(click())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
@@ -170,13 +165,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.profile_edit_image
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_edit_image)).perform(click())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
@@ -193,13 +182,7 @@ class ProfileProgressFragmentTest {
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.profile_edit_image
-        )
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_edit_image)).perform(click())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
       intended(expectedIntent)
@@ -211,12 +194,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("0"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_count
-        )
-      ).check(matches(withText("0")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
+      ).check(
+        matches(withText("0"))
+      )
     }
   }
 
@@ -227,12 +208,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("2"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_count
-        )
-      ).check(matches(withText("2")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
+      ).check(
+        matches(withText("2"))
+      )
     }
   }
 
@@ -244,12 +223,10 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("2"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_count
-        )
-      ).check(matches(withText("2")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
+      ).check(
+        matches(withText("2"))
+      )
     }
   }
 
@@ -258,12 +235,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topic_in_progress))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_description_text_view
-        )
-      ).check(matches(withText(R.string.topic_in_progress)))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+      ).check(
+        matches(withText(R.string.topic_in_progress))
+      )
     }
   }
 
@@ -274,12 +249,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_description_text_view
-        )
-      ).check(matches(withText(R.string.topics_in_progress)))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+      ).check(
+        matches(withText(R.string.topics_in_progress))
+      )
     }
   }
 
@@ -291,12 +264,10 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_description_text_view
-        )
-      ).check(matches(withText(R.string.topics_in_progress)))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+      ).check(
+        matches(withText(R.string.topics_in_progress))
+      )
     }
   }
 
@@ -305,12 +276,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("0"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_count
-        )
-      ).check(matches(withText("0")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_count)
+      ).check(
+        matches(withText("0"))
+      )
     }
   }
 
@@ -321,12 +290,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("2"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_count
-        )
-      ).check(matches(withText("2")))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_count)
+      ).check(
+        matches(withText("2"))
+      )
     }
   }
 
@@ -335,12 +302,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.story_completed))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_description_text_view
-        )
-      ).check(matches(withText(R.string.story_completed)))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_description_text_view)
+      ).check(
+        matches(withText(R.string.story_completed))
+      )
     }
   }
 
@@ -351,12 +316,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.stories_completed))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_description_text_view
-        )
-      ).check(matches(withText(R.string.stories_completed)))
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_description_text_view)
+      ).check(
+        matches(withText(R.string.stories_completed))
+      )
     }
   }
 
@@ -365,12 +328,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("What is a Fraction?"))
-      onView(atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)).check(
-        matches(
-          withText(
-            containsString("What is a Fraction?")
-          )
-        )
+      onView(
+        atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
+      ).check(
+        matches(withText(containsString("What is a Fraction?")))
       )
     }
   }
@@ -381,12 +342,10 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("What is a Fraction?"))
-      onView(atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)).check(
-        matches(
-          withText(
-            containsString("What is a Fraction?")
-          )
-        )
+      onView(
+        atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
+      ).check(
+        matches(withText(containsString("What is a Fraction?")))
       )
     }
   }
@@ -397,12 +356,10 @@ class ProfileProgressFragmentTest {
       onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("Matthew Goes to the Bakery"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          1,
-          R.id.story_name_text_view
-        )
-      ).check(matches(withText(containsString("Matthew Goes to the Bakery"))))
+        atPositionOnView(R.id.profile_progress_list, 1, R.id.story_name_text_view)
+      ).check(
+        matches(withText(containsString("Matthew Goes to the Bakery")))
+      )
     }
   }
 
@@ -412,12 +369,10 @@ class ProfileProgressFragmentTest {
       onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("FRACTIONS"))
       onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          1,
-          R.id.topic_name_text_view
-        )
-      ).check(matches(withText(containsString("FRACTIONS"))))
+        atPositionOnView(R.id.profile_progress_list, 1, R.id.topic_name_text_view)
+      ).check(
+        matches(withText(containsString("FRACTIONS")))
+      )
     }
   }
 
@@ -435,12 +390,10 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickTopicCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topic_in_progress))
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).check(
-        matches(
-          not(
-            isClickable()
-          )
-        )
+      onView(
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)
+      ).check(
+        matches(not(isClickable()))
       )
     }
   }
@@ -449,12 +402,10 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.story_completed))
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).check(
-        matches(
-          not(
-            isClickable()
-          )
-        )
+      onView(
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
+      ).check(
+        matches(not(isClickable()))
       )
     }
   }
@@ -464,12 +415,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(R.string.story_completed))
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).check(
-        matches(
-          not(
-            isClickable()
-          )
-        )
+      onView(
+        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
+      ).check(
+        matches(not(isClickable()))
       )
     }
   }
@@ -498,7 +447,6 @@ class ProfileProgressFragmentTest {
     }
   }
 
-
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
@@ -516,12 +464,12 @@ class ProfileProgressFragmentTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-//  thread helps to counter that.
+  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
@@ -620,12 +568,11 @@ class ProfileProgressFragmentTest {
     fun inject(optionsFragmentTest: ProfileProgressFragmentTest)
   }
 
-
-// TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-//  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-//  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-//  and immediate.
-//  NB: This also blocks on #59 to be able to actually create a test-only library.
+  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
+  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
+  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
+  //  and immediate.
+  //  NB: This also blocks on #59 to be able to actually create a test-only library.
   /**
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
