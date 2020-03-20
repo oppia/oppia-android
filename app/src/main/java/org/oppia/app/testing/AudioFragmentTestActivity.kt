@@ -3,6 +3,7 @@ package org.oppia.app.testing
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+
 /** Test Activity used for testing AudioFragment */
 class AudioFragmentTestActivity : InjectableAppCompatActivity() {
 
