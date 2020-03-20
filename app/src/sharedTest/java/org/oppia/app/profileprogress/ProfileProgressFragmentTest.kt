@@ -182,8 +182,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -210,8 +210,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -238,8 +238,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
-    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -266,8 +266,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
-    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -358,8 +358,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId)
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId)
+    storyProgressTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)).perform(click())
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
@@ -369,8 +369,8 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
-    storyProgressTestHelper.markFullStoryProgressForFractions(profileId)
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
+    storyProgressTestHelper.markFullStoryProgressForFractions(profileId, timestampOlderThanAWeek = false)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)).perform(click())
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
