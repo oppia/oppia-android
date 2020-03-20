@@ -4,7 +4,9 @@
   xmlns:profile="http://schemas.android.com/tools">
 
   <data>
+
     <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserUiModel" />
@@ -30,13 +32,13 @@
     <TextView
       android:id="@+id/profile_name_text"
       android:layout_width="112dp"
-      android:gravity="center"
       android:layout_height="wrap_content"
-      android:fontFamily="sans-serif-medium"
-      android:text="@{viewModel.profile.name}"
-      android:maxLength="36"
       android:ellipsize="end"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:maxLength="36"
       android:singleLine="true"
+      android:text="@{viewModel.profile.name}"
       android:textColor="@color/white"
       android:textSize="14sp" />
 
@@ -45,8 +47,8 @@
       android:layout_width="112dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="2dp"
-      android:gravity="center"
       android:fontFamily="sans-serif-light"
+      android:gravity="center"
       android:text="@string/profile_chooser_admin"
       android:textColor="@color/white"
       android:textSize="12sp"
