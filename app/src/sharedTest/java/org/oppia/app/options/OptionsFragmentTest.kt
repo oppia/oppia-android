@@ -16,7 +16,6 @@ import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
@@ -255,7 +254,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             2,
             click()
           )
@@ -275,7 +274,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             2,
             click()
           )
@@ -306,7 +305,7 @@ class OptionsFragmentTest {
 
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             1,
             click()
           )
@@ -413,7 +412,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             4,
             click()
           )

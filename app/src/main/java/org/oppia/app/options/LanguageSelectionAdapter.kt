@@ -7,13 +7,12 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.LanguageItemsBinding
-import java.io.Serializable
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
 /** Adapter to bind languages to [RecyclerView] inside [AppLanguageActivityPresenter] and [DefaultAudioActivityPresenter]. */
 class LanguageSelectionAdapter(private val prefKey: String) :
-  RecyclerView.Adapter<LanguageSelectionAdapter.LanguageViewHolder>(),Serializable {
+  RecyclerView.Adapter<LanguageSelectionAdapter.LanguageViewHolder>() {
 
   private var prefSummaryValue: String? = null
   private var languageList: List<String> = ArrayList()
