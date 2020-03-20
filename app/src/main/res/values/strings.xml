@@ -160,7 +160,7 @@
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <string name="admin_pin_submit">Submit</string>
+  <string name="admin_pin_submit">Save</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
