@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 /** The ViewModel for [ExplorationActivity] */
 @ActivityScope
-class ExplorationViewModel @Inject constructor(): ObservableViewModel() {
+class ExplorationViewModel @Inject constructor() : ObservableViewModel() {
   /** Used to control visibility of audio button. */
   val showAudioButton = ObservableField(false)
 

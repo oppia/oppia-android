@@ -10,7 +10,9 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicInfoFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
+import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
@@ -29,12 +31,14 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory
 ) {
   private val topicInfoViewModel = getTopicInfoViewModel()
+  private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val htmlParser: HtmlParser by lazy {
     htmlParserFactory.create(/* entityType= */"topic", topicId, /* imageCenterAlign= */ true)
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
@@ -66,7 +70,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
   }
 
   private fun getTopicList(): LiveData<Topic> {

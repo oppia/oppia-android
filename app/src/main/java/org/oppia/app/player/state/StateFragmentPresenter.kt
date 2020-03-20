@@ -36,12 +36,14 @@ import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -68,6 +70,9 @@ import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
@@ -87,6 +92,9 @@ class StateFragmentPresenter @Inject constructor(
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private var feedbackId: String? = null
+  private lateinit var profileId: ProfileId
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
@@ -100,7 +108,7 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
    * retained upon configuration changes since the user can just re-expand the list. Note that the first element of this
-   * list (when initialized), will always be the previous answers header to help locate the items in the recycler view
+   * list (when initialized), will always be the previous answer's header to help locate the items in the recycler view
    * (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
@@ -109,8 +117,13 @@ class StateFragmentPresenter @Inject constructor(
    * configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
+  private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -399,7 +412,7 @@ class StateFragmentPresenter @Inject constructor(
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
-    },2000)
+    }, 2000)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -440,7 +453,8 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer())
+    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!)
+      handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   override fun onContinueButtonClicked() {
@@ -473,7 +487,7 @@ class StateFragmentPresenter @Inject constructor(
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver
+      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver
     )
   }
 
@@ -559,7 +573,7 @@ class StateFragmentPresenter @Inject constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean
   ) {
-    val stateNavigationButtonViewModel =
+    stateNavigationButtonViewModel =
       StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
     stateNavigationButtonViewModel.updatePreviousButton(isEnabled = hasPreviousState)
 
@@ -611,4 +625,13 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
+
+  /** Updates submit button UI as active if pendingAnswerError null else inactive. */
+  fun updateSubmitButton(pendingAnswerError: String?) {
+    if (pendingAnswerError != null) {
+      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
+    } else {
+      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
+    }
+  }
 }
