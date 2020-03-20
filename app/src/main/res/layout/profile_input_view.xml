@@ -29,6 +29,7 @@
       android:background="@drawable/add_profile_edit_text_background"
       android:fontFamily="sans-serif"
       android:padding="8dp"
+      android:minHeight="48dp"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="14sp"
       android:textStyle="italic" />

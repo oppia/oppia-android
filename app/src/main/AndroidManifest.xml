@@ -52,7 +52,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.DefaultAudioActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.OptionsActivity"
@@ -60,7 +59,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.StoryTextSizeActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"

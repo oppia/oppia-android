@@ -36,7 +36,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = authViewModel
     }
-    binding.inputPin.addTextChangedListener(object : TextWatcher {
+    binding.adminAuthInputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
           authViewModel.errorMessage.set("")
@@ -47,8 +47,8 @@ class AdminAuthActivityPresenter @Inject constructor(
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
-    binding.submitButton.setOnClickListener {
-      val inputPin = binding.inputPin.getInput()
+    binding.adminAuthSubmitButton.setOnClickListener {
+      val inputPin = binding.adminAuthInputPin.getInput()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
       }

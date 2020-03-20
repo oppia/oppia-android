@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.R
 import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.ProfileId
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
@@ -20,8 +21,14 @@ class RecentlyPlayedViewModel @Inject constructor(
 
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
 
+  private lateinit var profileId: ProfileId
+
+  fun setProfileId(internalProfileId: Int) {
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
+
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
+    topicListController.getOngoingStoryList(profileId)
   }
 
   val ongoingStoryLiveData: LiveData<List<RecentlyPlayedItemViewModel>>by lazy {
