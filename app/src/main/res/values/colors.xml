@@ -55,6 +55,7 @@
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="defaultAudioActivityRadioButton">#00A89F</color>
   <color name="submitButtonInactive">#61999999</color>
+  <color name="submitButtonTextInactive">#61000000</color>
   <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
