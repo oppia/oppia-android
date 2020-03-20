@@ -8,32 +8,52 @@
       type="CharSequence" />
   </data>
 
-  <RelativeLayout
-    android:id="@+id/radio_container"
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:gravity="center_vertical"
-    android:minHeight="48dp">
+    android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatRadioButton
-      android:id="@+id/language_radio_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:clickable="false"
-      android:padding="4dp"
-      app:buttonTint="@color/defaultAudioActivityRadioButton" />
-
-    <TextView
-      android:id="@+id/language_text_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/radio_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="4dp"
-      android:layout_toEndOf="@+id/language_radio_button"
-      android:fontFamily="sans-serif"
-      android:paddingTop="4dp"
-      android:text="@{languageString}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp" />
-  </RelativeLayout>
+      android:minHeight="48dp">
+
+      <TextView
+        android:id="@+id/language_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="4dp"
+        android:layout_toEndOf="@+id/language_radio_button"
+        android:fontFamily="sans-serif"
+        android:text="@{languageString}"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/language_radio_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45" />
+
+      <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/language_radio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:clickable="false"
+        app:buttonTint="@color/defaultAudioActivityRadioButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/language_text_view"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/grey"/>
+  </LinearLayout>
 </layout>
