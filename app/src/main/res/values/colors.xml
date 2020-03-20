@@ -52,6 +52,7 @@
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="submitButtonInactive">#61999999</color>
+  <color name="submitButtonTextInactive">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="editTextError">#AB0517</color>
