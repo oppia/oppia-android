@@ -95,7 +95,7 @@
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
-  <string name="topic_heading">Topic: %s</string>
+  <string name="topic_prefix">Topic: %s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -146,10 +146,13 @@
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <!-- AdminAuthActivity -->
+  <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
-  <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_sub">Enter the Administrator’s PIN to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_auth_submit">Submit</string>
+  <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
   <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
