@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
@@ -11,7 +12,6 @@ import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
-private const val TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY = "TopicActivity.internal_profile_id"
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
@@ -28,7 +28,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent?.getIntExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)!!
+    internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
@@ -63,7 +63,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   companion object {
 
     fun getProfileIdKey(): String {
-      return TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY
+      return KEY_NAVIGATION_PROFILE_ID
     }
 
     fun getTopicIdKey(): String {
@@ -77,7 +77,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(context: Context, internalProfileId: Int, topicId: String): Intent {
       val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       return intent
     }
@@ -90,7 +90,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
       storyId: String
     ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       return intent

@@ -39,30 +39,37 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_pin_description)
-
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        adminViewModel.pinErrorMsg.set("")
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          adminViewModel.pinErrorMsg.value = ""
+          adminViewModel.savedPin.value = it.toString()
+        }
       }
     }
 
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        adminViewModel.confirmPinErrorMsg.set("")
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          adminViewModel.confirmPinErrorMsg.value = ""
+          adminViewModel.savedConfirmPin.value = it.toString()
+        }
       }
     }
+
+    binding.inputPin.setInput(adminViewModel.savedPin.value.toString())
+    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.value.toString())
 
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
       if (inputPin.length < 5) {
-        adminViewModel.pinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_length))
+        adminViewModel.pinErrorMsg.value = activity.getString(R.string.admin_pin_error_pin_length)
         failed = true
       }
       if (inputPin != confirmPin) {
-        adminViewModel.confirmPinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_confirm_wrong))
+        adminViewModel.confirmPinErrorMsg.value = activity.getString(R.string.admin_pin_error_pin_confirm_wrong)
         failed = true
       }
       if (failed) {
@@ -85,13 +92,15 @@ class AdminPinActivityPresenter @Inject constructor(
     }
   }
 
-  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+  private fun addTextChangedListener(
+    profileInputView: ProfileInputView,
+    onTextChanged: (CharSequence?) -> Unit
+  ) {
     profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+      override fun afterTextChanged(p0: Editable?) {
         onTextChanged(p0)
       }
-
-      override fun afterTextChanged(p0: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
   }

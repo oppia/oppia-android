@@ -73,8 +73,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
-      android:name=".profile.AdminPinActivity"
-      android:screenOrientation="portrait" />
+      android:name=".profile.AdminPinActivity"/>
     <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
