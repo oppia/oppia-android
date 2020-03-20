@@ -86,20 +86,6 @@ message ChapterSummary {
   // Summary of this chapter.
   string summary = 3;
 
-  enum Playability {
-    // The completion status is unknown.
-    COMPLETION_STATUS_UNSPECIFIED = 0;
-
-    // The chapter has not yet been started, but can be started by the player.
-    NOT_STARTED = 1;
-
-    // The chapter has not yet been started, and can't since the player is missing prerequisites.
-    MISSING_PREREQUISITES = 2;
-
-    // The chapter has been completed by the player.
-    COMPLETED = 3;
-  }
-
   // Indicates the playable state of the current chapter, including whether it's already been completed.
   ChapterPlayState chapter_play_state = 4;
 
@@ -140,9 +126,6 @@ message OngoingTopicList {
 
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
-  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
-  // recommended story if no other stories are in progress.
-  PromotedStory promoted_story = 1;
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
@@ -254,8 +237,11 @@ enum ChapterPlayState {
   // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
+  // The chapter has been started but not completed by the player.
+  STARTED_NOT_COMPLETED = 3;
+
   // The chapter has been completed by the player.
-  COMPLETED = 3;
+  COMPLETED = 4;
 }
 
 // Top level proto used to store topic progress per-profile.
@@ -279,7 +265,19 @@ message StoryProgress {
   string story_id = 1;
 
   // Map from exploration ID to ChapterPlayState.
-  map<string, ChapterPlayState> chapter_progress = 2;
+  map<string, ChapterProgress> chapter_progress = 2;
+}
+
+// Represents the chapter progress.
+message ChapterProgress {
+  // The ID corresponding to the exploration.
+  string exploration_id = 1;
+
+  // The playability state of chapter.
+  ChapterPlayState chapter_play_state = 2;
+
+  // Timestamp to record last time the exploration was played in ms.
+  int64 last_played_timestamp = 3;
 }
 
 // Represents user's preference for using cellular data
