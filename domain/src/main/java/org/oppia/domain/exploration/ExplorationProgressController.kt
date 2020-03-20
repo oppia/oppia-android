@@ -166,13 +166,9 @@ class ExplorationProgressController @Inject constructor(
         try {
           explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
 
-          hint = explorationProgress.stateGraph.computeHintForResult(explorationProgress.stateDeck.getCurrentEphemeralState().state, hintIsRevealed, hintIndex)
+          hint = explorationProgress.stateGraph.computeHintForResult(explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state, hintIsRevealed, hintIndex)
 
           asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-          // Follow the answer's outcome to another part of the graph if it's different.
-//          explorationProgress.stateDeck.pushUpdateHintState(explorationProgress.stateGraph.getState(state.name))
-
-//            Log.d("StateFragment", "controller = "+ explorationProgress.stateDeck.getCurrentEphemeralState().state.interaction.hintList[0].hintIsRevealed)
 
         } finally {
 
@@ -503,6 +499,15 @@ class ExplorationProgressController @Inject constructor(
         stateIndex == previousStates.size -> getCurrentPendingState()
         else -> getPreviousState()
       }
+    }
+
+
+    /** Returns the current [EphemeralState] the learner is viewing. */
+    internal fun getCurrentUpdatedEphemeralState(): EphemeralState {
+      // Note that the terminal state is evaluated first since it can only return true if the current state is the top
+      // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
+      // the second case assumes the top of the deck must be pending.
+      return getCurrentPendingState()
     }
 
     /**
