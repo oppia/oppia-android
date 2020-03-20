@@ -15,8 +15,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import dagger.BindsInstance
@@ -31,7 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -113,9 +113,9 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_rotateScreen_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
+  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(), typeText("12345"), closeSoftKeyboard())
@@ -125,9 +125,9 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_rotateScreen_inputShortPin_clickSubmit_checkPinLengthError() {
+  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_checkPinLengthError() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_length))))
@@ -135,9 +135,9 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_rotateScreen_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
+  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("45"), closeSoftKeyboard())
@@ -146,9 +146,9 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_rotateScreen_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
+  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(),typeText("1234"), closeSoftKeyboard())
@@ -158,9 +158,9 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_rotateScreen_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
+  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(),typeText("1234"), closeSoftKeyboard())
@@ -171,26 +171,25 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_rotateScreen_checkConfirmWrongError(){
+  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError(){
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context,0,-10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("12345"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo(),typeText("54321"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(click())
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
     }
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickSubmit_rotateScreen_checkPinLengthError() {
+  fun testAdminPinActivity_inputShortPin_clickSubmit_configurationChange_checkPinLengthError() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(R.string.admin_pin_error_pin_length)))
     }
   }
-
 
   private fun setUpTestApplicationComponent() {
     DaggerAdminPinActivityTest_TestApplicationComponent.builder()
