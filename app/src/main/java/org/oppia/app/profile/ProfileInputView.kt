@@ -28,6 +28,14 @@ class ProfileInputView @JvmOverloads constructor(
     }
 
     @JvmStatic
+    @BindingAdapter("profile:labelMargin")
+    fun setLayoutMarginStart(profileInputView: ProfileInputView, dimen: Float) {
+      val layoutParams = profileInputView.label.layoutParams as MarginLayoutParams
+      layoutParams.marginStart = dimen.toInt()
+      profileInputView.label.layoutParams = layoutParams
+    }
+
+    @JvmStatic
     @BindingAdapter("profile:inputLength")
     fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
       profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
