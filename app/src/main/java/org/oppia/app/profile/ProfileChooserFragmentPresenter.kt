@@ -46,6 +46,7 @@ private val COLORS_LIST = listOf(
   R.color.avatar_background_23,
   R.color.avatar_background_24
 )
+private const val USER_NAME_MAX_CHAR_COUNT = 36
 
 /** The presenter for [ProfileChooserFragment]. */
 @FragmentScope
@@ -107,6 +108,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding: ProfileChooserProfileViewBinding,
     model: ProfileChooserUiModel
   ) {
+    binding.profileNameText.setText(formatString(model.profile.name))
     binding.viewModel = model
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
@@ -124,6 +126,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         activity.startActivity(pinPasswordIntent)
       }
     }
+  }
+
+  private fun formatString(stringToFormat: String): String {
+    var stringToFormat = stringToFormat
+    if (stringToFormat.length > USER_NAME_MAX_CHAR_COUNT) {
+      stringToFormat = stringToFormat.substring(0, USER_NAME_MAX_CHAR_COUNT - 1) + "..."
+    }
+    return stringToFormat
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {

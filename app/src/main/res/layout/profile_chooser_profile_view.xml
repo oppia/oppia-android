@@ -33,12 +33,8 @@
       android:id="@+id/profile_name_text"
       android:layout_width="112dp"
       android:layout_height="wrap_content"
-      android:ellipsize="end"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
-      android:maxLength="36"
-      android:singleLine="true"
-      android:text="@{viewModel.profile.name}"
       android:textColor="@color/white"
       android:textSize="14sp" />
 
