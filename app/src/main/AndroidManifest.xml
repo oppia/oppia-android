@@ -124,9 +124,6 @@
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
-    <activity
-      android:name=".testing.GridAutoFitLayoutManagerTestActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity android:name=".testing.RecentlyPlayedFragmentTestActivity" />

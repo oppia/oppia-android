@@ -65,5 +65,4 @@ class ProfileChooserSpanTest {
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenSw480dp() {
     assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(5)
   }
-
 }
