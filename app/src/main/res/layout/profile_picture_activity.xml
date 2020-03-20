@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:profile="http://schemas.android.com/tools">
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profileprogress.ProfilePictureActivityViewModel" />
+    <variable
+      name="presenter"
+      type="org.oppia.app.profileprogress.ProfilePictureActivityPresenter" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+      android:id="@+id/profile_picture_image_view"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      profile:src="@{viewModel.profileAvatar}"
+      tools:src="@drawable/ic_default_avatar"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -3,6 +3,7 @@ package org.oppia.app.testing
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -41,11 +42,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -61,7 +64,11 @@ import javax.inject.Singleton
 class NavigationDrawerTestActivityTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
   @Inject lateinit var context: Context
+
+  private val internalProfileId = 0
+  private val internalProfileId1 = 1
 
   @Before
   @ExperimentalCoroutinesApi
@@ -69,6 +76,12 @@ class NavigationDrawerTestActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+      ProfileId.newBuilder().setInternalId(
+        internalProfileId
+      ).build(),
+      timestampOlderThanAWeek = false
+    )
   }
 
   @After
@@ -76,10 +89,10 @@ class NavigationDrawerTestActivityTest {
     Intents.release()
   }
 
-  private fun createNavigationDrawerActivityIntent(profileId: Int): Intent {
+  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
     return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      internalProfileId
     )
   }
 
@@ -92,7 +105,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -100,9 +113,20 @@ class NavigationDrawerTestActivityTest {
         .check(matches(withText("Sean")))
     }
   }
+
+  @Test
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.profile_progress_text_view)).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
+    }
+  }
+
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(1)).use {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId1)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -124,7 +148,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSucessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -133,7 +157,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSucessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
@@ -151,7 +175,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -161,7 +185,7 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(1)).use {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId1)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(not(isDisplayed())))
     }
@@ -211,7 +235,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed(){
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -306,8 +330,11 @@ class NavigationDrawerTestActivityTest {
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
+  }
+
+  @Qualifier annotation class TestDispatcher
 
   @Module
   class TestModule {
