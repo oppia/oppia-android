@@ -301,4 +301,6 @@
   <!-- WalkthroughActivity -->
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>
+  <!-- WalkthroughTopicListFragment -->
+  <string name="what_do_you_want_to_learn">What do you want to learn?</string>
 </resources>
