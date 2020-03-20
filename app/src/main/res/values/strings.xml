@@ -296,5 +296,4 @@
   <!-- WalkthroughActivity -->
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>
-  <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
 </resources>

@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -143,18 +143,18 @@ class OngoingTopicListActivityTest {
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
-      )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+      )̥
+      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
