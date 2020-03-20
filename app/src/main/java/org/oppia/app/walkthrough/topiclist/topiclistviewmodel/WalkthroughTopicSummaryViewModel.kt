@@ -11,8 +11,8 @@ import org.oppia.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
 // These values were roughly computed based on the mocks. They won't produce the same colors since darker colors in the
 // mocks were not consistently darker. An alternative would be to specify both background colors together to ensure
 // proper contrast with readable elements.
-const val DARKEN_VALUE_MULTIPLIER: Float = 0.9f
-const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
+private const val DARKEN_VALUE_MULTIPLIER: Float = 0.9f
+private const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 
 /** The view model corresponding to topic summaries in the topic summary RecyclerView. */
 

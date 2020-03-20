@@ -21,7 +21,7 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
   }
 
   override fun pageWithTopicId(walkthroughPage: Int, topicId: String) {
-    walkthroughActivityPresenter.topicId = topicId
+    walkthroughActivityPresenter.setTopicId(topicId)
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 

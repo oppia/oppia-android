@@ -56,6 +56,5 @@ class WalkthroughTopicViewModel @Inject constructor(
       )
     })
     return itemViewModelList
-
   }
 }

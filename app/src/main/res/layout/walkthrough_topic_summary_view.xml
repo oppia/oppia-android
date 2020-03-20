@@ -10,7 +10,7 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/topic_container"
+    android:id="@+id/walkthrough_topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -21,7 +21,7 @@
     app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}">
 
     <ImageView
-      android:id="@+id/imageView"
+      android:id="@+id/walkthrough_topic_thumbnail_image_view"
       android:layout_width="match_parent"
       android:layout_height="92dp"
       android:importantForAccessibility="no"
@@ -54,7 +54,7 @@
         android:layout_margin="8dp">
 
         <TextView
-          android:id="@+id/topic_name_text_view"
+          android:id="@+id/walkthrough_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"
@@ -70,7 +70,7 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          android:id="@+id/lesson_count_text_view"
+          android:id="@+id/walkthrough_lesson_count_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-light"

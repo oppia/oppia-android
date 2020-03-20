@@ -17,7 +17,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
 ) {
-  lateinit var topicId: String
+  private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
   fun handleOnCreate() {
@@ -85,5 +85,9 @@ class WalkthroughActivityPresenter @Inject constructor(
 
   fun handleSystemBack() {
     previousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+  }
+
+  fun setTopicId(topicId: String) {
+    this.topicId = topicId
   }
 }
