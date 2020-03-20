@@ -355,12 +355,12 @@ class RecentlyPlayedFragmentTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-//  thread helps to counter that.
+  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
@@ -459,11 +459,11 @@ class RecentlyPlayedFragmentTest {
     fun inject(recentlyPlayedFragmentTest: RecentlyPlayedFragmentTest)
   }
 
-// TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-//  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-//  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-//  and immediate.
-//  NB: This also blocks on #59 to be able to actually create a test-only library.
+  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
+  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
+  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
+  //  and immediate.
+  //  NB: This also blocks on #59 to be able to actually create a test-only library.
   /**
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
