@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,9 +10,9 @@ import org.oppia.app.databinding.TopicReviewSummaryViewBinding
 import org.oppia.app.model.Subtopic
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
-/** Adapter to bind skills to [RecyclerView] inside [TopicReviewFragment]. */
-class ReviewSubtopicAdapter(private val reviewSelector: ReviewSubtopicSelector) :
-  RecyclerView.Adapter<ReviewSubtopicAdapter.SubtopicViewHolder>() {
+/** Adapter to bind skills to [RecyclerView] inside [TopicRevisionFragment]. */
+class RevisionSubtopicAdapter(private val revisionSelector: RevisionSubtopicSelector) :
+  RecyclerView.Adapter<RevisionSubtopicAdapter.SubtopicViewHolder>() {
 
   private var subtopicList: List<Subtopic> = ArrayList()
 
@@ -33,7 +33,7 @@ class ReviewSubtopicAdapter(private val reviewSelector: ReviewSubtopicSelector) 
     return subtopicList.size
   }
 
-  fun setReviewList(subtopicList: List<Subtopic>) {
+  fun setRevisionList(subtopicList: List<Subtopic>) {
     this.subtopicList = subtopicList
     notifyDataSetChanged()
   }
@@ -42,7 +42,7 @@ class ReviewSubtopicAdapter(private val reviewSelector: ReviewSubtopicSelector) 
     internal fun bind(subtopic: Subtopic) {
       binding.setVariable(BR.subtopic, subtopic)
       binding.root.setOnClickListener {
-        reviewSelector.onTopicReviewSummaryClicked(subtopic)
+        revisionSelector.onTopicReviewSummaryClicked(subtopic)
       }
     }
   }

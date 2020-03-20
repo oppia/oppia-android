@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.app.Application
 import android.content.Context
@@ -35,9 +35,9 @@ import javax.inject.Singleton
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
-/** Tests for [TopicReviewFragment]. */
+/** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicReviewFragmentTest {
+class TopicRevisionFragmentTest {
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val internalProfileId = 0
 
@@ -47,7 +47,7 @@ class TopicReviewFragmentTest {
   )
 
   @Test
-  fun testTopicReviewFragment_loadFragment_displayReviewTopics_isSuccessful() {
+  fun testTopicRevisionFragment_loadFragment_displayReviewTopics_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -61,7 +61,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewTopics_opensReviewActivity() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_opensReviewActivity() {
     topicActivityTestRule.launchActivity(
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -79,7 +79,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -93,7 +93,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_checkTopicThumbnail_isCorrect() {
+  fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -106,7 +106,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_checkSpanCoun_isTwo() {
+  fun testTopicRevisionFragment_loadFragment_checkSpanCoun_isTwo() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -134,7 +134,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+  fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -148,7 +148,7 @@ class TopicReviewFragmentTest {
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
+  fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(

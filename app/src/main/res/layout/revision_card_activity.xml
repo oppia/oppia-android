@@ -4,4 +4,4 @@
   android:id="@+id/review_card_fragment_placeholder"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="ReviewCardActivity" />
+  tools:context="Re" />

@@ -8,7 +8,7 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.reviewcard.ReviewCardActivity
+import org.oppia.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
 
 private const val TOPIC_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY = "TopicActivity.internal_profile_id"
@@ -17,7 +17,7 @@ private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id
 
 /** The activity for displaying [TopicFragment]. */
 class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener {
+  RouteToStoryListener, RouteToExplorationListener, RouteToRevisionCardListener {
 
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -45,7 +45,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToReviewCard(topicId: String, subtopicId: String) {
-    startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
+    startActivity(RevisionCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 
   override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {

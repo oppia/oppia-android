@@ -13,7 +13,7 @@ import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
-import org.oppia.app.model.ReviewCard
+import org.oppia.app.model.RevisionCard
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillThumbnail
 import org.oppia.app.model.SkillThumbnailGraphic
@@ -228,13 +228,13 @@ class TopicController @Inject constructor(
     )
   }
 
-  /** Returns the [ReviewCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
-  fun getReviewCard(topicId: String, subtopicId: String): LiveData<AsyncResult<ReviewCard>> {
+  /** Returns the [RevisionCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
+  fun getRevisionCard(topicId: String, subtopicId: String): LiveData<AsyncResult<RevisionCard>> {
     return MutableLiveData(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        AsyncResult.failed<ReviewCard>(e)
+        AsyncResult.failed<RevisionCard>(e)
       }
     )
   }
@@ -432,7 +432,7 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
-  private fun retrieveReviewCard(topicId: String, subtopicId: String): ReviewCard {
+  private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
         "fractions_subtopics.json"
@@ -675,10 +675,10 @@ class TopicController @Inject constructor(
   }
 
   /** Creates a sub-topic from its json representation. */
-  private fun createSubtopicFromJson(topicFileName: String): ReviewCard {
+  private fun createSubtopicFromJson(topicFileName: String): RevisionCard {
     val subtopicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
     val subtopicTitle = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getString("subtopic_title")!!
-    return ReviewCard.newBuilder()
+    return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
         SubtitledHtml.newBuilder()
