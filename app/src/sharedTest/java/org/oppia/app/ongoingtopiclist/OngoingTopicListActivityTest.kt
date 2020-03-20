@@ -153,7 +153,7 @@ class OngoingTopicListActivityTest {
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
-      )̥
+      )
       onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
