@@ -676,6 +676,107 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
+  @Test
+  fun testAddProfileActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("test"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("test")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputPin_changeConfiguration_checkPinIsDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("123")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputConfirmPin_changeConfiguration_checkConfirmPinIsDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("123")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_changeConfiguration_checkName_checkPin_checkConfirmPin_IsDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("test"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("test")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("123")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .check(matches(withText("123")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_deselectPIN_clickCreate_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("test"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
   @Qualifier
   annotation class TestDispatcher
 
