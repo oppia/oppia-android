@@ -46,7 +46,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
-  private var createPin = false
+  private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
@@ -70,6 +70,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
+      checkboxStateClicked = isChecked
     }
 
     binding.infoIcon.setOnClickListener {
@@ -78,7 +79,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-   // addTextChangedListeners(binding)
+    // addTextChangedListeners(binding)
     addButtonListeners(binding)
 
     binding.inputName.post {
@@ -119,7 +120,7 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.value.toString())
   }
 
-  private fun setValidPin( binding: AddProfileActivityBinding) {
+  private fun setValidPin(binding: AddProfileActivityBinding) {
     if (inputtedPin && inputtedConfirmPin) {
       profileViewModel.validPin.set(true)
     } else {
@@ -143,7 +144,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-     openGalleryIntent()
+      openGalleryIntent()
     }
     binding.editImageFab.setOnClickListener {
       openGalleryIntent()
@@ -156,8 +157,12 @@ class AddProfileActivityPresenter @Inject constructor(
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
       val name = binding.inputName.getInput()
-      val pin = binding.inputPin.getInput()
-      val confirmPin = binding.inputConfirmPin.getInput()
+      var pin = ""
+      var confirmPin = ""
+      if (checkboxStateClicked) {
+        pin = binding.inputPin.getInput()
+        confirmPin = binding.inputConfirmPin.getInput()
+      }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
         binding.scroll.smoothScrollTo(0, 0)
