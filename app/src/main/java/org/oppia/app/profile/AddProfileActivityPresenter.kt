@@ -79,24 +79,23 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-    // addTextChangedListeners(binding)
     addButtonListeners(binding)
 
     binding.inputName.post {
       addTextChangedListener(binding.inputName) { name ->
         name?.let {
           profileViewModel.nameErrorMsg.set("")
-          profileViewModel.inputName.value = it.toString()
+          profileViewModel.inputName.set(it.toString())
         }
       }
     }
 
-    binding.inputName.setInput(profileViewModel.inputName.value.toString())
+    binding.inputName.setInput(profileViewModel.inputName.get().toString())
 
     binding.inputPin.post {
       addTextChangedListener(binding.inputPin) { pin ->
         pin?.let {
-          profileViewModel.inputPin.value = it.toString()
+          profileViewModel.inputPin.set(it.toString())
           profileViewModel.pinErrorMsg.set("")
           inputtedPin = pin.isNotEmpty()
           setValidPin(binding)
@@ -104,12 +103,12 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputPin.setInput(profileViewModel.inputPin.value.toString())
+    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
 
     binding.inputConfirmPin.post {
       addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
         confirmPin?.let {
-          profileViewModel.inputConfirmPin.value = it.toString()
+          profileViewModel.inputConfirmPin.set(it.toString())
           profileViewModel.confirmPinErrorMsg.set("")
           inputtedConfirmPin = confirmPin.isNotEmpty()
           setValidPin(binding)
@@ -117,7 +116,7 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.value.toString())
+    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
   }
 
   private fun setValidPin(binding: AddProfileActivityBinding) {
