@@ -78,7 +78,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
 
     uploadImageView = binding.uploadImageButton
-
+    
     addButtonListeners(binding)
 
     binding.inputName.post {
@@ -89,9 +89,6 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-
-    binding.inputName.setInput(profileViewModel.inputName.get().toString())
-
     binding.inputPin.post {
       addTextChangedListener(binding.inputPin) { pin ->
         pin?.let {
@@ -102,9 +99,6 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-
-    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
-
     binding.inputConfirmPin.post {
       addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
         confirmPin?.let {
@@ -116,6 +110,8 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
+    binding.inputName.setInput(profileViewModel.inputName.get().toString())
+    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
     binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
   }
 
