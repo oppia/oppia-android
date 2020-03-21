@@ -78,7 +78,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
 
     uploadImageView = binding.uploadImageButton
-    
+
     addButtonListeners(binding)
 
     binding.inputName.post {
