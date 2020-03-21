@@ -91,6 +91,41 @@ class AddProfileActivityPresenter @Inject constructor(
     }
 
     binding.inputName.setInput(profileViewModel.inputName.value.toString())
+
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          profileViewModel.inputPin.value = it.toString()
+          profileViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+
+    binding.inputPin.setInput(profileViewModel.inputPin.value.toString())
+
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          profileViewModel.inputConfirmPin.value = it.toString()
+          profileViewModel.confirmPinErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+
+    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.value.toString())
+  }
+
+  private fun setValidPin( binding: AddProfileActivityBinding) {
+    if (inputtedPin && inputtedConfirmPin) {
+      profileViewModel.validPin.set(true)
+    } else {
+      binding.allowDownloadSwitch.isChecked = false
+      profileViewModel.validPin.set(false)
+    }
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,39 +225,6 @@ class AddProfileActivityPresenter @Inject constructor(
         )
       }
       binding.scroll.smoothScrollTo(0, 0)
-    }
-  }
-
-  private fun addTextChangedListeners(binding: AddProfileActivityBinding) {
-    fun setValidPin() {
-      if (inputtedPin && inputtedConfirmPin) {
-        profileViewModel.validPin.set(true)
-      } else {
-        binding.allowDownloadSwitch.isChecked = false
-        profileViewModel.validPin.set(false)
-      }
-    }
-
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        profileViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        profileViewModel.confirmPinErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputName) { name ->
-      name?.let {
-        profileViewModel.nameErrorMsg.set("")
-      }
     }
   }
 
