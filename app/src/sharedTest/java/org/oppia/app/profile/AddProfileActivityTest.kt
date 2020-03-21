@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,6 +45,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -58,8 +60,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AddProfileActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -92,7 +96,19 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_createPin_checkOpensProfileActivity() {
+  fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("test"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.checkbox_pin))).perform(click())
       onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
@@ -100,8 +116,25 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_createPinNotVisible_checkOpensProfileActivity() {
+  fun testAddProfileActivity_changeConfiguration_clickOnCheckbox_createPin_checkIsDisplayed() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.checkbox_pin))).perform(scrollTo()).perform(click())
+      onView(withId(R.id.input_pin)).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_createPin_checkNotVisible() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.input_pin)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_createPin_checkNotVisible() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.input_pin)).check(matches(not(isDisplayed())))
     }
   }
@@ -117,7 +150,38 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputName_inputPin_clickCreate_checkOpensProfileActivity() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(scrollTo()).perform(
+        typeText("test"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
         .perform(
           typeText("123"), closeSoftKeyboard()
         )
@@ -129,6 +193,20 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_clickCreate_checkNameEmptyError() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText(context.getString(R.string.add_profile_error_name_empty))))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_clickCreate_checkNameEmptyError() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(
         allOf(
@@ -159,6 +237,25 @@ class AddProfileActivityTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("Sean"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
     profileTestHelper.initializeProfiles()
     ActivityScenario.launch(AddProfileActivity::class.java).use {
@@ -169,13 +266,57 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
         typeText(" "), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("Sean"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText(" "), closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
     }
   }
 
   @Test
   fun testAddProfileActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText(context.getString(R.string.add_profile_error_name_only_letters))))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
@@ -199,7 +340,32 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
         typeText(" "), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText(" "), closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
     }
   }
 
@@ -221,6 +387,25 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("12"), closeSoftKeyboard()
+        )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.checkbox_pin)).perform(click())
@@ -231,7 +416,33 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("3"), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("12"), closeSoftKeyboard()
+        )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("3"), closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
 
@@ -242,10 +453,41 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
         .perform(typeText("12"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+        matches(
+          withText(
+            context.getString(R.string.add_profile_error_pin_confirm_wrong)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_checkConfirmWrongError() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(typeText("12"), closeSoftKeyboard())
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).perform(scrollTo()).check(
         matches(
           withText(
             context.getString(R.string.add_profile_error_pin_confirm_wrong)
@@ -262,10 +504,40 @@ class AddProfileActivityTest {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
         .perform(typeText("12"))
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        typeText("3"), closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(typeText("12"), closeSoftKeyboard())
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
         typeText("3"), closeSoftKeyboard()
       )
       onView(
@@ -289,13 +561,45 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_changeConfiguration_inputPin_checkAllowDownloadNotClickable() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(withId(R.id.allow_download_switch)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.checkbox_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"), closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
+        .perform(typeText("123"), closeSoftKeyboard())
+      onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("123"), closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      )
         .perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.allow_download_switch)).check(matches(isClickable()))
     }
@@ -316,6 +620,21 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_changeConfiguration_imageSelectAvatar_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.upload_image_button)).perform(click())
+      intended(expectedIntent)
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_imageSelectEdit_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
@@ -324,6 +643,21 @@ class AddProfileActivityTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.edit_image_fab)).perform(click())
+      intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_changeConfiguration_imageSelectEdit_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.edit_image_fab)).perform(click())
       intended(expectedIntent)
     }
@@ -342,7 +676,8 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
