@@ -180,6 +180,34 @@ class ProfileResetPinActivityTest {
     }
   }
 
+  @Test
+  fun testProfileResetPinActivity_startActivitywithAdmin_inputPin_performConfigurationLandscape_checkPinIsPresent() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use{
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivitywithAdmin_inputConfirmPin_performConfigurationLandscape_checkPinIsPresent() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use{
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.input_confirm_pin)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileResetPinActivity_startActivitywithAdmin_inputPin_inputConfirmPin_performConfigurationLandscape_checkPinIsPresent() {
+    ActivityScenario.launch<ProfileResetPinActivity>(ProfileResetPinActivity.createProfileResetPinActivity(context, 0, true)).use{
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(typeText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.input_pin)).check(matches(isDisplayed()))
+      onView(withId(R.id.input_confirm_pin)).check(matches(isDisplayed()))
+    }
+  }
 
   @Qualifier
   annotation class TestDispatcher
