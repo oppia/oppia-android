@@ -61,6 +61,7 @@ class AddProfileActivityPresenter @Inject constructor(
     )
 
     binding.apply {
+      lifecycleOwner = activity
       viewModel = profileViewModel
     }
 
@@ -77,8 +78,19 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-    addTextChangedListeners(binding)
+   // addTextChangedListeners(binding)
     addButtonListeners(binding)
+
+    binding.inputName.post {
+      addTextChangedListener(binding.inputName) { name ->
+        name?.let {
+          profileViewModel.nameErrorMsg.set("")
+          profileViewModel.inputName.value = it.toString()
+        }
+      }
+    }
+
+    binding.inputName.setInput(profileViewModel.inputName.value.toString())
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
