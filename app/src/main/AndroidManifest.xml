@@ -72,9 +72,7 @@
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".profile.AdminPinActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".profile.AdminPinActivity" />
     <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
@@ -88,13 +86,9 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profileprogress.ProfileProgressActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".settings.profile.ProfileEditActivity" />
-    <activity
-      android:name=".settings.profile.ProfileListActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".settings.profile.ProfileEditActivity" />
+    <activity android:name=".settings.profile.ProfileListActivity" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
@@ -126,7 +120,6 @@
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
-    <activity android:name=".testing.RecentlyPlayedFragmentTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
       android:screenOrientation="portrait"
