@@ -16,8 +16,10 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
   @Inject lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
   companion object {
-    fun createAdminAuthActivityIntent(context: Context, adminPin: String, profileId: Int, colorRgb: Int,
-                                      adminPinEnum: Int): Intent {
+    fun createAdminAuthActivityIntent(
+      context: Context, adminPin: String, profileId: Int, colorRgb: Int,
+      adminPinEnum: Int
+    ): Intent {
       val intent = Intent(context, AdminAuthActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_ADMIN_AUTH_ADMIN_PIN, adminPin)

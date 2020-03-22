@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:profile="http://schemas.android.com/tools"
-  android:orientation="vertical"
-  xmlns:app="http://schemas.android.com/apk/res-auto" >
+  android:orientation="vertical">
 
   <data>
+
     <variable
       name="viewModel"
       type="org.oppia.app.profile.AdminAuthViewModel" />
@@ -48,9 +49,9 @@
 
       <ScrollView
         android:id="@+id/admin_auth_landscape_scrollView"
-        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
@@ -58,13 +59,12 @@
 
           <TextView
             android:id="@+id/heading_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif-medium"
-            android:lines="2"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
             android:text="@string/admin_auth_heading"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="20sp"
@@ -75,10 +75,10 @@
             android:id="@+id/sub_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif"
-            android:paddingStart="28dp"
-            android:paddingEnd="28dp"
             android:text="@string/admin_auth_sub"
             android:textColor="@color/black_54"
             android:textSize="16sp"
@@ -122,11 +122,11 @@
           <Button
             android:id="@+id/submit_button"
             style="@style/StateButtonActive"
+            android:layout_marginBottom="92dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="28dp"
-            android:layout_marginBottom="36dp"
             android:layout_weight="18"
             android:background="@{viewModel.isSubmitButtonActive.get()? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
             android:gravity="center"
@@ -140,7 +140,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_linearLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
       </ScrollView>
 
       <View
@@ -149,7 +148,5 @@
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
-
   </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

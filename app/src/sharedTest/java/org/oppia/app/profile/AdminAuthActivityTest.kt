@@ -48,6 +48,8 @@ class AdminAuthActivityTest {
 
   @Inject lateinit var context: Context
 
+  private val internalProfileId: Int = 0
+
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
@@ -73,9 +75,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        1
+        AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -93,9 +95,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -113,9 +115,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -144,9 +146,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -168,9 +170,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -188,9 +190,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -212,9 +214,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        0,
+        internalProfileId,
         -10710042,
-        0
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
