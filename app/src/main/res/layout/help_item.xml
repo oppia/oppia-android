@@ -24,7 +24,7 @@
         android:id="@+id/help_item_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white_70"
+        android:background="@color/white"
         android:fontFamily="sans-serif"
         android:paddingStart="16dp"
         android:paddingTop="20dp"
