@@ -1,4 +1,4 @@
-package org.oppia.app.topic.reviewcard
+package org.oppia.app.topic.revisioncard
 
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
@@ -19,13 +19,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
-import org.oppia.app.topic.reviewcard.ReviewCardActivity.Companion.createReviewCardActivityIntent
+import org.oppia.app.topic.revisioncard.RevisionCardActivity.Companion.createReviewCardActivityIntent
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
 
-/** Tests for [ReviewCardActivity]. */
+/** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
-class ReviewCardFragmentTest {
+class RevisionCardFragmentTest {
 
   @Before
   fun setUp() {
@@ -34,7 +34,7 @@ class ReviewCardFragmentTest {
 
   @Test
   fun testReviewCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
-    launch<ReviewCardActivity>(
+    launch<RevisionCardActivity>(
       createReviewCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         FRACTIONS_TOPIC_ID,
@@ -44,7 +44,7 @@ class ReviewCardFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.review_card_toolbar))
+          withParent(withId(R.id.revision_card_toolbar))
         )
       ).check(matches(withText("What is Fraction?")))
     }
@@ -52,15 +52,15 @@ class ReviewCardFragmentTest {
 
   @Test
   fun testReviewCardTestActivity_toolbarTitle_fractionSubtopicId1_checkExplanationAreDisplayedSuccessfully() {
-    launch<ReviewCardActivity>(
+    launch<RevisionCardActivity>(
       createReviewCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
-      onView(withId(R.id.review_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(not(containsRichText())))
     }
   }
 
