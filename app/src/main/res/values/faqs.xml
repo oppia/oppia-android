@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="faq_question_1">How can I create a new profile?</string>
+  <string name="faq_question_2">How can I delete a profile?</string>
+  <string name="faq_question_3">How can I change my email/phone number?</string>
+  <string name="faq_question_4">Who is an Administrator?</string>
+  <string name="faq_question_5">Why is the Exploration player not loading?</string>
+  <string name="faq_question_6">Why is my audio not playing?</string>
+  <string name="faq_question_7">How do I download a Topic?</string>
+  <string name="faq_question_8">I can\'t find my question here. What now?</string>
+</resources>
