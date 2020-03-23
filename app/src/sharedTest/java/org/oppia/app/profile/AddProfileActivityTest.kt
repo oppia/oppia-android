@@ -171,21 +171,14 @@ class AddProfileActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(scrollTo()).perform(
-        typeText("test"),
-        closeSoftKeyboard()
-      )
+      ).perform(scrollTo())
+        .perform(typeText("test"), closeSoftKeyboard())
       onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
-        .perform(
-          typeText("123"), closeSoftKeyboard()
-        )
+        .perform(typeText("123"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
-      )
-        .perform(
-          typeText("123"), closeSoftKeyboard()
-        )
+      ).perform(typeText("123"), closeSoftKeyboard())
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
     }
@@ -501,18 +494,16 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.checkbox_pin)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        typeText("123"), closeSoftKeyboard()
-      )
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(typeText("123"), closeSoftKeyboard())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
-      )
-        .perform(typeText("12"))
+      ).perform(typeText("12"), closeSoftKeyboard())
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        typeText("3"), closeSoftKeyboard()
-      )
+        scrollTo()
+      ).perform(typeText("3"), closeSoftKeyboard())
       onView(
         allOf(
           withId(R.id.error_text),
@@ -710,15 +701,16 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputConfirmPin_changeConfiguration_checkConfirmPinIsDisplayed() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
         typeText("123"), closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo()
-      )
-        .check(matches(withText("123")))
+      ).check(matches(withText("123")))
     }
   }
 
