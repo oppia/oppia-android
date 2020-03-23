@@ -4,9 +4,13 @@
 
   <data>
 
+    <import type="android.view.View" />
+
+    <import type="org.oppia.app.model.Topic" />
+
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewSubtopicViewModel" />
+      type="org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel" />
 
   </data>
 

@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
 import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewSubtopicViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
