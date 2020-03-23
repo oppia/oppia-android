@@ -45,10 +45,8 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
-
       val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
-
       val name = binding.inputName.getInput()
       if (name.isEmpty()) {
         renameViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
