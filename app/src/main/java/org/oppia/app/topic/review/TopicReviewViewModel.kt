@@ -1,5 +1,6 @@
 package org.oppia.app.topic.review
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -16,12 +17,13 @@ import javax.inject.Inject
 @FragmentScope
 class TopicReviewViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger
+  private val logger: Logger,
+  fragment: Fragment
 ) : ViewModel() {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private val subtopicList: MutableList<TopicReviewItemViewModel> = ArrayList()
-  private lateinit var reviewSubtopicSelector: ReviewSubtopicSelector
+  private val reviewSubtopicSelector: ReviewSubtopicSelector = fragment as ReviewSubtopicSelector
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(profileId, topicId)
@@ -30,10 +32,10 @@ class TopicReviewViewModel @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   val subtopicLiveData: LiveData<List<TopicReviewItemViewModel>> by lazy {
-    Transformations.map(topicLiveData, ::processSubTopicList)
+    Transformations.map(topicLiveData, ::processTopic)
   }
 
-  private fun processSubTopicList(topic: Topic): List<TopicReviewItemViewModel> {
+  private fun processTopic(topic: Topic): List<TopicReviewItemViewModel> {
     subtopicList.addAll(topic.subtopicList.map {
       TopicReviewItemViewModel(it, reviewSubtopicSelector)
     })
@@ -57,9 +59,5 @@ class TopicReviewViewModel @Inject constructor(
 
   fun setInternalProfileId(internalProfileId: Int) {
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  }
-
-  fun setReviewSubtopicSelector(reviewSubtopicSelector: ReviewSubtopicSelector) {
-    this.reviewSubtopicSelector = reviewSubtopicSelector
   }
 }

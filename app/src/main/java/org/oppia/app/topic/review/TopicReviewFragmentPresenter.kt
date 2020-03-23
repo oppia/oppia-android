@@ -38,7 +38,6 @@ class TopicReviewFragmentPresenter @Inject constructor(
     val viewModel = getTopicReviewViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
-    viewModel.setReviewSubtopicSelector(this)
 
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
