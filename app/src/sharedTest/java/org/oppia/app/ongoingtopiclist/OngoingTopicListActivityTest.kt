@@ -135,7 +135,7 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_changeOrientation_textIsCorrect() {
+  fun testTopicPracticeFragment_loadFragment_changeConfiguration_textIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -168,8 +168,7 @@ class OngoingTopicListActivityTest {
     )
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   @Module
   class TestModule {
