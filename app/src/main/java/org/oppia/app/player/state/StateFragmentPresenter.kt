@@ -347,7 +347,7 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
-          logger.e("StateFragment", "Failed to retrieve ephemeral state"+ currentState.interaction.getHint(0).hintIsRevealed)
+          logger.e("StateFragment", "Revealed hint = "+ currentState.interaction.getHint(0).hintIsRevealed)
 
           // Start a timer for 3 secs and then display hint
           lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
