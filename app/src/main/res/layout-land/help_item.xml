@@ -38,7 +38,7 @@
         android:id="@+id/help_item_divider_view"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
-        android:background="@color/oppiaGreyBackground" />
+        android:background="@color/black_12" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
