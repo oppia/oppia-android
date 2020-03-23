@@ -16,9 +16,9 @@ import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -227,26 +227,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickAppLanguage_configurationChange_changeAppLanguageToFrenchSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
-        click()
-      )
-      onView(atPositionOnView(R.id.language_recycler_view, 1, R.id.language_radio_button)).perform(
-        click()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.language_recycler_view, 1, R.id.language_radio_button)).check(
-        matches(isChecked())
-      )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
-        matches(withText("French"))
-      )
-    }
-  }
-
-  @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
@@ -254,35 +234,11 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.language_recycler_view))
         .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             2,
             click()
           )
         )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
-        matches(withText("Hindi"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickAppLanguage_configurationChange_changeAppLanguageHindiSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
-      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
-        click()
-      )
-      onView(withId(R.id.language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            2,
-            click()
-          )
-        )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.language_recycler_view, 2, R.id.language_radio_button)).check(
-        matches(isChecked())
-      )
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
         matches(withText("Hindi"))
@@ -305,7 +261,7 @@ class OptionsFragmentTest {
 
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             1,
             click()
           )
@@ -412,7 +368,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             4,
             click()
           )
