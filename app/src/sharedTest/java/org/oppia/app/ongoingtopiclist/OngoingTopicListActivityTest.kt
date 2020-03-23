@@ -46,8 +46,7 @@ import javax.inject.Singleton
 class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
-  @Inject
-  lateinit var storyProfileTestHelper: StoryProgressTestHelper
+  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
   fun setUp() {
