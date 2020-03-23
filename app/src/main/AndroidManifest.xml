@@ -65,8 +65,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
-      android:name=".profile.AddProfileActivity"
-      android:screenOrientation="portrait" />
+      android:name=".profile.AddProfileActivity" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
@@ -108,9 +107,6 @@
     <activity
       android:name=".story.StoryActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".testing.StoryFragmentTestActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
@@ -124,6 +120,9 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".testing.StoryFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -133,12 +132,12 @@
       android:name=".topic.questionplayer.QuestionPlayerActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".topic.TopicActivity"
-      android:launchMode="singleInstance"
+      android:name=".topic.revisioncard.RevisionCardActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".topic.reviewcard.ReviewCardActivity"
-      android:screenOrientation="portrait"
+      android:name=".topic.TopicActivity"
+      android:launchMode="singleInstance"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"

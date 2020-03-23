@@ -1,7 +1,7 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import androidx.lifecycle.ViewModel
 import org.oppia.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for showing a list of subtopics. */
-abstract class TopicReviewViewModel : ObservableViewModel()
+abstract class TopicRevisionViewModel : ObservableViewModel()

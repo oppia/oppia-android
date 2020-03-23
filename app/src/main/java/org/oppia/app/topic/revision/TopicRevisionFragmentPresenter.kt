@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.content.res.Configuration
 import android.view.LayoutInflater
@@ -10,43 +10,43 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.databinding.TopicReviewFragmentBinding
+import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.app.topic.RouteToReviewCardListener
+import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** The presenter for [TopicReviewFragment]. */
+/** The presenter for [TopicRevisionFragment]. */
 @FragmentScope
-class TopicReviewFragmentPresenter @Inject constructor(
+class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController
-) : ReviewSubtopicSelector {
+) : RevisionSubtopicSelector {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val routeToReviewListener = activity as RouteToReviewCardListener
+  private val routeToReviewListener = activity as RouteToRevisionCardListener
 
-  private lateinit var reviewAdapter: ReviewSubtopicAdapter
+  private lateinit var revisionAdapter: RevisionSubtopicAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicReviewFragment."
+      "Expected topic ID to be included in arguments for TopicRevisionFragment."
     }
-    val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    reviewAdapter = ReviewSubtopicAdapter(this)
+    val binding = TopicRevisionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    revisionAdapter = RevisionSubtopicAdapter(this)
 
-    binding.reviewRecyclerView.apply {
-      adapter = reviewAdapter
+    binding.revisionRecyclerView.apply {
+      adapter = revisionAdapter
       // https://stackoverflow.com/a/50075019/3689782
       val spanCount = if( fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE )  3 else  2
       layoutManager = GridLayoutManager(context,spanCount)
@@ -58,8 +58,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
+  override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
+    routeToReviewListener.routeToRevisionCard(topicId, subtopic.subtopicId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
@@ -70,7 +70,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(fragment, Observer<Topic> { result ->
-      reviewAdapter.setReviewList(result.subtopicList)
+      revisionAdapter.setRevisionList(result.subtopicList)
     })
   }
 
@@ -80,7 +80,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicReviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
