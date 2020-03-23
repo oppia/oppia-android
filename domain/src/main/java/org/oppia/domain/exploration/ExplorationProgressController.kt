@@ -436,7 +436,7 @@ class ExplorationProgressController @Inject constructor(
       return answerOutcomeBuilder.build()
     }
 
-    /** Returns an [AnswerOutcome] based on the current state and resulting [Outcome] from the learner's answer. */
+    /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
     internal fun computeHintForResult(currentState: State,hintIsRevealed: Boolean, hintIndex: Int): Hint {
       val hintBuilder = Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
@@ -504,9 +504,6 @@ class ExplorationProgressController @Inject constructor(
 
     /** Returns the current [EphemeralState] the learner is viewing. */
     internal fun getCurrentUpdatedEphemeralState(): EphemeralState {
-      // Note that the terminal state is evaluated first since it can only return true if the current state is the top
-      // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
-      // the second case assumes the top of the deck must be pending.
       return getCurrentPendingState()
     }
 

@@ -418,12 +418,8 @@ class StateFragmentPresenter @Inject constructor(
         logger.e("StateFragment", "hint revealed true = "+ result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
         subscribeToCurrentState()
-
-        logger.e("StateFragment", "hint revealed current state = "+ currentState.interaction.hintList[0].hintIsRevealed)
-      } else {
-
+     } else {
         logger.e("StateFragment", "hint revealed false = "+ result.hintIsRevealed)
-
       }
     })
   }
