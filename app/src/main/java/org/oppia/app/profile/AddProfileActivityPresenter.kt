@@ -46,7 +46,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
-  private var createPin = false
+  private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
 
   @ExperimentalCoroutinesApi
@@ -61,6 +61,7 @@ class AddProfileActivityPresenter @Inject constructor(
     )
 
     binding.apply {
+      lifecycleOwner = activity
       viewModel = profileViewModel
     }
 
@@ -69,6 +70,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
+      checkboxStateClicked = isChecked
     }
 
     binding.infoIcon.setOnClickListener {
@@ -77,8 +79,49 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-    addTextChangedListeners(binding)
     addButtonListeners(binding)
+
+    binding.inputName.post {
+      addTextChangedListener(binding.inputName) { name ->
+        name?.let {
+          profileViewModel.nameErrorMsg.set("")
+          profileViewModel.inputName.set(it.toString())
+        }
+      }
+    }
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          profileViewModel.inputPin.set(it.toString())
+          profileViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          profileViewModel.inputConfirmPin.set(it.toString())
+          profileViewModel.confirmPinErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+
+    binding.inputName.setInput(profileViewModel.inputName.get().toString())
+    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
+    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
+  }
+
+  private fun setValidPin(binding: AddProfileActivityBinding) {
+    if (inputtedPin && inputtedConfirmPin) {
+      profileViewModel.validPin.set(true)
+    } else {
+      binding.allowDownloadSwitch.isChecked = false
+      profileViewModel.validPin.set(false)
+    }
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -96,7 +139,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-     openGalleryIntent()
+      openGalleryIntent()
     }
     binding.editImageFab.setOnClickListener {
       openGalleryIntent()
@@ -109,8 +152,12 @@ class AddProfileActivityPresenter @Inject constructor(
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
       val name = binding.inputName.getInput()
-      val pin = binding.inputPin.getInput()
-      val confirmPin = binding.inputConfirmPin.getInput()
+      var pin = ""
+      var confirmPin = ""
+      if (checkboxStateClicked) {
+        pin = binding.inputPin.getInput()
+        confirmPin = binding.inputConfirmPin.getInput()
+      }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
         binding.scroll.smoothScrollTo(0, 0)
@@ -178,39 +225,6 @@ class AddProfileActivityPresenter @Inject constructor(
         )
       }
       binding.scroll.smoothScrollTo(0, 0)
-    }
-  }
-
-  private fun addTextChangedListeners(binding: AddProfileActivityBinding) {
-    fun setValidPin() {
-      if (inputtedPin && inputtedConfirmPin) {
-        profileViewModel.validPin.set(true)
-      } else {
-        binding.allowDownloadSwitch.isChecked = false
-        profileViewModel.validPin.set(false)
-      }
-    }
-
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        profileViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        profileViewModel.confirmPinErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputName) { name ->
-      name?.let {
-        profileViewModel.nameErrorMsg.set("")
-      }
     }
   }
 

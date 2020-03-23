@@ -1,25 +1,25 @@
-package org.oppia.app.topic.reviewcard
+package org.oppia.app.topic.revisioncard
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.databinding.ReviewCardFragmentBinding
+import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** Presenter for [ReviewCardFragment], sets up bindings from ViewModel */
+/** Presenter for [RevisionCardFragment], sets up bindings from ViewModel */
 @FragmentScope
-class ReviewCardFragmentPresenter @Inject constructor(
+class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ReviewCardViewModel>
+  private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
 ) {
   private lateinit var topicId: String
   private lateinit var subtopicId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = ReviewCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = RevisionCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getReviewCardViewModel()
 
     topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
@@ -34,7 +34,7 @@ class ReviewCardFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getReviewCardViewModel(): ReviewCardViewModel {
-    return viewModelProvider.getForFragment(fragment, ReviewCardViewModel::class.java)
+  private fun getReviewCardViewModel(): RevisionCardViewModel {
+    return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
   }
 }
