@@ -5,8 +5,9 @@
   <data>
 
     <variable
-      name="subtopic"
-      type="org.oppia.app.model.Subtopic" />
+      name="viewModel"
+      type="org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewSubtopicViewModel" />
+
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -30,7 +31,7 @@
         android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{subtopic.subtopicThumbnail.thumbnailGraphic}"
+        android:src="@{viewModel.subtopic.subtopicThumbnail.thumbnailGraphic}"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +55,7 @@
         android:maxLines="3"
         android:minLines="3"
         android:padding="12dp"
-        android:text="@{subtopic.title}"
+        android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/separator_view" />

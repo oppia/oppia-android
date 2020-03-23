@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewCardViewModel" />
+      type="org.oppia.app.topic.review.TopicReviewViewModel" />
 
   </data>
 
@@ -27,6 +27,6 @@
       android:paddingTop="40dp"
       android:paddingRight="12dp"
       android:paddingBottom="@dimen/bottom_white_space"
-      app:data="@{viewModel.topicLiveData}" />
+      app:data="@{viewModel.subTopicLiveData}" />
   </FrameLayout>
 </layout>

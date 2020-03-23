@@ -6,23 +6,17 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.TopicReviewFragmentBinding
+import org.oppia.app.databinding.TopicReviewSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Subtopic
-import org.oppia.app.model.Topic
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToReviewCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
-import org.oppia.app.topic.practice.TopicPracticeViewModel
-import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewCardViewModel
+import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
+import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
@@ -33,7 +27,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val topicController: TopicController,
-  private val viewModelProvider: ViewModelProvider<TopicReviewCardViewModel>
+  private val viewModelProvider: ViewModelProvider<TopicReviewViewModel>
 ) : ReviewSubtopicSelector {
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToReviewCardListener
@@ -52,7 +46,7 @@ class TopicReviewFragmentPresenter @Inject constructor(
 
     binding.reviewRecyclerView.apply {
       adapter = BindableAdapter.SingleTypeBuilder
-        .newBuilder<TopicReviewCardViewModel>()
+        .newBuilder<TopicReviewItemViewModel>()
         .registerViewBinder(
           inflateView = { parent ->
             TopicReviewFragmentBinding.inflate(
@@ -60,8 +54,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
             ).root
           },
           bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<TopicReviewFragmentBinding>(view)!!
-            binding.viewModel = viewModel
+            val binding = TopicReviewSummaryViewBinding()
+            binding.viewModel = viewModel as TopicReviewSubtopicViewModel
           }
         ).build()
       // https://stackoverflow.com/a/50075019/3689782
@@ -75,12 +69,12 @@ class TopicReviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked( subtopic: Subtopic) {
+  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
     routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
   }
 
-  private fun getTopicReviewViewModel(): TopicReviewCardViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicReviewCardViewModel::class.java)
+  private fun getTopicReviewViewModel(): TopicReviewViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicReviewViewModel::class.java)
   }
 
   /*private fun subscribeToTopicLiveData() {
