@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
+      android:id="@+id/ongoing_topic_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"

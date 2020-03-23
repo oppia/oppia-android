@@ -135,7 +135,7 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_changeConfiguration_textIsCorrect() {
+  fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(

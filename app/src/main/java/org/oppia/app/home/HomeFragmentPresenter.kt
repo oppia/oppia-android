@@ -98,10 +98,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId),
-      ::processGetProfileResult
-    )
+    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
 
   private fun subscribeToProfileLiveData() {
@@ -125,8 +122,7 @@ class HomeFragmentPresenter @Inject constructor(
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
       for (topicSummary in result.topicSummaryList) {
-        val topicSummaryViewModel =
-          TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemList.add(topicSummaryViewModel)
       }
       topicListAdapter.notifyDataSetChanged()
@@ -161,11 +157,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
-      it.getOrDefault(
-        OngoingStoryList.getDefaultInstance()
-      )
-    }
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
