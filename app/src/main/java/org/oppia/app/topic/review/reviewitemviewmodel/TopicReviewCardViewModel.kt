@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
+import org.oppia.app.topic.review.TopicReviewViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -24,7 +25,7 @@ class TopicReviewCardViewModel @Inject constructor(
     topicController.getTopic(topicId)
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private fun getTopicList(): LiveData<Topic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
