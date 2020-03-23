@@ -45,7 +45,6 @@ import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
@@ -80,7 +79,8 @@ class NavigationDrawerTestActivityTest {
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
         internalProfileId
-      ).build()
+      ).build(),
+      timestampOlderThanAWeek = false
     )
   }
 
@@ -111,18 +111,6 @@ class NavigationDrawerTestActivityTest {
       ).perform(click())
       onView(withId(R.id.nav_header_profile_name))
         .check(matches(withText("Sean")))
-    }
-  }
-
-  @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
-    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
-      onView(withId(R.id.header_linear_layout)).perform(click())
-      intended(hasComponent(ProfileProgressActivity::class.java.name))
-      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
     }
   }
 

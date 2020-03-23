@@ -41,6 +41,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     this.internalProfileId = internalProfileId
 
+    viewModel.setProfileId(internalProfileId)
+
     binding.ongoingStoryRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }

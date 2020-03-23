@@ -26,4 +26,5 @@
   <dimen name="dot_gap">4dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
+
 </resources>
