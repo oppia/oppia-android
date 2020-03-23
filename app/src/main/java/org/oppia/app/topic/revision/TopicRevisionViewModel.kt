@@ -13,7 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** [ViewModel] for [TopicReviewFragment]. */
+/** [ViewModel] for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
@@ -48,7 +48,7 @@ class TopicRevisionViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicReviewFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
