@@ -177,15 +177,6 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <!-- FAQ Questions -->
-  <string name="faq_question_1">How can I create a new profile?</string>
-  <string name="faq_question_2">How can I delete a profile?</string>
-  <string name="faq_question_3">How can I change my email/phone number?</string>
-  <string name="faq_question_4">Who is an Administrator?</string>
-  <string name="faq_question_5">Why is the Exploration player not loading?</string>
-  <string name="faq_question_6">Why is my audio not playing?</string>
-  <string name="faq_question_7">How do I download a Topic?</string>
-  <string name="faq_question_8">I can\'t find my question here. What now?</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
