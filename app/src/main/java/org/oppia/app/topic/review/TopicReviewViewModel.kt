@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewSubtopicViewModel
+import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -16,12 +18,14 @@ import javax.inject.Inject
 class TopicReviewViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger
-  ): ViewModel() {
+): ViewModel() {
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private val subTopicList: MutableList<TopicReviewItemViewModel> = ArrayList()
+  private lateinit var reviewSubtopicSelector: ReviewSubtopicSelector
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(topicId)
+    topicController.getTopic(profileId, topicId)
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
@@ -32,7 +36,7 @@ class TopicReviewViewModel @Inject constructor(
 
   private fun processSubTopicList(topic: Topic): List<TopicReviewItemViewModel> {
     subTopicList.addAll(topic.subtopicList.map {
-      TopicReviewSubtopicViewModel(it)
+      TopicReviewItemViewModel(it, reviewSubtopicSelector)
     })
     return subTopicList
   }
@@ -50,5 +54,13 @@ class TopicReviewViewModel @Inject constructor(
 
   fun setTopicId(topicId: String) {
     this.topicId = topicId
+  }
+
+  fun setInternalProfileId(internalProfileId: Int) {
+    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
+
+  fun setReviewSubtopicSelector(reviewSubtopicSelector: ReviewSubtopicSelector) {
+    this.reviewSubtopicSelector = reviewSubtopicSelector
   }
 }

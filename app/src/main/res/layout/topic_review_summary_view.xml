@@ -6,7 +6,7 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.model.Topic" />
+    <import type="org.oppia.app.model.Subtopic" />
 
     <variable
       name="viewModel"
@@ -23,7 +23,8 @@
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp"
     app:strokeColor="@color/oppiaBrown"
-    app:strokeWidth="2dp">
+    app:strokeWidth="2dp"
+    android:onClick="@{(v) -> viewModel.onReviewItemPressed.onTopicReviewSummaryClicked(viewModel.subtopic)}" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"

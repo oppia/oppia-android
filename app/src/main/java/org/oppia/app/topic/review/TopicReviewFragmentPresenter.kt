@@ -36,8 +36,10 @@ class TopicReviewFragmentPresenter @Inject constructor(
       "Expected topic ID to be included in arguments for TopicReviewFragment."
     }
     val viewModel = getTopicReviewViewModel()
+    viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
-    
+    viewModel.setReviewSubtopicSelector(this)
+
     val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     binding.reviewRecyclerView.apply {
