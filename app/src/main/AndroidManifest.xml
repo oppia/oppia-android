@@ -138,7 +138,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"
-      android:launchMode="singleInstance"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
