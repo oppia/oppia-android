@@ -185,6 +185,44 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+     }
+  }
+
+  @Test
+  fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+     }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
