@@ -12,6 +12,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -26,6 +27,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -98,7 +100,7 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_inputNotUniqueName_clickSave_checkNameNotUniqueError() {
+  fun testProfileRenameActivity_inputOldName_clickSave_checkNameNotUniqueError() {
     launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
@@ -112,7 +114,7 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_inputNotUniqueName_clickSave_inputName_checkErrorIsCleared() {
+  fun testProfileRenameActivity_inputOldNam_clickSave_inputName_checkErrorIsCleared() {
     launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
@@ -158,8 +160,12 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_clickSave_checkError_changeConfiguration_checkNameNotFound() {
+  fun testProfileRenameActivity_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
     launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("Sean"),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -167,21 +173,16 @@ class ProfileRenameActivityTest {
           withId(R.id.error_text),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).check(matches(withText(context.getString(R.string.add_profile_error_name_empty))))
+      ).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
     }
   }
 
   @Test
-  fun testProfileRenameActivity_notUniqueName_clickSave_checkError_changeConfiguration_checkNameNotUniqueError() {
+  fun testProfileRenameActivity_clickSave_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
+      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_name))
-        )
-      ).check(matches(withText(context.getString(R.string.add_profile_error_name_empty))))
+      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
     }
   }
 

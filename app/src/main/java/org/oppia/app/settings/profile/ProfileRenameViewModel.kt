@@ -10,4 +10,8 @@ import javax.inject.Inject
 class ProfileRenameViewModel @Inject constructor() : ObservableViewModel() {
   val inputName = ObservableField("")
   val nameErrorMsg = ObservableField("")
+
+  fun sas(){
+    inputName.get()!!.isNotEmpty()
+  }
 }
