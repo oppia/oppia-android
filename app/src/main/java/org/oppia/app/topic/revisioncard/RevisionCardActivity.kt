@@ -9,7 +9,7 @@ import javax.inject.Inject
 const val TOPIC_ID_ARGUMENT_KEY = "TOPIC_ID_"
 const val SUBTOPIC_ID_ARGUMENT_KEY = "SUBTOPIC_ID"
 
-/** Activity for review card. */
+/** Activity for revision card. */
 class RevisionCardActivity : InjectableAppCompatActivity() {
 
   @Inject lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter

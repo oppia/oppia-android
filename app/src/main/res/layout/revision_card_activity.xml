@@ -4,4 +4,4 @@
   android:id="@+id/revision_card_fragment_placeholder"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="Re" />
+  tools:context=".topic.revisioncard.RevisionCardActivity" />

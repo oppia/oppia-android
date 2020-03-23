@@ -40,7 +40,7 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
     startActivity(ExplorationActivity.createExplorationActivityIntent(this, profileId, topicId, storyId, explorationId))
   }
 
-  override fun routeToReviewCard(topicId: String, subtopicId: String) {
+  override fun routeToRevisionCard(topicId: String, subtopicId: String) {
     startActivity(RevisionCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 }

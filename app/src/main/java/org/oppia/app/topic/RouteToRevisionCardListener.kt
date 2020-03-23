@@ -1,6 +1,6 @@
 package org.oppia.app.topic
 
-/** Listener for when an [TopicActivity] should route to a [ReviewCardFragment]. */
+/** Listener for when an [TopicActivity] should route to a [RevisionCardFragment]. */
 interface RouteToRevisionCardListener {
-  fun routeToReviewCard(topicId: String, subtopicId: String)
+  fun routeToRevisionCard(topicId: String, subtopicId: String)
 }

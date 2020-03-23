@@ -13,7 +13,7 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.RevisionCardHtmlParserEntityType
 import javax.inject.Inject
 
-/** [ViewModel] for Revision card, providing rich text and worked examples */
+/** [ViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
   private val topicController: TopicController,
@@ -31,7 +31,7 @@ class RevisionCardViewModel @Inject constructor(
     processExplanationLiveData()
   }
 
-  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding */
+  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
   fun setSubtopicIdAndBinding(topicId: String, id: String, binding: RevisionCardFragmentBinding) {
     subtopicId = id
     this.topicId = topicId

@@ -44,7 +44,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
-  override fun routeToReviewCard(topicId: String, subtopicId: String) {
+  override fun routeToRevisionCard(topicId: String, subtopicId: String) {
     startActivity(RevisionCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 

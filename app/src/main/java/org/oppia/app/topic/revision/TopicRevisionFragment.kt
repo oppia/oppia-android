@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.Subtopic
 import javax.inject.Inject
 
-/** Fragment that card for topic review. */
+/** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
   @Inject lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
 

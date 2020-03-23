@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-/* Fragment that displays review card */
+/* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
 
   @Inject lateinit var revisionCardFragmentPresenter: RevisionCardFragmentPresenter
