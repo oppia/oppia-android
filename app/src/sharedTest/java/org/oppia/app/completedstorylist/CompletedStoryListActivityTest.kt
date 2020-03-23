@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -29,6 +30,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -148,6 +150,23 @@ class CompletedStoryListActivityTest {
   @Test
   fun testCompletedStoryList_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_topic_name_text_view)).check(
+        matches(
+          withText(containsString("Ratios and Proportional Reasoning"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testCompletedStoryList_changeOrientation_checkItem1_titleIsCorrect() {
+    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
