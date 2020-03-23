@@ -54,6 +54,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -66,6 +67,7 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
+
   @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var topicController: TopicController
 
@@ -98,11 +100,12 @@ class TopicControllerTest {
   @Inject lateinit var dataProviders: DataProviders
 
   @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
+  @field:TestDispatcher lateinit var testDispatcher: CoroutineDispatcher
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
+
+  private val currentTimestamp = Date().time
 
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
@@ -1087,7 +1090,8 @@ class TopicControllerTest {
       profileId1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0
+      FRACTIONS_EXPLORATION_ID_0,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1096,7 +1100,8 @@ class TopicControllerTest {
       profileId1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1
+      FRACTIONS_EXPLORATION_ID_1,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1105,7 +1110,8 @@ class TopicControllerTest {
       profileId1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0
+      RATIOS_EXPLORATION_ID_0,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 
@@ -1114,7 +1120,8 @@ class TopicControllerTest {
       profileId1,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1
+      RATIOS_EXPLORATION_ID_1,
+      currentTimestamp
     ).observeForever(mockRecordProgressObserver)
   }
 

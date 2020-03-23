@@ -54,8 +54,8 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
 
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId)
-    storyProfileTestHelper.markPartialTopicProgressForFractions(profileId)
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
+    storyProfileTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
   }
 
   @After

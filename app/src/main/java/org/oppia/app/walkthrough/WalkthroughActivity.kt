@@ -20,6 +20,11 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
+  override fun pageWithTopicId(walkthroughPage: Int, topicId: String) {
+    walkthroughActivityPresenter.setTopicId(topicId)
+    walkthroughActivityPresenter.changePage(walkthroughPage)
+  }
+
   override fun onBackPressed() {
     walkthroughActivityPresenter.handleSystemBack()
   }

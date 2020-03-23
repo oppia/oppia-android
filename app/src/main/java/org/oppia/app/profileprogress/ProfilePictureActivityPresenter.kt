@@ -32,7 +32,6 @@ class ProfilePictureActivityPresenter @Inject constructor(
 
     binding.apply {
       viewModel = profilePictureActivityViewModel
-      presenter = this@ProfilePictureActivityPresenter
       lifecycleOwner = activity
     }
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()

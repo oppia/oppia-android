@@ -1,16 +1,14 @@
 package org.oppia.domain.topic
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
-import org.json.JSONArray
 import org.oppia.app.model.ChapterPlayState
+import org.oppia.app.model.ChapterProgress
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicProgressDatabase
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
@@ -42,13 +40,13 @@ private const val TRANSFORMED_GET_STORY_PROGRESS_LIST_PROVIDER_ID = "transformed
 private const val TRANSFORMED_GET_TOPIC_PROGRESS_PROVIDER_ID = "transformed_get_topic_progress_provider_id"
 private const val TRANSFORMED_GET_STORY_PROGRESS_PROVIDER_ID = "transformed_get_story_progress_provider_id"
 private const val ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID = "add_story_progress_transformed_id"
+private const val RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID = "recently_played_chapter_transformed_id"
 
 /** Controller that records and provides completion statuses of chapters within the context of a story. */
 @Singleton
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val jsonAssetRetriever: JsonAssetRetriever,
   private val logger: Logger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
@@ -59,13 +57,7 @@ class StoryProgressController @Inject constructor(
     SUCCESS
   }
 
-  private val trackedStoriesProgress: Map<String, TrackedStoryProgress> by lazy { createInitialStoryProgressState() }
-
   private val cacheStoreMap = mutableMapOf<ProfileId, PersistentCacheStore<TopicProgressDatabase>>()
-
-  fun retrieveStoryProgress(storyId: String): StoryProgress {
-    return createStoryProgressSnapshot(storyId)
-  }
 
   /**
    * Records the specified chapter completed within the context of the specified exploration, story, topic. Returns a [LiveData] that
@@ -76,23 +68,29 @@ class StoryProgressController @Inject constructor(
    * @param topicId the ID corresponding to the topic for which progress needs to be stored.
    * @param storyId the ID corresponding to the story for which progress needs to be stored.
    * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
+   * @param completionTimestamp the timestamp at the exploration was finished.
    * @return a [LiveData] that indicates the success/failure of this record progress operation.
    */
   fun recordCompletedChapter(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    completionTimestamp: Long
   ): LiveData<AsyncResult<Any?>> {
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
-        val chapterPlayState = ChapterPlayState.COMPLETED
+        val chapterProgress = ChapterProgress.newBuilder()
+          .setExplorationId(explorationId)
+          .setChapterPlayState(ChapterPlayState.COMPLETED)
+          .setLastPlayedTimestamp(completionTimestamp)
+          .build()
 
         val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)
         if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
           storyProgressBuilder.putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
         }
-        storyProgressBuilder.putChapterProgress(explorationId, chapterPlayState)
+        storyProgressBuilder.putChapterProgress(explorationId, chapterProgress)
         val storyProgress = storyProgressBuilder.build()
 
         val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
@@ -109,7 +107,74 @@ class StoryProgressController @Inject constructor(
 
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_STORY_PROGRESS_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(profileId, deferred)
+        return@createInMemoryDataProviderAsync getDeferredResult(deferred)
+      })
+  }
+
+  /**
+   * Records the recently played chapter for a specified exploration, story, topic. Returns a [LiveData] that
+   * provides exactly one [AsyncResult] to indicate whether this operation has succeeded. This method will never return
+   * a pending result.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
+   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it has not been [ChapterPlayState.COMPLETED] already.
+   * @param lastPlayedTimestamp the timestamp at which the exploration was last played.
+   * @return a [LiveData] that indicates the success/failure of this record progress operation.
+   */
+  fun recordRecentlyPlayedChapter(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    lastPlayedTimestamp: Long
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred =
+      retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(updateInMemoryCache = true) { topicProgressDatabase ->
+        val previousChapterProgress =
+          topicProgressDatabase
+            .topicProgressMap[topicId]?.storyProgressMap?.get(storyId)?.chapterProgressMap?.get(explorationId)
+
+        val chapterProgressBuilder = if (previousChapterProgress != null) {
+          previousChapterProgress.toBuilder()
+        } else {
+          ChapterProgress.newBuilder()
+            .setChapterPlayState(ChapterPlayState.STARTED_NOT_COMPLETED)
+            .setExplorationId(explorationId)
+        }
+        if (previousChapterProgress != null) {
+          chapterProgressBuilder.lastPlayedTimestamp =
+            if (previousChapterProgress.lastPlayedTimestamp < lastPlayedTimestamp && previousChapterProgress.chapterPlayState != ChapterPlayState.COMPLETED) {
+              lastPlayedTimestamp
+            } else {
+              previousChapterProgress.lastPlayedTimestamp
+            }
+        } else {
+          chapterProgressBuilder.lastPlayedTimestamp = lastPlayedTimestamp
+        }
+        val storyProgressBuilder = StoryProgress.newBuilder().setStoryId(storyId)
+        if (topicProgressDatabase.topicProgressMap[topicId]?.storyProgressMap?.get(storyId) != null) {
+          storyProgressBuilder.putAllChapterProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap[storyId]!!.chapterProgressMap)
+        }
+        storyProgressBuilder.putChapterProgress(explorationId, chapterProgressBuilder.build())
+        val storyProgress = storyProgressBuilder.build()
+
+        val topicProgressBuilder = TopicProgress.newBuilder().setTopicId(topicId)
+        if (topicProgressDatabase.topicProgressMap[topicId] != null) {
+          topicProgressBuilder
+            .putAllStoryProgress(topicProgressDatabase.topicProgressMap[topicId]!!.storyProgressMap)
+        }
+        topicProgressBuilder.putStoryProgress(storyId, storyProgress)
+        val topicProgress = topicProgressBuilder.build()
+
+        val topicDatabaseBuilder = topicProgressDatabase.toBuilder().putTopicProgress(topicId, topicProgress)
+        Pair(topicDatabaseBuilder.build(), StoryProgressActionStatus.SUCCESS)
+      }
+
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(deferred)
       })
   }
 
@@ -149,86 +214,10 @@ class StoryProgressController @Inject constructor(
     }
   }
 
-  private suspend fun getDeferredResult(
-    profileId: ProfileId?,
-    deferred: Deferred<StoryProgressActionStatus>
-  ): AsyncResult<Any?> {
+  private suspend fun getDeferredResult(deferred: Deferred<StoryProgressActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
     }
-  }
-
-  // TODO(#21): Implement notifying story progress changes when a chapter is recorded as complete, and add tests for
-  //  this case.
-
-  /**
-   * Returns a [LiveData] corresponding to the story progress of the specified story, or a failure if no such story can
-   * be identified. This [LiveData] will update as the story's progress changes.
-   */
-  fun getStoryProgress(storyId: String): LiveData<AsyncResult<StoryProgress>> {
-    return try {
-      MutableLiveData(AsyncResult.success(createStoryProgressSnapshot(storyId)))
-    } catch (e: Exception) {
-      MutableLiveData(AsyncResult.failed(e))
-    }
-  }
-
-  private fun createStoryProgressSnapshot(storyId: String): StoryProgress {
-    check(storyId in trackedStoriesProgress) { "No story found with ID: $storyId" }
-    return trackedStoriesProgress.getValue(storyId).toStoryProgress()
-  }
-
-  private fun createInitialStoryProgressState(): Map<String, TrackedStoryProgress> {
-    return mapOf(
-      TEST_STORY_ID_0 to createStoryProgress0(),
-      TEST_STORY_ID_1 to createStoryProgress1(),
-      TEST_STORY_ID_2 to createStoryProgress2(),
-      FRACTIONS_STORY_ID_0 to createStoryProgressForJsonStory("fractions_stories.json", /* index= */ 0),
-      RATIOS_STORY_ID_0 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 0),
-      RATIOS_STORY_ID_1 to createStoryProgressForJsonStory("ratios_stories.json", /* index= */ 1)
-    )
-  }
-
-  private fun createStoryProgressForJsonStory(fileName: String, index: Int): TrackedStoryProgress {
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
-    val explorationIdList = getExplorationIdsFromStory(
-      storyData.getJSONObject(index).getJSONObject("story")
-        .getJSONObject("story_contents").getJSONArray("nodes")
-    )
-    return TrackedStoryProgress(
-      chapterList = explorationIdList,
-      completedChapters = setOf()
-    )
-  }
-
-  private fun getExplorationIdsFromStory(chapterData: JSONArray): List<String> {
-    val explorationIdList = mutableListOf<String>()
-    for (i in 0 until chapterData.length()) {
-      val chapter = chapterData.getJSONObject(i)
-      explorationIdList.add(chapter.getString("exploration_id"))
-    }
-    return explorationIdList
-  }
-
-  private fun createStoryProgress0(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_0),
-      completedChapters = setOf()
-    )
-  }
-
-  private fun createStoryProgress1(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_1, TEST_EXPLORATION_ID_2, TEST_EXPLORATION_ID_3),
-      completedChapters = setOf()
-    )
-  }
-
-  private fun createStoryProgress2(): TrackedStoryProgress {
-    return TrackedStoryProgress(
-      chapterList = listOf(TEST_EXPLORATION_ID_4),
-      completedChapters = setOf()
-    )
   }
 
   private fun retrieveCacheStore(profileId: ProfileId): PersistentCacheStore<TopicProgressDatabase> {
@@ -252,71 +241,5 @@ class StoryProgressController @Inject constructor(
     }
 
     return cacheStore
-  }
-
-  /**
-   * Mutable container for [StoryProgress] that provides support for determining whether a specific chapter can be
-   * played in the context of this story, marking a chapter as played, and converting to a [StoryProgress] object for
-   * reporting to the UI.
-   */
-  private class TrackedStoryProgress(private val chapterList: List<String>, completedChapters: Set<String>) {
-    private val trackedCompletedChapters: MutableSet<String> = completedChapters.toMutableSet()
-
-    // TODO(#21): Implement tests for the following invariant checking logic, if possible.
-    init {
-      // Verify that the progress object is well-defined by ensuring that the invariant where lessons must be played in
-      // order holds.
-      var expectedCompleted: Boolean? = null
-      chapterList.reversed().forEach { explorationId ->
-        val completedChapter = explorationId in trackedCompletedChapters
-        val expectedCompletedSnapshot = expectedCompleted
-        if (expectedCompletedSnapshot == null) {
-          // This should always be initialized for the last lesson. If  it's completed, all previous lessons must be
-          // completed. If it's not, then previous lessons may be completed or incomplete.
-          expectedCompleted = completedChapter
-        } else if (completedChapter != expectedCompletedSnapshot) {
-          // There's exactly one case where the expectation can change: if the next lesson is not completed. This means
-          // the current lesson is the most recent one completed in the list, and all previous lessons must also be
-          // completed.
-          check(!expectedCompletedSnapshot) {
-            "Expected lessons to be completed in order with no holes between them, and starting from the beginning " +
-                "of the story. Encountered uncompleted chapter right before a completed chapter: $explorationId"
-          }
-          // This is the first lesson that was completed after encountering one or more lessons that are not completed.
-          // All previous lessons in the list (the lessons next to be iterated) must be completed in order for the
-          // in-order invariant to hold.
-          expectedCompleted = true
-        }
-        // Otherwise, the invariant holds. Continue on to the previous lesson.
-      }
-    }
-
-    /**
-     * Returns whether the specified exploration ID can be played, or if it's missing prerequisites. Fails if the
-     * specified exploration ID is not contained in this story.
-     */
-    fun canPlayChapter(explorationId: String): Boolean {
-      // The chapter can be played only if it's the first one, or the chapter before it has been completed.
-      check(explorationId in chapterList) { "Chapter not found in story: $explorationId" }
-      val chapterIndex = chapterList.indexOf(explorationId)
-      return if (chapterIndex == 0) true else chapterList[chapterIndex - 1] in trackedCompletedChapters
-    }
-
-    /** Returns an immutable [StoryProgress] representation of this progress object. */
-    fun toStoryProgress(): StoryProgress {
-      val storyProgressBuilder = StoryProgress.newBuilder()
-      for (explorationId in chapterList) {
-        storyProgressBuilder.putChapterProgress(explorationId, buildChapterProgress(explorationId))
-      }
-      return storyProgressBuilder.build()
-    }
-
-    private fun buildChapterProgress(explorationId: String): ChapterPlayState {
-      return when {
-        explorationId in trackedCompletedChapters -> ChapterPlayState.COMPLETED
-        canPlayChapter(explorationId) -> ChapterPlayState.NOT_STARTED
-        else -> ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES /* Assume only reason is missing prerequisites. */
-      }
-    }
   }
 }

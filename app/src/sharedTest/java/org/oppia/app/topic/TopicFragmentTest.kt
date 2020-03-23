@@ -51,14 +51,6 @@ class TopicFragmentTest {
   private val internalProfileId = 0
 
   @Test
-  fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_toolbar))))
-        .check(matches(withText("Topic: Fractions")))
-    }
-  }
-
-  @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
