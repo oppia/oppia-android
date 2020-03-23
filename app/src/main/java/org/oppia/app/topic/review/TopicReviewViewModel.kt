@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
@@ -13,15 +12,15 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-/** [ViewModel] for [TopicReviewFragment] */
+/** [ViewModel] for [TopicReviewFragment]. */
 @FragmentScope
 class TopicReviewViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger
-): ViewModel() {
+) : ViewModel() {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
-  private val subTopicList: MutableList<TopicReviewItemViewModel> = ArrayList()
+  private val subtopicList: MutableList<TopicReviewItemViewModel> = ArrayList()
   private lateinit var reviewSubtopicSelector: ReviewSubtopicSelector
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
@@ -30,15 +29,15 @@ class TopicReviewViewModel @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  val subTopicLiveData: LiveData<List<TopicReviewItemViewModel>> by lazy {
+  val subtopicLiveData: LiveData<List<TopicReviewItemViewModel>> by lazy {
     Transformations.map(topicLiveData, ::processSubTopicList)
   }
 
   private fun processSubTopicList(topic: Topic): List<TopicReviewItemViewModel> {
-    subTopicList.addAll(topic.subtopicList.map {
+    subtopicList.addAll(topic.subtopicList.map {
       TopicReviewItemViewModel(it, reviewSubtopicSelector)
     })
-    return subTopicList
+    return subtopicList
   }
 
   private fun getTopicList(): LiveData<Topic> {

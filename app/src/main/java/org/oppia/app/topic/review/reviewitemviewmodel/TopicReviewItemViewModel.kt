@@ -4,4 +4,8 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.model.Subtopic
 import org.oppia.app.topic.review.ReviewSubtopicSelector
 
-class TopicReviewItemViewModel(val subtopic: Subtopic, val onReviewItemPressed: ReviewSubtopicSelector): ViewModel()
+/** [ViewModel] for view present in the recycler view in [TopicReviewFragment] */
+class TopicReviewItemViewModel(
+  val subtopic: Subtopic,
+  val onReviewItemPressed: ReviewSubtopicSelector
+) : ViewModel()

@@ -25,6 +25,6 @@
       android:paddingTop="40dp"
       android:paddingRight="12dp"
       android:paddingBottom="@dimen/bottom_white_space"
-      app:data="@{viewModel.subTopicLiveData}" />
+      app:data="@{viewModel.subtopicLiveData}" />
   </FrameLayout>
 </layout>

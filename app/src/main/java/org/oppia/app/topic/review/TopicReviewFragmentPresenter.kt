@@ -45,8 +45,8 @@ class TopicReviewFragmentPresenter @Inject constructor(
     binding.reviewRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/50075019/3689782
-      val spanCount = if( fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE )  3 else  2
-      layoutManager = GridLayoutManager(context,spanCount)
+      val spanCount = if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+      layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.let {
       it.lifecycleOwner = fragment
