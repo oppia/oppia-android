@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.app.Application
 import android.content.Context
@@ -35,9 +35,9 @@ import javax.inject.Singleton
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
-/** Tests for [TopicReviewFragment]. */
+/** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
-class TopicReviewFragmentTest {
+class TopicRevisionFragmentTest {
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val internalProfileId = 0
 
@@ -47,7 +47,7 @@ class TopicReviewFragmentTest {
   )
 
   @Test
-  fun testTopicReviewFragment_loadFragment_displayReviewTopics_isSuccessful() {
+  fun testTopicRevisionFragment_loadFragment_displayReviewTopics_isSuccessful() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -55,13 +55,13 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewTopics_opensReviewActivity() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_opensReviewActivity() {
     topicActivityTestRule.launchActivity(
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -75,11 +75,11 @@ class TopicReviewFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
+    onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -87,13 +87,13 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0)).perform(click())
-      onView(withId(R.id.review_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_checkTopicThumbnail_isCorrect() {
+  fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -101,12 +101,12 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_checkSpanCoun_isTwo() {
+  fun testTopicRevisionFragment_loadFragment_checkSpanCoun_isTwo() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -114,7 +114,7 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(hasItemCount(2))
+      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(2))
     }
   }
 
@@ -128,13 +128,13 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.review_recycler_view, 0))
+      onView(atPosition(R.id.revision_recycler_view, 0))
         .check(matches(hasDescendant(withId(R.id.subtopic_title))))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
+  fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -143,12 +143,12 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
     }
   }
 
   @Test
-  fun testTopicReviewFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
+  fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -157,7 +157,7 @@ class TopicReviewFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.review_recycler_view)).check(hasItemCount(3))
+      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(3))
     }
   }
 

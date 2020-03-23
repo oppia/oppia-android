@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import android.content.res.Configuration
 import android.view.LayoutInflater
@@ -7,41 +7,41 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.databinding.TopicReviewFragmentBinding
-import org.oppia.app.databinding.TopicReviewSummaryViewBinding
+import org.oppia.app.databinding.TopicRevisionFragmentBinding
+import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.model.Subtopic
 import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.app.topic.RouteToReviewCardListener
+import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
-import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
+import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presenter for [TopicReviewFragment]. */
+/** The presenter for [TopicRevisionFragment]. */
 @FragmentScope
-class TopicReviewFragmentPresenter @Inject constructor(
+class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicReviewViewModel>
-) : ReviewSubtopicSelector {
+  private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
+) : RevisionSubtopicSelector {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val routeToReviewListener = activity as RouteToReviewCardListener
+  private val routeToRevisionListener = activity as RouteToRevisionCardListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicReviewFragment."
+      "Expected topic ID to be included in arguments for TopicRevisionFragment."
     }
-    val viewModel = getTopicReviewViewModel()
+    val viewModel = getTopicRevisionViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
 
-    val binding = TopicReviewFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = TopicRevisionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    binding.reviewRecyclerView.apply {
+    binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/50075019/3689782
       val spanCount = if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
@@ -54,20 +54,20 @@ class TopicReviewFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  override fun onTopicReviewSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToReviewCard(topicId, subtopic.subtopicId)
+  override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
+    routeToRevisionListener.routeToRevisionCard(topicId, subtopic.subtopicId)
   }
 
-  private fun getTopicReviewViewModel(): TopicReviewViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicReviewViewModel::class.java)
+  private fun getTopicRevisionViewModel(): TopicRevisionViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicRevisionViewModel::class.java)
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<TopicReviewItemViewModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicReviewItemViewModel>()
+      .newBuilder<TopicRevisionItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicReviewSummaryViewBinding::inflate,
-        setViewModel = TopicReviewSummaryViewBinding::setViewModel
+        inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
+        setViewModel = TopicRevisionSummaryViewBinding::setViewModel
       ).build()
   }
 }

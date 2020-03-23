@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel" />
+      type="org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
 
   </data>
 
@@ -24,7 +24,7 @@
     app:cardMaxElevation="4dp"
     app:strokeColor="@color/oppiaBrown"
     app:strokeWidth="2dp"
-    android:onClick="@{(v) -> viewModel.onReviewItemPressed.onTopicReviewSummaryClicked(viewModel.subtopic)}" >
+    android:onClick="@{(v) -> viewModel.onReviewItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"

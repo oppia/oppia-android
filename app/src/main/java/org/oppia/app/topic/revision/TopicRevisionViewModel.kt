@@ -1,4 +1,4 @@
-package org.oppia.app.topic.review
+package org.oppia.app.topic.revision
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.review.reviewitemviewmodel.TopicReviewItemViewModel
+import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
@@ -15,15 +15,15 @@ import javax.inject.Inject
 
 /** [ViewModel] for [TopicReviewFragment]. */
 @FragmentScope
-class TopicReviewViewModel @Inject constructor(
+class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger,
   fragment: Fragment
 ) : ViewModel() {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
-  private val subtopicList: MutableList<TopicReviewItemViewModel> = ArrayList()
-  private val reviewSubtopicSelector: ReviewSubtopicSelector = fragment as ReviewSubtopicSelector
+  private val subtopicList: MutableList<TopicRevisionItemViewModel> = ArrayList()
+  private val revisionSubtopicSelector: RevisionSubtopicSelector = fragment as RevisionSubtopicSelector
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(profileId, topicId)
@@ -31,13 +31,13 @@ class TopicReviewViewModel @Inject constructor(
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
-  val subtopicLiveData: LiveData<List<TopicReviewItemViewModel>> by lazy {
+  val subtopicLiveData: LiveData<List<TopicRevisionItemViewModel>> by lazy {
     Transformations.map(topicLiveData, ::processTopic)
   }
 
-  private fun processTopic(topic: Topic): List<TopicReviewItemViewModel> {
+  private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
     subtopicList.addAll(topic.subtopicList.map {
-      TopicReviewItemViewModel(it, reviewSubtopicSelector)
+      TopicRevisionItemViewModel(it, revisionSubtopicSelector)
     })
     return subtopicList
   }
