@@ -316,7 +316,7 @@ message RevisionCard {
   // The core explanation of the subtopic being revised.
   SubtitledHtml page_contents = 3;
 
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
   // recorded audio to play.
   map<string, VoiceoverMapping> recorded_voiceover = 5;
 
