@@ -23,6 +23,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -774,6 +775,104 @@ class AddProfileActivityTest {
       onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testAddProfileActivity_inputNotUniqueName_clickCreate_changeConfiguration_checkErrorMessageDisplayed() {
+    profileTestHelper.initializeProfiles()
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+        typeText("Sean"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_selectCheckbox_changeConfiguration_checkboxIsSelected() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.checkbox_pin)).perform(scrollTo()).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputPin_inputConfirmPin_changeConfiguration_checkPin_checkConfirmPin_IsDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        scrollTo()
+      ).check(matches(withText("123")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).check(matches(withText("123")))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputPin_inputDifferentConfirmPin_clickCreate_changeConfiguration_checkErrorMessageDisplayed() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
+        typeText("321"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).perform(scrollTo()).check(
+        matches(
+          withText(
+            context.getString(R.string.add_profile_error_pin_confirm_wrong)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputPin_inputConfirmPin_turnOnDownloadAccessSwitch_changeConfiguration_checkDownloadAccessSwitchIsOn() {
+    ActivityScenario.launch(AddProfileActivity::class.java).use {
+      onView(withId(R.id.checkbox_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
+        typeText("123"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.allow_download_switch)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.allow_download_switch)).perform(scrollTo()).check(matches(isChecked()))
     }
   }
 
