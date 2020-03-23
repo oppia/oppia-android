@@ -55,16 +55,16 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     welcomeViewModel = WelcomeViewModel()
-    promotedStoryListViewModel = PromotedStoryListViewModel(activity)
+    promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
     allTopicsViewModel = AllTopicsViewModel()
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
-
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -141,13 +141,13 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
+    topicListController.getOngoingStoryList(profileId)
   }
 
   private fun subscribeToOngoingStoryList() {
     getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
       it.recentStoryList.take(3).forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(activity)
+        val recentStory = PromotedStoryViewModel(activity, internalProfileId)
         recentStory.setPromotedStory(promotedStory)
         promotedStoryList.add(recentStory)
       }
@@ -161,6 +161,6 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(topicSummary.topicId)
+    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
   }
 }

@@ -16,17 +16,30 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    recentlyPlayedActivityPresenter.handleOnCreate()
+    val internalProfileId = intent.getIntExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
+    recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
+    internal const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY = "RecentlyPlayedActivity.internal_profile_id"
+
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createRecentlyPlayedActivityIntent(context: Context): Intent {
-      return Intent(context, RecentlyPlayedActivity::class.java)
+    fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
+      val intent = Intent(context, RecentlyPlayedActivity::class.java)
+      intent.putExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+      return intent
     }
   }
 
-  override fun routeToExploration(explorationId: String, topicId: String?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, explorationId, topicId))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId
+      )
+    )
   }
 }

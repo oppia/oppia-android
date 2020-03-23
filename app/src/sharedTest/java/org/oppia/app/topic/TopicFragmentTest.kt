@@ -37,35 +37,29 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
 
-private const val TOPIC_NAME = "First Test Topic"
+private const val TOPIC_NAME = "Fractions"
 
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
 class TopicFragmentTest {
 
-  @Test
-  fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_toolbar))))
-        .check(matches(withText("Topic: First Test Topic")))
-    }
-  }
+  private val internalProfileId = 0
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
       onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(1).name)))
@@ -74,21 +68,21 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withText(TopicTab.getTabForPosition(0).name)).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_container)).check(matches(matchCurrentTabTitle(TopicTab.getTabForPosition(0).name)))
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
           withText(
@@ -101,7 +95,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabSelected() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -114,7 +108,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPlayTab_showsPlayTabWithContentMatched() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -131,13 +125,13 @@ class TopicFragmentTest {
           R.id.story_summary_recycler_view,
           1
         )
-      ).check(matches(ViewMatchers.hasDescendant(withText(containsString("First Story")))))
+      ).check(matches(ViewMatchers.hasDescendant(withText(containsString("Matthew Goes to the Bakery")))))
     }
   }
 
   @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -150,7 +144,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -163,7 +157,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -176,7 +170,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -187,7 +181,7 @@ class TopicFragmentTest {
         matches(
           withText(
             containsString(
-              "An important skill"
+              "What is a Fraction?"
             )
           )
         )
@@ -197,7 +191,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTab() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -222,7 +216,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -248,7 +242,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnPlayTab_configurationChange_showsSameTabAndItsContent() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(1).name),
@@ -280,7 +274,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnPracticeTab_configurationChange_showsSameTabAndItsContent() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(2).name),
@@ -303,7 +297,7 @@ class TopicFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_clickOnReviewTab_configurationChange_showsSameTabAndItsContent() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
           withText(TopicTab.getTabForPosition(3).name),
@@ -320,14 +314,14 @@ class TopicFragmentTest {
       )
       onView(
         atPositionOnView(R.id.review_recycler_view, 0, R.id.subtopic_title)
-      ).check(matches(withText(containsString("An important skill"))))
+      ).check(matches(withText(containsString("What is a Fraction?"))))
     }
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTopicFragment_configurationChange_showsDefaultTabAndItsContent() {
-    launchTopicActivityIntent(TEST_TOPIC_ID_0).use {
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
@@ -346,8 +340,9 @@ class TopicFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(topicId: String): ActivityScenario<TopicActivity> {
-    val intent = TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), topicId)
+  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+    val intent =
+      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return launch(intent)
   }
 

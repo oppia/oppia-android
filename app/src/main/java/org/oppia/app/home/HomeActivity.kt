@@ -14,6 +14,7 @@ import javax.inject.Inject
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  private var internalProfileId: Int = -1
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
@@ -26,12 +27,13 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
+    internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
   }
 
-  override fun routeToTopic(topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, topicId))
+  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
   }
 
   override fun onBackPressed() {

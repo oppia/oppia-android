@@ -20,11 +20,16 @@ import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.CompletedStoryList
+import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -37,16 +42,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val topicController: TopicController,
+  private val logger: Logger,
+  private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
+  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
-  private var previousMenuItemId: Int? = null
   private lateinit var binding: DrawerFragmentBinding
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private lateinit var navigationDrawerHeaderViewModel: NavigationDrawerHeaderViewModel
-  private lateinit var navigationDrawerFooterViewModel: NavigationDrawerFooterViewModel
+  private var previousMenuItemId: Int? = null
+  private var internalProfileId: Int = -1
+
   private var routeToAdministratorControlsListener = fragment as RouteToAdministratorControlsListener
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -58,15 +65,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-    navigationDrawerHeaderViewModel = NavigationDrawerHeaderViewModel()
-    navigationDrawerFooterViewModel = NavigationDrawerFooterViewModel()
-
     val headerBinding = NavHeaderNavigationDrawerBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    headerBinding.viewModel = navigationDrawerHeaderViewModel
+    headerBinding.viewModel = getHeaderViewModel()
     subscribeToProfileLiveData()
+    subscribeToCompletedStoryListLiveData()
+    subscribeToOngoingTopicListLiveData()
 
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
-    binding.footerViewModel = navigationDrawerFooterViewModel
+    binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
 
     return binding.root
@@ -78,8 +84,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToProfileLiveData() {
     getProfileData().observe(fragment, Observer<Profile> {
-      navigationDrawerHeaderViewModel.profileName.set(it.name)
-      navigationDrawerFooterViewModel.isAdmin.set(it.isAdmin)
+      getHeaderViewModel().profile.set(it)
+      getFooterViewModel().isAdmin.set(it.isAdmin)
       binding.administratorControlsLinearLayout.setOnClickListener {
         routeToAdministratorControlsListener.routeToAdministratorControls(internalProfileId)
         drawerLayout.closeDrawers()
@@ -89,9 +95,51 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("NavigationDrawerFragmentPresenter", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("NavigationDrawerFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
+  }
+
+  private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
+    return Transformations.map(topicController.getCompletedStoryList(profileId), ::processGetCompletedStoryListResult)
+  }
+
+  private fun subscribeToCompletedStoryListLiveData() {
+    getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
+      getHeaderViewModel().completedStoryCount.set(it.completedStoryCount)
+    })
+  }
+
+  private fun processGetCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+    if (completedStoryListResult.isFailure()) {
+      logger.e(
+        "NavigationDrawerFragment",
+        "Failed to retrieve completed story list",
+        completedStoryListResult.getErrorOrNull()!!
+      )
+    }
+    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
+  }
+
+  private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
+    return Transformations.map(topicController.getOngoingTopicList(profileId), ::processGetOngoingTopicListResult)
+  }
+
+  private fun subscribeToOngoingTopicListLiveData() {
+    getOngoingTopicListCount().observe(fragment, Observer<OngoingTopicList> {
+      getHeaderViewModel().ongoingTopicCount.set(it.topicCount)
+    })
+  }
+
+  private fun processGetOngoingTopicListResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
+    if (ongoingTopicListResult.isFailure()) {
+      logger.e(
+        "NavigationDrawerFragment",
+        "Failed to retrieve ongoing topic list",
+        ongoingTopicListResult.getErrorOrNull()!!
+      )
+    }
+    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
@@ -101,6 +149,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
           fragment.activity!!.finish()
+        }
+        NavigationDrawerItem.OPTIONS -> {
+          fragment.activity!!.startActivity(
+            OptionsActivity.createOptionsActivity(
+              fragment.requireContext(),
+              internalProfileId
+            )
+          )
+          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
@@ -142,46 +199,83 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
-      NavigationDrawerItem.HOME -> {
-        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
+    if (menuItemId != 0) {
+      when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
+        NavigationDrawerItem.HOME -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HOME.ordinal).isChecked = true
+        }
+        NavigationDrawerItem.OPTIONS -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.OPTIONS.ordinal).isChecked = true
+        }
+        NavigationDrawerItem.HELP -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
+        }
+        NavigationDrawerItem.DOWNLOADS -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.DOWNLOADS.ordinal).isChecked = true
+        }
+        NavigationDrawerItem.SWITCH_PROFILE -> {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = true
+        }
       }
-      NavigationDrawerItem.HELP -> {
-        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.HELP.ordinal).isChecked = true
-      }
-      NavigationDrawerItem.DOWNLOADS -> {
-        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.DOWNLOADS.ordinal).isChecked = true
-      }
-      NavigationDrawerItem.SWITCH_PROFILE -> {
-        binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = true
-      }
-    }
-    this.drawerLayout = drawerLayout
-    previousMenuItemId = menuItemId
-    drawerToggle = object : ActionBarDrawerToggle(
-      fragment.activity,
-      drawerLayout,
-      toolbar,
-      R.string.drawer_open_content_description,
-      R.string.drawer_close_content_description
-    ) {
-      override fun onDrawerOpened(drawerView: View) {
-        super.onDrawerOpened(drawerView)
-        fragment.activity!!.invalidateOptionsMenu()
-      }
+      this.drawerLayout = drawerLayout
+      previousMenuItemId = menuItemId
+      drawerToggle = object : ActionBarDrawerToggle(
+        fragment.activity,
+        drawerLayout,
+        toolbar,
+        R.string.drawer_open_content_description,
+        R.string.drawer_close_content_description
+      ) {
+        override fun onDrawerOpened(drawerView: View) {
+          super.onDrawerOpened(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
 
-      override fun onDrawerClosed(drawerView: View) {
-        super.onDrawerClosed(drawerView)
-        fragment.activity!!.invalidateOptionsMenu()
+        override fun onDrawerClosed(drawerView: View) {
+          super.onDrawerClosed(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
       }
+      drawerLayout.setDrawerListener(drawerToggle)
+      /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
+      drawerLayout.post { drawerToggle.syncState() }
+    } else {
+      // For showing navigation drawer in AdministratorControlsActivity
+
+      this.drawerLayout = drawerLayout
+      drawerToggle = object : ActionBarDrawerToggle(
+        fragment.activity,
+        drawerLayout,
+        toolbar,
+        R.string.drawer_open_content_description,
+        R.string.drawer_close_content_description
+      ) {
+        override fun onDrawerOpened(drawerView: View) {
+          super.onDrawerOpened(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+
+        override fun onDrawerClosed(drawerView: View) {
+          super.onDrawerClosed(drawerView)
+          fragment.activity!!.invalidateOptionsMenu()
+        }
+      }
+      drawerLayout.setDrawerListener(drawerToggle)
+      /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
+      drawerLayout.post { drawerToggle.syncState() }
     }
-    drawerLayout.setDrawerListener(drawerToggle)
-    /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
-    drawerLayout.post { drawerToggle.syncState() }
   }
 
   override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
     openActivityByMenuItemId(menuItem.itemId)
     return true
+  }
+
+  private fun getHeaderViewModel(): NavigationDrawerHeaderViewModel {
+    return headerViewModelProvider.getForFragment(fragment, NavigationDrawerHeaderViewModel::class.java)
+  }
+
+  private fun getFooterViewModel(): NavigationDrawerFooterViewModel {
+    return footerViewModelProvider.getForFragment(fragment, NavigationDrawerFooterViewModel::class.java)
   }
 }

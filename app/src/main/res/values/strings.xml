@@ -2,9 +2,9 @@
 <resources>
   <string name="app_name">Oppia</string>
   <string name="nav_header_title">Sean</string>
-  <string name="nav_header_subtitle">14 Stories Completed | 3 Topics In Progress</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
+  <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -33,6 +33,7 @@
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
+  <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
@@ -44,6 +45,10 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
+  <string name="FAQs">FAQs</string>
+  <string name="featured_questions">Featured Questions</string>
+  <string name="frequently_asked_questions">Frequently Asked Questions</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Question (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
@@ -76,6 +81,7 @@
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="help">Help</string>
   <string name="preferences">Preferences</string>
+  <string name="search">Search</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
@@ -89,7 +95,7 @@
   <string name="size_mb">%d MB</string>
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
-  <string name="topic_heading">Topic: %s</string>
+  <string name="topic_prefix">Topic: %s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -118,15 +124,35 @@
       %d Lessons
     </item>
   </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">
+      1 Story Completed
+    </item>
+    <item quantity="other">
+      %d Stories Completed
+    </item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">
+      1 Topic in Progress
+    </item>
+    <item quantity="other">
+      %d Topics in Progress
+    </item>
+  </plurals>
+  <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <!-- AdminAuthActivity -->
+  <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
-  <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_sub">Enter the Administrator’s PIN to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_auth_submit">Submit</string>
+  <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
   <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
@@ -134,7 +160,7 @@
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <string name="admin_pin_submit">Submit</string>
+  <string name="admin_pin_submit">Save</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
@@ -206,6 +232,11 @@
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfileProgressActivity -->
+  <string name="profile_progress_edit_dialog_title">Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
+  <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
+  <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
   <!-- ProfileRenameActivity. -->
   <string name="profile_rename_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
@@ -223,4 +254,44 @@
   <string name="add_profile_required">*Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_general_label">General</string>
+  <string name="administrator_controls_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_management_label">Profile Management</string>
+  <string name="administrator_controls_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_label">Download Permissions</string>
+  <string name="administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_app_information_label">App Information</string>
+  <string name="administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_account_actions_label">Account Actions</string>
+  <string name="administrator_controls_log_out">Log Out</string>
+  <string name="log_out_dialog_cancel_button">Cancel</string>
+  <string name="log_out_dialog_okay_button">Ok</string>
+  <string name="log_out_dialog_message">Are you sure you want to log out of your profile?</string>
+  <!-- AppVersionFragment -->
+  <string name="app_version_name">App Version %s</string>
+  <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
+  <!-- OptionsActivity -->
+  <string name="title_story_text_size">Story Text Size</string>
+  <string name="title_app_language">App Language</string>
+  <string name="title_default_audio">Default Audio Language</string>
+  <string name="story_text_will_look_like_this">Story text will look like this</string>
+  <string name="constant_string_for_text_size">A</string>
+  <string name="audio_language">Audio Language</string>
+  <string name="app_language">App Language</string>
+  <string name="story_text_size">Story Text Size</string>
+  <string name="profile">Profile</string>
+  <string name="story_count_text_view">2 Stories</string>
+  <string name="topics_in_progress">Topics in Progress</string>
+  <string name="topic_in_progress">Topic in Progress</string>
+  <string name="stories_completed">Stories Completed</string>
+  <string name="story_completed">Story Completed</string>
+  <!-- WalkthroughActivity -->
+  <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
+  <string name="welcome">"Welcome %s!"</string>
+  <!-- WalkthroughTopicListFragment -->
+  <string name="what_do_you_want_to_learn">What do you want to learn?</string>
 </resources>
