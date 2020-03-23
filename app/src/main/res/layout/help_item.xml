@@ -17,7 +17,8 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="1dp"
+      android:layout_marginStart="1dp"
+      android:layout_marginEnd="1dp"
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
@@ -41,8 +42,8 @@
       <View
         android:id="@+id/help_item_divider_view"
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/black_12" />
+        android:layout_height="2dp"
+        android:background="@color/transparent" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
