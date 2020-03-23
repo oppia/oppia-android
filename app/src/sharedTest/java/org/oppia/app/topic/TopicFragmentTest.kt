@@ -2,7 +2,6 @@ package org.oppia.app.topic
 
 import android.app.Application
 import android.content.Context
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -17,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
@@ -27,7 +25,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matchers
 import org.junit.Ignore
 import org.junit.Test
@@ -177,7 +174,7 @@ class TopicFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.review_recycler_view, 0, R.id.subtopic_title)).check(
+      onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)).check(
         matches(
           withText(
             containsString(
@@ -313,7 +310,7 @@ class TopicFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.review_recycler_view, 0, R.id.subtopic_title)
+        atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)
       ).check(matches(withText(containsString("What is a Fraction?"))))
     }
   }

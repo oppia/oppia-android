@@ -1,4 +1,4 @@
-package org.oppia.app.topic.reviewcard
+package org.oppia.app.topic.revisioncard
 
 import android.content.Context
 import android.os.Bundle
@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-/* Fragment that displays review card */
-class ReviewCardFragment : InjectableDialogFragment() {
+/* Fragment that displays revision card */
+class RevisionCardFragment : InjectableDialogFragment() {
 
-  @Inject lateinit var reviewCardFragmentPresenter: ReviewCardFragmentPresenter
+  @Inject lateinit var revisionCardFragmentPresenter: RevisionCardFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -20,6 +20,6 @@ class ReviewCardFragment : InjectableDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return reviewCardFragmentPresenter.handleCreateView(inflater, container)
+    return revisionCardFragmentPresenter.handleCreateView(inflater, container)
   }
 }
