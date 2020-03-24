@@ -3,6 +3,4 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:padding="@dimen/cellular_data_dialog_padding">
-
-
 </RelativeLayout>
