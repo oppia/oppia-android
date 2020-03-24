@@ -31,6 +31,8 @@
       android:paddingTop="16dp"
       android:paddingEnd="12dp"
       android:paddingBottom="16dp"
+      android:textColor="@color/oppiaSubmittedAnswerTextColor"
+      android:textSize="14sp"
       android:text="@{submittedAnswer}"
       android:textAlignment="viewStart"
       app:layout_constraintStart_toStartOf="parent"
