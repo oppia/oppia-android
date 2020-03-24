@@ -79,9 +79,11 @@ class StateRetriever @Inject constructor(
           interactionJson.getJSONArray("hints")
         )
       )
-      .setSolution(createSolutionFromJson(
-        getJsonObject(interactionJson, "solution")
-      ))
+      .setSolution(
+        createSolutionFromJson(
+          getJsonObject(interactionJson, "solution")
+        )
+      )
       .build()
   }
 
@@ -138,7 +140,7 @@ class StateRetriever @Inject constructor(
         ).setContentId(
           hintJson.getJSONObject("hint_content")?.optString("content_id")
         )
-        )
+      )
       .build()
   }
 
@@ -177,11 +179,13 @@ class StateRetriever @Inject constructor(
     }
     return Solution.newBuilder()
       .setCorrectAnswer(createCorrectAnswer(solutionJson))
-      .setExplanation(SubtitledHtml.newBuilder().setHtml(
-        solutionJson.getJSONObject("explanation")?.getString("html")
-      ).setContentId(
-        solutionJson.getJSONObject("explanation")?.optString("content_id")
-      ))
+      .setExplanation(
+        SubtitledHtml.newBuilder().setHtml(
+          solutionJson.getJSONObject("explanation")?.getString("html")
+        ).setContentId(
+          solutionJson.getJSONObject("explanation")?.optString("content_id")
+        )
+      )
       .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
       .build()
   }
