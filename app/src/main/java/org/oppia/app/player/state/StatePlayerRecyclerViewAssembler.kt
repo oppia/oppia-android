@@ -7,8 +7,10 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -27,6 +29,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -66,6 +69,7 @@ import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -111,6 +115,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var hasPreviousResponsesExpanded: Boolean = false
 
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
+  val isCorrectAnswer = ObservableField<Boolean>(false)
 
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
@@ -276,7 +281,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     val textView = checkNotNull(congratulationsTextView) { "Expected non-null reference to congratulations text view" }
     textView.visibility = View.VISIBLE
-
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator()
     fadeIn.duration = 2000
@@ -298,7 +302,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun createSubmittedAnswer(userAnswer: UserAnswer, gcsEntityId: String): SubmittedAnswerViewModel {
-    return SubmittedAnswerViewModel(userAnswer, gcsEntityId)
+    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId)
+    submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
+    return submittedAnswerViewModel
   }
 
   private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
@@ -314,7 +320,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean) {
+    stateIsTerminal: Boolean
+  ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
@@ -485,30 +492,59 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying previously submitted answers. */
     fun addPastAnswersSupport(): Builder {
-      adapterBuilder.registerViewBinder(
-        viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-        inflateView = { parent ->
-          SubmittedAnswerItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
-          val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-          val userAnswer = submittedAnswerViewModel.submittedUserAnswer
-          when (userAnswer.textualAnswerCase) {
-            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser = htmlParserFactory.create(
-                resourceBucketName, entityType, submittedAnswerViewModel.gcsEntityId, imageCenterAlign = false
-              )
-              binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                userAnswer.htmlAnswer, binding.submittedAnswerTextView
-              )
+      if (fragment is QuestionPlayerFragment)
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+          inflateView = { parent ->
+            QuestionPlayerSubmittedAnswerItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<QuestionPlayerSubmittedAnswerItemBinding>(view)!!
+            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
+            binding.viewModel = submittedAnswerViewModel
+            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
+            when (userAnswer.textualAnswerCase) {
+              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+                val htmlParser = htmlParserFactory.create(
+                  resourceBucketName, entityType, submittedAnswerViewModel.gcsEntityId, imageCenterAlign = false
+                )
+                binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                  userAnswer.htmlAnswer, binding.questionPlayerSubmittedAnswerTextView
+                )
+              }
+              else -> {
+                binding.submittedAnswer = userAnswer.plainAnswer
+              }
             }
-            else -> binding.submittedAnswer = userAnswer.plainAnswer
           }
-        }
-      )
+        )
+      else
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+          inflateView = { parent ->
+            SubmittedAnswerItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
+            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
+            when (userAnswer.textualAnswerCase) {
+              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+                val htmlParser = htmlParserFactory.create(
+                  resourceBucketName, entityType, submittedAnswerViewModel.gcsEntityId, imageCenterAlign = false
+                )
+                binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                  userAnswer.htmlAnswer, binding.submittedAnswerTextView
+                )
+              }
+              else -> binding.submittedAnswer = userAnswer.plainAnswer
+            }
+          }
+        )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
     }

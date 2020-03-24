@@ -145,6 +145,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>) {
     val answerOutcomeLiveData = Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
     answerOutcomeLiveData.observe(fragment, Observer<AnsweredQuestionOutcome> { result ->
+      recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
       if (result.isCorrectAnswer) {
         recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
       }
