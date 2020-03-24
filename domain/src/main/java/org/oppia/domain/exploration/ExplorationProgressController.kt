@@ -546,7 +546,6 @@ class ExplorationProgressController @Inject constructor(
     }
 
     internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
-      hintList.clear()
       hintList += Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(state.interaction.getHint(hintIndex).hintContent)
