@@ -6,19 +6,19 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.RouteToQuestionPlayerListener
-import org.oppia.app.topic.RouteToReviewCardListener
+import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.TopicActivityPresenter
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.reviewcard.ReviewCardActivity
+import org.oppia.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, RouteToReviewCardListener {
+  RouteToStoryListener, RouteToExplorationListener, RouteToRevisionCardListener {
 
   @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -40,7 +40,7 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
     startActivity(ExplorationActivity.createExplorationActivityIntent(this, profileId, topicId, storyId, explorationId))
   }
 
-  override fun routeToReviewCard(topicId: String, subtopicId: String) {
-    startActivity(ReviewCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
+  override fun routeToRevisionCard(topicId: String, subtopicId: String) {
+    startActivity(RevisionCardActivity.createReviewCardActivityIntent(this, topicId, subtopicId))
   }
 }

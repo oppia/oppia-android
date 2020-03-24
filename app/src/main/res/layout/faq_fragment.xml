@@ -2,28 +2,30 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.help.faq.FAQViewModel" />
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/faq_app_bar_layout"
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/faq_toolbar"
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/faq_fragment_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaPrimaryDark"
-        android:textSize="20sp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/frequently_asked_questions"
-        app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="match_parent"
+        app:list="@{viewModel.faqItemList}" />
+    </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

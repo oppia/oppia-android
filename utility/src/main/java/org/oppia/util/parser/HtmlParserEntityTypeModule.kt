@@ -19,7 +19,7 @@ class HtmlParserEntityTypeModule {
   }
 
   @Provides
-  @ReviewCardHtmlParserEntityType
+  @RevisionCardHtmlParserEntityType
   fun provideReviewCardHtmlParserEntityType(): String {
     return "subtopic"
   }
