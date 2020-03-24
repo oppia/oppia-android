@@ -8,6 +8,10 @@ We're still working on setting up the basics of the Android project, but we are 
 4. Check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally, so that you can connect to a local instance of the web app when developing locally.
 5. Read the Oppia Android coding style guide: https://github.com/oppia/oppia-android/wiki/Coding-style-guide
 
+## Prerequisites
+1. Good internet connectivity is required as this project uses third party libraries which will be needed to build the app.
+2. Android Studio version [3.4.2](https://developer.android.com/studio/archive) or lower version. This is important because the `app` module test cases in this project will fail in latest android studio.
+
 ## Installation
 
 Please follow these steps for initial setup of the project on your local machine.
