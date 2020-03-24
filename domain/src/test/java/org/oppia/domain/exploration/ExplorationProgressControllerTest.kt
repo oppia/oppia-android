@@ -774,7 +774,7 @@ class ExplorationProgressControllerTest {
     assertThat(hint3.hintContent.html).contains("Always be careful about what you're counting. The question will have clues!")
 
     val solution = currentState.state.interaction.solution
-    assertThat(solution.correctAnswer).isEqualTo("3")
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3")
     assertThat(solution.explanation.html).contains("The denominator of a fraction is the second number in the fraction.")
   }
 

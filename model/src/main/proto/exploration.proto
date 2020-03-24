@@ -190,6 +190,7 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
+  // A list of hints.
   repeated Hint hint = 2;
 }
 
