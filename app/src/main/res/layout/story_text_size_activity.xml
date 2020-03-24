@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
-  
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,6 +32,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:background="@color/profileEditBackground"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +41,6 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -111,7 +111,7 @@
       <View
         android:id="@+id/story_text_size_toolbar_shadow_view"
         android:layout_width="match_parent"
-        android:layout_height="6dp"
+        android:layout_height="8dp"
         android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

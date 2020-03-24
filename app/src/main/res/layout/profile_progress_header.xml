@@ -26,6 +26,9 @@
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_edit_image"
         android:layout_width="96dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
         android:layout_height="96dp"
         profile:src="@{viewModel.profile.avatar}" />
 
@@ -36,6 +39,7 @@
         android:src="@drawable/ic_edit_18"
         app:backgroundTint="@color/white"
         app:fabCustomSize="24dp"
+        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
         app:tint="@color/colorPrimary" />
     </FrameLayout>
 
