@@ -54,7 +54,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.OptionsActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.StoryTextSizeActivity"

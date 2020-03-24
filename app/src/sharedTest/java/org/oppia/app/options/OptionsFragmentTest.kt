@@ -224,6 +224,23 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
+        click()
+      )
+      onView(atPositionOnView(R.id.language_recycler_view, 1, R.id.language_radio_button)).perform(
+        click()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
+        matches(withText("French"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
