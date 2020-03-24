@@ -7,6 +7,7 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CompletedState
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
@@ -143,6 +144,37 @@ class ExplorationProgressController @Inject constructor(
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
         return MutableLiveData(AsyncResult.success(answerOutcome))
+      }
+    } catch (e: Exception) {
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+    try {
+      explorationProgressLock.withLock {
+        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+          "Cannot submit an answer if an exploration is not being played."
+        }
+        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+          "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+
+          hint = explorationProgress.stateGraph.computeHintForResult(explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state, hintIsRevealed, hintIndex)
+
+          asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+
+        } finally {
+
+        }
+
+        return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
       return MutableLiveData(AsyncResult.failed(e))
@@ -354,9 +386,11 @@ class ExplorationProgressController @Inject constructor(
         PlayStage.VIEWING_STATE -> {
           // A state can be viewed after loading an exploration, after viewing another state, or after submitting an
           // answer. It cannot be viewed without a loaded exploration.
-          check(playStage == PlayStage.LOADING_EXPLORATION
-              || playStage == PlayStage.VIEWING_STATE
-              || playStage == PlayStage.SUBMITTING_ANSWER) {
+          check(
+            playStage == PlayStage.LOADING_EXPLORATION
+                || playStage == PlayStage.VIEWING_STATE
+                || playStage == PlayStage.SUBMITTING_ANSWER
+          ) {
             "Cannot transition to VIEWING_STATE from $playStage"
           }
           playStage = nextPlayStage
@@ -401,12 +435,23 @@ class ExplorationProgressController @Inject constructor(
       }
       return answerOutcomeBuilder.build()
     }
+
+    /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
+    internal fun computeHintForResult(currentState: State,hintIsRevealed: Boolean, hintIndex: Int): Hint {
+      val hintBuilder = Hint.newBuilder()
+        .setHintIsRevealed(hintIsRevealed)
+        .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
+        .setState(currentState)
+
+      return hintBuilder.build()
+    }
   }
 
   private class StateDeck internal constructor(initialState: State) {
     private var pendingTopState: State = initialState
     private val previousStates: MutableList<EphemeralState> = ArrayList()
     private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
+    private val hintList: MutableList<Hint> = ArrayList()
     private var stateIndex: Int = 0
 
     /** Resets this deck to a new, specified initial [State]. */
@@ -414,6 +459,7 @@ class ExplorationProgressController @Inject constructor(
       pendingTopState = initialState
       previousStates.clear()
       currentDialogInteractions.clear()
+      hintList.clear()
       stateIndex = 0
     }
 
@@ -455,6 +501,12 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+
+    /** Returns the current [EphemeralState] the learner is viewing. */
+    internal fun getCurrentUpdatedEphemeralState(): EphemeralState {
+      return getCurrentPendingState()
+    }
+
     /**
      * Pushes a new State onto the deck. This cannot happen if the learner isn't at the most recent State, if the
      * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
@@ -474,6 +526,7 @@ class ExplorationProgressController @Inject constructor(
         .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
         .build()
       currentDialogInteractions.clear()
+      hintList.clear()
       pendingTopState = state
     }
 
@@ -491,11 +544,18 @@ class ExplorationProgressController @Inject constructor(
         .build()
     }
 
+    internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
+       hintList += Hint.newBuilder()
+        .setHintIsRevealed(hintIsRevealed)
+        .setHintContent(state.interaction.getHint(hintIndex).hintContent)
+        .build()
+    }
+
     private fun getCurrentPendingState(): EphemeralState {
       return EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions))
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
         .build()
     }
 
