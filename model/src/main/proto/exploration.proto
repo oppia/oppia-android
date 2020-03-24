@@ -170,8 +170,6 @@ message EphemeralState {
   // the state at the top of the current state deck).
   bool has_next_state = 3;
 
-
-  
   // Different types this state can take depending on whether the learner needs to finish an existing card, has
   // navigated to a previous card, or has reached the end of the exploration.
   oneof state_type {
