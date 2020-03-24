@@ -17,6 +17,7 @@ import javax.inject.Inject
  * It tests profilechooser_span retrived on the basis of different display metric which is used to controll the span count in [ProfileChooserFragment] on landscape mode.
  */
 @RunWith(AndroidJUnit4::class)
+@Config(manifest = Config.NONE)
 class ProfileChooserSpanTest {
 
   @Inject
@@ -33,36 +34,31 @@ class ProfileChooserSpanTest {
   @Test
   @Config(qualifiers = "ldpi")
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenldpi() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(3)
+    assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(3)
   }
 
   @Test
   @Config(qualifiers = "mdpi")
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenMdpi() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(3)
+    assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(3)
   }
 
   @Test
   @Config(qualifiers = "hdpi")
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenHdpi() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(4)
+    assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(4)
   }
 
   @Test
   @Config(qualifiers = "xhdpi")
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenXhdpi() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(5)
+    assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(5)
   }
 
   @Test
   @Config(qualifiers = "xxhdpi")
   fun testProfileChooserSpanTest_onConfigLandScapeAndScreenXxhdpi() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(5)
+    assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(5)
   }
 
-  @Test
-  @Config(qualifiers = "sw480dp")
-  fun testProfileChooserSpanTest_onConfigLandScapeAndScreenSw480dp() {
-    assertThat(context.resources.getInteger(R.integer.profilechooser_span)).isEqualTo(5)
-  }
 }

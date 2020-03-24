@@ -23,32 +23,28 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_chooser_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="24dp">
 
-        <LinearLayout
-          android:layout_width="match_parent"
+        <TextView
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="end"
-          android:orientation="horizontal"
-          android:paddingTop="24dp"
+          android:layout_marginEnd="8dp"
+          android:minHeight="24dp"
+          android:text="@string/profile_chooser_language"
+          android:textColor="@color/profileChooserGreyTextColor"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+          android:id="@+id/profile_chooser_language_icon"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_marginEnd="20dp"
+          android:src="@drawable/ic_language_icon_grey_24dp"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent">
-
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="24dp"
-            android:text="@string/profile_chooser_language"
-            android:textColor="@color/profileChooserGreyTextColor"
-            android:textSize="16sp" />
-
-          <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_language_icon_grey_24dp" />
-        </LinearLayout>
+          app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/profile_select_text"
@@ -83,35 +79,37 @@
           app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
-          app:spanCount="@integer/profilechooser_span"/>
+          app:spanCount="@integer/profile_chooser_span_count" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
+    <View
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="96dp"
       android:background="@drawable/profile_chooser_gradient"
-      android:gravity="end"
-      android:orientation="horizontal"
-      android:paddingTop="52dp"
-      android:paddingBottom="24dp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent">
+      app:layout_constraintEnd_toEndOf="parent" />
 
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="24dp"
-        android:text="@string/profile_chooser_administrator_controls"
-        android:textColor="@color/profileChooserGreyTextColor"
-        android:textSize="16sp" />
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="24dp"
+      android:minHeight="24dp"
+      android:layout_marginEnd="8dp"
+      android:text="@string/profile_chooser_administrator_controls"
+      android:textColor="@color/profileChooserGreyTextColor"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/profile_chooser_setting_icon" />
 
-      <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/ic_settings_grey_48dp" />
-    </LinearLayout>
+    <ImageView
+      android:id="@+id/profile_chooser_setting_icon"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_marginEnd="20dp"
+      android:layout_marginBottom="24dp"
+      android:src="@drawable/ic_settings_grey_48dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

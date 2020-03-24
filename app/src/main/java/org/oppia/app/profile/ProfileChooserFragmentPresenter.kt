@@ -108,7 +108,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding: ProfileChooserProfileViewBinding,
     model: ProfileChooserUiModel
   ) {
-    binding.profileNameText.setText(formatString(model.profile.name))
     binding.viewModel = model
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
@@ -126,14 +125,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         activity.startActivity(pinPasswordIntent)
       }
     }
-  }
-
-  private fun formatString(stringToFormat: String): String {
-    var stringToFormat = stringToFormat
-    if (stringToFormat.length > USER_NAME_MAX_CHAR_COUNT) {
-      stringToFormat = stringToFormat.substring(0, USER_NAME_MAX_CHAR_COUNT - 1) + "..."
-    }
-    return stringToFormat
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
