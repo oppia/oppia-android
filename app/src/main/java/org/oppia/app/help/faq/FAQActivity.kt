@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
-class FAQActivity : InjectableAppCompatActivity() {
+class FAQActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
 
   @Inject lateinit var faqActivityPresenter: FAQActivityPresenter
 
@@ -29,5 +30,9 @@ class FAQActivity : InjectableAppCompatActivity() {
       val intent = Intent(context, FAQActivity::class.java)
       return intent
     }
+  }
+
+  override fun onRouteToFAQSingle(question: String, answer: String) {
+    startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 }

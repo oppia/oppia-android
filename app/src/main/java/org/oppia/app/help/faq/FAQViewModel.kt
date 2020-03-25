@@ -21,10 +21,10 @@ class FAQViewModel @Inject constructor(
   private fun getRecyclerViewItemList(): ArrayList<FAQItemViewModel> {
     val faqHeaderViewModel = FAQHeaderViewModel()
     arrayList.add(faqHeaderViewModel)
-
     val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
-    for (question in questions) {
-      val faqContentViewModel = FAQContentViewModel(question)
+    val answers: Array<String> = activity.resources.getStringArray(R.array.faq_answers)
+    questions.forEachIndexed { index, question ->
+      val faqContentViewModel = FAQContentViewModel(activity, question, answers[index])
       if (questions[questions.size - 1] == question) {
         faqContentViewModel.showDivider.set(false)
       } else {
