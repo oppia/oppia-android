@@ -88,9 +88,7 @@
     <activity android:name=".settings.profile.ProfileEditActivity" />
     <activity android:name=".settings.profile.ProfileListActivity" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
-    <activity
-      android:name=".settings.profile.ProfileResetPinActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
