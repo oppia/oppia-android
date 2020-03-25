@@ -9,41 +9,19 @@
       type="org.oppia.app.help.HelpViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <TextView
+    android:id="@+id/help_item_text_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black_12">
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="1dp"
-      android:layout_marginEnd="1dp"
-      android:orientation="vertical"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <TextView
-        android:id="@+id/help_item_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:fontFamily="sans-serif"
-        android:paddingStart="16dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="20dp"
-        android:text="@{viewModel.title}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <View
-        android:id="@+id/help_item_divider_view"
-        android:layout_width="wrap_content"
-        android:layout_height="2dp"
-        android:background="@color/transparent" />
-    </LinearLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    android:background="@drawable/help_item_background_border"
+    android:fontFamily="sans-serif"
+    android:paddingStart="16dp"
+    android:paddingTop="20dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="20dp"
+    android:text="@{viewModel.title}"
+    android:textColor="@color/oppiaPrimaryText"
+    android:textSize="16sp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 </layout>
