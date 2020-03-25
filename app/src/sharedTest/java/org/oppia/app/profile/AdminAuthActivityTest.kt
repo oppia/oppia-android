@@ -80,11 +80,11 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -100,11 +100,11 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -120,23 +120,23 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
 
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("4"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
     }
   }
 
@@ -151,16 +151,16 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("4"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
     }
   }
 
@@ -175,12 +175,12 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.submit_button)).check(matches(isEnabled()))
+      onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
   }
 
@@ -195,11 +195,11 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
-      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
      }
   }
 
@@ -214,11 +214,11 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
-      onView(withId(R.id.heading_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
      }
   }
 
@@ -233,12 +233,12 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(
         matches(
           withText("12345")
         )
@@ -257,22 +257,22 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_pin))
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
     }

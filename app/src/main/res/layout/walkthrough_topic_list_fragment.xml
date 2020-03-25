@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
 
     <variable
+      name="viewModel"
+      type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
+    <variable
       name="presenter"
       type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragmentPresenter" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <Button
-      style="@style/StateButtonActive"
-      android:text="@string/next"
-      android:onClick="@{(v) -> presenter.changePage()}"
-      android:layout_marginBottom="32dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/walkthrough_topic_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingTop="36dp"
+      android:paddingBottom="@dimen/bottom_white_space"
+      android:scrollbars="none"
+      app:data="@{viewModel.walkthroughTopicViewModelLiveData}" />
+  </LinearLayout>
 </layout>

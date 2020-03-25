@@ -14,6 +14,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 const val KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE = "ADMIN_AUTH_INPUT_ERROR_MESSAGE"
+const val KEY_ADMIN_AUTH_INPUT_PASSWORD = "ADMIN_AUTH_INPUT_PASSWORD"
 
 /** The presenter for [AdminAuthActivity]. */
 @ActivityScope
@@ -22,13 +23,14 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>
 ) {
+  private lateinit var binding: AdminAuthActivityBinding
   private val authViewModel by lazy {
     getAdminAuthViewModel()
   }
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    val binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
+    binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
@@ -40,10 +42,10 @@ class AdminAuthActivityPresenter @Inject constructor(
 
     setTitleAndSubTitle(binding)
 
-    binding.inputPin.addTextChangedListener(object : TextWatcher {
+    binding.adminAuthInputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
-          authViewModel.errorMessage.set("")
+          authViewModel.errorMessage.value = ""
         }
       }
 
@@ -51,8 +53,8 @@ class AdminAuthActivityPresenter @Inject constructor(
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
-    binding.submitButton.setOnClickListener {
-      val inputPin = binding.inputPin.getInput()
+    binding.adminAuthSubmitButton.setOnClickListener {
+      val inputPin = binding.adminAuthInputPin.getInput()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
       }
@@ -74,7 +76,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           }
         }
       } else {
-        authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
+        authViewModel.errorMessage.value = (activity.resources.getString(R.string.admin_auth_incorrect))
       }
     }
   }
@@ -83,25 +85,31 @@ class AdminAuthActivityPresenter @Inject constructor(
     when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
         binding?.adminAuthToolbar?.title = context.resources.getString(R.string.administrator_controls)
-        binding?.headingText?.text = context.resources.getString(R.string.admin_auth_heading)
-        binding?.subText?.text = context.resources.getString(R.string.admin_auth_admin_controls_sub)
+        binding?.adminAuthHeadingTextview?.text = context.resources.getString(R.string.admin_auth_heading)
+        binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_admin_controls_sub)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
         binding?.adminAuthToolbar?.title = context.resources.getString(R.string.add_profile_title)
-        binding?.headingText?.text = context.resources.getString(R.string.admin_auth_heading)
-        binding?.subText?.text = context.resources.getString(R.string.admin_auth_sub)
+        binding?.adminAuthHeadingTextview?.text = context.resources.getString(R.string.admin_auth_heading)
+        binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_sub)
       }
     }
   }
 
   fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
+    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.value)
+    bundle.putString(KEY_ADMIN_AUTH_INPUT_PASSWORD, binding.adminAuthInputPin.getInput())
   }
 
   fun handleOnRestoreInstanceState(bundle: Bundle) {
     val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
+    val password = bundle.getString(KEY_ADMIN_AUTH_INPUT_PASSWORD)
     if (errorMessage != null && errorMessage.isNotEmpty()) {
-      authViewModel.errorMessage.set(errorMessage)
+      authViewModel.errorMessage.value = errorMessage
+    }
+    if (!password.isNullOrEmpty()) {
+      binding.adminAuthInputPin.setInput(password)
+      binding.adminAuthInputPin.setSelection(password.length)
     }
   }
 

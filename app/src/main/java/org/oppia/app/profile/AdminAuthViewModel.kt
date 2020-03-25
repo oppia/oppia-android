@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
@@ -11,7 +12,7 @@ import javax.inject.Inject
 /** The ViewModel for [AdminAuthActivity]. */
 @ActivityScope
 class AdminAuthViewModel @Inject constructor() : ObservableViewModel() {
-  val errorMessage = ObservableField("")
+  val errorMessage = MutableLiveData("")
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
