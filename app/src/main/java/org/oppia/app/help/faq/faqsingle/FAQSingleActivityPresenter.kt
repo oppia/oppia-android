@@ -26,13 +26,14 @@ class FAQSingleActivityPresenter @Inject constructor(
 
     faqSingleActivityToolbar = binding.faqSingleActivityToolbar
     activity.setSupportActionBar(faqSingleActivityToolbar)
-    activity.supportActionBar!!.title = question
+    activity.supportActionBar!!.title = activity.resources.getString(R.string.FAQs)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     binding.faqSingleActivityToolbar.setNavigationOnClickListener {
       (activity as FAQSingleActivity).finish()
     }
+    activity.faq_question_text_view.text = question
     activity.faq_answer_text_view.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       Html.fromHtml(answer, Html.FROM_HTML_MODE_COMPACT)
     } else {
