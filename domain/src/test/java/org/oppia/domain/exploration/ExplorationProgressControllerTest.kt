@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -103,6 +104,9 @@ class ExplorationProgressControllerTest {
 
   @Mock
   lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+
+  @Mock
+  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
 
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
@@ -779,6 +783,34 @@ class ExplorationProgressControllerTest {
     val updatedState = currentStateResultCaptor.value.getOrThrow()
 
     assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state,true)
+    result.observeForever(mockAsyncSolutionObserver)
+    advanceUntilIdle()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    // Verify that the current state updates. Solution revealed is true.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
   }
 
   @Test
