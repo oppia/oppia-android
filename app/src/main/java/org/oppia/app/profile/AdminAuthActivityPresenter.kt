@@ -45,7 +45,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthInputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
-          authViewModel.errorMessage.value = ""
+          authViewModel.errorMessage.set("")
         }
       }
 
@@ -76,7 +76,7 @@ class AdminAuthActivityPresenter @Inject constructor(
           }
         }
       } else {
-        authViewModel.errorMessage.value = (activity.resources.getString(R.string.admin_auth_incorrect))
+        authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
     }
   }
@@ -96,20 +96,20 @@ class AdminAuthActivityPresenter @Inject constructor(
     }
   }
 
-  fun handleOnSavedInstanceState(bundle: Bundle) {
-    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.value)
+  fun   handleOnSavedInstanceState(bundle: Bundle) {
+    bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
     bundle.putString(KEY_ADMIN_AUTH_INPUT_PASSWORD, binding.adminAuthInputPin.getInput())
   }
 
   fun handleOnRestoreInstanceState(bundle: Bundle) {
     val errorMessage = bundle.getString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE)
     val password = bundle.getString(KEY_ADMIN_AUTH_INPUT_PASSWORD)
-    if (errorMessage != null && errorMessage.isNotEmpty()) {
-      authViewModel.errorMessage.value = errorMessage
-    }
     if (!password.isNullOrEmpty()) {
       binding.adminAuthInputPin.setInput(password)
       binding.adminAuthInputPin.setSelection(password.length)
+    }
+    if (errorMessage != null && errorMessage.isNotEmpty()) {
+      authViewModel.errorMessage.set(errorMessage)
     }
   }
 
