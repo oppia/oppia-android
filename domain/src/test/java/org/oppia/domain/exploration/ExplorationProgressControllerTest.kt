@@ -32,6 +32,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
@@ -99,6 +100,9 @@ class ExplorationProgressControllerTest {
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
+
+  @Mock
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
 
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
@@ -744,6 +748,37 @@ class ExplorationProgressControllerTest {
     assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
     val hintAndSolution = currentState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitHintIsRevealed(currentState.state,true, 0)
+    result.observeForever(mockAsyncHintObserver)
+    advanceUntilIdle()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
   }
 
   @Test

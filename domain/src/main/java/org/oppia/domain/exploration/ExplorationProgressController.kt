@@ -164,12 +164,14 @@ class ExplorationProgressController @Inject constructor(
         }
         lateinit var hint: Hint
         try {
-          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
           hint = explorationProgress.stateGraph.computeHintForResult(
             explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state,
             hintIsRevealed,
             hintIndex
           )
+          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          explorationProgress.stateDeck.pushStateForHint(state)
+
           asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
@@ -529,6 +531,16 @@ class ExplorationProgressController @Inject constructor(
       currentDialogInteractions.clear()
       hintList.clear()
       pendingTopState = state
+    }
+
+    internal fun pushStateForHint(state: State) {
+      val interactionBuilder = state.interaction.toBuilder().setHint(0,hintList.get(0))
+      val newState = state.toBuilder().setInteraction(interactionBuilder)
+
+      val ephemeralState = EphemeralState.newBuilder().setState(newState)
+      currentDialogInteractions.clear()
+      hintList.clear()
+      pendingTopState = ephemeralState.state
     }
 
     /**
