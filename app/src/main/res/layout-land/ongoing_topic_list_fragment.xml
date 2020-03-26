@@ -34,6 +34,7 @@
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/topics_in_progress"
+        app:titleTextAppearance="@style/ToolbarTitle"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,8 +52,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
-        android:layout_marginTop="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 

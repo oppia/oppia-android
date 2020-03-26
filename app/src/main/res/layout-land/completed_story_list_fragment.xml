@@ -31,6 +31,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
+        app:titleTextAppearance="@style/ToolbarTitle"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/stories_completed"
@@ -51,7 +52,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
+        android:paddingTop="28dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none"
         app:data="@{viewModel.completedStoryListLiveData}" />
 
