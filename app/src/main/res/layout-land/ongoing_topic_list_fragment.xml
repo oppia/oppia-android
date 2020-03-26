@@ -52,6 +52,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/bottom_white_space"
+        android:layout_marginTop="20dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 

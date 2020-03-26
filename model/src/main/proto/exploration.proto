@@ -108,11 +108,11 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
-
+  // correct_answer of the State.
   CorrectAnswer correct_answer = 3;
-
+  // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
-
+  // To check if the solution was revealed or not by the learner.
   bool solution_is_revealed = 5;
 }
 
@@ -121,15 +121,18 @@ message Solution {
 message CorrectAnswer {
   int32 denominator = 1;
   int32 numerator = 2;
-  int32 wholeNumber = 3;
-  bool isNegative = 4;
+  int32 whole_number = 3;
+  bool is_negative = 4;
   string correct_answer = 5;
 }
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
+  // Hint data.
   SubtitledHtml hint_content = 1;
+  // To check if the hint was revealed or not
   bool hint_is_revealed = 2;
+  // The current state to display to the user.
   State state = 3;
 }
 

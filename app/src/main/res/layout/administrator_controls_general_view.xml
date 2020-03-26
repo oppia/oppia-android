@@ -5,7 +5,7 @@
   <data>
 
     <variable
-      name="viewModel"
+      name="viewModel" 
       type="org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel" />
   </data>
 
@@ -19,9 +19,9 @@
       android:layout_height="wrap_content"
       android:background="@color/mid_grey_30"
       android:fontFamily="sans-serif-medium"
-      android:paddingLeft="16dp"
+      android:paddingStart="16dp"
       android:paddingTop="20dp"
-      android:paddingRight="16dp"
+      android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_general_label"
       android:textColor="@color/colorPrimary"
@@ -37,9 +37,9 @@
       android:layout_height="wrap_content"
       android:background="@color/white"
       android:fontFamily="sans-serif"
-      android:paddingLeft="16dp"
+      android:paddingStart="16dp"
       android:paddingTop="20dp"
-      android:paddingRight="16dp"
+      android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_edit_account"
       android:textColor="@color/oppiaPrimaryTextDark"

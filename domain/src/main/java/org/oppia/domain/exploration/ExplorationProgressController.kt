@@ -164,16 +164,20 @@ class ExplorationProgressController @Inject constructor(
         }
         lateinit var hint: Hint
         try {
+          hint = explorationProgress.stateGraph.computeHintForResult(
+            explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state,
+            hintIsRevealed,
+            hintIndex
+          )
           explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
-
-          hint = explorationProgress.stateGraph.computeHintForResult(explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state, hintIsRevealed, hintIndex)
+          explorationProgress.stateDeck.pushStateForHint(state)
 
           asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-
         } finally {
-
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
         }
-
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
@@ -437,7 +441,7 @@ class ExplorationProgressController @Inject constructor(
     }
 
     /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
-    internal fun computeHintForResult(currentState: State,hintIsRevealed: Boolean, hintIndex: Int): Hint {
+    internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
       val hintBuilder = Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
@@ -501,7 +505,6 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
-
     /** Returns the current [EphemeralState] the learner is viewing. */
     internal fun getCurrentUpdatedEphemeralState(): EphemeralState {
       return getCurrentPendingState()
@@ -530,6 +533,16 @@ class ExplorationProgressController @Inject constructor(
       pendingTopState = state
     }
 
+    internal fun pushStateForHint(state: State) {
+      val interactionBuilder = state.interaction.toBuilder().setHint(0,hintList.get(0))
+      val newState = state.toBuilder().setInteraction(interactionBuilder)
+
+      val ephemeralState = EphemeralState.newBuilder().setState(newState)
+      currentDialogInteractions.clear()
+      hintList.clear()
+      pendingTopState = ephemeralState.state
+    }
+
     /**
      * Submits an answer & feedback dialog the learner experience in the current State. This fails if the user is not at
      * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
@@ -545,8 +558,7 @@ class ExplorationProgressController @Inject constructor(
     }
 
     internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
-      hintList.clear()
-       hintList += Hint.newBuilder()
+      hintList += Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(state.interaction.getHint(hintIndex).hintContent)
         .build()
