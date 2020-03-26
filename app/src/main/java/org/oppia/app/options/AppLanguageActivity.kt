@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 private const val KEY_APP_LANGUAGE_PREFERENCE_TITLE = "APP_LANGUAGE_PREFERENCE"
 private const val KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE = "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
 
 /** The activity to change the language of the app. */
 class AppLanguageActivity : InjectableAppCompatActivity() {
@@ -19,7 +20,11 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     prefKey = intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_TITLE)
-    prefSummaryValue = intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    prefSummaryValue = if (savedInstanceState == null) {
+      intent.getStringExtra(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    } else {
+      savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
+    }
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
 
@@ -43,5 +48,10 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
     setResult(REQUEST_CODE_APP_LANGUAGE, intent)
     finish()
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putString(KEY_SELECTED_LANGUAGE, appLanguageActivityPresenter.getLanguageSelected())
   }
 }
