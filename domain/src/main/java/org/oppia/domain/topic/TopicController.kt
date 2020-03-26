@@ -384,7 +384,7 @@ class TopicController @Inject constructor(
       storySummary.chapterList.forEachIndexed { chapterIndex, chapterSummary ->
         if (storyProgress.chapterProgressMap.containsKey(chapterSummary.explorationId)) {
           val chapterBuilder = chapterSummary.toBuilder()
-          chapterBuilder.chapterPlayState = ChapterPlayState.COMPLETED
+          chapterBuilder.chapterPlayState = storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
           storyBuilder.setChapter(chapterIndex, chapterBuilder)
         } else {
           if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
