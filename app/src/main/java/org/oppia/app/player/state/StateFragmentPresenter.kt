@@ -406,8 +406,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
-   * This function listens to the result of submitAnswer.
-   * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
@@ -417,7 +417,7 @@ class StateFragmentPresenter @Inject constructor(
       if (result.hintIsRevealed) {
         logger.e("StateFragment", "hint revealed true = "+ result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        subscribeToCurrentState()
+
      } else {
         logger.e("StateFragment", "hint revealed false = "+ result.hintIsRevealed)
       }
@@ -493,7 +493,7 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for subscribeToHint. */
   private fun processHint(ephemeralStateResult: AsyncResult<Hint>): Hint {
     if (ephemeralStateResult.isFailure()) {
       logger.e(

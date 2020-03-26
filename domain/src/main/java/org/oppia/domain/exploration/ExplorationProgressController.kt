@@ -163,21 +163,25 @@ class ExplorationProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
+        lateinit var ephemeralState: EphemeralState
         try {
+
+          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
           hint = explorationProgress.stateGraph.computeHintForResult(
-            explorationProgress.stateDeck.getCurrentUpdatedEphemeralState().state,
+            state,
             hintIsRevealed,
             hintIndex
           )
-          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
-          explorationProgress.stateDeck.pushStateForHint(state)
 
-          asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+          ephemeralState = explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing hint' situation. This can specifically happen if hint throws an exception.
           explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
         }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
@@ -505,11 +509,6 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
-    /** Returns the current [EphemeralState] the learner is viewing. */
-    internal fun getCurrentUpdatedEphemeralState(): EphemeralState {
-      return getCurrentPendingState()
-    }
-
     /**
      * Pushes a new State onto the deck. This cannot happen if the learner isn't at the most recent State, if the
      * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
@@ -533,14 +532,17 @@ class ExplorationProgressController @Inject constructor(
       pendingTopState = state
     }
 
-    internal fun pushStateForHint(state: State) {
-      val interactionBuilder = state.interaction.toBuilder().setHint(0,hintList.get(0))
-      val newState = state.toBuilder().setInteraction(interactionBuilder)
-
-      val ephemeralState = EphemeralState.newBuilder().setState(newState)
-      currentDialogInteractions.clear()
+    internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
+      val interactionBuilder = state.interaction.toBuilder().setHint(hintIndex, hintList.get(0))
+      val newState = state.toBuilder().setInteraction(interactionBuilder).build()
+      val ephemeralState = EphemeralState.newBuilder()
+        .setState(newState)
+        .setHasPreviousState(!isCurrentStateInitial())
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+        .build()
+      pendingTopState = newState
       hintList.clear()
-      pendingTopState = ephemeralState.state
+      return ephemeralState
     }
 
     /**

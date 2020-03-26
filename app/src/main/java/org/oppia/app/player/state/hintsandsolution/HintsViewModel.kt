@@ -32,7 +32,7 @@ class HintsViewModel @Inject constructor(
       val hintsAndSolutionViewModel = HintsViewModel()
       hintsAndSolutionViewModel.title = hintList[index].hintContent.contentId
       hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList[index].hintContent.html
-      hintsAndSolutionViewModel.isHintRevealed = false
+      hintsAndSolutionViewModel.isHintRevealed = hintList[index].hintIsRevealed
       itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
     }
     if (solution.hasExplanation()) {

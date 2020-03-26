@@ -74,5 +74,4 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
   override fun revealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
   }
-
 }

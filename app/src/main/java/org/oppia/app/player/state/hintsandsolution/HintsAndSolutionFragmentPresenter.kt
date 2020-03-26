@@ -80,8 +80,4 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   fun handleRevealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
   }
-
-  fun handleRevealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    hintsAndSolutionAdapter.setRevealHint(saveUserChoice, hintIndex)
-  }
 }
