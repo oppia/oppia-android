@@ -22,7 +22,7 @@ import javax.inject.Inject
 class FAQListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val listViewModelProvider: ViewModelProvider<FAQListViewModel>
+  private val viewModelProvider: ViewModelProvider<FAQListViewModel>
 ) {
   private lateinit var binding: FaqListFragmentBinding
 
@@ -68,7 +68,7 @@ class FAQListFragmentPresenter @Inject constructor(
   }
 
   private fun getFAQListViewModel(): FAQListViewModel {
-    return listViewModelProvider.getForFragment(fragment, FAQListViewModel::class.java)
+    return viewModelProvider.getForFragment(fragment, FAQListViewModel::class.java)
   }
 
   private enum class ViewType {

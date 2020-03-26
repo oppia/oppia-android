@@ -41,8 +41,8 @@ class HelpCategoryAdapter(
       helpItemBinding.root.setOnClickListener {
         when (HelpItems.getHelpItemForPosition(position)) {
           HelpItems.FAQ -> {
-            val routeToFAQListener = activity as RoutetoFAQListener
-            routeToFAQListener.onRouteToFAQ()
+            val routeToFAQListener = activity as RouteToFAQListListener
+            routeToFAQListener.onRouteToFAQList()
           }
         }
       }

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains FAQ in the app. */
+/** Fragment that contains FAQ list in the app. */
 class FAQListFragment : InjectableFragment() {
   @Inject lateinit var faqListFragmentPresenter: FAQListFragmentPresenter
 
