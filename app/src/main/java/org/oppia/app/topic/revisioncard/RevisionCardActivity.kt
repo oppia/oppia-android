@@ -1,4 +1,4 @@
-package org.oppia.app.topic.reviewcard
+package org.oppia.app.topic.revisioncard
 
 import android.content.Context
 import android.content.Intent
@@ -9,21 +9,21 @@ import javax.inject.Inject
 const val TOPIC_ID_ARGUMENT_KEY = "TOPIC_ID_"
 const val SUBTOPIC_ID_ARGUMENT_KEY = "SUBTOPIC_ID"
 
-/** Activity for review card. */
-class ReviewCardActivity : InjectableAppCompatActivity() {
+/** Activity for revision card. */
+class RevisionCardActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var reviewCardActivityPresenter: ReviewCardActivityPresenter
+  @Inject lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    reviewCardActivityPresenter.handleOnCreate()
+    revisionCardActivityPresenter.handleOnCreate()
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [ReviewCardActivity]. */
+    /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createReviewCardActivityIntent(context: Context, topicId: String, subtopicId: String): Intent {
-      val intent = Intent(context, ReviewCardActivity::class.java)
+      val intent = Intent(context, RevisionCardActivity::class.java)
       intent.putExtra(TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
       return intent

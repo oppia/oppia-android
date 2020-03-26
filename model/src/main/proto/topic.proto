@@ -308,19 +308,19 @@ message Subtopic {
   SubtopicThumbnail subtopic_thumbnail = 5;
 }
 
-// Corresponds to a review card that can be displayed for a specific subtopic.
-message ReviewCard {
+// Corresponds to a revision card that can be displayed for a specific subtopic.
+message RevisionCard {
   // The title corresponding to the subtopic.
   string subtopic_title = 1;
 
-  // The core explanation of the subtopic being reviewed.
+  // The core explanation of the subtopic being revised.
   SubtitledHtml page_contents = 3;
 
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
   // recorded audio to play.
   map<string, VoiceoverMapping> recorded_voiceover = 5;
 
-  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this review card that has corresponding
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
   // translations.
   map<string, TranslationMapping> written_translation = 6;
 }
