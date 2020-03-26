@@ -38,6 +38,7 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -297,8 +298,13 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    logger.e("StateFragment", " revealed = "+ saveUserChoice)
+    logger.e("StateFragment", " revealed hint = "+ saveUserChoice)
     subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    logger.e("StateFragment", " revealed Solution = "+ saveUserChoice)
+    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -423,6 +429,25 @@ class StateFragmentPresenter @Inject constructor(
       }
     })
   }
+
+  /**
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
+    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
+    solutionLiveData.observe(fragment, Observer<Solution> { result ->
+      // If the hint was revealed remove dot and radar.
+      if (result.solutionIsRevealed) {
+        logger.e("StateFragment", "solution revealed true = "+ result.solutionIsRevealed)
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+
+     } else {
+        logger.e("StateFragment", "solution revealed false = "+ result.solutionIsRevealed)
+      }
+    })
+  }
   /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
@@ -472,6 +497,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToAnswerOutcome. */
+  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processSolution)
+  }
+
+  /** Helper for subscribeToAnswerOutcome. */
   private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
     return Transformations.map(hint, ::processHint)
   }
@@ -494,15 +524,26 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToHint. */
-  private fun processHint(ephemeralStateResult: AsyncResult<Hint>): Hint {
-    if (ephemeralStateResult.isFailure()) {
+  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
       logger.e(
         "StateFragment",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
+        "Failed to retrieve Hint",
+        hintResult.getErrorOrNull()!!
       )
     }
-    return ephemeralStateResult.getOrDefault(Hint.getDefaultInstance())
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+  /** Helper for subscribeToHint. */
+  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   private fun showOrHideAudioByState(state: State) {

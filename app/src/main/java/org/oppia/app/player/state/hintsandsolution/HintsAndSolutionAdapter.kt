@@ -199,15 +199,8 @@ class HintsAndSolutionAdapter(
     if (itemList.get(itemList.size - 1) is SolutionViewModel) {
       val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
       solutionViewModel.isSolutionRevealed = saveUserChoice
+      (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       notifyItemChanged(itemList.size - 1)
     }
   }
-
-//  fun setRevealHint(saveUserChoice: Boolean, hintIndex: Int) {
-//    if (itemList.get(hintIndex) is HintsViewModel) {
-//      val hintsViewModel = itemList.get(hintIndex) as HintsViewModel
-//      hintsViewModel.isHintRevealed = saveUserChoice
-//      notifyItemChanged(hintIndex)
-//    }
-//  }
 }

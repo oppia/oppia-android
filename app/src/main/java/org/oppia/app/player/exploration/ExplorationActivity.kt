@@ -3,7 +3,6 @@ package org.oppia.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
@@ -12,6 +11,7 @@ import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.player.state.hintsandsolution.RevealHintListener
+import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
@@ -23,7 +23,8 @@ const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener, RevealHintListener {
+  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener, RevealHintListener,
+  RevealSolutionInterface {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
@@ -110,6 +111,10 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     explorationActivityPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
+  override fun revealSolution(saveUserChoice: Boolean) {
+    explorationActivityPresenter.revealSolution(saveUserChoice)
+  }
+
   private fun getHintsAndSolution(): HintsAndSolutionFragment? {
     return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
   }
@@ -125,6 +130,4 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
   }
-
-
 }

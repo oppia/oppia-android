@@ -144,4 +144,10 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+    explorationFragment.revealSolution(saveUserChoice)
+  }
 }

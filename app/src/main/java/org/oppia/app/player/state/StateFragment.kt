@@ -66,4 +66,8 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    stateFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }

@@ -40,7 +40,7 @@ class HintsViewModel @Inject constructor(
       solutionViewModel.title = solution.explanation.contentId
       solutionViewModel.correctAnswer = solution.correctAnswer.correctAnswer
       solutionViewModel.solutionSummary = solution.explanation.html
-      solutionViewModel.isSolutionRevealed = false
+      solutionViewModel.isSolutionRevealed = solution.solutionIsRevealed
       itemList.add(solutionViewModel)
     }
     return itemList

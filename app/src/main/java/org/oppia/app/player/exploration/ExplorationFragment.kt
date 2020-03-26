@@ -32,4 +32,8 @@ class ExplorationFragment : InjectableFragment() {
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
     explorationFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
+
+  fun revealSolution(saveUserChoice: Boolean){
+    explorationFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }
