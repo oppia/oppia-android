@@ -10,25 +10,24 @@ import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
-class FAQActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
+class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
 
-  @Inject lateinit var faqActivityPresenter: FAQActivityPresenter
+  @Inject lateinit var faqListActivityPresenter: FAQListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    faqActivityPresenter.handleOnCreate()
+    faqListActivityPresenter.handleOnCreate()
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_faq_activity, menu)
+    menuInflater.inflate(R.menu.menu_faq_list_activity, menu)
     return super.onCreateOptionsMenu(menu)
   }
 
   companion object {
-    fun createFAQActivityIntent(context: Context): Intent {
-      val intent = Intent(context, FAQActivity::class.java)
-      return intent
+    fun createFAQListActivityIntent(context: Context): Intent {
+      return Intent(context, FAQListActivity::class.java)
     }
   }
 

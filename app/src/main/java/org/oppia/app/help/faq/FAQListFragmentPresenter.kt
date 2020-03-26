@@ -1,19 +1,14 @@
 package org.oppia.app.help.faq
 
-import android.content.res.Resources
-import android.util.DisplayMetrics
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.FaqContentBinding
-import org.oppia.app.databinding.FaqFragmentBinding
 import org.oppia.app.databinding.FaqItemHeaderBinding
+import org.oppia.app.databinding.FaqListFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel
@@ -22,19 +17,19 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
-/** The presenter for [FAQFragment]. */
+/** The presenter for [FAQListFragment]. */
 @FragmentScope
-class FAQFragmentPresenter @Inject constructor(
+class FAQListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<FAQViewModel>
+  private val listViewModelProvider: ViewModelProvider<FAQListViewModel>
 ) {
-  private lateinit var binding: FaqFragmentBinding
+  private lateinit var binding: FaqListFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val viewModel = getFAQViewModel()
+    val viewModel = getFAQListViewModel()
 
-    binding = FaqFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
+    binding = FaqListFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
 
     binding.faqFragmentRecyclerView.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
@@ -72,8 +67,8 @@ class FAQFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun getFAQViewModel(): FAQViewModel {
-    return viewModelProvider.getForFragment(fragment, FAQViewModel::class.java)
+  private fun getFAQListViewModel(): FAQListViewModel {
+    return listViewModelProvider.getForFragment(fragment, FAQListViewModel::class.java)
   }
 
   private enum class ViewType {

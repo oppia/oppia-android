@@ -9,8 +9,8 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains FAQ in the app. */
-class FAQFragment : InjectableFragment() {
-  @Inject lateinit var faqFragmentPresenter: FAQFragmentPresenter
+class FAQListFragment : InjectableFragment() {
+  @Inject lateinit var faqListFragmentPresenter: FAQListFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -18,6 +18,6 @@ class FAQFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return faqFragmentPresenter.handleCreateView(inflater, container)
+    return faqListFragmentPresenter.handleCreateView(inflater, container)
   }
 }

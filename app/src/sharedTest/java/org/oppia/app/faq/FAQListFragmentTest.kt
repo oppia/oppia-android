@@ -24,14 +24,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.help.faq.FAQActivity
+import org.oppia.app.help.faq.FAQListActivity
 import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 
-/** Tests for [FAQFragment]. */
+/** Tests for [FAQListFragment]. */
 @RunWith(AndroidJUnit4::class)
-class FAQFragmentTest {
+class FAQListFragmentTest {
 
   private val itemCount: Int = 9
 
@@ -46,8 +46,8 @@ class FAQFragmentTest {
   }
 
   @Test
-  fun openFAQActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
-    launch(FAQActivity::class.java).use {
+  fun openFAQListActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
+    launch(FAQListActivity::class.java).use {
       onView(withId(R.id.faq_fragment_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
@@ -58,8 +58,8 @@ class FAQFragmentTest {
   }
 
   @Test
-  fun openFAQActivity_selectFAQQuestion_opensFAQSingleActivity() {
-    launch(FAQActivity::class.java).use {
+  fun openFAQListActivity_selectFAQQuestion_opensFAQSingleActivity() {
+    launch(FAQListActivity::class.java).use {
       onView(atPosition(R.id.faq_fragment_recycler_view, 1)).perform(click())
       intended(
         allOf(
@@ -72,8 +72,8 @@ class FAQFragmentTest {
   }
 
   @Test
-  fun openFAQActivity_scrollRecyclerViewToLastPosition_checkDividerLineIsNotDisplayed() {
-    launch(FAQActivity::class.java).use {
+  fun openFAQListActivity_scrollRecyclerViewToLastPosition_checkDividerLineIsNotDisplayed() {
+    launch(FAQListActivity::class.java).use {
       onView(withId(R.id.faq_fragment_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(itemCount - 1))
       onView(
         atPositionOnView(

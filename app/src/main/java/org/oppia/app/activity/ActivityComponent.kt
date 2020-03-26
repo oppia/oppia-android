@@ -8,7 +8,7 @@ import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.help.HelpActivity
-import org.oppia.app.help.faq.FAQActivity
+import org.oppia.app.help.faq.FAQListActivity
 import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
@@ -79,7 +79,7 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
-  fun inject(faqActivity: FAQActivity)
+  fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)

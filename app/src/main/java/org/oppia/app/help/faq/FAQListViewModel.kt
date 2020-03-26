@@ -8,8 +8,8 @@ import org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.app.help.faq.faqItemViewModel.FAQItemViewModel
 import javax.inject.Inject
 
-/** View model in [FAQFragment]. */
-class FAQViewModel @Inject constructor(
+/** View model in [FAQListFragment]. */
+class FAQListViewModel @Inject constructor(
   val activity: AppCompatActivity
 ) : ViewModel() {
   private val arrayList = ArrayList<FAQItemViewModel>()

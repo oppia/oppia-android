@@ -21,19 +21,19 @@ class FAQSingleActivityTest {
 
   @Test
   fun openFAQSingleActivity_checkQuestion_isDisplayed() {
-    launch<FAQSingleActivity>(createTestActivityIntent()).use {
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use {
       onView(withId(R.id.faq_question_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun openFAQSingleActivity_checkAnswer_isDisplayed() {
-    launch<FAQSingleActivity>(createTestActivityIntent()).use {
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use {
       onView(withId(R.id.faq_answer_text_view)).check(matches(isDisplayed()))
     }
   }
 
-  private fun createTestActivityIntent(): Intent {
+  private fun createFAQSingleActivity(): Intent {
     return FAQSingleActivity.createFAQSingleActivityIntent(
       ApplicationProvider.getApplicationContext(),
       getResources().getString(R.string.faq_question_1),
