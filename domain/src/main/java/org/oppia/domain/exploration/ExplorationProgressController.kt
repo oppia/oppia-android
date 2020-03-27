@@ -165,7 +165,6 @@ class ExplorationProgressController @Inject constructor(
         }
         lateinit var hint: Hint
         try {
-
           explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
           hint = explorationProgress.stateGraph.computeHintForResult(
             state,
@@ -179,7 +178,6 @@ class ExplorationProgressController @Inject constructor(
           // showing hint' situation. This can specifically happen if hint throws an exception.
           explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
         }
-
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
@@ -481,24 +479,20 @@ class ExplorationProgressController @Inject constructor(
 
     /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
     internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
-      val hintBuilder = Hint.newBuilder()
+      return Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
         .setState(currentState)
-
-      return hintBuilder.build()
+        .build()
     }
-
 
     /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
     internal fun computeSolutionForResult(currentState: State, solutionIsRevealed: Boolean): Solution {
-      val solutionBuilder = Solution.newBuilder()
+      return Solution.newBuilder()
         .setSolutionIsRevealed(solutionIsRevealed)
         .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
         .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
-        .setExplanation(currentState.interaction.solution.explanation)
-
-      return solutionBuilder.build()
+        .setExplanation(currentState.interaction.solution.explanation).build()
     }
   }
 

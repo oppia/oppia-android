@@ -90,32 +90,23 @@ class ExplorationProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: TestCoroutineDispatcher
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  @Mock lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
-  @Mock
-  lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
+  @Mock lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
-  @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+  @Mock lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
 
-  @Mock
-  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
+  @Mock lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
 
-  @Captor
-  lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
+  @Captor lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
-  @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Captor lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
-  @Captor
-  lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+  @Captor lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -727,7 +718,7 @@ class ExplorationProgressControllerTest {
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
   }
-  
+
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
@@ -768,7 +759,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitHintIsRevealed(currentState.state,true, 0)
+    val result = explorationProgressController.submitHintIsRevealed(currentState.state, true, 0)
     result.observeForever(mockAsyncHintObserver)
     advanceUntilIdle()
 
@@ -799,7 +790,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state,true)
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state, true)
     result.observeForever(mockAsyncSolutionObserver)
     advanceUntilIdle()
 
@@ -1372,7 +1363,8 @@ class ExplorationProgressControllerTest {
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1422,11 +1414,13 @@ class ExplorationProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+      TextInputRuleModule::class, InteractionsModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
