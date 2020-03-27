@@ -23,7 +23,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.help.faq.FAQActivity
+import org.oppia.app.help.faq.FAQListActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -68,7 +68,7 @@ class HelpFragmentTest {
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
     launch(HelpActivity::class.java).use {
       onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
-      intended(hasComponent(FAQActivity::class.java.name))
+      intended(hasComponent(FAQListActivity::class.java.name))
     }
   }
 

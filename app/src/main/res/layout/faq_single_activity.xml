@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.ongoingtopiclist.OngoingTopicListViewModel" />
+      type="org.oppia.app.story.StoryViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/ongoing_topic_list_app_bar_layout"
+      android:id="@+id/faq_single_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,7 +24,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/ongoing_topic_list_toolbar"
+        android:id="@+id/faq_single_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -33,7 +33,6 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/topics_in_progress"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,24 +42,45 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/ongoing_topic_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/faq_single_app_bar_layout">
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ongoing_topic_list"
+      <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingTop="28dp"
-        android:paddingBottom="108dp"
-        android:scrollbars="none"
-        app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="24dp"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/faq_question_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="18sp" />
+
+          <TextView
+            android:id="@+id/faq_answer_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/oppiaPrimaryText"
+            android:layout_marginBottom="16dp"
+            android:textSize="16sp" />
+        </LinearLayout>
+      </ScrollView>
 
       <View
-        android:id="@+id/ongoing_topic_list_shadow_view"
+        android:id="@+id/faq_single_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+
+
