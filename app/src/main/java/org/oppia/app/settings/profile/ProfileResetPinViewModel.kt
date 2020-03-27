@@ -11,4 +11,7 @@ class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
   val pinErrorMsg = ObservableField("")
   val confirmErrorMsg = ObservableField("")
   val isAdmin = ObservableField(false)
+  val inputPin = ObservableField("")
+  val inputConfirmPin = ObservableField("")
+  val isButtonActive = ObservableField(false)
 }
