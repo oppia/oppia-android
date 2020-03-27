@@ -32,7 +32,6 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/admin_auth_toolbar"
@@ -50,26 +49,27 @@
       <ScrollView
         android:id="@+id/admin_auth_landscape_scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="wrap_content"
+          android:paddingBottom="92dp">
 
           <Button
             android:id="@+id/admin_auth_submit_button"
             style="@style/StateButtonActive"
-            android:layout_marginTop="36dp"
-            android:layout_marginBottom="36dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginTop="24dp"
             android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
             android:minHeight="48dp"
             android:text="@string/admin_auth_submit"
             android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/admin_auth_input_pin"
+            app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/admin_auth_input_pin"
+            app:layout_constraintStart_toStartOf="@id/admin_auth_input_pin"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
 
           <TextView
@@ -90,7 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="72dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="44dp"
             android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
@@ -102,18 +102,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-          <org.oppia.app.profile.ProfileInputView
+            <org.oppia.app.profile.ProfileInputView
             android:id="@+id/admin_auth_input_pin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginEnd="140dp"
             android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
             android:imeOptions="actionDone"
             app:inputLength="5"
             app:isPasswordInput="true"
             app:label="@string/admin_auth_pin"
-            app:layout_constraintEnd_toEndOf="@+id/admin_auth_sub_text"
-            app:layout_constraintStart_toStartOf="@+id/admin_auth_sub_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
             profile:error="@{viewModel.errorMessage}"
             profile:labelMargin="@{@dimen/margin_8}" />
@@ -126,7 +128,5 @@
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
-
   </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>
