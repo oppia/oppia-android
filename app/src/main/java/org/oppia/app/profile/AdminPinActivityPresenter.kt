@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.databinding.AdminPinActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -82,11 +83,22 @@ class AdminPinActivityPresenter @Inject constructor(
 
       profileManagementController.updatePin(profileId, inputPin).observe(activity, Observer {
         if (it.isSuccess()) {
-          activity.startActivity(
-            AddProfileActivity.createAddProfileActivityIntent(
-              context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
-            )
-          )
+          when (activity.intent.getIntExtra(KEY_ADMIN_PIN_ENUM, 0)) {
+            AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+              activity.startActivity(
+                AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
+                )
+              )
+            }
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
+              activity.startActivity(
+                AddProfileActivity.createAddProfileActivityIntent(
+                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
+                )
+              )
+            }
+          }
         }
       })
     }
