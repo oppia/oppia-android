@@ -90,6 +90,8 @@ class ProfileInputView @JvmOverloads constructor(
   /** Sets the input of editText. */
   fun setInput(text: String) = input.setText(text)
 
+  fun setSelection(length: Int) = input.setSelection(length)
+
   /** Allows editText to be watched. */
   fun addTextChangedListener(textWatcher: TextWatcher) = input.addTextChangedListener(textWatcher)
 

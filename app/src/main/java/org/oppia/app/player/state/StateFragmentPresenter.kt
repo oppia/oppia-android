@@ -68,10 +68,12 @@ import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -90,6 +92,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
+  private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
@@ -152,7 +155,6 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
-      viewModel.setHintOpenedAndUnRevealedVisibility(true)
       routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId)
     }
 
@@ -179,7 +181,7 @@ class StateFragmentPresenter @Inject constructor(
     })
 
     subscribeToCurrentState()
-
+    markExplorationAsRecentlyPlayed()
     return binding.root
   }
 
@@ -298,12 +300,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    logger.e("StateFragment", " revealed hint = "+ saveUserChoice)
+    logger.e("StateFragment", " revealed hint = " + saveUserChoice)
     subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
-    logger.e("StateFragment", " revealed Solution = "+ saveUserChoice)
+    logger.e("StateFragment", " revealed Solution = " + saveUserChoice)
     subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
   }
 
@@ -353,13 +355,24 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
-          logger.e("StateFragment", "Revealed hint = "+ currentState.interaction.getHint(0).hintIsRevealed)
+          logger.e("StateFragment", "Revealed hint = " + currentState.interaction.getHint(0).hintIsRevealed)
 
-          // Start a timer for 3 secs and then display hint
-          lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
-            viewModel.setHintOpenedAndUnRevealedVisibility(true)
-            viewModel.setHintBulbVisibility(true)
-          })
+          // Start a timer for 6 secs and then display 1st hint
+          for (index in 0 until ephemeralState.state.interaction.hintList.size) {
+            if (index == 0) {
+              if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+                lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+              }
+            } else if (!ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
+              lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              })
+            }
+          }
         }
       }
 
@@ -421,11 +434,10 @@ class StateFragmentPresenter @Inject constructor(
     hintLiveData.observe(fragment, Observer<Hint> { result ->
       // If the hint was revealed remove dot and radar.
       if (result.hintIsRevealed) {
-        logger.e("StateFragment", "hint revealed true = "+ result.hintIsRevealed)
+        logger.e("StateFragment", "hint revealed true = " + result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-
-     } else {
-        logger.e("StateFragment", "hint revealed false = "+ result.hintIsRevealed)
+      } else {
+        logger.e("StateFragment", "hint revealed false = " + result.hintIsRevealed)
       }
     })
   }
@@ -440,14 +452,15 @@ class StateFragmentPresenter @Inject constructor(
     solutionLiveData.observe(fragment, Observer<Solution> { result ->
       // If the hint was revealed remove dot and radar.
       if (result.solutionIsRevealed) {
-        logger.e("StateFragment", "solution revealed true = "+ result.solutionIsRevealed)
+        logger.e("StateFragment", "solution revealed true = " + result.solutionIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
 
-     } else {
-        logger.e("StateFragment", "solution revealed false = "+ result.solutionIsRevealed)
+      } else {
+        logger.e("StateFragment", "solution revealed false = " + result.solutionIsRevealed)
       }
     })
   }
+
   /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
@@ -534,6 +547,7 @@ class StateFragmentPresenter @Inject constructor(
     }
     return hintResult.getOrDefault(Hint.getDefaultInstance())
   }
+
   /** Helper for subscribeToHint. */
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
@@ -554,8 +568,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  // TODO(#880): Add test for this button once #495 is merged in develop.
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
+    markExplorationCompleted()
     explorationDataController.stopPlayingExploration()
     activity.finish()
   }
@@ -747,5 +763,13 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
+  }
+
+  private fun markExplorationAsRecentlyPlayed() {
+    storyProgressController.recordRecentlyPlayedChapter(profileId, topicId, storyId, explorationId, Date().time)
+  }
+
+  private fun markExplorationCompleted() {
+    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId, Date().time)
   }
 }

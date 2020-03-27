@@ -34,6 +34,7 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -89,29 +90,23 @@ class ExplorationProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: TestCoroutineDispatcher
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  @Mock lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
-  @Mock
-  lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
+  @Mock lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
-  @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+  @Mock lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
 
-  @Captor
-  lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
 
-  @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Captor lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
-  @Captor
-  lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+  @Captor lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Captor lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -723,7 +718,7 @@ class ExplorationProgressControllerTest {
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
   }
-  
+
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
@@ -764,7 +759,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitHintIsRevealed(currentState.state,true, 0)
+    val result = explorationProgressController.submitHintIsRevealed(currentState.state, true, 0)
     result.observeForever(mockAsyncHintObserver)
     advanceUntilIdle()
 
@@ -779,6 +774,34 @@ class ExplorationProgressControllerTest {
     val updatedState = currentStateResultCaptor.value.getOrThrow()
 
     assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state, true)
+    result.observeForever(mockAsyncSolutionObserver)
+    advanceUntilIdle()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    // Verify that the current state updates. Solution revealed is true.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
   }
 
   @Test
@@ -1340,7 +1363,8 @@ class ExplorationProgressControllerTest {
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1390,11 +1414,13 @@ class ExplorationProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+      TextInputRuleModule::class, InteractionsModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
