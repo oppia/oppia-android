@@ -8,7 +8,7 @@ import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
-import org.oppia.app.help.faq.FAQFragment
+import org.oppia.app.help.faq.FAQListFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
@@ -64,7 +64,7 @@ interface FragmentComponent {
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
-  fun inject(faqFragment: FAQFragment)
+  fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
