@@ -51,14 +51,12 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.AppLanguageActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.DefaultAudioActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.OptionsActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.StoryTextSizeActivity"
@@ -92,9 +90,7 @@
     <activity android:name=".settings.profile.ProfileEditActivity" />
     <activity android:name=".settings.profile.ProfileListActivity" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
-    <activity
-      android:name=".settings.profile.ProfileResetPinActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
@@ -121,7 +117,6 @@
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.StoryFragmentTestActivity"

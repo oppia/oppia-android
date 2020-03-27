@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <import type="org.oppia.app.R" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.home.HomeFragmentPresenter" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/home_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingTop="36dp"
+      android:paddingBottom="@dimen/bottom_white_space"
+      android:scrollbars="none" />
+  </LinearLayout>
+</layout>
