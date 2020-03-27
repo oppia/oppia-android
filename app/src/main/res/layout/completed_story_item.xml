@@ -13,17 +13,19 @@
 
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="92dp"
     android:layout_marginStart="28dp"
-    android:layout_marginTop="28dp"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="28dp"
+    android:layout_marginBottom="8dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="match_parent"
+      android:background="@drawable/grey_card_rounded_border">
 
       <ImageView
         android:id="@+id/completed_story_lesson_thumbnail"
@@ -43,10 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +59,7 @@
           android:layout_marginBottom="4dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
+          android:maxLines="2"
           android:text="@{viewModel.completedStory.storyName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
@@ -70,6 +70,7 @@
           android:layout_height="wrap_content"
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
+          android:maxLines="1"
           android:text="@{viewModel.completedStory.topicName}"
           android:textAllCaps="true"
           android:textColor="@color/oppiaPrimaryText"

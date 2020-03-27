@@ -443,8 +443,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  // TODO(#880): Add test for this button once #495 is merged in develop.
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
+    markExplorationCompleted()
     explorationDataController.stopPlayingExploration()
     activity.finish()
   }
@@ -638,7 +640,11 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun markExplorationAsRecentlyPlayed(){
+  private fun markExplorationAsRecentlyPlayed(){
     storyProgressController.recordRecentlyPlayedChapter(profileId,topicId, storyId, explorationId, Date().time)
+  }
+
+  private fun markExplorationCompleted(){
+    storyProgressController.recordCompletedChapter(profileId,topicId, storyId, explorationId, Date().time)
   }
 }
