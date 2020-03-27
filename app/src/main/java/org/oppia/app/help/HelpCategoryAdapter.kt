@@ -37,7 +37,7 @@ class HelpCategoryAdapter(
   class HelpItemView(private val helpItemBinding: HelpItemBinding) :
     RecyclerView.ViewHolder(helpItemBinding.root) {
     fun bind(helpViewModel: HelpViewModel, position: Int, activity: AppCompatActivity) {
-      this.helpItemBinding.viewmodel = helpViewModel
+      this.helpItemBinding.viewModel = helpViewModel
       helpItemBinding.root.setOnClickListener {
         when (HelpItems.getHelpItemForPosition(position)) {
           HelpItems.FAQ -> {
