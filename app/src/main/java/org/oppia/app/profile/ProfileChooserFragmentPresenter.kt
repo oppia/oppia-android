@@ -20,7 +20,6 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-private const val USER_NAME_MAX_CHAR_COUNT = 36
 private val COLORS_LIST = listOf(
   R.color.avatar_background_1,
   R.color.avatar_background_2,

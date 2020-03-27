@@ -32,18 +32,7 @@ import org.oppia.app.settings.profile.ProfileRenameActivity
 import org.oppia.app.settings.profile.ProfileResetPinActivity
 import org.oppia.app.splash.SplashActivity
 import org.oppia.app.story.StoryActivity
-import org.oppia.app.testing.AudioFragmentTestActivity
-import org.oppia.app.testing.BindableAdapterTestActivity
-import org.oppia.app.testing.ConceptCardFragmentTestActivity
-import org.oppia.app.testing.ContentCardTestActivity
-import org.oppia.app.testing.ExplorationInjectionActivity
-import org.oppia.app.testing.ExplorationTestActivity
-import org.oppia.app.testing.HtmlParserTestActivity
-import org.oppia.app.testing.NavigationDrawerTestActivity
-import org.oppia.app.testing.RecentlyPlayedFragmentTestActivity
-import org.oppia.app.testing.StoryFragmentTestActivity
-import org.oppia.app.testing.TopicTestActivity
-import org.oppia.app.testing.TopicTestActivityForStory
+import org.oppia.app.testing.*
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.app.topic.reviewcard.ReviewCardActivity
@@ -91,6 +80,7 @@ interface ActivityComponent {
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profilePictureActivity: ProfilePictureActivity)

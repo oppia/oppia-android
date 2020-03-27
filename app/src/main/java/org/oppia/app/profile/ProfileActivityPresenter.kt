@@ -34,6 +34,7 @@ class ProfileActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
         ProfileChooserFragment()
+      ,"TAG_PROFILE_CHOOSER_FRAGMENT"
       ).commitNow()
     }
   }
