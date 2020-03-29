@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:clickable="@{viewModel.inputName.get().length > 0}"
+        android:clickable="@{viewModel.inputName.length > 0}"
         android:text="@string/profile_rename_save"
         android:textAllCaps="true"
         app:layout_constraintEnd_toEndOf="parent"
