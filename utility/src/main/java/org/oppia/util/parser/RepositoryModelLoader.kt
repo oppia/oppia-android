@@ -25,7 +25,7 @@ internal class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStrea
 
   override fun handles(model: ImageAssetFetcher): Boolean = true
 
-  private class RepositoryDataFetcher(private val fetcher: ImageAssetFetcher): DataFetcher<InputStream> {
+  private class RepositoryDataFetcher(private val fetcher: ImageAssetFetcher) : DataFetcher<InputStream> {
     override fun getDataClass(): Class<InputStream> = InputStream::class.java
 
     override fun cleanup() {}
@@ -41,7 +41,7 @@ internal class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStrea
   }
 
   /** [ModelLoaderFactory] for creating new [RepositoryModelLoader]s. */
-  internal class Factory: ModelLoaderFactory<ImageAssetFetcher, InputStream> {
+  internal class Factory : ModelLoaderFactory<ImageAssetFetcher, InputStream> {
     override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<ImageAssetFetcher, InputStream> {
       return RepositoryModelLoader()
     }

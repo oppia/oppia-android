@@ -37,9 +37,16 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
   }
 
   override fun drawLeadingMargin(
-    canvas: Canvas, paint: Paint, x: Int, dir: Int,
-    top: Int, baseline: Int, bottom: Int,
-    text: CharSequence, start: Int, end: Int,
+    canvas: Canvas,
+    paint: Paint,
+    x: Int,
+    dir: Int,
+    top: Int,
+    baseline: Int,
+    bottom: Int,
+    text: CharSequence,
+    start: Int,
+    end: Int,
     first: Boolean,
     layout: Layout?
   ) {
