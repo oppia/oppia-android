@@ -35,6 +35,7 @@
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/admin_auth_toolbar"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -50,40 +51,13 @@
         android:id="@+id/admin_auth_landscape_scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingBottom="92dp">
-
-          <Button
-            android:id="@+id/admin_auth_submit_button"
-            style="@style/StateButtonActive"
-            android:layout_marginEnd="28dp"
-            android:layout_marginTop="24dp"
-            android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
-            android:minHeight="48dp"
-            android:text="@string/admin_auth_submit"
-            android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@id/admin_auth_input_pin"
-            app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
-
-          <TextView
-            android:id="@+id/admin_auth_sub_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="sans-serif"
-            android:text="@string/admin_auth_sub"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/admin_auth_heading_textview"
-            app:layout_constraintStart_toStartOf="@+id/admin_auth_heading_textview"
-            app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
 
           <TextView
             android:id="@+id/admin_auth_heading_textview"
@@ -102,12 +76,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-            <org.oppia.app.profile.ProfileInputView
+          <TextView
+            android:id="@+id/admin_auth_sub_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/admin_auth_sub"
+            android:textColor="@color/black_54"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/admin_auth_heading_textview"
+            app:layout_constraintStart_toStartOf="@+id/admin_auth_heading_textview"
+            app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
+
+          <org.oppia.app.profile.ProfileInputView
             android:id="@+id/admin_auth_input_pin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="140dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="140dp"
             android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
             android:imeOptions="actionDone"
@@ -119,6 +106,21 @@
             app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
             profile:error="@{viewModel.errorMessage}"
             profile:labelMargin="@{@dimen/margin_8}" />
+
+          <Button
+            android:id="@+id/admin_auth_submit_button"
+            style="@style/StateButtonActive"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="28dp"
+            android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
+            android:minHeight="48dp"
+            android:text="@string/admin_auth_submit"
+            android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@id/admin_auth_input_pin"
+            app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
         </androidx.constraintlayout.widget.ConstraintLayout>
       </ScrollView>
 
