@@ -30,6 +30,10 @@ task clean(type: Delete) {
 
 subprojects{
   afterEvaluate {
+    // kapt doesn't propagate source version properly so even if we set JDK to be 9, if we
+    // have a local JDK version of 9+, we see a dagger bug in generating annotations
+    // that only occurs in JDK 9+, this is the workaround:
+    // (Lots of useful information here: https://github.com/google/dagger/issues/1449)
     if (project.hasProperty('kapt')) {
       // Reference for 'kapt' DSL: https://kotlinlang.org/docs/reference/kapt.html#java-compiler-options
       kapt {
