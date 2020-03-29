@@ -15,6 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -26,6 +27,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -84,11 +86,11 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickSubmit_checkPinLengthError() {
+  fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
-      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_length))))
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -148,12 +150,12 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_checkPinLengthError() {
+  fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_clickIsDisabled() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
-      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(context.getString(R.string.admin_pin_error_pin_length))))
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -205,12 +207,12 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testAdminPinActivity_inputShortPin_clickSubmit_configurationChange_checkPinLengthError() {
+  fun testAdminPinActivity_inputShortPin_configurationChange_clicIsDisabled() {
     ActivityScenario.launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(typeText("123"), closeSoftKeyboard())
-      onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      onView(withId(R.id.submit_button)).perform(scrollTo())
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText(R.string.admin_pin_error_pin_length)))
+      onView(withId(R.id.submit_button)).check(matches(not(isClickable())))
     }
   }
 
