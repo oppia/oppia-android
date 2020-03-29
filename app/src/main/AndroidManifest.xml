@@ -23,7 +23,11 @@
       android:name=".completedstorylist.CompletedStoryListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.faq.FAQActivity"
+      android:name=".help.faq.FAQListActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.faqsingle.FAQSingleActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

@@ -3,7 +3,9 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel" />
@@ -25,8 +27,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
+        android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
         android:padding="@dimen/padding_24dp"
-        android:text="@{viewModel.title}"
+        android:text="@{viewModel.question}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         android:textStyle="bold" />
