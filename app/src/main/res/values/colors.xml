@@ -53,6 +53,7 @@
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="profileEditBackground">#E5E5E5</color>
   <color name="appVersionBackground">#E5E5E5</color>
+  <color name="navigationGeneralBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->

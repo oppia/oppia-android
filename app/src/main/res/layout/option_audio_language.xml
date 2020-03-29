@@ -13,15 +13,19 @@
     android:id="@+id/audio_laguage_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/general_item_background_border"
+    android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onAudioLanguageClicked()}"
-    android:background="@color/white">
+    android:paddingStart="16dp"
+    android:paddingTop="20dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="20dp">
 
     <TextView
       android:id="@+id/audio_language_label_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:padding="8dp"
       android:text="@string/audio_language"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
@@ -35,20 +39,11 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:padding="8dp"
       android:text="@{viewModel.audioLanguage}"
+      android:textColor="@color/black_54"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/audio_language_label_text_view" />
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:background="@color/grey_shade_29"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/audio_language_text_view" />
-
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
