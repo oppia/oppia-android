@@ -29,6 +29,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
 import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
@@ -460,32 +461,60 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * included since that's considered a navigation interaction.
      */
     fun addInteractionSupport(): Builder {
-      adapterBuilder.registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
-        inflateDataBinding = SelectionInteractionItemBinding::inflate,
-        setViewModel = SelectionInteractionItemBinding::setViewModel,
-        transformViewModel = { it as SelectionInteractionViewModel }
-      ).registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
-        inflateDataBinding = FractionInteractionItemBinding::inflate,
-        setViewModel = FractionInteractionItemBinding::setViewModel,
-        transformViewModel = { it as FractionInteractionViewModel }
-      ).registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
-        inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-        setViewModel = NumericInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as NumericInputViewModel }
-      ).registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
-        inflateDataBinding = TextInputInteractionItemBinding::inflate,
-        setViewModel = TextInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as TextInputViewModel }
-      ).registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
-        inflateDataBinding = SubmitButtonItemBinding::inflate,
-        setViewModel = SubmitButtonItemBinding::setButtonViewModel,
-        transformViewModel = { it as SubmitButtonViewModel }
-      )
+      if (fragment is QuestionPlayerFragment)
+        adapterBuilder.registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
+          inflateDataBinding = QuestionPlayerSelectionInteractionItemBinding::inflate,
+          setViewModel = QuestionPlayerSelectionInteractionItemBinding::setViewModel,
+          transformViewModel = { it as SelectionInteractionViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
+          inflateDataBinding = FractionInteractionItemBinding::inflate,
+          setViewModel = FractionInteractionItemBinding::setViewModel,
+          transformViewModel = { it as FractionInteractionViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
+          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
+          setViewModel = NumericInputInteractionItemBinding::setViewModel,
+          transformViewModel = { it as NumericInputViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
+          inflateDataBinding = TextInputInteractionItemBinding::inflate,
+          setViewModel = TextInputInteractionItemBinding::setViewModel,
+          transformViewModel = { it as TextInputViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
+          inflateDataBinding = SubmitButtonItemBinding::inflate,
+          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as SubmitButtonViewModel }
+        )
+      else
+        adapterBuilder.registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
+          inflateDataBinding = SelectionInteractionItemBinding::inflate,
+          setViewModel = SelectionInteractionItemBinding::setViewModel,
+          transformViewModel = { it as SelectionInteractionViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
+          inflateDataBinding = FractionInteractionItemBinding::inflate,
+          setViewModel = FractionInteractionItemBinding::setViewModel,
+          transformViewModel = { it as FractionInteractionViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
+          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
+          setViewModel = NumericInputInteractionItemBinding::setViewModel,
+          transformViewModel = { it as NumericInputViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
+          inflateDataBinding = TextInputInteractionItemBinding::inflate,
+          setViewModel = TextInputInteractionItemBinding::setViewModel,
+          transformViewModel = { it as TextInputViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
+          inflateDataBinding = SubmitButtonItemBinding::inflate,
+          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as SubmitButtonViewModel }
+        )
       featureSets += PlayerFeatureSet(interactionSupport = true)
       return this
     }
