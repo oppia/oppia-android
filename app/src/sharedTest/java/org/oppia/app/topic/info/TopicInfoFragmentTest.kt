@@ -106,6 +106,7 @@ class TopicInfoFragmentTest {
     }
   }
 
+  // TODO(#914): Add more data to topic description so that these test can pass on XHDPI and XXHDPI and XXXHDPI devices.
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
