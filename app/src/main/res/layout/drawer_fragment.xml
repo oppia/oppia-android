@@ -52,23 +52,26 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="bottom"
+          android:layout_marginTop="16dp"
+          android:layout_marginStart="24dp"
+          android:layout_marginEnd="24dp"
+          android:layout_marginBottom="36dp"
           android:orientation="horizontal"
-          android:padding="16dp"
+          android:paddingTop="16dp"
+          android:paddingBottom="16dp"
           android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
 
           <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:layout_margin="4dp"
             android:src="@drawable/ic_admin_settings_icon_brown_24dp" />
 
           <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/administrator_controls"
             android:textColor="@color/highlightedNavMenuItem"
