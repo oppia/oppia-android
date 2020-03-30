@@ -5,7 +5,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.profile.ProfileActivityPresenter
 import javax.inject.Inject
 
-/** Test Activity used for testing ConceptCardFragment */
+/** Test Activity used for testing [ProfileChooserFragment] */
 class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
 
   @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
