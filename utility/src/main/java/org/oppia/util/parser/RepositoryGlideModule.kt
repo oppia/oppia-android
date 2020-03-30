@@ -10,7 +10,7 @@ import java.io.InputStream
 
 /** Custom [AppGlideModule] to enable loading images from [AssetRepository] via Glide. */
 @GlideModule
-class RepositoryGlideModule: AppGlideModule() {
+class RepositoryGlideModule : AppGlideModule() {
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     registry.prepend(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
   }

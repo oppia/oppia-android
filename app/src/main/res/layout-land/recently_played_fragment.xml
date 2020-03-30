@@ -34,6 +34,7 @@
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/recently_played_activity"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,8 +52,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="8dp"
-        android:paddingBottom="172dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingStoryLiveData}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

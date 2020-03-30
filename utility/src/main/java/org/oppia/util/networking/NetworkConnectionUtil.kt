@@ -2,7 +2,6 @@ package org.oppia.util.networking
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import androidx.annotation.VisibleForTesting
 import javax.inject.Inject
 import javax.inject.Singleton

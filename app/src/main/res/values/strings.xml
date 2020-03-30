@@ -27,12 +27,13 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
-  <string name="review_card_toolbar_title">Review Card</string>
+  <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
+  <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
@@ -44,14 +45,16 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
+  <string name="see_more">See More</string>
+  <string name="see_less">See Less</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
-  <string name="frequently_asked_questions_FAQ">Frequently Asked Question (FAQs)</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
-  <string name="review">Review</string>
+  <string name="revision">Revision</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
@@ -147,10 +150,14 @@
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
+  <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
   <string name="admin_auth_sub">Enter the Administrator PIN in order to create a new account.</string>
+  <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_auth_submit">Submit</string>
+  <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
   <string name="admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
   <string name="admin_pin_pin_description">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
@@ -158,7 +165,7 @@
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <string name="admin_pin_submit">Submit</string>
+  <string name="admin_pin_submit">Save</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
@@ -175,15 +182,6 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <!-- FAQ Questions -->
-  <string name="faq_question_1">How can I create a new profile?</string>
-  <string name="faq_question_2">How can I delete a profile?</string>
-  <string name="faq_question_3">How can I change my email/phone number?</string>
-  <string name="faq_question_4">Who is an Administrator?</string>
-  <string name="faq_question_5">Why is the Exploration player not loading?</string>
-  <string name="faq_question_6">Why is my audio not playing?</string>
-  <string name="faq_question_7">How do I download a Topic?</string>
-  <string name="faq_question_8">I can\'t find my question here. What now?</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -287,10 +285,11 @@
   <string name="title_default_audio">Default Audio Language</string>
   <string name="story_text_will_look_like_this">Story text will look like this</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Audio Language</string>
+  <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>
+  <string name="story_count_text_view">2 Stories</string>
   <string name="topics_in_progress">Topics in Progress</string>
   <string name="topic_in_progress">Topic in Progress</string>
   <string name="stories_completed">Stories Completed</string>
@@ -298,4 +297,6 @@
   <!-- WalkthroughActivity -->
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>
+  <!-- WalkthroughTopicListFragment -->
+  <string name="what_do_you_want_to_learn">What do you want to learn?</string>
 </resources>

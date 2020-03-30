@@ -38,7 +38,7 @@ class DataProviders @Inject constructor(
    */
   fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-    return object: DataProvider<T2> {
+    return object : DataProvider<T2> {
       override fun getId(): Any {
         return newId
       }
@@ -58,10 +58,12 @@ class DataProviders @Inject constructor(
    * blocking.
    */
   fun <T1, T2> transformAsync(
-    newId: Any, dataProvider: DataProvider<T1>, function: suspend (T1) -> AsyncResult<T2>
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
   ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-    return object: DataProvider<T2> {
+    return object : DataProvider<T2> {
       override fun getId(): Any {
         return newId
       }
@@ -84,11 +86,14 @@ class DataProviders @Inject constructor(
    * with UI components.
    */
   fun <O, T1, T2> combine(
-    newId: Any, dataProvider1: DataProvider<T1>, dataProvider2: DataProvider<T2>, function: (T1, T2) -> O
+    newId: Any,
+    dataProvider1: DataProvider<T1>,
+    dataProvider2: DataProvider<T2>,
+    function: (T1, T2) -> O
   ): DataProvider<O> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
     asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
-    return object: DataProvider<O> {
+    return object : DataProvider<O> {
       override fun getId(): Any {
         return newId
       }
@@ -107,12 +112,14 @@ class DataProviders @Inject constructor(
    * Returns a transformed [DataProvider] in the same way as [combine] except the combine function can be blocking.
    */
   fun <O, T1, T2> combineAsync(
-    newId: Any, dataProvider1: DataProvider<T1>, dataProvider2: DataProvider<T2>,
+    newId: Any,
+    dataProvider1: DataProvider<T1>,
+    dataProvider2: DataProvider<T2>,
     function: suspend (T1, T2) -> AsyncResult<O>
   ): DataProvider<O> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
     asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
-    return object: DataProvider<O> {
+    return object : DataProvider<O> {
       override fun getId(): Any {
         return newId
       }
@@ -135,7 +142,7 @@ class DataProviders @Inject constructor(
    * with the in-memory provider's identifier.
    */
   fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
-    return object: DataProvider<T> {
+    return object : DataProvider<T> {
       override fun getId(): Any {
         return id
       }
@@ -155,7 +162,7 @@ class DataProviders @Inject constructor(
    * be blocking.
    */
   fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
-    return object: DataProvider<T> {
+    return object : DataProvider<T> {
       override fun getId(): Any {
         return id
       }

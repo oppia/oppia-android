@@ -73,7 +73,7 @@ class AssetRepository @Inject constructor(private val context: Context, private 
   private fun openCachingStreamToRemoteFile(url: String): InputStream {
     val urlInStream = openRemoteStream(url)
     val fileOutStream = openLocalCacheFileForWrite(url)
-    return object: InputStream() {
+    return object : InputStream() {
       override fun available(): Int {
         return urlInStream.available()
       }

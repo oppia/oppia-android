@@ -2,10 +2,13 @@ package org.oppia.app.topic.info
 
 import android.text.SpannedString
 import android.text.style.StyleSpan
+import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -14,20 +17,23 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.hamcrest.Description
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.topic.RATIOS_TOPIC_ID
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
 private const val TOPIC_DESCRIPTION =
   "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or " +
-      "some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe " +
-      "situations like these."
+    "some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe " +
+    "situations like these."
 
 // NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
 /** Tests for [TopicInfoFragment]. */
@@ -93,9 +99,50 @@ class TopicInfoFragmentTest {
     }
   }
 
+  @Test
+  fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+      onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 5)))
+    }
+  }
+
+  // TODO(#914): Add more data to topic description so that these test can pass on XHDPI and XXHDPI and XXXHDPI devices.
+  @Test
+  fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+      onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+      onView(withId(R.id.see_more_text_view)).perform(click())
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+    }
+  }
+
   private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
+  }
+
+  //Reference: https://stackoverflow.com/a/46296194
+  /** Custom function to check the maxLines value for a TextView. */
+  private fun maxLines(lineCount: Int): TypeSafeMatcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(item: View): Boolean {
+        return (item as TextView).lineCount == lineCount
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("isTextInLines")
+      }
+    }
   }
 }

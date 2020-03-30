@@ -8,7 +8,8 @@ import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.app.fragment.FragmentComponent
 import org.oppia.app.help.HelpActivity
-import org.oppia.app.help.faq.FAQActivity
+import org.oppia.app.help.faq.FAQListActivity
+import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.mydownloads.MyDownloadsActivity
@@ -41,13 +42,12 @@ import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.app.testing.RecentlyPlayedFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
-import org.oppia.app.topic.reviewcard.ReviewCardActivity
+import org.oppia.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
 
@@ -80,7 +80,8 @@ interface ActivityComponent {
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
-  fun inject(faqActivity: FAQActivity)
+  fun inject(faqListActivity: FAQListActivity)
+  fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
@@ -100,8 +101,7 @@ interface ActivityComponent {
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
-  fun inject(recentlyPlayedFragmentTestActivity: RecentlyPlayedFragmentTestActivity)
-  fun inject(reviewCardActivity: ReviewCardActivity)
+  fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(storyTextSizeActivity: StoryTextSizeActivity)

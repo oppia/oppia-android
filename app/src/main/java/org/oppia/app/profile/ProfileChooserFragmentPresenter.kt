@@ -64,7 +64,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
@@ -112,7 +113,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
-            activity.startActivity((HomeActivity.createHomeActivity(activity, model.profile.id.internalId)))
+            activity.startActivity(
+              (HomeActivity.createHomeActivity(
+                activity,
+                model.profile.id.internalId
+              ))
+            )
           }
         })
       } else {
@@ -133,7 +139,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           AdminPinActivity.createAdminPinActivityIntent(
             activity,
             chooserViewModel.adminProfileId.internalId,
-            selectUniqueRandomColor()
+            selectUniqueRandomColor(),
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
         )
       } else {
@@ -141,10 +148,35 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           AdminAuthActivity.createAdminAuthActivityIntent(
             activity,
             chooserViewModel.adminPin,
-            selectUniqueRandomColor()
+            -1,
+            selectUniqueRandomColor(),
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value
           )
         )
       }
+    }
+  }
+
+  fun routeToAdminPin() {
+    if (chooserViewModel.adminPin.isEmpty()) {
+      activity.startActivity(
+        AdminPinActivity.createAdminPinActivityIntent(
+          activity,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        )
+      )
+    } else {
+      activity.startActivity(
+        AdminAuthActivity.createAdminAuthActivityIntent(
+          activity,
+          chooserViewModel.adminPin,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        )
+      )
     }
   }
 }

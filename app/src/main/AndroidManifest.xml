@@ -23,7 +23,10 @@
       android:name=".completedstorylist.CompletedStoryListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.faq.FAQActivity"
+      android:name=".help.faq.FAQListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.faqsingle.FAQSingleActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -44,18 +47,15 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".ongoingtopiclist.OngoingTopicListActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.AppLanguageActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.DefaultAudioActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.OptionsActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".options.StoryTextSizeActivity"
@@ -65,16 +65,12 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".profile.AddProfileActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".profile.AddProfileActivity" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".profile.AdminPinActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".profile.AdminPinActivity" />
     <activity
       android:name=".profile.PinPasswordActivity"
       android:screenOrientation="portrait"
@@ -88,17 +84,13 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profileprogress.ProfileProgressActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".settings.profile.ProfileEditActivity" />
+    <activity android:name=".settings.profile.ProfileEditActivity" />
     <activity
       android:name=".settings.profile.ProfileListActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
-    <activity
-      android:name=".settings.profile.ProfileResetPinActivity"
-      android:screenOrientation="portrait" />
+    <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
@@ -115,9 +107,6 @@
     <activity
       android:name=".story.StoryActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity
-      android:name=".testing.StoryFragmentTestActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
@@ -126,10 +115,11 @@
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
-    <activity android:name=".testing.RecentlyPlayedFragmentTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
-      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.TopicTestActivity"
@@ -141,12 +131,11 @@
       android:name=".topic.questionplayer.QuestionPlayerActivity"
       android:screenOrientation="portrait" />
     <activity
-      android:name=".topic.TopicActivity"
-      android:launchMode="singleInstance"
+      android:name=".topic.revisioncard.RevisionCardActivity"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".topic.reviewcard.ReviewCardActivity"
-      android:screenOrientation="portrait"
+      android:name=".topic.TopicActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
