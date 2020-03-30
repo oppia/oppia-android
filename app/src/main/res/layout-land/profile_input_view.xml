@@ -28,19 +28,20 @@
       android:layout_marginTop="4dp"
       android:background="@drawable/add_profile_edit_text_background"
       android:fontFamily="sans-serif"
-      android:padding="8dp"
       android:minHeight="48dp"
+      android:padding="8dp"
+      android:saveEnabled="false"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="14sp"
-      android:textStyle="italic"
-      android:saveEnabled="false"/>
+      android:textStyle="italic" />
 
     <TextView
       android:id="@+id/error_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:textSize="12sp"
-      android:textColor="@color/editTextError" />
+      android:gravity="top"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp" />
   </LinearLayout>
 </layout>
