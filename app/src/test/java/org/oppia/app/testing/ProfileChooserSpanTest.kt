@@ -88,8 +88,8 @@ class ProfileChooserSpanTest {
   }
 
   @Test
-  @Config(qualifiers = "xxhdpi")
-  fun testProfileChooserSpanTest_onConfigLandScapeAndScreenXxhdpi() {
+  @Config(qualifiers = "xxxhdpi")
+  fun testProfileChooserSpanTest_onConfigLandScapeAndScreenXxxhdpi() {
     assertThat(context.resources.getInteger(R.integer.profile_chooser_span_count)).isEqualTo(5)
   }
 
@@ -128,6 +128,13 @@ class ProfileChooserSpanTest {
   @Test
   @Config(qualifiers = "land-xxhdpi")
   fun ProfileChooserFragmentTest_onConfigLandScapeAndForXxhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use {
+      assertThat((recyclerView.layoutManager as GridLayoutManager).spanCount).isEqualTo(5)
+    }
+  }
+  @Test
+  @Config(qualifiers = "land-xxxhdpi")
+  fun ProfileChooserFragmentTest_onConfigLandScapeAndForXxxhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat((recyclerView.layoutManager as GridLayoutManager).spanCount).isEqualTo(5)
     }
