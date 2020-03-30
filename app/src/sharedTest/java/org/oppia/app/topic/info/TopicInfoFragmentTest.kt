@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -109,6 +110,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
     }
@@ -117,7 +119,9 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
     }
   }
@@ -125,6 +129,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_topicDescriptionLinesChangeToSix() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 6)))
     }
