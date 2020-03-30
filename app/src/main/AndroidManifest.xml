@@ -27,7 +27,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.faqsingle.FAQSingleActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"

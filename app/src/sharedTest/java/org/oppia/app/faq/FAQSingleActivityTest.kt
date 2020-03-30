@@ -8,12 +8,14 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [FAQSingleActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -29,6 +31,22 @@ class FAQSingleActivityTest {
   @Test
   fun openFAQSingleActivity_checkAnswer_isDisplayed() {
     launch<FAQSingleActivity>(createFAQSingleActivity()).use {
+      onView(withId(R.id.faq_answer_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun openFAQSingleActivity_changeConfiguration_checkQuestion_isDisplayed() {
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.faq_question_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun openFAQSingleActivity_changeConfiguration_checkAnswer_isDisplayed() {
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.faq_answer_text_view)).check(matches(isDisplayed()))
     }
   }

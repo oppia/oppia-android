@@ -31,9 +31,9 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -59,7 +59,10 @@
           android:layout_height="wrap_content"
           android:background="@color/white"
           android:orientation="vertical"
-          android:padding="24dp">
+          android:paddingStart="72dp"
+          android:paddingTop="24dp"
+          android:paddingEnd="72dp"
+          android:paddingBottom="24dp">
 
           <TextView
             android:id="@+id/faq_question_text_view"
