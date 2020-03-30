@@ -19,7 +19,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.hamcrest.Description
 import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +26,7 @@ import org.oppia.app.R
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.RATIOS_TOPIC_ID
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
@@ -102,14 +101,14 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 5)))
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
@@ -118,28 +117,11 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_loadFragment_clickSeeMore_topicDescriptionLinesChangeToSix() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).perform(click())
-      onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 6)))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_loadFragment_changeConfiguration_seeMoreIsNotVisible() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.see_more_text_view)).check(matches(not(isDisplayed())))
     }
   }
 
