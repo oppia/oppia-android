@@ -121,7 +121,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+        typeText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -131,12 +131,6 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("4"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
     }
   }
 
@@ -258,7 +252,7 @@ class AdminAuthActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+        typeText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())

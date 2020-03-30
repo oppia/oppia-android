@@ -281,7 +281,7 @@
   <string name="title_default_audio">Default Audio Language</string>
   <string name="story_text_will_look_like_this">Story text will look like this</string>
   <string name="constant_string_for_text_size">A</string>
-  <string name="audio_language">Audio Language</string>
+  <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
   <string name="profile">Profile</string>

@@ -24,7 +24,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.FAQListActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.faqsingle.FAQSingleActivity"
@@ -66,8 +65,7 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".profile.AddProfileActivity" />
+    <activity android:name=".profile.AddProfileActivity" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
@@ -88,7 +86,9 @@
       android:name=".profileprogress.ProfileProgressActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileEditActivity" />
-    <activity android:name=".settings.profile.ProfileListActivity" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity
