@@ -30,6 +30,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory
 ) {
+  private lateinit var binding: TopicInfoFragmentBinding
   private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -42,7 +43,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
     topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
-    val binding = TopicInfoFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicInfoFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {
       it.lifecycleOwner = fragment
@@ -66,6 +67,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
           fragment.requireView().findViewById(R.id.topic_description_text_view)
         )
       )
+      controlSeeMoreTextVisibility()
     })
   }
 
@@ -82,5 +84,18 @@ class TopicInfoFragmentPresenter @Inject constructor(
       logger.e("TopicInfoFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
+  }
+
+  private fun controlSeeMoreTextVisibility() {
+    val minimumNumberOfLines = fragment.resources.getInteger(R.integer.topic_description_collapsed)
+    binding.topicDescriptionTextView.post {
+      if (binding.topicDescriptionTextView.lineCount > minimumNumberOfLines) {
+        getTopicInfoViewModel().isDescriptionExpanded.set(false)
+        getTopicInfoViewModel().isSeeMoreVisible.set(true)
+      } else {
+        getTopicInfoViewModel().isDescriptionExpanded.set(true)
+        getTopicInfoViewModel().isSeeMoreVisible.set(false)
+      }
+    }
   }
 }
