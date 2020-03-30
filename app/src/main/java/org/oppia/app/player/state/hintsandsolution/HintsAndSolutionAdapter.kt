@@ -91,7 +91,7 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
-      binding.hintTitle?.text = hintsViewModel.title.replace("_", " ").capitalize()
+      binding.hintTitle.text = hintsViewModel.title.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
           .parseOppiaHtml(
@@ -99,8 +99,7 @@ class HintsAndSolutionAdapter(
           )
 
       if(hintsViewModel.hintCanBeRevealed) {
-
-        binding.revealHintButton?.setOnClickListener {
+        binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed = true
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
           val previousIndex: Int? = currentExpandedHintListIndex

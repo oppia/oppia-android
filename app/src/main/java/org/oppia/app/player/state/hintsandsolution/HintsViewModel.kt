@@ -29,7 +29,7 @@ class HintsViewModel @Inject constructor(
 
   fun processHintList(): List<HintsAndSolutionItemViewModel> {
     itemList.clear()
-    for (index in 0 until  hintList.size) {
+    for (index in 0 until hintList.size) {
       val hintsAndSolutionViewModel = HintsViewModel()
       hintsAndSolutionViewModel.title = hintList[index].hintContent.contentId
       hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList[index].hintContent.html
@@ -49,6 +49,6 @@ class HintsViewModel @Inject constructor(
   }
 
   fun setExplorationId(explorationId: String) {
-      this.explorationId = explorationId
+    this.explorationId = explorationId
   }
 }

@@ -81,7 +81,6 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUME
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
-private const val TAG_HINTS_AND_SOLUTION = "HINTS_AND_SOLUTION"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -362,7 +361,8 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
-//           The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals
+
+          // TODO:  The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
             if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
@@ -458,7 +458,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
-   * This function listens to the result of RevealHint.
+   * This function listens to the result of RevealSolution.
    * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
@@ -469,7 +469,6 @@ class StateFragmentPresenter @Inject constructor(
       if (result.solutionIsRevealed) {
         logger.e("StateFragment", "solution revealed true = " + result.solutionIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-
       } else {
         logger.e("StateFragment", "solution revealed false = " + result.solutionIsRevealed)
       }
@@ -524,12 +523,12 @@ class StateFragmentPresenter @Inject constructor(
     }, 2000)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for subscribeToSolution. */
   private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
     return Transformations.map(hint, ::processSolution)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for subscribeToHint. */
   private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
     return Transformations.map(hint, ::processHint)
   }

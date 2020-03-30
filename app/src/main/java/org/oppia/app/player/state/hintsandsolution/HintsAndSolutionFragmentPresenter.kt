@@ -75,10 +75,6 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     if (allHintsExhausted) {
       handleAllHintsExhausted(allHintsExhausted)
     }
-
-
-//    binding.hintsAndSolutionRecyclerView.layoutManager!!.scrollToPosition(currentExpandedHintListIndex!!)
-
     return binding.root
   }
 
@@ -94,7 +90,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
   }
 
-  fun handleNewAvailableHint(hintIndex: Int) {
+  private fun handleNewAvailableHint(hintIndex: Int) {
     hintsAndSolutionAdapter.setNewHintIsAvailable(hintIndex)
   }
 }

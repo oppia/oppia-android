@@ -7,5 +7,4 @@ interface RevealHintListener {
    * If saveUserChoice is false, show solution and do not save preference and show this dialog next time too.
    */
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int)
-
 }

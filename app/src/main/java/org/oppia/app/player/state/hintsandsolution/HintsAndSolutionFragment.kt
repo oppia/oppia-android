@@ -70,7 +70,6 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     this.allHintsExhausted = allHintsExhausted
   }
 
-
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     if (currentExpandedHintListIndex != null) {

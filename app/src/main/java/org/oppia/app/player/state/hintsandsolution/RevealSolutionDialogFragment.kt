@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
 
 /**
- * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
+ * DialogFragment that asks to the user if they want to reveal solution.
  */
 class RevealSolutionDialogFragment : DialogFragment() {
   companion object {
