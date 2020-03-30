@@ -1,5 +1,4 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
 
@@ -8,32 +7,34 @@
       type="CharSequence" />
   </data>
 
-  <RelativeLayout
+  <LinearLayout
     android:id="@+id/radio_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:background="@drawable/general_item_background_border"
     android:gravity="center_vertical"
-    android:minHeight="48dp">
+    android:minHeight="48dp"
+    android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
       android:id="@+id/language_radio_button"
+      style="@style/LanguageRadioButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginEnd="24dp"
       android:clickable="false"
-      android:padding="4dp"
-      app:buttonTint="@color/defaultAudioActivityRadioButton" />
+      android:minWidth="20dp"
+      android:minHeight="20dp" />
 
     <TextView
       android:id="@+id/language_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="4dp"
-      android:layout_toEndOf="@+id/language_radio_button"
+      android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
-      android:paddingTop="4dp"
       android:text="@{languageString}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp" />
-  </RelativeLayout>
+  </LinearLayout>
 </layout>
