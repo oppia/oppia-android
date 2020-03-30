@@ -3,8 +3,6 @@ package org.oppia.app.testing
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.profile.ProfileActivityPresenter
-import org.oppia.app.profile.ProfileChooserFragment
-import org.oppia.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 /** Test Activity used for testing ConceptCardFragment */
