@@ -1,5 +1,6 @@
 package org.oppia.app.options
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import java.util.*
 import javax.inject.Inject
 
 const val STORY_TEXT_SIZE = "STORY_TEXT_SIZE"
@@ -167,8 +169,11 @@ class OptionsFragmentPresenter @Inject constructor(
         appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
       }
     }
+    updateLanguageInUI()
+  }
 
-    recyclerViewAdapter.notifyItemChanged(1)
+  private fun updateLanguageInUI() {
+    setPreferredLanguage(getAppLanguageCode(appLanguage))
   }
 
   fun updateAudioLanguage(language: String) {
@@ -211,6 +216,28 @@ class OptionsFragmentPresenter @Inject constructor(
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
+  }
+
+  private fun setPreferredLanguage(appLanguageCode: String) {
+    val locale = Locale(appLanguageCode)
+    Locale.setDefault(locale)
+    val config = Configuration()
+    config.locale = locale
+    activity.resources.updateConfiguration(
+      config,
+      activity.baseContext.resources.displayMetrics
+    )
+    activity.finish()
+    activity.startActivity(activity.intent)
+  }
+
+  private fun getAppLanguageCode(appLanguage: AppLanguage): String {
+    return when (appLanguage) {
+      AppLanguage.ENGLISH_APP_LANGUAGE -> "en"
+      AppLanguage.HINDI_APP_LANGUAGE -> "hi"
+      AppLanguage.FRENCH_APP_LANGUAGE -> "fr"
+      else -> "en"
+    }
   }
 }
 

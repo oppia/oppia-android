@@ -6,6 +6,8 @@ import android.os.Bundle
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.ProfileId
 import javax.inject.Inject
 
 /** The activity for setting user preferences. */
@@ -14,10 +16,12 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
+  private lateinit var profileId: ProfileId
+
   companion object {
-    fun createOptionsActivity(context: Context, profileId: Int?): Intent {
+    fun createOptionsActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       return intent
     }
   }
@@ -25,6 +29,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
+    val internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     optionActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_options)
   }
@@ -75,5 +81,11 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         storyTextSize
       ), REQUEST_CODE_TEXT_SIZE
     )
+  }
+
+  override fun onBackPressed() {
+    val intent = HomeActivity.createHomeActivity(this, profileId.internalId)
+    startActivity(intent)
+    finish()
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.app.profile
 
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -7,6 +8,7 @@ import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
+import java.util.*
 import javax.inject.Inject
 
 /** The presenter for [ProfileActivity]. */
@@ -17,6 +19,7 @@ class ProfileActivityPresenter @Inject constructor(
 ) {
   /** Adds [ProfileChooserFragment] to view. */
   fun handleOnCreate() {
+    setPreferredLanguage()
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
     profileManagementController.addProfile(
       name = "Sean",
@@ -40,5 +43,16 @@ class ProfileActivityPresenter @Inject constructor(
 
   private fun getProfileChooserFragment(): ProfileChooserFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as ProfileChooserFragment?
+  }
+
+  private fun setPreferredLanguage() {
+    val locale = Locale("en")
+    Locale.setDefault(locale)
+    val config = Configuration()
+    config.locale = locale
+    activity.resources.updateConfiguration(
+      config,
+      activity.baseContext.resources.displayMetrics
+    )
   }
 }

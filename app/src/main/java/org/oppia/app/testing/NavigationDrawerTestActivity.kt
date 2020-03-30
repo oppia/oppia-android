@@ -27,7 +27,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
-    homeActivityPresenter.handleOnCreate()
+    homeActivityPresenter.handleOnCreate(internalProfileId)
     title = getString(R.string.menu_home)
   }
 
