@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="subtopic"
+      type="org.oppia.app.model.Subtopic" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="16dp"
+    android:clipToPadding="true"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardMaxElevation="4dp"
+    app:strokeColor="@color/oppiaBrown"
+    app:strokeWidth="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/subtopic_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        android:src="@{subtopic.subtopicThumbnail.thumbnailGraphic}"
+        app:layout_constraintDimensionRatio="H,4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <View
+        android:id="@+id/separator_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/oppiaBrown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
+
+      <TextView
+        android:id="@+id/subtopic_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="3"
+        android:minLines="3"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="16dp"
+        android:text="@{subtopic.title}"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/separator_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>

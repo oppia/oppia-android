@@ -3,21 +3,12 @@ package org.oppia.app.topic
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.ProfileId
-import org.oppia.app.model.Topic
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
@@ -35,7 +26,7 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_info_icon_24dp,
       R.drawable.ic_lessons_icon_24dp,
       R.drawable.ic_practice_icon_24dp,
-      R.drawable.ic_review_icon_24dp
+      R.drawable.ic_revision_icon_24dp
     )
 
   fun handleCreateView(
@@ -66,7 +57,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.lessons)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.practice)).setIcon(tabIcons[2])
-    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.review)).setIcon(tabIcons[3])
+    tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
   }

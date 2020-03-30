@@ -51,7 +51,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
+        android:paddingTop="24dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none"
         app:data="@{viewModel.completedStoryListLiveData}" />
 

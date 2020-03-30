@@ -54,7 +54,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -657,7 +657,7 @@ class TopicControllerTest {
 
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
-    val reviewCardLiveData = topicController.getReviewCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
+    val reviewCardLiveData = topicController.getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
     val reviewCardResult = reviewCardLiveData.value
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()

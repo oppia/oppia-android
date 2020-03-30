@@ -1,0 +1,3 @@
+[*.{kt,kts}]
+# possible values: number (e.g. 2), "unset" (makes ktlint ignore indentation completely)  
+indent_size=2

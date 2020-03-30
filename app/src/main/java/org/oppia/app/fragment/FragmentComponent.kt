@@ -8,7 +8,7 @@ import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
-import org.oppia.app.help.faq.FAQFragment
+import org.oppia.app.help.faq.FAQListFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
@@ -33,8 +33,8 @@ import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
 import org.oppia.app.topic.practice.TopicPracticeFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
-import org.oppia.app.topic.review.TopicReviewFragment
-import org.oppia.app.topic.reviewcard.ReviewCardFragment
+import org.oppia.app.topic.revision.TopicRevisionFragment
+import org.oppia.app.topic.revisioncard.RevisionCardFragment
 import org.oppia.app.view.ViewComponent
 import org.oppia.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragment
@@ -64,7 +64,7 @@ interface FragmentComponent {
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
-  fun inject(faqFragment: FAQFragment)
+  fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
@@ -77,13 +77,13 @@ interface FragmentComponent {
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
-  fun inject(reviewCardFragment: ReviewCardFragment)
+  fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)
-  fun inject(topicReviewFragment: TopicReviewFragment)
+  fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)

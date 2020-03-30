@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="profilechooser_span">3</integer>
+  <integer name="profile_chooser_span_count">3</integer>
 </resources>
