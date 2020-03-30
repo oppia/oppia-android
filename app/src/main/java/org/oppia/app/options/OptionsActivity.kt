@@ -13,8 +13,7 @@ import javax.inject.Inject
 /** The activity for setting user preferences. */
 class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListListener, RouteToAudioLanguageListListener,
   RouteToStoryTextSizeListener {
-  @Inject
-  lateinit var optionActivityPresenter: OptionsActivityPresenter
+  @Inject lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   private lateinit var profileId: ProfileId
 

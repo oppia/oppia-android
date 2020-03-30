@@ -20,7 +20,7 @@ import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 const val STORY_TEXT_SIZE = "STORY_TEXT_SIZE"

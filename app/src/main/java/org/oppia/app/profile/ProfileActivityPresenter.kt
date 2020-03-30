@@ -8,7 +8,7 @@ import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** The presenter for [ProfileActivity]. */

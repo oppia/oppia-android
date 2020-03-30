@@ -62,7 +62,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("HomeActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e("AdministratorControlsActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
