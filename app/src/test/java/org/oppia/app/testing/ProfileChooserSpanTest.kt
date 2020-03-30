@@ -31,10 +31,10 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLERVIEW = "profile_recycler_
 @Config(manifest = Config.NONE)
 class ProfileChooserSpanTest {
 
-  lateinit var context: Context
+  private lateinit var context: Context
   private var activity: ProfileChooserFragmentTestActivity? = null
-  lateinit var fragment: ProfileChooserFragment
-  lateinit var recyclerView: RecyclerView
+  private lateinit var fragment: ProfileChooserFragment
+  private lateinit var recyclerView: RecyclerView
 
   @Before
   @ExperimentalCoroutinesApi
@@ -132,6 +132,7 @@ class ProfileChooserSpanTest {
       assertThat((recyclerView.layoutManager as GridLayoutManager).spanCount).isEqualTo(5)
     }
   }
+
   @Test
   @Config(qualifiers = "land-xxxhdpi")
   fun ProfileChooserFragmentTest_onConfigLandScapeAndForXxxhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
