@@ -53,7 +53,7 @@
         android:background="@color/profileEditBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="40dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none"
         app:data="@{viewModel.profiles}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
