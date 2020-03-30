@@ -2,7 +2,6 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -359,11 +358,12 @@ class StateFragmentPresenter @Inject constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
 
-      Log.d("pending item list", "" + viewModel.itemList.size)
       // Check if user submits wrong answers more then twice
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
+          logger.e("StateFragment", "hint revealed true = " + ephemeralState.state.interaction.hintList[0].hintIsRevealed)
+
 //           The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
             if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
@@ -381,11 +381,15 @@ class StateFragmentPresenter @Inject constructor(
               })
               break
             } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
-              lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
-                allHintsExhausted = true
-                viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                viewModel.setHintBulbVisibility(true)
-              })
+              if(ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
+                logger.e("StateFragment", "solution = " + ephemeralState.state.interaction.solution.correctAnswer)
+
+                lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                  allHintsExhausted = true
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+              }
             }
           }
         }
