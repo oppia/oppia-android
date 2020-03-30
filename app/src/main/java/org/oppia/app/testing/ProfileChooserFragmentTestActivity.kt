@@ -18,10 +18,6 @@ class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
     profileActivityPresenter.handleOnCreate()
   }
 
-   fun getProfileChooserFragment(): ProfileChooserFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment?
-  }
-
   companion object {
     internal const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
   }
