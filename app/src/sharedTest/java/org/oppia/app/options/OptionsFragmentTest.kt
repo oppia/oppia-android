@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -22,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -32,6 +34,8 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -257,6 +261,29 @@ class OptionsFragmentTest {
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
         matches(withText("Hindi"))
       )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_clickAppLanguage_changeAppLanguageHindi_checkToolbarTextChangeToHindi() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
+        click()
+      )
+      onView(withId(R.id.language_recycler_view))
+        .perform(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            2,
+            click()
+          )
+        )
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.options_activity_toolbar))
+        )
+      ).check(matches(withText("विकल्प")))
     }
   }
 
