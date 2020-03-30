@@ -119,10 +119,15 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
   }
 
-  override fun routeToHintsAndSolution(newState: State, explorationId: String) {
+  override fun routeToHintsAndSolution(
+    newState: State,
+    explorationId: String,
+    newAvailableHintIndex: Int,
+    allHintsExhausted: Boolean
+  ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment = HintsAndSolutionFragment()
-      hintsAndSolutionFragment.setStateAndExplorationId(newState, explorationId)
+      hintsAndSolutionFragment.setStateAndExplorationId(newState, explorationId, newAvailableHintIndex, allHintsExhausted)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

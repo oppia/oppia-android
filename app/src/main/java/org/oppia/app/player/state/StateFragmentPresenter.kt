@@ -111,6 +111,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private var newAvailableHintIndex: Int = -1
+  private var allHintsExhausted: Boolean = false
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -155,7 +157,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
-      routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId)
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(currentState, explorationId, newAvailableHintIndex, allHintsExhausted)
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
@@ -358,30 +360,26 @@ class StateFragmentPresenter @Inject constructor(
 
           // Start a timer for 6 secs and then display 1st hint
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
-            logger.e("StateFragment", "index = " + index)
-            logger.e("StateFragment", "Revealed hint = " + ephemeralState.state.interaction.hintList[index].hintIsRevealed)
-
             if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
                 lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
-                  logger.e("StateFragment", "inside hint 1 = " + index)
-
-                  explorationProgressController.newHintIsAvailable(currentState, 0)
+                  newAvailableHintIndex = index
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
                 })
-
                 break
-
             } else if (index!=0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
-                logger.e("StateFragment", "inside hint 2 = " + index)
-
-                explorationProgressController.newHintIsAvailable(currentState, index)
+                newAvailableHintIndex = index
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
-
                 break
+            }else if(index== (ephemeralState.state.interaction.hintList.size-1) && !ephemeralState.state.interaction.solution.solutionIsRevealed){
+              lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                allHintsExhausted = true
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              })
             }
           }
         }

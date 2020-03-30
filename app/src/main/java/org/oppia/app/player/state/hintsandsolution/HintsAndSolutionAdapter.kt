@@ -165,8 +165,10 @@ class HintsAndSolutionAdapter(
           solutionViewModel.solutionSummary, binding.solutionSummary
         )
 
-      binding.revealSolutionButton.setOnClickListener {
-        showRevealSolutionDialogFragment()
+      if(solutionViewModel.solutionCanBeRevealed) {
+        binding.revealSolutionButton.setOnClickListener {
+          showRevealSolutionDialogFragment()
+        }
       }
 
       binding.root.setOnClickListener {
@@ -208,6 +210,22 @@ class HintsAndSolutionAdapter(
       val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
       solutionViewModel.isSolutionRevealed = saveUserChoice
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
+      notifyItemChanged(itemList.size - 1)
+    }
+  }
+
+  fun setNewHintIsAvailable(hintIndex: Int) {
+    if (itemList.get(hintIndex) is HintsViewModel) {
+      val hintsViewModel = itemList.get(hintIndex) as HintsViewModel
+      hintsViewModel.hintCanBeRevealed = true
+      notifyItemChanged(hintIndex)
+    }
+  }
+
+  fun setSolutionCanBeRevealed(allHintsExhausted: Boolean) {
+    if (itemList.get(itemList.size - 1) is SolutionViewModel) {
+      val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
+      solutionViewModel.solutionCanBeRevealed = allHintsExhausted
       notifyItemChanged(itemList.size - 1)
     }
   }

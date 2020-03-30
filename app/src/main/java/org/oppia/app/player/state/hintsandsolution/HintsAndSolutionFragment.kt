@@ -19,6 +19,8 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
 
   private lateinit var currentState: State
   private lateinit var explorationId: String
+  private var newAvailableHintIndex: Int = -1
+  private var allHintsExhausted: Boolean = false
 
   private var currentExpandedHintListIndex: Int? = null
 
@@ -45,6 +47,8 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
       currentState,
       explorationId,
       currentExpandedHintListIndex,
+      newAvailableHintIndex,
+      allHintsExhausted,
       this as ExpandedHintListIndexListener
     )
   }
@@ -54,9 +58,16 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  fun setStateAndExplorationId(newState: State, explorationId: String) {
+  fun setStateAndExplorationId(
+    newState: State,
+    explorationId: String,
+    newAvailableHintIndex: Int,
+    allHintsExhausted: Boolean
+  ) {
     currentState = newState
     this.explorationId = explorationId
+    this.newAvailableHintIndex = newAvailableHintIndex
+    this.allHintsExhausted = allHintsExhausted
   }
 
 

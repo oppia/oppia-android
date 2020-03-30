@@ -33,6 +33,8 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
                        currentState: State,
                        explorationId: String,
                        currentExpandedHintListIndex: Int?,
+                       newAvailbleHintIndex: Int,
+                       allHintsExhausted: Boolean,
                        expandedHintListIndexListener: ExpandedHintListIndexListener): View? {
     val binding = HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getHintsAndSolutionViewModel()
@@ -68,9 +70,20 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       adapter = hintsAndSolutionAdapter
     }
 
+    handleNewAvailableHint(newAvailbleHintIndex)
+
+    if (allHintsExhausted) {
+      handleAllHintsExhausted(allHintsExhausted)
+    }
+
+
 //    binding.hintsAndSolutionRecyclerView.layoutManager!!.scrollToPosition(currentExpandedHintListIndex!!)
 
     return binding.root
+  }
+
+  private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
+    hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)
   }
 
   private fun getHintsAndSolutionViewModel(): HintsViewModel {
@@ -79,5 +92,9 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
   fun handleRevealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
+  }
+
+  fun handleNewAvailableHint(hintIndex: Int) {
+    hintsAndSolutionAdapter.setNewHintIsAvailable(hintIndex)
   }
 }
