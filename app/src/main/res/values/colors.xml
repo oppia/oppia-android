@@ -40,7 +40,10 @@
   <color name="black">#000000</color>
   <color name="transparent">#00000000</color>
   <color name="black_12">#1F000000</color>
+  <color name="black_87">#DE000000</color>
   <color name="black_20">#33000000</color>
+  <color name="black_30">#4D000000</color>
+  <color name="black_38">#61000000</color>
   <color name="black_54">#8A000000</color>
   <color name="whiteLight">#F9F9F9</color>
   <color name="red">#FF0000</color>
@@ -55,6 +58,7 @@
   <color name="profileEditBackground">#E5E5E5</color>
   <color name="generalNavigationBackground">#E5E5E5</color>
   <color name="appVersionBackground">#E5E5E5</color>
+  <color name="navigationGeneralBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#C55F45</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
