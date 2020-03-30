@@ -4,11 +4,9 @@
 
   <data>
 
-    <import type="android.view.View" />
-
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel" />
+      type="org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,23 +25,14 @@
         android:id="@+id/faq_question_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
-        android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
-        android:text="@{viewModel.question}"
+        android:paddingStart="72dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="72dp"
+        android:paddingBottom="8dp"
+        android:text="@string/featured_questions"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="14sp" />
-
-      <View
-        android:id="@+id/faq_question_divider_view"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
-        android:background="@color/oppiaFAQDivider" />
+        android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
