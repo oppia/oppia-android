@@ -15,7 +15,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/help_item_background_border">
+    android:background="@drawable/general_item_background_border">
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/profile_list_image"
@@ -40,7 +40,7 @@
       android:fontFamily="sans-serif"
       android:maxLines="1"
       android:text="@{profile.name}"
-      android:textColor="@color/black_87"
+      android:textColor="@color/oppiaPrimaryTextDark"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

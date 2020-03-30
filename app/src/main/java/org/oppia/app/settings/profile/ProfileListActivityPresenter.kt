@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.completedstorylist.CompletedStoryListActivity
-import org.oppia.app.databinding.CompletedStoryListFragmentBinding
 import org.oppia.app.databinding.ProfileListActivityBinding
 import org.oppia.app.databinding.ProfileListProfileViewBinding
 import org.oppia.app.model.Profile

@@ -27,9 +27,9 @@
         android:id="@+id/faq_question_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="76dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="76dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
@@ -41,8 +41,8 @@
         android:id="@+id/faq_question_divider_view"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginEnd="76dp"
         android:background="@color/oppiaFAQDivider" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
