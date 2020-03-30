@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Oppia</string>
+  <string name="nav_header_title">शॉन</string>
+  <string name="nav_header_desc">नेविगेशन हेडर</string>
+  <string name="menu_home">घर</string>
+  <string name="menu_options">विकल्प</string>
+  <string name="menu_my_downloads">मेरे डाउनलोड</string>
+  <string name="menu_help">मदद</string>
+  <string name="menu_switch_profile">प्रोफ़ाइल स्विच करें</string>
+  <string name="administrator_controls">प्रशासक नियंत्रण</string>
+  <string name="drawer_open_content_description">नेविगेशन मेनू खुला</string>
+  <string name="drawer_close_content_description">&gt; नेविगेशन मेनू बंद करें</string>
+  <string name="welcome_text">ओपिया में आपका स्वागत है!</string>
+  <string name="welcome_back_text">ओपिया में आपका स्वागत है!</string>
+  <string name="audio_play_description">ऑडियो चलाएं</string>
+  <string name="audio_pause_description">ऑडियो रोकें</string>
+  <string name="audio_language_select_dialog_okay_button">ठीक</string>
+  <string name="audio_language_select_dialog_cancel_button">रद्द करना</string>
+  <string name="audio_language_select_dialog_title">ऑडियो भाषा</string>
+  <string name="audio_dialog_offline_title">वर्तमान में ऑफ़लाइन</string>
+  <string name="audio_dialog_offline_message">सुनिश्चित करें कि वाई-फाई या सेलुलर डेटा चालू है, फिर से प्रयास करें।</string>
+  <string name="audio_dialog_offline_positive">ठीक</string>
+  <string name="cellular_data_alert_dialog_okay_button">ठीक</string>
+  <string name="cellular_data_alert_dialog_cancel_button">रद्द करना</string>
+  <string name="cellular_data_alert_dialog_title">वर्तमान में सेलुलर डेटा पर</string>
+  <string name="cellular_data_alert_dialog_description">स्ट्रीमिंग ऑडियो बहुत सेलुलर डेटा का उपयोग कर सकता है।</string>
+  <string name="cellular_data_alert_dialog_checkbox">यह संदेश दोबारा नहीं दिखाया जाएगा</string>
+  <string name="concept_card_toolbar_title">संकल्पना कार्ड</string>
+  <string name="revision_card_toolbar_title">संशोधन कार्ड</string>
+  <string name="stop_exploration_dialog_title">विषय पृष्ठ पर जाएं?</string>
+  <string name="stop_exploration_dialog_description">आपकी प्रगति बच नहीं पाएगी।</string>
+  <string name="stop_exploration_dialog_cancel_button">रद्द करना</string>
+  <string name="stop_exploration_dialog_leave_button">छोड़ना</string>
+  <string name="topic_practice_master_these_skills">मास्टर इन कौशल</string>
+  <string name="topic_name_text_view">अनुपात और आनुपातिक तर्क</string>
+  <string name="topic_practice_skills_description">उन कौशल का चयन करें या अचयनित करें जिन्हें आप अभ्यास करना चाहते हैं</string>
+  <string name="topic_practice_start">शुरू</string>
+  <string name="state_continue_button">जारी रखें</string>
+  <string name="state_continue_submit">प्रस्तुत</string>
+  <string name="previous_state_description">पूर्व स्थिति में नेविगेट करें</string>
+  <string name="next_state_description">अगले राज्य में नेविगेट करें</string>
+  <string name="state_submit_button">प्रस्तुत</string>
+  <string name="state_end_exploration_button">विषय पर लौटें</string>
+  <string name="previous_responses_header">पिछले जवाब ( %d)</string>
+  <string name="state_learn_again_button">फिर से जानें</string>
+  <string name="topic_download_text">(%s)</string>
+  <string name="FAQs">पूछे जाने वाले प्रश्न</string>
+  <string name="featured_questions">चुनिंदा प्रश्न</string>
+  <string name="frequently_asked_questions">अक्सर पूछे जाने वाले प्रश्न</string>
+  <string name="frequently_asked_questions_FAQ">अक्सर पूछे जाने वाले प्रश्न (एफएक्यू)</string>
+  <string name="info">जानकारी</string>
+  <string name="lessons">पाठ</string>
+  <string name="practice">अभ्यास</string>
+  <string name="revision">संशोधन</string>
+  <string name="topic">विषय</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="topic_play_chapter_index">%s.</string>
+  <string name="chapter_name">अध्याय %s: %s</string>
+  <string name="chapter_completed">अध्याय %s: %s पूरा हो गया है।</string>
+  <string name="text_input_default_content_description">लिखना प्रारम्भ करें।</string>
+  <string name="fractions_default_hint_text">प्रपत्र x /x, या प्रपत्र x x /x में मिश्रित संख्या में एक अंश दर्ज करें।</string>
+  <string name="fractions_default_hint_text_no_integer">प्रपत्र x /x में एक अंश दर्ज करें।</string>
+  <string name="numeric_input_content_description">एक नंबर दर्ज करें।</string>
+  <string name="number_with_units_input_hint_text">यहां इकाइयों के साथ संख्या लिखें।</string>
+  <string name="enable_audio_playback_content_description">इस पाठ के लिए ऑडियो वॉयसओवर सक्षम करें।</string>
+  <string name="recently_played_stories">हाल ही में खेली गई कहानियां</string>
+  <string name="view_all">सभी देखें</string>
+  <string name="ongoing_story_last_week">अंतिम सप्ताह के भीतर खेला गया</string>
+  <string name="ongoing_story_last_month">पिछले महीने के भीतर खेला गया</string>
+  <string name="lesson_thumbnail_content_description">%s के लिए छवि</string>
+  <string name="all_topics">सभी विषय</string>
+  <string name="stories_you_can_play">कहानियां आप खेल सकते हैं</string>
+  <string name="go_to_previous_page">पिछले पृष्ठ पर जाएं।</string>
+  <string name="recently_played_activity">हाल ही में प्ले की गई कहानियां</string>
+  <string name="topic_downloaded">विषय डाउनलोड</string>
+  <string name="downloaded">डाउनलोड</string>
+  <string name="status_in_progress">चालू</string>
+  <string name="status_completed">पूरा कर लिया है</string>
+  <string name="show_hide_chapter_list">%s की अध्याय सूची दिखाएँ /छिपाएँ</string>
+  <string name="play_pause_audio">Play /रोकें ऑडियो</string>
+  <string name="help">मदद</string>
+  <string name="preferences">पसंद</string>
+  <string name="search">खोज</string>
+  <string name="fraction_error_invalid_chars">कृपया केवल संख्यात्मक अंकों, रिक्त स्थान या फ़ॉरवर्ड स्लैश (/) का उपयोग करें</string>
+  <string name="fraction_error_invalid_format">कृपया एक वैध अंश दर्ज करें (जैसे, 5/3 या 1 2/3)</string>
+  <string name="fraction_error_divide_by_zero">कृपया हर में 0 न डालें</string>
+  <string name="fraction_error_larger_than_seven_digits">अंश में कोई भी संख्या 7 अंकों से अधिक नहीं होनी चाहिए।</string>
+  <string name="number_error_starting_with_floating_point">कृपया अपना उत्तर एक नंबर से शुरू करें (जैसे, 0.5 में 0)।</string>
+  <string name="number_error_invalid_format">कृपया एक सही संख्या डालिये।</string>
+  <string name="number_error_larger_than_fifteen_characters">उत्तर में अधिकतम 15 वर्ण (यानी, [0-9] या "" या "-") हो सकते हैं।</string>
+  <string name="unknown_size">अज्ञात आकार</string>
+  <string name="size_bytes">%d बाइट्स</string>
+  <string name="size_kb">%d केबी</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d जीबी</string>
+  <string name="correct">सही बात!</string>
+  <string name="topic_prefix">विषय</string>
+  <plurals name="chapter_count">
+    <item quantity="one">
+      1 अध्याय
+    </item>
+    <item quantity="other">
+      %d अध्याय
+    </item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="one">
+      1 कहानी
+    </item>
+    <item quantity="other">
+      %d कहानियों
+    </item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%d of %d अध्याय पूरा कर ली</item>
+    <item quantity="other">%d of %d अध्याय पूरा कर ली</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 पाठ
+    </item>
+    <item quantity="other">
+      %d पाठ
+    </item>
+  </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">
+      1 कहानी पूरी कर ली
+    </item>
+    <item quantity="other">
+      %d कहानिया पूरी कर ली
+    </item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">
+      1 प्रगति में विषय
+    </item>
+    <item quantity="other">
+      %d प्रगति में विषय
+    </item>
+  </plurals>
+  <string name="bar_separator">\u0020 | \u0020</string>
+  <string name="profile_chooser_admin">प्रशासक</string>
+  <string name="profile_chooser_select">अपनी प्रोफ़ाइल चुनें</string>
+  <string name="profile_chooser_add">प्रोफ़ाइल जोड़ें</string>
+  <string name="admin_auth_toolbar">प्रशासक नियंत्रण</string>
+  <string name="admin_auth_heading">व्यवस्थापक प्राधिकरण आवश्यक है</string>
+  <string name="admin_auth_sub">नया खाता बनाने के लिए व्यवस्थापक पिन दर्ज करें।</string>
+  <string name="admin_auth_admin_controls_sub">व्यवस्थापक नियंत्रण तक पहुँचने के लिए व्यवस्थापक पिन दर्ज करें।</string>
+  <string name="admin_auth_pin">प्रशासक का पिन</string>
+  <string name="admin_auth_incorrect">गलत प्रशासक का पिन। कृपया पुन: प्रयास करें।</string>
+  <string name="admin_auth_submit">प्रस्तुत</string>
+  <string name="admin_auth_close">बंद करे</string>
+  <string name="admin_pin_requirement_description">प्रोफ़ाइल जोड़ने से पहले, हमें एक पिन बनाकर आपके खाते की सुरक्षा करनी होगी। यह आपको डिवाइस पर डाउनलोड को अधिकृत करने और प्रोफाइल को प्रबंधित करने की क्षमता देता है।</string>
+  <string name="admin_pin_pin_description">कर<b> नहीं</b> एक पिन का उपयोग करें जिसे आपने बैंकिंग या सामाजिक सुरक्षा जैसे व्यक्तिगत खातों के लिए निर्धारित किया है।</string>
+  <string name="admin_pin_new_pin">नया 5-अंक पिन</string>
+  <string name="admin_pin_new_confirm">5-अंकीय पिन की पुष्टि करें</string>
+  <string name="admin_pin_error_pin_length">आपका पिन 5 अंक लंबा होना चाहिए।</string>
+  <string name="admin_pin_error_pin_confirm_wrong">कृपया सुनिश्चित करें कि दोनों पिन मेल खाते हैं।</string>
+  <string name="admin_pin_submit">सहेजें</string>
+  <string name="add_profile_title">प्रोफ़ाइल जोड़ें</string>
+  <string name="add_profile_input_name">नाम *</string>
+  <string name="add_profile_input_pin">3-अंक पिन *</string>
+  <string name="add_profile_input_confirm_pin">3-अंकीय पिन की पुष्टि करें *</string>
+  <string name="add_profile_allow_download_heading">डाउनलोड डाउनलोड की अनुमति दें</string>
+  <string name="add_profile_allow_download_sub">उपयोगकर्ता प्रशासक पासवर्ड के बिना सामग्री को डाउनलोड और हटाने में सक्षम है। केवल पिन के साथ उपलब्ध है।</string>
+  <string name="add_profile_create_btn">सृजन करना</string>
+  <string name="add_profile_close">बंद करे</string>
+  <string name="add_profile_pin_info">पिन के साथ, कोई भी अन्य व्यक्ति इस असाइन किए गए उपयोगकर्ता के अलावा किसी प्रोफ़ाइल तक नहीं पहुंच सकता</string>
+  <string name="add_profile_error_image_failed_store">हम आपकी अवतार छवि को संग्रहीत करने में विफल रहे। कृपया पुन: प्रयास करें।</string>
+  <string name="add_profile_error_name_not_unique">यह नाम पहले से ही किसी अन्य प्रोफ़ाइल के उपयोग में है।</string>
+  <string name="add_profile_error_name_empty">कृपया इस प्रोफ़ाइल के लिए एक नाम दर्ज करें।</string>
+  <string name="add_profile_error_name_only_letters">नामों में केवल अक्षर हो सकते हैं। कोई दूसरा नाम आज़माएँ?</string>
+  <string name="add_profile_error_pin_length">आपका पिन 3 अंक लंबा होना चाहिए।</string>
+  <string name="add_profile_error_pin_confirm_wrong">कृपया सुनिश्चित करें कि दोनों पिन मेल खाते हैं।</string>
+  <string name="onboarding_slide_0_title">ओपिया में आपका स्वागत है!</string>
+  <string name="onboarding_slide_0_description">एक प्रभावी और सुखद तरीके से आप जो कुछ भी चाहते हैं, उसे जानें।</string>
+  <string name="onboarding_slide_1_title">अपने खाते में उपयोगकर्ताओं को जोड़ें।</string>
+  <string name="onboarding_slide_1_description">अनुभव साझा करें और 10 प्रोफ़ाइल तक बनाएं।</string>
+  <string name="onboarding_slide_2_title">ऑफ़लाइन के लिए डाउनलोड करें।</string>
+  <string name="onboarding_slide_2_description">इंटरनेट कनेक्शन के बिना अपने सबक सीखना जारी रखें।</string>
+  <string name="onboarding_slide_3_title">मज़े करो!</string>
+  <string name="onboarding_slide_3_description">हमारे मुफ्त, प्रभावी पाठों के साथ अपने सीखने के रोमांच का आनंद लें।</string>
+  <string name="skip">छोड़ें</string>
+  <string name="get_started">शुरू हो जाओ</string>
+  <string name="pin_password_hello">उनके!</string>
+  <string name="pin_password_admin_enter">कृपया अपना व्यवस्थापक पिन दर्ज करें।</string>
+  <string name="pin_password_user_enter">कृपया अपना पिन दर्ज करें।</string>
+  <string name="pin_password_forgot_pin">मैं अपना पिन भूल गया।</string>
+  <string name="pin_password_incorrect_pin">गलत पिन।</string>
+  <string name="pin_password_show">प्रदर्शन</string>
+  <string name="pin_password_hide">छिपाना</string>
+  <string name="pin_password_close">बंद करे</string>
+  <string name="pin_password_success">पिन परिवर्तन सफल है</string>
+  <string name="pin_password_forgot_title">पिन भूल गए?</string>
+  <string name="pin_password_forgot_message">अपना पिन रीसेट करने के लिए, कृपया ओपिया की स्थापना रद्द करें और फिर इसे पुनर्स्थापित करें। \n\nध्यान रखें कि यदि डिवाइस ऑनलाइन नहीं हुआ है, तो आप कई खातों पर उपयोगकर्ता की प्रगति खो सकते हैं।</string>
+  <string name="pin_password_play_store">प्ले स्टोर पर जाएं</string>
+  <string name="show_hide_password_icon">पासवर्ड आइकन दिखाएँ /छिपाएँ</string>
+  <string name="admin_settings_label">प्रशासक का पिन</string>
+  <string name="admin_settings_heading">व्यवस्थापक सेटिंग्स तक पहुंच</string>
+  <string name="admin_settings_sub">उपयोगकर्ता के पिन को बदलने के लिए प्रशासक का पिन आवश्यक है</string>
+  <string name="admin_settings_cancel">रद्द करना</string>
+  <string name="admin_settings_submit">प्रस्तुत</string>
+  <string name="admin_settings_incorrect">गलत प्रशासक का पिन। कृपया पुन: प्रयास करें।</string>
+  <string name="reset_pin_enter">एक नया पिन दर्ज करें</string>
+  <string name="my_downloads">मेरे डाउनलोड</string>
+  <string name="tab_downloads">डाउनलोड</string>
+  <string name="tab_updates">अपडेट (2)</string>
+  <string name="home_activity_back_dialog_message">क्या आप अपनी प्रोफ़ाइल से बाहर निकलना चाहेंगे?</string>
+  <string name="home_activity_back_dialog_cancel">रद्द करना</string>
+  <string name="home_activity_back_dialog_exit">बाहर जाएं</string>
+  <string name="profile_list_activity_title">प्रोफाइल</string>
+  <string name="profile_edit_created">%s पर बनाया गया</string>
+  <string name="profile_edit_rename">नाम बदलें</string>
+  <string name="profile_edit_reset">पिन रीसेट करें</string>
+  <string name="profile_edit_delete">प्रोफ़ाइल हटाया गया</string>
+  <string name="profile_edit_delete_dialog_title">स्थायी रूप से इस प्रोफ़ाइल को हटाएं?</string>
+  <string name="profile_edit_delete_dialog_message">सभी प्रगति को हटा दिया जाएगा और पुनर्प्राप्त नहीं किया जा सकता है।</string>
+  <string name="profile_edit_delete_dialog_positive">हटाएं</string>
+  <string name="profile_edit_delete_dialog_negative">रद्द करना</string>
+  <string name="profile_edit_allow_download_heading">डाउनलोड डाउनलोड की अनुमति दें</string>
+  <string name="profile_edit_allow_download_sub">उपयोगकर्ता प्रशासक पासवर्ड के बिना सामग्री को डाउनलोड और हटाने में सक्षम है</string>
+  <string name="profile_progress_edit_dialog_title">प्रोफ़ाइल फोटो</string>
+  <string name="profile_picture_edit_alert_dialog_cancel_button">रद्द करना</string>
+  <string name="profile_picture_edit_alert_dialog_view_profile_picture">प्रोफ़ाइल चित्र देखें</string>
+  <string name="profile_picture_edit_alert_dialog_choose_from_library">पुस्तकालय से चुनें</string>
+  <string name="profile_rename_title">प्रोफाइल का नाम बदलें</string>
+  <string name="profile_rename_label">नया नाम</string>
+  <string name="profile_rename_save">सहेजें</string>
+  <string name="profile_reset_pin_title">पिन रीसेट करें</string>
+  <string name="profile_reset_pin_main">उपयोगकर्ता के लिए एक नया पिन दर्ज करें जब वे अपनी प्रोफ़ाइल तक पहुंच सकें।</string>
+  <string name="profile_reset_pin_user_pin_label">3-अंक पिन</string>
+  <string name="profile_reset_pin_admin_pin_label">5-अंक पिन</string>
+  <string name="profile_reset_pin_user_confirm_label">3-अंकीय पिन की पुष्टि करें</string>
+  <string name="profile_reset_pin_admin_confirm_label">5-अंकीय पिन की पुष्टि करें</string>
+  <string name="profile_reset_pin_error_user_pin_length">आपका पिन 3 अंक लंबा होना चाहिए।</string>
+  <string name="profile_reset_pin_error_admin_pin_length">आपका पिन 5 अंक लंबा होना चाहिए।</string>
+  <string name="add_profile_create_a_3_digit_pin">3 अंकों का पिन बनाएं</string>
+  <string name="add_profile_required">* आवश्यक</string>
+  <string name="back_button">पिछला बटन</string>
+  <string name="next">आगे</string>
+  <string name="administrator_controls_general_label">सामान्य</string>
+  <string name="administrator_controls_edit_account">खाता संपादित करें</string>
+  <string name="administrator_controls_profile_management_label">प्रोफ़ाइल प्रबंधन</string>
+  <string name="administrator_controls_edit_profiles">प्रोफाइल संपादित करें</string>
+  <string name="administrator_controls_download_permissions_label">डाउनलोड करें</string>
+  <string name="administrator_controls_update_on_wifi_title">डाउनलोड करें और केवल वाई-फाई पर अपडेट करें</string>
+  <string name="administrator_controls_update_on_wifi_message">विषय केवल वाई-फाई पर डाउनलोड और अपडेट किए जाएंगे। सेलुलर डेटा के किसी भी डाउनलोड या अपडेट को कतारबद्ध किया जाएगा।</string>
+  <string name="administrator_controls_auto_update_title">विषयों को स्वचालित रूप से अपडेट करें</string>
+  <string name="administrator_controls_auto_update_message">डाउनलोड किए गए विषय जिनके पास नई सामग्री उपलब्ध है, स्वचालित रूप से अपडेट हो जाएंगे।</string>
+  <string name="administrator_controls_app_information_label">ऐप की जानकारी</string>
+  <string name="administrator_controls_app_version">एप्लिकेशन वेरीज़न</string>
+  <string name="administrator_controls_account_actions_label">खाता क्रिया</string>
+  <string name="administrator_controls_log_out">लॉग आउट</string>
+  <string name="log_out_dialog_cancel_button">रद्द करना</string>
+  <string name="log_out_dialog_okay_button">ठीक</string>
+  <string name="log_out_dialog_message">क्या आप वाकई अपनी प्रोफ़ाइल से लॉग आउट करना चाहते हैं?</string>
+  <string name="app_version_name">ऐप संस्करण %s</string>
+  <string name="app_last_update_date">अंतिम अद्यतन %s पर स्थापित किया गया था। बग के बारे में प्रतिक्रिया भेजने के लिए उपरोक्त संस्करण संख्या का उपयोग करें।</string>
+  <string name="title_story_text_size">कहानी पाठ का आकार</string>
+  <string name="title_app_language">ऐप भाषा</string>
+  <string name="title_default_audio">डिफ़ॉल्ट ऑडियो भाषा</string>
+  <string name="story_text_will_look_like_this">कहानी पाठ इस तरह दिखेगा</string>
+  <string name="constant_string_for_text_size">ए</string>
+  <string name="audio_language">डिफ़ॉल्ट ऑडियो</string>
+  <string name="app_language">ऐप भाषा</string>
+  <string name="story_text_size">कहानी पाठ का आकार</string>
+  <string name="profile">प्रोफ़ाइल</string>
+  <string name="story_count_text_view">2 कहानियां</string>
+  <string name="topics_in_progress">प्रगति में विषय</string>
+  <string name="topic_in_progress">प्रगति में विषय</string>
+  <string name="stories_completed">कहानियां पूरी हुईं</string>
+  <string name="story_completed">कहानी पूरी हुई</string>
+  <string name="walkthrough_welcome_description">कहानियों के साथ नए गणित कौशल सीखें जो आपको दिखाते हैं कि उन्हें अपने दैनिक जीवन में कैसे उपयोग किया जाए</string>
+  <string name="welcome">"का स्वागत करते हैं!"</string>
+  <string name="what_do_you_want_to_learn">आप क्या सीखना चाहते हैं?</string>
+</resources>
