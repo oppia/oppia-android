@@ -151,6 +151,23 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  fun newHintIsAvailable(state: State, hintIndex: Int){
+    try {
+      explorationProgressLock.withLock {
+        explorationProgress.stateDeck.submitNewHintAvailable(state, hintIndex)
+        explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+        explorationProgress.stateGraph.computeHintForResult(
+            state,
+        false,
+        hintIndex
+        )
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+      }
+    } catch (e: Exception) {
+
+    }
+  }
+
   fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
@@ -482,6 +499,7 @@ class ExplorationProgressController @Inject constructor(
       return Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
+        .setNewHintIsAvailable(true)
         .setState(currentState)
         .build()
     }
@@ -617,6 +635,15 @@ class ExplorationProgressController @Inject constructor(
       hintList += Hint.newBuilder()
         .setHintIsRevealed(hintIsRevealed)
         .setHintContent(state.interaction.getHint(hintIndex).hintContent)
+        .setNewHintIsAvailable(true)
+        .build()
+    }
+
+    internal fun submitNewHintAvailable(state: State, hintIndex: Int) {
+      hintList += Hint.newBuilder()
+        .setHintIsRevealed(false)
+        .setHintContent(state.interaction.getHint(hintIndex).hintContent)
+        .setNewHintIsAvailable(true)
         .build()
     }
 

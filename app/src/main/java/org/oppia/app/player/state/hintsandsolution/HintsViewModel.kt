@@ -14,6 +14,7 @@ class HintsViewModel @Inject constructor(
   var title: String = ""
   var hintsAndSolutionSummary: String = ""
   var isHintRevealed: Boolean = false
+  var hintCanBeRevealed: Boolean = false
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
   private lateinit var explorationId: String
@@ -33,6 +34,7 @@ class HintsViewModel @Inject constructor(
       hintsAndSolutionViewModel.title = hintList[index].hintContent.contentId
       hintsAndSolutionViewModel.hintsAndSolutionSummary = hintList[index].hintContent.html
       hintsAndSolutionViewModel.isHintRevealed = hintList[index].hintIsRevealed
+      hintsAndSolutionViewModel.hintCanBeRevealed = hintList[index].newHintIsAvailable
       itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
     }
     if (solution.hasExplanation()) {

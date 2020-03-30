@@ -355,22 +355,33 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
-          logger.e("StateFragment", "Revealed hint = " + currentState.interaction.getHint(0).hintIsRevealed)
 
           // Start a timer for 6 secs and then display 1st hint
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
-            if (index == 0) {
-              if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+            logger.e("StateFragment", "index = " + index)
+            logger.e("StateFragment", "Revealed hint = " + ephemeralState.state.interaction.hintList[index].hintIsRevealed)
+
+            if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
                 lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
+                  logger.e("StateFragment", "inside hint 1 = " + index)
+
+                  explorationProgressController.newHintIsAvailable(currentState, 0)
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
                 })
-              }
-            } else if (!ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
+
+                break
+
+            } else if (index!=0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                logger.e("StateFragment", "inside hint 2 = " + index)
+
+                explorationProgressController.newHintIsAvailable(currentState, index)
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
+
+                break
             }
           }
         }

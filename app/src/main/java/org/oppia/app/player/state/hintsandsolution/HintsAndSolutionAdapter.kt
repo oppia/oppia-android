@@ -83,60 +83,66 @@ class HintsAndSolutionAdapter(
 
   inner class HintsAndSolutionSummaryViewHolder(private val binding: HintsSummaryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(hintsAndSolutionViewModel: HintsViewModel, position: Int) {
+    internal fun bind(hintsViewModel: HintsViewModel, position: Int) {
       var isHintListVisible = false
       if (currentExpandedHintListIndex != null) {
         isHintListVisible = currentExpandedHintListIndex!! == position
       }
       binding.isListExpanded = isHintListVisible
-      binding.viewModel = hintsAndSolutionViewModel
+      binding.viewModel = hintsViewModel
 
-      binding.hintTitle?.text = hintsAndSolutionViewModel.title.replace("_", " ").capitalize()
+      binding.hintTitle?.text = hintsViewModel.title.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
           .parseOppiaHtml(
-            hintsAndSolutionViewModel.hintsAndSolutionSummary, binding.hintsAndSolutionSummary
+            hintsViewModel.hintsAndSolutionSummary, binding.hintsAndSolutionSummary
           )
 
-      binding.revealHintButton?.setOnClickListener {
-        hintsAndSolutionViewModel.isHintRevealed = true
-        (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
-          notifyItemChanged(currentExpandedHintListIndex!!)
-        } else {
-          if (previousIndex != null) {
-            notifyItemChanged(previousIndex)
-          }
-          if (currentExpandedHintListIndex != null) {
+      if(hintsViewModel.hintCanBeRevealed) {
+
+        binding.revealHintButton?.setOnClickListener {
+          hintsViewModel.isHintRevealed = true
+          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
+          val previousIndex: Int? = currentExpandedHintListIndex
+          currentExpandedHintListIndex =
+            if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+              null
+            } else {
+              position
+            }
+          expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
             notifyItemChanged(currentExpandedHintListIndex!!)
+          } else {
+            if (previousIndex != null) {
+              notifyItemChanged(previousIndex)
+            }
+            if (currentExpandedHintListIndex != null) {
+              notifyItemChanged(currentExpandedHintListIndex!!)
+            }
           }
         }
       }
+
       binding.root.setOnClickListener {
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
-          notifyItemChanged(currentExpandedHintListIndex!!)
-        } else {
-          if (previousIndex != null) {
-            notifyItemChanged(previousIndex)
-          }
-          if (currentExpandedHintListIndex != null) {
+        if(hintsViewModel.isHintRevealed) {
+          val previousIndex: Int? = currentExpandedHintListIndex
+          currentExpandedHintListIndex =
+            if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+              null
+            } else {
+              position
+            }
+          expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
             notifyItemChanged(currentExpandedHintListIndex!!)
+          } else {
+            if (previousIndex != null) {
+              notifyItemChanged(previousIndex)
+            }
+            if (currentExpandedHintListIndex != null) {
+              notifyItemChanged(currentExpandedHintListIndex!!)
+            }
           }
         }
       }
@@ -164,22 +170,24 @@ class HintsAndSolutionAdapter(
       }
 
       binding.root.setOnClickListener {
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
-          notifyItemChanged(currentExpandedHintListIndex!!)
-        } else {
-          if (previousIndex != null) {
-            notifyItemChanged(previousIndex)
-          }
-          if (currentExpandedHintListIndex != null) {
+        if(solutionViewModel.isSolutionRevealed) {
+          val previousIndex: Int? = currentExpandedHintListIndex
+          currentExpandedHintListIndex =
+            if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+              null
+            } else {
+              position
+            }
+          expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
             notifyItemChanged(currentExpandedHintListIndex!!)
+          } else {
+            if (previousIndex != null) {
+              notifyItemChanged(previousIndex)
+            }
+            if (currentExpandedHintListIndex != null) {
+              notifyItemChanged(currentExpandedHintListIndex!!)
+            }
           }
         }
       }

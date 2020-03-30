@@ -8,4 +8,5 @@ class SolutionViewModel : HintsAndSolutionItemViewModel(){
   var correctAnswer: String = ""
   var title: String = ""
   var isSolutionRevealed: Boolean = false
+  var solutionCanBeRevealed: Boolean = false
 }
