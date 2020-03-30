@@ -362,8 +362,6 @@ class StateFragmentPresenter @Inject constructor(
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
-          logger.e("StateFragment", "hint revealed true = " + ephemeralState.state.interaction.hintList[0].hintIsRevealed)
-
 //           The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
             if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
@@ -382,8 +380,6 @@ class StateFragmentPresenter @Inject constructor(
               break
             } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
               if(ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
-                logger.e("StateFragment", "solution = " + ephemeralState.state.interaction.solution.correctAnswer)
-
                 lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
                   allHintsExhausted = true
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
