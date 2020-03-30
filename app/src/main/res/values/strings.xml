@@ -45,6 +45,8 @@
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
+  <string name="see_more">See More</string>
+  <string name="see_less">See Less</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
@@ -284,6 +286,7 @@
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
+  <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
   <string name="topics_in_progress">Topics in Progress</string>

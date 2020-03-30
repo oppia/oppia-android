@@ -140,6 +140,7 @@
                 style="@style/StoryTextSizeSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/slide_seekbar_to_control_text_size"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:thumb="@drawable/story_text_size_seekbar_thumb" />

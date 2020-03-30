@@ -86,7 +86,9 @@
       android:name=".profileprogress.ProfileProgressActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileEditActivity" />
-    <activity android:name=".settings.profile.ProfileListActivity" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileRenameActivity" />
     <activity android:name=".settings.profile.ProfileResetPinActivity" />
     <activity

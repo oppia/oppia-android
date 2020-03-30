@@ -7,7 +7,6 @@ import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ObservableViewModel
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */
@@ -15,13 +14,12 @@ import javax.inject.Inject
 class TopicInfoViewModel @Inject constructor(
   private val context: Context
 ) : ObservableViewModel() {
-  private val decimalFormat: DecimalFormat = DecimalFormat("##")
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
-
   val topicDescription = ObservableField<CharSequence>("")
-
   var downloadStatusIndicatorDrawableResourceId = ObservableField(R.drawable.ic_available_offline_primary_24dp)
+  val isDescriptionExpanded = ObservableField<Boolean>(true)
+  val isSeeMoreVisible = ObservableField<Boolean>(true)
 
   /** Returns the space this topic requires on disk, formatted for display. */
   fun getTopicSizeWithUnit(): String {
@@ -41,5 +39,9 @@ class TopicInfoViewModel @Inject constructor(
 
   private fun roundUpToHundreds(intValue: Int): Int {
     return ((intValue + 9) / 10) * 10
+  }
+
+  fun clickSeeMore() {
+    isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
   }
 }
