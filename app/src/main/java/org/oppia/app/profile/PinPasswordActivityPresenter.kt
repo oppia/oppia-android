@@ -50,17 +50,14 @@ class PinPasswordActivityPresenter @Inject constructor(
     binding.showPin.setOnClickListener {
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
-
     binding.inputPin.requestFocus()
     binding.inputPin.addTextChangedListener(object : TextWatcher {
-      var wrong = false
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let { inputtedPin ->
-          if (!wrong) {
+          if (inputtedPin.isNotEmpty()) {
             pinViewModel.showError.set(false)
           }
-          wrong = false
-          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length) {
+          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length && inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!.isNotEmpty()) {
             if (inputtedPin.toString() == pinViewModel.correctPin.get()) {
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
@@ -71,7 +68,6 @@ class PinPasswordActivityPresenter @Inject constructor(
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
               lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
-                wrong = true
                 binding.inputPin.setText("")
               })
               pinViewModel.showError.set(true)
