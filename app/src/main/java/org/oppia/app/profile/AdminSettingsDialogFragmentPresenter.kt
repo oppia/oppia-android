@@ -31,8 +31,8 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       DataBindingUtil.inflate(
         activity.layoutInflater,
         R.layout.admin_settings_dialog,
-        /* parent= */null,
-        /* attachToParent= */false
+        /* parent= */ null,
+        /* attachToParent= */ false
       )
     binding.apply {
       lifecycleOwner = fragment
