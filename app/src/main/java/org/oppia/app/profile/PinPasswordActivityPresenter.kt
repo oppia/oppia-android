@@ -35,6 +35,7 @@ class PinPasswordActivityPresenter @Inject constructor(
     getPinPasswordViewModel()
   }
   private var profileId = -1
+  private lateinit var alertDialog: AlertDialog
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -92,6 +93,10 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
+
+    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
+      showAdminForgotPin()
+    }
   }
 
   fun handleRouteToResetPinDialog() {
@@ -110,13 +115,16 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   private fun showAdminForgotPin() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
+    alertDialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
       .setMessage(R.string.pin_password_forgot_message)
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
       .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         try {
           activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.packageName)))
         } catch (e: ActivityNotFoundException) {
@@ -128,7 +136,14 @@ class PinPasswordActivityPresenter @Inject constructor(
           )
         }
         dialog.dismiss()
-      }.create().show()
+      }.create()
+    alertDialog.show()
+  }
+
+  fun dismissAlertDialog() {
+    if (::alertDialog.isInitialized && alertDialog.isShowing) {
+      alertDialog.dismiss()
+    }
   }
 
   private fun showSuccessDialog() {

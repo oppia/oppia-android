@@ -21,15 +21,19 @@ class PinPasswordViewModel @Inject constructor(
   private lateinit var profileId: ProfileId
   val showError = ObservableField(false)
   val showPassword = ObservableField(false)
-  val correctPin =  ObservableField<String>("")
+  val correctPin = ObservableField<String>("")
   val isAdmin = ObservableField<Boolean>(false)
   val name = ObservableField<String>("")
+  val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
+
   val profile: LiveData<Profile> by lazy {
     Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
+
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
+
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
