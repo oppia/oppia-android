@@ -42,11 +42,11 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
       - run:
-          name: App - Home, Player, Splash, Story, Testing, Topic tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.home* --tests org.oppia.app.player* --tests org.oppia.app.splash* --tests org.oppia.app.story* --tests org.oppia.app.testing* --tests org.oppia.app.topic* 
+          name: App tests
+          command: ./.circleci/gradle/gradlew -i :app:test
       - run:
           name: Data tests
-          command: ./.circleci/gradle/gradlew :data:test
+          command: ./.circleci/gradle/gradlew -i :data:test
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -65,14 +65,14 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
       - run:
-          name: App - Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
-      - run:
-          name: Domain tests
-          command: ./.circleci/gradle/gradlew :domain:test
-      - run:
           name: Utility tests
-          command: ./.circleci/gradle/gradlew :utility:test
+          command: ./.circleci/gradle/gradlew -i :utility:test
+       - run:
+          name: Domain tests
+          command: ./.circleci/gradle/gradlew -i :domain:test
+      - run:
+          name: App - Parser, RecyclerView, Utility tests
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility*
       - store_artifacts:
           path: app/build/reports
           destination: reports
