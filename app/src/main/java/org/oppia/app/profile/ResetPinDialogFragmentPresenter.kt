@@ -38,9 +38,9 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
 
     val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
       activity.layoutInflater,
-      R.layout.reset_pin_dialog, /* parent= */
-      null, /* attachToParent= */
-      false
+      R.layout.reset_pin_dialog,
+      /* parent= */null,
+      /* attachToParent= */false
     )
     binding.apply {
       lifecycleOwner = fragment

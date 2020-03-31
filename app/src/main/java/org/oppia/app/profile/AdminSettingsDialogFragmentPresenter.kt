@@ -28,7 +28,12 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     val adminPin = fragment.arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
     val binding: AdminSettingsDialogBinding =
-      DataBindingUtil.inflate(activity.layoutInflater, R.layout.admin_settings_dialog, /* parent= */ null, /* attachToParent= */false)
+      DataBindingUtil.inflate(
+        activity.layoutInflater,
+        R.layout.admin_settings_dialog,
+        /* parent= */null,
+        /* attachToParent= */false
+      )
     binding.apply {
       lifecycleOwner = fragment
       viewModel = adminViewModel
