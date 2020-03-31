@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 
 /** [ViewModel] for Solution in [HintsAndSolutionFragment]. */
 class SolutionViewModel : HintsAndSolutionItemViewModel() {
-  var solutionSummary = ObservableField<String>("")
-  var correctAnswer = ObservableField<String>("")
-  var title = ObservableField<String>("")
-  var isSolutionRevealed = ObservableField<Boolean>(false)
-  var solutionCanBeRevealed = ObservableField<Boolean>(false)
+  val solutionSummary = ObservableField<String>("")
+  val correctAnswer = ObservableField<String>("")
+  val title = ObservableField<String>("")
+  val isSolutionRevealed = ObservableField<Boolean>(false)
+  val solutionCanBeRevealed = ObservableField<Boolean>(false)
 }
