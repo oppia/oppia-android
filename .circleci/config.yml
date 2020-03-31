@@ -67,7 +67,7 @@ jobs:
       - run:
           name: Utility tests
           command: ./.circleci/gradle/gradlew -i :utility:test
-       - run:
+      - run:
           name: Domain tests
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
