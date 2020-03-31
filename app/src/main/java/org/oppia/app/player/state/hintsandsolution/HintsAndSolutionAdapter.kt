@@ -98,7 +98,7 @@ class HintsAndSolutionAdapter(
             hintsViewModel.hintsAndSolutionSummary, binding.hintsAndSolutionSummary
           )
 
-      if(hintsViewModel.hintCanBeRevealed) {
+      if (hintsViewModel.hintCanBeRevealed) {
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed = true
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
@@ -124,7 +124,7 @@ class HintsAndSolutionAdapter(
       }
 
       binding.root.setOnClickListener {
-        if(hintsViewModel.isHintRevealed) {
+        if (hintsViewModel.isHintRevealed) {
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -164,14 +164,14 @@ class HintsAndSolutionAdapter(
           solutionViewModel.solutionSummary, binding.solutionSummary
         )
 
-      if(solutionViewModel.solutionCanBeRevealed) {
+      if (solutionViewModel.solutionCanBeRevealed) {
         binding.revealSolutionButton.setOnClickListener {
           showRevealSolutionDialogFragment()
         }
       }
 
       binding.root.setOnClickListener {
-        if(solutionViewModel.isSolutionRevealed) {
+        if (solutionViewModel.isSolutionRevealed) {
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {

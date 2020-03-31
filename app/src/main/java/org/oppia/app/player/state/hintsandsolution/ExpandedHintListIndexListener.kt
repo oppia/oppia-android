@@ -1,7 +1,7 @@
 package org.oppia.app.player.state.hintsandsolution
 
 /**
- * Interface to keep track of story-index for which ChapterList is visible/expanded.
+ * Interface to keep track of hint-index for which HintList is visible/expanded.
  * This mainly helps to maintain the state during configuration change.
  */
 interface ExpandedHintListIndexListener {

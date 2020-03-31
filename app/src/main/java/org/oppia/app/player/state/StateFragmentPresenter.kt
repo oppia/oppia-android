@@ -379,7 +379,7 @@ class StateFragmentPresenter @Inject constructor(
               })
               break
             } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
-              if(ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
+              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
                 lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
                   allHintsExhausted = true
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)

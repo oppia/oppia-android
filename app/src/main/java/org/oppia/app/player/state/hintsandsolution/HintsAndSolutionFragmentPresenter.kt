@@ -13,7 +13,7 @@ import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
-/** Presenter for [HintsAndSolutionFragment], sets up bindings from ViewModel */
+/** Presenter for [HintsAndSolutionFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class HintsAndSolutionFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
