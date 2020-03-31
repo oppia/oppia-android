@@ -6,6 +6,7 @@ workflows:
   version: 2
   circleci_tests:
     jobs:
+      - linters
       - flaky_tests
       - non_flaky_tests
 
