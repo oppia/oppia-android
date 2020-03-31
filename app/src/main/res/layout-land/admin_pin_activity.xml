@@ -18,7 +18,7 @@
       android:id="@+id/scrollViewAdminPin"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/addProfileBackground"
+      android:background="@color/oppiaBackgroundYellowIvory"
       android:overScrollMode="never"
       android:scrollbars="none">
 
@@ -26,7 +26,7 @@
         android:id="@+id/admin_auth_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/addProfileBackground"
+        android:background="@color/oppiaBackgroundYellowIvory"
         android:paddingBottom="108dp">
 
         <TextView
@@ -97,7 +97,7 @@
           android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.isButtonActive()}"
           android:minHeight="48dp"
-          android:text="@string/admin_pin_submit"
+          android:text="@string/save"
           android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
           app:layout_constraintEnd_toEndOf="@id/input_confirm_pin"
           app:layout_constraintTop_toBottomOf="@+id/input_confirm_pin" />
