@@ -28,8 +28,6 @@ anchor_for_android_dependencies: &install_android_dependencies
 anchor_for_install_ktlint: &install_ktlint
   name: Download latest Ktlint
   command: >
-        apk add curl
-
         get_latest_release() {
             curl --silent "https://api.github.com/repos/$1/releases/latest" |
             grep '"tag_name":' |
