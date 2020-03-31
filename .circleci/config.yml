@@ -62,7 +62,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Utility module linting
-          command: ./ktlint utility/src/**/java
+          command: ./ktlint utility/src/**/java && echo "Lint completed successfully"
       - store_artifacts:
           path: app/build/reports
           destination: reports
