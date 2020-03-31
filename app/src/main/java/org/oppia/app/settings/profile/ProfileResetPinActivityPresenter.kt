@@ -40,6 +40,10 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     val isAdmin = activity.intent.getBooleanExtra(KEY_PROFILE_RESET_PIN_IS_ADMIN, false)
     resetViewModel.isAdmin.set(isAdmin)
 
+    binding.profileResetPinToolbar.setNavigationOnClickListener {
+      (activity as ProfileRenameActivity).finish()
+    }
+
     binding.apply {
       viewModel = resetViewModel
       lifecycleOwner = activity
