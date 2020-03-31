@@ -91,16 +91,16 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
-      binding.hintTitle.text = hintsViewModel.title.replace("_", " ").capitalize()
+      binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
           .parseOppiaHtml(
-            hintsViewModel.hintsAndSolutionSummary, binding.hintsAndSolutionSummary
+            hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
           )
 
-      if (hintsViewModel.hintCanBeRevealed) {
+      if (hintsViewModel.hintCanBeRevealed.get()!!) {
         binding.revealHintButton.setOnClickListener {
-          hintsViewModel.isHintRevealed = true
+          hintsViewModel.isHintRevealed.set(true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
@@ -124,7 +124,7 @@ class HintsAndSolutionAdapter(
       }
 
       binding.root.setOnClickListener {
-        if (hintsViewModel.isHintRevealed) {
+        if (hintsViewModel.isHintRevealed.get()!!) {
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -158,20 +158,20 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
 
-      binding.solutionTitle.text = solutionViewModel.title.capitalize()
+      binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
         .parseOppiaHtml(
-          solutionViewModel.solutionSummary, binding.solutionSummary
+          solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
         )
 
-      if (solutionViewModel.solutionCanBeRevealed) {
+      if (solutionViewModel.solutionCanBeRevealed.get()!!) {
         binding.revealSolutionButton.setOnClickListener {
           showRevealSolutionDialogFragment()
         }
       }
 
       binding.root.setOnClickListener {
-        if (solutionViewModel.isSolutionRevealed) {
+        if (solutionViewModel.isSolutionRevealed.get()!!) {
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -207,7 +207,7 @@ class HintsAndSolutionAdapter(
   fun setRevealSolution(saveUserChoice: Boolean) {
     if (itemList.get(itemList.size - 1) is SolutionViewModel) {
       val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
-      solutionViewModel.isSolutionRevealed = saveUserChoice
+      solutionViewModel.isSolutionRevealed.set(saveUserChoice)
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       notifyItemChanged(itemList.size - 1)
     }
@@ -216,7 +216,7 @@ class HintsAndSolutionAdapter(
   fun setNewHintIsAvailable(hintIndex: Int) {
     if (itemList.get(hintIndex) is HintsViewModel) {
       val hintsViewModel = itemList.get(hintIndex) as HintsViewModel
-      hintsViewModel.hintCanBeRevealed = true
+      hintsViewModel.hintCanBeRevealed.set(true)
       notifyItemChanged(hintIndex)
     }
   }
@@ -224,7 +224,7 @@ class HintsAndSolutionAdapter(
   fun setSolutionCanBeRevealed(allHintsExhausted: Boolean) {
     if (itemList.get(itemList.size - 1) is SolutionViewModel) {
       val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
-      solutionViewModel.solutionCanBeRevealed = allHintsExhausted
+      solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
       notifyItemChanged(itemList.size - 1)
     }
   }

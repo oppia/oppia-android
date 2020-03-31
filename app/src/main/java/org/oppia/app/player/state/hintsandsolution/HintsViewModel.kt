@@ -12,10 +12,10 @@ import javax.inject.Inject
 class HintsViewModel @Inject constructor(
 ) : HintsAndSolutionItemViewModel() {
 
-  var title = ObservableField<String>("")
-  var hintsAndSolutionSummary = ObservableField<String>("")
-  var isHintRevealed = ObservableField<Boolean>(false)
-  var hintCanBeRevealed = ObservableField<Boolean>(false)
+  val title = ObservableField<String>("")
+  val hintsAndSolutionSummary = ObservableField<String>("")
+  val isHintRevealed = ObservableField<Boolean>(false)
+  val hintCanBeRevealed = ObservableField<Boolean>(false)
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
