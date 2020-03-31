@@ -111,8 +111,8 @@ jobs:
           name: Domain tests
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
-          name: App - Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility*
+          name: App - FAQ, MyDownloads, Parser, RecyclerView, Utility tests
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility*
       - store_artifacts:
           path: app/build/reports
           destination: reports
