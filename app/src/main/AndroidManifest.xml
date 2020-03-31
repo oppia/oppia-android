@@ -89,8 +89,12 @@
     <activity
       android:name=".settings.profile.ProfileListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".settings.profile.ProfileRenameActivity" />
-    <activity android:name=".settings.profile.ProfileResetPinActivity" />
+    <activity
+      android:name=".settings.profile.ProfileRenameActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".settings.profile.ProfileResetPinActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"

@@ -26,6 +26,7 @@
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/title_default_audio"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,10 +42,10 @@
         android:id="@+id/audio_language_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/generalNavigationBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="8dp"
-        android:paddingBottom="128dp"
+        android:paddingBottom="132dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
