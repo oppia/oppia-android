@@ -2,6 +2,7 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -363,22 +364,50 @@ class StateFragmentPresenter @Inject constructor(
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
-
+      numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
+      Log.d("wronglist","size ="+ephemeralState.pendingState.wrongAnswerList.size)
       // Check if user submits wrong answers more then twice
-      if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
+      if (ephemeralState.pendingState.wrongAnswerList.size >=1 ) {
 
-        numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0 && startTimer.get()!!) {
-          startTimer.set(false)
-          lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
           // The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
-            if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
-              lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
-                newAvailableHintIndex = 0
+          for (index in 0 until currentState.interaction.hintList.size) {
+            Log.d("break ","point = 1"+""+ephemeralState.state.interaction.hintList[0].hintIsRevealed)
+            if (index==0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+              lifecycleSafeTimerFactory.cancel()
+              startTimer.set(false)
+              lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+              lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
+                 newAvailableHintIndex = 0
+                Log.d("break ","point = 2"+" newAvailableHintIndex"+index)
+
+
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
+              break
+            }
+            if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                newAvailableHintIndex = index
+                Log.d("break ","point = 3"+" newAvailableHintIndex"+index)
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              })
+              break
+            }
+            else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
+              if (currentState.interaction.solution.hasCorrectAnswer()) {
+                Log.d("break ","point = 4"+"")
+                lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                  allHintsExhausted = true
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+              }
+              break
+            }
           }
         }
       }
@@ -443,6 +472,42 @@ class StateFragmentPresenter @Inject constructor(
       if (result.hintIsRevealed) {
         logger.e("StateFragment", "hint revealed true = " + result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        for (index in 0 until currentState.interaction.hintList.size) {
+          if (index==0 && !currentState.interaction.hintList[0].hintIsRevealed) {
+            lifecycleSafeTimerFactory.cancel()
+            startTimer.set(false)
+            lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+            lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
+              newAvailableHintIndex = 0
+              Log.d("hintbreak ","point = 2"+" newAvailableHintIndex"+index)
+
+
+              viewModel.setHintOpenedAndUnRevealedVisibility(true)
+              viewModel.setHintBulbVisibility(true)
+            })
+            break
+          }
+          if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+            lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+              newAvailableHintIndex = index
+              Log.d("hintbreak ","point = 3"+" newAvailableHintIndex"+index)
+              viewModel.setHintOpenedAndUnRevealedVisibility(true)
+              viewModel.setHintBulbVisibility(true)
+            })
+            break
+          }
+          else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
+            if (currentState.interaction.solution.hasCorrectAnswer()) {
+              Log.d("hintbreak ","point = 4"+"")
+              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                allHintsExhausted = true
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              })
+            }
+            break
+          }
+        }
       } else {
         logger.e("StateFragment", "hint revealed false = " + result.hintIsRevealed)
       }
@@ -477,30 +542,53 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
+        lifecycleSafeTimerFactory.cancel()
+        startTimer.set(false)
         viewModel.setHintBulbVisibility(false)
         moveToNextState()
       } else {
         if (result.labelledAsCorrectAnswer) {
-          lifecycleSafeTimerFactory.cancel()
-          showCongratulationMessageOnCorrectAnswer()
           startTimer.set(false)
+          lifecycleSafeTimerFactory.cancel()
+          viewModel.setHintBulbVisibility(false)
+          showCongratulationMessageOnCorrectAnswer()
         }else {
+          // Show hint on submitting wrong answer. Reinitialize and start the timer.
           startTimer.set(true)
-          if (numberOfWrongAnswers >= 3 && startTimer.get()!!) {
+          if (numberOfWrongAnswers >= 1 && startTimer.get()!!) {
+            lifecycleSafeTimerFactory.cancel()
+            Log.d("Wrong break ","point = 1"+"")
             startTimer.set(false)
             lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
             for (index in 0 until currentState.interaction.hintList.size) {
-              if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
-                lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+              if (index==0 && !currentState.interaction.hintList[0].hintIsRevealed) {
+                startTimer.set(false)
+                lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+                lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
+                  newAvailableHintIndex = 0
+                  Log.d("Wrongbreak ", "point = 1" + " newAvailableHintIndex" + index)
+
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+                break
+              }
+              if (index!=0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+
+                lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
                   newAvailableHintIndex = index
+                  Log.d("Wrong break ","point = 2"+" newAvailableHintIndex"+index)
+
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
                 })
                 break
               } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
                 if (currentState.interaction.solution.hasCorrectAnswer()) {
-                  lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
+                    Log.d("Wrong break ","point = 3"+"")
+
                     allHintsExhausted = true
                     viewModel.setHintOpenedAndUnRevealedVisibility(true)
                     viewModel.setHintBulbVisibility(true)
@@ -520,7 +608,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCongratulationMessageOnCorrectAnswer() {
-    viewModel.setHintBulbVisibility(false)
     binding.congratulationTextview.setVisibility(View.VISIBLE)
 
     val fadeIn = AlphaAnimation(0f, 1f)
@@ -541,6 +628,9 @@ class StateFragmentPresenter @Inject constructor(
       binding.congratulationTextview.clearAnimation()
       binding.congratulationTextview.visibility = View.INVISIBLE
     }, 2000)
+
+    lifecycleSafeTimerFactory.cancel()
+    viewModel.setHintBulbVisibility(false)
   }
 
   /** Helper for subscribeToSolution. */
