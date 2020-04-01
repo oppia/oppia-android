@@ -34,7 +34,7 @@
       android:text="@{submittedAnswer}"
       android:textAlignment="viewStart"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="14sp"
+      android:textSize="16sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintWidth_max="wrap"
@@ -42,8 +42,8 @@
 
     <ImageView
       android:id="@+id/question_player_answer_tick"
-      android:layout_width="12dp"
-      android:layout_height="16dp"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
       android:layout_marginEnd="8dp"
