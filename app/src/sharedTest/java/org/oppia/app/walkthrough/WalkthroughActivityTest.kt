@@ -36,7 +36,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_btn)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
   }
@@ -44,7 +44,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_btn)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       pressBack()
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
@@ -54,7 +54,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_btn)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       onView(withId(R.id.back_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
