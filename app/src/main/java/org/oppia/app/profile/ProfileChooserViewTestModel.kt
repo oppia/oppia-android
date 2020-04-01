@@ -1,6 +1,7 @@
 package org.oppia.app.profile
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.activity.ActivityScope
@@ -15,10 +16,10 @@ import org.oppia.util.logging.Logger
 import java.util.Locale
 import javax.inject.Inject
 
-/** The ViewModel for [ProfileChooserFragment]. */
+/** The ViewModel for [ProfileChooserFragmentTestActivity]. */
 @ActivityScope
 class ProfileChooserViewTestModel @Inject constructor(
-  activity: Activity,
+  activity: AppCompatActivity,
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {

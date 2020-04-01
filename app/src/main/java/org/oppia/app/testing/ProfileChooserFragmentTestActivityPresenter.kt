@@ -35,6 +35,15 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView<ProfileChooserTestActivityBinding>(activity, R.layout.profile_chooser_test_activity)
+
+    binding.apply {
+      viewModel = chooserViewModel
+      lifecycleOwner = activity
+    }
+    binding.profileRecyclerView.isNestedScrollingEnabled = false
+    binding.profileRecyclerView.apply {
+      adapter = createRecyclerViewAdapter()
+    }
     profileManagementController.addProfile(
       name = "Sean",
       pin = "",
@@ -46,14 +55,6 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
-    binding.apply {
-      viewModel = chooserViewModel
-    }
-    binding.profileRecyclerView.isNestedScrollingEnabled = false
-    binding.profileRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
-    }
-
   }
 
   private fun getProfileChooserViewModel(): ProfileChooserViewTestModel {
