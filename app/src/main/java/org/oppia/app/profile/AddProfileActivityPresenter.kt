@@ -84,6 +84,7 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.inputName.post {
       addTextChangedListener(binding.inputName) { name ->
         name?.let {
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
           profileViewModel.nameErrorMsg.set("")
           profileViewModel.inputName.set(it.toString())
         }
