@@ -48,6 +48,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private var inputtedPin = false
   private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
+  private lateinit var alertDialog: AlertDialog
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -114,6 +115,9 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.inputName.setInput(profileViewModel.inputName.get().toString())
     binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
     binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
+    if (profileViewModel.showInfoAlertPopup.get()!!) {
+      showInfoDialog()
+    }
   }
 
   private fun setValidPin(binding: AddProfileActivityBinding) {
@@ -244,11 +248,22 @@ class AddProfileActivityPresenter @Inject constructor(
   }
 
   private fun showInfoDialog() {
-    AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+    profileViewModel.showInfoAlertPopup.set(true)
+    alertDialog = AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
       .setMessage(R.string.add_profile_pin_info)
       .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
+        profileViewModel.showInfoAlertPopup.set(false)
         dialog.dismiss()
-      }.create().show()
+      }
+      .setCancelable(false)
+      .create()
+    alertDialog.show()
+  }
+
+  fun dismissAlertDialog() {
+    if (::alertDialog.isInitialized && alertDialog.isShowing) {
+      alertDialog.dismiss()
+    }
   }
 
   private fun getAddProfileViewModel(): AddProfileViewModel {
