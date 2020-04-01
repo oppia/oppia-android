@@ -64,10 +64,12 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
+import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -85,6 +87,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
+  private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
@@ -165,7 +168,7 @@ class StateFragmentPresenter @Inject constructor(
     })
 
     subscribeToCurrentState()
-
+    markExplorationAsRecentlyPlayed()
     return binding.root
   }
 
@@ -440,8 +443,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  // TODO(#880): Add test for this button once #495 is merged in develop.
   override fun onReturnToTopicButtonClicked() {
     hideKeyboard()
+    markExplorationCompleted()
     explorationDataController.stopPlayingExploration()
     activity.finish()
   }
@@ -633,5 +638,13 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
     }
+  }
+
+  private fun markExplorationAsRecentlyPlayed(){
+    storyProgressController.recordRecentlyPlayedChapter(profileId,topicId, storyId, explorationId, Date().time)
+  }
+
+  private fun markExplorationCompleted(){
+    storyProgressController.recordCompletedChapter(profileId,topicId, storyId, explorationId, Date().time)
   }
 }

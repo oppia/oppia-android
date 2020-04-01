@@ -1,5 +1,6 @@
 package org.oppia.app.profile
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.fragment.FragmentScope
@@ -17,9 +18,13 @@ import javax.inject.Inject
 /** The ViewModel for [ProfileChooserFragment]. */
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
+  fragment: Fragment,
   private val logger: Logger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
+
+  private val routeToAdminPinListener = fragment as RouteToAdminPinListener
+
   val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
     Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
   }
@@ -64,5 +69,9 @@ class ProfileChooserViewModel @Inject constructor(
     }
 
     return sortedProfileList
+  }
+
+  fun onAdministratorControlsButtonClicked() {
+    routeToAdminPinListener.routeToAdminPin()
   }
 }

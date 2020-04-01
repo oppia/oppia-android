@@ -10,4 +10,7 @@ import javax.inject.Inject
 class AdminPinViewModel @Inject constructor() : ObservableViewModel() {
   val pinErrorMsg = ObservableField("")
   val confirmPinErrorMsg = ObservableField("")
+  val savedPin = ObservableField("")
+  val savedConfirmPin = ObservableField("")
+  val isButtonActive = ObservableField(false)
 }
