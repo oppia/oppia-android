@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BackgroundDispatcher
@@ -33,4 +34,9 @@ class LifecycleSafeTimerFactory @Inject constructor(
     }
     return liveData
   }
+
+  fun cancel() {
+    backgroundCoroutineScope.cancel()
+  }
+
 }

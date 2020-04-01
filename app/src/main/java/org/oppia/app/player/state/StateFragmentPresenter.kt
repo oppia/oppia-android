@@ -13,12 +13,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
@@ -73,6 +75,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
+import org.oppia.util.threading.BackgroundDispatcher
 import java.util.*
 import javax.inject.Inject
 
@@ -96,7 +99,8 @@ class StateFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -113,6 +117,8 @@ class StateFragmentPresenter @Inject constructor(
   private var newAvailableHintIndex: Int = -1
   private var numberOfWrongAnswers: Int = -1
   private var allHintsExhausted: Boolean = false
+  private val startTimer = ObservableField(true)
+
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -363,8 +369,9 @@ class StateFragmentPresenter @Inject constructor(
 
         numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
         // Check if hints are available for this state
-        if (ephemeralState.state.interaction.hintList.size != 0) {
-
+        if (ephemeralState.state.interaction.hintList.size != 0 && startTimer.get()!!) {
+          startTimer.set(false)
+          lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
           // The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
             if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
@@ -474,9 +481,15 @@ class StateFragmentPresenter @Inject constructor(
         moveToNextState()
       } else {
         if (result.labelledAsCorrectAnswer) {
+          lifecycleSafeTimerFactory.cancel()
           showCongratulationMessageOnCorrectAnswer()
+          startTimer.set(false)
         }else {
-          if (numberOfWrongAnswers >= 3) {
+          startTimer.set(true)
+          if (numberOfWrongAnswers >= 3 && startTimer.get()!!) {
+            startTimer.set(false)
+            lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
             for (index in 0 until currentState.interaction.hintList.size) {
               if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
                 lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
