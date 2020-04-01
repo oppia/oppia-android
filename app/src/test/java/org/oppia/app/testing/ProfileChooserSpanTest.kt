@@ -22,11 +22,9 @@ import org.oppia.app.R
 import org.oppia.app.profile.ProfileChooserFragment
 import org.robolectric.annotation.Config
 
-private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLERVIEW = "profile_recycler_view"
-
 /**
  * Tests for ensuring [ProfileChooserFragment] uses the correct column count for profiles based on display density.
- * document reffered :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
+ * Reference document :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
  * */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -40,7 +38,7 @@ class ProfileChooserSpanTest {
   fun setUp() {
     Intents.init()
     activity = getProfileChooserTestActivity()
-      ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
+    ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
       Configuration.ORIENTATION_LANDSCAPE
     context = ApplicationProvider.getApplicationContext()
   }
@@ -60,9 +58,17 @@ class ProfileChooserSpanTest {
     Intents.release()
   }
 
+  private fun getProfileRecyclerViewGridLayoutManager(activity: ProfileChooserFragmentTestActivity): GridLayoutManager {
+    return getProfileRecyclerView(activity).layoutManager as GridLayoutManager
+  }
+
+  private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
+    return activity.findViewById(R.id.profile_recycler_view)
+  }
+
   @Test
   @Config(qualifiers = "land-ldpi")
-  fun ProfileChooserFragmentTest_onConfigLandScapeAndForLdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+  fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(3)
     }
@@ -76,17 +82,9 @@ class ProfileChooserSpanTest {
     }
   }
 
-  private fun getProfileRecyclerViewGridLayoutManager(activity: ProfileChooserFragmentTestActivity): GridLayoutManager {
-    return getProfileRecyclerView(activity).layoutManager as GridLayoutManager
-  }
-
-  private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return activity.findViewById(R.id.profile_recycler_view)
-  }
-
   @Test
   @Config(qualifiers = "land-hdpi")
-  fun ProfileChooserFragmentTest_onConfigLandScapeAndForHdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+  fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(4)
     }
@@ -94,7 +92,7 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xhdpi")
-  fun ProfileChooserFragmentTest_onConfigLandScapeAndForXhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+  fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
     }
@@ -102,7 +100,7 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xxhdpi")
-  fun ProfileChooserFragmentTest_onConfigLandScapeAndForXxhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+  fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
     }
@@ -110,7 +108,7 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xxxhdpi")
-  fun ProfileChooserFragmentTest_onConfigLandScapeAndForXxxhdpi_hasRecyclerViewSpanCountVerifiedSucessfully() {
+  fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use {
       assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
     }
