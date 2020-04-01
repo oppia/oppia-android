@@ -17,8 +17,15 @@ interface InteractionAnswerHandler {
   /** Returns whether this handler automatically navigates the user to a later state, including answer submission. */
   fun isAutoNavigating(): Boolean = false
 
+  /** Return the current answer's error messages  if not valid else return null. */
+  fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
+    return null
+  }
+
   /** Return the current answer that is ready for handling. */
-  fun getPendingAnswer(): UserAnswer
+  fun getPendingAnswer(): UserAnswer? {
+    return null
+  }
 }
 
 /**
@@ -27,4 +34,12 @@ interface InteractionAnswerHandler {
  */
 interface InteractionAnswerReceiver {
   fun onAnswerReadyForSubmission(answer: UserAnswer)
+}
+
+/** Categories of errors that can be inferred from a pending answer.  */
+enum class AnswerErrorCategory {
+  /** Corresponds to errors that may be found while the user is trying to input an answer.  */
+  REAL_TIME,
+  /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
+  SUBMIT_TIME
 }

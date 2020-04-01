@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.onboarding.OnboardingFragmentPresenter" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.onboarding.OnboardingViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/oppiaBackgroundYellowIvory">
+
+    <androidx.viewpager.widget.ViewPager
+      android:id="@+id/onboarding_slide_view_pager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      app:layout_constraintBottom_toTopOf="@id/bottom_frame_layout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+      android:id="@+id/bottom_frame_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/get_started_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="56dp"
+        android:paddingEnd="56dp"
+        android:paddingBottom="24dp"
+        android:visibility="@{viewModel.slideNumber == (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=gone}">
+
+        <Button
+          android:id="@+id/get_started_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/primary_rounded_button"
+          android:fontFamily="sans-serif-medium"
+          android:minHeight="48dp"
+          android:onClick="@{(v) -> presenter.clickOnGetStarted()}"
+          android:text="@string/get_started"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="16dp"
+        android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}">
+
+        <LinearLayout
+          android:id="@+id/slide_dots_container"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/skip_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="center"
+          android:minHeight="48dp"
+          android:onClick="@{(v) -> presenter.clickOnSkip()}"
+          android:text="@string/skip"
+          android:textAllCaps="true"
+          android:textColor="@color/colorPrimary"
+          android:textSize="14sp"
+          app:layout_constraintBottom_toBottomOf="@+id/slide_dots_container"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

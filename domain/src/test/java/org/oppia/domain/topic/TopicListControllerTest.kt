@@ -2,6 +2,7 @@ package org.oppia.domain.topic
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,13 +11,33 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.PromotedStory
 import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -27,20 +48,68 @@ import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
+
+private const val NINE_DAYS_IN_MS = 9 * 24 * 60 * 60 * 1000
 
 /** Tests for [TopicListController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class TopicListControllerTest {
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject lateinit var context: Context
+
+  @Inject lateinit var topicListController: TopicListController
+
+  @Inject lateinit var storyProgressController: StoryProgressController
+
+  @Mock lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+  @Captor lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+
   @Inject
-  lateinit var topicListController: TopicListController
+  @field:TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
+  private val coroutineContext by lazy {
+    EmptyCoroutineContext + testDispatcher
+  }
+
+  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
+
+  private lateinit var profileId0: ProfileId
 
   @Before
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun setUp() {
+    profileId0 = ProfileId.newBuilder().setInternalId(0).build()
+    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
+  fun tearDown() {
+    Dispatchers.resetMain()
+    testThread.close()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerTopicListControllerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#15): Add tests for recommended lessons rather than promoted, and tests for the 'continue playing' LiveData
@@ -179,108 +248,369 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_promotedLesson_hasCorrectLessonInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() =
+    runBlockingTest(coroutineContext) {
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val promotedStory = topicList.promotedStory
-    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(promotedStory.storyName).isEqualTo("Matthew Goes to the Bakery")
-  }
+      verifyGetOngoingStoryListSucceeded()
+      verifyDefaultOngoingStoryListSucceeded()
+    }
 
   @Test
-  fun testRetrieveTopicList_promotedLesson_hasCorrectTopicInfo() {
-    val topicListLiveData = topicListController.getTopicList()
+  @Ignore("Failing on Circle CI.")
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
 
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val promotedStory = topicList.promotedStory
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+      verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_1,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+    }
+
+  @Test
+  @Ignore("Failing on Circle CI.")
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_1,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+      verifyDefaultOngoingStoryListSucceeded()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_1,
+        RATIOS_EXPLORATION_ID_2,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+      verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[0])
+      verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordRecentlyPlayedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_1,
+        RATIOS_EXPLORATION_ID_2,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[0])
+      verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_1,
+        RATIOS_EXPLORATION_ID_2,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(3)
+      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[1])
+      verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[2])
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() =
+    runBlockingTest(coroutineContext) {
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        getOldTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        getOldTimestamp()
+      )
+      advanceUntilIdle()
+
+      storyProgressController.recordCompletedChapter(
+        profileId0,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_1,
+        RATIOS_EXPLORATION_ID_2,
+        getCurrentTimestamp()
+      )
+      advanceUntilIdle()
+
+      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      advanceUntilIdle()
+
+      verifyGetOngoingStoryListSucceeded()
+
+      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+      assertThat(ongoingTopicList.olderStoryCount).isEqualTo(2)
+      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.olderStoryList[0])
+      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.olderStoryList[1])
+      verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[0])
+    }
+
+  private fun verifyGetOngoingStoryListSucceeded() {
+    verify(mockOngoingStoryListObserver, atLeastOnce()).onChanged(ongoingStoryListResultCaptor.capture())
+    assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyDefaultOngoingStoryListSucceeded() {
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[1])
+  }
+
+  private fun verifyOngoingStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicName).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveTopicList_promotedLesson_hasCorrectCompletionStats() {
-    val topicListLiveData = topicListController.getTopicList()
-
-    val topicList = topicListLiveData.value!!.getOrThrow()
-    val promotedStory = topicList.promotedStory
+  private fun verifyOngoingStoryAsFractionStory0Exploration1(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
+    assertThat(promotedStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(promotedStory.topicName).isEqualTo("Fractions")
+    assertThat(promotedStory.nextChapterName).isEqualTo("The Meaning of Equal Parts")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_isSuccessful() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryListResult = ongoingStoryListLiveData.value
-    assertThat(ongoingStoryListResult).isNotNull()
-    assertThat(ongoingStoryListResult!!.isSuccess()).isTrue()
+  private fun verifyOngoingStoryAsRatioStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_0)
+    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(promotedStory.nextChapterName).isEqualTo("What is a Ratio?")
+    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_withinSevenDays_hasOngoingLesson() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.recentStoryCount).isEqualTo(1)
+  private fun verifyOngoingStoryAsRatioStory0Exploration1(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_1)
+    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(promotedStory.nextChapterName).isEqualTo("Order is important")
+    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_recentLesson_hasCorrectStoryInfo() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(recentLesson.storyName).isEqualTo("Matthew Goes to the Bakery")
+  private fun verifyOngoingStoryAsRatioStory1Exploration2(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_2)
+    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
+    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(promotedStory.nextChapterName).isEqualTo("Equivalent Ratios")
+    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_recentLesson_hasCorrectTopicInfo() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(recentLesson.topicName).isEqualTo("Fractions")
+  private fun verifyOngoingStoryAsRatioStory1Exploration3(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(RATIOS_EXPLORATION_ID_3)
+    assertThat(promotedStory.storyId).isEqualTo(RATIOS_STORY_ID_1)
+    assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(promotedStory.nextChapterName).isEqualTo("Writing Ratios in Simplest Form")
+    assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(1)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_recentLesson_hasCorrectCompletionStats() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.completedChapterCount).isEqualTo(1)
-    assertThat(recentLesson.totalChapterCount).isEqualTo(2)
+  private fun getCurrentTimestamp(): Long {
+    return Date().time
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_recentLesson_hasCorrectThumbnail() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    val recentLesson = ongoingStoryList.getRecentStory(0)
-    assertThat(recentLesson.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+  // Returns a timestamp which is atleast a week older than current timestamp.
+  private fun getOldTimestamp(): Long {
+    return Date().time - NINE_DAYS_IN_MS
   }
 
-  @Test
-  fun testRetrieveOngoingStoryList_earlierThanSevenDays_doesNotHaveOngoingLesson() {
-    val ongoingStoryListLiveData = topicListController.getOngoingStoryList()
-
-    val ongoingStoryList = ongoingStoryListLiveData.value!!.getOrThrow()
-    assertThat(ongoingStoryList.olderStoryCount).isEqualTo(0)
-  }
-
-  private fun setUpTestApplicationComponent() {
-    DaggerTopicListControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
-
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

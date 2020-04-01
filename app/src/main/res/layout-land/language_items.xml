@@ -1,0 +1,40 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="languageString"
+      type="CharSequence" />
+  </data>
+
+  <LinearLayout
+    android:id="@+id/radio_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/general_item_background_border_light"
+    android:gravity="center_vertical"
+    android:minHeight="48dp"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatRadioButton
+      android:id="@+id/language_radio_button"
+      style="@style/LanguageRadioButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginEnd="24dp"
+      android:clickable="false"
+      android:minWidth="20dp"
+      android:minHeight="20dp" />
+
+    <TextView
+      android:id="@+id/language_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="24dp"
+      android:fontFamily="sans-serif"
+      android:text="@{languageString}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp" />
+  </LinearLayout>
+</layout>

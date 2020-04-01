@@ -65,20 +65,68 @@ class AsyncResult<T> private constructor(
    * Note also that the specified transformation function should have no side effects, and be non-blocking.
    */
   fun <O> transform(transformFunction: (T) -> O): AsyncResult<O> {
-    return when(status) {
-      Status.PENDING -> pending()
-      Status.FAILED -> failed(ChainedFailureException(error!!))
-      Status.SUCCEEDED -> success(transformFunction(value!!))
+    return transformWithResult { value ->
+      success(transformFunction(value))
     }
   }
 
   /**
    * Returns a transformed version of this result in the same way as [transform] except it supports using a blocking
    * transformation function instead of a non-blocking one. Note that the transform function is only used if the current
-   * result is a success, at which case the function's result becomes the new transformed result.
+   * result is a success, at which case the function's result becomes the new, transformed result.
    */
   suspend fun <O> transformAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
-    return when(status) {
+    return transformWithResultAsync { value ->
+      transformFunction(value)
+    }
+  }
+
+  /**
+   * Returns a version of this result that retains its pending and failed states, but combines its success state with
+   * the success state of another result, according to the specified combine function.
+   *
+   * Note that if the other result is either pending or failed, that pending or failed state will be propagated to the
+   * returned result rather than attempting to combine the two states. Only successful states are combined.
+   *
+   * Note that if the current result is a failure, the transformed result's failure will be a chained exception with
+   * this result's failure as the root cause to preserve this combination in the exception's stacktrace.
+   *
+   * Note also that the specified combine function should have no side effects, and be non-blocking.
+   */
+  fun <O, T2> combineWith(otherResult: AsyncResult<T2>, combineFunction: (T, T2) -> O): AsyncResult<O> {
+    return transformWithResult { value1 ->
+      otherResult.transformWithResult { value2 ->
+        success(combineFunction(value1, value2))
+      }
+    }
+  }
+
+  /**
+   * Returns a version of this result that is combined with another result in the same way as [combineWith], except it
+   * supports using a blocking combine function instead of a non-blocking one. Note that the combine function is only
+   * used if both results are a success, at which case the function's result becomes the new, combined result.
+   */
+  suspend fun <O, T2> combineWithAsync(
+    otherResult: AsyncResult<T2>,
+    combineFunction: suspend (T, T2) -> AsyncResult<O>
+  ): AsyncResult<O> {
+    return transformWithResultAsync { value1 ->
+      otherResult.transformWithResultAsync { value2 ->
+        combineFunction(value1, value2)
+      }
+    }
+  }
+
+  private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>): AsyncResult<O> {
+    return when (status) {
+      Status.PENDING -> pending()
+      Status.FAILED -> failed(ChainedFailureException(error!!))
+      Status.SUCCEEDED -> transformFunction(value!!)
+    }
+  }
+
+  private suspend fun <O> transformWithResultAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
+    return when (status) {
       Status.PENDING -> pending()
       Status.FAILED -> failed(ChainedFailureException(error!!))
       Status.SUCCEEDED -> transformFunction(value!!)
@@ -105,7 +153,7 @@ class AsyncResult<T> private constructor(
   }
 
   override fun toString(): String {
-    return when(status) {
+    return when (status) {
       Status.PENDING -> "AsyncResult[status=PENDING]"
       Status.FAILED -> "AsyncResult[status=FAILED, error=$error]"
       Status.SUCCEEDED -> "AsyncResult[status=SUCCESS, value=$value]"
@@ -130,5 +178,5 @@ class AsyncResult<T> private constructor(
   }
 
   /** A chained exception to preserve failure stacktraces for [transform] and [transformAsync]. */
-  class ChainedFailureException(cause: Throwable): Exception(cause)
+  class ChainedFailureException(cause: Throwable) : Exception(cause)
 }

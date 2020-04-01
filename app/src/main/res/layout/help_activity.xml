@@ -1,0 +1,43 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/help_activity_drawer_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+      android:id="@+id/help_activity_toolbar"
+      layout="@layout/toolbar" />
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <FrameLayout
+        android:id="@+id/help_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/oppiaGreyBackground" />
+
+      <View
+        android:id="@+id/help_activity_toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </LinearLayout>
+
+  <fragment
+    android:id="@+id/help_activity_fragment_navigation_drawer"
+    android:name="org.oppia.app.drawer.NavigationDrawerFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    app:layout="@layout/drawer_fragment"
+    tools:layout="@layout/drawer_fragment" />
+</androidx.drawerlayout.widget.DrawerLayout>

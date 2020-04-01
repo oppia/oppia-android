@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -20,6 +19,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,7 +37,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.player.audio.testing.AudioFragmentTestActivity
+import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
@@ -46,6 +46,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -63,12 +64,11 @@ class AudioFragmentTest {
 
   private lateinit var activityScenario: ActivityScenario<AudioFragmentTestActivity>
 
-  @Inject
-  lateinit var audioPlayerController: AudioPlayerController
+  @Inject lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
-  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-hi-en-u0rzwuys9s7ur1kg3b5zsemi.mp3"
-  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/DIWZiVgs0km-/assets/audio/content-es-4lbxy0bwo4g.mp3"
+  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
+  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
 
   @Before
   fun setUp() {
@@ -82,7 +82,7 @@ class AudioFragmentTest {
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
   }
 
   @Test
@@ -91,7 +91,7 @@ class AudioFragmentTest {
 
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
   @Test
@@ -100,7 +100,7 @@ class AudioFragmentTest {
 
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
   }
 
   @Test
@@ -110,7 +110,7 @@ class AudioFragmentTest {
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
 
@@ -120,12 +120,10 @@ class AudioFragmentTest {
     invokePreparedListener(shadowMediaPlayer)
     onView(withId(R.id.ivPlayPauseAudio)).perform(click())
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
-
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_pause_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
   @Test
@@ -135,23 +133,12 @@ class AudioFragmentTest {
     onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
     onView(withId(R.id.tvAudioLanguage)).perform(click())
-    onView(withText("es")).inRoot(isDialog()).perform(click())
+    val locale = Locale("es")
+    onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
     onView(withText("OK")).inRoot(isDialog()).perform(click())
 
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(R.string.audio_play_description)))
+    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
-  }
-
-  private fun withContentDescription(contentDescriptionId: Int) = object : TypeSafeMatcher<View>() {
-    private val contentDescription = context.getString(contentDescriptionId)
-
-    override fun describeTo(description: Description) {
-      description.appendText("ImageView with contentDescription same as $contentDescription")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view is ImageView && view.contentDescription.toString() == contentDescription
-    }
   }
 
   private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
@@ -264,10 +251,6 @@ class AudioFragmentTest {
       return TestCoroutineDispatcher()
     }
 
-    @CacheAssetsLocally
-    @Provides
-    fun provideCacheAssetsLocally(): Boolean = false
-
     @Singleton
     @Provides
     @BackgroundDispatcher
@@ -295,6 +278,10 @@ class AudioFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   @Singleton

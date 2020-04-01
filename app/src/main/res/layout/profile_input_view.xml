@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="28dp"
+    android:layout_marginEnd="28dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/label_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="4dp"
+      android:fontFamily="sans-serif"
+      android:textAllCaps="true"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="12sp" />
+
+    <EditText
+      android:id="@+id/input"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      android:background="@drawable/add_profile_edit_text_background"
+      android:fontFamily="sans-serif"
+      android:padding="8dp"
+      android:minHeight="48dp"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      android:saveEnabled="false"/>
+
+    <TextView
+      android:id="@+id/error_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:textSize="12sp"
+      android:textColor="@color/editTextError" />
+  </LinearLayout>
+</layout>

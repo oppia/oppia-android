@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -8,7 +9,94 @@
       type="org.oppia.app.profile.ProfileChooserViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"></androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/profileChooserBackground"
+      android:overScrollMode="never"
+      android:scrollbars="none">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_chooser_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+          android:id="@+id/profile_select_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="36dp"
+          android:layout_marginTop="60dp"
+          android:layout_marginEnd="36dp"
+          android:fontFamily="sans-serif"
+          android:text="@string/profile_chooser_select"
+          android:textColor="@color/white"
+          android:textSize="24sp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/profile_recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginStart="36dp"
+          android:layout_marginTop="36dp"
+          android:layout_marginEnd="36dp"
+          android:clipToPadding="false"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="72dp"
+          android:orientation="vertical"
+          android:overScrollMode="never"
+          android:paddingBottom="@dimen/bottom_white_space"
+          android:requiresFadingEdge="vertical"
+          android:scrollbars="none"
+          app:data="@{viewModel.profiles}"
+          app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_select_text"
+          app:spanCount="2" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="128dp"
+      android:layout_gravity="bottom"
+      android:background="@drawable/admin_controls_gradient"
+      android:gravity="bottom"
+      android:orientation="horizontal"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:paddingBottom="24dp">
+
+      <LinearLayout
+        android:id="@+id/administrator_controls_linear_layout"
+        android:layout_width="match_parent"
+        android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="8dp"
+          android:layout_marginBottom="2dp"
+          android:layout_weight="1"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="end"
+          android:text="@string/administrator_controls"
+          android:textColor="@color/oppiaProgressChapterNotFinished"
+          android:textSize="14sp" />
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/ic_admin_settings_icon_grey_24dp" />
+      </LinearLayout>
+    </LinearLayout>
+  </FrameLayout>
 </layout>

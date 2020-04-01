@@ -9,6 +9,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,22 +32,15 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /** Tests for [DirectoryManagementUtil]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
 
-  @Inject
-  lateinit var directoryManagementUtil: DirectoryManagementUtil
+  @Inject lateinit var directoryManagementUtil: DirectoryManagementUtil
 
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi

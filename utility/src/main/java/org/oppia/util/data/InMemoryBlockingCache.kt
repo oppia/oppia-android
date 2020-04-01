@@ -1,12 +1,12 @@
 package org.oppia.util.data
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import org.oppia.util.threading.BlockingDispatcher
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
@@ -92,6 +92,15 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
       val updatedValue = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
       value = updatedValue
       updatedValue
+    }
+  }
+
+  /** See [updateIfPresentAsync]. Returns a custom deferred result. */
+  fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> {
+    return blockingScope.async {
+      val (updatedValue, customResult) = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
+      value = updatedValue
+      customResult
     }
   }
 

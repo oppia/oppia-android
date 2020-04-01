@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.AddProfileViewModel" />
+  </data>
+
+  <ScrollView
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/addProfileBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="40dp"
+      android:paddingBottom="40dp">
+
+      <Button
+        android:id="@+id/create_button"
+        style="@style/StateButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/add_profile_create_btn"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pin_container" />
+
+      <CheckBox
+        android:id="@+id/checkbox_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/add_profile_create_a_3_digit_pin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_name" />
+
+      <ImageView
+        android:id="@+id/info_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="40dp"
+        android:src="@drawable/ic_info_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_pin" />
+
+      <TextView
+        android:id="@+id/required_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/add_profile_required"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@+id/upload_image_button" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pin_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="@{viewModel.createPin ? View.VISIBLE : View.GONE}"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_pin">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/allow_download_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="64dp"
+          android:layout_marginTop="32dp"
+          android:layout_marginEnd="32dp"
+          app:layout_constraintTop_toBottomOf="@+id/input_confirm_pin">
+
+          <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/allow_download_switch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+              android:id="@+id/allow_download_heading"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/add_profile_allow_download_heading"
+              android:textColor="@{viewModel.validPin ? @color/black : @color/grey}"
+              android:textStyle="bold" />
+
+            <TextView
+              android:id="@+id/allow_download_sub"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/add_profile_allow_download_sub" />
+          </LinearLayout>
+
+          <Switch
+            android:id="@+id/allow_download_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="@{viewModel.validPin ? true : false}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <org.oppia.app.profile.ProfileInputView
+          android:id="@+id/input_confirm_pin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="32dp"
+          app:inputLength="3"
+          app:isPasswordInput="true"
+          app:label="@string/add_profile_input_confirm_pin"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/input_pin"
+          profile:error="@{viewModel.confirmPinErrorMsg}" />
+
+        <org.oppia.app.profile.ProfileInputView
+          android:id="@+id/input_pin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="32dp"
+          android:visibility="visible"
+          app:inputLength="3"
+          app:isPasswordInput="true"
+          app:label="@string/add_profile_input_pin"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          profile:error="@{viewModel.pinErrorMsg}" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/upload_image_button"
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        app:civ_circle_background_color="@color/grey"
+        android:paddingBottom="8dp"
+        android:src="@drawable/ic_default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <org.oppia.app.profile.ProfileInputView
+        android:id="@+id/input_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/add_profile_input_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/required_heading"
+        profile:error="@{viewModel.nameErrorMsg}" />
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit_image_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/upload_image_button"
+        app:layout_constraintEnd_toEndOf="@+id/upload_image_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
+</layout>
