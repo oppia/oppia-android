@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/story_list_app_bar_layout"
+      android:id="@+id/app_language_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -23,6 +23,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/title_app_language"
@@ -35,16 +36,16 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/app_language_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/language_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/generalNavigationBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="8dp"
-        android:paddingBottom="128dp"
+        android:paddingBottom="132dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -115,7 +115,8 @@ class AsyncResult<T> private constructor(
    * used if both results are a success, at which case the function's result becomes the new, combined result.
    */
   suspend fun <O, T2> combineWithAsync(
-    otherResult: AsyncResult<T2>, combineFunction: suspend (T, T2) -> AsyncResult<O>
+    otherResult: AsyncResult<T2>,
+    combineFunction: suspend (T, T2) -> AsyncResult<O>
   ): AsyncResult<O> {
     return transformWithResultAsync { value1 ->
       otherResult.transformWithResultAsync { value2 ->
@@ -160,7 +161,7 @@ class AsyncResult<T> private constructor(
   }
 
   override fun toString(): String {
-    return when(status) {
+    return when (status) {
       Status.PENDING -> "AsyncResult[status=PENDING]"
       Status.FAILED -> "AsyncResult[status=FAILED, error=$error]"
       Status.SUCCEEDED -> "AsyncResult[status=SUCCESS, value=$value]"
@@ -185,5 +186,5 @@ class AsyncResult<T> private constructor(
   }
 
   /** A chained exception to preserve failure stacktraces for [transform] and [transformAsync]. */
-  class ChainedFailureException(cause: Throwable): Exception(cause)
+  class ChainedFailureException(cause: Throwable) : Exception(cause)
 }

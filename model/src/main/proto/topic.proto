@@ -68,8 +68,11 @@ message StorySummary {
   // The name of the story.
   string story_name = 2;
 
+  // The thumbnail corresponding to this story.
+  LessonThumbnail story_thumbnail = 3;
+
   // A list of summarized chapters/explorations that can be played within the story.
-  repeated ChapterSummary chapter = 3;
+  repeated ChapterSummary chapter = 4;
 }
 
 // A summary of a chapter/exploration that can be played.
@@ -82,20 +85,6 @@ message ChapterSummary {
 
   // Summary of this chapter.
   string summary = 3;
-
-  enum Playability {
-    // The completion status is unknown.
-    COMPLETION_STATUS_UNSPECIFIED = 0;
-
-    // The chapter has not yet been started, but can be started by the player.
-    NOT_STARTED = 1;
-
-    // The chapter has not yet been started, and can't since the player is missing prerequisites.
-    MISSING_PREREQUISITES = 2;
-
-    // The chapter has been completed by the player.
-    COMPLETED = 3;
-  }
 
   // Indicates the playable state of the current chapter, including whether it's already been completed.
   ChapterPlayState chapter_play_state = 4;
@@ -137,9 +126,6 @@ message OngoingTopicList {
 
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
-  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
-  // recommended story if no other stories are in progress.
-  PromotedStory promoted_story = 1;
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
@@ -148,7 +134,22 @@ message TopicList {
 // Corresponds to the list of stories that have been completed across all topics.
 message CompletedStoryList {
   // List of completed stories
-  repeated StorySummary story_summary = 1;
+  repeated CompletedStory completed_story = 1;
+}
+
+// The summary of a story that has been completed for a profile.
+message CompletedStory {
+  // The ID of the story being completed.
+  string story_id = 1;
+
+  // The name of the story being completed.
+  string story_name = 2;
+
+  // The name of the topic this story is part of.
+  string topic_name = 3;
+
+  // The thumbnail that should be displayed for this completed story.
+  LessonThumbnail lesson_thumbnail = 4;
 }
 
 // Corresponds to the list of stories the player is currently playing across all topics.
@@ -236,8 +237,11 @@ enum ChapterPlayState {
   // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
+  // The chapter has been started but not completed by the player.
+  STARTED_NOT_COMPLETED = 3;
+
   // The chapter has been completed by the player.
-  COMPLETED = 3;
+  COMPLETED = 4;
 }
 
 // Top level proto used to store topic progress per-profile.
@@ -255,25 +259,25 @@ message TopicProgress {
   map<string, StoryProgress> story_progress = 2;
 }
 
-// Corresponds to the list of topic progress.
-message TopicProgressList {
-  // List of topic progress
-  repeated TopicProgress topic_progress = 1;
-}
-
-// Corresponds to the list of story progress.
-message StoryProgressList {
-  // List of story progress
-  repeated StoryProgress story_progress = 1;
-}
-
 // Represents the story progress.
 message StoryProgress {
   // The ID corresponding to the story.
   string story_id = 1;
 
   // Map from exploration ID to ChapterPlayState.
-  map<string, ChapterPlayState> chapter_progress = 2;
+  map<string, ChapterProgress> chapter_progress = 2;
+}
+
+// Represents the chapter progress.
+message ChapterProgress {
+  // The ID corresponding to the exploration.
+  string exploration_id = 1;
+
+  // The playability state of chapter.
+  ChapterPlayState chapter_play_state = 2;
+
+  // Timestamp to record last time the exploration was played in ms.
+  int64 last_played_timestamp = 3;
 }
 
 // Represents user's preference for using cellular data
@@ -304,19 +308,19 @@ message Subtopic {
   SubtopicThumbnail subtopic_thumbnail = 5;
 }
 
-// Corresponds to a review card that can be displayed for a specific subtopic.
-message ReviewCard {
+// Corresponds to a revision card that can be displayed for a specific subtopic.
+message RevisionCard {
   // The title corresponding to the subtopic.
   string subtopic_title = 1;
 
-  // The core explanation of the subtopic being reviewed.
+  // The core explanation of the subtopic being revised.
   SubtitledHtml page_contents = 3;
 
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this review card that has corresponding
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
   // recorded audio to play.
   map<string, VoiceoverMapping> recorded_voiceover = 5;
 
-  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this review card that has corresponding
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
   // translations.
   map<string, TranslationMapping> written_translation = 6;
 }

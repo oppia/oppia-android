@@ -68,7 +68,7 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
+    topicListController.getOngoingStoryList(profileId)
   }
 
   private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
@@ -91,7 +91,12 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun processOngoingStoryList(ongoingStoryList: OngoingStoryList): List<ProfileProgressItemViewModel> {
-    itemViewModelList.addAll(ongoingStoryList.recentStoryList.subList(0, 2).map { story ->
+    val itemList = if (ongoingStoryList.recentStoryList.size > 3) {
+      ongoingStoryList.recentStoryList.subList(0, 2)
+    } else {
+      ongoingStoryList.recentStoryList
+    }
+    itemViewModelList.addAll(itemList.map { story ->
       RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
     })
     return itemViewModelList
@@ -99,7 +104,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun subscribeToCompletedStoryListLiveData() {
     getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
-      headerViewModel.setCompletedStoryCount(it.storySummaryCount)
+      headerViewModel.setCompletedStoryCount(it.completedStoryCount)
     })
   }
 

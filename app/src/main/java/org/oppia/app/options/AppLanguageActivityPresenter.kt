@@ -32,7 +32,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     createAdapter()
   }
 
-  fun getLanguageSelected(): String{
+  fun getLanguageSelected(): String {
     return languageSelectionAdapter.getSelectedLanguage()
   }
 
@@ -46,5 +46,4 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     languageSelectionAdapter.setLanguageList(languageList)
     languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
   }
-
 }

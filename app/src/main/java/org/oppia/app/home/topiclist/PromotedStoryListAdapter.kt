@@ -1,12 +1,18 @@
 package org.oppia.app.home.topiclist
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.PromotedStoryCardBinding
 
 /** Adapter to bind promoted stories to [RecyclerView] inside [HomeFragment] to create carousel. */
-class PromotedStoryListAdapter(private val itemList: MutableList<PromotedStoryViewModel>) :
+class PromotedStoryListAdapter(
+  private val activity: AppCompatActivity,
+  private val itemList: MutableList<PromotedStoryViewModel>
+) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -28,11 +34,18 @@ class PromotedStoryListAdapter(private val itemList: MutableList<PromotedStoryVi
     return itemList.size
   }
 
-  private class PromotedStoryViewHolder(
+  inner class PromotedStoryViewHolder(
     val binding: PromotedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
+      val layoutParams = binding.promotedStoryCardContainer.layoutParams
+      layoutParams.width = if (itemCount > 1) {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+      } else {
+        ViewGroup.LayoutParams.MATCH_PARENT
+      }
+      binding.promotedStoryCardContainer.layoutParams = layoutParams
     }
   }
 }
