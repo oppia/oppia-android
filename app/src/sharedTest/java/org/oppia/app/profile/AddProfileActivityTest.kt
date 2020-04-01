@@ -820,7 +820,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_clickInfo_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.app_info_image_view)).perform(click())
+      onView(withId(R.id.info_icon)).perform(click())
       onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
     }
   }
@@ -828,19 +828,9 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_clickInfo_changeConfiguration_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.app_info_image_view)).perform(click())
+      onView(withId(R.id.info_icon)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAddProfileActivity_clickInfo_clickClose_checkInfoPopupIsDismissed() {
-    launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.app_info_image_view)).perform(click())
-      onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.add_profile_close))).perform(click())
-      onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(not(isDisplayed())))
     }
   }
 
