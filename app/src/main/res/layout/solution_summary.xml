@@ -17,17 +17,6 @@
       type="org.oppia.app.player.state.hintsandsolution.SolutionViewModel" />
   </data>
 
-  <com.google.android.material.card.MaterialCardView
-    android:id="@+id/story_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -108,7 +97,6 @@
         android:id="@+id/solution_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/whiteLight"
         android:orientation="vertical"
         android:padding="8dp"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
@@ -117,9 +105,7 @@
           android:id="@+id/solution_correct_answer"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center"
           android:fontFamily="sans-serif-medium"
-          android:text="@{viewModel.correctAnswer}"
           android:textColor="@color/oppiaPrimaryText"
           android:layout_margin="4dp"
           android:textSize="14sp" />
@@ -134,6 +120,10 @@
           android:textSize="14sp" />
 
       </LinearLayout>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_shade_29"/>
     </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
 </layout>

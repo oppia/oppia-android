@@ -111,6 +111,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var newAvailableHintIndex: Int = -1
+  private var numberOfWrongAnswers: Int = -1
   private var allHintsExhausted: Boolean = false
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -359,34 +360,18 @@ class StateFragmentPresenter @Inject constructor(
 
       // Check if user submits wrong answers more then twice
       if (ephemeralState.pendingState.wrongAnswerList.size > 2) {
+
+        numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
         // Check if hints are available for this state
         if (ephemeralState.state.interaction.hintList.size != 0) {
 
-          // TODO:  The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
-          for (index in 0 until ephemeralState.state.interaction.hintList.size) {
-            if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+          // The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
+            if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(6000).observe(activity, Observer {
                 newAvailableHintIndex = 0
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
-              break
-            } else if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
-              lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
-                newAvailableHintIndex = index
-                viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                viewModel.setHintBulbVisibility(true)
-              })
-              break
-            } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
-              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
-                lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
-                  allHintsExhausted = true
-                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                  viewModel.setHintBulbVisibility(true)
-                })
-              }
-            }
           }
         }
       }
@@ -490,6 +475,28 @@ class StateFragmentPresenter @Inject constructor(
       } else {
         if (result.labelledAsCorrectAnswer) {
           showCongratulationMessageOnCorrectAnswer()
+        }else {
+          if (numberOfWrongAnswers >= 3) {
+            for (index in 0 until currentState.interaction.hintList.size) {
+              if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+                lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                  newAvailableHintIndex = index
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+                break
+              } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
+                if (currentState.interaction.solution.hasCorrectAnswer()) {
+                  lifecycleSafeTimerFactory.createTimer(3000).observe(activity, Observer {
+                    allHintsExhausted = true
+                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                    viewModel.setHintBulbVisibility(true)
+                  })
+                }
+                break
+              }
+            }
+          }
         }
         feedbackId = result.feedback.contentId
         if (isAudioShowing()) {
