@@ -175,6 +175,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("1234"),
@@ -205,6 +206,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -267,6 +269,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -293,6 +296,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("1234"),
@@ -312,6 +316,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -332,6 +337,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -373,6 +379,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("1234"),
@@ -404,6 +411,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -451,6 +459,7 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withText(context.getString(R.string.pin_password_show))).check(matches(isDisplayed()))
     }
   }
@@ -479,6 +488,7 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.show_pin)).perform(click())
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
     }
@@ -494,6 +504,7 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.show_pin)).perform(click())
       onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_hide_eye_icon)))
     }
@@ -509,6 +520,7 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.show_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
