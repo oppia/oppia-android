@@ -8,12 +8,12 @@ import javax.inject.Inject
 /** Test Activity used for testing [ProfileChooserFragment] */
 class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
+  @Inject lateinit var profileChooserFragmentTestActivityPresenter: ProfileChooserFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    profileActivityPresenter.handleOnCreate()
+    profileChooserFragmentTestActivityPresenter.handleOnCreate()
   }
 
   companion object {
