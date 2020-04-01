@@ -37,6 +37,7 @@ private const val TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID = "transformed_dev
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
+private const val UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID = "update_profile_avater_transformed_id"
 private const val UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID = "update_device_settings_transformed_id"
 private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_download_access_transformed_id"
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
@@ -227,6 +228,42 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+      })
+  }
+
+  /**
+   * Updates the profile avatar of an existing profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param avatarImagePath New profile avatar for the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateProfileAvatar(profileId: ProfileId, avatarImagePath: Uri?, colorRgb: Int): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfileBuilder = profile.toBuilder()
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir) ?: return@storeDataWithCustomChannelAsync Pair(
+            it,
+            ProfileActionStatus.FAILED_TO_STORE_IMAGE
+          )
+        updatedProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfileBuilder.build())
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
 
