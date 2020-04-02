@@ -38,5 +38,4 @@ class LifecycleSafeTimerFactory @Inject constructor(
   fun cancel() {
     backgroundCoroutineScope.cancel()
   }
-
 }

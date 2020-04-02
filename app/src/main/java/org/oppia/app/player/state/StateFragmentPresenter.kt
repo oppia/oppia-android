@@ -117,6 +117,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var newAvailableHintIndex: Int = -1
   private var numberOfWrongAnswers: Int = -1
+  private var isNewWrongAnswerSubmitted: Boolean = false
   private var allHintsExhausted: Boolean = false
   private val startTimer = ObservableField(true)
 
@@ -367,16 +368,13 @@ class StateFragmentPresenter @Inject constructor(
       numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
       Log.d("wronglist","size ="+ephemeralState.pendingState.wrongAnswerList.size)
       // Check if user submits wrong answers more then twice
-      if (ephemeralState.pendingState.wrongAnswerList.size >=1 ) {
-
+      if (ephemeralState.pendingState.wrongAnswerList.size ==1 ) {
         // Check if hints are available for this state
-        if (ephemeralState.state.interaction.hintList.size != 0 && startTimer.get()!!) {
+        if (ephemeralState.state.interaction.hintList.size != 0) {
           // The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
-          for (index in 0 until currentState.interaction.hintList.size) {
+          for (index in 0 until ephemeralState.state.interaction.hintList.size) {
             lifecycleSafeTimerFactory.cancel()
-            startTimer.set(false)
             lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
-
             Log.d("break ","point = 1"+""+ephemeralState.state.interaction.hintList[0].hintIsRevealed)
             if (index==0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
               lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
@@ -387,26 +385,37 @@ class StateFragmentPresenter @Inject constructor(
               })
               break
             }
-            if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+          }
+        }
+      }else if(!isNewWrongAnswerSubmitted) {
+        for (index in 0 until ephemeralState.state.interaction.hintList.size) {
+          Log.d(
+            "hintbreak ",
+            "point = 2" + " newAvailableHintIndex" + index + " = " + ephemeralState.state.interaction.hintList[index].hintIsRevealed
+          )
+          lifecycleSafeTimerFactory.cancel()
+          lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
+          if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
+            lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+              newAvailableHintIndex = index
+              Log.d("hintbreak ", "point = 2" + " newAvailableHintIndex" + index)
+
+              viewModel.setHintOpenedAndUnRevealedVisibility(true)
+              viewModel.setHintBulbVisibility(true)
+            })
+            break
+          } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
+            if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
               lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                newAvailableHintIndex = index
-                Log.d("break ","point = 3"+" newAvailableHintIndex"+index)
+                Log.d("hintbreak ", "point = 3" + "")
+
+                allHintsExhausted = true
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
-              break
             }
-            else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
-              if (currentState.interaction.solution.hasCorrectAnswer()) {
-                Log.d("break ","point = 4"+"")
-                lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                  allHintsExhausted = true
-                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                  viewModel.setHintBulbVisibility(true)
-                })
-              }
-              break
-            }
+            break
           }
         }
       }
@@ -471,46 +480,7 @@ class StateFragmentPresenter @Inject constructor(
       if (result.hintIsRevealed) {
         logger.e("StateFragment", "hint revealed true = " + result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        lifecycleSafeTimerFactory.cancel()
-        startTimer.set(false)
-        lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
-        for (index in 0 until currentState.interaction.hintList.size) {
-
-
-          if (index==0 && !currentState.interaction.hintList[0].hintIsRevealed) {
-
-            lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
-              newAvailableHintIndex = 0
-              Log.d("hintbreak ","point = 2"+" newAvailableHintIndex"+index)
-
-
-              viewModel.setHintOpenedAndUnRevealedVisibility(true)
-              viewModel.setHintBulbVisibility(true)
-            })
-            break
-          }
-          if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
-            lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-              newAvailableHintIndex = index
-              Log.d("hintbreak ","point = 3"+" newAvailableHintIndex"+index)
-              viewModel.setHintOpenedAndUnRevealedVisibility(true)
-              viewModel.setHintBulbVisibility(true)
-            })
-            break
-          }
-          else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
-            if (currentState.interaction.solution.hasCorrectAnswer()) {
-              Log.d("hintbreak ","point = 4"+"")
-              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                allHintsExhausted = true
-                viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                viewModel.setHintBulbVisibility(true)
-              })
-            }
-            break
-          }
-        }
       } else {
         logger.e("StateFragment", "hint revealed false = " + result.hintIsRevealed)
       }
@@ -556,12 +526,14 @@ class StateFragmentPresenter @Inject constructor(
           viewModel.setHintBulbVisibility(false)
           showCongratulationMessageOnCorrectAnswer()
         }else {
+          numberOfWrongAnswers += 1
           // Show hint on submitting wrong answer. Reinitialize and start the timer.
-          startTimer.set(true)
-          if (numberOfWrongAnswers >= 1 && startTimer.get()!!) {
+//          startTimer.set(true)
+          if (numberOfWrongAnswers > 1 ) {
+            isNewWrongAnswerSubmitted = true
             lifecycleSafeTimerFactory.cancel()
-            Log.d("Wrong break ","point = 1"+"")
-            startTimer.set(false)
+            Log.d("Wrong break ","point = 1"+"" +numberOfWrongAnswers)
+//            startTimer.set(false)
             lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
             for (index in 0 until currentState.interaction.hintList.size) {
@@ -572,6 +544,7 @@ class StateFragmentPresenter @Inject constructor(
 
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
+                  isNewWrongAnswerSubmitted = false
                 })
                 break
               }
@@ -583,6 +556,7 @@ class StateFragmentPresenter @Inject constructor(
 
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
+                  isNewWrongAnswerSubmitted = false
                 })
                 break
               } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
@@ -593,6 +567,7 @@ class StateFragmentPresenter @Inject constructor(
                     allHintsExhausted = true
                     viewModel.setHintOpenedAndUnRevealedVisibility(true)
                     viewModel.setHintBulbVisibility(true)
+                    isNewWrongAnswerSubmitted = false
                   })
                 }
                 break
