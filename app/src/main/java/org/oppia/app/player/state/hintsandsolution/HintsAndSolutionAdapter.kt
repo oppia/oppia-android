@@ -169,7 +169,8 @@ class HintsAndSolutionAdapter(
 
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
-      binding.solutionCorrectAnswer.text = fragment.getString(R.string.the_only_solution_is) + solutionViewModel.numerator.get()+"/"+solutionViewModel.denominator.get()
+      binding.solutionCorrectAnswer.text =
+        """${fragment.getString(R.string.the_only_solution_is)}${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
       binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
         .parseOppiaHtml(
           solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
