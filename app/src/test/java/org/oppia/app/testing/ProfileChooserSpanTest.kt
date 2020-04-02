@@ -24,7 +24,7 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
 
 /**
  * Tests for ensuring [ProfileChooserFragment] uses the correct column count for profiles based on display density.
- * document reffered :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
+ * Reference document :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
  * */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
