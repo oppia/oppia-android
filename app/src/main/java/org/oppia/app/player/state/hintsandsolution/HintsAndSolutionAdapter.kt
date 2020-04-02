@@ -1,6 +1,7 @@
 package org.oppia.app.player.state.hintsandsolution
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -92,6 +93,12 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
+      if(hintsViewModel.isHintRevealed.get()!!){
+        binding.root.visibility = View.VISIBLE
+      }else{
+        binding.root.visibility = View.GONE
+      }
+
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
@@ -100,6 +107,7 @@ class HintsAndSolutionAdapter(
           )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
+        binding.root.visibility = View.VISIBLE
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
@@ -159,6 +167,7 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
 
+      binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionCorrectAnswer.text = fragment.getString(R.string.the_only_solution_is) + solutionViewModel.numerator.get()+"/"+solutionViewModel.denominator.get()
       binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
@@ -167,6 +176,7 @@ class HintsAndSolutionAdapter(
         )
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
+        binding.root.visibility = View.VISIBLE
         binding.revealSolutionButton.setOnClickListener {
           showRevealSolutionDialogFragment()
         }
