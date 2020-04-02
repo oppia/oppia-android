@@ -401,7 +401,6 @@ class StateFragmentPresenter @Inject constructor(
             }
           }
         }
-
       }
 
       addInteractionForPendingState(pendingItemList, interaction)
