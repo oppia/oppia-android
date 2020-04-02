@@ -36,7 +36,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View? {
     binding = WalkthroughFinalFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     this.topicId = topicId
-    val internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, 1)
+    val internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()

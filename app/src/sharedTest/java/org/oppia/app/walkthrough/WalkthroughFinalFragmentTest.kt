@@ -6,18 +6,22 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
 
 /** Tests for [WalkthroughFinalFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -46,9 +50,9 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
-        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           1,
           R.id.walkthrough_topic_name_text_view
@@ -68,9 +72,9 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
-        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
           R.id.walkthrough_topic_name_text_view
@@ -90,20 +94,38 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_welcome_next_button))
         .perform(click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
-        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
           R.id.walkthrough_topic_name_text_view
         )
       ).perform(click())
-      onView(allOf(withId(R.id.walkthrough_final_no_button),
-        isCompletelyDisplayed()
-      )).check(matches(isDisplayed()))
-      onView(allOf(withId(R.id.walkthrough_final_yes_button),
-        isCompletelyDisplayed()
-      )).check(matches(isDisplayed()))
+      onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.walkthrough_final_yes_button)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_noButton_worksCorrectly() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      onView(withId(R.id.walkthrough_welcome_next_button))
+        .perform(click())
+      onView(withId(R.id.walkthrough_topic_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          R.id.walkthrough_topic_recycler_view,
+          2,
+          R.id.walkthrough_topic_name_text_view
+        )
+      ).perform(click())
+      onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
+        .perform(click())
+      onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
   }
 }
