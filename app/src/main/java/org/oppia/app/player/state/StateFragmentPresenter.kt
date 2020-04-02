@@ -363,48 +363,45 @@ class StateFragmentPresenter @Inject constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
       numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
-      // Check if user submits wrong answers more then twice
-      if (ephemeralState.pendingState.wrongAnswerList.size == 1) {
-        // Check if hints are available for this state
-        if (ephemeralState.state.interaction.hintList.size != 0) {
-          // The first hint is unlocked after 60s on submission of new Wrong answer
+      // Check if hints are available for this state.
+      if (ephemeralState.state.interaction.hintList.size != 0) {
+        // Check if user submits 1st wrong answer. The first hint is unlocked after 60s on submission of Wrong answer.
+        if (ephemeralState.pendingState.wrongAnswerList.size == 1) {
+          lifecycleSafeTimerFactory.cancel()
+          lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+          if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+            lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
+              newAvailableHintIndex = 0
+              viewModel.setHintOpenedAndUnRevealedVisibility(true)
+              viewModel.setHintBulbVisibility(true)
+            })
+          }
+        } else if (!isNewWrongAnswerSubmitted) {
+          // Subsequent hints are unlocked at 30s intervals when no answer is submitted by the user.
           for (index in 0 until ephemeralState.state.interaction.hintList.size) {
             lifecycleSafeTimerFactory.cancel()
             lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
-            if (index == 0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
-              lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
-                newAvailableHintIndex = 0
+
+            if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
+              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                newAvailableHintIndex = index
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
               break
+            } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
+              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
+                lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                  allHintsExhausted = true
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+              }
+              break
             }
           }
         }
-      } else if (!isNewWrongAnswerSubmitted) {
-        // Subsequent hints are unlocked at 30s intervals when no answer is submitted by the use.
-        for (index in 0 until ephemeralState.state.interaction.hintList.size) {
-          lifecycleSafeTimerFactory.cancel()
-          lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
-          if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
-            lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-              newAvailableHintIndex = index
-              viewModel.setHintOpenedAndUnRevealedVisibility(true)
-              viewModel.setHintBulbVisibility(true)
-            })
-            break
-          } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
-            if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
-              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                allHintsExhausted = true
-                viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                viewModel.setHintBulbVisibility(true)
-              })
-            }
-            break
-          }
-        }
       }
 
       addInteractionForPendingState(pendingItemList, interaction)
