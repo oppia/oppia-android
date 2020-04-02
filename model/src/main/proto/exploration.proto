@@ -132,10 +132,8 @@ message Hint {
   SubtitledHtml hint_content = 1;
   // To check if the hint was revealed or not
   bool hint_is_revealed = 2;
-  // To check if the new hint is available and ready to reveal
-  bool new_hint_is_available = 3;
   // The current state to display to the user.
-  State state = 4;
+  State state = 3;
 }
 
 // Structure for a single outcome
