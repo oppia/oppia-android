@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.profile.ProfileChooserFragment
 import org.robolectric.annotation.Config
 
-private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLERVIEW = "profile_recycler_view"
+private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler_view"
 
 /**
  * Tests for ensuring [ProfileChooserFragment] uses the correct column count for profiles based on display density.
@@ -61,7 +61,7 @@ class ProfileChooserSpanTest {
   }
 
   private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLERVIEW)!! as RecyclerView
+    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW)!! as RecyclerView
   }
 
   @Test
