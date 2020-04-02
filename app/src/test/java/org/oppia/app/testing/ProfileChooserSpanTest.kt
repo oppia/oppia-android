@@ -38,9 +38,6 @@ class ProfileChooserSpanTest {
       Configuration.ORIENTATION_LANDSCAPE
   }
 
-  @get:Rule
-  var activityRule = ActivityScenarioRule(ProfileChooserFragmentTestActivity::class.java)
-
   @After
   fun tearDown() {
     Intents.release()
