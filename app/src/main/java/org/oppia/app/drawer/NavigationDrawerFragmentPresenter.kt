@@ -1,5 +1,6 @@
 package org.oppia.app.drawer
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -61,6 +62,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     binding.fragmentDrawerNavView.setNavigationItemSelectedListener(this)
 
     fragment.setHasOptionsMenu(true)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      binding.fragmentDrawerNavView.setElevation(0f);
+    }
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()

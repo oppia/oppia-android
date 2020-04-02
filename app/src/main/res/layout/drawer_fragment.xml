@@ -8,42 +8,74 @@
       type="org.oppia.app.drawer.NavigationDrawerFooterViewModel" />
   </data>
   <com.google.android.material.navigation.NavigationView
-    android:id="@+id/fragment_drawer_nav_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:fitsSystemWindows="true"
-    app:itemBackground="@android:color/transparent"
-    app:itemIconTint="@color/drawer_item"
-    app:itemTextColor="@color/drawer_item"
-    app:menu="@menu/navigation_drawer_menu">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-      android:id="@+id/administrator_controls_linear_layout"
+    <androidx.core.widget.NestedScrollView
+      android:id="@+id/nestedscrollview"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:orientation="horizontal"
-      android:padding="16dp"
-      android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
+      android:layout_height="match_parent"
+      android:fillViewport="true"
+      android:scrollbars="vertical">
 
-      <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="4dp"
-        android:src="@drawable/ic_admin_settings_icon_brown_24dp" />
-
-      <TextView
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/administrator_controls"
-        android:textColor="@color/highlightedNavMenuItem"
-        android:textSize="14sp" />
-    </LinearLayout>
+        android:orientation="vertical">
+
+        <com.google.android.material.navigation.NavigationView
+          android:id="@+id/fragment_drawer_nav_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:background="@android:color/transparent"
+          android:fitsSystemWindows="true"
+          app:itemBackground="@android:color/transparent"
+          app:itemIconTint="@color/drawer_item"
+          app:itemTextColor="@color/drawer_item"
+          app:menu="@menu/navigation_drawer_menu"
+          android:overScrollMode="never"/>
+
+        <Button
+          android:id="@+id/menu_footer_separator"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:clickable="false"
+          android:background="@android:color/transparent" />
+
+        <LinearLayout
+          android:id="@+id/administrator_controls_linear_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:orientation="horizontal"
+          android:padding="16dp"
+          android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
+
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_admin_settings_icon_brown_24dp" />
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/administrator_controls"
+            android:textColor="@color/highlightedNavMenuItem"
+            android:textSize="14sp" />
+        </LinearLayout>
+
+
+      </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
   </com.google.android.material.navigation.NavigationView>
 </layout>
