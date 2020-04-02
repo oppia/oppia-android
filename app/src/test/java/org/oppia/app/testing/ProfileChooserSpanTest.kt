@@ -30,26 +30,16 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
 @Config(manifest = Config.NONE)
 class ProfileChooserSpanTest {
 
-  private var activity: ProfileChooserFragmentTestActivity? = null
-
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
-    activity = getProfileChooserTestActivity()
     ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
       Configuration.ORIENTATION_LANDSCAPE
   }
 
   @get:Rule
   var activityRule = ActivityScenarioRule(ProfileChooserFragmentTestActivity::class.java)
-
-  private fun getProfileChooserTestActivity(): ProfileChooserFragmentTestActivity? {
-    activityRule.scenario.onActivity {
-      activity = it
-    }
-    return activity as ProfileChooserFragmentTestActivity
-  }
 
   @After
   fun tearDown() {
@@ -67,52 +57,64 @@ class ProfileChooserSpanTest {
   @Test
   @Config(qualifiers = "land-ldpi")
   fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(3)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
+      }
     }
   }
 
   @Test
   @Config(qualifiers = "land-mdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_mdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(3)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
+      }
     }
   }
 
   @Test
   @Config(qualifiers = "land-hdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(4)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(4)
+      }
     }
   }
 
   @Test
   @Config(qualifiers = "land-xhdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+      }
     }
   }
 
   @Test
   @Config(qualifiers = "land-xxhdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+      }
     }
   }
 
   @Test
   @Config(qualifiers = "land-xxxhdpi")
   fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
-    launch(ProfileChooserFragmentTestActivity::class.java).use {
-      assertThat(getProfileRecyclerViewGridLayoutManager(activity!!).spanCount).isEqualTo(5)
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+      }
     }
   }
 
   fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment {
-    return activity!!.supportFragmentManager.findFragmentByTag(ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment
+    return activity.supportFragmentManager.findFragmentByTag(ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment
   }
 }
