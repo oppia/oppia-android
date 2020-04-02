@@ -10,7 +10,6 @@ import android.text.Html
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import org.oppia.util.gcsresource.DefaultResourceBucketName
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -34,12 +33,10 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, "umPkwp0L1M0-", urlString)
-//    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-//    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
-    imageLoader.load("https://storage.googleapis.com/oppiaserver-resources/exploration/umPkwp0L1M0-/assets/image/img_20180107_005823_g1asgsfffe_height_105_width_105.png", target)
+    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
     return urlDrawable
   }
 

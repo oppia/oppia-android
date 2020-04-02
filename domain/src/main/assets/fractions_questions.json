@@ -8,7 +8,14 @@
       "question_state_data": {
         "param_changes": [],
         "interaction": {
-          "solution": null,
+          "solution": {
+            "correct_answer": "1/4",
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>Removing one of the lines on the right results in a square that is divided into 4 equal pieces:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;A square divided into four pieces by the diagonals. The left piece is shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_012904_7vi149rtw5_height_132_width_145.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>So, the fraction represented by the shaded area is 1/4.</p>"
+            },
+            "answer_is_exclusive": false
+          },
           "answer_groups": [
             {
               "tagged_skill_misconception_id": null,
@@ -16,9 +23,9 @@
                 "param_changes": [],
                 "feedback": {
                   "content_id": "feedback_1",
-                  "html": "<p>Correct! You're ready for the next step. </p>"
+                  "html": "<p>Yes, that's correct. Well done!</p>"
                 },
-                "dest": "Writing out Fractions",
+                "dest": null,
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": true
@@ -28,20 +35,26 @@
                 {
                   "rule_type": "Equals",
                   "inputs": {
-                    "x": 1
+                    "x": "1/4"
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "2/8"
                   }
                 }
               ]
             },
             {
-              "tagged_skill_misconception_id": null,
+              "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
               "outcome": {
                 "param_changes": [],
                 "feedback": {
                   "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. In your answer, the cake is divided into <strong>eight </strong>(8)<strong> </strong>equal parts, so each part is called an <strong>eighth</strong>. </p><p>Three of the parts are red. So, the picture in your answer shows <strong>three eighths</strong>.</p><p>Let's go back and learn this again!<br></p>"
+                  "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
                 },
-                "dest": "Parts of a whole",
+                "dest": null,
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -51,7 +64,7 @@
                 {
                   "rule_type": "Equals",
                   "inputs": {
-                    "x": 0
+                    "x": "1/5"
                   }
                 }
               ]
@@ -62,9 +75,9 @@
                 "param_changes": [],
                 "feedback": {
                   "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. In your answer, the cake is divided into six (6) equal parts, so each part is called a <strong>sixth</strong>. Good!</p><p>But, four of the parts are yellow. So, the picture in your answer shows <strong>four </strong>sixths.</p><p>Let's go back and learn this again.<br></p>"
+                  "html": "<p>No, that's not correct. \"1/9\" is just an example to show you how to enter the fraction, but you need to type in the fraction represented by the shaded part of the picture. Try again.</p>"
                 },
-                "dest": "Parts of a whole",
+                "dest": null,
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -74,7 +87,7 @@
                 {
                   "rule_type": "Equals",
                   "inputs": {
-                    "x": 2
+                    "x": "1/9"
                   }
                 }
               ]
@@ -84,173 +97,57 @@
             "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
-              "html": "<p>No, that's not right. Let's learn that again!</p>"
+              "html": "<p>No, that's not correct. Did you forget to divide the picture into equal parts first?</p>"
             },
-            "dest": "Parts of a whole",
+            "dest": null,
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null,
             "labelled_as_correct": false
           },
           "customization_args": {
-            "choices": {
-              "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into eight equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005823_g1asgsfffe_height_105_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005850_j227cn4ims_height_107_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005900_eyfj4jqnz0_height_105_width_104.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 5 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005920_u4qln0stnq_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image>"
-              ]
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter a fraction, e.g. 1/9."
             }
           },
           "confirmed_unclassified_answers": [],
-          "id": "MultipleChoiceInput",
-          "hints": []
+          "id": "TextInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>Before writing a fraction, remember to divide the image into equal parts first. The parts need to all have the same size before you can count the total number of parts (for the fraction's denominator).</p>"
+              }
+            }
+          ]
         },
         "recorded_voiceovers": {
           "voiceovers_mapping": {
-            "content": {
-              "hi": {
-                "file_size_bytes": 352023,
-                "needs_update": false,
-                "filename": "content-hi-wu2li04o44l.mp3"
-              },
-              "en": {
-                "file_size_bytes": 173309,
-                "needs_update": false,
-                "filename": "content-en-c5q7jd6bqdr.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 255336,
-                "needs_update": false,
-                "filename": "content-hi-en-u6u5av7iu8.mp3"
-              }
-            },
-            "feedback_2": {
-              "hi": {
-                "file_size_bytes": 722967,
-                "needs_update": false,
-                "filename": "feedback-hi-qkf9yinxthk.mp3"
-              },
-              "en": {
-                "file_size_bytes": 308272,
-                "needs_update": false,
-                "filename": "feedback-en-yd1a8w5mnsr.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 281877,
-                "needs_update": false,
-                "filename": "feedback-hi-en-rg6gs8ayr89.mp3"
-              }
-            },
-            "feedback_3": {
-              "hi": {
-                "file_size_bytes": 782103,
-                "needs_update": false,
-                "filename": "feedback-hi-9r32ljvkulo.mp3"
-              },
-              "en": {
-                "file_size_bytes": 347701,
-                "needs_update": false,
-                "filename": "feedback-en-ikauvruh72.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 299013,
-                "needs_update": false,
-                "filename": "feedback-hi-en-ra99cdwfo0c.mp3"
-              }
-            },
-            "feedback_1": {
-              "hi": {
-                "file_size_bytes": 108567,
-                "needs_update": false,
-                "filename": "feedback-hi-yy37gafmswo.mp3"
-              },
-              "en": {
-                "file_size_bytes": 51997,
-                "needs_update": false,
-                "filename": "feedback-en-olgv4a9oh39.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 114901,
-                "needs_update": false,
-                "filename": "feedback-hi-en-rvx9h4yoam.mp3"
-              }
-            },
-            "default_outcome": {
-              "hi": {
-                "file_size_bytes": 170007,
-                "needs_update": false,
-                "filename": "feedback-hi-3n0cvn1wlcu.mp3"
-              },
-              "en": {
-                "file_size_bytes": 71228,
-                "needs_update": false,
-                "filename": "feedback-en-m8tvmsq0ptn.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 151264,
-                "needs_update": false,
-                "filename": "feedback-hi-en-t9w2a4r4uz.mp3"
-              }
-            }
+            "content": {},
+            "solution": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
           }
         },
         "classifier_model_id": null,
         "content": {
           "content_id": "content",
-          "html": "<p>\"Very good! Now look at these cakes,\" said Mr. Baker. \"Which of them shows <strong>three sixths</strong>?”</p>"
+          "html": "<p>What fraction is represented by the shaded part of the picture below?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_012521_sq67z4euz8_height_132_width_145.png&amp;quot;\"></oppia-noninteractive-image>"
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>\"¡Muy bien! Ahora mire estos pasteles\", dijo el Sr. Baker. \"¿Cuál de ellos muestra tres sextos?\"</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>\"Very good! Ab neeche diye hue cakes ko dekhe, aur ye bataye ki inme se kaunsa cake three-sixths ko denote karta hai\"</p>"
-              }
-            },
-            "feedback_2": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no es correcto. En tu respuesta, el pastel se divide en ocho (8) partes iguales, por lo que cada parte se llama octava.&nbsp;</p>\n\n<p>Tres de las partes son rojas. así que la imagen en tu respuesta muestra tres octavos.</p>\n\n<p>¡Volvamos y aprendamos esto otra vez!</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>No, ye sahi nahi hain. Apke answer main cake eight equal parts main divided hain, so each part ko hum eighth kehtay hain.<br>\n<br>\n3 part jo hian wo red hian. So apke answer main jo picture hain wo three eights hain.</p>\n\n<p>Chalo pichay chaltay hian aur firse yaad kartay hain!</p>"
-              }
-            },
-            "feedback_3": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no es correcto. En tu respuesta, el pastel se divide en seis (6) partes iguales, por lo que cada parte se llama una sexta. ¡bien!</p>\n\n<p>Pero, cuatro de las partes son amarillas. Por lo tanto, la imagen en tu respuesta muestra cuatro sextos.</p>\n\n<p>¡Volvamos y aprendamos esto otra vez!</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>No, ye sahi nahi hain. Apke answer main cake six (6) equal parts main divided hain, so each part ko hum sixth kehtay hain. Good!</p>\n\n<p>Lekin, 4 part jo hian wo yellow hian. So apke answer main jo picture hain wo four sixths hain.</p>\n\n<p>Chalo pichay chaltay hian aur firse yaad kartay hain!</p>"
-              }
-            },
-            "feedback_1": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>¡Correcto! estás listo para el siguiente paso.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Bilkul sahi, ab aap next step ke liye ready hai.</p>"
-              }
-            },
-            "default_outcome": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no es correcto. ¡Aprendamos eso otra vez!</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Nahi, ye galat answer hai. Chaliye hum ek baar firse seekhte hai.</p>"
-              }
-            }
+            "content": {},
+            "solution": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
           }
         },
         "solicit_answer_details": false
@@ -267,17 +164,24 @@
       "question_state_data": {
         "param_changes": [],
         "interaction": {
-          "solution": null,
+          "solution": {
+            "correct_answer": "1/4",
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>First, let's divide the picture into equal parts:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;An equilateral triangle divided into 4 equal parts. 1 part is shaded red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_011934_xbds5ar8ma_height_130_width_106.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>There are 4 parts in total, and 1 of them is red, so the fraction is <strong>1/4</strong>.</p>"
+            },
+            "answer_is_exclusive": false
+          },
           "answer_groups": [
             {
               "tagged_skill_misconception_id": null,
               "outcome": {
                 "param_changes": [],
                 "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You are doing great. </p>"
+                  "content_id": "feedback_3",
+                  "html": "<p>Yes, that's right! Well done, this was a hard question :-)</p>"
                 },
-                "dest": "Practice 10",
+                "dest": null,
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": true
@@ -287,23 +191,43 @@
                 {
                   "rule_type": "Equals",
                   "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
+                    "x": "1/4"
                   }
                 }
               ]
             },
             {
               "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>No, that's not correct. \"1/8\" is just an example to show you how to write the fraction, but you need to write the actual fraction that the red part represents.</p>"
+                },
+                "dest": null,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "1/8"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
               "outcome": {
                 "param_changes": [],
                 "feedback": {
                   "content_id": "feedback_2",
-                  "html": "<p>That's right, but there is more than one correct answer. Make sure to select <strong>all the correct answers</strong> before submitting.</p>"
+                  "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
                 },
-                "dest": "Practice 9",
+                "dest": null,
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -313,117 +237,7 @@
                 {
                   "rule_type": "Equals",
                   "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>"
-                    ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. Remember what Mr. Baker said: the numerator is always the<strong> first</strong> number, and the denominator is the <strong>second </strong>number.</p><p>So, 3/7 has a <strong>numerator</strong> of 3, not a denominator of 3. Let's go back and read the explanation again.<br></p>"
-                },
-                "dest": "Numerator and Denominator",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>If you're stuck, remember that you need to select <strong>all</strong> the correct answers <strong>before </strong>submitting. There may be more than one correct answer.</p>"
-                },
-                "dest": "Practice 9",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. Your answer includes 3/7, but 3/7 has a <strong>numerator</strong> of 3. Remember what Mr. Baker said: the numerator is the <strong>first</strong> number in the fraction.</p><p>Let's go back and look again at Mr. Baker's explanation of numerators and denominators.</p>"
-                },
-                "dest": "Numerator and Denominator",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>Try again.</p>"
-                },
-                "dest": "Practice 9",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
-                    ]
+                    "x": "1/2"
                   }
                 }
               ]
@@ -433,360 +247,57 @@
             "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
-              "html": "<p>No, that's not right. Remember: \"the <strong>denominator</strong> is always the second or bottom number, the total number of pieces the whole is divided into.” </p>"
+              "html": "<p>No, that's not correct. Try again. Remember that the picture needs to be divided into equal parts before you write the fraction.</p>"
             },
-            "dest": "Practice 9",
+            "dest": null,
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null,
             "labelled_as_correct": false
           },
           "customization_args": {
-            "maxAllowableSelectionCount": {
-              "value": 4
-            },
-            "minAllowableSelectionCount": {
+            "rows": {
               "value": 1
             },
-            "choices": {
-              "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
-              ]
+            "placeholder": {
+              "value": "Enter a fraction here, e.g. 1/8."
             }
           },
           "confirmed_unclassified_answers": [],
-          "id": "ItemSelectionInput",
+          "id": "TextInput",
           "hints": [
             {
               "hint_content": {
                 "content_id": "hint_1",
-                "html": "<p>There is more than one correct answer.<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>Remember what Mr. Baker said:</p><p>\"The <strong>numerator</strong> is always the first or top number, the number of pieces we want. The <strong>denominator</strong> is always the second or bottom number, the total number of pieces the whole is divided into.\"<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>Here is an example: in 5/6, the numerator is 5, and the denominator is 6.</p><p>Can you figure out the numerators and denominators for the given fractions? Write them all down first, then select the ones with denominator 3.</p>"
+                "html": "<p>You need to divide the picture into equal parts before writing&nbsp;the fraction.</p>"
               }
             }
           ]
         },
         "recorded_voiceovers": {
           "voiceovers_mapping": {
-            "content": {
-              "hi": {
-                "file_size_bytes": 1225239,
-                "needs_update": false,
-                "filename": "content-hi-613ea2p2spg.mp3"
-              },
-              "en": {
-                "file_size_bytes": 493417,
-                "needs_update": false,
-                "filename": "content-en-1ootmfefsb4.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 682281,
-                "needs_update": false,
-                "filename": "content-hi-en-2mgs1izmmww.mp3"
-              }
-            },
-            "feedback_4": {
-              "hi": {
-                "file_size_bytes": 878871,
-                "needs_update": false,
-                "filename": "feedback-hi-eymxnq9wf65.mp3"
-              },
-              "en": {
-                "file_size_bytes": 409009,
-                "needs_update": false,
-                "filename": "feedback-en-se3d5rke55.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 403503,
-                "needs_update": false,
-                "filename": "feedback-hi-en-ng77ur1sgxk.mp3"
-              }
-            },
-            "feedback_5": {
-              "hi": {
-                "file_size_bytes": 1130007,
-                "needs_update": false,
-                "filename": "feedback-hi-vkw3mh39cy.mp3"
-              },
-              "en": {
-                "file_size_bytes": 430458,
-                "needs_update": false,
-                "filename": "feedback-en-omdt7bc3iqd.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 312806,
-                "needs_update": false,
-                "filename": "feedback-hi-en-4b0as3vycaq.mp3"
-              }
-            },
-            "feedback_2": {
-              "hi": {
-                "file_size_bytes": 369687,
-                "needs_update": false,
-                "filename": "feedback-hi-9b51f0xgzcv.mp3"
-              },
-              "en": {
-                "file_size_bytes": 156724,
-                "needs_update": false,
-                "filename": "feedback-en-8igrjcn0i7p.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 151892,
-                "needs_update": false,
-                "filename": "feedback-hi-en-k8gxh0f82j.mp3"
-              }
-            },
-            "feedback_3": {
-              "hi": {
-                "file_size_bytes": 1000983,
-                "needs_update": false,
-                "filename": "feedback-hi-zctld5716zl.mp3"
-              },
-              "en": {
-                "file_size_bytes": 358736,
-                "needs_update": false,
-                "filename": "feedback-en-3u5xoz6ynvp.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 344989,
-                "needs_update": false,
-                "filename": "feedback-hi-en-owdgzuq94k.mp3"
-              }
-            },
-            "feedback_1": {
-              "hi": {
-                "file_size_bytes": 97815,
-                "needs_update": false,
-                "filename": "feedback-hi-1fhe2fj489w.mp3"
-              },
-              "en": {
-                "file_size_bytes": 56590,
-                "needs_update": false,
-                "filename": "feedback-en-3j79yjdz7un.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 73523,
-                "needs_update": false,
-                "filename": "feedback-hi-en-llf1zmhozj.mp3"
-              }
-            },
-            "feedback_6": {
-              "hi": {
-                "file_size_bytes": 554775,
-                "needs_update": false,
-                "filename": "feedback-hi-n44iydgpcs7.mp3"
-              },
-              "en": {
-                "file_size_bytes": 206212,
-                "needs_update": false,
-                "filename": "feedback-en-0urs0h9zijye.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 214168,
-                "needs_update": false,
-                "filename": "feedback-hi-en-rwvkudanqfr.mp3"
-              }
-            },
-            "hint_1": {
-              "hi": {
-                "file_size_bytes": 80151,
-                "needs_update": false,
-                "filename": "hint-hi-18eyj15ffpi.mp3"
-              },
-              "en": {
-                "file_size_bytes": 55858,
-                "needs_update": false,
-                "filename": "hint-en-sn5jkt3l34.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 149383,
-                "needs_update": false,
-                "filename": "hint-hi-en-886ka9hyw4e.mp3"
-              }
-            },
-            "hint_2": {
-              "hi": {
-                "file_size_bytes": 925719,
-                "needs_update": false,
-                "filename": "hint-hi-4v7iibltmg.mp3"
-              },
-              "en": {
-                "file_size_bytes": 316595,
-                "needs_update": false,
-                "filename": "hint-en-op6neweluq.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 571940,
-                "needs_update": false,
-                "filename": "hint-hi-en-hqspkwc42ka.mp3"
-              }
-            },
-            "hint_3": {
-              "hi": {
-                "file_size_bytes": 923415,
-                "needs_update": false,
-                "filename": "hint-hi-w20fdo1sfm.mp3"
-              },
-              "en": {
-                "file_size_bytes": 326887,
-                "needs_update": false,
-                "filename": "hint-en-yzmpx2iiu7g.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 569432,
-                "needs_update": false,
-                "filename": "hint-hi-en-8x1pqu2d5mx.mp3"
-              }
-            },
-            "default_outcome": {
-              "hi": {
-                "file_size_bytes": 495639,
-                "needs_update": false,
-                "filename": "feedback-hi-i4lvigod81.mp3"
-              },
-              "en": {
-                "file_size_bytes": 204743,
-                "needs_update": false,
-                "filename": "feedback-en-iyyavu3ftzs.mp3"
-              },
-              "hi-en": {
-                "file_size_bytes": 314268,
-                "needs_update": false,
-                "filename": "feedback-hi-en-wuji2tje8ob.mp3"
-              }
-            }
+            "content": {},
+            "solution": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
           }
         },
         "classifier_model_id": null,
         "content": {
           "content_id": "content",
-          "html": "<p>“You’re doing great!\" said Mr. Baker. \"As you can see, it doesn’t matter if the first number is larger or smaller than the second one. The <strong>numerator</strong> is always the <strong>first</strong> (or top) number!<br></p><p>“Now, look at these cakes, all cut into pieces. Which of the fractions shown have a <strong>denominator</strong> of 3? There might be more than one.”</p>"
+          "html": "<p>What fraction of this picture is shaded?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;An equilateral triangle, standing on its base, divided by a horizontal line midway. The top part is shaded red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_011202_2sqx9v6lj1_height_130_width_106.png&amp;quot;\"></oppia-noninteractive-image>"
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>\"¡Lo estás haciendo muy bien!\"&nbsp;dijo el Sr. Baker. \"Como puedes ver, no importa si el primer número es más grande o más pequeño que el segundo. ¡El numerador es siempre el primer (o máximo) número!</p>\n\n<p><br>\n“Ahora, mira estos pasteles, todos cortados en pedazos. ¿Cuál de las fracciones mostradas tiene un denominador de 3? Puede haber más de uno \".</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>\"Aap bohot acha kar rahe hai. Jaisa ki aap dekh sakte hai, yeh jaroori nahi hai ki numerator denominator se chota ho, wo bada bhi ho sakta hai. But numerator humesha denominator se pehle ata hai.\"</p>\n\n<p>\"Ab in cakes ko dekhe. Inme se kis fraction ka denominator 3 hai? Dhyaan rakhe ki aap ek se jyada answer select kar sakte hai\"</p>"
-              }
-            },
-            "feedback_4": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no está bien. Parece extraño que tu respuesta contenga la imagen que representa 2/7 ... ¡ni siquiera hay un 3 en esa fracción!</p>\n\n<p>Si estás atascado, recuerda que debes seleccionar <strong>todas</strong> las respuestas correctas <strong>antes</strong> de enviarlas. Puede haber más de una respuesta correcta.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Ye sahi nahi hain, Ye odd hian ki aapke asnwer 2/7 represent kar raha hian jismain 3 nahi hain.<br>\n<br>\nAgar aap aatak rahay hian tooh yaad rakhiya ki aapko sare sahi answer select karne hain. Ek se bhi jyada sahi answer honay ki sambhaona hain.</p>"
-              }
-            },
-            "feedback_5": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no está bien. Tu respuesta incluye 3/7, pero 3/7 tiene un <strong>numerador</strong> de 3. Recuerda lo que dijo el Sr. Baker: el numerador es siempre el <strong>primer</strong> número de la fracción.&nbsp;</p>\n\n<p>Volvamos atrás y miremos de nuevo la explicación de numerador y denominador de Mr. Baker.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Ye sahi nahi hain, Ye odd hian ki aapke asnwer 3/7 represent kar raha hian, lekin 3/7 main 3 numerator hain. Yadd kartya Mr. Baker nay kaha that numerator fraction ka firts number hain.<br>\n<br>\nChaliya pichay chaltay hian aur Mr. Baker ke numerator aur denominator ke explanation ko firse dekhtay hain.</p>"
-              }
-            },
-            "feedback_2": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>Eso es correcto, pero hay más de una respuesta correcta. Asegúrate de seleccionar <strong>todas</strong> <strong>las respuestas correctas</strong> antes de enviarlas.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Second = Apka answer correct hai, but, apko sare correct answers select karne hai!</p>"
-              }
-            },
-            "feedback_3": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no está bien. Recuerda lo que dijo el Sr. Baker: el numerador es siempre el <strong>primer</strong> número, y el denominador es el <strong>segundo</strong> número.</p>\n\n<p>Entonces, 3/7 tiene un <strong>numerador</strong> de 3, no un denominador de 3. Vayamos atrás y leamos la explicación nuevamente.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Nahi ye sahi nahi hain, yaad hain Mr. Baker nay kaha tha: First number numerator hain aur second number denominator hain. </p>"
-              }
-            },
-            "feedback_1": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>¡Correcto! lo estás haciendo genial.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>\"Correct\"</p>"
-              }
-            },
-            "feedback_6": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no está bien. Parece extraño que tu respuesta contenga la imagen que representa 2/7 ... ¡ni siquiera hay un 3 en esa fracción!</p>\n\n<p>Inténtalo de nuevo!</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Ye sahi nahi hain, Ye odd hian ki aapke asnwer 2/7 represent kar raha hian jismain 3 nahi hain.<br>\n<br>\nTry again!</p>"
-              }
-            },
-            "hint_1": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>Hay más de una respuesta correcta.&nbsp;</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Aap ek se jyada correct answer select kar sakte hai!</p>"
-              }
-            },
-            "hint_2": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>Recuerda lo que dijo el Sr. Baker:</p>\n\n<p>\"El <strong>numerador</strong> es siempre el primer número o el número superior, el número de piezas que queremos. El <strong>denominador</strong> es siempre el segundo número o el número inferior, el número total de piezas en que se divide el conjunto\"</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Yaad rakhe ki Mr Baker ne kya kaha tha: \"Numerator humesha pehla ya upar wala number hota hai, jo batata hai ki hume kitne pieces chahiye. Denominator humesha second ya neeche wala number hota hai jo hume batata hai ki humne ek cheej ko kitne equal parts mein cut kiya hai.\"</p>"
-              }
-            },
-            "hint_3": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>Aquí hay un ejemplo: en 5/6, el numerador es 5 y el denominador es 6.</p>\n\n<p>¿Puedes calcular el numerador y los denominador para las fracciones dadas? Escríbelas todas primero, luego selecciona las que tienen el denominador 3.</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Chaliye ek example lete hai, 5/6 mein numerator 5 hai aur denominator 6 hai.</p>\n\n<p>Kya aap diye hue sare fractions mein se numerator and denominator dhoond sakte hai? Aap sare fractions apne paper par likh le aur wo fraction select kare jinka denominator 3 ho.</p>"
-              }
-            },
-            "default_outcome": {
-              "es": {
-                "needs_update": false,
-                "html": "<p>No, eso no es correcto. Recuerda: \"el denominador es siempre el segundo o el número de abajo, el número total de piezas en que se divide el conjunto\".</p>"
-              },
-              "hi-en": {
-                "needs_update": false,
-                "html": "<p>Ye galat answer hai. Dhyaan mein rakhe ki denominator humesha dusra ya neeche wala number hta hai, jo hume batata hai ki total kitne parts mein kisi cheez divided hai.</p>"
-              }
-            }
+            "content": {},
+            "solution": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
           }
         },
         "solicit_answer_details": false
