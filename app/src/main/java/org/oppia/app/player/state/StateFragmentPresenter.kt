@@ -373,16 +373,15 @@ class StateFragmentPresenter @Inject constructor(
         if (ephemeralState.state.interaction.hintList.size != 0 && startTimer.get()!!) {
           // The first hint is unlocked after 60s and subsequent hints are unlocked at 30s intervals on submission of new Wrong answer
           for (index in 0 until currentState.interaction.hintList.size) {
+            lifecycleSafeTimerFactory.cancel()
+            startTimer.set(false)
+            lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
             Log.d("break ","point = 1"+""+ephemeralState.state.interaction.hintList[0].hintIsRevealed)
             if (index==0 && !ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
-              lifecycleSafeTimerFactory.cancel()
-              startTimer.set(false)
-              lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
               lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
                  newAvailableHintIndex = 0
                 Log.d("break ","point = 2"+" newAvailableHintIndex"+index)
-
-
                 viewModel.setHintOpenedAndUnRevealedVisibility(true)
                 viewModel.setHintBulbVisibility(true)
               })
@@ -472,11 +471,15 @@ class StateFragmentPresenter @Inject constructor(
       if (result.hintIsRevealed) {
         logger.e("StateFragment", "hint revealed true = " + result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        lifecycleSafeTimerFactory.cancel()
+        startTimer.set(false)
+        lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
         for (index in 0 until currentState.interaction.hintList.size) {
+
+
           if (index==0 && !currentState.interaction.hintList[0].hintIsRevealed) {
-            lifecycleSafeTimerFactory.cancel()
-            startTimer.set(false)
-            lifecycleSafeTimerFactory= LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
             lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
               newAvailableHintIndex = 0
               Log.d("hintbreak ","point = 2"+" newAvailableHintIndex"+index)
@@ -563,8 +566,6 @@ class StateFragmentPresenter @Inject constructor(
 
             for (index in 0 until currentState.interaction.hintList.size) {
               if (index==0 && !currentState.interaction.hintList[0].hintIsRevealed) {
-                startTimer.set(false)
-                lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
                 lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
                   newAvailableHintIndex = 0
                   Log.d("Wrongbreak ", "point = 1" + " newAvailableHintIndex" + index)
