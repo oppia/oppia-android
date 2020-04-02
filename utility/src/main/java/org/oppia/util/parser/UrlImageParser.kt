@@ -34,10 +34,12 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
-    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, "umPkwp0L1M0-", urlString)
+//    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+//    imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+    imageLoader.load("https://storage.googleapis.com/oppiaserver-resources/exploration/umPkwp0L1M0-/assets/image/img_20180107_005823_g1asgsfffe_height_105_width_105.png", target)
     return urlDrawable
   }
 

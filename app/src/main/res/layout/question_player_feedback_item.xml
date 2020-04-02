@@ -2,15 +2,13 @@
 
   <data>
 
-    <import type="android.view.View" />
-
     <variable
       name="htmlContent"
       type="CharSequence" />
   </data>
 
   <FrameLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="28dp"
     android:layout_marginTop="@dimen/divider_margin_top"
@@ -18,16 +16,14 @@
     android:layout_marginBottom="@dimen/divider_margin_bottom">
 
     <TextView
-      android:id="@+id/content_text_view"
+      android:id="@+id/question_player_feedback_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:layout_marginBottom="16dp"
       android:fontFamily="sans-serif"
+      android:paddingTop="16dp"
+      android:paddingBottom="16dp"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp"
-      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}" />
+      android:textSize="16sp" />
   </FrameLayout>
 </layout>
-

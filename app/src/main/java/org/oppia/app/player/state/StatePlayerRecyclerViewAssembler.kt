@@ -29,6 +29,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
 import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
 import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
@@ -436,22 +437,40 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying feedback to the user when they submit an answer. */
     fun addFeedbackSupport(): Builder {
-      adapterBuilder.registerViewBinder(
-        viewType = StateItemViewModel.ViewType.FEEDBACK,
-        inflateView = { parent ->
-          FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          val feedbackViewModel = viewModel as FeedbackViewModel
-          binding.htmlContent =
-            htmlParserFactory.create(
-              resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
-            ).parseOppiaHtml(
-              feedbackViewModel.htmlContent.toString(), binding.feedbackTextView
-            )
-        }
-      )
+      if (fragment is QuestionPlayerFragment)
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.FEEDBACK,
+          inflateView = { parent ->
+            QuestionPlayerFeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<QuestionPlayerFeedbackItemBinding>(view)!!
+            val feedbackViewModel = viewModel as FeedbackViewModel
+            binding.htmlContent =
+              htmlParserFactory.create(
+                resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              ).parseOppiaHtml(
+                feedbackViewModel.htmlContent.toString(), binding.questionPlayerFeedbackTextView
+              )
+          }
+        )
+      else
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.FEEDBACK,
+          inflateView = { parent ->
+            FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
+            val feedbackViewModel = viewModel as FeedbackViewModel
+            binding.htmlContent =
+              htmlParserFactory.create(
+                resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              ).parseOppiaHtml(
+                feedbackViewModel.htmlContent.toString(), binding.feedbackTextView
+              )
+          }
+        )
       featureSets += PlayerFeatureSet(feedbackSupport = true)
       return this
     }
