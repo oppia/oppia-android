@@ -6,15 +6,18 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -25,6 +28,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -44,6 +48,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.After
@@ -147,7 +152,6 @@ class HomeActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -221,7 +225,6 @@ class HomeActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -314,7 +317,6 @@ class HomeActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -354,14 +356,43 @@ class HomeActivityTest {
     }
   }
 
+  @Test
+  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwo() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsTwo() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
+    }
+  }
+
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
-  private fun createTestRootComponent(): TestApplicationComponent {
-    return DaggerHomeActivityTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
+  /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
+  private fun hasGridItemCount(spanCount: Int, position: Int): ViewAssertion {
+    return RecyclerViewGridItemCountAssertion(spanCount, position)
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
@@ -505,6 +536,21 @@ class HomeActivityTest {
 
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
+    }
+  }
+
+  /** Custom class to check number of spans occupied by an item at a given position. */
+  private class RecyclerViewGridItemCountAssertion(private val count: Int, private val position: Int) : ViewAssertion {
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      check(view is RecyclerView) { "The asserted view is not RecyclerView" }
+      check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
+      val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
+      assertThat(
+        "RecyclerViewGrid span count", spanCount, equalTo(count)
+      )
     }
   }
 }

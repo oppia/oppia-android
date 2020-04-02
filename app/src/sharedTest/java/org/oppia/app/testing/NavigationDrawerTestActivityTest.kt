@@ -3,12 +3,12 @@ package org.oppia.app.testing
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
@@ -45,7 +45,7 @@ import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.StoryProgressTestHelper
@@ -115,11 +115,20 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Sean")))
+    }
+  }
+
+  @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
       onView(withId(R.id.profile_progress_text_view)).check(matches(withText("1 Story Completed | 1 Topic in Progress")))
     }
   }
@@ -127,22 +136,29 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId1)).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
-      onView(withId(R.id.nav_header_profile_name))
-        .check(matches(withText("Ben")))
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
+      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Ben")))
     }
   }
 
   @Test
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
-      onView(withId(R.id.home_fragment_placeholder))
-        .check(matches(isCompletelyDisplayed()))
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
@@ -169,6 +185,16 @@ class NavigationDrawerTestActivityTest {
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_changeConfiguration_checkAdministratorControlsDisplayed() {
+    launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
@@ -263,9 +289,8 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.help_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_help)))
-      onView(withContentDescription(R.string.drawer_open_content_description)).check(
-        matches(isCompletelyDisplayed())
-      ).perform(click())
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
+        .perform(click())
       onView(withId(R.id.help_activity_drawer_layout))
     }
   }
@@ -275,8 +300,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
-      onView(withContentDescription(R.string.drawer_open_content_description))
-        .perform(click())
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
       onView(
@@ -321,17 +345,13 @@ class NavigationDrawerTestActivityTest {
         )
       ).check(matches(withText(R.string.menu_home)))
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
       ).check(matches(withText("Welcome to Oppia!")))
     }
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier annotation class TestDispatcher

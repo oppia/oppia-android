@@ -16,7 +16,6 @@ import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -56,10 +55,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -126,7 +123,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected(){
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
@@ -161,7 +158,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected(){
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
@@ -196,7 +193,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected(){
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_item_layout)).perform(
         click()
@@ -227,6 +224,23 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
+        click()
+      )
+      onView(atPositionOnView(R.id.language_recycler_view, 1, R.id.language_radio_button)).perform(
+        click()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
+        matches(withText("French"))
+      )
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_item_layout)).perform(
@@ -234,7 +248,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             2,
             click()
           )
@@ -261,7 +275,7 @@ class OptionsFragmentTest {
 
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             1,
             click()
           )
@@ -368,7 +382,7 @@ class OptionsFragmentTest {
       )
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
-          RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          actionOnItemAtPosition<RecyclerView.ViewHolder>(
             4,
             click()
           )
@@ -376,6 +390,36 @@ class OptionsFragmentTest {
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
         matches(withText("Chinese"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_changeConfiguration_checkTextSizeLargeIsSmall() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.options_recyclerview, 0, R.id.story_text_size_text_view)).check(
+        matches(withText("Small"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_changeConfiguration_checkAppLanguageIsEnglish() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.options_recyclerview, 1, R.id.app_language_text_view)).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionFragment_changeConfiguration_checkAudioLanguageIsHindi() {
+    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
+        matches(withText("Hindi"))
       )
     }
   }
@@ -397,8 +441,7 @@ class OptionsFragmentTest {
     }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   @Module
   class TestModule {

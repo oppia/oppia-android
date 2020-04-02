@@ -31,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -46,6 +47,8 @@ import javax.inject.Singleton
 class AdminAuthActivityTest {
 
   @Inject lateinit var context: Context
+
+  private val internalProfileId: Int = 0
 
   @Before
   @ExperimentalCoroutinesApi
@@ -72,7 +75,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
@@ -85,16 +90,38 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_inputCorrectPassword_opensAddAdministratorControlsActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+        typeText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -104,12 +131,6 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
-
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("4"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
     }
   }
 
@@ -119,7 +140,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
@@ -141,7 +164,9 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
@@ -154,12 +179,52 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+     }
+  }
+
+  @Test
+  fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
+     }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
@@ -181,11 +246,13 @@ class AdminAuthActivityTest {
       AdminAuthActivity.createAdminAuthActivityIntent(
         context,
         "12345",
-        -10710042
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        typeText("123"),
+        typeText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())

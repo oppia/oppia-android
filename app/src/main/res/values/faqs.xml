@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="faq_question_1">How can I create a new profile?</string>
+  <string name="faq_question_2">How can I delete a profile?</string>
+  <string name="faq_question_3">How can I change my email/phone number?</string>
+  <string name="faq_question_4">Who is an Administrator?</string>
+  <string name="faq_question_5">Why is the Exploration player not loading?</string>
+  <string name="faq_question_6">Why is my audio not playing?</string>
+  <string name="faq_question_7">How do I download a Topic?</string>
+  <string name="faq_question_8">I can\'t find my question here. What now?</string>
+  <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN: </p> <p> 1. From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>. </p> <p> 2. Create a PIN and <strong>Save</strong>. </p> <p> 3. Fill in all fields for the profile. </p> <ol> <li> (Optional) Upload a photo. </li> <li> Enter a name. </li> <li> (Optional) Assign a 3-digit PIN. </li> </ol> <p> 4. Tap <strong>Create</strong>. This profile is added to your Profile Chooser! <br/> <br/> If you have created a profile before and have a PIN: </p> <p> 1. From the Profile Chooser, tap on <strong>Add Profile</strong>. </p> <p> 2. Enter your PIN and tap <strong>Submit</strong>. </p> <p> 3. Fill in all fields for the profile. </p> <ol> <li> (Optional) Upload a photo. </li> <li> Enter a name. </li> <li> (Optional) Assign a 3-digit PIN. </li> </ol> <p> 4. Tap <strong>Create</strong>. This profile is added to your Profile Chooser! <br/> <br/> Note: Only the Administrator is able to manage profiles.</p>]]></string>
+</resources>

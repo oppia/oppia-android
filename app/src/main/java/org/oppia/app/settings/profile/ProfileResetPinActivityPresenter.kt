@@ -22,6 +22,9 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ProfileResetPinViewModel>
 ) {
+  private var inputtedPin = false
+  private var inputtedConfirmPin = false
+
   private val resetViewModel: ProfileResetPinViewModel by lazy {
     getProfileResetPinViewModel()
   }
@@ -37,22 +40,38 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     val isAdmin = activity.intent.getBooleanExtra(KEY_PROFILE_RESET_PIN_IS_ADMIN, false)
     resetViewModel.isAdmin.set(isAdmin)
 
+    binding.profileResetPinToolbar.setNavigationOnClickListener {
+      (activity as ProfileRenameActivity).finish()
+    }
+
     binding.apply {
       viewModel = resetViewModel
       lifecycleOwner = activity
     }
 
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        resetViewModel.pinErrorMsg.set("")
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          resetViewModel.inputPin.set(it.toString())
+          resetViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
+      }
+    }
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          resetViewModel.inputConfirmPin.set(it.toString())
+          resetViewModel.confirmErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        resetViewModel.confirmErrorMsg.set("")
-      }
-    }
+    binding.inputPin.setInput(resetViewModel.inputPin.get().toString())
+    binding.inputConfirmPin.setInput(resetViewModel.inputConfirmPin.get().toString())
 
     binding.profileResetSaveButton.setOnClickListener {
       val pin = binding.inputPin.getInput()
@@ -84,6 +103,14 @@ class ProfileResetPinActivityPresenter @Inject constructor(
             activity.startActivity(intent)
           }
         })
+    }
+  }
+
+  private fun setValidPin() {
+    if (inputtedPin && inputtedConfirmPin) {
+      resetViewModel.isButtonActive.set(true)
+    } else {
+      resetViewModel.isButtonActive.set(false)
     }
   }
 
