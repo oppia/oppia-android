@@ -132,7 +132,7 @@ message Hint {
   SubtitledHtml hint_content = 1;
   // To check if the hint was revealed or not
   bool hint_is_revealed = 2;
-  // The current state to display to the user.
+  // The current state that is display to the user.
   State state = 3;
 }
 
