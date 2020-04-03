@@ -105,6 +105,9 @@ class TopicRevisionFragmentTest {
     }
   }
 
+  //Test Failing in other devices too. RecyclerView item count
+  //Expected: <2>
+  //Got: <12>
   @Test
   fun testTopicRevisionFragment_loadFragment_checkSpanCoun_isTwo() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
@@ -147,6 +150,9 @@ class TopicRevisionFragmentTest {
     }
   }
 
+  //Test failing in other devices too. RecyclerView item count
+  //Expected: <3>
+  //Got: <12>
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {

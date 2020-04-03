@@ -141,6 +141,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -155,6 +156,7 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
     launch(HomeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,

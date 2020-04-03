@@ -100,7 +100,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileActivity() {
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(scrollTo()).perform(
         typeText("test"), closeSoftKeyboard()
       )
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
@@ -279,7 +279,7 @@ class AddProfileActivityTest {
         typeText("Sean"), closeSoftKeyboard()
       )
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(scrollTo()).perform(
         typeText(" "), closeSoftKeyboard()
       )
       onView(
@@ -351,7 +351,7 @@ class AddProfileActivityTest {
         typeText("123"), closeSoftKeyboard()
       )
       onView(withId(R.id.create_button)).perform(scrollTo()).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(scrollTo()).perform(
         typeText(" "), closeSoftKeyboard()
       )
       onView(
@@ -621,7 +621,7 @@ class AddProfileActivityTest {
     intending(expectedIntent).respondWith(activityResult)
     ActivityScenario.launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.upload_image_button)).perform(click())
+      onView(withId(R.id.upload_image_button)).perform(scrollTo()).perform(click())
       intended(expectedIntent)
     }
   }
