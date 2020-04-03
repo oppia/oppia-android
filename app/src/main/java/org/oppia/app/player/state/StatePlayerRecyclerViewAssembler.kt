@@ -441,7 +441,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         adapterBuilder.registerViewBinder(
           viewType = StateItemViewModel.ViewType.FEEDBACK,
           inflateView = { parent ->
-            QuestionPlayerFeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
+            QuestionPlayerFeedbackItemBinding.inflate(
+              LayoutInflater.from(parent.context),
+              parent, /* attachToParent= */
+              false
+            ).root
           },
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<QuestionPlayerFeedbackItemBinding>(view)!!
