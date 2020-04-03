@@ -16,7 +16,7 @@ private const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
 
-/** Adapter to bind StorySummary to [RecyclerView] inside [HintsAndSolutionFragment]. */
+/** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionFragment]. */
 class HintsAndSolutionAdapter(
   private val fragment: Fragment,
   private val itemList: List<HintsAndSolutionItemViewModel>,
