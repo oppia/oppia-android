@@ -10,7 +10,7 @@ import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [ProfileActivity]. */
+/** The presenter for [ProfileChooserFragmentTestActivity]. */
 @ActivityScope
 class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
