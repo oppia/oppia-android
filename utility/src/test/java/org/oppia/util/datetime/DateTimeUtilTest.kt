@@ -33,9 +33,9 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private const val MORNING_TIMESTAMP = 1579666500000- 19800000
-private const val AFTERNOON_TIMESTAMP = 1579774500000 -19800000
-private const val EVENING_TIMESTAMP = 1579792500000 - 19800000
+private const val MORNING_TIMESTAMP = 1585888380000//1579666500000- 19800000
+private const val AFTERNOON_TIMESTAMP = 1585902780000//1579774500000 -19800000
+private const val EVENING_TIMESTAMP = 1585917180000//1579792500000 - 19800000
 
 /** Tests for [DateTimeUtil]. */
 @RunWith(AndroidJUnit4::class)
