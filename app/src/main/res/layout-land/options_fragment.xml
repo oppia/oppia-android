@@ -1,0 +1,25 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+      <variable
+        name="viewModel"
+        type="org.oppia.app.options.OptionControlsViewModel" />
+    </data>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/options_recyclerview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/navigationGeneralBackground"
+    android:clipToPadding="false"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    app:data="@{viewModel.optionListLiveData}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+</layout>

@@ -19,12 +19,18 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
+private val DEFAULT_STORY_TEXT_SIZE = StoryTextSize.SMALL_TEXT_SIZE
+private val DEFAULT_APP_LANGUAGE = AppLanguage.ENGLISH_APP_LANGUAGE
+private val DEFAULT_AUDIO_LANGUAGE = AudioLanguage.NO_AUDIO
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -40,7 +46,9 @@ class AddProfileActivityPresenter @Inject constructor(
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
+  private var checkboxStateClicked = false
   private var inputtedConfirmPin = false
+  private lateinit var alertDialog: AlertDialog
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
@@ -54,11 +62,16 @@ class AddProfileActivityPresenter @Inject constructor(
     )
 
     binding.apply {
+      lifecycleOwner = activity
       viewModel = profileViewModel
     }
 
     binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
+    }
+    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+      profileViewModel.createPin.set(isChecked)
+      checkboxStateClicked = isChecked
     }
 
     binding.infoIcon.setOnClickListener {
@@ -67,8 +80,53 @@ class AddProfileActivityPresenter @Inject constructor(
 
     uploadImageView = binding.uploadImageButton
 
-    addTextChangedListeners(binding)
     addButtonListeners(binding)
+
+    binding.inputName.post {
+      addTextChangedListener(binding.inputName) { name ->
+        name?.let {
+          profileViewModel.isButtonActive.set(it.isNotEmpty())
+          profileViewModel.nameErrorMsg.set("")
+          profileViewModel.inputName.set(it.toString())
+        }
+      }
+    }
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          profileViewModel.inputPin.set(it.toString())
+          profileViewModel.pinErrorMsg.set("")
+          inputtedPin = pin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          profileViewModel.inputConfirmPin.set(it.toString())
+          profileViewModel.confirmPinErrorMsg.set("")
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin(binding)
+        }
+      }
+    }
+
+    binding.inputName.setInput(profileViewModel.inputName.get().toString())
+    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
+    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
+    if (profileViewModel.showInfoAlertPopup.get()!!) {
+      showInfoDialog()
+    }
+  }
+
+  private fun setValidPin(binding: AddProfileActivityBinding) {
+    if (inputtedPin && inputtedConfirmPin) {
+      profileViewModel.validPin.set(true)
+    } else {
+      binding.allowDownloadSwitch.isChecked = false
+      profileViewModel.validPin.set(false)
+    }
   }
 
   fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -86,8 +144,10 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
     binding.uploadImageButton.setOnClickListener {
-      val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-      activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
+      openGalleryIntent()
+    }
+    binding.editImageFab.setOnClickListener {
+      openGalleryIntent()
     }
 
     binding.createButton.setOnClickListener {
@@ -97,8 +157,12 @@ class AddProfileActivityPresenter @Inject constructor(
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
       val name = binding.inputName.getInput()
-      val pin = binding.inputPin.getInput()
-      val confirmPin = binding.inputConfirmPin.getInput()
+      var pin = ""
+      var confirmPin = ""
+      if (checkboxStateClicked) {
+        pin = binding.inputPin.getInput()
+        confirmPin = binding.inputConfirmPin.getInput()
+      }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
         binding.scroll.smoothScrollTo(0, 0)
@@ -111,12 +175,20 @@ class AddProfileActivityPresenter @Inject constructor(
         avatarImagePath = selectedImage,
         allowDownloadAccess = allowDownloadAccess,
         colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = DEFAULT_STORY_TEXT_SIZE,
+        appLanguage = DEFAULT_APP_LANGUAGE,
+        audioLanguage = DEFAULT_AUDIO_LANGUAGE
       )
         .observe(activity, Observer {
           handleAddProfileResult(it, binding)
         })
     }
+  }
+
+  private fun openGalleryIntent() {
+    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
@@ -161,39 +233,6 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  private fun addTextChangedListeners(binding: AddProfileActivityBinding) {
-    fun setValidPin() {
-      if (inputtedPin && inputtedConfirmPin) {
-        profileViewModel.validPin.set(true)
-      } else {
-        binding.allowDownloadSwitch.isChecked = false
-        profileViewModel.validPin.set(false)
-      }
-    }
-
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        profileViewModel.pinErrorMsg.set("")
-        inputtedPin = pin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        profileViewModel.confirmPinErrorMsg.set("")
-        inputtedConfirmPin = confirmPin.isNotEmpty()
-        setValidPin()
-      }
-    }
-
-    addTextChangedListener(binding.inputName) { name ->
-      name?.let {
-        profileViewModel.nameErrorMsg.set("")
-      }
-    }
-  }
-
   private fun addTextChangedListener(
     profileInputView: ProfileInputView,
     onTextChanged: (CharSequence?) -> Unit
@@ -209,11 +248,22 @@ class AddProfileActivityPresenter @Inject constructor(
   }
 
   private fun showInfoDialog() {
-    AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+    profileViewModel.showInfoAlertPopup.set(true)
+    alertDialog = AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
       .setMessage(R.string.add_profile_pin_info)
       .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
+        profileViewModel.showInfoAlertPopup.set(false)
         dialog.dismiss()
-      }.create().show()
+      }
+      .setCancelable(false)
+      .create()
+    alertDialog.show()
+  }
+
+  fun dismissAlertDialog() {
+    if (::alertDialog.isInitialized && alertDialog.isShowing) {
+      alertDialog.dismiss()
+    }
   }
 
   private fun getAddProfileViewModel(): AddProfileViewModel {

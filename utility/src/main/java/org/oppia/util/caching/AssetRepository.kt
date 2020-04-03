@@ -1,7 +1,6 @@
 package org.oppia.util.caching
 
 import android.content.Context
-import org.oppia.util.logging.Logger
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -10,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.util.logging.Logger
 
 // TODO(#169): Leverage this repository or a version of it for caching all topic contents in a proto. It may also be
 //  worth keeping a version of this repository for caching audio files within certain size limits for buffering during
@@ -73,7 +73,7 @@ class AssetRepository @Inject constructor(private val context: Context, private 
   private fun openCachingStreamToRemoteFile(url: String): InputStream {
     val urlInStream = openRemoteStream(url)
     val fileOutStream = openLocalCacheFileForWrite(url)
-    return object: InputStream() {
+    return object : InputStream() {
       override fun available(): Int {
         return urlInStream.available()
       }

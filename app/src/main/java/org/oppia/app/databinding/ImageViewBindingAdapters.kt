@@ -10,6 +10,7 @@ import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.SkillThumbnailGraphic
+import org.oppia.app.model.SubtopicThumbnailGraphic
 
 /**
  * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
@@ -69,6 +70,23 @@ fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SkillThumbnailGraph
       SkillThumbnailGraphic.MULTIPLYING_FRACTIONS -> R.drawable.topic_fractions_07
       SkillThumbnailGraphic.DIVIDING_FRACTIONS -> R.drawable.topic_fractions_08
       SkillThumbnailGraphic.DERIVE_A_RATIO -> R.drawable.topic_ratios_01
+      else -> R.drawable.topic_fractions_01
+    }
+  )
+}
+
+/**
+ * Binds the specified [SkillThumbnailGraphic] as the source for the [ImageView]. The view should be specified to have
+ * no width/height (when sized in a constraint layout), and use centerCrop for the image to appear correctly.
+ */
+@BindingAdapter("android:src")
+fun setImageDrawable(imageView: ImageView, thumbnailGraphic: SubtopicThumbnailGraphic) {
+  setImageDrawable(
+    imageView, when (thumbnailGraphic) {
+      SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION -> R.drawable.topic_fractions_01
+      SubtopicThumbnailGraphic.FRACTION_OF_A_GROUP -> R.drawable.topic_fractions_02
+      SubtopicThumbnailGraphic.ADDING_FRACTIONS -> R.drawable.topic_fractions_03
+      SubtopicThumbnailGraphic.MIXED_NUMBERS -> R.drawable.topic_fractions_04
       else -> R.drawable.topic_fractions_01
     }
   )

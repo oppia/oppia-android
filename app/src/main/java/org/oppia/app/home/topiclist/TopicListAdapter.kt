@@ -1,6 +1,8 @@
 package org.oppia.app.home.topiclist
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,7 @@ import org.oppia.app.databinding.PromotedStoryListBinding
 import org.oppia.app.databinding.TopicSummaryViewBinding
 import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
-import org.oppia.app.home.UserAppHistoryViewModel
+import org.oppia.app.home.WelcomeViewModel
 import org.oppia.app.recyclerview.StartSnapHelper
 
 private const val VIEW_TYPE_WELCOME_MESSAGE = 1
@@ -28,6 +30,8 @@ class TopicListAdapter(
   private val promotedStoryList: MutableList<PromotedStoryViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val orientation = Resources.getSystem().configuration.orientation
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -79,7 +83,7 @@ class TopicListAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
     when (holder.itemViewType) {
       VIEW_TYPE_WELCOME_MESSAGE -> {
-        (holder as WelcomeViewHolder).bind(itemList[position] as UserAppHistoryViewModel)
+        (holder as WelcomeViewHolder).bind(itemList[position] as WelcomeViewModel)
       }
       VIEW_TYPE_PROMOTED_STORY_LIST -> {
         (holder as PromotedStoryListViewHolder).bind(
@@ -99,7 +103,7 @@ class TopicListAdapter(
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
-      is UserAppHistoryViewModel -> {
+      is WelcomeViewModel -> {
         VIEW_TYPE_WELCOME_MESSAGE
       }
       is AllTopicsViewModel -> {
@@ -120,8 +124,8 @@ class TopicListAdapter(
   }
 
   private class WelcomeViewHolder(val binding: WelcomeBinding) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(userAppHistoryViewModel: UserAppHistoryViewModel) {
-      binding.viewModel = userAppHistoryViewModel
+    internal fun bind(welcomeViewModel: WelcomeViewModel) {
+      binding.viewModel = welcomeViewModel
     }
   }
 
@@ -133,7 +137,7 @@ class TopicListAdapter(
       promotedStoryList: MutableList<PromotedStoryViewModel>
     ) {
       binding.viewModel = promotedStoryListViewModel
-      val promotedStoryAdapter = PromotedStoryListAdapter(promotedStoryList)
+      val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
       val horizontalLayoutManager =
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
       binding.promotedStoryListRecyclerView.apply {
@@ -149,12 +153,20 @@ class TopicListAdapter(
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
-      val padding48 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
-      val padding20 = (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_20)
-      if (promotedStoryList.size > 1) {
-        binding.promotedStoryListRecyclerView.setPadding(padding20, 0, padding48, 0)
+      val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
       } else {
-        binding.promotedStoryListRecyclerView.setPadding(padding20, 0, padding20, 0)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+      }
+      val paddingStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_20)
+      } else {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+      }
+      if (promotedStoryList.size > 1) {
+        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
+      } else {
+        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
       }
     }
   }
@@ -168,12 +180,31 @@ class TopicListAdapter(
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
       val param = binding.topicContainer.layoutParams as GridLayoutManager.LayoutParams
-      val margin32 = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_32)
-      val margin8 = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-      if (position % 2 == 0) {
-        param.setMargins(margin8, margin8, margin32, margin8)
+      val marginMax = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_32)
       } else {
-        param.setMargins(margin32, margin8, margin8, margin8)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
+      }
+
+      val marginTopBottom = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_12)
+
+      val marginMin = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+      } else {
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_36)
+      }
+
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        when {
+          position % 2 == 0 -> param.setMargins(marginMin, marginTopBottom, marginMax, marginTopBottom)
+          else -> param.setMargins(marginMax, marginTopBottom, marginMin, marginTopBottom)
+        }
+      } else {
+        when {
+          position % 3 == 0 -> param.setMargins(marginMax, marginTopBottom, /* right= */ 0, marginTopBottom)
+          position % 3 == 1 -> param.setMargins(marginMin, marginTopBottom, marginMin, marginTopBottom)
+          position % 3 == 2 -> param.setMargins(/* left= */ 0, marginTopBottom, marginMax, marginTopBottom)
+        }
       }
       binding.topicContainer.layoutParams = param
     }

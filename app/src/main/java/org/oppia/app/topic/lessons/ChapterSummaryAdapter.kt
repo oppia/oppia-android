@@ -12,6 +12,7 @@ import org.oppia.app.model.ChapterSummary
 
 /** Adapter to bind ChapterSummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class ChapterSummaryAdapter(
+  private val storyId: String,
   private val chapterList: List<ChapterSummary>,
   private val chapterSummarySelector: ChapterSummarySelector
 ) :
@@ -39,7 +40,7 @@ class ChapterSummaryAdapter(
       binding.chapterSummary = chapterSummary
       binding.index = position
       binding.chapterContainer.setOnClickListener {
-        chapterSummarySelector.selectChapterSummary(chapterSummary)
+        chapterSummarySelector.selectChapterSummary(storyId, chapterSummary)
       }
     }
   }

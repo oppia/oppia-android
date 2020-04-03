@@ -28,6 +28,14 @@ class ProfileInputView @JvmOverloads constructor(
     }
 
     @JvmStatic
+    @BindingAdapter("profile:labelMargin")
+    fun setLayoutMarginStart(profileInputView: ProfileInputView, dimen: Float) {
+      val layoutParams = profileInputView.label.layoutParams as MarginLayoutParams
+      layoutParams.marginStart = dimen.toInt()
+      profileInputView.label.layoutParams = layoutParams
+    }
+
+    @JvmStatic
     @BindingAdapter("profile:inputLength")
     fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
       profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
@@ -35,11 +43,12 @@ class ProfileInputView @JvmOverloads constructor(
 
     @JvmStatic
     @BindingAdapter("profile:error")
-    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String) {
-      if (errorMessage.isEmpty()) {
+    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String?) {
+      var errMessage: String = errorMessage ?: ""
+      if (errMessage.isEmpty()) {
         profileInputView.clearErrorText()
       } else {
-        profileInputView.setErrorText(errorMessage)
+        profileInputView.setErrorText(errMessage)
       }
     }
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
@@ -77,6 +86,11 @@ class ProfileInputView @JvmOverloads constructor(
 
   /** Gets input of editText. */
   fun getInput() = input.text.toString()
+
+  /** Sets the input of editText. */
+  fun setInput(text: String) = input.setText(text)
+
+  fun setSelection(length: Int) = input.setSelection(length)
 
   /** Allows editText to be watched. */
   fun addTextChangedListener(textWatcher: TextWatcher) = input.addTextChangedListener(textWatcher)

@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
@@ -57,6 +59,26 @@ class ConceptCardFragmentTest {
         withParent(withId(R.id.concept_card_toolbar))
       )
     ).check(matches(withText(R.string.concept_card_toolbar_title)))
+  }
+
+  @Test
+  fun testConceptCardFragment_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.open_dialog_0)).perform(click())
+    onView(
+      allOf(
+        instanceOf(TextView::class.java),
+        withParent(withId(R.id.concept_card_toolbar))
+      )
+    ).check(matches(withText(R.string.concept_card_toolbar_title)))
+  }
+
+  @Test
+  fun testConceptCardFragment_configurationChange_conceptCardIsDisplayedCorrectly() {
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.open_dialog_0)).perform(click())
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
+    onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
   }
 
   @Test
