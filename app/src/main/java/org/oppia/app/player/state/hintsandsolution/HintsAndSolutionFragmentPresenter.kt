@@ -29,13 +29,15 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                       currentState: State,
-                       explorationId: String,
-                       currentExpandedHintListIndex: Int?,
-                       newAvailbleHintIndex: Int,
-                       allHintsExhausted: Boolean,
-                       expandedHintListIndexListener: ExpandedHintListIndexListener): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    currentState: State,
+    explorationId: String,
+    currentExpandedHintListIndex: Int?,
+    newAvailableHintIndex: Int,
+    allHintsExhausted: Boolean,
+    expandedHintListIndexListener: ExpandedHintListIndexListener
+  ): View? {
     val binding = HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getHintsAndSolutionViewModel()
 
@@ -56,7 +58,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     viewModel.setSolution(currentState.interaction.solution)
     viewModel.setExplorationId(explorationId)
 
-     hintsAndSolutionAdapter =
+    hintsAndSolutionAdapter =
       HintsAndSolutionAdapter(
         fragment,
         viewModel.processHintList(),
@@ -70,7 +72,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       adapter = hintsAndSolutionAdapter
     }
 
-    handleNewAvailableHint(newAvailbleHintIndex)
+    handleNewAvailableHint(newAvailableHintIndex)
 
     if (allHintsExhausted) {
       handleAllHintsExhausted(allHintsExhausted)

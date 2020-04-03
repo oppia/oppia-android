@@ -93,9 +93,9 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
-      if(hintsViewModel.isHintRevealed.get()!!){
+      if (hintsViewModel.isHintRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
-      }else{
+      } else {
         binding.root.visibility = View.GONE
       }
 
@@ -166,7 +166,6 @@ class HintsAndSolutionAdapter(
       }
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
-
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionCorrectAnswer.text =
@@ -218,8 +217,8 @@ class HintsAndSolutionAdapter(
   }
 
   fun setRevealSolution(saveUserChoice: Boolean) {
-    if (itemList.get(itemList.size - 1) is SolutionViewModel) {
-      val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
+    if (itemList[itemList.size - 1] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(saveUserChoice)
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       notifyItemChanged(itemList.size - 1)
@@ -227,16 +226,16 @@ class HintsAndSolutionAdapter(
   }
 
   fun setNewHintIsAvailable(hintIndex: Int) {
-    if (itemList.get(hintIndex) is HintsViewModel) {
-      val hintsViewModel = itemList.get(hintIndex) as HintsViewModel
+    if (itemList[hintIndex] is HintsViewModel) {
+      val hintsViewModel = itemList[hintIndex] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
       notifyItemChanged(hintIndex)
     }
   }
 
   fun setSolutionCanBeRevealed(allHintsExhausted: Boolean) {
-    if (itemList.get(itemList.size - 1) is SolutionViewModel) {
-      val solutionViewModel = itemList.get(itemList.size - 1) as SolutionViewModel
+    if (itemList[itemList.size - 1] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
       notifyItemChanged(itemList.size - 1)
     }

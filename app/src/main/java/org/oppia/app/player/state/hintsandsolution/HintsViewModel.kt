@@ -9,8 +9,7 @@ import javax.inject.Inject
 
 /** [ViewModel] for Hints in [HintsAndSolutionFragment]. */
 @FragmentScope
-class HintsViewModel @Inject constructor(
-) : HintsAndSolutionItemViewModel() {
+class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   val title = ObservableField<String>("")
   val hintsAndSolutionSummary = ObservableField<String>("")

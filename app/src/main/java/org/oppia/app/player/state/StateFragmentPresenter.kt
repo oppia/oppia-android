@@ -312,12 +312,10 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    logger.e("StateFragment", " revealed hint = " + saveUserChoice)
     subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
-    logger.e("StateFragment", " revealed Solution = " + saveUserChoice)
     subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
   }
 
@@ -365,7 +363,7 @@ class StateFragmentPresenter @Inject constructor(
       numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
       // Check if hints are available for this state.
       if (ephemeralState.state.interaction.hintList.size != 0) {
-        // Check if user submits 1st wrong answer. The first hint is unlocked after 60s on submission of Wrong answer.
+        // Check if user submits 1st wrong answer. The first hint is unlocked after 60s on submission of wrong answer.
         if (ephemeralState.pendingState.wrongAnswerList.size == 1) {
           lifecycleSafeTimerFactory.cancel()
           lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
@@ -402,7 +400,6 @@ class StateFragmentPresenter @Inject constructor(
           }
         }
       }
-
       addInteractionForPendingState(pendingItemList, interaction)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
@@ -461,10 +458,7 @@ class StateFragmentPresenter @Inject constructor(
     hintLiveData.observe(fragment, Observer<Hint> { result ->
       // If the hint was revealed remove dot and radar.
       if (result.hintIsRevealed) {
-        logger.e("StateFragment", "hint revealed true = " + result.hintIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-      } else {
-        logger.e("StateFragment", "hint revealed false = " + result.hintIsRevealed)
       }
     })
   }
@@ -479,10 +473,7 @@ class StateFragmentPresenter @Inject constructor(
     solutionLiveData.observe(fragment, Observer<Solution> { result ->
       // If the hint was revealed remove dot and radar.
       if (result.solutionIsRevealed) {
-        logger.e("StateFragment", "solution revealed true = " + result.solutionIsRevealed)
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
-      } else {
-        logger.e("StateFragment", "solution revealed false = " + result.solutionIsRevealed)
       }
     })
   }
@@ -512,7 +503,6 @@ class StateFragmentPresenter @Inject constructor(
             isNewWrongAnswerSubmitted = true
             lifecycleSafeTimerFactory.cancel()
             lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
-
             if (currentState.interaction.hintList.size != 0) {
               for (index in 0 until currentState.interaction.hintList.size) {
                 if (index == 0 && !currentState.interaction.hintList[0].hintIsRevealed) {
@@ -581,22 +571,22 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.setHintBulbVisibility(false)
   }
 
-  /** Helper for subscribeToSolution. */
+  /** Helper for [subscribeToSolution]. */
   private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
     return Transformations.map(hint, ::processSolution)
   }
 
-  /** Helper for subscribeToHint. */
+  /** Helper for [subscribeToHint]. */
   private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
     return Transformations.map(hint, ::processHint)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for [subscribeToAnswerOutcome]. */
   private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for [subscribeToAnswerOutcome]. */
   private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
@@ -608,7 +598,7 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  /** Helper for subscribeToHint. */
+  /** Helper for [subscribeToHint]. */
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
       logger.e(
@@ -620,7 +610,7 @@ class StateFragmentPresenter @Inject constructor(
     return hintResult.getOrDefault(Hint.getDefaultInstance())
   }
 
-  /** Helper for subscribeToHint. */
+  /** Helper for [subscribeToSolution]. */
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
       logger.e(
