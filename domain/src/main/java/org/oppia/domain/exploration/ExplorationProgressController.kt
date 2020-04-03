@@ -337,11 +337,11 @@ class ExplorationProgressController @Inject constructor(
       // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex.
       check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-            " to ${explorationProgress.currentExplorationId}"
+          " to ${explorationProgress.currentExplorationId}"
       }
       check(explorationProgress.playStage == currentStage) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-            " to ${explorationProgress.currentExplorationId}"
+          " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
         PlayStage.NOT_PLAYING -> AsyncResult.pending()
@@ -429,8 +429,8 @@ class ExplorationProgressController @Inject constructor(
           // answer. It cannot be viewed without a loaded exploration.
           check(
             playStage == PlayStage.LOADING_EXPLORATION
-                || playStage == PlayStage.VIEWING_STATE
-                || playStage == PlayStage.SUBMITTING_ANSWER
+              || playStage == PlayStage.VIEWING_STATE
+              || playStage == PlayStage.SUBMITTING_ANSWER
           ) {
             "Cannot transition to VIEWING_STATE from $playStage"
           }
