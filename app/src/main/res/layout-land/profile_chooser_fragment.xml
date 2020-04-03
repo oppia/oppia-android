@@ -24,15 +24,16 @@
         android:id="@+id/profile_chooser_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="24dp">
+        android:paddingTop="20dp">
 
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="8dp"
+          android:layout_marginEnd="4dp"
           android:minHeight="24dp"
           android:text="@string/profile_chooser_language"
           android:textColor="@color/profileChooserGreyTextColor"
+          android:fontFamily="sans-serif"
           android:textSize="16sp"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
           app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +42,8 @@
           android:id="@+id/profile_chooser_language_icon"
           android:layout_width="24dp"
           android:layout_height="24dp"
-          android:layout_marginEnd="20dp"
+          android:layout_marginEnd="36dp"
+          android:fontFamily="sans-serif"
           android:src="@drawable/ic_language_icon_grey_24dp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +53,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="36dp"
-          android:layout_marginTop="60dp"
+          android:layout_marginTop="64dp"
           android:layout_marginEnd="36dp"
           android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
@@ -65,7 +67,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="36dp"
+          android:layout_marginTop="16dp"
           android:layout_marginEnd="16dp"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
@@ -100,6 +102,7 @@
       android:text="@string/profile_chooser_administrator_controls"
       android:textColor="@color/profileChooserGreyTextColor"
       android:textSize="16sp"
+      android:fontFamily="sans-serif"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/profile_chooser_setting_icon" />
 

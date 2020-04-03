@@ -111,7 +111,7 @@ class ProfileChooserSpanTest {
     }
   }
 
-  fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment {
+  private fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment {
     return activity.supportFragmentManager.findFragmentByTag(ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment
   }
 }
