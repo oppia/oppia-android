@@ -23,7 +23,10 @@
       android:name=".completedstorylist.CompletedStoryListActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".help.faq.FAQActivity"
+      android:name=".help.faq.FAQListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.faqsingle.FAQSingleActivity"
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -62,8 +65,7 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity
-      android:name=".profile.AddProfileActivity" />
+    <activity android:name=".profile.AddProfileActivity" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
@@ -71,7 +73,6 @@
     <activity android:name=".profile.AdminPinActivity" />
     <activity
       android:name=".profile.PinPasswordActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
@@ -84,9 +85,15 @@
       android:name=".profileprogress.ProfileProgressActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".settings.profile.ProfileEditActivity" />
-    <activity android:name=".settings.profile.ProfileListActivity" />
-    <activity android:name=".settings.profile.ProfileRenameActivity" />
-    <activity android:name=".settings.profile.ProfileResetPinActivity" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".settings.profile.ProfileRenameActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".settings.profile.ProfileResetPinActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
@@ -113,7 +120,6 @@
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.StoryFragmentTestActivity"

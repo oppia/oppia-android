@@ -23,6 +23,10 @@ class AdminPinActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<AdminPinViewModel>
 ) {
+
+  private var inputtedPin = false
+  private var inputtedConfirmPin = false
+
   private val adminViewModel by lazy {
     getAdminPinViewModel()
   }
@@ -43,8 +47,10 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.inputPin.post {
       addTextChangedListener(binding.inputPin) { pin ->
         pin?.let {
-          adminViewModel.pinErrorMsg.value = ""
-          adminViewModel.savedPin.value = it.toString()
+          adminViewModel.pinErrorMsg.set("")
+          adminViewModel.savedPin.set(it.toString())
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
         }
       }
     }
@@ -52,25 +58,27 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.inputConfirmPin.post {
       addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
         confirmPin?.let {
-          adminViewModel.confirmPinErrorMsg.value = ""
-          adminViewModel.savedConfirmPin.value = it.toString()
+          adminViewModel.confirmPinErrorMsg.set("")
+          adminViewModel.savedConfirmPin.set(it.toString())
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
         }
       }
     }
 
-    binding.inputPin.setInput(adminViewModel.savedPin.value.toString())
-    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.value.toString())
+    binding.inputPin.setInput(adminViewModel.savedPin.get().toString())
+    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.get().toString())
 
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
       if (inputPin.length < 5) {
-        adminViewModel.pinErrorMsg.value = activity.getString(R.string.admin_pin_error_pin_length)
+        adminViewModel.pinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_length))
         failed = true
       }
       if (inputPin != confirmPin) {
-        adminViewModel.confirmPinErrorMsg.value = activity.getString(R.string.admin_pin_error_pin_confirm_wrong)
+        adminViewModel.confirmPinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_confirm_wrong))
         failed = true
       }
       if (failed) {
@@ -115,6 +123,14 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
+  }
+
+  private fun setValidPin() {
+    if (inputtedPin && inputtedConfirmPin) {
+      getAdminPinViewModel().isButtonActive.set(true)
+    } else {
+      getAdminPinViewModel().isButtonActive.set(false)
+    }
   }
 
   private fun getAdminPinViewModel(): AdminPinViewModel {

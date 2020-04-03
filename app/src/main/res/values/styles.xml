@@ -6,6 +6,10 @@
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
+  <!-- This style specifies the Text Size of the Toolbar Title. -->
+  <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">20sp</item>
+  </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
@@ -140,5 +144,15 @@
     <item name="android:textColor">@color/tab_icon_color_selector</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="textAllCaps">true</item>
+  </style>
+
+  <style name="LanguageRadioButton" parent="Base.Widget.AppCompat.CompoundButton.RadioButton">
+    <item name="android:button">@drawable/radio_button_drawable</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:backgroundDimEnabled">true</item>
   </style>
 </resources>

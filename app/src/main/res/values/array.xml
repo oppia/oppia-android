@@ -11,4 +11,15 @@
     <item>@string/faq_question_7</item>
     <item>@string/faq_question_8</item>
   </string-array>
+
+  <string-array name="faq_answers">
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+  </string-array>
 </resources>

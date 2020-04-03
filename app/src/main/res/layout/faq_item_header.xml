@@ -11,7 +11,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -24,14 +25,14 @@
         android:id="@+id/faq_question_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:paddingStart="@dimen/padding_24dp"
-        android:paddingTop="@dimen/padding_24dp"
-        android:paddingEnd="@dimen/padding_24dp"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp"
         android:text="@string/featured_questions"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

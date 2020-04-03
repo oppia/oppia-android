@@ -6,26 +6,33 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.help.faq.FAQViewModel" />
+      type="org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
-      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/faq_fragment_recycler_view"
+      <TextView
+        android:id="@+id/faq_question_text_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:list="@{viewModel.faqItemList}" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="72dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="72dp"
+        android:paddingBottom="8dp"
+        android:text="@string/featured_questions"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
