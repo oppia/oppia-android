@@ -19,10 +19,26 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   val isAudioBarVisible = ObservableField<Boolean>(false)
 
+  val isHintBulbVisible = ObservableField<Boolean>(false)
+  val isHintOpenedAndUnRevealed = ObservableField<Boolean>(false)
+  val isHintRevealed = ObservableField<Boolean>(false)
+
   var currentStateName: String? = null
 
   fun setAudioBarVisibility(audioBarVisible: Boolean) {
     isAudioBarVisible.set(audioBarVisible)
+  }
+
+  fun setHintBulbVisibility(hintBulbVisible: Boolean) {
+    isHintBulbVisible.set(hintBulbVisible)
+  }
+
+  fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
+    isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
+  }
+
+  fun setHintRevealedVisibility(hintRevealedVisible: Boolean) {
+    isHintRevealed.set(hintRevealedVisible)
   }
 
   /**
