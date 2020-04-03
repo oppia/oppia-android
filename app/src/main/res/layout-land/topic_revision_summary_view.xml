@@ -43,7 +43,7 @@
         android:id="@+id/subtopic_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppiaBrown"
+        android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="3"
