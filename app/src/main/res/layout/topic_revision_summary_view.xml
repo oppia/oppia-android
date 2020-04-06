@@ -12,8 +12,12 @@
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="12dp"
     android:clipToPadding="true"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp"
@@ -53,10 +57,13 @@
         android:fontFamily="sans-serif-medium"
         android:maxLines="3"
         android:minLines="3"
-        android:padding="12dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="16dp"
         android:text="@{subtopic.title}"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/separator_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>
