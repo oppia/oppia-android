@@ -24,4 +24,9 @@ class DateTimeUtil @Inject constructor(
       else -> context.getString(R.string.good_evening)
     }
   }
+
+  fun getGreetinTime(): Long {
+    val calender = oppiaClock.getCurrentCalendar()
+    return calender.timeInMillis
+  }
 }
