@@ -120,10 +120,10 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/flaky-test-results/junit/
-            find . -type f -regex ".*/build/flaky-test-results/.*xml" -exec cp {} ~/flaky-test-results/junit/ \;
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
           when: always
       - store_test_results:
-          path: ~/flaky-test-results
+          path: ~/test-results
       - store_artifacts:
-          path: ~/flaky-test-results/junit
+          path: ~/test-results/junit
