@@ -50,6 +50,75 @@ class ProfileChooserSpanTest {
   }
 
   @Test
+  fun testProfileChooserFragmentRecyclerView_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-ldpi")
+  fun testProfileChooserFragmentRecyclerView_ldpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-mdpi")
+  fun testProfileChooserFragmentRecyclerView_mdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-hdpi")
+  fun testProfileChooserFragmentRecyclerView_hdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xhdpi")
+  fun testProfileChooserFragmentRecyclerView_xhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xxhdpi")
+  fun testProfileChooserFragmentRecyclerView_xxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xxxhdpi")
+  fun testProfileChooserFragmentRecyclerView_xxxhdpi_hasCorrectSpanCount() {
+    launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+      }
+    }
+  }
+
+  @Test
   @Config(qualifiers = "land-ldpi")
   fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
