@@ -2,11 +2,9 @@ package org.oppia.util.system
 
 import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
-
-
 
 /** Utility to get the current date/time. */
 @Singleton
