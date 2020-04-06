@@ -7,8 +7,10 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.CompletedState
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.PendingState
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -149,6 +151,77 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+    try {
+      explorationProgressLock.withLock {
+        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+          "Cannot submit an answer if an exploration is not being played."
+        }
+        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+          "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          hint = explorationProgress.stateGraph.computeHintForResult(
+            state,
+            hintIsRevealed,
+            hintIndex
+          )
+          explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(hint))
+      }
+    } catch (e: Exception) {
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+    try {
+      explorationProgressLock.withLock {
+        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+          "Cannot submit an answer if an exploration is not being played."
+        }
+        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+          "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var solution: Solution
+        try {
+
+          explorationProgress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
+          solution = explorationProgress.stateGraph.computeSolutionForResult(
+            state,
+            solutionIsRevealed
+          )
+          explorationProgress.stateDeck.pushStateForSolution(state)
+
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing solution' situation. This can specifically happen if solution throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(solution))
+      }
+    } catch (e: Exception) {
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
   /**
    * Navigates to the previous state in the graph. If the learner is currently on the initial state, this method will
    * throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
@@ -264,11 +337,11 @@ class ExplorationProgressController @Inject constructor(
       // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex.
       check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-            " to ${explorationProgress.currentExplorationId}"
+          " to ${explorationProgress.currentExplorationId}"
       }
       check(explorationProgress.playStage == currentStage) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-            " to ${explorationProgress.currentExplorationId}"
+          " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
         PlayStage.NOT_PLAYING -> AsyncResult.pending()
@@ -354,9 +427,11 @@ class ExplorationProgressController @Inject constructor(
         PlayStage.VIEWING_STATE -> {
           // A state can be viewed after loading an exploration, after viewing another state, or after submitting an
           // answer. It cannot be viewed without a loaded exploration.
-          check(playStage == PlayStage.LOADING_EXPLORATION
+          check(
+            playStage == PlayStage.LOADING_EXPLORATION
               || playStage == PlayStage.VIEWING_STATE
-              || playStage == PlayStage.SUBMITTING_ANSWER) {
+              || playStage == PlayStage.SUBMITTING_ANSWER
+          ) {
             "Cannot transition to VIEWING_STATE from $playStage"
           }
           playStage = nextPlayStage
@@ -401,12 +476,32 @@ class ExplorationProgressController @Inject constructor(
       }
       return answerOutcomeBuilder.build()
     }
+
+    /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
+    internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
+      return Hint.newBuilder()
+        .setHintIsRevealed(hintIsRevealed)
+        .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
+        .setState(currentState)
+        .build()
+    }
+
+    /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
+    internal fun computeSolutionForResult(currentState: State, solutionIsRevealed: Boolean): Solution {
+      return Solution.newBuilder()
+        .setSolutionIsRevealed(solutionIsRevealed)
+        .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
+        .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
+        .setExplanation(currentState.interaction.solution.explanation).build()
+    }
   }
 
   private class StateDeck internal constructor(initialState: State) {
     private var pendingTopState: State = initialState
     private val previousStates: MutableList<EphemeralState> = ArrayList()
     private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
+    private val hintList: MutableList<Hint> = ArrayList()
+    private lateinit var solution: Solution
     private var stateIndex: Int = 0
 
     /** Resets this deck to a new, specified initial [State]. */
@@ -414,6 +509,7 @@ class ExplorationProgressController @Inject constructor(
       pendingTopState = initialState
       previousStates.clear()
       currentDialogInteractions.clear()
+      hintList.clear()
       stateIndex = 0
     }
 
@@ -474,7 +570,33 @@ class ExplorationProgressController @Inject constructor(
         .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
         .build()
       currentDialogInteractions.clear()
+      hintList.clear()
       pendingTopState = state
+    }
+
+    internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
+      val interactionBuilder = state.interaction.toBuilder().setHint(hintIndex, hintList.get(0))
+      val newState = state.toBuilder().setInteraction(interactionBuilder).build()
+      val ephemeralState = EphemeralState.newBuilder()
+        .setState(newState)
+        .setHasPreviousState(!isCurrentStateInitial())
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+        .build()
+      pendingTopState = newState
+      hintList.clear()
+      return ephemeralState
+    }
+
+    internal fun pushStateForSolution(state: State): EphemeralState {
+      val interactionBuilder = state.interaction.toBuilder().setSolution(solution)
+      val newState = state.toBuilder().setInteraction(interactionBuilder).build()
+      val ephemeralState = EphemeralState.newBuilder()
+        .setState(newState)
+        .setHasPreviousState(!isCurrentStateInitial())
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+        .build()
+      pendingTopState = newState
+      return ephemeralState
     }
 
     /**
@@ -491,11 +613,27 @@ class ExplorationProgressController @Inject constructor(
         .build()
     }
 
+    internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
+      hintList += Hint.newBuilder()
+        .setHintIsRevealed(hintIsRevealed)
+        .setHintContent(state.interaction.getHint(hintIndex).hintContent)
+        .build()
+    }
+
+    internal fun submitSolutionRevealed(state: State, solutionIsRevealed: Boolean) {
+      solution = Solution.newBuilder()
+        .setSolutionIsRevealed(solutionIsRevealed)
+        .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
+        .setCorrectAnswer(state.interaction.solution.correctAnswer)
+        .setExplanation(state.interaction.solution.explanation)
+        .build()
+    }
+
     private fun getCurrentPendingState(): EphemeralState {
       return EphemeralState.newBuilder()
         .setState(pendingTopState)
         .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions))
+        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
         .build()
     }
 
