@@ -116,14 +116,14 @@ jobs:
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
           name: App - FAQ, MyDownloads, Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility*
+          command:  :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/flaky-test-results/junit/
+            find . -type f -regex ".*/build/flaky-test-results/.*xml" -exec cp {} ~/flaky-test-results/junit/ \;
           when: always
       - store_test_results:
-          path: ~/test-results
+          path: ~/flaky-test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/flaky-test-results/junit
