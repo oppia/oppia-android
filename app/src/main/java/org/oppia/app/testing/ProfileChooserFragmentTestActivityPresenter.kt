@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
@@ -6,13 +6,13 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
-import org.oppia.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [ProfileActivity]. */
+/** The presenter for [ProfileChooserFragmentTestActivity]. */
 @ActivityScope
-class ProfileActivityPresenter @Inject constructor(
+class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController
 ) {
@@ -30,7 +30,7 @@ class ProfileActivityPresenter @Inject constructor(
       appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
-    activity.setContentView(R.layout.profile_activity)
+    activity.setContentView(R.layout.profile_test_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
