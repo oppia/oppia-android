@@ -116,7 +116,7 @@ jobs:
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
           name: App -  Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
       - run:
           name: Save test results
           command: |
