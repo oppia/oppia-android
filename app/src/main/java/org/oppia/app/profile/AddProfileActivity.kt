@@ -40,4 +40,9 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     super.onActivityResult(requestCode, resultCode, data)
     addProfileFragmentPresenter.handleOnActivityResult(requestCode, resultCode, data)
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    addProfileFragmentPresenter.dismissAlertDialog()
+  }
 }

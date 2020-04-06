@@ -43,6 +43,10 @@ class ProfileRenameActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
+    binding.profileRenameToolbar.setNavigationOnClickListener {
+      (activity as ProfileRenameActivity).finish()
+    }
+
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
       val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager

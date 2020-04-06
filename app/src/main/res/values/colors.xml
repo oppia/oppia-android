@@ -11,6 +11,7 @@
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
+  <color name="oppiaPrimaryLight">#009688</color>
   <color name="oppiaPrimaryText30">#4D333333</color>
   <color name="oppiaPrimaryTextDark">#DE000000</color>
   <color name="oppiaPrimaryDark">#00645C</color>
@@ -33,6 +34,7 @@
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
+  <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
@@ -42,6 +44,7 @@
   <color name="black_12">#1F000000</color>
   <color name="black_87">#DE000000</color>
   <color name="black_20">#33000000</color>
+  <color name="black_26">#42000000</color>
   <color name="black_30">#4D000000</color>
   <color name="black_38">#61000000</color>
   <color name="black_54">#8A000000</color>
@@ -60,7 +63,7 @@
   <color name="generalNavigationBackground">#E5E5E5</color>
   <color name="appVersionBackground">#E5E5E5</color>
   <color name="navigationGeneralBackground">#E5E5E5</color>
-  <color name="highlightedNavMenuItem">#C55F45</color>
+  <color name="highlightedNavMenuItem">#BE563C</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="defaultAudioActivityRadioButton">#00A89F</color>
@@ -125,4 +128,6 @@
   <color name="avatar_background_22">#AB29CC</color>
   <color name="avatar_background_23">#CC29B1</color>
   <color name="avatar_background_24">#CC2970</color>
+  <!-- StoryTextSizeActivity -->
+  <color name="seekbarDivider">#707070</color>
 </resources>
