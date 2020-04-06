@@ -122,6 +122,9 @@
       android:name=".testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".testing.ProfileChooserFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
