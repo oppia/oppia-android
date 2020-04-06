@@ -7,13 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import javax.inject.Inject
 
 /** [NavigationDrawerFragment] to show navigation drawer. */
-class NavigationDrawerFragment : InjectableFragment(), RouteToAdministratorControlsListener, RouteToProfileProgressListener {
+class NavigationDrawerFragment : InjectableFragment(), RouteToProfileProgressListener {
 
   @Inject lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
 
@@ -28,10 +27,6 @@ class NavigationDrawerFragment : InjectableFragment(), RouteToAdministratorContr
 
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
-  }
-
-  override fun routeToAdministratorControls(profileId: Int) {
-    startActivity(AdministratorControlsActivity.createAdministratorControlsActivityIntent(this.activity!!, profileId))
   }
 
   override fun routeToProfileProgress(profileId: Int) {

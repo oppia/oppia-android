@@ -163,7 +163,7 @@
   <string name="admin_pin_new_confirm">Confirm 5-Digit PIN</string>
   <string name="admin_pin_error_pin_length">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
-  <string name="admin_pin_submit">Save</string>
+  <string name="save">Save</string>
   <!-- AddProfileActivity -->
   <string name="add_profile_title">Add Profile</string>
   <string name="add_profile_input_name">Name*</string>
@@ -281,11 +281,12 @@
   <string name="title_story_text_size">Story Text Size</string>
   <string name="title_app_language">App Language</string>
   <string name="title_default_audio">Default Audio Language</string>
-  <string name="story_text_will_look_like_this">Story text will look like this</string>
+  <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="story_text_size">Story Text Size</string>
+  <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
   <string name="topics_in_progress">Topics in Progress</string>
@@ -297,4 +298,11 @@
   <string name="welcome">"Welcome %s!"</string>
   <!-- WalkthroughTopicListFragment -->
   <string name="what_do_you_want_to_learn">What do you want to learn?</string>
+  <!-- WalkthroughEndFragment -->
+  <string name="great">Great</string>
+  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="yes">Yes</string>
+  <string name="no">No…</string>
+  <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
+  <string name="are_you_interested">Are you interested in:\n%s?</string>
 </resources>

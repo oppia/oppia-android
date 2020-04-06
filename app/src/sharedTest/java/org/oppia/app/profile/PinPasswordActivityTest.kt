@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,6 +36,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -172,6 +175,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("1234"),
@@ -202,6 +206,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -264,6 +269,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
@@ -278,6 +284,247 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.pin_password_close))).perform(click())
       onView(withId(R.id.input_pin)).perform(typeText("321"))
       intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_changeConfiguration_checkInputPinIsPresent() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("1234"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("1234")))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfiguration_restPinDialogIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.reset_pin_enter))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_inputNewPin_changeConfiguration_clickSubmit_pinChangeIsSuccessful() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("123"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(withText(context.getString(R.string.pin_password_success))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithAdmin_clickForgot_changeConfiguration_checkOpensAdminForgotDialog() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.pin_password_forgot_message))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_changeConfiguration_checkWrongAdminPinError() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("1234"),
+        closeSoftKeyboard()
+      )
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(context.getString(R.string.admin_settings_incorrect))))
+
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("5"),
+        closeSoftKeyboard()
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputIncorrectPin_clickSubmit_changeConfiguration_errorIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("11"),
+        closeSoftKeyboard()
+      )
+      onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_pin))
+        )
+      ).check(matches(withText(R.string.add_profile_error_pin_length)))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_inputWrongPin_changeConfiguration_checkIncorrectPinShows() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText("54321"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_defaultText() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.pin_password_show))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_defaultImage() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_show_eye_icon)))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_hide_eye_icon)))
+    }
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_changeConfiguration_hideViewIsShown() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context,
+        adminPin,
+        adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
+      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_hide_eye_icon)))
     }
   }
 
