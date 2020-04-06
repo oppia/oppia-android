@@ -51,4 +51,12 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun onKeyboardAction() {
     getStateFragment()?.handleKeyboardAction()
   }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean){
+    getStateFragment()?.revealSolution(saveUserChoice)
+  }
 }

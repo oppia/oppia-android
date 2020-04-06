@@ -35,6 +35,7 @@
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
+  <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
   <color name="white_80">#CCFFFFFF</color>
@@ -55,14 +56,16 @@
   <!-- PROFILE COMPONENT -->
   <color name="avatarBorder">#707070</color>
   <color name="addProfileBackground">#FFFFF0</color>
+  <color name="hintsAndSolutionBackground">#E4F2F1</color>
   <color name="pinPasswordBackground">#E4F2F1</color>
   <color name="profileChooserBackground">#212121</color>
+  <color name="profileChooserGreyTextColor">#999999</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="profileEditBackground">#E5E5E5</color>
   <color name="generalNavigationBackground">#E5E5E5</color>
   <color name="appVersionBackground">#E5E5E5</color>
   <color name="navigationGeneralBackground">#E5E5E5</color>
-  <color name="highlightedNavMenuItem">#C55F45</color>
+  <color name="highlightedNavMenuItem">#BE563C</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="defaultAudioActivityRadioButton">#00A89F</color>

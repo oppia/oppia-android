@@ -73,7 +73,6 @@
     <activity android:name=".profile.AdminPinActivity" />
     <activity
       android:name=".profile.PinPasswordActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
@@ -121,6 +120,9 @@
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.StoryFragmentTestActivity"

@@ -45,6 +45,7 @@
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
+          android:minHeight="48dp"
           android:orientation="vertical" />
 
         <LinearLayout
@@ -53,11 +54,11 @@
           android:layout_height="wrap_content"
           android:layout_gravity="bottom"
           android:layout_marginTop="16dp"
-          android:layout_marginStart="24dp"
-          android:layout_marginEnd="24dp"
           android:layout_marginBottom="36dp"
           android:orientation="horizontal"
+          android:paddingStart="24dp"
           android:paddingTop="16dp"
+          android:paddingEnd="24dp"
           android:paddingBottom="16dp"
           android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
 
@@ -65,7 +66,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_admin_settings_icon_brown_24dp" />
+            android:src="@drawable/ic_admin_settings_icon_brown_24dp"
+            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
 
           <TextView
             android:layout_width="match_parent"
@@ -74,7 +76,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/administrator_controls"
-            android:textColor="@color/highlightedNavMenuItem"
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}"
             android:textSize="14sp" />
         </LinearLayout>
       </LinearLayout>
