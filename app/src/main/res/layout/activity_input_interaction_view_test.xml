@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="fractionInteractionViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+
+    <variable
+      name="numericInputViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
+
+    <variable
+      name="textInputViewModel"
+      type="org.oppia.app.player.state.itemviewmodel.TextInputViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".testing.InputInteractionViewTestActivity">
+
+    <org.oppia.app.customview.interaction.FractionInputInteractionView
+      android:id="@+id/test_fraction_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:fontFamily="sans-serif"
+      android:hint="@{fractionInteractionViewModel.hintText}"
+      android:imeOptions="actionDone"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:singleLine="true"
+      android:text="@={fractionInteractionViewModel.answerText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{fractionInteractionViewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/fraction_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{fractionInteractionViewModel.errorMessage}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+
+    <org.oppia.app.customview.interaction.NumericInputInteractionView
+      android:id="@+id/test_number_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:focusable="true"
+      android:hint="Write the digit here."
+      android:longClickable="false"
+      android:maxLength="200"
+      android:padding="8dp"
+      android:singleLine="true"
+      android:text="@={numericInputViewModel.answerText}"
+      app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/number_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{numericInputViewModel.errorMessage}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+
+    <org.oppia.app.customview.interaction.TextInputInteractionView
+      android:id="@+id/test_text_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:background="@drawable/edit_text_background"
+      android:focusable="true"
+      android:hint="Write here."
+      android:inputType="text"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:padding="8dp"
+      android:singleLine="true"
+      android:text="@={textInputViewModel.answerText}" />
+
+    <Button
+      android:id="@+id/submit_button"
+      style="@style/StateButtonActive"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:onClick="getPendingAnswerErrorOnSubmitClick"
+      android:text="Submit"
+      android:textColor="@color/white" />
+  </LinearLayout>
+</layout>

@@ -3,6 +3,10 @@ package org.oppia.app.profile
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.StoryTextSize
+import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
@@ -21,13 +25,17 @@ class ProfileActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
     activity.setContentView(R.layout.profile_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
-        ProfileChooserFragment()
+        ProfileChooserFragment(),
+        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
   }

@@ -7,20 +7,29 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), InteractionAnswerReceiver {
+class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
+  InteractionAnswerErrorReceiver {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
-     * @param explorationId used by StateFragment.
+     * @param internalProfileId used by StateFragment to mark progress.
+     * @param topicId used by StateFragment to mark progress.
+     * @param storyId used by StateFragment to mark progress.
+     * @param explorationId used by StateFragment to mark progress and manage exploration.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(explorationId: String): StateFragment {
+    fun newInstance(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
+      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       stateFragment.arguments = args
       return stateFragment
@@ -46,7 +55,19 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver {
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
+  override fun onPendingAnswerError(pendingAnswerError: String?) {
+    stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  }
+
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    stateFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }

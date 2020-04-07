@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,14 +56,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  private lateinit var binding: ProfileChooserFragmentBinding
+
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding =
-      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
@@ -112,7 +112,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
           if (it.isSuccess()) {
-            activity.startActivity(Intent(fragment.context, HomeActivity::class.java))
+            activity.startActivity(
+              (HomeActivity.createHomeActivity(
+                activity,
+                model.profile.id.internalId
+              ))
+            )
           }
         })
       } else {
@@ -130,13 +135,47 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
-          AdminPinActivity.createAdminPinActivityIntent(activity, chooserViewModel.adminProfileId.internalId, selectUniqueRandomColor())
+          AdminPinActivity.createAdminPinActivityIntent(
+            activity,
+            chooserViewModel.adminProfileId.internalId,
+            selectUniqueRandomColor(),
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          )
         )
       } else {
         activity.startActivity(
-          AdminAuthActivity.createAdminAuthActivityIntent(activity, chooserViewModel.adminPin, selectUniqueRandomColor())
+          AdminAuthActivity.createAdminAuthActivityIntent(
+            activity,
+            chooserViewModel.adminPin,
+            -1,
+            selectUniqueRandomColor(),
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          )
         )
       }
+    }
+  }
+
+  fun routeToAdminPin() {
+    if (chooserViewModel.adminPin.isEmpty()) {
+      activity.startActivity(
+        AdminPinActivity.createAdminPinActivityIntent(
+          activity,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        )
+      )
+    } else {
+      activity.startActivity(
+        AdminAuthActivity.createAdminAuthActivityIntent(
+          activity,
+          chooserViewModel.adminPin,
+          chooserViewModel.adminProfileId.internalId,
+          selectUniqueRandomColor(),
+          AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+        )
+      )
     }
   }
 }

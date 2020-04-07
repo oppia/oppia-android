@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -63,10 +62,11 @@ class StateFragmentTest {
   //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask of the question stay the same.
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the navigated state.
   //  7. Verifying that old answers were present when navigation backward/forward.
+  //  8. Testing providing the wrong answer and showing hints.
 
   @Test
   fun testStateFragment_clickPlayExploration_explorationLoadsSuccessfully() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
       onView(atPosition(R.id.state_recycler_view, 0)).check(matches(hasDescendant(withId(R.id.interaction_button))))
@@ -75,7 +75,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_submitChangesToContinueButton() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(
         atPositionOnView(
@@ -97,7 +97,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExplorationTest5_previousAndNextButtonIsNotDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.previous_state_image_view)).check(
         matches(
@@ -118,7 +118,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
@@ -134,7 +134,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_clickPreviousButton_previousButtonIsHiddenAndNextButtonIsDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
@@ -153,7 +153,7 @@ class StateFragmentTest {
   // TODO(#257): This test case corresponds to the special test-case mentioned in #257 and discussed in #251.
   @Test
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_submitAnswer_clickPreviousButton_clickNextButton_continueButtonIsDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       // State 0: Welcome! - MultipleChoiceInout Interaction
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
@@ -175,7 +175,7 @@ class StateFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testStateFragment_loadExplorationTest5_submitAnswer_clickContinueButton_configurationChange_previousAndInteractionButtonIsDisplayed() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       // State 0: MultipleChoiceInput
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())
@@ -196,7 +196,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExplorationTest5_continueToEndExploration_endExplorationButtonIsDisplayedInFinal() {
-    ActivityScenario.launch(HomeActivity::class.java).use {
+    launch(HomeActivity::class.java).use {
       onView(withId(R.id.play_exploration_button)).perform(click())
       // State 0: Welcome! - MultipleChoiceInout Interaction
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.interaction_button)).perform(click())

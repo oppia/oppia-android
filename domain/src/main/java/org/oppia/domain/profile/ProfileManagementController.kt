@@ -11,10 +11,14 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
+import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -23,23 +27,32 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.Exception
 import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
+private const val TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID = "transformed_was_profile_ever_added_provider_id"
+private const val TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID = "transformed_device_settings_provider_id"
 private const val ADD_PROFILE_TRANSFORMED_PROVIDER_ID = "add_profile_transformed_id"
 private const val UPDATE_NAME_TRANSFORMED_PROVIDER_ID = "update_name_transformed_id"
 private const val UPDATE_PIN_TRANSFORMED_PROVIDER_ID = "update_pin_transformed_id"
+private const val UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID = "update_profile_avater_transformed_id"
+private const val UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID = "update_device_settings_transformed_id"
 private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID = "update_download_access_transformed_id"
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
 private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
 private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
+private const val UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID = "update_story_text_size_transformed_id"
+private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_language_transformed_id"
+private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_audio_language_transformed_id"
 
 const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
 
@@ -73,6 +86,12 @@ class ProfileManagementController @Inject constructor(
   /** Indicates that the given profileId is not associated with an existing profile. */
   class ProfileNotFoundException(msg: String) : Exception(msg)
 
+  /** Indicates that the given profileId is not associated with an admin. */
+  class ProfileNotAdminException(msg: String) : Exception(msg)
+
+  /** Indicates that the there is not device settings currently. */
+  class DeviceSettingsNotFoundException(msg: String) : Exception(msg)
+
   /**
    * These Statuses correspond to the exceptions above such that if the deferred contains
    * PROFILE_NOT_FOUND, the [ProfileNotFoundException] will be passed to a failed AsyncResult.
@@ -85,7 +104,8 @@ class ProfileManagementController @Inject constructor(
     FAILED_TO_STORE_IMAGE,
     FAILED_TO_GENERATE_GRAVATAR,
     FAILED_TO_DELETE_DIR,
-    PROFILE_NOT_FOUND
+    PROFILE_NOT_FOUND,
+    PROFILE_NOT_ADMIN
   }
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
@@ -119,6 +139,36 @@ class ProfileManagementController @Inject constructor(
     return dataProviders.convertToLiveData(transformedDataProvider)
   }
 
+  /** Returns a boolean determining whether the profile was ever added or not. */
+  fun getWasProfileEverAdded(): LiveData<AsyncResult<Boolean>> {
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, Boolean>(
+        TRANSFORMED_GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID,
+        profileDataStore
+      ) {
+        val wasProfileEverAdded = it.wasProfileEverAdded
+        AsyncResult.success(wasProfileEverAdded)
+      }
+    return dataProviders.convertToLiveData(transformedDataProvider)
+  }
+
+  /** Returns device settings for the app. */
+  fun getDeviceSettings(): LiveData<AsyncResult<DeviceSettings>> {
+    val transformedDataProvider =
+      dataProviders.transformAsync<ProfileDatabase, DeviceSettings>(
+        TRANSFORMED_GET_DEVICE_SETTINGS_PROVIDER_ID,
+        profileDataStore
+      ) {
+        val deviceSettings = it.deviceSettings
+        if (deviceSettings != null) {
+          AsyncResult.success(deviceSettings)
+        } else {
+          AsyncResult.failed(DeviceSettingsNotFoundException("Device Settings not found."))
+        }
+      }
+    return dataProviders.convertToLiveData(transformedDataProvider)
+  }
+
   /**
    * Adds a new profile with the specified parameters.
    *
@@ -135,8 +185,12 @@ class ProfileManagementController @Inject constructor(
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
     colorRgb: Int,
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    storyTextSize: StoryTextSize,
+    appLanguage: AppLanguage,
+    audioLanguage: AudioLanguage
   ): LiveData<AsyncResult<Any?>> {
+
     if (!onlyLetters(name)) {
       return MutableLiveData(AsyncResult.failed(ProfileNameOnlyLettersException("$name does not contain only letters")))
     }
@@ -154,6 +208,9 @@ class ProfileManagementController @Inject constructor(
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
+        .setStoryTextSize(storyTextSize)
+        .setAppLanguage(appLanguage)
+        .setAudioLanguage(audioLanguage)
 
       if (avatarImagePath != null) {
         val imageUri =
@@ -166,13 +223,54 @@ class ProfileManagementController @Inject constructor(
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
+      val wasProfileEverAdded = !it.wasProfileEverAdded && !isAdmin
+
       val profileDatabaseBuilder =
-        it.toBuilder().putProfiles(nextProfileId, newProfileBuilder.build()).setNextProfileId(nextProfileId + 1)
+        it.toBuilder()
+          .putProfiles(nextProfileId, newProfileBuilder.build())
+          .setWasProfileEverAdded(wasProfileEverAdded)
+          .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_PROFILE_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(null, name, deferred)
+      })
+  }
+
+  /**
+   * Updates the profile avatar of an existing profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param avatarImagePath New profile avatar for the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateProfileAvatar(profileId: ProfileId, avatarImagePath: Uri?, colorRgb: Int): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDir = directoryManagementUtil.getOrCreateDir(profileId.toString())
+
+      val updatedProfileBuilder = profile.toBuilder()
+      if (avatarImagePath != null) {
+        val imageUri =
+          saveImageToInternalStorage(avatarImagePath, profileDir) ?: return@storeDataWithCustomChannelAsync Pair(
+            it,
+            ProfileActionStatus.FAILED_TO_STORE_IMAGE
+          )
+        updatedProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
+      } else {
+        updatedProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+      }
+
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfileBuilder.build())
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_PROFILE_AVATER_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
 
@@ -229,6 +327,70 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
+   * Updates the download/update on wifi only permission.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param downloadAndUpdateOnWifiOnly download and update permission on wifi only.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateWifiPermissionDeviceSettings(
+    profileId: ProfileId,
+    downloadAndUpdateOnWifiOnly: Boolean
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDatabaseBuilder = it.toBuilder()
+      if (profile.isAdmin) {
+        val deviceSettingsBuilder = it.deviceSettings.toBuilder()
+        deviceSettingsBuilder.allowDownloadAndUpdateOnlyOnWifi = downloadAndUpdateOnWifiOnly
+        profileDatabaseBuilder.deviceSettings = deviceSettingsBuilder.build()
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      } else {
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.PROFILE_NOT_ADMIN)
+      }
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the automatically update topics permission.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param automaticallyUpdateTopics automatically update topic permission.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateTopicAutomaticallyPermissionDeviceSettings(
+    profileId: ProfileId,
+    automaticallyUpdateTopics: Boolean
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val profileDatabaseBuilder = it.toBuilder()
+      if (profile.isAdmin) {
+        val deviceSettingsBuilder = it.deviceSettings.toBuilder()
+        deviceSettingsBuilder.automaticallyUpdateTopics = automaticallyUpdateTopics
+        profileDatabaseBuilder.deviceSettings = deviceSettingsBuilder.build()
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      } else {
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.PROFILE_NOT_ADMIN)
+      }
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_DEVICE_SETTINGS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
    * Updates the download access of an existing profile.
    *
    * @param profileId the ID corresponding to the profile being updated.
@@ -249,6 +411,81 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the story text size of the profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param storyTextSize New text size for the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateStoryTextSize(
+    profileId: ProfileId, storyTextSize: StoryTextSize
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val updatedProfile = profile.toBuilder().setStoryTextSize(storyTextSize).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the app language of the profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param appLanguage New app language for the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateAppLanguage(
+    profileId: ProfileId, appLanguage: AppLanguage
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val updatedProfile = profile.toBuilder().setAppLanguage(appLanguage).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID) {
+        return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+      })
+  }
+
+  /**
+   * Updates the audio language of the profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   * @param audioLanguage New audio language for the profile being updated.
+   * @return a [LiveData] that indicates the success/failure of this update operation.
+   */
+  fun updateAudioLanguage(
+    profileId: ProfileId, audioLanguage: AudioLanguage
+  ): LiveData<AsyncResult<Any?>> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+        it,
+        ProfileActionStatus.PROFILE_NOT_FOUND
+      )
+      val updatedProfile = profile.toBuilder().setAudioLanguage(audioLanguage).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.convertToLiveData(
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       })
   }
@@ -344,6 +581,7 @@ class ProfileManagementController @Inject constructor(
       ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR -> AsyncResult.failed(FailedToGenerateGravatarException("Failed to generate a gravatar url"))
       ProfileActionStatus.FAILED_TO_DELETE_DIR -> AsyncResult.failed(FailedToDeleteDirException("Failed to delete directory with ${profileId?.internalId}"))
       ProfileActionStatus.PROFILE_NOT_FOUND -> AsyncResult.failed(ProfileNotFoundException("ProfileId ${profileId?.internalId} does not match an existing Profile"))
+      ProfileActionStatus.PROFILE_NOT_ADMIN -> AsyncResult.failed(ProfileNotAdminException("ProfileId ${profileId?.internalId} does not match an existing admin"))
     }
   }
 
@@ -374,21 +612,6 @@ class ProfileManagementController @Inject constructor(
 
   private fun onlyLetters(name: String): Boolean {
     return name.matches(Regex("^[ A-Za-z]+\$"))
-  }
-
-  // https://stackoverflow.com/questions/3934331/how-to-hash-a-string-in-android
-  private fun md5(s: String): String? {
-    try {
-      val digest = MessageDigest.getInstance("MD5")
-      digest.update(s.toByteArray(Charset.forName("US-ASCII")), 0, s.length)
-      val magnitude = digest.digest()
-      val bi = BigInteger(1, magnitude)
-      val hash = String.format("%0" + (magnitude.size.shl(1)) + "x", bi)
-      return hash
-    } catch (e: NoSuchAlgorithmException) {
-      logger.e("ProfileManagementController", "No such algorithm when creating md5 hash for gravatar", e)
-    }
-    return null
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {

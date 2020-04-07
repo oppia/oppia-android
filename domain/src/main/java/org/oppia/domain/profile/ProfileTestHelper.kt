@@ -1,7 +1,10 @@
 package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
+import org.oppia.app.model.AppLanguage
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
@@ -17,7 +20,10 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
     )
     profileManagementController.addProfile(
       name = "Ben",
@@ -25,7 +31,10 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false
+      isAdmin = false,
+      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
+      appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
@@ -39,7 +48,10 @@ class ProfileTestHelper @Inject constructor(
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false
+        isAdmin = false,
+        storyTextSize = StoryTextSize.LARGE_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
     }
   }
@@ -52,4 +64,7 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(1).build())
+  /** Login to user profile. */
+  fun loginToUser2() =
+    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(2).build())
 }

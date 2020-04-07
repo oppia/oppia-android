@@ -3,6 +3,7 @@ package org.oppia.app.player.audio
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
@@ -25,7 +26,7 @@ class CellularAudioDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val view = activity!!.layoutInflater.inflate(R.layout.cellular_data_dialog, null)
+    val view = View.inflate(context, R.layout.cellular_data_dialog, /* root= */ null)
     val checkBox = view.findViewById<CheckBox>(R.id.cellular_data_dialog_checkbox)
 
     val cellularDataInterface: CellularDataInterface = parentFragment as AudioFragment
@@ -34,11 +35,11 @@ class CellularAudioDialogFragment : DialogFragment() {
       .setTitle(R.string.cellular_data_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)
-      .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { dialog, whichButton ->
+      .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { _, _ ->
         cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { dialog, whichButton ->
+      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
         cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }

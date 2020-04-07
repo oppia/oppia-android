@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.databinding.AdminPinActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -22,6 +23,10 @@ class AdminPinActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<AdminPinViewModel>
 ) {
+
+  private var inputtedPin = false
+  private var inputtedConfirmPin = false
+
   private val adminViewModel by lazy {
     getAdminPinViewModel()
   }
@@ -39,19 +44,30 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.adminPinWarningText.text = activity.getText(R.string.admin_pin_pin_description)
-
-    addTextChangedListener(binding.inputPin) { pin ->
-      pin?.let {
-        adminViewModel.pinErrorMsg.set("")
+    binding.inputPin.post {
+      addTextChangedListener(binding.inputPin) { pin ->
+        pin?.let {
+          adminViewModel.pinErrorMsg.set("")
+          adminViewModel.savedPin.set(it.toString())
+          inputtedPin = pin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
 
-    addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-      confirmPin?.let {
-        adminViewModel.confirmPinErrorMsg.set("")
+    binding.inputConfirmPin.post {
+      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+        confirmPin?.let {
+          adminViewModel.confirmPinErrorMsg.set("")
+          adminViewModel.savedConfirmPin.set(it.toString())
+          inputtedConfirmPin = confirmPin.isNotEmpty()
+          setValidPin()
+        }
       }
     }
+
+    binding.inputPin.setInput(adminViewModel.savedPin.get().toString())
+    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.get().toString())
 
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()
@@ -75,25 +91,46 @@ class AdminPinActivityPresenter @Inject constructor(
 
       profileManagementController.updatePin(profileId, inputPin).observe(activity, Observer {
         if (it.isSuccess()) {
-          activity.startActivity(
-            AddProfileActivity.createAddProfileActivityIntent(
-              context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
-            )
-          )
+          when (activity.intent.getIntExtra(KEY_ADMIN_PIN_ENUM, 0)) {
+            AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+              activity.startActivity(
+                AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
+                )
+              )
+            }
+            AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
+              activity.startActivity(
+                AddProfileActivity.createAddProfileActivityIntent(
+                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
+                )
+              )
+            }
+          }
         }
       })
     }
   }
 
-  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+  private fun addTextChangedListener(
+    profileInputView: ProfileInputView,
+    onTextChanged: (CharSequence?) -> Unit
+  ) {
     profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+      override fun afterTextChanged(p0: Editable?) {
         onTextChanged(p0)
       }
-
-      override fun afterTextChanged(p0: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
+  }
+
+  private fun setValidPin() {
+    if (inputtedPin && inputtedConfirmPin) {
+      getAdminPinViewModel().isButtonActive.set(true)
+    } else {
+      getAdminPinViewModel().isButtonActive.set(false)
+    }
   }
 
   private fun getAdminPinViewModel(): AdminPinViewModel {
