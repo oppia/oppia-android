@@ -12,13 +12,13 @@
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="12dp"
     android:clipToPadding="true"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp">
 
@@ -45,7 +45,8 @@
         android:layout_height="wrap_content"
         android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
         android:maxLines="3"
         android:minLines="3"
         android:paddingStart="8dp"
