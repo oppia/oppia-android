@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -196,7 +197,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 2)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
@@ -220,7 +221,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(AdminAuthActivity.getIntentKey(), 0))
@@ -252,7 +253,7 @@ class ProfileChooserFragmentTest {
       AppLanguage.ENGLISH_APP_LANGUAGE,
       AudioLanguage.NO_AUDIO
     )
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
@@ -271,7 +272,7 @@ class ProfileChooserFragmentTest {
       AppLanguage.ENGLISH_APP_LANGUAGE,
       AudioLanguage.NO_AUDIO
     )
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
@@ -280,7 +281,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_changeConfiguration_checkSpanCount_hasSpanCount2() {
     profileTestHelper.addOnlyAdminProfile()
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
       it.onActivity { activity ->
         val profileRecyclerView = activity.findViewById<RecyclerView>(R.id.profile_recycler_view)
@@ -291,14 +292,51 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_checkSpanCount() {
+  fun testProfileChooserFragment_checkLayoutManager_isLinearLayoutManager() {
     profileTestHelper.addOnlyAdminProfile()
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       it.onActivity { activity ->
         val profileRecyclerView = activity.findViewById<RecyclerView>(R.id.profile_recycler_view)
         val layoutManager = profileRecyclerView.layoutManager as LinearLayoutManager
         assertThat(layoutManager.orientation).isEqualTo(LinearLayoutManager.VERTICAL)
       }
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_onlyAdminProfile_checkText_setUpMultipleProfilesIsVisible() {
+    profileTestHelper.addOnlyAdminProfile()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.add_profile_text)).check(
+        matches(withText(R.string.set_up_multiple_profiles))
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_onlyAdminProfile_checkDescriptionText_isDisplayed() {
+    profileTestHelper.addOnlyAdminProfile()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.add_profile_description_text))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
+    profileTestHelper.initializeProfiles()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text))
+        .check(matches(withText(R.string.profile_chooser_add)))
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
+    profileTestHelper.initializeProfiles()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_description_text))
+        .check(matches(not(isDisplayed())))
     }
   }
 

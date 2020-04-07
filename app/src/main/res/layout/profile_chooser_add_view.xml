@@ -41,10 +41,23 @@
       android:layout_gravity="center"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
-      android:text="@string/profile_chooser_add"
+      android:text="@{presenter.wasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
       android:textColor="@color/white"
       android:textSize="14sp" />
+
+    <TextView
+      android:id="@+id/add_profile_description_text"
+      android:layout_width="wrap_content"
+      android:layout_gravity="center"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:text="@string/set_up_multiple_profiles_description"
+      android:textColor="@color/white"
+      android:textSize="14sp"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
   </LinearLayout>
 </layout>
