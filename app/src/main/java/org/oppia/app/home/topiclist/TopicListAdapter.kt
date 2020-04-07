@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -182,10 +181,9 @@ class TopicListAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
-      val param = FrameLayout.LayoutParams(
-        FrameLayout.LayoutParams.MATCH_PARENT,
-        FrameLayout.LayoutParams.WRAP_CONTENT
-      )
+
+      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
+
       val marginMax = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
       } else {
@@ -202,29 +200,34 @@ class TopicListAdapter(
 
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         when {
-          position % 2 == 0 -> param.setMargins(
+          position % 2 == 0 -> marginLayoutParams.setMargins(
             marginMin,
             marginTopBottom,
             marginMax,
             marginTopBottom
           )
-          else -> param.setMargins(marginMax, marginTopBottom, marginMin, marginTopBottom)
+          else -> marginLayoutParams.setMargins(
+            marginMax,
+            marginTopBottom,
+            marginMin,
+            marginTopBottom
+          )
         }
       } else {
         when {
-          position % 3 == 0 -> param.setMargins(
+          position % 3 == 0 -> marginLayoutParams.setMargins(
             marginMax,
             marginTopBottom,
             /* right= */0,
             marginTopBottom
           )
-          position % 3 == 1 -> param.setMargins(
+          position % 3 == 1 -> marginLayoutParams.setMargins(
             marginMin,
             marginTopBottom,
             marginMin,
             marginTopBottom
           )
-          position % 3 == 2 -> param.setMargins(
+          position % 3 == 2 -> marginLayoutParams.setMargins(
             /* left= */ 0,
             marginTopBottom,
             marginMax,
@@ -232,7 +235,7 @@ class TopicListAdapter(
           )
         }
       }
-      binding.topicContainer.layoutParams = param
+      binding.topicContainer.layoutParams = marginLayoutParams
     }
   }
 }

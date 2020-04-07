@@ -13,12 +13,12 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
       android:clickable="true"
       android:focusable="true">
 
