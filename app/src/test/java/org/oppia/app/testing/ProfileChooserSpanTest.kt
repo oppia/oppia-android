@@ -32,8 +32,6 @@ class ProfileChooserSpanTest {
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
-    ApplicationProvider.getApplicationContext<Context>().resources.configuration.orientation =
-      Configuration.ORIENTATION_LANDSCAPE
   }
 
   @After
