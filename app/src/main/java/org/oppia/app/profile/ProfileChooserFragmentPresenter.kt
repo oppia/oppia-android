@@ -3,21 +3,19 @@ package org.oppia.app.profile
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Rect
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -26,6 +24,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.utility.DividerItemDecorator
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -107,34 +106,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           } else {
             LinearLayoutManager(activity)
           }
-        val dividerOrientation = if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-          DividerItemDecoration.VERTICAL
-        } else {
-          DividerItemDecoration.HORIZONTAL
-        }
-        val divider = object : DividerItemDecoration(context, dividerOrientation ) {
-          override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-          ) {
-            val position = parent.getChildAdapterPosition(view)
-            Log.d("TAG", "state.itemCount: " + state.itemCount)
-            if (position == state.itemCount - 1) {
-              outRect.setEmpty()
-            } else {
-              super.getItemOffsets(outRect, view, parent, state)
-            }
-          }
-        }
-        divider.setDrawable(
-          ContextCompat.getDrawable(
-            activity,
-            R.drawable.profile_chooser_divider
-          )!!
-        )
-        binding.profileRecyclerView.addItemDecoration(divider)
+        binding.profileRecyclerView.addItemDecoration(DividerItemDecorator(getDrawable(context, R.drawable.profile_chooser_divider)!!))
       }
     })
   }
