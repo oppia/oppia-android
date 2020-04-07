@@ -42,12 +42,9 @@ private const val EVENING_TIMESTAMP = 1585917180000
 @Config(manifest = Config.NONE)
 class DateTimeUtilTest {
 
-  @Inject
-  lateinit var dateTimeUtil: DateTimeUtil
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var dateTimeUtil: DateTimeUtil
+  @Inject lateinit var context: Context
+  @Inject lateinit var oppiaClock: OppiaClock
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
