@@ -1,8 +1,13 @@
 package org.oppia.util.system
 
+import android.annotation.SuppressLint
 import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.TimeZone
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,13 +20,26 @@ class OppiaClock @Inject constructor() {
     return SystemClock.elapsedRealtime()
   }
 
-  fun getCurrentTimeMs(): Long {
-    return testTimeMs ?: System.currentTimeMillis()
+  private fun getCurrentTimeMs(): Long {
+    return testTimeMs ?: Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis
   }
 
+  @SuppressLint("SimpleDateFormat")
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun setCurrentTimeMs(currentTimeMs: Long) {
-    testTimeMs = currentTimeMs
+    var currentTimeMsNew: Long = 0
+    val format = SimpleDateFormat("yyyy-MM-dd hh:mm a")
+    val dtStart = format.format(currentTimeMs)
+    val date: Date?
+    try {
+      date = format.parse(dtStart)
+      currentTimeMsNew = getLocalToUTCDate(date)
+      System.out.println("UTC = " + getLocalToUTCDate(date))
+
+    } catch (e: ParseException) {
+      e.printStackTrace()
+    }
+    testTimeMs = currentTimeMsNew
   }
 
   /** returns current date and time */
@@ -29,5 +47,18 @@ class OppiaClock @Inject constructor() {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = getCurrentTimeMs()
     return calendar
+  }
+
+  @SuppressLint("SimpleDateFormat")
+  fun getLocalToUTCDate(date: Date): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    calendar.timeZone = TimeZone.getTimeZone("UTC")
+    val time = calendar.time
+    val outputFmt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    outputFmt.timeZone = TimeZone.getTimeZone("UTC")
+    System.out.println("time=" + outputFmt.format(time))
+    val newDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(outputFmt.format(time))
+    return newDate.time
   }
 }

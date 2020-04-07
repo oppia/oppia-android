@@ -3,7 +3,7 @@ package org.oppia.util.datetime
 import android.content.Context
 import org.oppia.util.R
 import org.oppia.util.system.OppiaClock
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,10 +23,5 @@ class DateTimeUtil @Inject constructor(
       in 17 downTo 3 -> context.getString(R.string.good_evening)
       else -> context.getString(R.string.good_evening)
     }
-  }
-
-  fun getGreetinTime(): Long {
-    val calender = oppiaClock.getCurrentCalendar()
-    return calender.timeInMillis
   }
 }
