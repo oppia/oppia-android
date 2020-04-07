@@ -1,13 +1,23 @@
 package org.oppia.app.profile
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Rect
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -18,6 +28,8 @@ import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -53,10 +65,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
+  private val logger: Logger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
+  private val orientation = Resources.getSystem().configuration.orientation
 
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
@@ -70,10 +84,77 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
     }
     binding.profileRecyclerView.isNestedScrollingEnabled = false
+    subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
     return binding.root
+  }
+
+  private fun subscribeToWasProfileEverBeenAdded() {
+    wasProfileEverBeenAdded.observe(activity, Observer<Boolean> {
+      if (it) {
+        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          activity.resources.getInteger(R.integer.profile_chooser_span_count)
+        } else {
+          /* spanCount= */ 2
+        }
+        binding.profileRecyclerView.layoutManager = GridLayoutManager(activity, spanCount)
+      } else {
+        binding.profileRecyclerView.layoutManager =
+          if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            GridLayoutManager(activity, /* spanCount= */ 2)
+          } else {
+            LinearLayoutManager(activity)
+          }
+        val dividerOrientation = if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
+          DividerItemDecoration.VERTICAL
+        } else {
+          DividerItemDecoration.HORIZONTAL
+        }
+        val divider = object : DividerItemDecoration(context, dividerOrientation ) {
+          override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+          ) {
+            val position = parent.getChildAdapterPosition(view)
+            Log.d("TAG", "state.itemCount: " + state.itemCount)
+            if (position == state.itemCount - 1) {
+              outRect.setEmpty()
+            } else {
+              super.getItemOffsets(outRect, view, parent, state)
+            }
+          }
+        }
+        divider.setDrawable(
+          ContextCompat.getDrawable(
+            activity,
+            R.drawable.profile_chooser_divider
+          )!!
+        )
+        binding.profileRecyclerView.addItemDecoration(divider)
+      }
+    })
+  }
+
+  private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getWasProfileEverAdded(),
+      ::processWasProfileEverBeenAddedResult
+    )
+  }
+
+  private fun processWasProfileEverBeenAddedResult(wasProfileEverBeenAddedResult: AsyncResult<Boolean>): Boolean {
+    if (wasProfileEverBeenAddedResult.isFailure()) {
+      logger.e(
+        "ProfileChooserFragment",
+        "Failed to retrieve the information on wasProfileEverBeenAdded ",
+        wasProfileEverBeenAddedResult.getErrorOrNull()!!
+      )
+    }
+    return wasProfileEverBeenAddedResult.getOrDefault(/* defaultValue= */ false)
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
