@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getDrawable
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -24,7 +23,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.utility.DividerItemDecorator
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -71,6 +69,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
 
+  val wasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
+
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
@@ -92,6 +92,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun subscribeToWasProfileEverBeenAdded() {
     wasProfileEverBeenAdded.observe(activity, Observer<Boolean> {
+      wasProfileEverBeenAddedValue.set(it)
       if (it) {
         val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
@@ -106,7 +107,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           } else {
             LinearLayoutManager(activity)
           }
-        binding.profileRecyclerView.addItemDecoration(DividerItemDecorator(getDrawable(context, R.drawable.profile_chooser_divider)!!))
       }
     })
   }
@@ -161,6 +161,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
+    binding.presenter = this
     binding.root.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
@@ -185,6 +186,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
+    binding.presenter = this
     binding.root.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
