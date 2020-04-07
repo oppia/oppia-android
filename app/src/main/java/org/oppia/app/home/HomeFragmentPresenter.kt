@@ -149,8 +149,8 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      welcomeViewModel.profileName = "$profileName!"
-      welcomeViewModel.greeting = DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage()
+      welcomeViewModel.profileName.set(profileName)
+      welcomeViewModel.greeting.set(DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage())
     }
   }
 

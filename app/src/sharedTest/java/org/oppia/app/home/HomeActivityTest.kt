@@ -83,8 +83,11 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
-private const val  MORNING_TIMESTAMP = 1556094120000
+// Time: Wed Apr 24 2019 08:22:00
+private const val MORNING_TIMESTAMP = 1556094120000
+// Time: Tue Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [HomeActivity]. */

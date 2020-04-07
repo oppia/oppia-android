@@ -5,7 +5,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The presenter for [HomeTestActivityPresenter]. */
+/** The presenter for [HomeTestActivity]. */
 @ActivityScope
 class HomeTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity

@@ -16,7 +16,6 @@ class DateTimeUtil @Inject constructor(
 
   fun getGreetingMessage(): String {
     val calender = oppiaClock.getCurrentCalendar()
-    System.out.println("date util=" + calender.timeInMillis)
     return when (calender.get(Calendar.HOUR_OF_DAY)) {
       in 4..11 -> context.getString(R.string.good_morning)
       in 12..16 -> context.getString(R.string.good_afternoon)

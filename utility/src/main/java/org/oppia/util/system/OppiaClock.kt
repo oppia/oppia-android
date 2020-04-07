@@ -32,7 +32,6 @@ class OppiaClock @Inject constructor() {
     try {
       date = format.parse(dtStart)
       currentTimeMsNew = getLocalToUTCDate(date)
-      System.out.println("UTC = " + getLocalToUTCDate(date))
     } catch (e: ParseException) {
       e.printStackTrace()
     }
@@ -54,7 +53,6 @@ class OppiaClock @Inject constructor() {
     val time = calendar.time
     val outputFmt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     outputFmt.timeZone = TimeZone.getTimeZone("UTC")
-    System.out.println("time=" + outputFmt.format(time))
     val newDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(outputFmt.format(time))
     return newDate.time
   }

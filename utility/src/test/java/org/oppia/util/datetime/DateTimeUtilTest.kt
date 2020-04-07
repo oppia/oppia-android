@@ -33,8 +33,11 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+// Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
+// Time: Wed Apr 24 2019 08:22:00
 private const val MORNING_TIMESTAMP = 1556094120000
+// Time: Tue Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [DateTimeUtil]. */
@@ -46,9 +49,8 @@ class DateTimeUtilTest {
   @Inject lateinit var context: Context
   @Inject lateinit var oppiaClock: OppiaClock
 
-  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
+  // Reference document: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
+  @ObsoleteCoroutinesApi private val testThread = newSingleThreadContext("TestMain")
 
   @Before
   @ExperimentalCoroutinesApi
@@ -91,8 +93,7 @@ class DateTimeUtilTest {
     assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
