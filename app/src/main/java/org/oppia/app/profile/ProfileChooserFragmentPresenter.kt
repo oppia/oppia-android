@@ -93,21 +93,21 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun subscribeToWasProfileEverBeenAdded() {
     wasProfileEverBeenAdded.observe(activity, Observer<Boolean> {
       wasProfileEverBeenAddedValue.set(it)
-      if (it) {
+      val layoutManager = if (it) {
         val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
           /* spanCount= */ 2
         }
-        binding.profileRecyclerView.layoutManager = GridLayoutManager(activity, spanCount)
+        GridLayoutManager(activity, spanCount)
       } else {
-        binding.profileRecyclerView.layoutManager =
-          if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            GridLayoutManager(activity, /* spanCount= */ 2)
-          } else {
-            LinearLayoutManager(activity)
-          }
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          GridLayoutManager(activity, /* spanCount= */ 2)
+        } else {
+          LinearLayoutManager(activity)
+        }
       }
+      binding.profileRecyclerView.layoutManager = layoutManager
     })
   }
 
@@ -122,7 +122,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     if (wasProfileEverBeenAddedResult.isFailure()) {
       logger.e(
         "ProfileChooserFragment",
-        "Failed to retrieve the information on wasProfileEverBeenAdded ",
+        "Failed to retrieve the information on wasProfileEverBeenAdded",
         wasProfileEverBeenAddedResult.getErrorOrNull()!!
       )
     }
