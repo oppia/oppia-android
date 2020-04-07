@@ -56,14 +56,15 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController
 ) {
+  private lateinit var binding: ProfileChooserFragmentBinding
+
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
   }
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding =
-      ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment

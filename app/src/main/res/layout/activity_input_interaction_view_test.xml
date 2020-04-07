@@ -60,10 +60,10 @@
       android:layout_marginEnd="8dp"
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
-      android:text="@{fractionInteractionViewModel.errorMessage.get()}"
+      android:text="@{fractionInteractionViewModel.errorMessage}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{fractionInteractionViewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/test_number_input_interaction_view"
@@ -88,10 +88,10 @@
       android:layout_marginEnd="8dp"
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
-      android:text="@{numericInputViewModel.errorMessage.get()}"
+      android:text="@{numericInputViewModel.errorMessage}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{numericInputViewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.app.customview.interaction.TextInputInteractionView
       android:id="@+id/test_text_input_interaction_view"

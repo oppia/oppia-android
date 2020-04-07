@@ -147,6 +147,8 @@
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
+  <string name="profile_chooser_administrator_controls">Administrator Controls</string>
+  <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
@@ -298,4 +300,20 @@
   <string name="welcome">"Welcome %s!"</string>
   <!-- WalkthroughTopicListFragment -->
   <string name="what_do_you_want_to_learn">What do you want to learn?</string>
+  <!-- WalkthroughEndFragment -->
+  <string name="great">Great</string>
+  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="yes">Yes</string>
+  <string name="no">No…</string>
+  <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
+  <string name="are_you_interested">Are you interested in:\n%s?</string>
+  <!-- HintsAndSolutionFragment -->
+  <string name="hints_toolbar_title">Hints</string>
+  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_hint">Reveal Hint</string>
+  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
+  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="the_only_solution_is">The only solution is :  </string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="reveal">Reveal</string>
 </resources>
