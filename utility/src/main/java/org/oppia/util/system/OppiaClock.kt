@@ -5,9 +5,7 @@ import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.TimeZone
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,7 +33,6 @@ class OppiaClock @Inject constructor() {
       date = format.parse(dtStart)
       currentTimeMsNew = getLocalToUTCDate(date)
       System.out.println("UTC = " + getLocalToUTCDate(date))
-
     } catch (e: ParseException) {
       e.printStackTrace()
     }
