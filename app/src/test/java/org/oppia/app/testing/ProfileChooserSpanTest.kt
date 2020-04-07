@@ -1,9 +1,12 @@
 package org.oppia.app.testing
 
+import android.content.Context
+import android.content.res.Configuration
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -41,9 +44,7 @@ class ProfileChooserSpanTest {
   }
 
   private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(
-      TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW
-    )!! as RecyclerView
+    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW)!! as RecyclerView
   }
 
   @Test
