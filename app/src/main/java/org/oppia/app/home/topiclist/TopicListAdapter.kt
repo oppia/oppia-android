@@ -195,7 +195,7 @@ class TopicListAdapter(
       val marginMin = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
       } else {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_32)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_36)
       }
 
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
