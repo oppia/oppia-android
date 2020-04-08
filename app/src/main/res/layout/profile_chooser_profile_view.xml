@@ -56,7 +56,7 @@
       android:textColor="@color/white"
       android:textSize="12sp"
       android:textStyle="italic"
-      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs>0 ? View.VISIBLE : View.GONE}"
+      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
       profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
     <TextView

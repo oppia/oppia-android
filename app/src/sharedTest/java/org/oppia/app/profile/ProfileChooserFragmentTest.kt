@@ -121,7 +121,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
-      launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
       onView(withId(R.id.input_pin)).perform(typeText("12345"))
@@ -415,6 +415,7 @@ class ProfileChooserFragmentTest {
   private fun getResources(): Resources {
     return ApplicationProvider.getApplicationContext<Context>().resources
   }
+
   @Qualifier annotation class TestDispatcher
 
   @Module

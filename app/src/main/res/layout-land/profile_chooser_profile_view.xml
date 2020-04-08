@@ -51,6 +51,7 @@
         android:text="@{viewModel.profile.name}"
         android:textColor="@color/white"
         android:textSize="14sp" />
+
       <TextView
         android:id="@+id/profile_last_visited"
         android:layout_width="wrap_content"
@@ -60,7 +61,7 @@
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="italic"
-        android:visibility="@{viewModel.profile.lastLoggedInTimestampMs>0 ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
         profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
       <TextView
