@@ -103,7 +103,17 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeIsShown() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch(ProfileActivity::class.java).use {
+    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()) .use {
+      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.admin_auth_toolbar))))
+        .check(matches(withText(context.resources.getString(R.string.add_profile_title))))
+      onView(withText(context.resources.getString(R.string.admin_auth_heading))).check(matches(isDisplayed()))
+      onView(withText(context.resources.getString(R.string.admin_auth_sub))).check(matches(isDisplayed()))
+      onView(isRoot()).perform(pressBack())
+      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
 
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(
