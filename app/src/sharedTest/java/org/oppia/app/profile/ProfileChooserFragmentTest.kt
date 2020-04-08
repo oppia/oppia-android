@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -88,7 +87,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch(ProfileActivity::class.java).use {
+    launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(
         matches(
@@ -121,7 +120,7 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(8)
-    ActivityScenario.launch(ProfileActivity::class.java).use {
+    launch(ProfileActivity::class.java).use {
       onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(
         matches(
@@ -188,7 +187,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickProfile_checkOpensPinPasswordActivity() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch(ProfileActivity::class.java).use {
+    launch(ProfileActivity::class.java).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
