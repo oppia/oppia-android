@@ -30,6 +30,17 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
+    profileManagementController.addProfile(
+      name = "Ben",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false,
+      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
+      appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+    )
     activity.setContentView(R.layout.profile_test_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

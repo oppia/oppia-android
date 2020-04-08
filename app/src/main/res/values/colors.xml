@@ -35,6 +35,7 @@
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
+  <color name="oppiaProfileChooserDivider">#707070</color>
   <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
