@@ -1,11 +1,11 @@
 package org.oppia.util.datetime
 
 import android.content.Context
-import org.oppia.util.R
-import org.oppia.util.system.OppiaClock
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.util.R
+import org.oppia.util.system.OppiaClock
 
 /** Utility to manage date and time. */
 @Singleton

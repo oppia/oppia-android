@@ -133,4 +133,6 @@
   <color name="avatar_background_24">#CC2970</color>
   <!-- StoryTextSizeActivity -->
   <color name="seekbarDivider">#707070</color>
+  <color name="topicThumbnailBackground">#C6DCDA</color>
+  <color name="topicTitleBackground">#2F6687</color>
 </resources>

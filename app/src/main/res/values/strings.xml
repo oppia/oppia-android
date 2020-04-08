@@ -99,6 +99,7 @@
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
+  <string name="welcome_profile_name">%s!</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
