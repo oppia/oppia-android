@@ -5,5 +5,6 @@ import androidx.lifecycle.ViewModel
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel : HomeItemViewModel() {
-  var profileName : String = ""
+  val profileName = ObservableField<String>("")
+  val greeting = ObservableField<String>("")
 }

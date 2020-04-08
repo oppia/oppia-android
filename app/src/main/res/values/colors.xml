@@ -5,7 +5,7 @@
   <color name="colorAccent">#2D4A9D</color>
   <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
-  <color name="colorConceptToolbarBackground">#C55F45</color>
+  <color name="colorConceptToolbarBackground">#BE563C</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
   <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
@@ -35,6 +35,7 @@
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
+  <color name="oppiaProfileChooserDivider">#707070</color>
   <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
@@ -132,4 +133,6 @@
   <color name="avatar_background_24">#CC2970</color>
   <!-- StoryTextSizeActivity -->
   <color name="seekbarDivider">#707070</color>
+  <color name="topicThumbnailBackground">#C6DCDA</color>
+  <color name="topicTitleBackground">#2F6687</color>
 </resources>
