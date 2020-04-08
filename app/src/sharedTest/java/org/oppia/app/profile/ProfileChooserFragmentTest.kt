@@ -3,19 +3,19 @@ package org.oppia.app.profile
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.widget.TextView
 import android.content.res.Resources
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -39,16 +39,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.databinding.getTimeAgo
-import org.oppia.app.model.ProfileId
-import org.oppia.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
-import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -103,29 +101,28 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeIsShown() {
     profileTestHelper.initializeProfiles()
-    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()) .use {
+    ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
-      intended(hasComponent(AdminAuthActivity::class.java.name))
-      intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.admin_auth_toolbar))))
-        .check(matches(withText(context.resources.getString(R.string.add_profile_title))))
-      onView(withText(context.resources.getString(R.string.admin_auth_heading))).check(matches(isDisplayed()))
-      onView(withText(context.resources.getString(R.string.admin_auth_sub))).check(matches(isDisplayed()))
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+      onView(withId(R.id.input_pin)).perform(ViewActions.typeText("12345"))
+      intended(hasComponent(HomeActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
-
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(
-        isDisplayed()))
-
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(matches(withText( String.format(
-        getResources().getString(R.string.profile_last_used) + " " + getTimeAgo(
-          profileManagementController.getUpdateLastLoggedInTimeAsyncForTest(
-            ProfileId.newBuilder().setInternalId(0).build(),1579677300000),
-          ApplicationProvider.getApplicationContext<Context>()
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          isDisplayed()
         )
-      ))))
+      )
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
+        )
+      )
     }
   }
 

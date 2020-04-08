@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.annotation.VisibleForTesting
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,13 +26,7 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
-import java.math.BigInteger
-import java.nio.charset.Charset
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -522,20 +515,6 @@ class ProfileManagementController @Inject constructor(
       val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-  }
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  fun getUpdateLastLoggedInTimeAsyncForTest(profileId: ProfileId, timeStamp: Long): Long{
-    var lastLoggedInTimeStampMs : Long = 0
-     profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId]
-        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-      val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(timeStamp).build()
-       lastLoggedInTimeStampMs = profile.lastLoggedInTimestampMs
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(profileId.internalId, updatedProfile)
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-    }
-    return lastLoggedInTimeStampMs
   }
 
   /**
