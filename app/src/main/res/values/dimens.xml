@@ -21,6 +21,7 @@
   <dimen name="bottom_white_space">160dp</dimen>
   <dimen name="padding_48">48dp</dimen>
   <dimen name="padding_20">20dp</dimen>
+  <dimen name="padding_44">44dp</dimen>
   <dimen name="padding_72">72dp</dimen>
   <dimen name="margin_72">72dp</dimen>
   <dimen name="margin_36">36dp</dimen>

@@ -151,10 +151,11 @@ class TopicListAdapter(
        */
       val snapHelper = StartSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
+      binding.promotedStoryListRecyclerView.onFlingListener = null
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
       val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
       } else {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
       }
