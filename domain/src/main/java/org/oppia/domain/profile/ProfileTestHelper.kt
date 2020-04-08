@@ -56,7 +56,6 @@ class ProfileTestHelper @Inject constructor(
     }
   }
 
-
   /** Login to admin profile. */
   fun loginToAdmin() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())

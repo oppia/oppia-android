@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -104,7 +104,7 @@ class ProfileChooserFragmentTest {
     ActivityScenario.launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
-      onView(withId(R.id.input_pin)).perform(ViewActions.typeText("12345"))
+      onView(withId(R.id.input_pin)).perform(typeText("12345"))
       intended(hasComponent(HomeActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())

@@ -39,31 +39,43 @@ fun currentDate(): Date {
   return calendar.time
 }
 
-fun getTimeAgo(time: Long, context: Context): String {
-  var time = time
-  if (time < 1000000000000L)
+fun getTimeAgo(lastVisitedTimeStamp: Long, context: Context): String {
+  var timeStamp = lastVisitedTimeStamp
+  if (timeStamp < 1000000000000L)
   // If timestamp is given in seconds, convert that to milliseconds.
-    time *= 1000
+    timeStamp *= 1000
 
   val now = currentDate().time
-  if (time > now || time <= 0) return ""
+  if (timeStamp > now || timeStamp <= 0) return ""
 
   val res = context.resources
-  val timeDifference = now - time
+  val timeDifference = now - timeStamp
   return when {
     timeDifference < MINUTE_MILLIS -> context.getString(R.string.just_now)
     timeDifference < 50 * MINUTE_MILLIS -> context.getString(
       R.string.time_ago,
-      res.getQuantityString(R.plurals.minutes, timeDifference.toInt() / MINUTE_MILLIS, timeDifference / MINUTE_MILLIS)
+      res.getQuantityString(
+        R.plurals.minutes,
+        timeDifference.toInt() / MINUTE_MILLIS,
+        timeDifference / MINUTE_MILLIS
+      )
     )
     timeDifference < 24 * HOUR_MILLIS -> context.getString(
       R.string.time_ago,
-      res.getQuantityString(R.plurals.hours, timeDifference.toInt() / HOUR_MILLIS, timeDifference / HOUR_MILLIS)
+      res.getQuantityString(
+        R.plurals.hours,
+        timeDifference.toInt() / HOUR_MILLIS,
+        timeDifference / HOUR_MILLIS
+      )
     )
     timeDifference < 48 * HOUR_MILLIS -> context.getString(R.string.yesterday)
     else -> context.getString(
       R.string.time_ago,
-      res.getQuantityString(R.plurals.days, timeDifference.toInt() / DAY_MILLIS, timeDifference / DAY_MILLIS)
+      res.getQuantityString(
+        R.plurals.days,
+        timeDifference.toInt() / DAY_MILLIS,
+        timeDifference / DAY_MILLIS
+      )
     )
   }
 }
