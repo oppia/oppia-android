@@ -34,7 +34,7 @@
       android:ellipsize="end"
       android:maxLines="1"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.profileName}"
+      android:text="@{String.format(@string/welcome_profile_name, viewModel.profileName)}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
