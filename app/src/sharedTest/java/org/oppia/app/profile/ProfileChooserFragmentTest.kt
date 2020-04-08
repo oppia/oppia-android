@@ -119,7 +119,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVistedTimeIsShown() {
+  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
       launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
@@ -134,6 +134,44 @@ class ProfileChooserFragmentTest {
           isDisplayed()
         )
       )
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() {
+    profileTestHelper.initializeProfiles()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+      onView(withId(R.id.input_pin)).perform(typeText("12345"))
+      intended(hasComponent(HomeActivity::class.java.name))
+      onView(isRoot()).perform(pressBack())
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
+        )
+      )
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
         matches(
           withText(
