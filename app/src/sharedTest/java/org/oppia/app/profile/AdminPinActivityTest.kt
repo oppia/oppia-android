@@ -181,7 +181,7 @@ class AdminPinActivityTest {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo()).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )

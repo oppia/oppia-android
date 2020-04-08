@@ -23,6 +23,8 @@ class ProfileEditViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
+  lateinit var profileName : String
+
   val profile: LiveData<Profile> by lazy {
     Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
   }
@@ -45,6 +47,7 @@ class ProfileEditViewModel @Inject constructor(
     val switch = activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
     switch.isChecked = profile.allowDownloadAccess
     activity.title = profile.name
+    profileName = profile.name
     isAdmin = profile.isAdmin
     return profile
   }

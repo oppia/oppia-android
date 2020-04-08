@@ -2,9 +2,14 @@ package org.oppia.app.topic.revision
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -32,7 +37,6 @@ import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicRevisionFragment]. */
@@ -105,9 +109,6 @@ class TopicRevisionFragmentTest {
     }
   }
 
-  //Test Failing in other devices too. RecyclerView item count
-  //Expected: <2>
-  //Got: <12>
   @Test
   fun testTopicRevisionFragment_loadFragment_checkSpanCoun_isTwo() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
@@ -117,7 +118,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(2))
+      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(2))
     }
   }
 
@@ -150,9 +151,6 @@ class TopicRevisionFragmentTest {
     }
   }
 
-  //Test failing in other devices too. RecyclerView item count
-  //Expected: <3>
-  //Got: <12>
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkSpanCount_isThree() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
@@ -163,7 +161,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(3))
+      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(3))
     }
   }
 
@@ -171,6 +169,35 @@ class TopicRevisionFragmentTest {
     val intent =
       TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
     return ActivityScenario.launch(intent)
+  }
+
+  class GridLayoutManagerColumnCountAssertion(expectedColumnCount:Int):ViewAssertion {
+    private var expectedColumnCount:Int = 0
+    init{
+      this.expectedColumnCount = expectedColumnCount
+    }
+    override fun check(view:View, noViewFoundException:NoMatchingViewException?) {
+      if (noViewFoundException != null)
+      {
+        throw noViewFoundException
+      }
+      val recyclerView = view as RecyclerView
+      if (recyclerView.getLayoutManager() is GridLayoutManager)
+      {
+        val gridLayoutManager = recyclerView.getLayoutManager() as GridLayoutManager
+        val spanCount = gridLayoutManager.getSpanCount()
+        if (spanCount != expectedColumnCount)
+        {
+          val errorMessage = ("expected column count " + expectedColumnCount
+            + " but was " + spanCount)
+          throw AssertionError(errorMessage)
+        }
+      }
+      else
+      {
+        throw IllegalStateException("no grid layout manager")
+      }
+    }
   }
 
   @Module

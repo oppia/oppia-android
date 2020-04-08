@@ -85,7 +85,6 @@ class ProfileEditActivityTest {
     }
   }
 
-  // Failing in other Devices too. ActionBar does not have the text "Sean". It has "Oppia"
   @Test
   fun testProfileEditActivity_configurationChange_startActivityWithAdminProfile_checkAdminInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 0)).use {
@@ -107,15 +106,14 @@ class ProfileEditActivityTest {
     }
   }
 
-  // Failing in other Devices too. ActionBar does not have the text "Ben". It has "Oppia"
   @Test
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_checkUserInfoIsDisplayed() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 1)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_container)).perform(scrollTo()).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches((isDisplayed())))
     }
   }
 
