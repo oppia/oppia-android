@@ -151,7 +151,7 @@ class TopicListAdapter(
        */
       val snapHelper = StartSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-      binding.promotedStoryListRecyclerView.onFlingListener = null
+      binding.promotedStoryListRecyclerView.setOnFlingListener(null)
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
       val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -219,7 +219,7 @@ class TopicListAdapter(
           position % 3 == 0 -> marginLayoutParams.setMargins(
             marginMax,
             marginTopBottom,
-            /* right= */0,
+            /* right= */ 0,
             marginTopBottom
           )
           position % 3 == 1 -> marginLayoutParams.setMargins(
