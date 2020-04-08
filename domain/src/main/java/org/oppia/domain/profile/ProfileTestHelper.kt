@@ -39,6 +39,22 @@ class ProfileTestHelper @Inject constructor(
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
 
+  /** Creates one admin profile and logs in to admin profile. */
+  fun addOnlyAdminProfile(): LiveData<AsyncResult<Any?>> {
+    profileManagementController.addProfile(
+      name = "Sean",
+      pin = "12345",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+    )
+    return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+  }
+
   /** Create [numProfiles] number of user profiles. */
   fun addMoreProfiles(numProfiles: Int) {
     for (x in 0 until numProfiles) {

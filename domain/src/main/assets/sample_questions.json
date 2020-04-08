@@ -56,7 +56,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
@@ -142,7 +142,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
@@ -201,7 +201,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
@@ -276,7 +276,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
@@ -362,7 +362,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
@@ -421,7 +421,7 @@
         },
         "hints": [
           {
-            "hintContent": {
+            "hint_content": {
               "html": "<p>Hint text will appear here</p>",
               "content_id": "hint_1"
             }
