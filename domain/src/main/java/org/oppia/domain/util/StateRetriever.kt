@@ -3,13 +3,16 @@ package org.oppia.domain.util
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.CorrectAnswer
 import org.oppia.app.model.Fraction
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
@@ -71,6 +74,16 @@ class StateRetriever @Inject constructor(
           getJsonObject(interactionJson, "customization_args")
         )
       )
+      .addAllHint(
+        createListOfHintsFromJson(
+          interactionJson.getJSONArray("hints")
+        )
+      )
+      .setSolution(
+        createSolutionFromJson(
+          getJsonObject(interactionJson, "solution")
+        )
+      )
       .build()
   }
 
@@ -95,6 +108,40 @@ class StateRetriever @Inject constructor(
       )
     }
     return answerGroups
+  }
+
+  // Creates the list of hints objects from JSON
+  private fun createListOfHintsFromJson(
+    hintsJson: JSONArray?
+  ): MutableList<Hint> {
+    val hints = mutableListOf<Hint>()
+    if (hintsJson == null) {
+      return hints
+    }
+    for (i in 0 until hintsJson.length()) {
+      hints.add(
+        createSingleHintFromJson(
+          hintsJson.getJSONObject(i)
+        )
+      )
+    }
+    return hints
+  }
+
+  // Creates an hint object from JSON
+  private fun createSingleHintFromJson(hintJson: JSONObject?): Hint {
+    if (hintJson == null) {
+      return Hint.getDefaultInstance()
+    }
+    return Hint.newBuilder()
+      .setHintContent(
+        SubtitledHtml.newBuilder().setHtml(
+          hintJson.getJSONObject("hint_content")?.getString("html")
+        ).setContentId(
+          hintJson.getJSONObject("hint_content")?.optString("content_id")
+        )
+      )
+      .build()
   }
 
   // Creates a single answer group object from JSON
@@ -123,6 +170,38 @@ class StateRetriever @Inject constructor(
       .setFeedback(createFeedbackSubtitledHtml(outcomeJson))
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
+  }
+
+  // Creates a solution object from JSON
+  private fun createSolutionFromJson(solutionJson: JSONObject?): Solution {
+    if (solutionJson == null) {
+      return Solution.getDefaultInstance()
+    }
+    return Solution.newBuilder()
+      .setCorrectAnswer(createCorrectAnswer(solutionJson))
+      .setExplanation(
+        SubtitledHtml.newBuilder().setHtml(
+          solutionJson.getJSONObject("explanation")?.getString("html")
+        ).setContentId(
+          solutionJson.getJSONObject("explanation")?.optString("content_id")
+        )
+      )
+      .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
+      .build()
+  }
+
+  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
+    val correctAnswerObject = containerObject.optJSONObject("correct_answer")
+    return if (correctAnswerObject != null) {
+      CorrectAnswer.newBuilder()
+        .setNumerator(correctAnswerObject.getInt("numerator"))
+        .setDenominator(correctAnswerObject.getInt("denominator"))
+        .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
+        .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
+        .build()
+    } else {
+      CorrectAnswer.newBuilder().setCorrectAnswer(containerObject.getString("correct_answer")).build()
+    }
   }
 
   // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are

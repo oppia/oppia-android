@@ -1,6 +1,8 @@
 package org.oppia.app.home.topiclist
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,8 @@ class PromotedStoryListAdapter(
   private val itemList: MutableList<PromotedStoryViewModel>
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val orientation = Resources.getSystem().configuration.orientation
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     val inflater = LayoutInflater.from(parent.context)
@@ -41,7 +45,12 @@ class PromotedStoryListAdapter(
       binding.viewModel = promotedStoryViewModel
       val layoutParams = binding.promotedStoryCardContainer.layoutParams
       layoutParams.width = if (itemCount > 1) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        else{
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
+        }
       } else {
         ViewGroup.LayoutParams.MATCH_PARENT
       }

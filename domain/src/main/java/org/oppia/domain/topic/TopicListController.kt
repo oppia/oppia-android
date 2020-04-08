@@ -416,7 +416,7 @@ class TopicListController @Inject constructor(
     val stateContents = states.map(State::getContent)
     val stateInteractions = states.map(State::getInteraction)
     val stateSolutions = stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
-    val stateHints = stateInteractions.map(Interaction::getHint).map(Hint::getHintContent)
+    val stateHints = stateInteractions.flatMap(Interaction::getHintList).map(Hint::getHintContent)
     val answerGroupOutcomes = stateInteractions.flatMap(Interaction::getAnswerGroupsList).map(AnswerGroup::getOutcome)
     val defaultOutcomes = stateInteractions.map(Interaction::getDefaultOutcome)
     val outcomeFeedbacks = (answerGroupOutcomes + defaultOutcomes).map(Outcome::getFeedback)
