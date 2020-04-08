@@ -39,8 +39,11 @@ import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
+import org.oppia.app.testing.HomeInjectionActivity
+import org.oppia.app.testing.HomeTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
+import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
@@ -83,6 +86,8 @@ interface ActivityComponent {
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
+  fun inject(homeInjectionActivity: HomeInjectionActivity)
+  fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
@@ -92,6 +97,7 @@ interface ActivityComponent {
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profilePictureActivity: ProfilePictureActivity)
