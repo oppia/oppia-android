@@ -12,17 +12,15 @@
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="12dp"
     android:clipToPadding="true"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:cardMaxElevation="4dp"
-    app:strokeColor="@color/oppiaBrown"
-    app:strokeWidth="2dp">
+    app:cardMaxElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -32,6 +30,7 @@
         android:id="@+id/subtopic_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/white"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
         android:src="@{subtopic.subtopicThumbnail.thumbnailGraphic}"
@@ -40,21 +39,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-      <View
-        android:id="@+id/separator_view"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/oppiaBrown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
-
       <TextView
         android:id="@+id/subtopic_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
         android:maxLines="3"
         android:minLines="3"
         android:paddingStart="8dp"
@@ -62,9 +54,9 @@
         android:paddingEnd="8dp"
         android:paddingBottom="16dp"
         android:text="@{subtopic.title}"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/separator_view" />
+        app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>
 </layout>

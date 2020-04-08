@@ -8,6 +8,10 @@
     <import type="android.view.View" />
 
     <variable
+      name="presenter"
+      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserUiModel" />
   </data>
@@ -15,10 +19,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="24dp"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/profile_avatar_img"
@@ -58,5 +60,13 @@
       android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+
+    <View
+      android:id="@+id/add_profile_divider_view"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginTop="24dp"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      android:background="@color/oppiaProfileChooserDivider" />
   </LinearLayout>
 </layout>
