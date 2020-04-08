@@ -19,7 +19,7 @@ class HelpListViewModel @Inject constructor(
     for (item in HelpItems.values()) {
       if (item == HelpItems.FAQ) {
         val category1 = activity.getString(R.string.frequently_asked_questions_FAQ)
-        val helpViewModel = HelpItemViewModel(category1)
+        val helpViewModel = HelpItemViewModel(activity,category1)
         arrayList.add(helpViewModel)
       }
     }
