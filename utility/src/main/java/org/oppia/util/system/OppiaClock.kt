@@ -3,13 +3,13 @@ package org.oppia.util.system
 import android.annotation.SuppressLint
 import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
-import javax.inject.Inject
-import javax.inject.Singleton
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Utility to get the current date/time. */
 @Singleton

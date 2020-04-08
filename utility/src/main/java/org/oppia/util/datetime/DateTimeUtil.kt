@@ -1,9 +1,9 @@
 package org.oppia.util.datetime
 
 import android.content.Context
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
-import java.util.Calendar
 import org.oppia.util.R
 import org.oppia.util.system.OppiaClock
 
