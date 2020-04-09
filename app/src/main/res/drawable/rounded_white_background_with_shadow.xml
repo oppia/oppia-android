@@ -22,12 +22,11 @@
       <corners android:radius="10dp" />
     </shape>
   </item>
-
   <item
     android:bottom="16dp"
+    android:drawable="@drawable/ic_edit_18"
     android:left="16dp"
     android:right="16dp"
-    android:top="16dp"
-    android:drawable="@drawable/ic_edit_18"
-    android:state_enabled="true" />
+    android:state_enabled="true"
+    android:top="16dp" />
 </layer-list>
