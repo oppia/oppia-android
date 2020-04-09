@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   private var currentExpandedHintListIndex: Int? = null
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
   private lateinit var hintsAndSolutionAdapter: HintsAndSolutionAdapter
+  private var currentState: State? = null
+  private var explorationId: String? = ""
+  private var newAvailableHintIndex: Int = -1
+  private var allHintsExhausted: Boolean = false
 
   val viewModel by lazy {
     getHintsAndSolutionViewModel()
@@ -36,14 +41,31 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
    */
   fun handleCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
-    currentState: State,
-    explorationId: String,
+    isOrientationChanged: Boolean,
+    currentState: State?,
+    explorationId: String?,
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean,
     expandedHintListIndexListener: ExpandedHintListIndexListener
   ): View? {
 
+
+    Log.d("orientation=","=="+isOrientationChanged)
+    if (isOrientationChanged){
+      this.currentState = viewModel.currentState.get()!!
+      this.explorationId = viewModel.explorationId.get()!!
+      this.newAvailableHintIndex = viewModel.newAvailableHintIndex.get()!!
+      this.allHintsExhausted = viewModel.allHintsExhausted.get()!!
+
+      Log.d("hint list=",""+this.currentState!!.interaction.hintList[0].hintIsRevealed)
+      Log.d("hint list=",""+viewModel.currentState.get()!!.interaction.hintList[0].hintIsRevealed)
+    }else{
+      this.currentState = currentState
+      this.explorationId = explorationId
+      this.newAvailableHintIndex = newAvailableHintIndex
+      this.allHintsExhausted = allHintsExhausted
+    }
 
     val binding = HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
@@ -60,9 +82,13 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    viewModel.setHintsList(currentState.interaction.hintList)
-    viewModel.setSolution(currentState.interaction.solution)
-    viewModel.explorationId.set(explorationId)
+    viewModel.currentState.set(this.currentState)
+    viewModel.newAvailableHintIndex.set(this.newAvailableHintIndex)
+    viewModel.allHintsExhausted.set(this.allHintsExhausted)
+    viewModel.explorationId.set(this.explorationId)
+
+    viewModel.setHintsList(viewModel.currentState.get()!!.interaction.hintList)
+    viewModel.setSolution(viewModel.currentState.get()!!.interaction.solution)
 
     hintsAndSolutionAdapter =
       HintsAndSolutionAdapter(
@@ -70,7 +96,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
         viewModel.processHintList(),
         expandedHintListIndexListener,
         currentExpandedHintListIndex,
-        explorationId,
+        viewModel.explorationId.get(),
         htmlParserFactory,
         entityType
       )
@@ -78,10 +104,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       adapter = hintsAndSolutionAdapter
     }
 
-    handleNewAvailableHint(newAvailableHintIndex)
+    handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
 
-    if (allHintsExhausted) {
-      handleAllHintsExhausted(allHintsExhausted)
+    if (this.allHintsExhausted) {
+      handleAllHintsExhausted(viewModel.allHintsExhausted.get()!!)
     }
     return binding.root
   }

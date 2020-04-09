@@ -22,7 +22,7 @@ class HintsAndSolutionAdapter(
   private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
   private var currentExpandedHintListIndex: Int?,
-  private var explorationId: String,
+  private var explorationId: String?,
   private var htmlParserFactory: HtmlParser.Factory,
   private var entityType: String
 ) :
@@ -101,7 +101,7 @@ class HintsAndSolutionAdapter(
 
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
-        htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+        htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
           .parseOppiaHtml(
             hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
           )
@@ -170,7 +170,7 @@ class HintsAndSolutionAdapter(
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionCorrectAnswer.text =
         """${fragment.getString(R.string.the_only_solution_is)}${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
-      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
         .parseOppiaHtml(
           solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
         )
@@ -184,6 +184,7 @@ class HintsAndSolutionAdapter(
 
       binding.root.setOnClickListener {
         if (solutionViewModel.isSolutionRevealed.get()!!) {
+          binding.revealSolutionButton.visibility = View.GONE
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -238,6 +239,14 @@ class HintsAndSolutionAdapter(
       val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
       notifyItemChanged(itemList.size - 1)
+    }
+  }
+
+  fun setRevealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    if (itemList[hintIndex] is HintsViewModel) {
+      val hintsViewModel = itemList[hintIndex] as HintsViewModel
+      hintsViewModel.isHintRevealed.set(saveUserChoice)
+      notifyItemChanged(hintIndex)
     }
   }
 }

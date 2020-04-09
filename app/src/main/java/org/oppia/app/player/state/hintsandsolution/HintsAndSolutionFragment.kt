@@ -8,28 +8,23 @@ import android.view.ViewGroup
 import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import org.oppia.app.model.State
-import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
+private const val KEY_ON_ORIENTATION_CHANGE = "ON_ORIENTATION_CHANGE"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
-class HintsAndSolutionFragment :
-  InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
+class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
-  private lateinit var viewModelProvider: ViewModelProvider<HintsViewModel> 
 
-  private lateinit var currentState: State
-  private lateinit var explorationId: String
+  private  var currentState: State? = null
+  private  var explorationId: String? = ""
   private var newAvailableHintIndex: Int = -1
   private var allHintsExhausted: Boolean = false
+  private var isOrientationChanged: Boolean = false
 
   private var currentExpandedHintListIndex: Int? = null
-
-  private val viewModel by lazy {
-    getHintsAndSolutionViewModel()
-  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -44,19 +39,20 @@ class HintsAndSolutionFragment :
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     if (savedInstanceState != null) {
       currentExpandedHintListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      isOrientationChanged = savedInstanceState.getBoolean(KEY_ON_ORIENTATION_CHANGE, false)
       if (currentExpandedHintListIndex == -1) {
         currentExpandedHintListIndex = null
       }
     }
-
     return hintsAndSolutionFragmentPresenter.handleCreateView(
       inflater,
       container,
-      viewModel.currentState.get()!!,
-      viewModel.explorationId.get()!!,
+      isOrientationChanged,
+      currentState,
+      explorationId,
       currentExpandedHintListIndex,
-      viewModel.newAvailableHintIndex.get()!!,
-      viewModel.allHintsExhausted.get()!!,
+      newAvailableHintIndex,
+      allHintsExhausted,
       this as ExpandedHintListIndexListener
     )
   }
@@ -72,11 +68,10 @@ class HintsAndSolutionFragment :
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
-
-    viewModel.currentState.set(newState)
-    viewModel.explorationId.set(explorationId)
-    viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
-    viewModel.allHintsExhausted.set(allHintsExhausted)
+    this.currentState = newState
+    this.explorationId = explorationId
+    this.newAvailableHintIndex = newAvailableHintIndex
+    this.allHintsExhausted = allHintsExhausted
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -84,10 +79,7 @@ class HintsAndSolutionFragment :
     if (currentExpandedHintListIndex != null) {
       outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedHintListIndex!!)
     }
-  }
-
-  private fun getHintsAndSolutionViewModel(): HintsViewModel {
-    return viewModelProvider.getForFragment(this, HintsViewModel::class.java)
+    outState.putBoolean(KEY_ON_ORIENTATION_CHANGE, true)
   }
 
   override fun onExpandListIconClicked(index: Int?) {
@@ -97,5 +89,4 @@ class HintsAndSolutionFragment :
   override fun revealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
   }
-
 }
