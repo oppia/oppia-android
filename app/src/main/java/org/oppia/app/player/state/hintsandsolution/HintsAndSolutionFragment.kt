@@ -18,7 +18,7 @@ class HintsAndSolutionFragment :
   InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
-  private lateinit var viewModelProvider: ViewModelProvider<HintsViewModel> = 
+  private lateinit var viewModelProvider: ViewModelProvider<HintsViewModel> 
 
   private lateinit var currentState: State
   private lateinit var explorationId: String
