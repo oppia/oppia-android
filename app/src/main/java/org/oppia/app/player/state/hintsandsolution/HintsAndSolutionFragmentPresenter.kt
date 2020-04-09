@@ -104,10 +104,11 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       adapter = hintsAndSolutionAdapter
     }
 
-    handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
+    if(this.newAvailableHintIndex!=-1)
+    handleNewAvailableHint(this.newAvailableHintIndex)
 
     if (this.allHintsExhausted) {
-      handleAllHintsExhausted(viewModel.allHintsExhausted.get()!!)
+      handleAllHintsExhausted(this.allHintsExhausted)
     }
     return binding.root
   }
