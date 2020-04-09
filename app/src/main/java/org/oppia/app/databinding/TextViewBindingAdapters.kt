@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oppia.app.R
+import org.oppia.util.system.OppiaDateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,8 +12,11 @@ import java.util.*
 @BindingAdapter("profile:created")
 fun setProfileDataText(textView: TextView, timestamp: Long) {
   // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-  val time = sdf.format(Date(timestamp))
+  val oppiaDateTimeFormatter = OppiaDateTimeFormatter()
+  val time = oppiaDateTimeFormatter.formatDateFromDateString(
+    oppiaDateTimeFormatter.dd_MMMM_yyyy,
+    timestamp
+  )
   textView.text = String.format(textView.context.getString(R.string.profile_edit_created, time))
 }
 
@@ -34,18 +38,14 @@ private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 private const val DAY_MILLIS = 24 * HOUR_MILLIS
 
 // TODO(#555): Shift this logic to central utility file for date-time related conversions.
-fun currentDate(): Date {
-  val calendar = Calendar.getInstance()
-  return calendar.time
-}
 
 fun getTimeAgo(lastVisitedTimeStamp: Long, context: Context): String {
-  var timeStamp = lastVisitedTimeStamp
-  if (timeStamp < 1000000000000L)
-  // If timestamp is given in seconds, convert that to milliseconds.
-    timeStamp *= 1000
 
-  val now = currentDate().time
+  val oppiaDateTimeFormatter = OppiaDateTimeFormatter()
+  val timeStamp =
+    oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp)
+  val now = oppiaDateTimeFormatter.currentDate().time
+
   if (timeStamp > now || timeStamp <= 0) return ""
 
   val res = context.resources
