@@ -8,14 +8,17 @@ import android.view.ViewGroup
 import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import org.oppia.app.model.State
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
+class HintsAndSolutionFragment :
+  InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
+  private lateinit var viewModelProvider: ViewModelProvider<HintsViewModel> = 
 
   private lateinit var currentState: State
   private lateinit var explorationId: String
@@ -23,6 +26,10 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
   private var allHintsExhausted: Boolean = false
 
   private var currentExpandedHintListIndex: Int? = null
+
+  private val viewModel by lazy {
+    getHintsAndSolutionViewModel()
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -41,14 +48,15 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
         currentExpandedHintListIndex = null
       }
     }
+
     return hintsAndSolutionFragmentPresenter.handleCreateView(
       inflater,
       container,
-      currentState,
-      explorationId,
+      viewModel.currentState.get()!!,
+      viewModel.explorationId.get()!!,
       currentExpandedHintListIndex,
-      newAvailableHintIndex,
-      allHintsExhausted,
+      viewModel.newAvailableHintIndex.get()!!,
+      viewModel.allHintsExhausted.get()!!,
       this as ExpandedHintListIndexListener
     )
   }
@@ -64,10 +72,11 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
-    currentState = newState
-    this.explorationId = explorationId
-    this.newAvailableHintIndex = newAvailableHintIndex
-    this.allHintsExhausted = allHintsExhausted
+
+    viewModel.currentState.set(newState)
+    viewModel.explorationId.set(explorationId)
+    viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
+    viewModel.allHintsExhausted.set(allHintsExhausted)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -77,6 +86,10 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     }
   }
 
+  private fun getHintsAndSolutionViewModel(): HintsViewModel {
+    return viewModelProvider.getForFragment(this, HintsViewModel::class.java)
+  }
+
   override fun onExpandListIconClicked(index: Int?) {
     currentExpandedHintListIndex = index
   }
@@ -84,4 +97,5 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
   override fun revealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
   }
+
 }

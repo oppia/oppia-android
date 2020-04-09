@@ -25,6 +25,11 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   private var currentExpandedHintListIndex: Int? = null
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
   private lateinit var hintsAndSolutionAdapter: HintsAndSolutionAdapter
+
+  val viewModel by lazy {
+    getHintsAndSolutionViewModel()
+  }
+
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
@@ -38,8 +43,9 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     allHintsExhausted: Boolean,
     expandedHintListIndexListener: ExpandedHintListIndexListener
   ): View? {
+
+
     val binding = HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    val viewModel = getHintsAndSolutionViewModel()
 
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
     this.expandedHintListIndexListener = expandedHintListIndexListener
@@ -56,7 +62,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
     viewModel.setHintsList(currentState.interaction.hintList)
     viewModel.setSolution(currentState.interaction.solution)
-    viewModel.setExplorationId(explorationId)
+    viewModel.explorationId.set(explorationId)
 
     hintsAndSolutionAdapter =
       HintsAndSolutionAdapter(
@@ -84,7 +90,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)
   }
 
-  private fun getHintsAndSolutionViewModel(): HintsViewModel {
+  fun getHintsAndSolutionViewModel(): HintsViewModel {
     return viewModelProvider.getForFragment(fragment, HintsViewModel::class.java)
   }
 

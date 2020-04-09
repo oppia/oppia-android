@@ -5,11 +5,17 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
+import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** [ViewModel] for Hints in [HintsAndSolutionFragment]. */
 @FragmentScope
 class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
+
+   val currentState=ObservableField<State>()
+   val newAvailableHintIndex= ObservableField<Int>(-1)
+   var allHintsExhausted=ObservableField<Boolean>(false)
+  val explorationId = ObservableField<String>("")
 
   val title = ObservableField<String>("")
   val hintsAndSolutionSummary = ObservableField<String>("")
@@ -18,7 +24,6 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
-  private lateinit var explorationId: String
   private val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
 
   fun setHintsList(hintList: List<Hint>) {
@@ -54,7 +59,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     return itemList
   }
 
-  fun setExplorationId(explorationId: String) {
-    this.explorationId = explorationId
-  }
+//  fun setExplorationId(explorationId: String) {
+//    this.explorationId = explorationId
+//  }
 }
