@@ -10,7 +10,7 @@ We're still working on setting up the basics of the Android project, but we are 
 
 ## Prerequisites
 1. Good internet connectivity is required as this project uses third party libraries which will be needed to build the app.
-2. Android Studio version [3.4.2](https://developer.android.com/studio/archive) or lower version. This is important because the `app` module test cases are failing in latest android studio.
+2. Download/Install latest [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads).
 3. Install the following linters:
    * [Ktlint](https://github.com/pinterest/ktlint#installation)
 
