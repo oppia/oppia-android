@@ -10,4 +10,3 @@ class TopicRevisionItemViewModel(
   val subtopic: Subtopic,
   val onRevisionItemPressed: RevisionSubtopicSelector
 ) : ViewModel()
-
