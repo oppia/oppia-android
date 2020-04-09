@@ -241,12 +241,4 @@ class HintsAndSolutionAdapter(
       notifyItemChanged(itemList.size - 1)
     }
   }
-
-  fun setRevealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    if (itemList[hintIndex] is HintsViewModel) {
-      val hintsViewModel = itemList[hintIndex] as HintsViewModel
-      hintsViewModel.isHintRevealed.set(saveUserChoice)
-      notifyItemChanged(hintIndex)
-    }
-  }
 }
