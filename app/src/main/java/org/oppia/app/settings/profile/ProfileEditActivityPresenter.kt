@@ -86,8 +86,4 @@ class ProfileEditActivityPresenter @Inject constructor(
   private fun getProfileEditViewModel(): ProfileEditViewModel {
     return viewModelProvider.getForActivity(activity, ProfileEditViewModel::class.java)
   }
-
-  fun handleOnRestoreSavedInstanceState(){
-    activity.title=editViewModel.profileName
-  }
 }
