@@ -78,7 +78,7 @@ class AdminPinActivityTest {
         typeText("12345"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -96,7 +96,7 @@ class AdminPinActivityTest {
           typeText("12345"),
           closeSoftKeyboard()
         )
-        onView(withId(R.id.submit_button)).perform(click())
+        onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
@@ -140,7 +140,7 @@ class AdminPinActivityTest {
         typeText("1234"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
         matches(
           withText(
@@ -162,7 +162,7 @@ class AdminPinActivityTest {
         typeText("1234"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         typeText("5"),
         closeSoftKeyboard()
@@ -310,7 +310,7 @@ class AdminPinActivityTest {
         typeText("54321"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.submit_button)).perform(click())
+      onView(withId(R.id.submit_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(

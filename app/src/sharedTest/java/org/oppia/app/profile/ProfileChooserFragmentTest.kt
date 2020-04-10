@@ -1,5 +1,7 @@
 package org.oppia.app.profile
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -24,6 +26,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -254,6 +259,7 @@ class ProfileChooserFragmentTest {
     )
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
+      waitUntilActivityVisible<AdminPinActivity>()
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
   }
@@ -336,6 +342,33 @@ class ProfileChooserFragmentTest {
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_description_text))
         .check(matches(not(isDisplayed())))
+    }
+  }
+
+  fun getCurrentActivity(): Activity? {
+    var currentActivity: Activity? = null
+    InstrumentationRegistry.getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
+      Stage.RESUMED).elementAtOrNull(0) } }
+    return currentActivity
+  }
+
+  inline fun <reified T : Activity> isVisible() : Boolean {
+    val am = InstrumentationRegistry.getInstrumentation().getTargetContext().getSystemService(
+      Context.ACTIVITY_SERVICE
+    ) as ActivityManager
+    val visibleActivityName = getCurrentActivity()!!::class.java.name
+    return visibleActivityName == T::class.java.name
+  }
+
+  inline fun <reified T : Activity> waitUntilActivityVisible() {
+    val TIMEOUT = 1000L
+    val CONDITION_CHECK_INTERVAL = 100L
+    val startTime = System.currentTimeMillis()
+    while (!isVisible<T>()) {
+      Thread.sleep(CONDITION_CHECK_INTERVAL)
+      if (System.currentTimeMillis() - startTime >= TIMEOUT) {
+        throw AssertionError("Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds")
+      }
     }
   }
 
