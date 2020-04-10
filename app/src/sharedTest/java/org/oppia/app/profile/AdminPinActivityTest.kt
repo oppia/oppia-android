@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -84,8 +85,24 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("12345"),
+        pressImeActionButton()
+      )
+      intended(hasComponent(AddProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() {
-    ActivityScenario.launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
+    launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
       .use {
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
           typeText("12345"),
@@ -97,6 +114,23 @@ class AdminPinActivityTest {
           closeSoftKeyboard()
         )
         onView(withId(R.id.submit_button)).perform(click())
+        intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
+    launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
+      .use {
+        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+          typeText("12345"),
+          closeSoftKeyboard()
+        )
+        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+          scrollTo(),
+          typeText("12345"),
+          pressImeActionButton()
+        )
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
@@ -152,6 +186,27 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        typeText("1234"),
+        pressImeActionButton()
+      )
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+        matches(
+          withText(
+            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -163,6 +218,30 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        typeText("5"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        typeText("1234"),
+        pressImeActionButton()
+      )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         typeText("5"),
         closeSoftKeyboard()
@@ -196,6 +275,24 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      closeSoftKeyboard()
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("12345"),
+        pressImeActionButton()
+      )
+      intended(hasComponent(AddProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -210,6 +307,24 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(scrollTo(), click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      closeSoftKeyboard()
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("12345"),
+        pressImeActionButton()
+      )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -270,6 +385,30 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      closeSoftKeyboard()
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("1234"),
+        pressImeActionButton()
+      )
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+        matches(
+          withText(
+            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -299,6 +438,34 @@ class AdminPinActivityTest {
   }
 
   @Test
+  fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      closeSoftKeyboard()
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("1234"),
+        pressImeActionButton()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("5"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).check(matches(withText("")))
+    }
+  }
+
+  @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -311,6 +478,28 @@ class AdminPinActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
+    }
+  }
+
+  @Test
+  fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() {
+    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        typeText("12345"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo(),
+        typeText("54321"),
+        pressImeActionButton()
+      )
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
