@@ -148,7 +148,7 @@ class HomeActivityTest {
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText(containsString("Welcome"))))
+      ).check(matches(withText(containsString("Good"))))
     }
   }
 
@@ -163,7 +163,7 @@ class HomeActivityTest {
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText(containsString("Welcome"))))
+      ).check(matches(withText(containsString("Good"))))
     }
   }
 
