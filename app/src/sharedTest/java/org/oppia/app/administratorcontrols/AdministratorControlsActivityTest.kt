@@ -271,7 +271,7 @@ class AdministratorControlsActivityTest {
     )
   }
 
-  /** Function taken from : https://stackoverflow.com/a/46037284/8860848 */
+  /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from : https://stackoverflow.com/a/46037284/8860848 */
   fun nestedScrollTo(): ViewAction {
     return object: ViewAction {
       override fun getDescription(): String {
@@ -308,7 +308,7 @@ class AdministratorControlsActivityTest {
       }
     }
   }
-
+  
   private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
     var parent : ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
