@@ -14,12 +14,13 @@ private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX
 private const val KEY_ON_ORIENTATION_CHANGE = "ON_ORIENTATION_CHANGE"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener, RevealSolutionInterface {
+class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener,
+  RevealSolutionInterface {
 
   @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
-  private  var currentState: State? = null
-  private  var explorationId: String? = ""
+  private var currentState: State? = null
+  private var explorationId: String? = ""
   private var newAvailableHintIndex: Int = -1
   private var allHintsExhausted: Boolean = false
   private var isOrientationChanged: Boolean = false
@@ -36,7 +37,11 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     setStyle(STYLE_NORMAL, R.style.FullScreenHintDialogStyle)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     if (savedInstanceState != null) {
       currentExpandedHintListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
       isOrientationChanged = savedInstanceState.getBoolean(KEY_ON_ORIENTATION_CHANGE, false)
@@ -47,7 +52,6 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     return hintsAndSolutionFragmentPresenter.handleCreateView(
       inflater,
       container,
-      isOrientationChanged,
       currentState,
       explorationId,
       currentExpandedHintListIndex,
@@ -63,12 +67,10 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
   }
 
   fun setStateAndExplorationId(
-    newState: State,
     explorationId: String,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
-    this.currentState = newState
     this.explorationId = explorationId
     this.newAvailableHintIndex = newAvailableHintIndex
     this.allHintsExhausted = allHintsExhausted
