@@ -271,6 +271,7 @@ class AdministratorControlsActivityTest {
     )
   }
 
+  /** Function taken from : https://stackoverflow.com/a/46037284/8860848 */
   fun nestedScrollTo(): ViewAction {
     return object: ViewAction {
       override fun getDescription(): String {
