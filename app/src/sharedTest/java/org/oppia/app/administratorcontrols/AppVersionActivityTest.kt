@@ -81,37 +81,29 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly(){
-    launchAppVersionActivityIntent().use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        withId(
-          R.id.app_version_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_version_name),
-              BuildConfig.VERSION_NAME
-            )
-          )
+    onView(isRoot()).perform(orientationLandscape())
+    onView(
+      withId(
+        R.id.app_version_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(context.resources.getString(R.string.app_version_name), BuildConfig.VERSION_NAME)
         )
       )
-      onView(
-        withId(
-          R.id.app_last_update_date_text_view
-        )
-      ).check(
-        matches(
-          withText(
-            String.format(
-              context.resources.getString(R.string.app_last_update_date),
-              lastUpdateDate
-            )
-          )
+    )
+    onView(
+      withId(
+        R.id.app_last_update_date_text_view
+      )
+    ).check(
+      matches(
+        withText(
+          String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate)
         )
       )
-    }
+    )
   }
 
   @Test
