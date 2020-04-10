@@ -126,7 +126,7 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.input_pin)).perform(typeText("123"))
-      waitUntilActivityVisible<HomeActivity>()  // Used because HomeActivity takes time to load on the Nexus S Device.
+      waitUntilActivityVisible<HomeActivity>()
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
