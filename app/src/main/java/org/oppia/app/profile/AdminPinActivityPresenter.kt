@@ -74,7 +74,6 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.inputConfirmPin.addEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
       if (actionId == EditorInfo.IME_ACTION_DONE) {
         binding.submitButton.callOnClick()
-        true
       }
       false
     })
