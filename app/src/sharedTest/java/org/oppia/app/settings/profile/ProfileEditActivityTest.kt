@@ -2,12 +2,10 @@ package org.oppia.app.settings.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.SystemClock
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -112,8 +110,8 @@ class ProfileEditActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_container)).perform(scrollTo()).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
     }
   }
 
@@ -147,7 +145,7 @@ class ProfileEditActivityTest {
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 1)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
+      onView(withId(R.id.profile_reset_button)).perform(click())
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
     }
   }
@@ -164,7 +162,7 @@ class ProfileEditActivityTest {
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 1)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message)).check(matches(isDisplayed()))
     }
   }
@@ -182,7 +180,7 @@ class ProfileEditActivityTest {
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickProfileDeletionButton_clickDelete_checkReturnsToProfileListActivity() {
     ActivityScenario.launch<ProfileEditActivity>(ProfileEditActivity.createProfileEditActivity(context, 1)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
