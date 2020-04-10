@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -90,6 +91,25 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("12345"),
+        pressImeActionButton()
+      )
+      intended(hasComponent(AddProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddAdministratorControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
@@ -105,6 +125,25 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("12345"),
+        pressImeActionButton()
+      )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -135,6 +174,30 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("12354"),
+        pressImeActionButton()
+      )
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_checkErrorIsGone() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
@@ -150,6 +213,29 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("4"),
+        closeSoftKeyboard()
+      )
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("123"),
+        pressImeActionButton()
+      )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
         typeText("4"),
         closeSoftKeyboard()
@@ -256,6 +342,37 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(matches(withText(context.resources.getString(R.string.admin_auth_incorrect))))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context,
+        "12345",
+        internalProfileId,
+        -10710042,
+        AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
+        typeText("12354"),
+        pressImeActionButton()
+      )
       onView(
         allOf(
           withId(R.id.error_text),
