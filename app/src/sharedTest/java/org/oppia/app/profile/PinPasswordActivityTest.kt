@@ -2,13 +2,11 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.os.SystemClock
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -105,7 +103,6 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
       onView(withId(R.id.input_pin)).perform(typeText("12345"))
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -120,8 +117,7 @@ class PinPasswordActivityTest {
         userId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(typeText("123"), closeSoftKeyboard())
-      SystemClock.sleep(1000)
+      onView(withId(R.id.input_pin)).perform(typeText("123"))
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
@@ -136,7 +132,6 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
       onView(withId(R.id.input_pin)).perform(typeText("54321"), closeSoftKeyboard())
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
     }
@@ -165,7 +160,6 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
       onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(withText(context.getString(R.string.pin_password_forgot_message))).check(matches(isDisplayed()))
@@ -289,7 +283,6 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(withText(context.getString(R.string.pin_password_close))).perform(click())
       onView(withId(R.id.input_pin)).perform(typeText("321"))
-      SystemClock.sleep(1000)
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
@@ -450,8 +443,7 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
-      onView(withId(R.id.input_pin)).perform(typeText("54321"),closeSoftKeyboard())
+      onView(withId(R.id.input_pin)).perform(typeText("54321"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
     }
@@ -528,7 +520,6 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
       onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.show_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
