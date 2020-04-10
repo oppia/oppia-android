@@ -95,6 +95,10 @@ class ProfileInputView @JvmOverloads constructor(
   /** Allows editText to be watched. */
   fun addTextChangedListener(textWatcher: TextWatcher) = input.addTextChangedListener(textWatcher)
 
+  /** Allows editText actions to be listened to.*/
+  fun addEditorActionListener(editorActionListener: TextView.OnEditorActionListener) =
+    input.setOnEditorActionListener(editorActionListener)
+
   /** Clears red border and error text. */
   fun clearErrorText() {
     input.background = context.resources.getDrawable(R.drawable.add_profile_edit_text_background)
