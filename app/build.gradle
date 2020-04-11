@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.facebook.testing.screenshot'
 
 android {
   compileSdkVersion 28
@@ -13,7 +14,7 @@ android {
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "org.oppia.app.screenshottesting.TestRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
     javaCompileOptions {
@@ -88,6 +89,8 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
       'org.mockito:mockito-core:2.7.22',
+      'com.facebook.testing.screenshot:layout-hierarchy-common:0.12.0',
+      'com.facebook.testing.screenshot:layout-hierarchy-litho:0.12.0',
   )
   testImplementation(
       'androidx.test:core:1.2.0',
