@@ -13,6 +13,10 @@ class OptionsStoryTextViewViewModel(
   }
 
   fun onStoryTextSizeClicked() {
-    routeToStoryTextSizeListener.routeStoryTextSize(storyTextSize.get())
+    if (isTablet.get() == true){
+
+    } else {
+      routeToStoryTextSizeListener.routeStoryTextSize(storyTextSize.get())
+    }
   }
 }

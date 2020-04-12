@@ -29,6 +29,7 @@ class OptionControlsViewModel @Inject constructor(
   private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
+  private val loadAppLanguageFragmentListener = activity as LoadAppLanguageFragmentListener
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -62,7 +63,7 @@ class OptionControlsViewModel @Inject constructor(
     val optionsStoryTextViewViewModel =
       OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageFragmentListener)
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
 

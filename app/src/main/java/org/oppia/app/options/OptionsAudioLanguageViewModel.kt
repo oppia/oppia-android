@@ -13,6 +13,10 @@ class OptionsAudioLanguageViewModel(
   }
 
   fun onAudioLanguageClicked() {
-    routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    if (isTablet.get() == true){
+
+    } else {
+      routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    }
   }
 }

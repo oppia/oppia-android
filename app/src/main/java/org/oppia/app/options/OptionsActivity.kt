@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 /** The activity for setting user preferences. */
 class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListListener, RouteToAudioLanguageListListener,
-  RouteToStoryTextSizeListener {
+  RouteToStoryTextSizeListener, LoadAppLanguageFragmentListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
@@ -75,5 +75,9 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         storyTextSize
       ), REQUEST_CODE_TEXT_SIZE
     )
+  }
+
+  override fun loadAppLanguageFragment(prefKey: String, prefSummaryValue: String) {
+    optionActivityPresenter.loadAppLanguageFragment(prefKey, prefSummaryValue)
   }
 }

@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.OptionAppLanguageBinding
 import org.oppia.app.databinding.OptionAudioLanguageBinding
 import org.oppia.app.databinding.OptionStoryTextSizeBinding
@@ -40,6 +42,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
+  private var isTablet = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OptionsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -57,6 +60,9 @@ class OptionsFragmentPresenter @Inject constructor(
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
+    }
+    if(binding.subOptionsPlaceholder != null) {
+      isTablet = true
     }
     return binding.root
   }
@@ -93,14 +99,17 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private fun bindStoryTextSize(binding: OptionStoryTextSizeBinding, model: OptionsStoryTextViewViewModel) {
+    model.isTablet.set(isTablet)
     binding.viewModel = model
   }
 
   private fun bindAppLanguage(binding: OptionAppLanguageBinding, model: OptionsAppLanguageViewModel) {
+    model.isTablet.set(isTablet)
     binding.viewModel = model
   }
 
   private fun bindAudioLanguage(binding: OptionAudioLanguageBinding, model: OptionsAudioLanguageViewModel) {
+    model.isTablet.set(isTablet)
     binding.viewModel = model
   }
 
@@ -211,6 +220,11 @@ class OptionsFragmentPresenter @Inject constructor(
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
+  }
+
+  fun loadAppLanguageFragment(fragmentManager: FragmentManager, prefKey: String, prefSummaryValue: String) {
+    val appLanguageFragment = AppLanguageFragment(prefKey, prefSummaryValue)
+    fragmentManager.beginTransaction().add(R.id.sub_options_placeholder,appLanguageFragment).commitNow()
   }
 }
 
