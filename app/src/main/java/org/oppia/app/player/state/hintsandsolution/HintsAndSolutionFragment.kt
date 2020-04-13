@@ -10,7 +10,6 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
-private const val KEY_ON_ORIENTATION_CHANGE = "ON_ORIENTATION_CHANGE"
 private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
 private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
 private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
@@ -96,7 +95,6 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     if (currentExpandedHintListIndex != null) {
       outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedHintListIndex!!)
     }
-    outState.putBoolean(KEY_ON_ORIENTATION_CHANGE, true)
   }
 
   override fun onExpandListIconClicked(index: Int?) {

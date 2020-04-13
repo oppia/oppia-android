@@ -57,27 +57,20 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
     this.expandedHintListIndexListener = expandedHintListIndexListener
-
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.hintsAndSolutionToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
     }
-
     binding.let {
       it.viewModel = this.viewModel
       it.lifecycleOwner = fragment
     }
-
     subscribeToCurrentState()
-
-
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(explorationId)
-
     return binding.root
   }
 
@@ -117,10 +110,8 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       binding.hintsAndSolutionRecyclerView.apply {
         adapter = hintsAndSolutionAdapter
       }
-
-      if (viewModel.newAvailableHintIndex.get()!=-1)
-      handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
-
+      if (viewModel.newAvailableHintIndex.get() != -1)
+        handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
       if (viewModel.allHintsExhausted.get()!!) {
         handleAllHintsExhausted(viewModel.allHintsExhausted.get()!!)
       }
@@ -131,7 +122,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)
   }
 
-  fun getHintsAndSolutionViewModel(): HintsViewModel {
+  private fun getHintsAndSolutionViewModel(): HintsViewModel {
     return viewModelProvider.getForFragment(fragment, HintsViewModel::class.java)
   }
 
