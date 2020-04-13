@@ -94,7 +94,8 @@ public class MyActivityTest {
 <img width="1070" alt="Screenshot 2020-04-13 at 2 51 31 PM" src="https://user-images.githubusercontent.com/9396084/79109717-851c1d00-7d96-11ea-92c1-2e8a9c6ef88f.png">
 
 3. Enter following information - (a.) **Name** (Normally class name) (b.)**Use classpath of module** (c.) **Class**
-<img width="1069" alt="Screenshot 2020-04-13 at 2 52 01 PM" src="https://user-images.githubusercontent.com/9396084/79109719-85b4b380-7d96-11ea-8183-92f38ab98665.png">
+<img width="1074" alt="Screenshot 2020-04-13 at 3 18 39 PM" src="https://user-images.githubusercontent.com/9396084/79111450-307aa100-7d9a-11ea-8b9d-81aac26e104d.png">
+
 
 4. Press `OK` to run the test cases in roboelectric.
 
