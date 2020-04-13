@@ -4,14 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.R
 import org.oppia.app.databinding.ProfileProgressFragmentBinding
 import org.oppia.app.databinding.ProfileProgressHeaderBinding
 import org.oppia.app.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
-import org.oppia.app.databinding.ToolbarBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
