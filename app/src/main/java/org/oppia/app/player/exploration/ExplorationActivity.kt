@@ -124,8 +124,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment()
-      hintsAndSolutionFragment.setStateAndExplorationId(explorationId, newAvailableHintIndex, allHintsExhausted)
+      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

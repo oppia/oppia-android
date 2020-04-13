@@ -17,7 +17,6 @@
       type="org.oppia.app.player.state.hintsandsolution.SolutionViewModel" />
   </data>
 
-
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -26,9 +25,9 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="72dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="72dp"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
@@ -37,12 +36,10 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
           android:fontFamily="sans-serif-medium"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp"
+          android:textSize="20sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -51,9 +48,10 @@
           android:id="@+id/reveal_solution_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:minWidth="160dp"
           android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
+          android:layout_marginTop="28dp"
+          android:layout_marginBottom="32dp"
           android:layout_marginEnd="8dp"
           android:background="@drawable/reveal_solution_brown_background"
           android:padding="4dp"
@@ -85,8 +83,9 @@
 
           <ImageView
             android:id="@+id/chapter_list_drop_down_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="8dp"
             android:layout_gravity="center_vertical"
             android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
             android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
@@ -98,7 +97,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginEnd="72dp"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
         <TextView
@@ -106,18 +106,24 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
+          android:layout_gravity="start"
+          android:layout_marginEnd="12dp"
+          android:layout_marginTop="32dp"
+          android:layout_marginBottom="32dp"
           android:textColor="@color/oppiaPrimaryText"
           android:layout_margin="4dp"
-          android:textSize="14sp" />
+          android:textSize="16sp" />
         <TextView
           android:id="@+id/solution_summary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_margin="4dp"
+          android:layout_gravity="start"
+          android:layout_marginEnd="12dp"
+          android:layout_marginTop="32dp"
+          android:layout_marginBottom="32dp"
           android:fontFamily="sans-serif-medium"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp" />
+          android:textSize="16sp" />
 
       </LinearLayout>
 

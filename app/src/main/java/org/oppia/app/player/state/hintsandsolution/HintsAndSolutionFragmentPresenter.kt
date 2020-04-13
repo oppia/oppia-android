@@ -10,7 +10,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
@@ -45,11 +44,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
   /**
    * Sets up data binding and toolbar.
-   * Host activity must inherit ConceptCardListener to dismiss this fragment.
+   * Host activity must inherit HintsAndSolutionListener to dismiss this fragment.
    */
   fun handleCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
-    currentState: State?,
     explorationId: String?,
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
@@ -75,7 +73,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
     subscribeToCurrentState()
 
-//    viewModel.currentState.set(this.currentState)
+
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(explorationId)
@@ -120,7 +118,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
         adapter = hintsAndSolutionAdapter
       }
 
-      if(viewModel.newAvailableHintIndex.get()!!!=-1)
+      if (viewModel.newAvailableHintIndex.get()!=-1)
       handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
 
       if (viewModel.allHintsExhausted.get()!!) {
