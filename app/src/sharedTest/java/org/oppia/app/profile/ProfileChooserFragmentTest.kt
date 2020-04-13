@@ -63,6 +63,9 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+private const val TIMEOUT = 1000L
+private const val CONDITION_CHECK_INTERVAL = 100L
+
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
 
@@ -345,24 +348,26 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  fun getCurrentActivity(): Activity? {
+  private fun getCurrentActivity(): Activity? {
     var currentActivity: Activity? = null
-    InstrumentationRegistry.getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
-      Stage.RESUMED).elementAtOrNull(0) } }
+    getInstrumentation().runOnMainSync {
+      run {
+        currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
+          Stage.RESUMED
+        ).elementAtOrNull(0)
+      }
+    }
     return currentActivity
   }
 
-  inline fun <reified T : Activity> isVisible() : Boolean {
-    val am = InstrumentationRegistry.getInstrumentation().getTargetContext().getSystemService(
-      Context.ACTIVITY_SERVICE
-    ) as ActivityManager
-    val visibleActivityName = getCurrentActivity()!!::class.java.name
+  private inline fun <reified T : Activity> isVisible(): Boolean {
+    val am =
+      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+    val visibleActivityName = this.getCurrentActivity()!!::class.java.name
     return visibleActivityName == T::class.java.name
   }
 
-  inline fun <reified T : Activity> waitUntilActivityVisible() {
-    val TIMEOUT = 1000L
-    val CONDITION_CHECK_INTERVAL = 100L
+  private inline fun <reified T : Activity> waitUntilActivityVisible() {
     val startTime = System.currentTimeMillis()
     while (!isVisible<T>()) {
       Thread.sleep(CONDITION_CHECK_INTERVAL)
