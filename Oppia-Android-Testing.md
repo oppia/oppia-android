@@ -85,6 +85,19 @@ public class MyActivityTest {
   }
 }
 ```
+
+### Running Roboelectric tests
+1. Go to **Edit Configuration** in Android Studio
+<img width="425" alt="Screenshot 2020-04-13 at 2 51 02 PM" src="https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png">
+
+2. Add **Android JUnit** 
+<img width="1070" alt="Screenshot 2020-04-13 at 2 51 31 PM" src="https://user-images.githubusercontent.com/9396084/79109717-851c1d00-7d96-11ea-92c1-2e8a9c6ef88f.png">
+
+3. Enter following information - (a.) **Name** (Normally class name) (b.)**Use classpath of module** (c.) **Class**
+<img width="1069" alt="Screenshot 2020-04-13 at 2 52 01 PM" src="https://user-images.githubusercontent.com/9396084/79109719-85b4b380-7d96-11ea-8183-92f38ab98665.png">
+
+4. Press `OK` to run the test cases in roboelectric.
+
 ## Espresso
 Use [Espresso](https://developer.android.com/training/testing/espresso) to write concise, beautiful, and reliable Android UI tests.
 Example JUnit4 test using Rules:
