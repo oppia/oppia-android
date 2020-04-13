@@ -172,30 +172,27 @@ class TopicRevisionFragmentTest {
     return ActivityScenario.launch(intent)
   }
 
-  class GridLayoutManagerColumnCountAssertion(expectedColumnCount:Int): ViewAssertion {
-    private var expectedColumnCount:Int = 0
-    init{
+  class GridLayoutManagerColumnCountAssertion(expectedColumnCount: Int) : ViewAssertion {
+    private var expectedColumnCount: Int = 0
+
+    init {
       this.expectedColumnCount = expectedColumnCount
     }
+
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-      if (noViewFoundException != null)
-      {
+      if (noViewFoundException != null) {
         throw noViewFoundException
       }
       val recyclerView = view as RecyclerView
-      if (recyclerView.getLayoutManager() is GridLayoutManager)
-      {
-        val gridLayoutManager = recyclerView.getLayoutManager() as GridLayoutManager
-        val spanCount = gridLayoutManager.getSpanCount()
-        if (spanCount != expectedColumnCount)
-        {
-          val errorMessage = ("expected column count " + expectedColumnCount
-            + " but was " + spanCount)
+      if (recyclerView.layoutManager is GridLayoutManager) {
+        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+        val spanCount = gridLayoutManager.spanCount
+        if (spanCount != expectedColumnCount) {
+          val errorMessage =
+            ("expected column count " + expectedColumnCount + " but was " + spanCount)
           throw AssertionError(errorMessage)
         }
-      }
-      else
-      {
+      } else {
         throw IllegalStateException("no grid layout manager")
       }
     }
