@@ -32,6 +32,7 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -84,6 +85,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
@@ -118,6 +120,7 @@ class AdminPinActivityTest {
       }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
     launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
@@ -185,6 +188,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
@@ -231,6 +235,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
@@ -274,6 +279,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
@@ -311,6 +317,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
@@ -384,6 +391,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
@@ -437,6 +445,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
@@ -488,6 +497,7 @@ class AdminPinActivityTest {
     }
   }
 
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() {
     launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
