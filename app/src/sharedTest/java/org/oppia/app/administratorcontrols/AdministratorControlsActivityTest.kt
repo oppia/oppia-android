@@ -272,7 +272,7 @@ class AdministratorControlsActivityTest {
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
-  fun nestedScrollTo(): ViewAction {
+  private fun nestedScrollTo(): ViewAction {
     return object: ViewAction {
       override fun getDescription(): String {
         return "View is not NestedScrollView"
@@ -287,15 +287,8 @@ class AdministratorControlsActivityTest {
       override fun perform(uiController: UiController, view: View) {
         try
         {
-          val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java!!) as NestedScrollView
-          if (nestedScrollView != null)
-          {
-            nestedScrollView.scrollTo(0, view.getTop())
-          }
-          else
-          {
-            throw Exception("Unable to find NestedScrollView parent.")
-          }
+          val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
+          nestedScrollView.scrollTo(0, view.getTop())
         }
         catch (e:Exception) {
           throw PerformException.Builder()
@@ -308,12 +301,12 @@ class AdministratorControlsActivityTest {
       }
     }
   }
-  
+
   private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
     var parent : ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
-    while (parent != null && !(parent.javaClass === parentClass))
+    while (!(parent.javaClass === parentClass))
     {
       if (i == 0)
       {
