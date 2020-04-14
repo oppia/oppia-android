@@ -70,7 +70,9 @@
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity android:name=".profile.AdminPinActivity" />
+    <activity
+      android:name=".profile.AdminPinActivity"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".profile.PinPasswordActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
