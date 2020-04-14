@@ -64,6 +64,10 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
   }
 
+  fun handleOnRestoreSavedInstanceState() {
+    activity.title = editViewModel.profileName
+  }
+
   private fun showDeletionDialog(profileId: Int) {
     AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)

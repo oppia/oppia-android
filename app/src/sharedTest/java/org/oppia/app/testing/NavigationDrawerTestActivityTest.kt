@@ -3,10 +3,18 @@ package org.oppia.app.testing
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.view.ViewParent
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -14,17 +22,21 @@ import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.BindsInstance
 import dagger.Component
@@ -33,6 +45,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
@@ -53,11 +66,15 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+// Time: Wed Apr 24 2019 08:22:00
+private const val MORNING_TIMESTAMP = 1556094120000
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -69,6 +86,7 @@ class NavigationDrawerTestActivityTest {
 
   private val internalProfileId = 0
   private val internalProfileId1 = 1
+  private lateinit var oppiaClock: OppiaClock
 
   @Before
   @ExperimentalCoroutinesApi
@@ -87,6 +105,14 @@ class NavigationDrawerTestActivityTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  private fun getApplicationDependencies() {
+    launch(HomeInjectionActivity::class.java).use {
+      it.onActivity { activity ->
+        oppiaClock = activity.oppiaClock
+      }
+    }
   }
 
   private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
@@ -203,7 +229,7 @@ class NavigationDrawerTestActivityTest {
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() {
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo()).check(matches(isDisplayed())).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
     }
@@ -333,6 +359,8 @@ class NavigationDrawerTestActivityTest {
 
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() {
+    getApplicationDependencies()
+    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
@@ -344,15 +372,74 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.home_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_home)))
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText("Welcome to Oppia!")))
+      ).check(matches(withText("Good morning,")))
     }
   }
+
+    /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
+  private fun nestedScrollTo(): ViewAction {
+    return object: ViewAction {
+      override fun getDescription(): String {
+        return "View is not NestedScrollView"
+      }
+
+      override fun getConstraints(): org.hamcrest.Matcher<View> {
+        return Matchers.allOf(
+          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
+        )
+      }
+
+      override fun perform(uiController: UiController, view: View) {
+        try
+        {
+          val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
+          nestedScrollView.scrollTo(0, view.getTop())
+        }
+        catch (e:Exception) {
+          throw PerformException.Builder()
+            .withActionDescription(this.description)
+            .withViewDescription(HumanReadables.describe(view))
+            .withCause(e)
+            .build()
+        }
+        uiController.loopMainThreadUntilIdle()
+      }
+    }
+  }
+
+  private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
+    var parent : ViewParent = FrameLayout(view.getContext())
+    lateinit var incrementView: ViewParent
+    var i = 0
+    while (!(parent.javaClass === parentClass))
+    {
+      if (i == 0)
+      {
+        parent = findParent(view)
+      }
+      else
+      {
+        parent = findParent(incrementView)
+      }
+      incrementView = parent
+      i++
+    }
+    return parent as View
+  }
+  private fun findParent(view: View): ViewParent {
+    return view.getParent()
+  }
+  private fun findParent(view: ViewParent): ViewParent {
+    return view.getParent()
+  }
+
 
   @Qualifier annotation class TestDispatcher
 
