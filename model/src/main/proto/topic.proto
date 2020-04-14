@@ -106,7 +106,7 @@ message SkillSummary {
   string thumbnail_url = 3;
 
   // The thumbnail corresponding to this skill.
-  SkillThumbnail skill_thumbnail = 4;
+  LessonThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.
@@ -305,7 +305,7 @@ message Subtopic {
   string thumbnail_url = 4;
 
   // The thumbnail corresponding to this subtopic.
-  SubtopicThumbnail subtopic_thumbnail = 5;
+  LessonThumbnail subtopic_thumbnail = 5;
 }
 
 // Corresponds to a revision card that can be displayed for a specific subtopic.

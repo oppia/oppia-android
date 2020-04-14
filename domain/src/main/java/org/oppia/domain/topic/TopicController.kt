@@ -10,19 +10,17 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.CompletedStory
 import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.ConceptCard
+import org.oppia.app.model.LessonThumbnail
+import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.RevisionCard
 import org.oppia.app.model.SkillSummary
-import org.oppia.app.model.SkillThumbnail
-import org.oppia.app.model.SkillThumbnailGraphic
 import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
-import org.oppia.app.model.SubtopicThumbnail
-import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.Translation
@@ -706,7 +704,7 @@ class TopicController @Inject constructor(
       }
       val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
         .setTitle(currentSubtopicJsonObject.optString("title"))
-        .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject.optString("id")))
+        .setSubtopicThumbnail(createLessonThumbnail(currentSubtopicJsonObject.optString("id")))
         .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
     }
@@ -736,7 +734,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setDescription(skillData.getString("description"))
-      .setSkillThumbnail(createSkillThumbnail(skillData.getString("id")))
+      .setSkillThumbnail(createLessonThumbnail(skillData.getString("id")))
       .build()
   }
 
@@ -872,7 +870,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_0)
       .setDescription("An important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_0))
+      .setSkillThumbnail(createLessonThumbnail(TEST_SKILL_ID_0))
       .build()
   }
 
@@ -880,7 +878,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
+      .setSkillThumbnail(createLessonThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -888,7 +886,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("A different skill in a different topic Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
+      .setSkillThumbnail(createLessonThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -896,7 +894,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setDescription("Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
+      .setSkillThumbnail(createLessonThumbnail(TEST_SKILL_ID_1))
       .build()
   }
 
@@ -904,7 +902,7 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(TEST_SKILL_ID_2)
       .setDescription("A different skill in a different topic")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_2))
+      .setSkillThumbnail(createLessonThumbnail(TEST_SKILL_ID_2))
       .build()
   }
 
@@ -993,42 +991,22 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  private fun createSkillThumbnail(skillId: String): SkillThumbnail {
+  private fun createLessonThumbnail(skillId: String): LessonThumbnail {
     return when (skillId) {
-      FRACTIONS_SKILL_ID_0 -> SkillThumbnail.newBuilder()
-        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+      FRACTIONS_SKILL_ID_0 -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.LESSON_THUMBNAIL_GRAPHIC_UNSPECIFIED)
         .build()
-      FRACTIONS_SKILL_ID_1 -> SkillThumbnail.newBuilder()
-        .setThumbnailGraphic(SkillThumbnailGraphic.WRITING_FRACTIONS)
+      FRACTIONS_SKILL_ID_1 -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
         .build()
-      FRACTIONS_SKILL_ID_2 -> SkillThumbnail.newBuilder()
-        .setThumbnailGraphic(SkillThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
+      FRACTIONS_SKILL_ID_2 -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_BOOK)
         .build()
-      RATIOS_SKILL_ID_0 -> SkillThumbnail.newBuilder()
-        .setThumbnailGraphic(SkillThumbnailGraphic.DERIVE_A_RATIO)
+      RATIOS_SKILL_ID_0 -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
         .build()
-      else -> SkillThumbnail.newBuilder()
-        .setThumbnailGraphic(SkillThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-        .build()
-    }
-  }
-
-  private fun createSubtopicThumbnail(subtopicId: String): SubtopicThumbnail {
-    return when (subtopicId) {
-      FRACTIONS_SUBTOPIC_ID_1 -> SubtopicThumbnail.newBuilder()
-        .setThumbnailGraphic(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_2 -> SubtopicThumbnail.newBuilder()
-        .setThumbnailGraphic(SubtopicThumbnailGraphic.FRACTION_OF_A_GROUP)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_3 -> SubtopicThumbnail.newBuilder()
-        .setThumbnailGraphic(SubtopicThumbnailGraphic.MIXED_NUMBERS)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_4 -> SubtopicThumbnail.newBuilder()
-        .setThumbnailGraphic(SubtopicThumbnailGraphic.ADDING_FRACTIONS)
-        .build()
-      else -> SubtopicThumbnail.newBuilder()
-        .setThumbnailGraphic(SubtopicThumbnailGraphic.THE_NUMBER_LINE)
+      else -> LessonThumbnail.newBuilder()
+        .setThumbnailGraphic(LessonThumbnailGraphic.LESSON_THUMBNAIL_GRAPHIC_UNSPECIFIED)
         .build()
     }
   }
