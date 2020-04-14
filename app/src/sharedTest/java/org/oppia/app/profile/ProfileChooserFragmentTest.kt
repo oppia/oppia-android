@@ -1,7 +1,10 @@
 package org.oppia.app.profile
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.content.res.Resources
 import android.widget.TextView
@@ -26,6 +29,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -60,6 +67,9 @@ import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+private const val TIMEOUT = 1000L
+private const val CONDITION_CHECK_INTERVAL = 100L
 
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
@@ -323,6 +333,7 @@ class ProfileChooserFragmentTest {
     )
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
+      waitUntilActivityVisible<AdminPinActivity>()
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
   }
@@ -405,6 +416,35 @@ class ProfileChooserFragmentTest {
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_description_text))
         .check(matches(not(isDisplayed())))
+    }
+  }
+
+  private fun getCurrentActivity(): Activity? {
+    var currentActivity: Activity? = null
+    getInstrumentation().runOnMainSync {
+      run {
+        currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
+          Stage.RESUMED
+        ).elementAtOrNull(0)
+      }
+    }
+    return currentActivity
+  }
+
+  private inline fun <reified T : Activity> isVisible(): Boolean {
+    val am =
+      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+    val visibleActivityName = this.getCurrentActivity()!!::class.java.name
+    return visibleActivityName == T::class.java.name
+  }
+
+  private inline fun <reified T : Activity> waitUntilActivityVisible() {
+    val startTime = System.currentTimeMillis()
+    while (!isVisible<T>()) {
+      Thread.sleep(CONDITION_CHECK_INTERVAL)
+      if (System.currentTimeMillis() - startTime >= TIMEOUT) {
+        throw AssertionError("Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds")
+      }
     }
   }
 
