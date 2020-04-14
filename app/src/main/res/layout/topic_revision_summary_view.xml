@@ -3,10 +3,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
+    <import type="android.view.View"/>
+    <import type="org.oppia.app.model.Subtopic"/>
     <variable
-      name="subtopic"
-      type="org.oppia.app.model.Subtopic" />
+      name="viewModel"
+      type="org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
+
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -20,7 +22,8 @@
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:cardMaxElevation="4dp">
+    app:cardMaxElevation="4dp"
+    android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -33,7 +36,7 @@
         android:background="@color/white"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{subtopic.subtopicThumbnail.thumbnailGraphic}"
+        android:src="@{viewModel.subtopic.subtopicThumbnail.thumbnailGraphic}"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +56,7 @@
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="16dp"
-        android:text="@{subtopic.title}"
+        android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
