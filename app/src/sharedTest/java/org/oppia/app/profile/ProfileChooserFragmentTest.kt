@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.content.res.Resources
 import android.widget.TextView
@@ -29,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
