@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/story_list_app_bar_layout"
+      android:id="@+id/recently_played_fragment_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,7 +24,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/recently_played_toolbar"
+        android:id="@+id/recently_played_fragment_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -44,10 +44,10 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/recently_played_fragment_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ongoing_story_recycler_view"
+        android:id="@+id/recently_played_fragment_ongoing_story_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -59,7 +59,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
       <View
-        android:id="@+id/recently_played__shadow_view"
+        android:id="@+id/recently_played_fragment_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />

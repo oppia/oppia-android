@@ -14,7 +14,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      android:id="@+id/welcome_text_view"
+      android:id="@+id/home_welcome_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="72dp"
@@ -26,7 +26,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-      android:id="@+id/profile_name_textview"
+      android:id="@+id/home_welcome_profile_name_textview"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:layout_marginStart="8dp"
@@ -38,17 +38,17 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/welcome_text_view"
-      app:layout_constraintBottom_toBottomOf="@id/welcome_text_view"
-      app:layout_constraintTop_toTopOf="@+id/welcome_text_view" />
+      app:layout_constraintStart_toEndOf="@+id/home_welcome_text_view"
+      app:layout_constraintBottom_toBottomOf="@id/home_welcome_text_view"
+      app:layout_constraintTop_toTopOf="@+id/home_welcome_text_view" />
 
     <View
       android:layout_width="0dp"
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
       android:background="@color/oppiaLightBrown"
-      app:layout_constraintEnd_toEndOf="@+id/welcome_text_view"
-      app:layout_constraintStart_toStartOf="@+id/welcome_text_view"
-      app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
+      app:layout_constraintEnd_toEndOf="@+id/home_welcome_text_view"
+      app:layout_constraintStart_toStartOf="@+id/home_welcome_text_view"
+      app:layout_constraintTop_toBottomOf="@+id/home_welcome_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

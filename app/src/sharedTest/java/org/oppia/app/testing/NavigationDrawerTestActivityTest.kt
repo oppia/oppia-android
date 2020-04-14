@@ -173,7 +173,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
         .perform(click())
-      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
@@ -183,7 +183,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
         .perform(click())
-      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
@@ -372,12 +372,12 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.home_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_home)))
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.home_fragment_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
-          R.id.home_recycler_view,
+          R.id.home_fragment_recycler_view,
           0,
-          R.id.welcome_text_view
+          R.id.home_welcome_text_view
         )
       ).check(matches(withText("Good morning,")))
     }

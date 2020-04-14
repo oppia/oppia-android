@@ -23,7 +23,7 @@
       android:orientation="horizontal">
 
       <TextView
-        android:id="@+id/recently_played_stories_text_view"
+        android:id="@+id/home_promoted_story_list_recently_played_stories_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
@@ -34,7 +34,7 @@
         android:textSize="18sp" />
 
       <TextView
-        android:id="@+id/view_all_text_view"
+        android:id="@+id/home_promoted_story_list_view_all_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
@@ -50,7 +50,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/promoted_story_list_recycler_view"
+      android:id="@+id/home_promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:clipToPadding="false"

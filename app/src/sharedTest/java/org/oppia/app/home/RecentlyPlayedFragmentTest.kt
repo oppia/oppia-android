@@ -120,7 +120,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testRecentlyPlayedTestActivity_clickOnToolbarNavigationButton_closeActivity() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.recently_played_toolbar)).perform(click())
+      onView(withId(R.id.recently_played_fragment_toolbar)).perform(click())
     }
   }
 
@@ -130,7 +130,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.recently_played_toolbar))
+          withParent(withId(R.id.recently_played_fragment_toolbar))
         )
       ).check(
         matches(withText(R.string.recently_played_activity))
@@ -142,9 +142,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem0_doesNotShowSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_week))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 0, R.id.recently_played_section_title_divider_view)
       ).check(
         matches(not(isDisplayed()))
       )
@@ -156,7 +156,7 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 0, R.id.recently_played_section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -167,9 +167,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem1_chapterNameIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("What is a Fraction?"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.chapter_name_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_chapter_name_text_view)
       ).check(
         matches(withText(containsString("What is a Fraction?")))
       )
@@ -180,9 +180,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem1_storyNameIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Matthew Goes to the Bakery"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_story_name_text_view)
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -193,9 +193,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem1_topicNameIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("FRACTIONS"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_topic_name_text_view)
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -206,9 +206,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem1_lessonThumbnailIsCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("FRACTIONS"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_lesson_thumbnail)
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -219,9 +219,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem1_clickStory_intentsToExplorationActivity() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("FRACTIONS"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_lesson_thumbnail)
       ).perform(click())
       intended(
         allOf(
@@ -239,9 +239,9 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsLastMonthSectionTitle() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_month))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 2, R.id.recently_played_section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )
@@ -252,8 +252,8 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_recyclerViewItem2_showsSectionDivider() {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_month))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.divider_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 2, R.id.recently_played_section_title_divider_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -262,7 +262,7 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
-        allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
+        allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_fragment_toolbar)))
       ).check(
         matches(withText(R.string.recently_played_activity))
       )
@@ -274,9 +274,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.divider_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 0, R.id.recently_played_section_title_divider_view)
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -286,9 +286,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 0, R.id.section_title_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 0, R.id.recently_played_section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_week))
       )
@@ -300,9 +300,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Matthew Goes to the Bakery"))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.story_name_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_story_name_text_view)
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -314,9 +314,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText("FRACTIONS"))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.topic_name_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_topic_name_text_view)
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -328,9 +328,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("FRACTIONS"))
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 1, R.id.lesson_thumbnail)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 1, R.id.recently_played_ongoing_story_lesson_thumbnail)
       ).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_duck_and_chicken))
       )
@@ -342,9 +342,9 @@ class RecentlyPlayedFragmentTest {
     ActivityScenario.launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.ongoing_story_last_month))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.recently_played_fragment_ongoing_story_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(
-        atPositionOnView(R.id.ongoing_story_recycler_view, 2, R.id.section_title_text_view)
+        atPositionOnView(R.id.recently_played_fragment_ongoing_story_recycler_view, 2, R.id.recently_played_section_title_text_view)
       ).check(
         matches(withText(R.string.ongoing_story_last_month))
       )

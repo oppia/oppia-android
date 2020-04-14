@@ -21,7 +21,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     setUpNavigationDrawer()
     if (getHomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.home_fragment_placeholder,
+        R.id.home_activity_fragment_placeholder,
         HomeFragment(),
         TAG_HOME_FRAGMENT
       ).commitNow()
@@ -41,6 +41,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun getHomeFragment(): HomeFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.home_fragment_placeholder) as HomeFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.home_activity_fragment_placeholder) as HomeFragment?
   }
 }

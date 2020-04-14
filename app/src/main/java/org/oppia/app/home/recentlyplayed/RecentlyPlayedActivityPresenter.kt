@@ -12,13 +12,13 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
     activity.setContentView(R.layout.recently_played_activity)
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.recently_played_fragment_placeholder,
+        R.id.recently_played_activity_fragment_placeholder,
         RecentlyPlayedFragment.newInstance(internalProfileId)
       ).commitNow()
     }
   }
 
   private fun getRecentlyPlayedFragment(): RecentlyPlayedFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.recently_played_fragment_placeholder) as RecentlyPlayedFragment?
+    return activity.supportFragmentManager.findFragmentById(R.id.recently_played_activity_fragment_placeholder) as RecentlyPlayedFragment?
   }
 }

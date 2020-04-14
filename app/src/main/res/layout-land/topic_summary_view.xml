@@ -10,7 +10,7 @@
   </data>
 
   <com.google.android.material.card.MaterialCardView
-    android:id="@+id/topic_container"
+    android:id="@+id/home_topic_summary_view_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="4dp">
@@ -23,7 +23,7 @@
       android:focusable="true">
 
       <ImageView
-        android:id="@+id/topic_thumbnail_image_view"
+        android:id="@+id/home_topic_summary_view_thumbnail_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
@@ -36,17 +36,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/home_topic_summary_view_detail_container_constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/topicTitleBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topic_thumbnail_image_view">
+        app:layout_constraintTop_toBottomOf="@id/home_topic_summary_view_thumbnail_image_view">
 
         <TextView
-          android:id="@+id/topic_name_text_view"
+          android:id="@+id/home_topic_summary_view_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"
@@ -65,7 +65,7 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          android:id="@+id/lesson_count_text_view"
+          android:id="@+id/home_topic_summary_view_lesson_count_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-light"
@@ -78,7 +78,7 @@
           android:layout_marginEnd="8dp"
           android:paddingBottom="8dp"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
+          app:layout_constraintTop_toBottomOf="@+id/home_topic_summary_view_topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

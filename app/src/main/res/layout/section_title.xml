@@ -16,7 +16,7 @@
     android:orientation="vertical">
 
     <View
-      android:id="@+id/divider_view"
+      android:id="@+id/recently_played_section_title_divider_view"
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginTop="28dp"
@@ -24,7 +24,7 @@
       android:visibility="@{viewModel.isDividerVisible? View.VISIBLE : View.GONE}" />
 
     <TextView
-      android:id="@+id/section_title_text_view"
+      android:id="@+id/recently_played_section_title_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="28dp"

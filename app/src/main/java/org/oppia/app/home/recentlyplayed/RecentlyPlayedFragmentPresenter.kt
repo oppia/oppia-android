@@ -35,7 +35,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
     binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getRecentlyPlayedModel()
-    binding.recentlyPlayedToolbar.setNavigationOnClickListener {
+    binding.recentlyPlayedFragmentToolbar.setNavigationOnClickListener {
       (activity as RecentlyPlayedActivity).finish()
     }
 
@@ -43,7 +43,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     viewModel.setProfileId(internalProfileId)
 
-    binding.ongoingStoryRecyclerView.apply {
+    binding.recentlyPlayedFragmentOngoingStoryRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
     binding.let {

@@ -43,7 +43,7 @@ class PromotedStoryListAdapter(
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
-      val layoutParams = binding.promotedStoryCardContainer.layoutParams
+      val layoutParams = binding.homePromotedStoryCardContainer.layoutParams
       layoutParams.width = if (itemCount > 1) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           ViewGroup.LayoutParams.MATCH_PARENT
@@ -54,7 +54,7 @@ class PromotedStoryListAdapter(
       } else {
         ViewGroup.LayoutParams.MATCH_PARENT
       }
-      binding.promotedStoryCardContainer.layoutParams = layoutParams
+      binding.homePromotedStoryCardContainer.layoutParams = layoutParams
     }
   }
 }

@@ -23,7 +23,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/promoted_story_card_container"
+      android:id="@+id/home_promoted_story_card_container"
       android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
       app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
       <ImageView
-        android:id="@+id/lesson_thumbnail"
+        android:id="@+id/home_promoted_story_card_lesson_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
@@ -51,10 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lesson_thumbnail">
+        app:layout_constraintTop_toBottomOf="@id/home_promoted_story_card_lesson_thumbnail">
 
         <TextView
-          android:id="@+id/chapter_name_text_view"
+          android:id="@+id/home_promoted_story_card_chapter_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -68,7 +68,7 @@
           android:textColor="@color/oppiaPrimaryText" />
 
         <TextView
-          android:id="@+id/story_name_text_view"
+          android:id="@+id/home_promoted_story_card_story_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -82,7 +82,7 @@
           android:textSize="14sp" />
 
         <TextView
-          android:id="@+id/topic_name_text_view"
+          android:id="@+id/home_promoted_story_card_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"

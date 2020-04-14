@@ -140,7 +140,7 @@ class TopicListAdapter(
       val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
       val horizontalLayoutManager =
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
-      binding.promotedStoryListRecyclerView.apply {
+      binding.homePromotedStoryListRecyclerView.apply {
         layoutManager = horizontalLayoutManager
         adapter = promotedStoryAdapter
       }
@@ -150,9 +150,9 @@ class TopicListAdapter(
        * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
        */
       val snapHelper = StartSnapHelper()
-      binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-      binding.promotedStoryListRecyclerView.setOnFlingListener(null)
-      snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
+      binding.homePromotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
+      binding.homePromotedStoryListRecyclerView.setOnFlingListener(null)
+      snapHelper.attachToRecyclerView(binding.homePromotedStoryListRecyclerView)
 
       val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
@@ -165,9 +165,9 @@ class TopicListAdapter(
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
       }
       if (promotedStoryList.size > 1) {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
+        binding.homePromotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
       } else {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
+        binding.homePromotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
       }
     }
   }
@@ -183,7 +183,7 @@ class TopicListAdapter(
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
 
-      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
+      val marginLayoutParams = binding.homeTopicSummaryViewContainer.layoutParams as ViewGroup.MarginLayoutParams
 
       val marginMax = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
@@ -236,7 +236,7 @@ class TopicListAdapter(
           )
         }
       }
-      binding.topicContainer.layoutParams = marginLayoutParams
+      binding.homeTopicSummaryViewContainer.layoutParams = marginLayoutParams
     }
   }
 }
