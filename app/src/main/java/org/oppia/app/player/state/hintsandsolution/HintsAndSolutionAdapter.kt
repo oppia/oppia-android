@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import org.oppia.app.databinding.HintsSummaryBinding
 import org.oppia.app.databinding.SolutionSummaryBinding
 import org.oppia.util.parser.HtmlParser
@@ -169,7 +168,7 @@ class HintsAndSolutionAdapter(
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionCorrectAnswer.text =
-        """${fragment.getString(R.string.the_only_solution_is)}${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
+        """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
       binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
         .parseOppiaHtml(
           solutionViewModel.solutionSummary.get()!!, binding.solutionSummary

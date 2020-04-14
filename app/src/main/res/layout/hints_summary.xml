@@ -23,7 +23,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="24dp"
+      android:layout_marginTop="32dp"
       android:layout_marginStart="28dp"
       android:layout_marginEnd="28dp"
       android:layout_marginBottom="20dp"
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
@@ -49,11 +49,12 @@
         android:minWidth="160dp"
         android:minHeight="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_hint_button_blue_background"
         android:padding="4dp"
+        android:textSize="14sp"
         android:text="@string/reveal_hint"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,11 +90,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-      android:id="@+id/hint_summary_container"
+      android:id="@+id/hint_list_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="40dp"
       android:layout_marginEnd="40dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="32dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
@@ -102,8 +105,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />
