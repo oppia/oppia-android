@@ -392,7 +392,7 @@ class NavigationDrawerTestActivityTest {
 
       override fun getConstraints(): org.hamcrest.Matcher<View> {
         return Matchers.allOf(
-          ViewMatchers.isDescendantOfA(ViewMatchers.isAssignableFrom(NestedScrollView::class.java))
+          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
         )
       }
 
