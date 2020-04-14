@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="108dp"
+        android:paddingBottom="208dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingStoryListViewModelLiveData}" />
     </FrameLayout>
