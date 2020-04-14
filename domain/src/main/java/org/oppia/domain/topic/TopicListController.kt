@@ -3,6 +3,7 @@ package org.oppia.domain.topic
 import android.os.SystemClock
 import android.text.Spannable
 import android.text.style.ImageSpan
+import android.util.Log
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,6 +45,7 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
+import org.oppia.util.parser.OfflineImagePathTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -103,6 +105,7 @@ class TopicListController @Inject constructor(
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+  @OfflineImagePathTemplate private val offlineImagePathTemplate: String,
   logger: Logger,
   assetRepository: AssetRepository
 ) {
@@ -445,9 +448,18 @@ class TopicListController @Inject constructor(
   }
 
   private fun getUriForImage(explorationId: String, imageFileName: String): String {
-    return gcsPrefix + gcsResource + String.format(
-      imageDownloadUrlTemplate, "exploration", explorationId, imageFileName
-    )
+    return if (getOfflineUriForImage(explorationId, imageFileName).isEmpty()) {
+      gcsPrefix + gcsResource + String.format(
+        imageDownloadUrlTemplate, "exploration", explorationId, imageFileName
+      )
+    } else {
+      getOfflineUriForImage(explorationId, imageFileName)
+    }
+  }
+
+  private fun getOfflineUriForImage(explorationId: String, imageFileName: String): String {
+    Log.d("TAG", "TopicListController: " + String.format(offlineImagePathTemplate, "exploration", explorationId, imageFileName))
+    return String.format(offlineImagePathTemplate, "exploration", explorationId, imageFileName)
   }
 }
 

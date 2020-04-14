@@ -27,4 +27,11 @@ class ImageParsingModule {
   fun provideImageDownloadUrlTemplate(): String {
     return "%s/%s/assets/image/%s"
   }
+
+  @Provides
+  @OfflineImagePathTemplate
+  @Singleton
+  fun provideOfflineImagePathTemplate(): String {
+    return "/storage/emulated/0/oppia/%s/%s/assets/image/%s"
+  }
 }

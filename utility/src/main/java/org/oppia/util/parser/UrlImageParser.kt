@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import java.io.File
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -22,6 +23,7 @@ class UrlImageParser private constructor(
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultGcsResource private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+  @OfflineImagePathTemplate private val offlineImagePathTemplate: String,
   private val htmlContentTextView: TextView,
   private val entityType: String,
   private val entityId: String,
@@ -34,14 +36,27 @@ class UrlImageParser private constructor(
    * @return Drawable : Drawable representation of the image.
    */
   override fun getDrawable(urlString: String): Drawable {
+    val offlineImageUrl = String.format(offlineImagePathTemplate, entityType, entityId, urlString)
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     val target = BitmapTarget(urlDrawable)
-    imageLoader.load(
-      gcsPrefix + gcsResource + imageUrl,
-      target
-    )
+    if (doesFileExists(offlineImageUrl)) {
+      imageLoader.load(
+        offlineImageUrl,
+        target
+      )
+    } else {
+      imageLoader.load(
+        gcsPrefix + gcsResource + imageUrl,
+        target
+      )
+    }
     return urlDrawable
+  }
+
+  private fun doesFileExists(offlineFilePath: String): Boolean {
+    val file = File(offlineFilePath)
+    return file.exists()
   }
 
   private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
@@ -60,7 +75,8 @@ class UrlImageParser private constructor(
           } else {
             0
           }
-          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          val rect =
+            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
           drawable.bounds = rect
           urlDrawable.bounds = rect
           urlDrawable.drawable = drawable
@@ -107,6 +123,7 @@ class UrlImageParser private constructor(
     @DefaultGcsPrefix private val gcsPrefix: String,
     @DefaultGcsResource private val gcsResource: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+    @OfflineImagePathTemplate private val offlineImagePathTemplate: String,
     private val imageLoader: ImageLoader
   ) {
     fun create(
@@ -120,6 +137,7 @@ class UrlImageParser private constructor(
         gcsPrefix,
         gcsResource,
         imageDownloadUrlTemplate,
+        offlineImagePathTemplate,
         htmlContentTextView,
         entityType,
         entityId,

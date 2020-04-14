@@ -325,6 +325,7 @@
   <string name="just_now">just now</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
+  <string name="external_permission_explanation">Allowing this permission will enable entire offline usage of applicaton by loading images from internal storage.</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>

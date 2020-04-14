@@ -11,3 +11,6 @@ import javax.inject.Qualifier
 
 /** Corresponds to the default Image Download Url Template. */
 @Qualifier annotation class ImageDownloadUrlTemplate
+
+/** Corresponds to the default Offline Image Path Template. */
+@Qualifier annotation class OfflineImagePathTemplate
