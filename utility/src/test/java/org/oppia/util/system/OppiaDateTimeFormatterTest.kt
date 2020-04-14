@@ -9,19 +9,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // Time: Wed Apr 24 2019 08:22:00
 private const val MORNING_TIMESTAMP = 1556094120000
-
 // Time: Formatted time for 1556094120000 timestamp
 private const val MORNING_FORMATTED_TIME = "24 April 2019"
-
 private const val MILLISECONDS = 1586774460000
 private const val TIMESTAMP_IN_SECONDS = 1586774460L
 
