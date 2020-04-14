@@ -131,7 +131,6 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
           )
           return false
         }
-
       })
       .into(imageView)
 
