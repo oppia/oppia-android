@@ -12,7 +12,7 @@ import javax.inject.Inject
 class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   val newAvailableHintIndex = ObservableField<Int>(-1)
-  var allHintsExhausted = ObservableField<Boolean>(false)
+  val allHintsExhausted = ObservableField<Boolean>(false)
   val explorationId = ObservableField<String>("")
 
   val title = ObservableField<String>("")
