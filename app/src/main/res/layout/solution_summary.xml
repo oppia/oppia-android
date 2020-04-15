@@ -112,8 +112,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
-          android:fontFamily="sans-serif"
-          android:textStyle="bold"
+          android:fontFamily="sans-serif-black"
           android:text="@string/the_only_solution_is"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
@@ -138,9 +137,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
-          android:fontFamily="sans-serif"
           android:layout_marginTop="12dp"
-          android:textStyle="bold"
+          android:fontFamily="sans-serif-black"
           android:text="@string/explanation"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />

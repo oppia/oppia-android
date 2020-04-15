@@ -52,7 +52,6 @@
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_hint_button_blue_background"
-        android:padding="4dp"
         android:textSize="14sp"
         android:text="@string/reveal_hint"
         android:textColor="@color/white"
