@@ -161,6 +161,7 @@
     <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
+      android:layout_marginBottom="32dp"
       android:background="@color/grey_shade_29"/>
   </LinearLayout>
 </layout>
