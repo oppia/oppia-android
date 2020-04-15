@@ -232,6 +232,7 @@
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity. -->
   <string name="profile_edit_created">Created on %s</string>
+  <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
   <string name="profile_edit_delete">Profile Deletion</string>
@@ -321,4 +322,20 @@
   <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
   <string name="reveal">Reveal</string>
   <string name="explanation">Explanation :</string>
+  <!-- TextViewBindingAdapters -->
+  <string name="just_now">just now</string>
+  <string name="time_ago">%s ago</string>
+  <string name="yesterday">yesterday</string>
+  <plurals name="minutes">
+    <item quantity="one">a minute</item>
+    <item quantity="other">%d minutes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">an hour</item>
+    <item quantity="other">%d hours</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">a day</item>
+    <item quantity="other">%d days</item>
+  </plurals>
 </resources>

@@ -1,8 +1,12 @@
 package org.oppia.app.profile
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
+import android.content.res.Resources
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +16,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -24,6 +29,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -40,6 +49,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
@@ -57,6 +67,9 @@ import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+private const val TIMEOUT = 1000L
+private const val CONDITION_CHECK_INTERVAL = 100L
 
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
@@ -110,6 +123,72 @@ class ProfileChooserFragmentTest {
       onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(
         matches(
           withText(context.getString(R.string.profile_chooser_add))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVisitedTimeIsShown() {
+    profileTestHelper.initializeProfiles()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+      onView(withId(R.id.input_pin)).perform(typeText("12345"))
+      intended(hasComponent(HomeActivity::class.java.name))
+      onView(isRoot()).perform(pressBack())
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() {
+    profileTestHelper.initializeProfiles()
+    launch<ProfileActivity>(createProfileActivityIntent()).use {
+      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      intended(hasComponent(PinPasswordActivity::class.java.name))
+      onView(withId(R.id.input_pin)).perform(typeText("12345"))
+      intended(hasComponent(HomeActivity::class.java.name))
+      onView(isRoot()).perform(pressBack())
+      onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
+        )
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+        matches(
+          withText(
+            String.format(
+              getResources().getString(R.string.profile_last_used) + " just now"
+            )
+          )
         )
       )
     }
@@ -254,6 +333,7 @@ class ProfileChooserFragmentTest {
     )
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
+      waitUntilActivityVisible<AdminPinActivity>()
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
   }
@@ -339,8 +419,41 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  private fun getCurrentActivity(): Activity? {
+    var currentActivity: Activity? = null
+    getInstrumentation().runOnMainSync {
+      run {
+        currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(
+          Stage.RESUMED
+        ).elementAtOrNull(0)
+      }
+    }
+    return currentActivity
+  }
+
+  private inline fun <reified T : Activity> isVisible(): Boolean {
+    val am =
+      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+    val visibleActivityName = this.getCurrentActivity()!!::class.java.name
+    return visibleActivityName == T::class.java.name
+  }
+
+  private inline fun <reified T : Activity> waitUntilActivityVisible() {
+    val startTime = System.currentTimeMillis()
+    while (!isVisible<T>()) {
+      Thread.sleep(CONDITION_CHECK_INTERVAL)
+      if (System.currentTimeMillis() - startTime >= TIMEOUT) {
+        throw AssertionError("Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds")
+      }
+    }
+  }
+
   private fun createProfileActivityIntent(): Intent {
     return ProfileActivity.createProfileActivity(ApplicationProvider.getApplicationContext())
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier annotation class TestDispatcher
