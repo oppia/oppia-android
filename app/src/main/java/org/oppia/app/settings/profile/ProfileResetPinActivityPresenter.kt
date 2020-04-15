@@ -41,7 +41,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     resetViewModel.isAdmin.set(isAdmin)
 
     binding.profileResetPinToolbar.setNavigationOnClickListener {
-      (activity as ProfileRenameActivity).finish()
+      (activity as ProfileResetPinActivity).finish()
     }
 
     binding.apply {
