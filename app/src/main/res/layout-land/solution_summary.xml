@@ -24,7 +24,6 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="72dp"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="20dp"
@@ -113,8 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:fontFamily="sans-serif"
-            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
             android:text="@string/the_only_solution_is"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
@@ -139,9 +137,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-black"
             android:layout_marginTop="12dp"
-            android:textStyle="bold"
             android:text="@string/explanation"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
@@ -155,12 +152,12 @@
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
         </LinearLayout>
-
       </LinearLayout>
 
       <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="32dp"
         android:background="@color/grey_shade_29"/>
     </LinearLayout>
 </layout>

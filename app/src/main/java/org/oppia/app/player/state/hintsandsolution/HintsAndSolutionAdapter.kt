@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,8 +86,6 @@ class HintsAndSolutionAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(hintsViewModel: HintsViewModel, position: Int) {
       var isHintListVisible = false
-
-      Log.d("Tag","Adapter = "+currentExpandedHintListIndex)
       if (currentExpandedHintListIndex != null) {
         isHintListVisible = currentExpandedHintListIndex!! == position
       }

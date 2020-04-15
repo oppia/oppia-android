@@ -136,7 +136,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
 
   fun onExpandClicked(index: Int?) {
     currentExpandedHintListIndex = index
-    if(index!=null)
-    hintsAndSolutionAdapter.notifyItemChanged(index)
+    if (index != null)
+      hintsAndSolutionAdapter.notifyItemChanged(index)
   }
 }
