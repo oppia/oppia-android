@@ -668,7 +668,7 @@ class TopicControllerTest {
     val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
 
     val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.subtopicList.get(0).subtopicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.LESSON_THUMBNAIL_GRAPHIC_UNSPECIFIED)
+    assertThat(topic.subtopicList.get(0).subtopicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.WHAT_IS_A_FRACTION)
   }
 
   @Test
