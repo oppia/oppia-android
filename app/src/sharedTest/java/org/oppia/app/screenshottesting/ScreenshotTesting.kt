@@ -12,7 +12,7 @@ class ScreenshotTesting {
   @Test
   fun runScreenshotTesting() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
-    val view = LayoutInflater.from(context).inflate(R.layout.item_selection_interaction_items, null, false)
+    val view = LayoutInflater.from(context).inflate(R.layout.admin_auth_activity, null, false)
     ViewHelpers.setupView(view)
       .setExactWidthPx(300)
       .layout()
