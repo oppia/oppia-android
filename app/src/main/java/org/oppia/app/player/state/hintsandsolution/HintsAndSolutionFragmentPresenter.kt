@@ -133,4 +133,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   private fun handleNewAvailableHint(hintIndex: Int) {
     hintsAndSolutionAdapter.setNewHintIsAvailable(hintIndex)
   }
+
+  fun onExpandClicked(index: Int?) {
+    currentExpandedHintListIndex = index
+    if(index!=null)
+    hintsAndSolutionAdapter.notifyItemChanged(index)
+  }
 }

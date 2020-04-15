@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,6 +87,8 @@ class HintsAndSolutionAdapter(
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(hintsViewModel: HintsViewModel, position: Int) {
       var isHintListVisible = false
+
+      Log.d("Tag","Adapter = "+currentExpandedHintListIndex)
       if (currentExpandedHintListIndex != null) {
         isHintListVisible = currentExpandedHintListIndex!! == position
       }
@@ -110,7 +113,6 @@ class HintsAndSolutionAdapter(
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
-          val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
               null
@@ -118,16 +120,6 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
-            notifyItemChanged(currentExpandedHintListIndex!!)
-          } else {
-            if (previousIndex != null) {
-              notifyItemChanged(previousIndex)
-            }
-            if (currentExpandedHintListIndex != null) {
-              notifyItemChanged(currentExpandedHintListIndex!!)
-            }
-          }
         }
       }
 

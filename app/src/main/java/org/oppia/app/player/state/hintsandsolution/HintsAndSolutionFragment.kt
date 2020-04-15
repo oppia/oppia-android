@@ -99,6 +99,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
 
   override fun onExpandListIconClicked(index: Int?) {
     currentExpandedHintListIndex = index
+    hintsAndSolutionFragmentPresenter.onExpandClicked(index)
   }
 
   override fun revealSolution(saveUserChoice: Boolean) {

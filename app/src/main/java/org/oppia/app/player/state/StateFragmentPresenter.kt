@@ -505,7 +505,7 @@ class StateFragmentPresenter @Inject constructor(
             if (currentState.interaction.hintList.size != 0) {
               for (index in 0 until currentState.interaction.hintList.size) {
                 if (index == 0 && !currentState.interaction.hintList[0].hintIsRevealed) {
-                  lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
+                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
                     newAvailableHintIndex = 0
                     viewModel.setHintOpenedAndUnRevealedVisibility(true)
                     viewModel.setHintBulbVisibility(true)
@@ -514,7 +514,7 @@ class StateFragmentPresenter @Inject constructor(
                   break
                 }
                 if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
-                  lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
+                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
                     newAvailableHintIndex = index
                     viewModel.setHintOpenedAndUnRevealedVisibility(true)
                     viewModel.setHintBulbVisibility(true)
@@ -523,7 +523,7 @@ class StateFragmentPresenter @Inject constructor(
                   break
                 } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
                   if (currentState.interaction.solution.hasCorrectAnswer()) {
-                    lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
+                    lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
                       allHintsExhausted = true
                       viewModel.setHintOpenedAndUnRevealedVisibility(true)
                       viewModel.setHintBulbVisibility(true)
