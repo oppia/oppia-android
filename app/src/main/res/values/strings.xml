@@ -325,6 +325,7 @@
   <string name="just_now">just now</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
+  <string name="return_to_topic">Return to topic</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>

@@ -9,7 +9,7 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 /* Fragment that displays revision card */
-class RevisionCardFragment : InjectableDialogFragment() {
+class RevisionCardFragment : InjectableDialogFragment(), ReturnToTopicClickListener {
 
   @Inject lateinit var revisionCardFragmentPresenter: RevisionCardFragmentPresenter
 
@@ -21,5 +21,9 @@ class RevisionCardFragment : InjectableDialogFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     return revisionCardFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  override fun onReturnToTopicClicked() {
+    revisionCardFragmentPresenter.returnToTopic()
   }
 }
