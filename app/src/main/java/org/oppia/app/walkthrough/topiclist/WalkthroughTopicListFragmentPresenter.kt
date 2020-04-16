@@ -35,7 +35,8 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
 
-    binding = WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -50,7 +51,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     walkthroughLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position == 0) {
-          /* number of spaces this item should occupy = */ 2
+          /* number of spaces this item should occupy = */spanCount
         } else {
           /* number of spaces this item should occupy = */ 1
         }
