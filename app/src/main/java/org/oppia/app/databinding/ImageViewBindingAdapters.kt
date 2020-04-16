@@ -1,11 +1,16 @@
 package org.oppia.app.databinding
 
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import org.oppia.app.R
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.ProfileAvatar
@@ -76,10 +81,31 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
   if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
     Glide.with(imageView.context)
       .load(R.drawable.ic_default_avatar)
+      .listener(object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+          e: GlideException?,
+          model: Any?,
+          target: Target<Drawable>?,
+          isFirstResource: Boolean
+        ): Boolean {
+          return false
+        }
+
+        override fun onResourceReady(
+          resource: Drawable?,
+          model: Any?,
+          target: Target<Drawable>?,
+          dataSource: DataSource?,
+          isFirstResource: Boolean
+        ): Boolean {
+          imageView.setColorFilter(
+            profileAvatar.avatarColorRgb, PorterDuff.Mode.DST_OVER
+          )
+          return false
+        }
+      })
       .into(imageView)
-    imageView.setColorFilter(
-      profileAvatar.avatarColorRgb, PorterDuff.Mode.DST_OVER
-    )
+
   } else {
     Glide.with(imageView.context)
       .load(profileAvatar.avatarImageUri)
