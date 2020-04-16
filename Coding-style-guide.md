@@ -36,6 +36,30 @@ NOTE: This does not guarantee 100% formatting of code as per guidelines but will
 - Order imports alphabetically. Remove unused imports.
 - Do not use "magic numbers" in code. Declare constants instead (typically at the module level).
 
+## Layout files
+- Each layout file should be named according to how they are used, where all layouts fall in the following buckets:
+  - Activities: _screen\_name\_activity.xml_ (all end with ``_activity.xml``)
+  - Fragments: _subscreen\_name\_fragment.xml_ (all end with ``fragment.xml``)
+  - Custom views: _custom\_widget\_name\_view.xml_ (all end with ``_activity.xml``)
+  - RecyclerView items: _element\_name\_item.xml_ (all end with ``_item.xml``)
+  - Toolbars: _screen\_location\_toolbar.xml_ (all end with ``_toolbar.xml``)
+- Any layouts not associated with the above that should be shared across multiple layouts should instead be associated with a custom view (including a corresponding Kotlin file). This means the ``include`` directive won't be included in any layouts.
+- Since widget IDs within layout files are global scoped, they should be named based on their location, value, and widget type.
+  - The general format for this is: _<parent\_file\_name>\_<view\_name>\_<widget\_type>_
+  - The following are some recognized widget types (this list is not comprehensive):
+    - ``TextView``
+    - ``EditText``
+    - ``RecyclerView``
+    - ``Button``
+    - ``View``
+    - Custom views (the full name of the view should be spelled out for the widget type in identifiers)
+  - Layout elements should be named as follows:
+    - ``container``: if the element contains other elements within the same layout
+    - ``placeholder``: if the element will be replaced at runtime with new elements (such as a fragment layout)
+  - Here are some examples of valid IDs:
+    - ``recently_played_activity_recently_played_fragment_placeholder`` (a ``FrameLayout`` in ``recently_played_activity.xml``)
+    - ``recently_played_fragment_ongoing_story_recycler_view`` (a ``RecyclerView`` in ``recently_played_fragment.xml``)
+
 ## build.gradle file
 - Arrange lists in alphabetical order unless there's a good reason not to.
 - Combine `implementation`, `androidTestImplementation` and `testImplementation` to declare all similar dependencies in one block.
