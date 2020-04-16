@@ -37,66 +37,46 @@ enum LessonThumbnailGraphic {
 
   // Corresponds to an in-app image of a person next to a pie chart.
   PERSON_WITH_PIE_CHART = 6;
-}
 
-// Represents the thumbnail that should be rendered for a skill.
-message SkillThumbnail {
-  // The graphic corresponding to this thumbnail.
-  SkillThumbnailGraphic thumbnail_graphic = 1;
-}
-
-// Corresponds to different types of thumbnails that may be used by skills in a topic. These currently only
-// correspond to in-app thumbnails, but may later indicate that a skill has a downloadable thumbnail to use, instead.
-enum SkillThumbnailGraphic {
   // Corresponds to Identifying the parts of a fraction skill. Also, acts as default thumbnail for skill.
-  IDENTIFYING_THE_PARTS_OF_A_FRACTION = 0;
+  IDENTIFYING_THE_PARTS_OF_A_FRACTION = 7;
 
   // Corresponds to Writing Fractions skill.
-  WRITING_FRACTIONS = 1;
+  WRITING_FRACTIONS = 8;
 
   // Corresponds to Equivalent Fractions skill.
-  EQUIVALENT_FRACTIONS = 2;
+  EQUIVALENT_FRACTIONS = 9;
 
   // Corresponds to Mixed Numberes and Improper Fractions skill.
-  MIXED_NUMBERS_AND_IMPROPER_FRACTIONS = 3;
+  MIXED_NUMBERS_AND_IMPROPER_FRACTIONS = 10;
 
   // Corresponds to Comparing Fractions skill.
-  COMPARING_FRACTIONS = 4;
+  COMPARING_FRACTIONS = 11;
 
   // Corresponds to Adding and Subtracting Fractions skill.
-  ADDING_AND_SUBTRACTING_FRACTIONS = 5;
+  ADDING_AND_SUBTRACTING_FRACTIONS = 12;
 
   // Corresponds to Multiplying Fractions skill.
-  MULTIPLYING_FRACTIONS = 6;
+  MULTIPLYING_FRACTIONS = 13;
 
   // Corresponds to Dividing Fractions skill.
-  DIVIDING_FRACTIONS = 7;
+  DIVIDING_FRACTIONS = 14;
 
   // Corresponds to Derive a ratio from a description or picture skill.
-  DERIVE_A_RATIO = 8;
-}
+  DERIVE_A_RATIO = 15;
 
-// Represents the thumbnail that should be rendered for a subtopic.
-message SubtopicThumbnail {
-  // The graphic corresponding to this thumbnail.
-  SubtopicThumbnailGraphic thumbnail_graphic = 1;
-}
-
-// Corresponds to different types of thumbnails that may be used by subtopics in a topic. These currently only
-// correspond to in-app thumbnails, but may later indicate that a subtopic has a downloadable thumbnail to use, instead.
-enum SubtopicThumbnailGraphic {
   // Corresponds to Identifying the parts of a fraction subtopic. Also, acts as default thumbnail for subtopic.
-  WHAT_IS_A_FRACTION = 0;
+  WHAT_IS_A_FRACTION = 16;
 
   // Corresponds to Grouping Fractions subtopic.
-  FRACTION_OF_A_GROUP = 1;
+  FRACTION_OF_A_GROUP = 17;
 
   // Corresponds to Mixed Numberes Fractions subtopic.
-  MIXED_NUMBERS = 2;
+  MIXED_NUMBERS = 18;
 
   // Corresponds to Adding Fractions subtopic.
-  ADDING_FRACTIONS = 3;
+  ADDING_FRACTIONS = 19;
 
   // Corresponds to Number line Fractions subtopic.
-  THE_NUMBER_LINE = 4;
+  THE_NUMBER_LINE = 20;
 }

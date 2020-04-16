@@ -11,7 +11,7 @@ class HelpListViewModel @Inject constructor(
 ) : ViewModel() {
   private val arrayList = ArrayList<HelpItemViewModel>()
 
-  val helpItemItemList: List<HelpItemViewModel> by lazy {
+  val helpItemList: List<HelpItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
 

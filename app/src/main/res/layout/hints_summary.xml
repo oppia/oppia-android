@@ -10,108 +10,108 @@
       name="isListExpanded"
       type="Boolean" />
 
-     <variable
+    <variable
       name="viewModel"
       type="org.oppia.app.player.state.hintsandsolution.HintsViewModel" />
   </data>
 
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_marginStart="28dp"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="20dp"
+      android:orientation="horizontal">
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+      <TextView
+        android:id="@+id/hint_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-          android:id="@+id/hint_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:fontFamily="sans-serif-medium"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-          android:id="@+id/reveal_hint_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginEnd="8dp"
-          android:background="@drawable/reveal_hint_button_blue_background"
-          android:padding="4dp"
-          android:text="@string/reveal_hint"
-          android:textColor="@color/white"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/hint_title"
-          android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}" />
-
-        <FrameLayout
-          android:id="@+id/expand_list_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="16dp"
-          android:layout_marginEnd="8dp"
-          android:layout_marginBottom="8dp"
-          android:minWidth="48dp"
-          android:minHeight="48dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.966"
-          app:layout_constraintStart_toEndOf="@+id/hint_title"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintVertical_bias="0.0"
-          android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}">
-
-          <ImageView
-            android:id="@+id/chapter_list_drop_down_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@{@string/show_hide_hint_list(viewModel.hintsAndSolutionSummary)}"
-            android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
-        </FrameLayout>
-      </androidx.constraintlayout.widget.ConstraintLayout>
-
-      <LinearLayout
-        android:id="@+id/chapter_list_container"
-        android:layout_width="match_parent"
+      <Button
+        android:id="@+id/reveal_hint_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+        android:minWidth="160dp"
+        android:minHeight="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/reveal_hint_button_blue_background"
+        android:textSize="14sp"
+        android:text="@string/reveal_hint"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hint_title"
+        android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}" />
 
-        <TextView
-          android:id="@+id/hints_and_solution_summary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_margin="12dp"
-          android:fontFamily="sans-serif-medium"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp" />
-      </LinearLayout>
+      <FrameLayout
+        android:id="@+id/expand_list_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintStart_toEndOf="@+id/hint_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}">
 
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_shade_29"/>
+        <ImageView
+          android:id="@+id/hint_list_drop_down_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:padding="8dp"
+          android:layout_gravity="center_vertical"
+          android:contentDescription="@{@string/show_hide_hint_list(viewModel.hintsAndSolutionSummary)}"
+          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+      </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+      android:id="@+id/hint_list_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="40dp"
+      android:layout_marginEnd="40dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="32dp"
+      android:orientation="vertical"
+      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+      <TextView
+        android:id="@+id/hints_and_solution_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="16sp" />
     </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="32dp"
+      android:background="@color/grey_shade_29"/>
+  </LinearLayout>
 </layout>
