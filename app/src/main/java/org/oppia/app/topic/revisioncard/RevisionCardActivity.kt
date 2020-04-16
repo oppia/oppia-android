@@ -22,7 +22,7 @@ class RevisionCardActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
-    fun createReviewCardActivityIntent(context: Context, topicId: String, subtopicId: String): Intent {
+    fun createRevisionCardActivityIntent(context: Context, topicId: String, subtopicId: String): Intent {
       val intent = Intent(context, RevisionCardActivity::class.java)
       intent.putExtra(TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
