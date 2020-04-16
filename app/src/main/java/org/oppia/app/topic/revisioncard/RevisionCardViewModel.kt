@@ -21,7 +21,7 @@ class RevisionCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  val fragment: Fragment,
+  private val fragment: Fragment,
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
