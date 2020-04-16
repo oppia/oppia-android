@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="28dp"
         android:paddingEnd="28dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="20dp"
         android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}">
 
         <LinearLayout

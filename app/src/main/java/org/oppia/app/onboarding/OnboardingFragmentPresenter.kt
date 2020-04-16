@@ -45,16 +45,22 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun setUpViewPager() {
     onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+    binding.onboardingSlideViewPager.addOnPageChangeListener(object :
+      ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
+        val position: Int = binding.onboardingSlideViewPager.currentItem
+        if (state.equals(1) && binding.onboardingSlideViewPager.currentItem > 0)
+          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position - 1))
+        if (state.equals(0)) {
+          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
+          selectDot(position)
+        }
       }
 
       override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
       }
 
       override fun onPageSelected(position: Int) {
-        getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
-        selectDot(position)
       }
     })
   }
