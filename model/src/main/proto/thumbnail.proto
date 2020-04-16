@@ -79,5 +79,4 @@ enum LessonThumbnailGraphic {
 
   // Corresponds to Number line Fractions subtopic.
   THE_NUMBER_LINE = 20;
-
 }
