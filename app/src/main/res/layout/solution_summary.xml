@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -11,119 +11,117 @@
       name="isListExpanded"
       type="Boolean" />
 
-
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.hintsandsolution.SolutionViewModel" />
   </data>
 
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="24dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginBottom="24dp"
+      android:orientation="horizontal">
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+      <TextView
+        android:id="@+id/solution_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-          android:id="@+id/solution_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:fontFamily="sans-serif-medium"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-          android:id="@+id/reveal_solution_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          android:layout_marginEnd="8dp"
-          android:background="@drawable/reveal_solution_brown_background"
-          android:padding="4dp"
-          android:text="@string/reveal_solution"
-          android:textColor="@color/white"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          android:visibility="@{viewModel.isSolutionRevealed? View.GONE : View.VISIBLE}"
-          app:layout_constraintTop_toBottomOf="@+id/solution_title" />
-
-        <FrameLayout
-          android:id="@+id/expand_list_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="8dp"
-          android:layout_marginTop="16dp"
-          android:layout_marginEnd="8dp"
-          android:layout_marginBottom="8dp"
-          android:minWidth="48dp"
-          android:minHeight="48dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.966"
-          app:layout_constraintStart_toEndOf="@+id/solution_title"
-          app:layout_constraintTop_toTopOf="parent"
-          android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
-          app:layout_constraintVertical_bias="0.0">
-
-          <ImageView
-            android:id="@+id/chapter_list_drop_down_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
-            android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
-        </FrameLayout>
-      </androidx.constraintlayout.widget.ConstraintLayout>
-
-      <LinearLayout
-        android:id="@+id/solution_container"
-        android:layout_width="match_parent"
+      <Button
+        android:id="@+id/reveal_solution_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/reveal_solution_brown_background"
+        android:padding="4dp"
+        android:text="@string/reveal_solution"
+        android:textColor="@color/white"
+        android:visibility="@{viewModel.isSolutionRevealed? View.GONE : View.VISIBLE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/solution_title" />
 
-        <TextView
-          android:id="@+id/solution_correct_answer"
+      <FrameLayout
+        android:id="@+id/expand_list_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintStart_toEndOf="@+id/solution_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+          android:id="@+id/chapter_list_drop_down_icon"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-medium"
-          android:textColor="@color/oppiaPrimaryText"
-          android:layout_margin="4dp"
-          android:textSize="14sp" />
-        <TextView
-          android:id="@+id/solution_summary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_margin="4dp"
-          android:fontFamily="sans-serif-medium"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp" />
+          android:layout_gravity="center_vertical"
+          android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
+          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+      </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-      </LinearLayout>
+    <LinearLayout
+      android:id="@+id/solution_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="8dp"
+      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_shade_29"/>
+      <TextView
+        android:id="@+id/solution_correct_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp" />
+
+      <TextView
+        android:id="@+id/solution_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp" />
     </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/grey_shade_29" />
+  </LinearLayout>
 </layout>
