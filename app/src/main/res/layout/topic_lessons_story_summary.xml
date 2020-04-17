@@ -23,9 +23,9 @@
     android:id="@+id/story_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
+    android:layout_marginStart="28dp"
     android:layout_marginTop="12dp"
-    android:layout_marginEnd="20dp"
+    android:layout_marginEnd="28dp"
     android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
@@ -106,13 +106,14 @@
               android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:text="@{viewModel.storySummary.storyName}"
               android:textColor="@color/oppiaPrimaryText"
-              android:textSize="20sp" />
+              android:textSize="18sp" />
 
             <TextView
               android:id="@+id/chapter_count"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
+              android:layout_marginTop="4dp"
               android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="16sp" />
@@ -156,7 +157,7 @@
           android:id="@+id/chapter_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
+          android:layout_marginTop="20dp"
           android:layout_marginBottom="8dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>
