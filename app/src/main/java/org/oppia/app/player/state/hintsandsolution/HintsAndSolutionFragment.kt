@@ -87,7 +87,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
 
   override fun onStart() {
     super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+    dialog?.window?.setWindowAnimations(R.style.FullScreenHintDialogStyle)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
