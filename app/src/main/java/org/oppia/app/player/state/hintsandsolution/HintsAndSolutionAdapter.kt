@@ -172,7 +172,6 @@ class HintsAndSolutionAdapter(
 
       binding.root.setOnClickListener {
         if (solutionViewModel.isSolutionRevealed.get()!!) {
-          binding.revealSolutionButton.visibility = View.GONE
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
