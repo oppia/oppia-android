@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="28dp"
-    android:layout_marginTop="28dp"
     android:layout_marginEnd="28dp"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -32,8 +31,7 @@
       android:padding="8dp"
       android:saveEnabled="false"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="14sp"
-      android:textStyle="italic" />
+      android:textSize="14sp" />
 
     <TextView
       android:id="@+id/error_text"

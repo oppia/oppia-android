@@ -57,7 +57,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
-          app:inputLength="35"
+          app:inputLength="36"
           app:label="@string/add_profile_input_name"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
