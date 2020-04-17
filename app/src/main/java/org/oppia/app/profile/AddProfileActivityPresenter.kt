@@ -3,6 +3,7 @@ package org.oppia.app.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -65,25 +67,29 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
-
-    binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
+    binding.addProfileActivityAllowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
     }
-    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+    binding.addProfileActivityPinCheckBox.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
       checkboxStateClicked = isChecked
     }
 
-    binding.infoIcon.setOnClickListener {
+    binding.addProfileActivityInfoImageView.setOnClickListener {
       showInfoDialog()
     }
 
-    uploadImageView = binding.uploadImageButton
-
+    uploadImageView = binding.addProfileActivityUserImageView as ImageView
+    Glide.with(activity)
+      .load(R.drawable.ic_default_avatar)
+      .into(uploadImageView)
+    uploadImageView.setColorFilter(
+      ResourcesCompat.getColor(activity.getResources(), R.color.avatar_background_11, null), PorterDuff.Mode.DST_OVER
+    )
     addButtonListeners(binding)
 
-    binding.inputName.post {
-      addTextChangedListener(binding.inputName) { name ->
+    binding.addProfileActivityUserNameProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityUserNameProfileInputView) { name ->
         name?.let {
           profileViewModel.isButtonActive.set(it.isNotEmpty())
           profileViewModel.nameErrorMsg.set("")
@@ -91,8 +97,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.inputPin.post {
-      addTextChangedListener(binding.inputPin) { pin ->
+    binding.addProfileActivityInputPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityInputPinProfileInputView) { pin ->
         pin?.let {
           profileViewModel.inputPin.set(it.toString())
           profileViewModel.pinErrorMsg.set("")
@@ -101,8 +107,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.inputConfirmPin.post {
-      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+    binding.addProfileActivityInputConfirmPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityInputConfirmPinProfileInputView) { confirmPin ->
         confirmPin?.let {
           profileViewModel.inputConfirmPin.set(it.toString())
           profileViewModel.confirmPinErrorMsg.set("")
@@ -112,9 +118,9 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputName.setInput(profileViewModel.inputName.get().toString())
-    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
-    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
+    binding.addProfileActivityUserNameProfileInputView.setInput(profileViewModel.inputName.get().toString())
+    binding.addProfileActivityInputPinProfileInputView.setInput(profileViewModel.inputPin.get().toString())
+    binding.addProfileActivityInputConfirmPinProfileInputView.setInput(profileViewModel.inputConfirmPin.get().toString())
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -124,7 +130,7 @@ class AddProfileActivityPresenter @Inject constructor(
     if (inputtedPin && inputtedConfirmPin) {
       profileViewModel.validPin.set(true)
     } else {
-      binding.allowDownloadSwitch.isChecked = false
+      binding.addProfileActivityAllowDownloadSwitch.isChecked = false
       profileViewModel.validPin.set(false)
     }
   }
@@ -143,29 +149,29 @@ class AddProfileActivityPresenter @Inject constructor(
   }
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
-    binding.uploadImageButton.setOnClickListener {
+    uploadImageView.setOnClickListener {
       openGalleryIntent()
     }
-    binding.editImageFab.setOnClickListener {
+    binding.addProfileActivityEditUserImageView.setOnClickListener {
       openGalleryIntent()
     }
 
-    binding.createButton.setOnClickListener {
+    binding.addProfileActivityCreateButton.setOnClickListener {
       profileViewModel.clearAllErrorMessages()
 
       val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
-      val name = binding.inputName.getInput()
+      val name = binding.addProfileActivityUserNameProfileInputView.getInput()
       var pin = ""
       var confirmPin = ""
       if (checkboxStateClicked) {
-        pin = binding.inputPin.getInput()
-        confirmPin = binding.inputConfirmPin.getInput()
+        pin = binding.addProfileActivityInputPinProfileInputView.getInput()
+        confirmPin = binding.addProfileActivityInputConfirmPinProfileInputView.getInput()
       }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
-        binding.scroll.smoothScrollTo(0, 0)
+        binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
         return@setOnClickListener
       }
 
@@ -229,7 +235,7 @@ class AddProfileActivityPresenter @Inject constructor(
           )
         )
       }
-      binding.scroll.smoothScrollTo(0, 0)
+      binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
     }
   }
 
