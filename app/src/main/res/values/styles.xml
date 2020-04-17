@@ -71,7 +71,7 @@
 
   <style name="FullScreenHintDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/oppiaDarkBlue</item>
+    <item name="colorPrimaryDark">@color/black</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
