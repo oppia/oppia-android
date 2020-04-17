@@ -939,7 +939,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_clickInfo_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.info_icon)).perform(click())
+      onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
       onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
     }
   }
@@ -947,7 +947,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_clickInfo_changeConfiguration_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.info_icon)).perform(click())
+      onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
     }
