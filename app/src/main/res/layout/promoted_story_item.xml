@@ -21,7 +21,7 @@
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/home_promoted_story_card_container"
+      android:id="@+id/promoted_story_item_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
@@ -32,7 +32,7 @@
       app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
       <ImageView
-        android:id="@+id/home_promoted_story_card_lesson_thumbnail"
+        android:id="@+id/promoted_story_item_lesson_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
@@ -51,10 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_promoted_story_card_lesson_thumbnail">
+        app:layout_constraintTop_toBottomOf="@id/promoted_story_item_lesson_thumbnail_image_view">
 
         <TextView
-          android:id="@+id/home_promoted_story_card_chapter_name_text_view"
+          android:id="@+id/promoted_story_item_chapter_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -68,7 +68,7 @@
           android:textSize="18sp" />
 
         <TextView
-          android:id="@+id/home_promoted_story_card_story_name_text_view"
+          android:id="@+id/promoted_story_item_story_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -82,7 +82,7 @@
           android:textSize="16sp" />
 
         <TextView
-          android:id="@+id/home_promoted_story_card_topic_name_text_view"
+          android:id="@+id/promoted_story_item_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"

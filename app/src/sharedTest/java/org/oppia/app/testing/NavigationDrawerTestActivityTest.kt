@@ -173,8 +173,8 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
         .perform(click())
-      onView(withId(R.id.home_activity_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+      onView(withId(R.id.home_activity_home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).check(matches(isOpen()))
     }
   }
 
@@ -183,9 +183,9 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(matches(isCompletelyDisplayed()))
         .perform(click())
-      onView(withId(R.id.home_activity_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).check(matches(isOpen()))
     }
   }
 
@@ -194,7 +194,7 @@ class NavigationDrawerTestActivityTest {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).check(matches(isOpen()))
     }
   }
 
@@ -202,8 +202,8 @@ class NavigationDrawerTestActivityTest {
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
-      onView(withId(R.id.home_activity_drawer_layout)).perform(close())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(close())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).check(matches(isClosed()))
     }
   }
 
@@ -246,7 +246,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
         allOf(
@@ -260,7 +260,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_my_downloads)).perform(click())
       intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
@@ -269,7 +269,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
@@ -278,7 +278,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileActivity() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
@@ -289,16 +289,16 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_cancel)).perform(click())
-      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).check(matches(isClosed()))
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.home_activity_toolbar))
+          withParent(withId(R.id.home_activity_home_toolbar_toolbar))
         )
       ).check(matches(withText(R.string.menu_home)))
     }
@@ -307,7 +307,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(
         allOf(
@@ -324,7 +324,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
@@ -343,7 +343,7 @@ class NavigationDrawerTestActivityTest {
   @Test
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() {
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(open())
       onView(
@@ -362,22 +362,22 @@ class NavigationDrawerTestActivityTest {
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch(NavigationDrawerTestActivity::class.java).use {
-      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withId(R.id.home_activity_home_drawer_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_home)).perform(click())
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.home_activity_toolbar))
+          withParent(withId(R.id.home_activity_home_toolbar_toolbar))
         )
       ).check(matches(withText(R.string.menu_home)))
-      onView(withId(R.id.home_fragment_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.home_fragment_topic_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
-          R.id.home_fragment_recycler_view,
+          R.id.home_fragment_topic_list_recycler_view,
           0,
-          R.id.home_welcome_text_view
+          R.id.welcome_item_greeting_text_view
         )
       ).check(matches(withText("Good morning,")))
     }

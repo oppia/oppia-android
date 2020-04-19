@@ -14,9 +14,9 @@
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="28dp"
+    android:layout_marginStart="96dp"
     android:layout_marginTop="28dp"
-    android:layout_marginEnd="28dp"
+    android:layout_marginEnd="96dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
@@ -28,7 +28,7 @@
       android:onClick="@{viewModel::clickOnOngoingStoryTile}">
 
       <ImageView
-        android:id="@+id/recently_played_ongoing_story_lesson_thumbnail"
+        android:id="@+id/ongoing_story_item_lesson_thumbnail_image_view"
         android:layout_width="80dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -52,11 +52,11 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/recently_played_ongoing_story_lesson_thumbnail"
+        app:layout_constraintStart_toEndOf="@id/ongoing_story_item_lesson_thumbnail_image_view"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-          android:id="@+id/recently_played_ongoing_story_chapter_name_text_view"
+          android:id="@+id/ongoing_story_item_chapter_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"
@@ -67,7 +67,7 @@
           android:textSize="18sp" />
 
         <TextView
-          android:id="@+id/recently_played_ongoing_story_story_name_text_view"
+          android:id="@+id/ongoing_story_item_story_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
@@ -80,7 +80,7 @@
           android:textSize="16sp" />
 
         <TextView
-          android:id="@+id/recently_played_ongoing_story_topic_name_text_view"
+          android:id="@+id/ongoing_story_item_topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"

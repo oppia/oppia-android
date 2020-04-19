@@ -18,7 +18,7 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/home_fragment_recycler_view"
+      android:id="@+id/home_fragment_topic_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clipToPadding="false"

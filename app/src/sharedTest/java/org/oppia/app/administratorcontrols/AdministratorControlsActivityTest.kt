@@ -100,7 +100,7 @@ class AdministratorControlsActivityTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
       onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.home_fragment_topic_list_recycler_view)).check(matches(isDisplayed()))
     }
   }
 

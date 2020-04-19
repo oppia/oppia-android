@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.app.databinding.OngoingStoryCardBinding
+import org.oppia.app.databinding.OngoingStoryItemBinding
 import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
-import org.oppia.app.databinding.SectionTitleBinding
+import org.oppia.app.databinding.SectionTitleItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.PromotedStory
@@ -64,14 +64,14 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       }
       .registerViewDataBinder(
         viewType = RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_TITLE_TEXT,
-        inflateDataBinding = SectionTitleBinding::inflate,
-        setViewModel = SectionTitleBinding::setViewModel,
+        inflateDataBinding = SectionTitleItemBinding::inflate,
+        setViewModel = SectionTitleItemBinding::setViewModel,
         transformViewModel = { it as SectionTitleViewModel }
       )
       .registerViewDataBinder(
         viewType = RecentlyPlayedItemViewModel.ViewType.VIEW_TYPE_SECTION_STORY_ITEM,
-        inflateDataBinding = OngoingStoryCardBinding::inflate,
-        setViewModel = OngoingStoryCardBinding::setViewModel,
+        inflateDataBinding = OngoingStoryItemBinding::inflate,
+        setViewModel = OngoingStoryItemBinding::setViewModel,
         transformViewModel = { it as OngoingStoryViewModel }
       )
       .build()

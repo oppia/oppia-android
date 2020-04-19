@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.PromotedStoryCardBinding
+import org.oppia.app.databinding.PromotedStoryItemBinding
 
 /** Adapter to bind promoted stories to [RecyclerView] inside [HomeFragment] to create carousel. */
 class PromotedStoryListAdapter(
@@ -22,7 +22,7 @@ class PromotedStoryListAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     val inflater = LayoutInflater.from(parent.context)
     val binding =
-      PromotedStoryCardBinding.inflate(
+      PromotedStoryItemBinding.inflate(
         inflater,
         parent,
         /* attachToParent= */ false
@@ -39,11 +39,11 @@ class PromotedStoryListAdapter(
   }
 
   inner class PromotedStoryViewHolder(
-    val binding: PromotedStoryCardBinding
+    val binding: PromotedStoryItemBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
-      val layoutParams = binding.homePromotedStoryCardContainer.layoutParams
+      val layoutParams = binding.promotedStoryItemContainer.layoutParams
       layoutParams.width = if (itemCount > 1) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           ViewGroup.LayoutParams.MATCH_PARENT
@@ -54,7 +54,7 @@ class PromotedStoryListAdapter(
       } else {
         ViewGroup.LayoutParams.MATCH_PARENT
       }
-      binding.homePromotedStoryCardContainer.layoutParams = layoutParams
+      binding.promotedStoryItemContainer.layoutParams = layoutParams
     }
   }
 }

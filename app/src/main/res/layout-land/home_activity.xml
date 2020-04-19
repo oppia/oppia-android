@@ -1,7 +1,7 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/home_activity_drawer_layout"
+  android:id="@+id/home_activity_home_drawer_drawer_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   tools:context=".home.HomeActivity">
@@ -12,18 +12,18 @@
     android:orientation="vertical">
 
     <include
-      android:id="@+id/home_activity_toolbar"
+      android:id="@+id/home_activity_home_toolbar_toolbar"
       layout="@layout/toolbar" />
 
     <FrameLayout
-      android:id="@+id/home_activity_fragment_placeholder"
+      android:id="@+id/home_activity_home_fragment_placeholder"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1" />
   </LinearLayout>
 
   <fragment
-    android:id="@+id/home_activity_fragment_navigation_drawer"
+    android:id="@+id/home_activity_drawer_fragment_navigation_drawer"
     android:name="org.oppia.app.drawer.NavigationDrawerFragment"
     android:layout_width="304dp"
     android:layout_height="match_parent"

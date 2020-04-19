@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.AllTopicsBinding
+import org.oppia.app.databinding.AllTopicsItemBinding
 import org.oppia.app.databinding.PromotedStoryListBinding
-import org.oppia.app.databinding.TopicSummaryViewBinding
-import org.oppia.app.databinding.WelcomeBinding
+import org.oppia.app.databinding.TopicSummaryItemBinding
+import org.oppia.app.databinding.WelcomeItemBinding
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.WelcomeViewModel
 import org.oppia.app.recyclerview.StartSnapHelper
@@ -38,7 +38,7 @@ class TopicListAdapter(
       VIEW_TYPE_WELCOME_MESSAGE -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          WelcomeBinding.inflate(
+          WelcomeItemBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -58,7 +58,7 @@ class TopicListAdapter(
       VIEW_TYPE_ALL_TOPICS -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          AllTopicsBinding.inflate(
+          AllTopicsItemBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -68,7 +68,7 @@ class TopicListAdapter(
       VIEW_TYPE_TOPIC_LIST -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          TopicSummaryViewBinding.inflate(
+          TopicSummaryItemBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -122,7 +122,7 @@ class TopicListAdapter(
     return itemList.size
   }
 
-  private class WelcomeViewHolder(val binding: WelcomeBinding) :
+  private class WelcomeViewHolder(val binding: WelcomeItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(welcomeViewModel: WelcomeViewModel) {
       binding.viewModel = welcomeViewModel
@@ -140,7 +140,7 @@ class TopicListAdapter(
       val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
       val horizontalLayoutManager =
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
-      binding.homePromotedStoryListRecyclerView.apply {
+      binding.promotedStoryListItemPromotedListRecyclerView.apply {
         layoutManager = horizontalLayoutManager
         adapter = promotedStoryAdapter
       }
@@ -150,9 +150,9 @@ class TopicListAdapter(
        * so that the item is completely visible in [HomeFragment] as soon as learner lifts the finger after scrolling.
        */
       val snapHelper = StartSnapHelper()
-      binding.homePromotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
-      binding.homePromotedStoryListRecyclerView.setOnFlingListener(null)
-      snapHelper.attachToRecyclerView(binding.homePromotedStoryListRecyclerView)
+      binding.promotedStoryListItemPromotedListRecyclerView.layoutManager = horizontalLayoutManager
+      binding.promotedStoryListItemPromotedListRecyclerView.setOnFlingListener(null)
+      snapHelper.attachToRecyclerView(binding.promotedStoryListItemPromotedListRecyclerView)
 
       val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
@@ -165,25 +165,25 @@ class TopicListAdapter(
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
       }
       if (promotedStoryList.size > 1) {
-        binding.homePromotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
+        binding.promotedStoryListItemPromotedListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
       } else {
-        binding.homePromotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
+        binding.promotedStoryListItemPromotedListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
       }
     }
   }
 
-  private class AllTopicsViewHolder(binding: AllTopicsBinding) :
+  private class AllTopicsViewHolder(binding: AllTopicsItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind() {
     }
   }
 
-  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) :
+  inner class TopicListViewHolder(val binding: TopicSummaryItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
 
-      val marginLayoutParams = binding.homeTopicSummaryViewContainer.layoutParams as ViewGroup.MarginLayoutParams
+      val marginLayoutParams = binding.topicSummaryListContainer.layoutParams as ViewGroup.MarginLayoutParams
 
       val marginMax = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
@@ -236,7 +236,7 @@ class TopicListAdapter(
           )
         }
       }
-      binding.homeTopicSummaryViewContainer.layoutParams = marginLayoutParams
+      binding.topicSummaryListContainer.layoutParams = marginLayoutParams
     }
   }
 }

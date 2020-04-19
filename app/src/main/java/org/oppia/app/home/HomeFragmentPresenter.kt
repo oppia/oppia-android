@@ -90,7 +90,7 @@ class HomeFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.homeFragmentRecyclerView.apply {
+    binding.homeFragmentTopicListRecyclerView.apply {
       adapter = topicListAdapter
       // https://stackoverflow.com/a/32763434/32763621
       layoutManager = homeLayoutManager
