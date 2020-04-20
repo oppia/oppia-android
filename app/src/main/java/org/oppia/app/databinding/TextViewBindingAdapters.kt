@@ -9,7 +9,6 @@ import org.oppia.util.system.OppiaDateTimeFormatter
 /** Binds date text with relative time. */
 @BindingAdapter("profile:created")
 fun setProfileDataText(textView: TextView, timestamp: Long) {
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
   val oppiaDateTimeFormatter = OppiaDateTimeFormatter()
   val time = oppiaDateTimeFormatter.formatDateFromDateString(
     OppiaDateTimeFormatter.DD_MMM_YYYY,
@@ -20,8 +19,7 @@ fun setProfileDataText(textView: TextView, timestamp: Long) {
 
 @BindingAdapter("profile:lastVisited")
 fun setProfileLastVisitedText(textView: TextView, timestamp: Long) {
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  textView.text =
+   textView.text =
     String.format(
       textView.context.getString(R.string.profile_last_used) + " " + getTimeAgo(
         timestamp,
@@ -34,8 +32,6 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 private const val DAY_MILLIS = 24 * HOUR_MILLIS
-
-// TODO(#555): Shift this logic to central utility file for date-time related conversions.
 
 fun getTimeAgo(lastVisitedTimeStamp: Long, context: Context): String {
 
