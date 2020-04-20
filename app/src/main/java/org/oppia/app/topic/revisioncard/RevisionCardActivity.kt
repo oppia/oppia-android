@@ -10,7 +10,7 @@ const val TOPIC_ID_ARGUMENT_KEY = "TOPIC_ID_"
 const val SUBTOPIC_ID_ARGUMENT_KEY = "SUBTOPIC_ID"
 
 /** Activity for revision card. */
-class RevisionCardActivity : InjectableAppCompatActivity() {
+class RevisionCardActivity : InjectableAppCompatActivity(), ReturnToTopicClickListener {
 
   @Inject lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
 
@@ -28,5 +28,9 @@ class RevisionCardActivity : InjectableAppCompatActivity() {
       intent.putExtra(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
       return intent
     }
+  }
+
+  override fun onReturnToTopicClicked() {
+    onBackPressed()
   }
 }

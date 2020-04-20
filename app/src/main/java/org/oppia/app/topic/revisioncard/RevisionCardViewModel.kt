@@ -1,6 +1,7 @@
 package org.oppia.app.topic.revisioncard
 
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -18,17 +19,16 @@ import javax.inject.Inject
 /** [ViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
+  activity: AppCompatActivity,
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val fragment: Fragment,
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
   private lateinit var subtopicId: String
   private lateinit var binding: RevisionCardFragmentBinding
-  private val returnToTopicClickListener: ReturnToTopicClickListener =
-    fragment as ReturnToTopicClickListener
+  private val returnToTopicClickListener: ReturnToTopicClickListener = activity as ReturnToTopicClickListener
 
   var subtopicTitle: String = ""
 

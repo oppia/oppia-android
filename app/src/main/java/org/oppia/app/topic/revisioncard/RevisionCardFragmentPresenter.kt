@@ -37,8 +37,4 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private fun getReviewCardViewModel(): RevisionCardViewModel {
     return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
   }
-
-   fun returnToTopic() {
-    fragment.activity!!.onBackPressed()
-  }
 }
