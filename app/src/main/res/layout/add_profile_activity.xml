@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="48dp"
-        android:paddingBottom="160dp">
+        android:paddingBottom="64dp">
 
         <com.jackandphantom.circularimageview.CircleImage
           android:id="@+id/add_profile_activity_user_image_view"
@@ -51,6 +51,18 @@
           app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
           app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
           app:layout_constraintRight_toRightOf="@+id/add_profile_activity_user_image_view" />
+
+        <TextView
+          android:id="@+id/add_profile_activity_required_heading_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="32dp"
+          android:layout_marginTop="32dp"
+          android:layout_marginEnd="32dp"
+          android:text="@string/add_profile_required"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="12sp"
+          app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
         <org.oppia.app.profile.ProfileInputView
           android:id="@+id/add_profile_activity_user_name_profile_input_view"
@@ -84,17 +96,6 @@
           android:src="@drawable/ic_info_icon"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box" />
-
-        <TextView
-          android:id="@+id/add_profile_activity_required_heading_text_view"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="32dp"
-          android:layout_marginEnd="32dp"
-          android:text="@string/add_profile_required"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="12sp"
-          app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/add_profile_activity_pin_constraint_layout"
@@ -140,31 +141,28 @@
             android:layout_marginEnd="32dp"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_input_confirm_pin_profile_input_view">
 
+            <TextView
+              android:id="@+id/add_profile_activity_allow_download_heading_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:fontFamily="sans-serif"
+              android:text="@string/add_profile_allow_download_heading"
+              android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/grey}"
+              android:textSize="16sp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
 
-
-              <TextView
-                android:id="@+id/add_profile_activity_allow_download_heading_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/grey}"
-                android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                />
-
-              <TextView
-                android:id="@+id/add_profile_activity_allow_download_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="@string/add_profile_allow_download_sub"
-                android:textColor="@color/light_grey"
-                android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
-                app:layout_constraintWidth_percent=".8"
-                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+              android:id="@+id/add_profile_activity_allow_download_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:fontFamily="sans-serif"
+              android:text="@string/add_profile_allow_download_sub"
+              android:textColor="@color/light_grey"
+              android:textSize="14sp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
+              app:layout_constraintWidth_percent=".8" />
 
             <Switch
               android:id="@+id/add_profile_activity_allow_download_switch"
