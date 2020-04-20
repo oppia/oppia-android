@@ -180,7 +180,6 @@ class RevisionCardFragmentTest {
     }
   }
 
-
   @After
   fun tearDown() {
     Intents.release()
