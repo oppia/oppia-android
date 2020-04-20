@@ -47,7 +47,7 @@ class OppiaDateTimeFormatterTest {
   fun testFormatDateFromDateString_successFormatToString() {
     assertThat(
       oppiaDateTimeFormatter.formatDateFromDateString(
-        oppiaDateTimeFormatter.dd_MMMM_yyyy,
+        OppiaDateTimeFormatter.DD_MMM_YYYY,
         MORNING_TIMESTAMP
       )
     ).isEqualTo(MORNING_FORMATTED_TIME)

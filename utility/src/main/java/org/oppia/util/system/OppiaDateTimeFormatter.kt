@@ -11,10 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class OppiaDateTimeFormatter @Inject constructor() {
 
-  val dd_MMM_yyyy = "dd MMM yyyy"
-  val hh_mm_a = "hh:mm a"
-  val dd_MMMM_yyyy = "dd MMMM yyyy"
-  val dd_MMMM_yyyy_zzzz = "dd MMMM yyyy zzzz"
+  companion object{
+    val DD_MMM_YYYY = "dd MMMM yyyy"
+  }
 
   fun formatDateFromDateString(
     inputDateFormat: String,
@@ -37,9 +36,10 @@ class OppiaDateTimeFormatter @Inject constructor() {
 
   fun checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp: Long): Long {
     var timeStamp = lastVisitedTimeStamp
-    if (timeStamp < 1000000000000L)
-    // If timestamp is given in seconds, convert that to milliseconds.
+    if (timeStamp < 1000000000000L) {
+      // If timestamp is given in seconds, convert that to milliseconds.
       timeStamp *= 1000
+    }
     return timeStamp
   }
 }

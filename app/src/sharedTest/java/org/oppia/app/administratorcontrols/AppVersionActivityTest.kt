@@ -128,13 +128,12 @@ class AppVersionActivityTest {
   }
 
   // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun getDateTime(l: Long): String? {
-    val dateTime = oppiaDateTimeFormatter.formatDateFromDateString(
-      oppiaDateTimeFormatter.dd_MMMM_yyyy,
-      l,
+  private fun getDateTime(dateTimeTimestamp: Long): String? {
+    return oppiaDateTimeFormatter.formatDateFromDateString(
+      OppiaDateTimeFormatter.DD_MMM_YYYY,
+      dateTimeTimestamp,
       Locale.US
     )
-    return dateTime
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {

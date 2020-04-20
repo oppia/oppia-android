@@ -22,13 +22,11 @@ class AppVersionViewModel @Inject constructor(
     fragment.activity!!.packageManager.getPackageInfo(fragment.activity!!.packageName, /* flags= */ 0).lastUpdateTime
   val lastUpdateDate = ObservableField<String>(getDateTime(lastUpdateDateTime))
 
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun getDateTime(l: Long): String? {
-    val dateTime = oppiaDateTimeFormatter.formatDateFromDateString(
-      oppiaDateTimeFormatter.dd_MMMM_yyyy,
-      l,
+  private fun getDateTime(lastUpdateTime: Long): String? {
+    return oppiaDateTimeFormatter.formatDateFromDateString(
+      OppiaDateTimeFormatter.DD_MMM_YYYY,
+      lastUpdateTime,
       Locale.US
     )
-    return dateTime
   }
 }
