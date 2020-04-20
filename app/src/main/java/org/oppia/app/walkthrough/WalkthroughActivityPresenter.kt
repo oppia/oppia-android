@@ -20,7 +20,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
-  fun handleOnCreate(currentFragmentIndex: Int?) {
+  fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(activity, R.layout.walkthrough_activity)
 
     binding.apply {
@@ -28,8 +28,8 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
-
-    if (currentFragmentIndex == null && getWalkthroughWelcomeFragment() == null) {
+    val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
+    if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
         WalkthroughWelcomeFragment()
