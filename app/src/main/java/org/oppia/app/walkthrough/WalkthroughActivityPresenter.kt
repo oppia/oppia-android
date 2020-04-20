@@ -29,6 +29,7 @@ class WalkthroughActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
     val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
+
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
