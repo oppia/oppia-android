@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class OppiaDateTimeFormatter @Inject constructor() {
 
-  companion object{
+  companion object {
     val DD_MMM_YYYY = "dd MMMM yyyy"
   }
 
