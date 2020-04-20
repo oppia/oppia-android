@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
@@ -16,7 +17,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -82,10 +87,33 @@ class AddProfileActivityPresenter @Inject constructor(
     uploadImageView = binding.addProfileActivityUserImageView as ImageView
     Glide.with(activity)
       .load(R.drawable.ic_default_avatar)
+      .listener(object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+          e: GlideException?,
+          model: Any?,
+          target: Target<Drawable>?,
+          isFirstResource: Boolean
+        ): Boolean {
+          return false
+        }
+
+        override fun onResourceReady(
+          resource: Drawable?,
+          model: Any?,
+          target: Target<Drawable>?,
+          dataSource: DataSource?,
+          isFirstResource: Boolean
+        ): Boolean {
+          uploadImageView.setColorFilter(
+            ResourcesCompat.getColor(activity.getResources(), R.color.avatar_background_11, null),
+            PorterDuff.Mode.DST_OVER
+          )
+          return false
+        }
+
+      })
       .into(uploadImageView)
-    uploadImageView.setColorFilter(
-      ResourcesCompat.getColor(activity.getResources(), R.color.avatar_background_11, null), PorterDuff.Mode.DST_OVER
-    )
+
     addButtonListeners(binding)
 
     binding.addProfileActivityUserNameProfileInputView.post {
