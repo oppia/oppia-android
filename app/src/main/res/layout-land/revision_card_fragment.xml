@@ -91,7 +91,7 @@
             android:layout_gravity="end"
             android:textColor="@color/white"
             android:textSize="14sp"
-             />
+            />
         </LinearLayout>
         <!--TODO(#352): Show worked examples in Review Card.-->
       </ScrollView>

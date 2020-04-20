@@ -141,7 +141,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.revisioncard.RevisionCardActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"
