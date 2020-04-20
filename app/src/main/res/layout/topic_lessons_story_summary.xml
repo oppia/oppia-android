@@ -23,9 +23,9 @@
     android:id="@+id/story_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="28dp"
+    android:layout_marginStart="20dp"
     android:layout_marginTop="12dp"
-    android:layout_marginEnd="28dp"
+    android:layout_marginEnd="20dp"
     android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
@@ -39,9 +39,8 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
@@ -49,6 +48,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center"
+          android:layout_marginTop="24dp"
           android:orientation="vertical">
 
           <FrameLayout
@@ -93,7 +93,7 @@
           <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -102,6 +102,8 @@
               android:id="@+id/story_name_text_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:paddingBottom="4dp"
+              android:paddingTop="24dp"
               android:fontFamily="sans-serif-medium"
               android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:text="@{viewModel.storySummary.storyName}"
@@ -113,7 +115,6 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
-              android:layout_marginTop="4dp"
               android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="16sp" />
@@ -157,7 +158,7 @@
           android:id="@+id/chapter_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="20dp"
+          android:layout_marginTop="8dp"
           android:layout_marginBottom="8dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
       </LinearLayout>
