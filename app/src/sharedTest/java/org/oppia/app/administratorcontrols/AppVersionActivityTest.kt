@@ -32,10 +32,10 @@ import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.util.system.OppiaDateTimeFormatter
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,6 +44,7 @@ import javax.inject.Singleton
 class AppVersionActivityTest {
 
   @Inject lateinit var context: Context
+  @Inject lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
   private lateinit var lastUpdateDate: String
 
   @Before
@@ -125,15 +126,12 @@ class AppVersionActivityTest {
     }
   }
 
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun getDateTime(l: Long): String? {
-    return try {
-      val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.US)
-      val netDate = Date(l)
-      sdf.format(netDate)
-    } catch (e: Exception) {
-      e.toString()
-    }
+  private fun getDateTime(dateTimeTimestamp: Long): String? {
+    return oppiaDateTimeFormatter.formatDateFromDateString(
+      OppiaDateTimeFormatter.DD_MMM_YYYY,
+      dateTimeTimestamp,
+      Locale.US
+    )
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
