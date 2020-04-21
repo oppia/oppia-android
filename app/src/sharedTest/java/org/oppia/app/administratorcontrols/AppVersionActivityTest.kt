@@ -35,7 +35,7 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.util.system.OppiaDateTimeFormatter
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -126,7 +126,6 @@ class AppVersionActivityTest {
     }
   }
 
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
   private fun getDateTime(dateTimeTimestamp: Long): String? {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_YYYY,

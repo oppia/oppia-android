@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class OppiaDateTimeFormatter @Inject constructor() {
 
   companion object {
-    val DD_MMM_YYYY = "dd MMMM yyyy"
+    const val DD_MMM_YYYY = "dd MMMM yyyy"
   }
 
   fun formatDateFromDateString(
