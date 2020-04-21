@@ -1,8 +1,10 @@
 package org.oppia.app.options
 
 import android.content.Intent
+import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -23,7 +25,10 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
     fontSize = prefSummaryValue
 
-    binding.storyTextSizeToolbar.setNavigationOnClickListener {
+    val toolbar = activity.findViewById<View>(R.id.story_text_size_activity_toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+
+    toolbar.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, fontSize)
       (activity as StoryTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)

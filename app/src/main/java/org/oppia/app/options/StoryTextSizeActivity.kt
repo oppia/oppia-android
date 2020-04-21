@@ -3,6 +3,8 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.android.synthetic.main.story_text_size_activity.*
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -28,6 +30,7 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
       intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
     }) as String
     storyTextSizeActivityPresenter.handleOnCreate(prefSummaryValue)
+    title = getString(R.string.title_story_text_size)
   }
 
   companion object {

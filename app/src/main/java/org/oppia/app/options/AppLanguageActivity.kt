@@ -3,6 +3,7 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
     }
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
+    title = getString(R.string.title_app_language)
   }
 
   companion object {

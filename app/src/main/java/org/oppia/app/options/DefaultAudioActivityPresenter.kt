@@ -1,7 +1,9 @@
 package org.oppia.app.options
 
 import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -23,7 +25,10 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
       adapter = languageSelectionAdapter
     }
 
-    binding.audioLanguageToolbar.setNavigationOnClickListener {
+    val toolbar = activity.findViewById<View>(R.id.default_audio_activity_toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+
+    toolbar.setNavigationOnClickListener {
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)

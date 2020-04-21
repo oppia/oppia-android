@@ -3,6 +3,7 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -28,6 +29,7 @@ class DefaultAudioActivity : InjectableAppCompatActivity() {
       intent.getStringExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
     }
     defaultAudioActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
+    title = getString(R.string.title_default_audio)
   }
 
   companion object {
