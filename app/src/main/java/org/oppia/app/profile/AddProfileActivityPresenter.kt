@@ -84,7 +84,7 @@ class AddProfileActivityPresenter @Inject constructor(
       showInfoDialog()
     }
 
-    uploadImageView = binding.addProfileActivityUserImageView as ImageView
+    uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)
       .load(R.drawable.ic_default_avatar)
       .listener(object : RequestListener<Drawable> {
@@ -105,7 +105,7 @@ class AddProfileActivityPresenter @Inject constructor(
           isFirstResource: Boolean
         ): Boolean {
           uploadImageView.setColorFilter(
-            ResourcesCompat.getColor(activity.getResources(), R.color.avatar_background_11, null),
+            ResourcesCompat.getColor(activity.resources, R.color.avatar_background_11, null),
             PorterDuff.Mode.DST_OVER
           )
           return false
@@ -125,8 +125,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.addProfileActivityInputPinProfileInputView.post {
-      addTextChangedListener(binding.addProfileActivityInputPinProfileInputView) { pin ->
+    binding.addProfileActivityPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityPinProfileInputView) { pin ->
         pin?.let {
           profileViewModel.inputPin.set(it.toString())
           profileViewModel.pinErrorMsg.set("")
@@ -135,8 +135,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.addProfileActivityInputConfirmPinProfileInputView.post {
-      addTextChangedListener(binding.addProfileActivityInputConfirmPinProfileInputView) { confirmPin ->
+    binding.addProfileActivityConfirmPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityConfirmPinProfileInputView) { confirmPin ->
         confirmPin?.let {
           profileViewModel.inputConfirmPin.set(it.toString())
           profileViewModel.confirmPinErrorMsg.set("")
@@ -147,8 +147,8 @@ class AddProfileActivityPresenter @Inject constructor(
     }
 
     binding.addProfileActivityUserNameProfileInputView.setInput(profileViewModel.inputName.get().toString())
-    binding.addProfileActivityInputPinProfileInputView.setInput(profileViewModel.inputPin.get().toString())
-    binding.addProfileActivityInputConfirmPinProfileInputView.setInput(profileViewModel.inputConfirmPin.get().toString())
+    binding.addProfileActivityPinProfileInputView.setInput(profileViewModel.inputPin.get().toString())
+    binding.addProfileActivityConfirmPinProfileInputView.setInput(profileViewModel.inputConfirmPin.get().toString())
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -194,8 +194,8 @@ class AddProfileActivityPresenter @Inject constructor(
       var pin = ""
       var confirmPin = ""
       if (checkboxStateClicked) {
-        pin = binding.addProfileActivityInputPinProfileInputView.getInput()
-        confirmPin = binding.addProfileActivityInputConfirmPinProfileInputView.getInput()
+        pin = binding.addProfileActivityPinProfileInputView.getInput()
+        confirmPin = binding.addProfileActivityConfirmPinProfileInputView.getInput()
       }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {

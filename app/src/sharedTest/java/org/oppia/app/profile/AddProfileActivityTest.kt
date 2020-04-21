@@ -122,7 +122,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(click())
-      onView(withId(R.id.add_profile_activity_input_pin_profile_input_view)).check(
+      onView(withId(R.id.add_profile_activity_pin_profile_input_view)).check(
         matches(
           isDisplayed()
         )
@@ -136,8 +136,8 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
         .perform(click())
-      onView(withId(R.id.add_profile_activity_input_pin_profile_input_view)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_input_pin_profile_input_view)).check(
+      onView(withId(R.id.add_profile_activity_pin_profile_input_view)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_pin_profile_input_view)).check(
         matches(
           isDisplayed()
         )
@@ -148,7 +148,7 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_createPin_checkNotVisible() {
     launch(AddProfileActivity::class.java).use {
-      onView(withId(R.id.add_profile_activity_input_pin_profile_input_view)).check(
+      onView(withId(R.id.add_profile_activity_pin_profile_input_view)).check(
         matches(
           not(
             isDisplayed()
@@ -162,7 +162,7 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_changeConfiguration_createPin_checkNotVisible() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.add_profile_activity_input_pin_profile_input_view)).check(
+      onView(withId(R.id.add_profile_activity_pin_profile_input_view)).check(
         matches(
           not(
             isDisplayed()
@@ -188,7 +188,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -197,13 +197,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -233,13 +233,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -248,13 +248,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -569,7 +569,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("12"), closeSoftKeyboard()
@@ -579,7 +579,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
     }
@@ -602,13 +602,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("12"),
@@ -619,7 +619,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(matches(withText(context.getString(R.string.add_profile_error_pin_length))))
     }
@@ -632,7 +632,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("12"), closeSoftKeyboard()
@@ -642,7 +642,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("3"), closeSoftKeyboard()
@@ -650,7 +650,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(
         matches(
@@ -669,7 +669,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("12"),
@@ -679,13 +679,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("3"),
@@ -694,7 +694,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(
         matches(
@@ -719,7 +719,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"), closeSoftKeyboard()
@@ -727,13 +727,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(typeText("12"))
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
@@ -741,7 +741,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(
         matches(
@@ -771,13 +771,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -786,13 +786,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("12"),
@@ -803,13 +803,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(
         matches(
@@ -829,13 +829,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -844,13 +844,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("12"),
@@ -861,13 +861,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("3"),
@@ -876,7 +876,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(matches(withText("")))
     }
@@ -891,7 +891,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("123"),
@@ -900,7 +900,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("12"),
@@ -911,13 +911,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("3"),
@@ -926,7 +926,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(matches(withText("")))
     }
@@ -939,7 +939,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"), closeSoftKeyboard()
@@ -956,7 +956,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("123"),
@@ -973,7 +973,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -982,13 +982,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1007,13 +1007,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1022,13 +1022,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1128,7 +1128,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1138,7 +1138,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
         .check(matches(withText("123")))
@@ -1153,7 +1153,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo()).perform(
         typeText("123"),
@@ -1163,7 +1163,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
         .check(matches(withText("123")))
@@ -1186,7 +1186,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"), closeSoftKeyboard()
@@ -1194,13 +1194,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1217,25 +1217,25 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(matches(withText("123")))
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(matches(withText("123")))
     }
@@ -1257,7 +1257,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1266,7 +1266,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
         .perform(typeText("123"), closeSoftKeyboard())
@@ -1322,7 +1322,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1331,13 +1331,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1347,25 +1347,25 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).check(matches(withText("123")))
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(matches(withText("123")))
     }
@@ -1387,7 +1387,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1396,13 +1396,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("321"),
@@ -1415,7 +1415,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).check(
         matches(
@@ -1434,7 +1434,7 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
@@ -1443,13 +1443,13 @@ class AddProfileActivityTest {
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(scrollTo())
       onView(
         allOf(
           withId(R.id.input),
-          isDescendantOfA(withId(R.id.add_profile_activity_input_confirm_pin_profile_input_view))
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin_profile_input_view))
         )
       ).perform(
         typeText("123"),
