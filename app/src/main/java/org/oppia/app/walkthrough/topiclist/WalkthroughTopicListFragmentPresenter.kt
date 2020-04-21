@@ -50,7 +50,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     walkthroughLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position == 0) {
-          /* number of spaces this item should occupy = */spanCount
+          /* number of spaces this item should occupy = */ spanCount
         } else {
           /* number of spaces this item should occupy = */ 1
         }

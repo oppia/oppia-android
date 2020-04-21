@@ -5,8 +5,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -41,7 +46,6 @@ class WalkthroughActivityTest {
     }
   }
 
-
   @Test
   fun testWalkthroughFragment_increaseProgress_configurationChanged_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
@@ -49,6 +53,21 @@ class WalkthroughActivityTest {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+    }
+  }
+
+  @Test
+  fun testWalkthroughFragment_nextBtn_configurationChanged_backBtn_worksCorrectly() {
+    launch(WalkthroughActivity::class.java).use {
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.back_button)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.walkthrough_welcome_description_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.walkthrough_welcome_description)))
     }
   }
 
