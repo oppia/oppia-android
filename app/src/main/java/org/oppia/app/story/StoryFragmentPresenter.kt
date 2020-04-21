@@ -51,6 +51,10 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
+    binding.storyToolbar.setOnClickListener{
+      binding.toolbarTitle!!.setSelected(true);
+    }
+
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     linearSmoothScroller = createSmoothScroller()
 

@@ -32,9 +32,27 @@
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@{viewModel.storyNameLiveData}"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/white" >
+
+        <TextView
+          android:id="@+id/toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="20sp"
+          android:text="Matthew is a young man who like friends, sports, and eating cake."
+          android:textColor="@color/white"
+          android:ellipsize="marquee"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:focusable="true"
+          android:layout_marginEnd="20dp"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusableInTouchMode="true"
+          android:singleLine="true" />
+      </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
