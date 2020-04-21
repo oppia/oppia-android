@@ -163,7 +163,6 @@ class StateFragmentPresenter @Inject constructor(
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
-        currentState,
         explorationId,
         newAvailableHintIndex,
         allHintsExhausted

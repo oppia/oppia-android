@@ -62,7 +62,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity android:name=".profile.AddProfileActivity" />
@@ -142,7 +141,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.revisioncard.RevisionCardActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"

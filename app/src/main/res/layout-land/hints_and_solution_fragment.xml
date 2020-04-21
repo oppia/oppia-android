@@ -15,27 +15,20 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/hints_and_solution_app_bar_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/hints_and_solution_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="56dp"
         android:background="@color/oppiaDarkBlue"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="56dp"
         android:textSize="20sp"
         app:title="@string/hints_toolbar_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
       android:layout_width="0dp"
@@ -44,7 +37,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       android:background="@color/hintsAndSolutionBackground"
-      app:layout_constraintTop_toBottomOf="@+id/hints_and_solution_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@+id/hints_and_solution_toolbar">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hints_and_solution_recycler_view"
@@ -52,8 +45,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="20dp"
-        android:paddingBottom="168dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="120dp"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"

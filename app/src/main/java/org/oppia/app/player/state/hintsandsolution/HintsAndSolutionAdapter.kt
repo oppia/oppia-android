@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import org.oppia.app.databinding.HintsSummaryBinding
 import org.oppia.app.databinding.SolutionSummaryBinding
 import org.oppia.util.parser.HtmlParser
@@ -22,7 +21,7 @@ class HintsAndSolutionAdapter(
   private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
   private var currentExpandedHintListIndex: Int?,
-  private var explorationId: String,
+  private var explorationId: String?,
   private var htmlParserFactory: HtmlParser.Factory,
   private var entityType: String
 ) :
@@ -101,7 +100,7 @@ class HintsAndSolutionAdapter(
 
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
-        htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+        htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
           .parseOppiaHtml(
             hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
           )
@@ -111,7 +110,6 @@ class HintsAndSolutionAdapter(
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
-          val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
               null
@@ -119,16 +117,6 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
-            notifyItemChanged(currentExpandedHintListIndex!!)
-          } else {
-            if (previousIndex != null) {
-              notifyItemChanged(previousIndex)
-            }
-            if (currentExpandedHintListIndex != null) {
-              notifyItemChanged(currentExpandedHintListIndex!!)
-            }
-          }
         }
       }
 
@@ -169,8 +157,8 @@ class HintsAndSolutionAdapter(
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       binding.solutionCorrectAnswer.text =
-        """${fragment.getString(R.string.the_only_solution_is)}${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
-      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
+        """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
+      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
         .parseOppiaHtml(
           solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
         )

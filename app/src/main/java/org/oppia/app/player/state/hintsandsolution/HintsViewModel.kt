@@ -11,6 +11,10 @@ import javax.inject.Inject
 @FragmentScope
 class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
+  val newAvailableHintIndex = ObservableField<Int>(-1)
+  val allHintsExhausted = ObservableField<Boolean>(false)
+  val explorationId = ObservableField<String>("")
+
   val title = ObservableField<String>("")
   val hintsAndSolutionSummary = ObservableField<String>("")
   val isHintRevealed = ObservableField<Boolean>(false)
@@ -18,7 +22,6 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
-  private lateinit var explorationId: String
   private val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
 
   fun setHintsList(hintList: List<Hint>) {
@@ -52,9 +55,5 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
       itemList.add(solutionViewModel)
     }
     return itemList
-  }
-
-  fun setExplorationId(explorationId: String) {
-    this.explorationId = explorationId
   }
 }

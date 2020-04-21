@@ -1,8 +1,8 @@
 package org.oppia.data.backends
 
-import org.json.JSONObject
-import org.json.JSONException
 import java.io.FileInputStream
+import org.json.JSONException
+import org.json.JSONObject
 
 /** A class that loads json responses for test cases */
 class ApiUtils {

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
@@ -120,14 +119,12 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   override fun routeToHintsAndSolution(
-    newState: State,
     explorationId: String,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment()
-      hintsAndSolutionFragment.setStateAndExplorationId(newState, explorationId, newAvailableHintIndex, allHintsExhausted)
+      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
