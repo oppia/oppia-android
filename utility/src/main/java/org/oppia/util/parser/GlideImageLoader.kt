@@ -2,11 +2,12 @@ package org.oppia.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.bumptech.glide.Glide
+import android.net.Uri
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.target.CustomTarget
-import javax.inject.Inject
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
+import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */
 class GlideImageLoader @Inject constructor(
@@ -22,9 +23,16 @@ class GlideImageLoader @Inject constructor(
         override fun getImageIdentifier(): String = imageUrl
       }
     } else imageUrl
-    Glide.with(context)
-      .asBitmap()
-      .load(model)
-      .into(target)
+//    Glide.with(context)
+//      .asBitmap()
+//      .load(model)
+//      .into(target)
+
+    val requestBuilder: RequestBuilder<Bitmap?> = GlideApp.with(context)
+      .`as`(Bitmap::class.java)
+      .listener(SvgSoftwareLayerSetter())
+
+    val uri: Uri = Uri.parse("https://drive.google.com/a/google.com/file/d/1wqnklWExa7t926Yv2KRBG5q64Vv__X8m/view?usp=sharing")
+    requestBuilder.load(uri).into(target)
   }
 }
