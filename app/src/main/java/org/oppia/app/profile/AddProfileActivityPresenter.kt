@@ -9,10 +9,12 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -59,9 +61,6 @@ class AddProfileActivityPresenter @Inject constructor(
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.add_profile_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
       activity,
@@ -83,6 +82,11 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.addProfileActivityInfoImageView.setOnClickListener {
       showInfoDialog()
     }
+    val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar?.title = activity.getString(R.string.add_profile_title)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)
