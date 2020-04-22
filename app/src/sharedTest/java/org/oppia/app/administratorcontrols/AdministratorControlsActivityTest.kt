@@ -64,6 +64,7 @@ import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.robolectric.shadows.ShadowDialog.getLatestDialog
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -241,9 +242,8 @@ class AdministratorControlsActivityTest {
     ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
       onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.log_out_text_view)).perform(click())
-      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
+      assert(getLatestDialog().isShowing)
+      getLatestDialog().dismiss()
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
   }
