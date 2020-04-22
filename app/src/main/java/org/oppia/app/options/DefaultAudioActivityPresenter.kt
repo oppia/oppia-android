@@ -25,7 +25,7 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
       adapter = languageSelectionAdapter
     }
 
-    val toolbar = activity.findViewById<View>(R.id.default_audio_activity_toolbar) as Toolbar
+    val toolbar = binding.defaultAudioActivityToolbar as Toolbar
     activity.setSupportActionBar(toolbar)
 
     toolbar.setNavigationOnClickListener {

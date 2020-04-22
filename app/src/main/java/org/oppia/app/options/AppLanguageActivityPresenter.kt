@@ -24,7 +24,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
       adapter = languageSelectionAdapter
     }
 
-    val toolbar = activity.findViewById<View>(R.id.app_language_activity_toolbar) as Toolbar
+    val toolbar = binding.appLanguageActivityToolbar as Toolbar
     activity.setSupportActionBar(toolbar)
 
     toolbar.setNavigationOnClickListener {

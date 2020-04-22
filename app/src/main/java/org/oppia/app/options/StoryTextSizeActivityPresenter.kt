@@ -25,7 +25,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
     fontSize = prefSummaryValue
 
-    val toolbar = activity.findViewById<View>(R.id.story_text_size_activity_toolbar) as Toolbar
+    val toolbar = binding.storyTextSizeActivityToolbar as Toolbar
     activity.setSupportActionBar(toolbar)
 
     toolbar.setNavigationOnClickListener {
