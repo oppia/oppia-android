@@ -74,6 +74,13 @@ class OnboardingFragmentPresenter @Inject constructor(
     getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
     binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
   }
+  fun clickOnNext() {
+    val position: Int = binding.onboardingSlideViewPager.currentItem+1
+    binding.onboardingSlideViewPager.currentItem=position
+      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
+      selectDot(position)
+
+    }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
@@ -98,7 +105,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       params.setMargins(
         activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
         0,
-        activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
+        0,
         0
       )
       dotsLayout.addView(dotView, params)

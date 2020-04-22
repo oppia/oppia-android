@@ -43,16 +43,15 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/get_started_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="56dp"
-        android:paddingEnd="56dp"
-        android:paddingBottom="24dp"
-        android:visibility="@{viewModel.slideNumber == (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=gone}">
+        android:layout_height="wrap_content">
 
         <Button
           android:id="@+id/get_started_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="56dp"
+          android:layout_marginEnd="56dp"
+          android:layout_marginBottom="32dp"
           android:background="@drawable/primary_rounded_button"
           android:fontFamily="sans-serif-medium"
           android:minHeight="48dp"
@@ -60,45 +59,65 @@
           android:text="@string/get_started"
           android:textColor="@color/white"
           android:textSize="14sp"
-          app:layout_constraintBottom_toBottomOf="parent"
+          android:visibility="@{viewModel.slideNumber == (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=gone}"
+          app:layout_constraintBottom_toTopOf="@+id/onboarding_fragment_divider_view"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottom_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="28dp"
-        android:paddingEnd="28dp"
-        android:paddingBottom="20dp"
-        android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}">
+        <View
+          android:id="@+id/onboarding_fragment_divider_view"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_marginBottom="16dp"
+          android:background="@color/oppiaPrimaryText"
+          app:layout_constraintBottom_toTopOf="@+id/slide_dots_container" />
 
         <LinearLayout
           android:id="@+id/slide_dots_container"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="32dp"
+          android:layout_marginBottom="16dp"
+          android:minHeight="48dp"
+          android:gravity="center"
           android:orientation="horizontal"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+          android:id="@+id/onboarding_fragment_next_image_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="32dp"
+          android:gravity="center"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:onClick="@{(v) -> presenter.clickOnNext()}"
+          android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}"
+          android:paddingStart="12dp"
+          android:paddingEnd="12dp"
+          android:src="@drawable/ic_arrow_forward_black_24dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
 
         <TextView
           android:id="@+id/skip_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginStart="32dp"
           android:fontFamily="sans-serif-medium"
           android:gravity="center"
+          android:minWidth="48dp"
           android:minHeight="48dp"
           android:onClick="@{(v) -> presenter.clickOnSkip()}"
           android:text="@string/skip"
           android:textAllCaps="true"
-          android:textColor="@color/colorPrimary"
+          android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
-          app:layout_constraintBottom_toBottomOf="@+id/slide_dots_container"
-          app:layout_constraintEnd_toEndOf="parent"
+          android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}"
+          app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="@+id/slide_dots_container" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
