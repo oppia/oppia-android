@@ -6,7 +6,7 @@
   android:layout_height="?attr/actionBarSize"
   android:background="?attr/colorPrimary"
   android:minHeight="?attr/actionBarSize"
-  android:textSize="20sp"
+  app:titleTextAppearance="@style/ToolbarTextAppearance"
   android:fontFamily="sans-serif"
   app:navigationContentDescription="@string/go_to_previous_page"
   app:navigationIcon="?attr/homeAsUpIndicator"
