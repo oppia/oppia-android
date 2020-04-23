@@ -26,10 +26,6 @@ class ProfileProgressFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.lifecycleOwner = fragment
-
-    binding.profileProgressToolbar.setNavigationOnClickListener {
-      (activity as ProfileProgressActivity).finish()
-    }
     binding.profileProgressList.apply {
       layoutManager = LinearLayoutManager(activity)
       adapter = createRecyclerViewAdapter()

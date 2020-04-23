@@ -62,7 +62,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity android:name=".profile.AddProfileActivity" />
@@ -70,7 +69,9 @@
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity android:name=".profile.AdminPinActivity" />
+    <activity
+      android:name=".profile.AdminPinActivity"
+      android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".profile.PinPasswordActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
@@ -116,10 +117,15 @@
     <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
+    <activity android:name=".testing.HomeInjectionActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.HomeTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.StoryFragmentTestActivity"
@@ -135,7 +141,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:name=".topic.revisioncard.RevisionCardActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"

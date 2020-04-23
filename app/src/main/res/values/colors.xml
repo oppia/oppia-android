@@ -5,7 +5,7 @@
   <color name="colorAccent">#2D4A9D</color>
   <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
-  <color name="colorConceptToolbarBackground">#C55F45</color>
+  <color name="colorConceptToolbarBackground">#BE563C</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
   <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
@@ -19,6 +19,7 @@
   <color name="oppiaLightGreen">#F0FFFF</color>
   <color name="oppiaLightBlue">#4DA5D3EC</color>
   <color name="oppiaLightYellow">#FFFFF0</color>
+  <color name="oppiaBrownDark">#BE563C</color>
   <color name="oppiaBrown">#C55F45</color>
   <color name="oppiaLightBrown">#E76F51</color>
   <color name="oppiaBackground">#F2F2F2</color>
@@ -34,6 +35,7 @@
   <color name="oppiaDashedDivider">#80707070</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
+  <color name="oppiaProfileChooserDivider">#707070</color>
   <color name="oppiaNavDrawerItemSelected">#D8D8D8</color>
   <!-- BASIC COLORS -->
   <color name="white">#FFFFFF</color>
@@ -55,8 +57,10 @@
   <!-- PROFILE COMPONENT -->
   <color name="avatarBorder">#707070</color>
   <color name="addProfileBackground">#FFFFF0</color>
+  <color name="hintsAndSolutionBackground">#E4F2F1</color>
   <color name="pinPasswordBackground">#E4F2F1</color>
   <color name="profileChooserBackground">#212121</color>
+  <color name="profileChooserGreyTextColor">#999999</color>
   <color name="profileImagePlaceHolder">#26A69A</color>
   <color name="profileEditBackground">#E5E5E5</color>
   <color name="generalNavigationBackground">#E5E5E5</color>
@@ -129,4 +133,6 @@
   <color name="avatar_background_24">#CC2970</color>
   <!-- StoryTextSizeActivity -->
   <color name="seekbarDivider">#707070</color>
+  <color name="topicThumbnailBackground">#C6DCDA</color>
+  <color name="topicTitleBackground">#2F6687</color>
 </resources>
