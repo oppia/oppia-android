@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.walkthrough.welcome.WalkthroughWelcomeViewModel" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragmentPresenter" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+      android:id="@+id/walkthrough_welcome_title_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.profileName}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/walkthrough_welcome_image_view"
+      app:layout_constraintTop_toTopOf="@+id/walkthrough_welcome_image_view"
+      tools:text="Welcome Rajat" />
+
+    <TextView
+      android:id="@+id/walkthrough_welcome_description_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="52dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginEnd="56dp"
+      android:fontFamily="sans-serif"
+      android:text="@string/walkthrough_welcome_description"
+      android:textAlignment="center"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="20sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/walkthrough_welcome_image_view"
+      app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_title_text_view" />
+
+    <ImageView
+      android:id="@+id/walkthrough_welcome_image_view"
+      android:layout_width="180dp"
+      android:layout_height="180dp"
+      android:layout_marginStart="56dp"
+      android:src="@drawable/ic_onboarding_0"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+      android:id="@+id/walkthrough_welcome_next_button"
+      style="@style/StateButtonActive"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      android:layout_marginTop="12dp"
+      android:onClick="@{(v) -> presenter.changePage()}"
+      android:text="@string/next"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/walkthrough_welcome_image_view"
+      app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_description_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
