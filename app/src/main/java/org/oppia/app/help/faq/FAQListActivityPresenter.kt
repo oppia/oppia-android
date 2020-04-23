@@ -21,13 +21,11 @@ class FAQListActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    faqListActivityToolbar = binding.faqListActivityToolbar
+    faqListActivityToolbar = binding.faqListActivityToolbar as Toolbar
     activity.setSupportActionBar(faqListActivityToolbar)
     activity.supportActionBar!!.title = activity.getString(R.string.FAQs)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.faqListActivityToolbar.setNavigationOnClickListener {
+    faqListActivityToolbar.setNavigationOnClickListener {
       (activity as FAQListActivity).finish()
     }
 

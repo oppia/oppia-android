@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.OngoingTopicItemBinding
 import org.oppia.app.databinding.OngoingTopicListFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
@@ -26,7 +28,11 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
     binding = OngoingTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     viewModel.setProfileId(internalProfileId)
 
-    binding.ongoingTopicListToolbar.setNavigationOnClickListener {
+    val toolbar = binding.ongoingTopicListToolbar as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar!!.setTitle(R.string.topics_in_progress)
+
+    toolbar.setNavigationOnClickListener {
       (activity as OngoingTopicListActivity).finish()
     }
 

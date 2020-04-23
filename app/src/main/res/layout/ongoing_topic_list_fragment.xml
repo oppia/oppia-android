@@ -23,18 +23,9 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <androidx.appcompat.widget.Toolbar
+      <include
         android:id="@+id/ongoing_topic_list_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
-        app:navigationContentDescription="@string/go_to_previous_page"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/topics_in_progress"
-        app:titleTextColor="@color/white" />
+        layout="@layout/back_arrow_toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

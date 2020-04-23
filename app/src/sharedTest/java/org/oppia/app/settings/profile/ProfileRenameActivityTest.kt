@@ -151,11 +151,11 @@ class ProfileRenameActivityTest {
   fun testProfileRenameActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
     launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-        typeText("test"),
+        typeText("Test"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("test")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("Test")))
     }
   }
 

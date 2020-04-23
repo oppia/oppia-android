@@ -24,13 +24,11 @@ class FAQSingleActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    faqSingleActivityToolbar = binding.faqSingleActivityToolbar
+    faqSingleActivityToolbar = binding.faqSingleActivityToolbar as Toolbar
     activity.setSupportActionBar(faqSingleActivityToolbar)
     activity.supportActionBar!!.title = activity.resources.getString(R.string.FAQs)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.faqSingleActivityToolbar.setNavigationOnClickListener {
+    faqSingleActivityToolbar.setNavigationOnClickListener {
       (activity as FAQSingleActivity).finish()
     }
     activity.faq_question_text_view.text = question

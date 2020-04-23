@@ -8,7 +8,7 @@
 
   <include
     android:id="@+id/profile_progress_activity_toolbar"
-    layout="@layout/toolbar" />
+    layout="@layout/back_arrow_toolbar" />
 
   <FrameLayout
     android:layout_width="match_parent"

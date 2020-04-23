@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/back_arrow_toolbar"
+  android:layout_width="match_parent"
+  android:layout_height="56dp"
+  android:background="?attr/colorPrimary"
+  android:minHeight="56dp"
+  app:titleTextAppearance="@style/ToolbarTextAppearance"
+  android:fontFamily="sans-serif"
+  app:navigationContentDescription="@string/go_to_previous_page"
+  app:navigationIcon="?attr/homeAsUpIndicator"
+  app:titleTextColor="@color/white"/>

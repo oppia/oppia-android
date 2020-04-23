@@ -4,6 +4,7 @@ import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.app.R
@@ -31,8 +32,6 @@ class ProfileResetPinActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.title = activity.getString(R.string.profile_reset_pin_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
     val binding =
       DataBindingUtil.setContentView<ProfileResetPinActivityBinding>(activity, R.layout.profile_reset_pin_activity)
@@ -40,7 +39,10 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     val isAdmin = activity.intent.getBooleanExtra(KEY_PROFILE_RESET_PIN_IS_ADMIN, false)
     resetViewModel.isAdmin.set(isAdmin)
 
-    binding.profileResetPinToolbar.setNavigationOnClickListener {
+    val toolbar = binding.profileResetPinToolbar as Toolbar
+    activity.setSupportActionBar(toolbar)
+
+    toolbar.setNavigationOnClickListener {
       (activity as ProfileResetPinActivity).finish()
     }
 

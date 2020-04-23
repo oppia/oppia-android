@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.CompletedStoryItemBinding
 import org.oppia.app.databinding.CompletedStoryListFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
@@ -26,7 +28,12 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
     viewModel.setProfileId(internalProfileId)
 
     binding = CompletedStoryListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.completedStoryListToolbar.setNavigationOnClickListener {
+
+    val toolbar = binding.completedStoryListFragmentToolbar as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar!!.setTitle(R.string.stories_completed)
+
+    toolbar.setNavigationOnClickListener {
       (activity as CompletedStoryListActivity).finish()
     }
     binding.completedStoryList.apply {

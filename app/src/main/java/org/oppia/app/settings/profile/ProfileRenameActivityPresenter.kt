@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.app.R
@@ -31,8 +32,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.title = activity.getString(R.string.profile_rename_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
     val binding =
       DataBindingUtil.setContentView<ProfileRenameActivityBinding>(activity, R.layout.profile_rename_activity)
@@ -43,7 +42,10 @@ class ProfileRenameActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    binding.profileRenameToolbar.setNavigationOnClickListener {
+    val toolbar = binding.profileRenameActivityToolbar as Toolbar
+    activity.setSupportActionBar(toolbar)
+
+    toolbar.setNavigationOnClickListener {
       (activity as ProfileRenameActivity).finish()
     }
 

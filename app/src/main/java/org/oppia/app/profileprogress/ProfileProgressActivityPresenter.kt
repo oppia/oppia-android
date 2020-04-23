@@ -1,6 +1,8 @@
 package org.oppia.app.profileprogress
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +42,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
     activity.supportActionBar!!.setTitle(R.string.profile)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    toolbar.navigationIcon!!.setColorFilter(Color.WHITE,PorterDuff.Mode.SRC_IN)
     toolbar.setNavigationOnClickListener {
       activity.finish()
     }

@@ -1,6 +1,7 @@
 package org.oppia.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -18,12 +19,14 @@ class ProfileListActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.profile_list_activity_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
     val binding = DataBindingUtil.setContentView<ProfileListActivityBinding>(activity, R.layout.profile_list_activity)
-    binding.profileListToolbar.setNavigationOnClickListener {
+
+    val toolbar = binding.profileListToolbar as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.title = activity.getString(R.string.profile_list_activity_title)
+
+    toolbar.setNavigationOnClickListener {
       (activity as ProfileListActivity).finish()
     }
     binding.apply {
