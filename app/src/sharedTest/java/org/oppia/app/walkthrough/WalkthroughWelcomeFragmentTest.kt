@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -90,7 +90,7 @@ class WalkthroughWelcomeFragmentTest {
   fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
       onView(allOf(withId(R.id.walkthrough_welcome_title_text_view), isCompletelyDisplayed())).check(matches(withText("Welcome Sean!")))
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.walkthrough_welcome_title_text_view), isCompletelyDisplayed())).check(matches(withText("Welcome Sean!")))
     }
   }

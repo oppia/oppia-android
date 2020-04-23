@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [WalkthroughTopicListFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -71,7 +71,7 @@ class WalkthroughTopicListFragmentTest {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.walkthrough_topic_recycler_view, 1, R.id.walkthrough_topic_name_text_view)).check(
         matches(
           withText(containsString("First Topic"))
