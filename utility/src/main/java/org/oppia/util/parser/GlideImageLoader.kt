@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
@@ -30,9 +32,12 @@ class GlideImageLoader @Inject constructor(
 
     val requestBuilder: RequestBuilder<Bitmap?> = GlideApp.with(context)
       .`as`(Bitmap::class.java)
+      .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
       .listener(SvgSoftwareLayerSetter())
 
-    val uri: Uri = Uri.parse("https://drive.google.com/a/google.com/file/d/1wqnklWExa7t926Yv2KRBG5q64Vv__X8m/view?usp=sharing")
-    requestBuilder.load(uri).into(target)
+    val uri: Uri = Uri.parse("https://cdn.shopify.com/s/files/1/0496/1029/files/Freesample.svg")
+    requestBuilder.load(uri)
+      .disallowHardwareConfig()
+      .into(target)
   }
 }
