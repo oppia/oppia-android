@@ -67,7 +67,7 @@
       android:windowSoftInputMode="adjustResize" />
     <activity
       android:name=".profile.AddProfileActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
