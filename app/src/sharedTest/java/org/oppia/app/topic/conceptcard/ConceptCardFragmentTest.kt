@@ -2,7 +2,6 @@ package org.oppia.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -22,7 +21,6 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
