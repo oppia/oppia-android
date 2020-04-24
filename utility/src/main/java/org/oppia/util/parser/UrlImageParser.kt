@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.PictureDrawable
 import android.text.Html
 import android.view.ViewTreeObserver
 import android.widget.TextView
@@ -36,11 +37,20 @@ class UrlImageParser private constructor(
   override fun getDrawable(urlString: String): Drawable {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
-    val target = BitmapTarget(urlDrawable)
-    imageLoader.load(
-      gcsPrefix + gcsResource + imageUrl,
-      target
-    )
+    if (imageUrl.endsWith("svg")) {
+      val target = SvgBitmapTarget(urlDrawable)
+      imageLoader.loadSvg(
+        gcsPrefix + gcsResource + imageUrl,
+        target
+      )
+    } else {
+      // do something
+      val target = BitmapTarget(urlDrawable)
+      imageLoader.load(
+        gcsPrefix + gcsResource + imageUrl,
+        target
+      )
+    }
     return urlDrawable
   }
 
@@ -60,7 +70,40 @@ class UrlImageParser private constructor(
           } else {
             0
           }
-          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          val rect =
+            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          drawable.bounds = rect
+          urlDrawable.bounds = rect
+          urlDrawable.drawable = drawable
+          htmlContentTextView.text = htmlContentTextView.text
+          htmlContentTextView.invalidate()
+        }
+      }
+    }
+  }
+
+  private inner class SvgBitmapTarget(private val urlDrawable: UrlDrawable) :
+    CustomTarget<PictureDrawable>() {
+    override fun onLoadCleared(placeholder: Drawable?) {
+      // No resources to clear.
+    }
+
+    override fun onResourceReady(
+      resource: PictureDrawable,
+      transition: Transition<in PictureDrawable>?
+    ) {
+      val drawable = PictureDrawable(resource.picture)
+      htmlContentTextView.post {
+        htmlContentTextView.width {
+          val drawableHeight = drawable.intrinsicHeight
+          val drawableWidth = drawable.intrinsicWidth
+          val initialDrawableMargin = if (imageCenterAlign) {
+            calculateInitialMargin(it, drawableWidth)
+          } else {
+            0
+          }
+          val rect =
+            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
           drawable.bounds = rect
           urlDrawable.bounds = rect
           urlDrawable.drawable = drawable
