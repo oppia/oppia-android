@@ -28,12 +28,35 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
-    if (getWalkthroughWelcomeFragment() == null) {
+    val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
+
+    if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.walkthrough_fragment_placeholder,
         WalkthroughWelcomeFragment()
       ).commitNow().also {
         getWalkthroughViewModel().currentProgress.set(1)
+      }
+    } else if (currentFragmentIndex != null) {
+      when (currentFragmentIndex) {
+        0 -> activity.supportFragmentManager.beginTransaction().replace(
+          R.id.walkthrough_fragment_placeholder,
+          getWalkthroughWelcomeFragment() ?: WalkthroughWelcomeFragment()
+        ).commitNow().also {
+          getWalkthroughViewModel().currentProgress.set(1)
+        }
+        1 -> activity.supportFragmentManager.beginTransaction().replace(
+          R.id.walkthrough_fragment_placeholder,
+          getWalkthroughTopicListFragment() ?: WalkthroughTopicListFragment()
+        ).commitNow().also {
+          getWalkthroughViewModel().currentProgress.set(2)
+        }
+        2 -> activity.supportFragmentManager.beginTransaction().replace(
+          R.id.walkthrough_fragment_placeholder,
+          getWalkthroughFinalFragment() ?: WalkthroughFinalFragment()
+        ).commitNow().also {
+          getWalkthroughViewModel().currentProgress.set(3)
+        }
       }
     }
   }
@@ -52,6 +75,14 @@ class WalkthroughActivityPresenter @Inject constructor(
 
   private fun getWalkthroughWelcomeFragment(): WalkthroughWelcomeFragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughWelcomeFragment?
+  }
+
+  private fun getWalkthroughTopicListFragment(): WalkthroughTopicListFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughTopicListFragment?
+  }
+
+  private fun getWalkthroughFinalFragment(): WalkthroughFinalFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughFinalFragment?
   }
 
   fun changePage(pageNumber: Int) {
