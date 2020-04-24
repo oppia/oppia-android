@@ -98,13 +98,9 @@ class ConceptCardFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    activityScenario.recreate()
+    onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
