@@ -44,7 +44,6 @@ class UrlImageParser private constructor(
         target
       )
     } else {
-      // do something
       val target = BitmapTarget(urlDrawable)
       imageLoader.load(
         gcsPrefix + gcsResource + imageUrl,
