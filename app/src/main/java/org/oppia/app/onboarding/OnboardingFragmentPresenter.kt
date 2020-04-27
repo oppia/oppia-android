@@ -49,9 +49,10 @@ class OnboardingFragmentPresenter @Inject constructor(
       ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
         val position: Int = binding.onboardingSlideViewPager.currentItem
-        if (state.equals(1) && binding.onboardingSlideViewPager.currentItem > 0)
+        if (state == 1 && binding.onboardingSlideViewPager.currentItem > 0) {
           getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position - 1))
-        if (state.equals(0)) {
+        }
+        if (state == 0) {
           getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
           selectDot(position)
         }
@@ -74,13 +75,13 @@ class OnboardingFragmentPresenter @Inject constructor(
     getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
     binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
   }
-  fun clickOnNext() {
-    val position: Int = binding.onboardingSlideViewPager.currentItem+1
-    binding.onboardingSlideViewPager.currentItem=position
-      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
-      selectDot(position)
 
-    }
+  fun clickOnNext() {
+    val position: Int = binding.onboardingSlideViewPager.currentItem + 1
+    binding.onboardingSlideViewPager.currentItem = position
+    getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
+    selectDot(position)
+  }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
