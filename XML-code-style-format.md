@@ -1,5 +1,4 @@
 
-## Problem Statement
 Android Code Style improves productivity. When working alone on your apps you don’t have problems with your manual code formatting. Whereas while multiple developers, with multiple opinions, multiple operating systems and multiple screen sizes work on the same code base, if you don’t let a tool format your code, discussions about the formatting may arise or worse, different formatting and sorting increases diffs and can cause completely unnecessary merge conflicts. This will slow down development for no reason.
 
 It’s professional to have common formatting throughout the project. It helps the project to be ready to scale to two or more developers.
