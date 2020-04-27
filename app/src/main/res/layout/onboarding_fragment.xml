@@ -45,26 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-          android:id="@+id/get_started_button"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="56dp"
-          android:layout_marginEnd="56dp"
-          android:layout_marginBottom="32dp"
-          android:background="@drawable/primary_rounded_button"
-          android:fontFamily="sans-serif-medium"
-          android:minHeight="48dp"
-          android:onClick="@{(v) -> presenter.clickOnGetStarted()}"
-          android:text="@string/get_started"
-          android:textColor="@color/white"
-          android:textSize="14sp"
-          android:visibility="@{viewModel.slideNumber == (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=gone}"
-          app:layout_constraintBottom_toTopOf="@+id/onboarding_fragment_divider_view"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
         <View
           android:id="@+id/onboarding_fragment_divider_view"
           android:layout_width="match_parent"
@@ -95,7 +75,7 @@
           android:minWidth="48dp"
           android:minHeight="48dp"
           android:onClick="@{(v) -> presenter.clickOnNext()}"
-          android:visibility="@{viewModel.slideNumber != (viewModel.totalNumberOfSlides - 1) ? View.VISIBLE: View.GONE, default=visible}"
+          android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
           android:paddingStart="12dp"
           android:paddingEnd="12dp"
           android:src="@drawable/ic_arrow_forward_black_24dp"

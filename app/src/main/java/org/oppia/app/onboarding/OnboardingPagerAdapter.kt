@@ -7,12 +7,25 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.app.databinding.OnboardingSlideBinding
+import org.oppia.app.databinding.OnboardingSlideFinalBinding
 
 /** Adapter to control the slide details in onboarding flow. */
-class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
+class OnboardingPagerAdapter(
+  val context: Context,
+  val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
+) : PagerAdapter() {
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
+    if (position == 3) {
+      val binding =
+        OnboardingSlideFinalBinding.inflate(LayoutInflater.from(context), container, false)
+      binding.viewModel = onboardingSlideFinalViewModel
+      container.addView(binding.root)
+      return binding.root
+    }
+
     val binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
-    val onboardingSlideViewModel = OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
+    val onboardingSlideViewModel =
+      OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel
     container.addView(binding.root)
     return binding.root

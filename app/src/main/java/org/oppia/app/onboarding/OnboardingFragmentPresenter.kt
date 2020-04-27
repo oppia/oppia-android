@@ -12,7 +12,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.onboarding.OnboardingFlowController
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -20,8 +19,8 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val onboardingFlowController: OnboardingFlowController,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
+  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
@@ -43,48 +42,53 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
+    onboardingPagerAdapter =
+      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
     binding.onboardingSlideViewPager.addOnPageChangeListener(object :
       ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
-        val position: Int = binding.onboardingSlideViewPager.currentItem
-        if (state == 1 && binding.onboardingSlideViewPager.currentItem > 0) {
-          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position - 1))
-        }
-        if (state == 0) {
-          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
-          selectDot(position)
-        }
       }
 
       override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
       }
 
       override fun onPageSelected(position: Int) {
+        if (position == 3) {
+          binding.onboardingSlideViewPager.currentItem = 3
+          getOnboardingViewModel().slideChanged(3)
+        } else {
+          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+        }
+        selectDot(position)
       }
     })
   }
 
-  fun clickOnGetStarted() {
-    onboardingFlowController.markOnboardingFlowCompleted()
-    routeToProfileListener.routeToProfileList()
-  }
-
   fun clickOnSkip() {
-    getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
-    binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
+    binding.onboardingSlideViewPager.currentItem = 3
   }
 
   fun clickOnNext() {
     val position: Int = binding.onboardingSlideViewPager.currentItem + 1
     binding.onboardingSlideViewPager.currentItem = position
-    getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
+    if (position != 3) {
+      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+    } else {
+      getOnboardingViewModel().slideChanged(3)
+    }
     selectDot(position)
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
+  }
+
+  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
+    return viewModelProviderFinalSlide.getForFragment(
+      fragment,
+      OnboardingSlideFinalViewModel::class.java
+    )
   }
 
   private fun addDots() {

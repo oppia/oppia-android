@@ -52,7 +52,6 @@
         android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-medium"
         android:minHeight="48dp"
-        android:onClick="@{(v) -> presenter.clickOnGetStarted()}"
         android:text="@string/get_started"
         android:textColor="@color/white"
         android:textSize="14sp"
