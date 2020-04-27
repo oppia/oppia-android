@@ -8,6 +8,7 @@ import com.caverock.androidsvg.SVG
 import java.io.File
 import java.io.FileOutputStream
 
+/** Encodes an SVG internal representation to {@link FileOutputStream}. */
 class SvgEncoder : ResourceEncoder<SVG?> {
 
   override fun getEncodeStrategy(options: Options): EncodeStrategy {
