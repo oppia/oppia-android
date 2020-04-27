@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="colorPrimary">#00645C</color>
-  <color name="colorPrimaryDark">#00574B</color>
+  <color name="colorPrimaryDark">#003933</color>
   <color name="colorAccent">#2D4A9D</color>
   <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
@@ -138,7 +138,6 @@
   <!-- STATUS BAR COLORS -->
   <color name="profile_status_bar">#000000</color>
   <color name="hint_full_dialog_status_bar">#00236E</color>
-  <color name="headers_status_bar">#00574B</color>
   <color name="slide_drawer_open_status_bar">#001F2A</color>
   <color name="concept_card_status_bar">#882814</color>
   <color name="pin_input_status_bar">#BDCCCC</color>

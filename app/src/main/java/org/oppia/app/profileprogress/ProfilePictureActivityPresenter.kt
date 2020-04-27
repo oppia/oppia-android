@@ -14,6 +14,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [ProfilePictureActivity]. */
@@ -27,6 +28,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
+    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
     val binding = DataBindingUtil.setContentView<ProfilePictureActivityBinding>(activity, R.layout.profile_picture_activity)
     profilePictureActivityViewModel = ProfilePictureActivityViewModel()
 

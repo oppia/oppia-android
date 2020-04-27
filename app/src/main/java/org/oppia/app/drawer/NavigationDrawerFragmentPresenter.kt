@@ -254,7 +254,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.headers_status_bar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
@@ -280,7 +280,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.headers_status_bar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
