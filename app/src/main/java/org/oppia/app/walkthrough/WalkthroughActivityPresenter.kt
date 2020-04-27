@@ -9,6 +9,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughActivity]. */
@@ -28,6 +29,7 @@ class WalkthroughActivityPresenter @Inject constructor(
       presenter = this@WalkthroughActivityPresenter
       lifecycleOwner = activity
     }
+    StatusBarColor.statusBarColorUpdate(R.color.walkthrough_status_bar, activity, true)
     val currentFragmentIndex = getWalkthroughViewModel().currentProgress.get()?.minus(1)
 
     if (currentFragmentIndex == -1 && getWalkthroughWelcomeFragment() == null) {

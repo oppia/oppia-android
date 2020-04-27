@@ -13,6 +13,7 @@ import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -55,8 +56,18 @@ class OnboardingFragmentPresenter @Inject constructor(
       override fun onPageSelected(position: Int) {
         getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
         selectDot(position)
+        onboardingStatusBarColorUpdate(position)
       }
     })
+  }
+
+  private fun onboardingStatusBarColorUpdate(position: Int) {
+    when (position) {
+      0 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding_1_status_bar, activity, false)
+      1 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding_2_status_bar, activity, false)
+      2 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding_3_status_bar, activity, false)
+      3 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding_4_status_bar, activity, false)
+    }
   }
 
   fun clickOnGetStarted() {
