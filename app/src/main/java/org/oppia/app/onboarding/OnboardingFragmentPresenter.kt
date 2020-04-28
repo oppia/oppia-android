@@ -24,7 +24,6 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
-  private val routeToProfileListener = activity as RouteToProfileListListener
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -54,9 +53,9 @@ class OnboardingFragmentPresenter @Inject constructor(
       }
 
       override fun onPageSelected(position: Int) {
-        if (position == 3) {
-          binding.onboardingSlideViewPager.currentItem = 3
-          getOnboardingViewModel().slideChanged(3)
+        if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+          binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
+          getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
         } else {
           getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
         }
@@ -66,16 +65,16 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   fun clickOnSkip() {
-    binding.onboardingSlideViewPager.currentItem = 3
+    binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
   }
 
   fun clickOnNext() {
     val position: Int = binding.onboardingSlideViewPager.currentItem + 1
     binding.onboardingSlideViewPager.currentItem = position
-    if (position != 3) {
+    if (position != TOTAL_NUMBER_OF_SLIDES - 1) {
       getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
     } else {
-      getOnboardingViewModel().slideChanged(3)
+      getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
     }
     selectDot(position)
   }

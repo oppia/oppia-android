@@ -15,7 +15,7 @@ class OnboardingPagerAdapter(
   val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
 ) : PagerAdapter() {
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
-    if (position == 3) {
+    if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
       val binding =
         OnboardingSlideFinalBinding.inflate(LayoutInflater.from(context), container, false)
       binding.viewModel = onboardingSlideFinalViewModel

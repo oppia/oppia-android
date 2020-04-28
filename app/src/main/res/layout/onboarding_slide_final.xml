@@ -67,7 +67,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="56dp"
       android:layout_marginEnd="56dp"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="36dp"
       android:layout_marginBottom="32dp"
       android:background="@drawable/primary_rounded_button"
       android:fontFamily="sans-serif-medium"
