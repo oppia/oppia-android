@@ -64,7 +64,9 @@
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
-    <activity android:name=".profile.AddProfileActivity" />
+    <activity
+      android:name=".profile.AddProfileActivity"
+      android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
     <activity
       android:name=".profile.AdminAuthActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"

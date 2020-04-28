@@ -12,7 +12,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.onboarding.OnboardingFlowController
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -21,12 +20,11 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val onboardingFlowController: OnboardingFlowController,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
+  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
-  private val routeToProfileListener = activity as RouteToProfileListListener
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -44,9 +42,11 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
+    onboardingPagerAdapter =
+      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+    binding.onboardingSlideViewPager.addOnPageChangeListener(object :
+      ViewPager.OnPageChangeListener {
       override fun onPageScrollStateChanged(state: Int) {
       }
 
@@ -54,7 +54,12 @@ class OnboardingFragmentPresenter @Inject constructor(
       }
 
       override fun onPageSelected(position: Int) {
-        getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
+        if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+          binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
+          getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+        } else {
+          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+        }
         selectDot(position)
         onboardingStatusBarColorUpdate(position)
       }
@@ -71,18 +76,30 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
   }
 
-  fun clickOnGetStarted() {
-    onboardingFlowController.markOnboardingFlowCompleted()
-    routeToProfileListener.routeToProfileList()
+  fun clickOnSkip() {
+    binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
   }
 
-  fun clickOnSkip() {
-    getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
-    binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
+  fun clickOnNext() {
+    val position: Int = binding.onboardingSlideViewPager.currentItem + 1
+    binding.onboardingSlideViewPager.currentItem = position
+    if (position != TOTAL_NUMBER_OF_SLIDES - 1) {
+      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+    } else {
+      getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+    }
+    selectDot(position)
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
+  }
+
+  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
+    return viewModelProviderFinalSlide.getForFragment(
+      fragment,
+      OnboardingSlideFinalViewModel::class.java
+    )
   }
 
   private fun addDots() {
@@ -104,7 +121,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       params.setMargins(
         activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
         0,
-        activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
+        0,
         0
       )
       dotsLayout.addView(dotView, params)
