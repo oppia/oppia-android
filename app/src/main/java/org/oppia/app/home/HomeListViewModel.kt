@@ -33,7 +33,6 @@ class HomeListViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val topicController: TopicController,
   private val oppiaClock: OppiaClock,
   private val topicListController: TopicListController,
   private val logger: Logger
@@ -46,7 +45,6 @@ class HomeListViewModel @Inject constructor(
   private lateinit var profileName: String
 
   private lateinit var welcomeViewModel: WelcomeViewModel
-  private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
   private lateinit var allTopicsViewModel: AllTopicsViewModel
   private var itemViewModelList: MutableList<HomeItemViewModel> = mutableListOf()
   private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
@@ -56,13 +54,10 @@ class HomeListViewModel @Inject constructor(
     this.internalProfileId = internalProfileId
 
     subscribeToProfileLiveData()
-    //subscribeToOngoingStoryList()
 
     welcomeViewModel = WelcomeViewModel()
     allTopicsViewModel = AllTopicsViewModel()
     itemViewModelList.add(welcomeViewModel as HomeItemViewModel)
-//    promotedStoryListViewModel = PromotedStoryListViewModel(activity,internalProfileId)
-//    itemViewModelList.add(promotedStoryListViewModel as HomeItemViewModel)
   }
 
   private val profileLiveData: LiveData<Profile> by lazy {
@@ -135,34 +130,12 @@ class HomeListViewModel @Inject constructor(
     return itemViewModelList
   }
 
-  /*private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
-      it.recentStoryList.take(3).forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(activity, internalProfileId)
-        recentStory.setPromotedStory(promotedStory)
-        //itemViewModelList.add(recentStory)
-        promotedStoryList.add(recentStory)
-      }
-
-      //createRecyclerViewAdapter().notifyItemChanged(1)
-      //topicListAdapter.notifyItemChanged(1)
-    })
-  }*/
-
-  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
-    // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
-  }
-
-
   private fun subscribeToTopicList() {
     getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
       for (topicSummary in result.topicSummaryList) {
         val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
         itemViewModelList.add(topicSummaryViewModel)
       }
-      //createRecyclerViewAdapter().notifyDataSetChanged()
-      //topicListAdapter.notifyDataSetChanged()
     })
   }
 
@@ -178,44 +151,4 @@ class HomeListViewModel @Inject constructor(
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
     topicListController.getOngoingStoryList(profileId)
   }
-
-
-
-
-
-
-
-  /*private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList()
-  }
-
-  val ongoingStoryLiveData: LiveData<List<ContinuePlayingItemViewModel>>by lazy {
-    Transformations.map(ongoingStoryListSummaryResultLiveData, ::processOngoingStoryList)
-  }
-
-  private fun processOngoingStoryList(ongoingStoryList: AsyncResult<OngoingStoryList>): List<ContinuePlayingItemViewModel> {
-    if (ongoingStoryList.isSuccess()) {
-      if (ongoingStoryList.getOrThrow().recentStoryList.isNotEmpty()) {
-        val recentSectionTitleViewModel =
-          SectionTitleViewModel(fragment.getString(R.string.ongoing_story_last_week), false)
-        itemList.add(recentSectionTitleViewModel)
-        for (promotedStory in ongoingStoryList.getOrThrow().recentStoryList) {
-          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-          itemList.add(ongoingStoryViewModel)
-        }
-      }
-
-      if (ongoingStoryList.getOrThrow().olderStoryList.isNotEmpty()) {
-        val showDivider = itemList.isNotEmpty()
-        val olderSectionTitleViewModel =
-          SectionTitleViewModel(fragment.getString(R.string.ongoing_story_last_month), showDivider)
-        itemList.add(olderSectionTitleViewModel)
-        for (promotedStory in ongoingStoryList.getOrThrow().olderStoryList) {
-          val ongoingStoryViewModel = OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-          itemList.add(ongoingStoryViewModel)
-        }
-      }
-    }
-    return itemList
-  }*/
 }

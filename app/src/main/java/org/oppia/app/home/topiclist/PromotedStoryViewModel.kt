@@ -18,7 +18,6 @@ class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int
 ) :
-  //ObservableViewModel(),
   HomeItemViewModel(),
   RouteToTopicPlayStoryListener {
 
