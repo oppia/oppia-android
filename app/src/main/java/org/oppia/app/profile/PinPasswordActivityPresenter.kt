@@ -40,7 +40,7 @@ class PinPasswordActivityPresenter @Inject constructor(
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    StatusBarColor.statusBarColorUpdate(R.color.pin_input_status_bar, activity, true)
+    StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
     profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)

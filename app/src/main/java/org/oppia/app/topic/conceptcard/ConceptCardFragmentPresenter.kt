@@ -3,16 +3,19 @@ package org.oppia.app.topic.conceptcard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.R
 import org.oppia.app.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
 class ConceptCardFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
 ) {
@@ -25,7 +28,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
     val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val viewModel = getConceptCardViewModel()
-
+    StatusBarColor.statusBarColorUpdate(R.color.conceptCardStatusBar, activity, false)
     skillId = id
     viewModel.setSkillIdAndBinding(skillId, binding)
 

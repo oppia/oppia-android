@@ -248,7 +248,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.slide_drawer_open_status_bar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
@@ -274,7 +274,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.slide_drawer_open_status_bar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {

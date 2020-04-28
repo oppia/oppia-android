@@ -28,7 +28,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
-    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
+    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
     val binding = DataBindingUtil.setContentView<ProfilePictureActivityBinding>(activity, R.layout.profile_picture_activity)
     profilePictureActivityViewModel = ProfilePictureActivityViewModel()
 
