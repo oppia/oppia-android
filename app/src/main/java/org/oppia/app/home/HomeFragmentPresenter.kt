@@ -10,8 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import org.oppia.app.viewmodel.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.databinding.AllTopicsBinding
 import org.oppia.app.databinding.HomeFragmentBinding
+import org.oppia.app.databinding.PromotedStoryCardBinding
+import org.oppia.app.databinding.PromotedStoryListBinding
+import org.oppia.app.databinding.TopicSummaryViewBinding
+import org.oppia.app.databinding.WelcomeBinding
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
@@ -25,6 +31,8 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
+import org.oppia.app.profileprogress.RecentlyPlayedStorySummaryViewModel
+import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
@@ -41,7 +49,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger
+  private val logger: Logger,
+  private val viewModelProvider: ViewModelProvider<HomeListViewModel>
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -49,7 +58,7 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var welcomeViewModel: WelcomeViewModel
   private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
   private lateinit var allTopicsViewModel: AllTopicsViewModel
-  private lateinit var topicListAdapter: TopicListAdapter
+  //private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
@@ -62,8 +71,12 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
+
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+    val viewModel = getHomeListViewModel()
+    viewModel.setProfileId(internalProfileId)
 
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
@@ -71,7 +84,7 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
     itemList.add(allTopicsViewModel)
-    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+    //topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
     val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
       2
@@ -91,24 +104,68 @@ class HomeFragmentPresenter @Inject constructor(
     }
 
     binding.homeRecyclerView.apply {
-      adapter = topicListAdapter
+      //adapter = topicListAdapter
+      adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/32763434/32763621
       layoutManager = homeLayoutManager
     }
     binding.let {
       it.presenter = this
       it.lifecycleOwner = fragment
+      it.viewModel = viewModel
     }
 
-    subscribeToProfileLiveData()
+    /*subscribeToProfileLiveData()
     subscribeToOngoingStoryList()
-    subscribeToTopicList()
+    subscribeToTopicList()*/
     return binding.root
   }
 
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
+  private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<HomeItemViewModel, HomeItemViewModel.ViewType> { viewModel ->
+        when (viewModel) {
+          is WelcomeViewModel -> HomeItemViewModel.ViewType.VIEW_TYPE_WELCOME_MESSAGE
+          is PromotedStoryViewModel -> HomeItemViewModel.ViewType.VIEW_TYPE_PROMOTED_STORY_LIST
+          is AllTopicsViewModel -> HomeItemViewModel.ViewType.VIEW_TYPE_ALL_TOPICS
+          is TopicSummaryViewModel -> HomeItemViewModel.ViewType.VIEW_TYPE_TOPIC_LIST
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = HomeItemViewModel.ViewType.VIEW_TYPE_WELCOME_MESSAGE,
+        inflateDataBinding = WelcomeBinding::inflate,
+        setViewModel = WelcomeBinding::setViewModel,
+        transformViewModel = { it as WelcomeViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = HomeItemViewModel.ViewType.VIEW_TYPE_PROMOTED_STORY_LIST,
+        inflateDataBinding = PromotedStoryCardBinding::inflate,
+        setViewModel = PromotedStoryCardBinding::setViewModel,
+        transformViewModel = { it as PromotedStoryViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = HomeItemViewModel.ViewType.VIEW_TYPE_ALL_TOPICS,
+        inflateDataBinding = AllTopicsBinding::inflate,
+        setViewModel = AllTopicsBinding::setViewModel,
+        transformViewModel = { it as AllTopicsViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = HomeItemViewModel.ViewType.VIEW_TYPE_TOPIC_LIST,
+        inflateDataBinding = TopicSummaryViewBinding::inflate,
+        setViewModel = TopicSummaryViewBinding::setViewModel,
+        transformViewModel = { it as TopicSummaryViewModel }
+      )
+      .build()
   }
+
+  private fun getHomeListViewModel(): HomeListViewModel {
+    return viewModelProvider.getForFragment(fragment, HomeListViewModel::class.java)
+  }
+
+  /*private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }      //
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
@@ -165,7 +222,8 @@ class HomeFragmentPresenter @Inject constructor(
         recentStory.setPromotedStory(promotedStory)
         promotedStoryList.add(recentStory)
       }
-      topicListAdapter.notifyItemChanged(1)
+      createRecyclerViewAdapter().notifyItemChanged(1)
+      //topicListAdapter.notifyItemChanged(1)
     })
   }
 
@@ -173,6 +231,10 @@ class HomeFragmentPresenter @Inject constructor(
     // If there's an error loading the data, assume the default.
     return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
   }
+
+  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+  }*/
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -8,6 +9,9 @@
     <variable
       name="presenter"
       type="org.oppia.app.home.HomeFragmentPresenter" />
+    <variable
+      name="viewModel"
+      type="org.oppia.app.home.HomeListViewModel" />
   </data>
 
   <FrameLayout
@@ -25,7 +29,8 @@
       android:overScrollMode="never"
       android:paddingTop="36dp"
       android:paddingBottom="148dp"
-      android:scrollbars="none" />
+      android:scrollbars="none"
+      app:data="@{viewModel.ongoingStoryListViewModelLiveData}"/>
 
     <View
       android:layout_width="match_parent"
