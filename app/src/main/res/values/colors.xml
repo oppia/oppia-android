@@ -13,6 +13,7 @@
   <color name="oppiaPrimaryText">#333333</color>
   <color name="oppiaPrimaryLight">#009688</color>
   <color name="oppiaPrimaryText30">#4D333333</color>
+  <color name="oppiaPrimaryText70">#B3333333</color>
   <color name="oppiaPrimaryTextDark">#DE000000</color>
   <color name="oppiaPrimaryDark">#00645C</color>
   <color name="oppiaSecondaryText">#666666</color>
@@ -29,6 +30,7 @@
   <color name="oppiaStrokeBlack">#CC333333</color>
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
+  <color name="oppiaOnboardingDivider">#999999</color>
   <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
