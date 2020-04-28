@@ -37,6 +37,7 @@ class OptionsActivityPresenter @Inject constructor(
       activity.findViewById<View>(R.id.options_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_options
     )
+    navigationDrawerFragment!!.retainInstance = true;
   }
 
   private fun getOptionFragment(): OptionsFragment? {
