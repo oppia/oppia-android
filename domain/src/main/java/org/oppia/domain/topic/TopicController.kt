@@ -89,7 +89,6 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
 )
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
-
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
   "transformed_get_completed_stories_provider_id"
 private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID =
