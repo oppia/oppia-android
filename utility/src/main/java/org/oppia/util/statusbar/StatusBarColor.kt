@@ -10,7 +10,6 @@ class StatusBarColor {
   companion object {
     /**
      * This method updates the color of the Status Bar.
-     *
      * @param colorId color passed for the status bar
      * @param activity the reference of the activity from which this method is called.
      * @param statusBarLight passed Boolean true if the status bar theme is light, else passed Boolean false
