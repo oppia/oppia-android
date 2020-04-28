@@ -30,6 +30,7 @@
   <color name="oppiaStrokeBlack">#CC333333</color>
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
+  <color name="oppiaOnboardingDivider">#999999</color>
   <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
