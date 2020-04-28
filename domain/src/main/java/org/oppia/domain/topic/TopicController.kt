@@ -90,8 +90,10 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 
-private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID = "transformed_get_completed_stories_provider_id"
-private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID = "transformed_get_ongoing_topics_provider_id"
+private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
+  "transformed_get_completed_stories_provider_id"
+private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID =
+  "transformed_get_ongoing_topics_provider_id"
 private const val TRANSFORMED_GET_TOPIC_PROVIDER_ID = "transformed_get_topic_provider_id"
 private const val TRANSFORMED_GET_STORY_PROVIDER_ID = "transformed_get_story_provider_id"
 private const val COMBINED_TOPIC_PROVIDER_ID = "combined_topic_provider_id"
@@ -105,17 +107,6 @@ class TopicController @Inject constructor(
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController
 ) {
-
-  /** Returns the [Topic] corresponding to the specified topic ID, or a failed result if no such topic exists. */
-  fun getTopic(topicId: String): LiveData<AsyncResult<Topic>> {
-    return MutableLiveData(
-      try {
-        AsyncResult.success(retrieveTopic(topicId))
-      } catch (e: Exception) {
-        AsyncResult.failed<Topic>(e)
-      }
-    )
-  }
 
   /**
    * Fetches a topic given a profile ID and a topic ID.
@@ -139,35 +130,6 @@ class TopicController @Inject constructor(
         topicProgressDataProvider,
         ::combineTopicAndTopicProgress
       )
-    )
-  }
-
-  // TODO(#173): Move this to its own controller once structural data & saved progress data are better distinguished.
-
-  /** Returns the [StorySummary] corresponding to the specified story ID, or a failed result if there is none. */
-  fun getStory(storyId: String): LiveData<AsyncResult<StorySummary>> {
-    return MutableLiveData(
-      when (storyId) {
-        TEST_STORY_ID_0 -> AsyncResult.success(createTestTopic0Story0())
-        TEST_STORY_ID_1 -> AsyncResult.success(createTestTopic0Story1())
-        TEST_STORY_ID_2 -> AsyncResult.success(createTestTopic1Story2())
-        FRACTIONS_STORY_ID_0 -> AsyncResult.success(
-          createStoryFromJsonFile(
-            "fractions_stories.json", /* index= */ 0
-          )
-        )
-        RATIOS_STORY_ID_0 -> AsyncResult.success(
-          createStoryFromJsonFile(
-            "ratios_stories.json", /* index= */ 0
-          )
-        )
-        RATIOS_STORY_ID_1 -> AsyncResult.success(
-          createStoryFromJsonFile(
-            "ratios_stories.json", /* index= */ 1
-          )
-        )
-        else -> AsyncResult.failed(IllegalArgumentException("Invalid story ID: $storyId"))
-      }
     )
   }
 
