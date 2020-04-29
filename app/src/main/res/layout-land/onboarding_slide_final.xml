@@ -65,6 +65,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
+      android:layout_marginStart="28dp"
       android:layout_marginEnd="52dp"
       android:background="@drawable/primary_rounded_button"
       android:fontFamily="sans-serif-medium"
@@ -74,7 +75,7 @@
       android:textColor="@color/white"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@+id/slide_description_text_view"
+      app:layout_constraintStart_toEndOf="@+id/slide_image_view"
       app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
