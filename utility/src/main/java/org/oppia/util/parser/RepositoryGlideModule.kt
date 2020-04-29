@@ -16,7 +16,7 @@ class RepositoryGlideModule : AppGlideModule() {
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     registry.register(SVG::class.java, PictureDrawable::class.java, SvgDrawableTranscoder())
       .prepend(SVG::class.java, SvgEncoder())
-      .append(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
       .append(InputStream::class.java, SVG::class.java, SvgDecoder())
+      .append(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
   }
 }
