@@ -176,7 +176,7 @@
   <string name="add_profile_input_pin">3-Digit PIN*</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
-  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
+  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_create_btn">Create</string>
   <string name="add_profile_close">Close</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
