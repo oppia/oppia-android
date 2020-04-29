@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingSlideViewModel" />
+      type="org.oppia.app.onboarding.OnboardingSlideFinalViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,9 +19,8 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:adjustViewBounds="true"
-      android:contentDescription="@{viewModel.contentDescription}"
       android:scaleType="fitXY"
-      android:src="@{viewModel.slideImage}"
+      android:src="@drawable/ic_landscape_onboarding_3"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintDimensionRatio="H, 10:9"
       app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +35,7 @@
       android:layout_marginEnd="28dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_horizontal"
-      android:text="@{viewModel.title}"
+      android:text="@string/onboarding_slide_3_title"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +52,7 @@
       android:layout_marginEnd="40dp"
       android:fontFamily="sans-serif"
       android:gravity="center_horizontal"
-      android:text="@{viewModel.description}"
+      android:text="@string/onboarding_slide_3_description"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintEnd_toEndOf="parent"
