@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingSlideFinalViewModel" />
+      type="org.oppia.app.onboarding.OnboardingSlideViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,10 +19,11 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:adjustViewBounds="true"
+      android:contentDescription="@{viewModel.contentDescription}"
       android:scaleType="fitXY"
-      android:src="@drawable/ic_landscape_onboarding_3"
+      android:src="@{viewModel.slideImage}"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintDimensionRatio="4:4"
+      app:layout_constraintDimensionRatio="H, 10:9"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,11 +31,12 @@
       android:id="@+id/slide_title_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
       android:layout_marginTop="80dp"
       android:layout_marginEnd="28dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_horizontal"
-      android:text="@string/onboarding_slide_3_title"
+      android:text="@{viewModel.title}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -46,12 +48,12 @@
       android:id="@+id/slide_description_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="10dp"
+      android:layout_marginStart="20dp"
       android:layout_marginTop="16dp"
       android:layout_marginEnd="40dp"
       android:fontFamily="sans-serif"
       android:gravity="center_horizontal"
-      android:text="@string/onboarding_slide_3_description"
+      android:text="@{viewModel.description}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +63,7 @@
 
     <Button
       android:id="@+id/get_started_button"
-      android:layout_width="240dp"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
       android:layout_marginEnd="52dp"
