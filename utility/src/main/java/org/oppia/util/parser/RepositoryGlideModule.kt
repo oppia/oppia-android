@@ -13,7 +13,6 @@ import java.io.InputStream
 /** Custom [AppGlideModule] to enable loading images from [AssetRepository] via Glide. */
 @GlideModule
 class RepositoryGlideModule : AppGlideModule() {
-  
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     registry.register(SVG::class.java, PictureDrawable::class.java, SvgDrawableTranscoder())
       .prepend(SVG::class.java, SvgEncoder())
