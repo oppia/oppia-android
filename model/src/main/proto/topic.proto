@@ -10,6 +10,12 @@ import "voiceover.proto";
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
+// Top level proto used to store topics.
+message TopicDatabase {
+  // Map from topic ID to Topic.
+  map<string, Topic> topic = 1;
+}
+
 // Corresponds to a single topic that can be read, played, trained, or reviewed.
 message Topic {
   // The ID corresponding to the topic.
