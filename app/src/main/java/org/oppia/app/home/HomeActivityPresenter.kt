@@ -38,7 +38,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.findViewById<View>(R.id.home_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_home
     )
-    navigationDrawerFragment!!.retainInstance = true
   }
 
   private fun getHomeFragment(): HomeFragment? {
