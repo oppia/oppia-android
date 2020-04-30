@@ -5,12 +5,10 @@ import android.text.Spannable
 import android.text.style.ImageSpan
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterProgress
@@ -26,7 +24,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
@@ -45,7 +42,7 @@ import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -86,7 +83,8 @@ private const val REPLACE_IMG_TAG = "img"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
-private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID = "transformed_get_ongoing_story_list_provider_id"
+private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID =
+  "transformed_get_ongoing_story_list_provider_id"
 
 private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 
@@ -96,6 +94,7 @@ class TopicListController @Inject constructor(
   private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
+  private val topicDatabaseController: TopicDatabaseController,
   private val storyProgressController: StoryProgressController,
   private val explorationRetriever: ExplorationRetriever,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
@@ -131,7 +130,8 @@ class TopicListController @Inject constructor(
         val voiceoverUrls = collectAllDesiredVoiceoverUrls(explorations).toSet()
         val imageUrls = collectAllImageUrls(explorations).toSet()
         logger.d(
-          "AssetRepo", "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images"
+          "AssetRepo",
+          "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images"
         )
         val startTime = SystemClock.elapsedRealtime()
         val voiceoverDownloadJobs = voiceoverUrls.map { url ->
@@ -146,7 +146,10 @@ class TopicListController @Inject constructor(
         }
         (voiceoverDownloadJobs + imageDownloadJobs).forEach { it.await() }
         val endTime = SystemClock.elapsedRealtime()
-        logger.d("AssetRepo", "Finished downloading voiceovers and images in ${endTime - startTime}ms")
+        logger.d(
+          "AssetRepo",
+          "Finished downloading voiceovers and images in ${endTime - startTime}ms"
+        )
       }
     }
   }
@@ -156,7 +159,7 @@ class TopicListController @Inject constructor(
    * [EVICTION_TIME_MILLIS] old.
    */
   fun getTopicList(): LiveData<AsyncResult<TopicList>> {
-    return MutableLiveData(AsyncResult.success(createTopicList()))
+    return dataProviders.convertToLiveData(topicDatabaseController.getTopicList())
   }
 
   /**
@@ -179,72 +182,6 @@ class TopicListController @Inject constructor(
     return dataProviders.convertToLiveData(ongoingStoryListDataProvider)
   }
 
-  private fun createTopicList(): TopicList {
-    val topicListBuilder = TopicList.newBuilder()
-      .addTopicSummary(createTopicSummary0())
-      .addTopicSummary(createTopicSummary1())
-      .addTopicSummary(createFractionsTopicSummary())
-      .addTopicSummary(createRatiosTopicSummary())
-    return topicListBuilder.build()
-  }
-
-  private fun createFractionsTopicSummary(): TopicSummary {
-    val fractionsJson = jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")?.getJSONObject("topic")!!
-    return createTopicSummaryFromJson(FRACTIONS_TOPIC_ID, fractionsJson)
-  }
-
-  private fun createRatiosTopicSummary(): TopicSummary {
-    val ratiosJson = jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")?.getJSONObject("topic")!!
-    return createTopicSummaryFromJson(RATIOS_TOPIC_ID, ratiosJson)
-  }
-
-  private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
-    val topic = topicController.retrieveTopic(topicId)
-    val totalChapterCount = topic.storyList.map(StorySummary::getChapterCount).reduceRight(Int::plus)
-    return TopicSummary.newBuilder()
-      .setTopicId(topicId)
-      .setName(jsonObject.getString("name"))
-      .setVersion(jsonObject.getInt("version"))
-      .setSubtopicCount(jsonObject.getJSONArray("subtopics").length())
-      .setCanonicalStoryCount(jsonObject.getJSONArray("canonical_story_references").length())
-      .setUncategorizedSkillCount(jsonObject.getJSONArray("uncategorized_skill_ids").length())
-      .setAdditionalStoryCount(jsonObject.getJSONArray("additional_story_references").length())
-      .setTotalSkillCount(TOPIC_SKILL_ASSOCIATIONS.getValue(topicId).size)
-      .setTotalChapterCount(totalChapterCount)
-      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
-      .build()
-  }
-
-  private fun createTopicSummary0(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_0)
-      .setName("First Topic")
-      .setVersion(1)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(2)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(2)
-      .setTotalChapterCount(4)
-      .setTopicThumbnail(createTopicThumbnail0())
-      .build()
-  }
-
-  private fun createTopicSummary1(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setName("Second Topic")
-      .setVersion(3)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(1)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(1)
-      .setTotalChapterCount(1)
-      .setTopicThumbnail(createTopicThumbnail1())
-      .build()
-  }
-
   private fun createOngoingStoryListFromProgress(topicProgressList: List<TopicProgress>): OngoingStoryList {
     val ongoingStoryListBuilder = OngoingStoryList.newBuilder()
     topicProgressList.forEach { topicProgress ->
@@ -257,19 +194,23 @@ class TopicListController @Inject constructor(
           storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED }
             .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
 
-        val lastCompletedChapterProgress: ChapterProgress? = completedChapterProgressList.firstOrNull()
+        val lastCompletedChapterProgress: ChapterProgress? =
+          completedChapterProgressList.firstOrNull()
 
         val startedChapterProgressList =
           storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED }
             .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
 
-        val recentlyPlayerChapterProgress: ChapterProgress? = startedChapterProgressList.firstOrNull()
+        val recentlyPlayerChapterProgress: ChapterProgress? =
+          startedChapterProgressList.firstOrNull()
         if (recentlyPlayerChapterProgress != null) {
-          val recentlyPlayerChapterSummary: ChapterSummary? = story.chapterList.find { chapterSummary ->
-            recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
-          }
+          val recentlyPlayerChapterSummary: ChapterSummary? =
+            story.chapterList.find { chapterSummary ->
+              recentlyPlayerChapterProgress.explorationId == chapterSummary.explorationId
+            }
           if (recentlyPlayerChapterSummary != null) {
-            val numberOfDaysPassed = (Date().time - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            val numberOfDaysPassed =
+              (Date().time - recentlyPlayerChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
             val promotedStory = createPromotedStory(
               storyId,
               topic,
@@ -291,7 +232,8 @@ class TopicListController @Inject constructor(
           val nextChapterIndex = story.chapterList.indexOf(lastChapterSummary) + 1
           val nextChapterSummary: ChapterSummary? = story.chapterList[nextChapterIndex]
           if (nextChapterSummary != null) {
-            val numberOfDaysPassed = (Date().time - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
+            val numberOfDaysPassed =
+              (Date().time - lastCompletedChapterProgress.lastPlayedTimestamp) / ONE_DAY_IN_MS
             val promotedStory = createPromotedStory(
               storyId,
               topic,
@@ -374,7 +316,12 @@ class TopicListController @Inject constructor(
   }
 
   private fun collectDesiredVoiceoverUrls(exploration: Exploration): Collection<String> {
-    return extractDesiredVoiceovers(exploration).map { voiceover -> getUriForVoiceover(exploration.id, voiceover) }
+    return extractDesiredVoiceovers(exploration).map { voiceover ->
+      getUriForVoiceover(
+        exploration.id,
+        voiceover
+      )
+    }
   }
 
   private fun extractDesiredVoiceovers(exploration: Exploration): Collection<Voiceover> {
@@ -395,7 +342,8 @@ class TopicListController @Inject constructor(
     val defaultFeedbackSubtitledHtml = state.interaction.defaultOutcome.feedback
     val answerGroupOutcomes = state.interaction.answerGroupsList.map(AnswerGroup::getOutcome)
     val answerGroupsSubtitledHtml = answerGroupOutcomes.map(Outcome::getFeedback)
-    val targetedSubtitledHtmls = answerGroupsSubtitledHtml + stateContentSubtitledHtml + defaultFeedbackSubtitledHtml
+    val targetedSubtitledHtmls =
+      answerGroupsSubtitledHtml + stateContentSubtitledHtml + defaultFeedbackSubtitledHtml
     return targetedSubtitledHtmls.map(SubtitledHtml::getContentId)
   }
 
@@ -415,9 +363,11 @@ class TopicListController @Inject constructor(
     val states = exploration.statesMap.values
     val stateContents = states.map(State::getContent)
     val stateInteractions = states.map(State::getInteraction)
-    val stateSolutions = stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
+    val stateSolutions =
+      stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
     val stateHints = stateInteractions.flatMap(Interaction::getHintList).map(Hint::getHintContent)
-    val answerGroupOutcomes = stateInteractions.flatMap(Interaction::getAnswerGroupsList).map(AnswerGroup::getOutcome)
+    val answerGroupOutcomes =
+      stateInteractions.flatMap(Interaction::getAnswerGroupsList).map(AnswerGroup::getOutcome)
     val defaultOutcomes = stateInteractions.map(Interaction::getDefaultOutcome)
     val outcomeFeedbacks = (answerGroupOutcomes + defaultOutcomes).map(Outcome::getFeedback)
     val allSubtitledHtmls = stateContents + stateSolutions + stateHints + outcomeFeedbacks

@@ -104,7 +104,8 @@ class TopicController @Inject constructor(
   private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val topicDatabaseController: TopicDatabaseController
 ) {
 
   /**
@@ -115,10 +116,7 @@ class TopicController @Inject constructor(
    * @return a [LiveData] for [Topic] combined with [TopicProgress].
    */
   fun getTopic(profileId: ProfileId, topicId: String): LiveData<AsyncResult<Topic>> {
-    val topicDataProvider =
-      dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_TOPIC_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
-      }
+    val topicDataProvider = topicDatabaseController.getTopic(topicId)
     val topicProgressDataProvider =
       storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
 
@@ -145,10 +143,7 @@ class TopicController @Inject constructor(
     topicId: String,
     storyId: String
   ): LiveData<AsyncResult<StorySummary>> {
-    val storyDataProvider =
-      dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(storyId))
-      }
+    val storyDataProvider = topicDatabaseController.getStory(topicId, storyId)
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
 

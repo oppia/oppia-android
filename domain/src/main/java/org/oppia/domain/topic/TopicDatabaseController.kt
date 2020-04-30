@@ -1,6 +1,5 @@
 package org.oppia.domain.topic
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Deferred
 import org.json.JSONArray
@@ -16,9 +15,12 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicDatabase
+import org.oppia.app.model.TopicList
+import org.oppia.app.model.TopicSummary
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -47,6 +49,9 @@ val TOPIC_JSON_FILE_ASSOCIATIONS = mapOf(
 )
 
 private const val ADD_TOPIC_TRANSFORMED_PROVIDER_ID = "add_topic_transformed_id"
+private const val GET_ALL_TOPICS_TRANSFORMED_PROVIDER_ID = "get_all_topics_transformed_id"
+private const val GET_TOPIC_LIST_TRANSFORMED_PROVIDER_ID = "get_topic_list_transformed_id"
+private const val GET_TOPIC_TRANSFORMED_PROVIDER_ID = "get_topic_transformed_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -58,17 +63,21 @@ class TopicDatabaseController @Inject constructor(
 ) {
 
   /** Indicates that the given topic already exists. */
-  class TopicAlreadyFoundException(msg: String) : Exception(msg)
+  class TopicAlreadyExistsException(msg: String) : Exception(msg)
+
+  /** Indicates that the given topic already exists. */
+  class TopicNotFoundException(msg: String) : Exception(msg)
 
   /**
    * These Statuses correspond to the exceptions above such that if the deferred contains
-   * TOPIC_ALREADY_FOUND, the [TopicAlreadyFoundException] will be passed to a failed AsyncResult.
+   * TOPIC_ALREADY_FOUND, the [TopicAlreadyExistsException] will be passed to a failed AsyncResult.
    *
    * SUCCESS corresponds to a successful AsyncResult.
    */
   private enum class TopicActionStatus {
     SUCCESS,
-    TOPIC_ALREADY_FOUND
+    TOPIC_ALREADY_EXISTS,
+    TOPIC_NOT_FOUND
   }
 
   private val topicDataStore =
@@ -103,25 +112,83 @@ class TopicDatabaseController @Inject constructor(
   private fun addTopic(topic: Topic): LiveData<AsyncResult<Any?>> {
     val deferred = topicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (it.topicMap.containsKey(topic.topicId)) {
-        return@storeDataWithCustomChannelAsync Pair(it, TopicActionStatus.TOPIC_ALREADY_FOUND)
+        return@storeDataWithCustomChannelAsync Pair(it, TopicActionStatus.TOPIC_ALREADY_EXISTS)
       }
       val topicDatabaseBuilder = it.toBuilder().putTopic(topic.topicId, topic)
       Pair(topicDatabaseBuilder.build(), TopicActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
       dataProviders.createInMemoryDataProviderAsync(ADD_TOPIC_TRANSFORMED_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync getDeferredResult(topic, deferred)
+        return@createInMemoryDataProviderAsync getDeferredResult(topic.topicId, deferred)
       })
   }
 
+  internal fun getTopicList(): DataProvider<TopicList> {
+    return dataProviders.transformAsync(
+      GET_TOPIC_LIST_TRANSFORMED_PROVIDER_ID,
+      topicDataStore
+    ) {
+      val topicListBuilder = TopicList.newBuilder()
+      it.topicMap.values.toList().forEach { topic ->
+        val topicSummary = convertTopicToTopicSummary(topic)
+        topicListBuilder.addTopicSummary(topicSummary)
+      }
+      AsyncResult.success(topicListBuilder.build())
+    }
+  }
+
+  private fun convertTopicToTopicSummary(topic: Topic): TopicSummary {
+    val chapterCount = topic.storyList.map(StorySummary::getChapterCount).reduceRight(Int::plus)
+    return TopicSummary.newBuilder()
+      .setTopicId(topic.topicId)
+      .setName(topic.name)
+      .setSubtopicCount(topic.subtopicCount)
+      .setVersion(1)
+      .setCanonicalStoryCount(topic.storyCount)
+      .setUncategorizedSkillCount(0)
+      .setAdditionalStoryCount(0)
+      .setTotalSkillCount(topic.skillCount)
+      .setTotalChapterCount(chapterCount)
+      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topic.topicId))
+      .build()
+  }
+
+  internal fun getTopic(topicId: String): DataProvider<Topic> {
+    return dataProviders.transformAsync<TopicDatabase, Topic>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      topicDataStore
+    ) {
+      val topic = it.topicMap[topicId]
+      AsyncResult.success(topic ?: Topic.getDefaultInstance())
+    }
+  }
+
+  internal fun getStory(topicId: String, storyId: String): DataProvider<StorySummary> {
+    return dataProviders.transformAsync<TopicDatabase, StorySummary>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      topicDataStore
+    ) {
+      val topic = it.topicMap[topicId]
+      if (topic != null) {
+        val storySummary = topic.storyList.find { storySummary -> storySummary.storyId == storyId }
+        AsyncResult.success(storySummary ?: StorySummary.getDefaultInstance())
+      } else {
+        AsyncResult.success(StorySummary.getDefaultInstance())
+      }
+    }
+  }
+
   private suspend fun getDeferredResult(
-    topic: Topic,
+    topicId: String,
     deferred: Deferred<TopicActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       TopicActionStatus.SUCCESS -> AsyncResult.success(null)
-      TopicActionStatus.TOPIC_ALREADY_FOUND -> AsyncResult.failed(
-        TopicAlreadyFoundException("Topic for topicId ${topic.topicId} is already present.")
+      TopicActionStatus.TOPIC_ALREADY_EXISTS -> AsyncResult.failed(
+        TopicAlreadyExistsException("Topic for topicId $topicId is already present.")
+      )
+      TopicActionStatus.TOPIC_NOT_FOUND -> AsyncResult.failed(
+        TopicNotFoundException("Topic for topicId $topicId not found.")
       )
     }
   }
