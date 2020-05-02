@@ -29,6 +29,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
@@ -210,6 +211,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       drawerLayout.closeDrawers()
     }
+  }
+
+  fun openProfileProgress(profileId: Int) {
+    activity.startActivity(ProfileProgressActivity.createProfileProgressActivityIntent(activity, profileId))
   }
 
   /**
