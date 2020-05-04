@@ -4,8 +4,7 @@ package org.oppia.app.onboarding
 enum class ViewPagerSlide(private var position: Int) {
   SLIDE_0(position = 0),
   SLIDE_1(position = 1),
-  SLIDE_2(position = 2),
-  SLIDE_3(position = 3);
+  SLIDE_2(position = 2);
 
   companion object {
     fun getSlideForPosition(position: Int): ViewPagerSlide {
