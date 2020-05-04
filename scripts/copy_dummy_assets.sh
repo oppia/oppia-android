@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # INSTRUCTIONS:
-# This script copies all dummy-assets to domain/src/main/assets folder and delete
+# This script copies all dummy-assets to domain/src/main/assets folder and deletes
 # the original oppia assets.
 #
 # Run the script from the oppia-android root folder:
