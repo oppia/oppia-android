@@ -13,10 +13,10 @@
 destination_assets_path="domain/src/main/assets"
 
 # Remove current assets from domain/src/main/assets
-rm -r domain/src/main/assets/*
+rm -r $destination_assets_path/*
 
 # Copy old assets files to domain/src/main/assets
-rsync -r ../old-assets/ domain/src/main/assets/
+rsync -r ../old-assets/ $destination_assets_path/
 
 # Remove the assets folder available outside the repo.
 rm -rf ../old-assets
