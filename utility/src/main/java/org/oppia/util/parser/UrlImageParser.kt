@@ -38,7 +38,7 @@ class UrlImageParser private constructor(
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
     if (imageUrl.endsWith("svg")) {
-      val target = SvgBitmapTarget(urlDrawable)
+      val target = SvgTarget(urlDrawable)
       imageLoader.loadSvg(
         gcsPrefix + gcsResource + imageUrl,
         target
@@ -53,7 +53,9 @@ class UrlImageParser private constructor(
     return urlDrawable
   }
 
-  private inner class BitmapTarget(private val urlDrawable: UrlDrawable) : CustomTarget<Bitmap>() {
+  private inner class BitmapTarget(
+    private val urlDrawable: UrlDrawable
+  ) : CustomTarget<Bitmap>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
     }
@@ -81,17 +83,17 @@ class UrlImageParser private constructor(
     }
   }
 
-  private inner class SvgBitmapTarget(private val urlDrawable: UrlDrawable) :
-    CustomTarget<PictureDrawable>() {
+  private inner class SvgTarget(
+    private val urlDrawable: UrlDrawable
+  ) : CustomTarget<PictureDrawable>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
     }
 
     override fun onResourceReady(
-      resource: PictureDrawable,
+      drawable: PictureDrawable,
       transition: Transition<in PictureDrawable>?
     ) {
-      val drawable = PictureDrawable(resource.picture)
       htmlContentTextView.post {
         htmlContentTextView.width {
           val drawableHeight = drawable.intrinsicHeight
@@ -112,6 +114,7 @@ class UrlImageParser private constructor(
       }
     }
   }
+
 
   class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
