@@ -53,15 +53,23 @@ class UrlImageParser private constructor(
     return urlDrawable
   }
 
-  private inner class BitmapTarget(
-    private val urlDrawable: UrlDrawable
-  ) : CustomTarget<Bitmap>() {
+  private inner class BitmapTarget(urlDrawable: UrlDrawable): CustomImageTarget<Bitmap>(
+    urlDrawable, {resource -> BitmapDrawable(context.resources, resource)}
+      )
+
+  private inner class SvgTarget(urlDrawable: UrlDrawable): CustomImageTarget<PictureDrawable>(
+    urlDrawable, {resource -> PictureDrawable(resource.picture)}
+  )
+
+  private open inner class CustomImageTarget<T>(
+    private val urlDrawable: UrlDrawable, private val drawableFactory: (T) -> Drawable
+  ) : CustomTarget<T>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.
     }
 
-    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-      val drawable = BitmapDrawable(context.resources, resource)
+    override fun onResourceReady(resource: T, transition: Transition<in T>?) {
+      val drawable = drawableFactory(resource)
       htmlContentTextView.post {
         htmlContentTextView.width {
           val drawableHeight = drawable.intrinsicHeight
@@ -71,8 +79,7 @@ class UrlImageParser private constructor(
           } else {
             0
           }
-          val rect =
-            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
           drawable.bounds = rect
           urlDrawable.bounds = rect
           urlDrawable.drawable = drawable
@@ -82,40 +89,6 @@ class UrlImageParser private constructor(
       }
     }
   }
-
-  private inner class SvgTarget(
-    private val urlDrawable: UrlDrawable
-  ) : CustomTarget<PictureDrawable>() {
-    override fun onLoadCleared(placeholder: Drawable?) {
-      // No resources to clear.
-    }
-
-    override fun onResourceReady(
-      drawable: PictureDrawable,
-      transition: Transition<in PictureDrawable>?
-    ) {
-      htmlContentTextView.post {
-        htmlContentTextView.width {
-          val drawableHeight = drawable.intrinsicHeight
-          val drawableWidth = drawable.intrinsicWidth
-          val initialDrawableMargin = if (imageCenterAlign) {
-            calculateInitialMargin(it, drawableWidth)
-          } else {
-            0
-          }
-          val rect =
-            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
-          drawable.bounds = rect
-          urlDrawable.bounds = rect
-          urlDrawable.drawable = drawable
-          htmlContentTextView.text = htmlContentTextView.text
-          htmlContentTextView.invalidate()
-        }
-      }
-    }
-  }
-
-
   class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {

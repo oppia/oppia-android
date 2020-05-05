@@ -1,14 +1,16 @@
 package org.oppia.util.parser
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import com.bumptech.glide.load.EncodeStrategy
 import com.bumptech.glide.load.Options
 import com.bumptech.glide.load.ResourceEncoder
 import com.bumptech.glide.load.engine.Resource
 import com.caverock.androidsvg.SVG
 import org.oppia.util.logging.Logger
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 
 /** Encodes an SVG internal representation to {@link FileOutputStream}. */
 class SvgEncoder: ResourceEncoder<SVG?> {
@@ -22,9 +24,15 @@ class SvgEncoder: ResourceEncoder<SVG?> {
     return try {
       val svg: SVG = data.get()
       val picture = svg.renderToPicture()
-      // Write the contents of the Picture object to disk
-      val os: OutputStream = FileOutputStream(file)
-      picture.writeToStream(os)
+      val bitmap: Bitmap =
+        Bitmap.createBitmap(picture.width, picture.height, Bitmap.Config.ARGB_8888)
+      val canvas = Canvas(bitmap)
+      canvas.drawPicture(picture)
+
+      val os = ByteArrayOutputStream()
+      bitmap.compress(Bitmap.CompressFormat.PNG, /* quality= */100 , os)
+      bitmap.recycle()
+      os.writeTo(FileOutputStream(file))
       os.close()
       true
     } catch (e: Exception) {

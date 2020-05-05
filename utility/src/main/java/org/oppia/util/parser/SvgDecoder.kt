@@ -24,6 +24,7 @@ class SvgDecoder : ResourceDecoder<InputStream?, SVG?> {
   ): Resource<SVG?>? {
     return try {
       val svg = SVG.getFromInputStream(source)
+      source.close()
       SimpleResource(svg)
     } catch (ex: SVGParseException) {
       throw IOException("Cannot load SVG from stream", ex)
