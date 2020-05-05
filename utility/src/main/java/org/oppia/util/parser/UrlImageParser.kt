@@ -53,12 +53,12 @@ class UrlImageParser private constructor(
     return urlDrawable
   }
 
-  private inner class BitmapTarget(urlDrawable: UrlDrawable): CustomImageTarget<Bitmap>(
-    urlDrawable, {resource -> BitmapDrawable(context.resources, resource)}
-      )
+  private inner class BitmapTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Bitmap>(
+    urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
+  )
 
-  private inner class SvgTarget(urlDrawable: UrlDrawable): CustomImageTarget<PictureDrawable>(
-    urlDrawable, {resource -> PictureDrawable(resource.picture)}
+  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+    urlDrawable, { resource -> PictureDrawable(resource.picture) }
   )
 
   private open inner class CustomImageTarget<T>(
@@ -79,7 +79,8 @@ class UrlImageParser private constructor(
           } else {
             0
           }
-          val rect = Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
+          val rect =
+            Rect(initialDrawableMargin, 0, drawableWidth + initialDrawableMargin, drawableHeight)
           drawable.bounds = rect
           urlDrawable.bounds = rect
           urlDrawable.drawable = drawable
@@ -89,6 +90,7 @@ class UrlImageParser private constructor(
       }
     }
   }
+
   class UrlDrawable : BitmapDrawable() {
     var drawable: Drawable? = null
     override fun draw(canvas: Canvas) {

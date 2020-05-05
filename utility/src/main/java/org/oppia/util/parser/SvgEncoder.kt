@@ -13,7 +13,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 /** Encodes an SVG internal representation to {@link FileOutputStream}. */
-class SvgEncoder: ResourceEncoder<SVG?> {
+class SvgEncoder : ResourceEncoder<SVG?> {
 
   private lateinit var logger: Logger
   override fun getEncodeStrategy(options: Options): EncodeStrategy {
@@ -30,13 +30,13 @@ class SvgEncoder: ResourceEncoder<SVG?> {
       canvas.drawPicture(picture)
 
       val os = ByteArrayOutputStream()
-      bitmap.compress(Bitmap.CompressFormat.PNG, /* quality= */100 , os)
+      bitmap.compress(Bitmap.CompressFormat.PNG, /* quality= */100, os)
       bitmap.recycle()
       os.writeTo(FileOutputStream(file))
       os.close()
       true
     } catch (e: Exception) {
-      logger.e("Failed to encode svg",""+e.message)
+      logger.e("Failed to encode svg", "" + e.message)
       false
     }
   }
