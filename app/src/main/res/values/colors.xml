@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="colorPrimary">#00645C</color>
-  <color name="colorPrimaryDark">#00574B</color>
+  <color name="colorPrimaryDark">#003933</color>
   <color name="colorAccent">#2D4A9D</color>
   <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
@@ -137,4 +137,16 @@
   <color name="seekbarDivider">#707070</color>
   <color name="topicThumbnailBackground">#C6DCDA</color>
   <color name="topicTitleBackground">#2F6687</color>
+  <!-- STATUS BAR COLORS -->
+  <color name="profileStatusBar">#000000</color>
+  <color name="hintFullDialogStatusBar">#00236E</color>
+  <color name="slideDrawerOpenStatusBar">#001F2A</color>
+  <color name="conceptCardStatusBar">#882814</color>
+  <color name="pinInputStatusBar">#BDCCCC</color>
+  <color name="walkthroughStatusBar">#CCCCCC</color>
+  <color name="onboarding1StatusBar">#00847A</color>
+  <color name="onboarding2StatusBar">#8B2A15</color>
+  <color name="onboarding3StatusBar">#AD8500</color>
+  <color name="onboarding4StatusBar">#3B5893</color>
+  <color name="registrationStatusBar">#9CB1BE</color>
 </resources>
