@@ -62,7 +62,8 @@ class UrlImageParser private constructor(
   )
 
   private open inner class CustomImageTarget<T>(
-    private val urlDrawable: UrlDrawable, private val drawableFactory: (T) -> Drawable
+    private val urlDrawable: UrlDrawable,
+    private val drawableFactory: (T) -> Drawable
   ) : CustomTarget<T>() {
     override fun onLoadCleared(placeholder: Drawable?) {
       // No resources to clear.

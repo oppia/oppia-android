@@ -7,10 +7,10 @@ import com.bumptech.glide.load.Options
 import com.bumptech.glide.load.ResourceEncoder
 import com.bumptech.glide.load.engine.Resource
 import com.caverock.androidsvg.SVG
-import org.oppia.util.logging.Logger
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import org.oppia.util.logging.Logger
 
 /** Encodes an SVG internal representation to {@link FileOutputStream}. */
 class SvgEncoder : ResourceEncoder<SVG?> {
