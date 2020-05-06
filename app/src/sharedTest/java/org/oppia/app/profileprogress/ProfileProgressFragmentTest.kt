@@ -121,13 +121,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
-    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-    }
-  }
-
-  @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
@@ -233,11 +226,11 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText(R.string.topic_in_progress))
+      waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
       ).check(
-        matches(withText(R.string.topic_in_progress))
+        matches(withText(R.string.topics_in_progress))
       )
     }
   }
@@ -300,11 +293,11 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText(R.string.story_completed))
+      waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_description_text_view)
       ).check(
-        matches(withText(R.string.story_completed))
+        matches(withText(R.string.stories_completed))
       )
     }
   }
@@ -389,7 +382,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickTopicCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText(R.string.topic_in_progress))
+      waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)
       ).check(
@@ -401,7 +394,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText(R.string.story_completed))
+      waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
       ).check(
@@ -414,7 +407,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText(R.string.story_completed))
+      waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
       ).check(
