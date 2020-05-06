@@ -135,12 +135,18 @@
     <item quantity="other">
       %d Stories Completed
     </item>
+    <item quantity="zero">
+      %d Stories Completed
+    </item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">
       1 Topic in Progress
     </item>
     <item quantity="other">
+      %d Topics in Progress
+    </item>
+    <item quantity="zero">
       %d Topics in Progress
     </item>
   </plurals>

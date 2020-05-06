@@ -95,7 +95,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="@{viewModel.ongoingTopicCount > 1 ? @string/topics_in_progress : @string/topic_in_progress}"
+          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="12sp" />
       </LinearLayout>
@@ -141,7 +141,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:gravity="center"
-          android:text="@{viewModel.completedStoryCount > 1 ? @string/stories_completed : @string/story_completed}"
+          android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="12sp" />
       </LinearLayout>
