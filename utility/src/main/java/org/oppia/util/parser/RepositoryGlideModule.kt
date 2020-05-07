@@ -7,8 +7,8 @@ import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.caverock.androidsvg.SVG
-import org.oppia.util.caching.AssetRepository
 import java.io.InputStream
+import org.oppia.util.caching.AssetRepository
 
 /** Custom [AppGlideModule] to enable loading images from [AssetRepository] via Glide. */
 @GlideModule
