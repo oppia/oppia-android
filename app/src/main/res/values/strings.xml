@@ -35,7 +35,7 @@
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
-  <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
