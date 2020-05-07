@@ -37,7 +37,8 @@ class UrlImageParser private constructor(
   override fun getDrawable(urlString: String): Drawable {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
     val urlDrawable = UrlDrawable()
-    if (imageUrl.endsWith("svg")) {
+    // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
+    if (imageUrl.endsWith("svg", ignoreCase = true)) {
       val target = SvgTarget(urlDrawable)
       imageLoader.loadSvg(
         gcsPrefix + gcsResource + imageUrl,
