@@ -44,7 +44,7 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .`as`(PictureDrawable::class.java)
       .fitCenter()
-      .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+      .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
       .into(target)
   }
