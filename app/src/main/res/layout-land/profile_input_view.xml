@@ -14,7 +14,6 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
-      android:textAllCaps="true"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="12sp" />
 
