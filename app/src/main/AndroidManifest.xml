@@ -63,6 +63,7 @@
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
+    <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".profile.AddProfileActivity"
       android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
@@ -115,7 +116,6 @@
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
-    <activity android:name=".testing.ContentCardTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity android:name=".testing.HomeInjectionActivity" />

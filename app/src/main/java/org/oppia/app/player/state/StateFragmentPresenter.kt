@@ -73,14 +73,12 @@ import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationInterface
-import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
@@ -104,12 +102,10 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
-  private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -364,7 +360,6 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     val hasPreviousState = ephemeralState.hasPreviousState
-
 
     currentState = ephemeralState.state
 
