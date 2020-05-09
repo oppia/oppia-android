@@ -21,7 +21,7 @@
       android:id="@+id/walkthrough_welcome_title_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="40dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.profileName}"
       android:textColor="@color/oppiaPrimaryText"
@@ -51,18 +51,18 @@
       android:id="@+id/walkthrough_welcome_image_view"
       android:layout_width="180dp"
       android:layout_height="180dp"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="38dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/walkthrough_welcome_description_text_view"
-      android:src="@drawable/ic_portrait_onboarding_0" />
+      android:src="@drawable/ic_otter" />
 
     <Button
       android:id="@+id/walkthrough_welcome_next_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="0dp"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="48dp"
       android:onClick="@{(v) -> presenter.changePage()}"
       android:text="@string/next"
       app:layout_constraintEnd_toEndOf="parent"
